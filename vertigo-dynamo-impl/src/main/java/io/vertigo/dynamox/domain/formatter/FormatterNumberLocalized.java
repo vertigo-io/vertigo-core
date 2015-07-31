@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.Home;
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 

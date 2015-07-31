@@ -19,20 +19,33 @@
 package io.vertigo.dynamo.work;
 
 /**
- *
+ * Work processor used for composing multiple WorkEngine.
+ * Example : F o G o H (x) composition mean : F(G(H(x)))
  * @author pchretien
+ * @param <WR> WorkResult type
+ * @param <I> Input type
  */
-public interface WorkProcessor<WR, W> {
+public interface WorkProcessor<WR, I> {
 	/**
 	 * Add a task to the current processor to build a new processor
+	 * @param workEngineProvider WorkEngine provider
+	 * @param <WR1> WorkEngine result
+	 * @return new WorkProcessor
 	 */
-	<WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, WR> workEngineProvider);
+	<WR1> WorkProcessor<WR1, I> then(final WorkEngineProvider<WR1, WR> workEngineProvider);
 
-	<WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz);
+	/**
+	 * Add a task to the current processor to build a new processor
+	 * @param clazz Class of workEngine
+	 * @param <WR1> WorkEngine result
+	 * @return new WorkProcessor
+	 */
+	<WR1> WorkProcessor<WR1, I> then(final Class<? extends WorkEngine<WR1, WR>> clazz);
 
 	/**
 	 * Execute processor composed of tasks.
+	 * @param input Input param
 	 * @return output
 	 */
-	WR exec(W input);
+	WR exec(I input);
 }

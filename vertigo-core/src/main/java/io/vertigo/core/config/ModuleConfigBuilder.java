@@ -18,11 +18,12 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,32 +35,36 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final Option<AppConfigBuilder> myAppConfigBuilderOption;
+	private final boolean boot;
+	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
+	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
+	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
-	//---Rules
 	private boolean myHasApi = true; //par défaut on a une api.
 	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
 	//State to avoid reuse of this Builder
 	private boolean ended = false;
 
-	public ModuleConfigBuilder(final String name) {
-		Assertion.checkArgNotEmpty(name);
+	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
+		Assertion.checkNotNull(appConfigBuilder);
 		//-----
-		myName = name;
-		myAppConfigBuilderOption = Option.none();
+		myName = "boot";
+		boot = true;
+		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
 		Assertion.checkNotNull(appConfigBuilder);
+		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
+		boot = false;
 		myName = name;
-		myAppConfigBuilderOption = Option.some(appConfigBuilder);
+		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
@@ -85,15 +90,27 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
+	 * Ajout de définitions définie par un iterable.
+	 */
+	public ModuleConfigBuilder addDefinitionProvider(final String definitionProviderClassName) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		Assertion.checkArgNotEmpty(definitionProviderClassName);
+		//-----
+		final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
+		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
+		return this;
+	}
+
+	/**
 	 * Ajout de resources
 	 * @param resourceType Type of resource
 	 */
-	public ModuleConfigBuilder addResource(final String resourceType, final String resourcePath) {
+	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//-----
-		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
+		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
@@ -149,11 +166,14 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public AppConfigBuilder endModule() {
 		Assertion.checkArgument(!ended, "this builder is ended");
-		Assertion.checkArgument(myAppConfigBuilderOption.isDefined(), "beginModule() must be used before endModule()");
 		//-----
-		myAppConfigBuilderOption.get().withModules(Collections.singletonList(this.build()));
+		if (boot) {
+			myAppConfigBuilder.beginBoot().withModule(build()).endBoot();
+		} else {
+			myAppConfigBuilder.withModules(Collections.singletonList(build()));
+		}
 		ended = true;
-		return myAppConfigBuilderOption.get();
+		return myAppConfigBuilder;
 	}
 
 	/** {@inheritDoc} */
@@ -172,7 +192,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(myName, myResourceConfigs, componentConfig, myAspectConfigs, moduleRules);
+		final ModuleConfig moduleConfig = new ModuleConfig(myName, myDefinitionProviderConfigs, myDefinitionResourceConfigs, componentConfig, myAspectConfigs, moduleRules);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

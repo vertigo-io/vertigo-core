@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author tchassagnette, pchretien
  */
 public final class Metric {
-	public static enum Status {
+	public enum Status {
 		/** Exécution OK*/
 		Executed,
 		/** Erreur lors de l'exécution*/

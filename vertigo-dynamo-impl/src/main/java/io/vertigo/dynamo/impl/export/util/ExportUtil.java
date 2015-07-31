@@ -29,12 +29,17 @@ import io.vertigo.dynamo.store.StoreManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * Classe utilitaire pour export.
  *
  * @author pchretien
  */
 public final class ExportUtil {
+
+	private static final Logger LOGGER = Logger.getLogger(ExportUtil.class);
+
 	private ExportUtil() {
 		//private constructor
 	}
@@ -43,7 +48,7 @@ public final class ExportUtil {
 	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine,
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à
 	 * faire.
-	 *
+	 * @param storeManager Store Manager
 	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
 	 * @param denormCache  Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
@@ -57,6 +62,7 @@ public final class ExportUtil {
 	/**
 	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
 	 *
+	 * @param storeManager Store Manager
 	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
 	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
@@ -95,15 +101,14 @@ public final class ExportUtil {
 		} catch (final Exception e) {
 			// TODO : solution ? => ouvrir pour surcharge de cette gestion
 			value = "Non Exportable";
+			LOGGER.warn("Field " + dtField.getName() + " non exportable", e);
 		}
 		return value;
 	}
 
 	private static Map<Object, String> createReferentielIndex(final StoreManager storeManager, final DtField dtField) {
-		// TODO ceci est un copier/coller de KSelectionListBean (qui resemble
-		// plus à un helper des MasterData qu'a un bean)
-		// La collection n'est pas précisé alors on va la chercher dans le
-		// repository du référentiel
+		// TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
+		// La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
 		final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
 		final DtList<DtObject> valueList = storeManager.getDataStore().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();

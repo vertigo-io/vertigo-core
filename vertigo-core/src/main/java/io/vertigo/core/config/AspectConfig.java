@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 
 /**

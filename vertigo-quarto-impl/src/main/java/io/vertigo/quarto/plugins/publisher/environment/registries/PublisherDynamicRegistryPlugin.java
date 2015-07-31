@@ -18,11 +18,12 @@
  */
 package io.vertigo.quarto.plugins.publisher.environment.registries;
 
-import io.vertigo.core.Home;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
@@ -45,19 +46,20 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	 * Constructeur.
 	 */
 	public PublisherDynamicRegistryPlugin() {
-		super(PublisherGrammar.grammar);
+		super(PublisherGrammar.GRAMMAR);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
 
 		if (entity.equals(PublisherGrammar.publisherDefinition)) {
-			final PublisherDataDefinition definition = createPublisherDataDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition);
+			final Definition definition = createPublisherDataDefinition(xdefinition);
+			return Option.some(definition);
 		} else if (entity.equals(PublisherGrammar.publisherNodeDefinition)) {
 			createPublisherNodeDefinition(xdefinition);
+			return Option.none();
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}

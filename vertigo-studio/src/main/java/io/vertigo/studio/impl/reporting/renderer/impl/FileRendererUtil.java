@@ -20,9 +20,11 @@ package io.vertigo.studio.impl.reporting.renderer.impl;
 
 import io.vertigo.lang.Assertion;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 /**
  * Classe utilitaire.
@@ -37,6 +39,7 @@ final class FileRendererUtil {
 
 	/**
 	 * Méthode d'écriture d'un fichier.
+	 * @param rootPath Chemin racine
 	 * @param fileName Nom du fichier
 	 * @param content Contenu du fichier.
 	 */
@@ -45,21 +48,24 @@ final class FileRendererUtil {
 		//-----
 		final File pathFile = new File(rootPath);
 		try {
-			if (!pathFile.exists()) {
-				if (!pathFile.mkdirs()) {
-					throw new IOException("Can't create directory: " + pathFile.getAbsolutePath());
-				}
+			if (!pathFile.exists() && !pathFile.mkdirs()) {
+				throw new IOException("Can't create directory: " + pathFile.getAbsolutePath());
 			}
 			final File file = new File(rootPath + "" + fileName);
 
 			//On crée un fichier si il n'en existe pas déjà un
 			//Atomically creates a new, empty file named by this abstract pathname if and only if a file with this name does not yet exis
-			file.createNewFile();
-
-			try (final FileWriter fileWriter = new FileWriter(file)) {
-				fileWriter.write(content);
+			if (!file.createNewFile()) {
+				throw new IOException("Can't create file: " + file.getAbsolutePath());
 			}
-			//System.out.println("writing" + file.getCanonicalPath());
+
+			try (final FileOutputStream fos = new FileOutputStream(file)) {
+				try (final OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8")) {//needs to specify charset
+					try (final BufferedWriter bw = new BufferedWriter(osw)) {
+						bw.write(content);
+					}
+				}
+			}
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur IO", e);
 		}

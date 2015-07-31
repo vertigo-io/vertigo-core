@@ -1,6 +1,8 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<module name="myApp2">
-		<resource type="classes" path="io.vertigo.dynamo.environment.java.data.DtDefinitions" />
+		<definitions>		
+			<resource type="classes" path="io.vertigo.dynamo.environment.java.data.DtDefinitions" />
+		</definitions>
 	</module>
 </config>

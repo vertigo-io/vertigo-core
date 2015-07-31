@@ -31,21 +31,34 @@ import spark.Response;
 import spark.Route;
 
 public final class Hub {
+	private Hub() {
+		//private
+	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		final VConsoleHandler consoleHandler = new VConsoleHandler();
 
-		get(new Route("/:cmd") {
-			@Override
-			public Object handle(Request request, Response response) {
-				final String commandName = request.params(":cmd");
-				Map<String, String> params = new HashMap<>();
-				for (String queryParam : request.queryParams()) {
-					params.put(queryParam, request.queryParams(queryParam));
-				}
-				VResponse vresponse = consoleHandler.execCommand(new VCommand(commandName, params));
-				return vresponse.getResponse();
+		get(new CommandRoute("/:cmd", consoleHandler));
+	}
+
+	private static final class CommandRoute extends Route {
+		private final VConsoleHandler consoleHandler;
+
+		CommandRoute(final String path, final VConsoleHandler consoleHandler) {
+			super(path);
+			this.consoleHandler = consoleHandler;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Object handle(final Request request, final Response response) {
+			final String commandName = request.params(":cmd");
+			final Map<String, String> params = new HashMap<>();
+			for (final String queryParam : request.queryParams()) {
+				params.put(queryParam, request.queryParams(queryParam));
 			}
-		});
+			final VResponse vresponse = consoleHandler.execCommand(new VCommand(commandName, params));
+			return vresponse.getResponse();
+		}
 	}
 }

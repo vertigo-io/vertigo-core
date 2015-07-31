@@ -101,10 +101,11 @@
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>1.4.5</version>
-			<optional>true</optional><!-- EsSearchServicesPlugin -->
+			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 
-	
+	<!-- Dépendances à des librairies spécifiques au module -->
+		
 		
 
 		<!-- <dependency>

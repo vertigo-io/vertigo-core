@@ -73,7 +73,7 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void testDtDefinition() {
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
 		Assert.assertEquals(Famille.class.getCanonicalName(), dtDefinition.getClassCanonicalName());
-		Assert.assertEquals(true, dtDefinition.isPersistent());
+		Assert.assertTrue(dtDefinition.isPersistent());
 		Assert.assertEquals(Famille.class.getPackage().getName(), dtDefinition.getPackageName());
 	}
 }

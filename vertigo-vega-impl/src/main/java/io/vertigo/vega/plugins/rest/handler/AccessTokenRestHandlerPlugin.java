@@ -38,9 +38,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
-	private static final Serializable TOKEN_DATA = new Serializable() {
-		private static final long serialVersionUID = 1L;
-	};
+	private static final Serializable TOKEN_DATA = new UniqueToken();
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token"; //Todo make a resource.properties
@@ -90,4 +88,11 @@ public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
 		return result;
 	}
 
+	private static class UniqueToken implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		public UniqueToken() {
+			//empty
+		}
+	}
 }

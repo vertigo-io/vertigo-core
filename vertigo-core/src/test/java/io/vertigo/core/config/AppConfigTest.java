@@ -19,8 +19,8 @@
 package io.vertigo.core.config;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.core.Home.App;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 import java.util.Properties;

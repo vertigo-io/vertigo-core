@@ -143,7 +143,7 @@ final class BerkeleyDatabase {
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new RuntimeException("findAll a échouée");
+			throw new RuntimeException("findAll a échouée", e);
 		}
 	}
 

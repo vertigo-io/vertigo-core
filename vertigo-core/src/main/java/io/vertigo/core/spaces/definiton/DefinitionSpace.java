@@ -18,67 +18,31 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.boot.BootConfig;
-import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.dynamo.impl.environment.Environment;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Espace de définitions (non threadSafe).
- * Il est nécessaier d'enregistrer toutes les définitions au démarrage du serveur.
+ * Il est nécessaire d'enregistrer toutes les définitions au démarrage du serveur.
  * Etape 1 : Enregistrer les classes éligibles (register)
  * Etape 2 : Ajouter les objets (put)
  *
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {
-	private Environment myEnvironment = null;
-
 	/**
 	 * Liste des objets indexés par Class (le type) et nom.
 	 */
 	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
-
-	public DefinitionSpace(final BootConfig bootConfig) {
-		//
-	}
-
-	public void injectDefinitions(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
-		//We are doing a copy of all resources, to check that they are all parsed.
-		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
-		//-----
-		//Candidates contins all resources that can be treated by the resourceLoader
-		final List<ResourceConfig> candidates = new ArrayList<>();
-		for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
-			final ResourceConfig resourceConfig = it.next();
-			if (myEnvironment.getTypes().contains(resourceConfig.getType())) {
-				candidates.add(resourceConfig);
-				it.remove();
-			}
-		}
-		if (myEnvironment != null) {
-			myEnvironment.parse(candidates);
-		}
-		//-----	
-		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{0}' have not been parsed successfully ", resourceConfigsToDo);
-	}
 
 	/**
 	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
@@ -202,13 +166,6 @@ public final class DefinitionSpace implements Activeable {
 	public void stop() {
 		definitions.clear();
 		allObjects.clear();
-		myEnvironment = null;
 	}
 
-	public void addLoader(final Environment environment) {
-		Assertion.checkNotNull(environment);
-		Assertion.checkArgument(!environment.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
-		//-----
-		myEnvironment = environment;
-	}
 }

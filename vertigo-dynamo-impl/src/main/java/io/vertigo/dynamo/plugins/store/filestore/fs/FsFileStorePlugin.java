@@ -69,7 +69,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 *
 	 * @author npiedeloup
 	 */
-	private static enum DtoFields {
+	private enum DtoFields {
 		/** Champ FILE_NAME */
 		FILE_NAME,
 		/** Champ MIME_TYPE */

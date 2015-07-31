@@ -18,11 +18,10 @@
  */
 package io.vertigo.boot.xml;
 
-import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.BootConfigBuilder;
 import io.vertigo.core.config.LogConfig;
-import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -38,9 +37,8 @@ import java.util.Properties;
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
 
-	public XMLAppConfigBuilder withBootConfig(final BootConfig bootConfig) {
-		appConfigBuilder.withBootConfig(bootConfig);
-		return this;
+	public BootConfigBuilder beginBoot() {
+		return appConfigBuilder.beginBoot();
 	}
 
 	/**
@@ -56,8 +54,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		for (final String xmlModulesFileName : xmlModulesFileNames) {
 			xmlModulesAsUrls.add(createURL(xmlModulesFileName, relativeRootClass));
 		}
-		final List<ModuleConfig> moduleConfigs = XMLModulesParser.parseAll(xmlModulesParams, xmlModulesAsUrls);
-		appConfigBuilder.withModules(moduleConfigs);
+		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
 		return this;
 	}
 
@@ -68,7 +65,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	public XMLAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		appConfigBuilder.withLogConfig(logConfig);
+		appConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
 		return this;
 	}
 

@@ -20,7 +20,7 @@ package io.vertigo.commons.plugins.config.xml;
 
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.impl.config.ConfigPlugin;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
@@ -34,6 +34,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -95,6 +96,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 
 		final XmlConfigHandler handler = new XmlConfigHandler(tmpConfigs);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);

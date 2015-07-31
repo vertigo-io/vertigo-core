@@ -19,14 +19,12 @@
 package io.vertigo;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.core.Home.App;
-import io.vertigo.core.boot.BootConfigBuilder;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Container;
 import io.vertigo.lang.Describable;
 
 import java.util.List;
@@ -49,7 +47,9 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	private synchronized void stopHome() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 		app = null;
 	}
 
@@ -97,7 +97,7 @@ public abstract class AbstractTestCaseJU4 {
 			startHome();
 		}
 		// On injecte les managers sur la classe de test.
-		Injector.injectMembers(this, getContainer());
+		Injector.injectMembers(this, Home.getComponentSpace());
 		doSetUp();
 	}
 
@@ -146,15 +146,6 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Fournit le container utilisé pour l'injection.
-	 *
-	 * @return Container de l'injection
-	 */
-	private static Container getContainer() {
-		return Home.getComponentSpace();
-	}
-
-	/**
 	 * Tableau des fichiers managers.xml a prendre en compte.
 	 *
 	 * @return fichier managers.xml (par defaut managers-test.xml)
@@ -178,13 +169,12 @@ public abstract class AbstractTestCaseJU4 {
 
 	/**
 	 * Configuration des tests.
+	 * @return App config
 	 */
 	protected AppConfig buildAppConfig() {
-
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withBootConfig(new BootConfigBuilder().silently().build())
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.build();
+				.beginBoot().silently().endBoot().build();
 	}
 }

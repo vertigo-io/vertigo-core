@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -141,8 +142,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+	public boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return indexDefinition != null;
 	}
 
@@ -161,7 +162,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkNotNull(keyConceptUris);
 		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
-		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptUris.get(0).getDefinition());
+		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
+		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
+		Assertion.checkNotNull(searchIndexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		//-----
 		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
@@ -171,9 +175,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
-		//TODO return un Futur ?
-		executorService.schedule(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+	public Future<Long> reindexAll(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		return reindexFuture;
 	}
 
 }

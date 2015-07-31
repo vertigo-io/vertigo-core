@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -26,6 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -39,6 +41,7 @@ import java.util.Map;
  * @author emangin
  */
 public final class DomainUtil {
+
 	/**
 	 * Constructeur privé pour classe utilitaire.
 	 */
@@ -118,24 +121,9 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à trier
 	 * @return collection triée
 	 */
-	private static Collection<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
+	static Collection<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
-		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
-			@Override
-			public int compare(final DtDefinition definition1, final DtDefinition definition2) {
-				return definition1.getClassCanonicalName().compareTo(definition2.getClassCanonicalName());
-			}
-
-			@Override
-			public boolean equals(final Object obj) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public int hashCode() {
-				throw new UnsupportedOperationException();
-			}
-		});
+		java.util.Collections.sort(list, new DefinitionComparator<DtDefinition>());
 		return list;
 	}
 
@@ -157,45 +145,35 @@ public final class DomainUtil {
 		return map;
 	}
 
-	static Collection<DtDefinition> sortAbsoluteDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
-		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
-		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
-			@Override
-			public int compare(final DtDefinition definition1, final DtDefinition definition2) {
-				return definition1.getClassSimpleName().compareTo(definition2.getClassSimpleName());
-			}
-
-			@Override
-			public boolean equals(final Object obj) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public int hashCode() {
-				throw new UnsupportedOperationException();
-			}
-		});
+	private static <A extends AssociationDefinition> Collection<A> sortAssociationsCollection(final Collection<A> associationCollection) {
+		final List<A> list = new ArrayList<>(associationCollection);
+		java.util.Collections.sort(list, new DefinitionComparator<AssociationDefinition>());
 		return list;
 	}
 
-	private static <A extends AssociationDefinition> Collection<A> sortAssociationsCollection(final Collection<A> associationCollection) {
-		final List<A> list = new ArrayList<>(associationCollection);
-		java.util.Collections.sort(list, new Comparator<AssociationDefinition>() {
-			@Override
-			public int compare(final AssociationDefinition definition1, final AssociationDefinition definition2) {
-				return definition1.getName().compareTo(definition2.getName());
-			}
+	private static final class DefinitionComparator<D extends Definition> implements Comparator<D>, Serializable {
+		private static final long serialVersionUID = 2382100262536812147L;
 
-			@Override
-			public boolean equals(final Object obj) {
-				throw new UnsupportedOperationException();
-			}
+		DefinitionComparator() {
+			//rien
+		}
 
-			@Override
-			public int hashCode() {
-				throw new UnsupportedOperationException();
-			}
-		});
-		return list;
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final D definition1, final D definition2) {
+			return definition1.getName().compareTo(definition2.getName());
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public boolean equals(final Object obj) {
+			throw new UnsupportedOperationException();
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int hashCode() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

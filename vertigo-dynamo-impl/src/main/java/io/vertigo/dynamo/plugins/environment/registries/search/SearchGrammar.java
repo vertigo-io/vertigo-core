@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityPropertyType;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
@@ -31,23 +31,28 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
  */
 final class SearchGrammar {
 
+	/** Index definition. */
 	public static final Entity INDEX_DEFINITION_ENTITY;
-
+	/** Search loader id. */
 	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
-
-	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
-
-	public static final Grammar GRAMMAR;
-
-	public static final Entity FACET_DEFINITION_ENTITY;
-
-	public static final Entity FACET_RANGE_ENTITY;
-	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
-
-	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
+	/** List filter class. */
 	public static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
-
+	/** List filter query. */
 	public static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
+
+	/** Fieldname. */
+	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
+	/** Facet definition. */
+	public static final Entity FACET_DEFINITION_ENTITY;
+	/** Facet range. */
+	private static final Entity FACET_RANGE_ENTITY;
+	/** Range filter. */
+	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
+	/** Faceted query definition. */
+	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
+
+	/** Search Grammar instance. */
+	public static final Grammar GRAMMAR;
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -104,4 +109,7 @@ final class SearchGrammar {
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
 	}
 
+	private SearchGrammar() {
+		//private
+	}
 }

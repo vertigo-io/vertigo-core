@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

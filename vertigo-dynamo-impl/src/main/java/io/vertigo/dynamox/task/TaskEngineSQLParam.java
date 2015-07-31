@@ -36,7 +36,7 @@ final class TaskEngineSQLParam {
 	 * Liste énumérée des différents types de paramètre SQL Il existe trois types dont inout qui n'a pas d'équivalent en
 	 * java pour les objets simples (non mutables).
 	 */
-	static enum InOutType {
+	enum InOutType {
 		/**
 		 * Paramètre SQL de type IN.
 		 */

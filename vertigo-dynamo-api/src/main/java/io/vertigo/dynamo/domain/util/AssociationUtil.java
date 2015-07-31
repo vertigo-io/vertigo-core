@@ -38,7 +38,7 @@ public final class AssociationUtil {
 	 * Liste des cardinalitées.
 	 *
 	 */
-	private static enum Cardinality {
+	private enum Cardinality {
 		/** Cardinalité 0-1. */
 		CARD_0_1("0..1", false, false),
 		/** Cardinalité 0-N. */

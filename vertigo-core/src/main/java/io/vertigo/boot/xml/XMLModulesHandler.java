@@ -18,15 +18,14 @@
  */
 package io.vertigo.boot.xml;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
-import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.ListBuilder;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -40,45 +39,53 @@ final class XMLModulesHandler extends DefaultHandler {
 	private PluginConfigBuilder pluginConfigBuilder;
 	//Global Params
 	private final XMLModulesParams params;
-	//We are populating moduleConfigs during parsing
-	private final ListBuilder<ModuleConfig> moduleConfigsBuilder;
+	private final AppConfigBuilder appConfigBuilder;
 
-	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final XMLModulesParams params) {
-		Assertion.checkNotNull(moduleConfigsBuilder);
+	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
+		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(params);
 		//-----
-		this.moduleConfigsBuilder = moduleConfigsBuilder;
+		this.appConfigBuilder = appConfigBuilder;
 		this.params = params;
 	}
 
 	enum TagName {
 		config,
+		boot,
 		module,
+		//---
+		definitions,
 		resource,
-		component, plugin, param, aspect
+		provider,
+		//---
+		component,
+		plugin,
+		param,
+		aspect
 	}
 
 	private TagName current;
 
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf(eName)) {
+		switch (TagName.valueOf(qName)) {
+			case boot:
 			case module:
-				moduleConfigsBuilder.add(moduleConfigBuilder.build());
+				moduleConfigBuilder.endModule();
 				moduleConfigBuilder = null;
 				break;
 			case component:
+				componentConfigBuilder.endComponent();
 				componentConfigBuilder = null;
 				break;
 			case plugin:
+				pluginConfigBuilder.endPlugin();
 				pluginConfigBuilder = null;
 				break;
 			case aspect: //non géré
 			case param: //non géré
+			case definitions: //non géré
+			case provider: //non géré
 			case resource: //non géré
 			case config: //non géré
 			default:
@@ -87,19 +94,19 @@ final class XMLModulesHandler extends DefaultHandler {
 
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf(eName)) {
+		switch (TagName.valueOf(qName)) {
+			case boot:
+				moduleConfigBuilder = appConfigBuilder.beginBootModule();
+				break;
+
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
 				final String superClass = attrs.getValue("inheritance");
-				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
+				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
 				if (api != null) {
-					if (!Boolean.valueOf(api)) {
+					if (!Boolean.parseBoolean(api)) {
 						moduleConfigBuilder.withNoAPI();
 					}
 				}
@@ -117,8 +124,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				} else {
 					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentImplClass);
 				}
-				if (attrs.getValue("initClass") != null) {
-					final Class componentInitialierClass = ClassUtil.classForName(attrs.getValue("initClass"));
+				final String initClass = attrs.getValue("initClass");
+				if (initClass != null) {
+					final Class componentInitialierClass = ClassUtil.classForName(initClass);
 					componentConfigBuilder.withInitializer(componentInitialierClass);
 				}
 				break;
@@ -127,10 +135,14 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
 				pluginConfigBuilder = componentConfigBuilder.beginPlugin(pluginImplClass);
 				break;
+			case provider:
+				final String definitionProviderClassName = attrs.getValue("className");
+				moduleConfigBuilder.addDefinitionProvider(definitionProviderClassName);
+				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				moduleConfigBuilder.addResource(resourceType, evalParamValue(resourcePath));
+				moduleConfigBuilder.addDefinitionResource(resourceType, evalParamValue(resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
@@ -146,6 +158,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
 				break;
+			case definitions: //non géré
 			case config: //non géré
 			default:
 		}

@@ -41,6 +41,7 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,6 +95,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <K> Type du keyConcept métier indexé
  */
 final class ESStatement<K extends KeyConcept, I extends DtObject> {
+
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -200,7 +202,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
 		appendFacetDefinition(searchQuery, searchRequestBuilder);
-
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 		return translateQuery(indexDefinition, queryResponse, searchQuery);
 	}
@@ -230,6 +231,12 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			searchRequestBuilder.addSort(sortBuilder);
 		}
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		if (searchQuery.getSecurityListFilter().isDefined()) {
+			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
+			//use filteredQuery instead of PostFilter in order to filter aggregations too.
+			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
+		}
+
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
@@ -351,7 +358,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.append(')')
 				.toString();
 		return QueryBuilders.queryString(query)
-				.lowercaseExpandedTerms(false);
+				.lowercaseExpandedTerms(false)
+				.analyzeWildcard(true);
 	}
 
 	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
@@ -482,13 +490,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 
 		//tri des facettes
-		final Comparator<FacetValue> facetComparator = new Comparator<FacetValue>() {
-			@Override
-			public int compare(final FacetValue o1, final FacetValue o2) {
-				final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
-				return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
-			}
-		};
+		final Comparator<FacetValue> facetComparator = new FacetComparator(facetValues);
 		final Map<FacetValue, Long> sortedFacetValues = new TreeMap<>(facetComparator);
 		sortedFacetValues.putAll(facetValues);
 
@@ -504,4 +506,21 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 		return new Facet(facetDefinition, rangeValues);
 	}
+
+	private static final class FacetComparator implements Comparator<FacetValue>, Serializable {
+		private static final long serialVersionUID = 7890908569483553289L;
+		private final Map<FacetValue, Long> facetValues;
+
+		FacetComparator(final Map<FacetValue, Long> facetValues) {
+			this.facetValues = facetValues;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final FacetValue o1, final FacetValue o2) {
+			final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
+			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+		}
+	}
+
 }

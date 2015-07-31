@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.core.Home.App;
+import io.vertigo.core.App;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;

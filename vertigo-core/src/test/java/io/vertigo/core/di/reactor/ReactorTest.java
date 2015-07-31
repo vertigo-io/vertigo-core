@@ -18,7 +18,8 @@
  */
 package io.vertigo.core.di.reactor;
 
-import io.vertigo.core.di.DIException;
+import io.vertigo.core.component.di.DIException;
+import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.di.data.A;
 import io.vertigo.core.di.data.B;
 import io.vertigo.core.di.data.C;

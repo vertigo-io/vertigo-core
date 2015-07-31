@@ -28,7 +28,7 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
  */
 interface FileAction {
 
-	static enum State {
+	enum State {
 		/** Etat d'initialisation */
 		READY,
 		/** Etat après l'action process() */

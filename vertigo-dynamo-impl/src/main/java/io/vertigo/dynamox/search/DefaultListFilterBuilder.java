@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  * Pattern syntax is easy :
  * #QUERY# : criteria.toString() : use this when Criteria is a user string
  * #MY_FIELD# : criteria.myField
+ * #MY_FIELD#!(myDefault) : criteria.myField!=null?criteria.myField:myDefault
  * QueryString modifier must be add into the ## and will be repeated for all word (separated by regexp \p{White_Space})
  *
  * example:
@@ -75,7 +76,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 *   4: post-expression value
 	 *   5: separator value
 	 */
-	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?([^\\s#]*)(\\s|$)+";
+	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
 	private final static Pattern QUERY_PATTERN = Pattern.compile(QUERY_PATTERN_STRING);
 
 	private final static String FULL_QUERY_PATTERN_STRING = "^(?:" + QUERY_PATTERN_STRING + ")*";
@@ -133,11 +134,11 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	//private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + NOT_WORD_PATTERN + "]*)([^" + NOT_WORD_PATTERN + "]+)([^\\w" + NOT_WORD_PATTERN + "]*))";
 	private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([" + PREFIX_RESERVERD_PATTERN + "]*?)([" + WORD_RESERVERD_PATTERN + "]+)((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
 	private final static String CRITERIA_VALUE_PATTERN_STRING = "(?:"
-			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 1
-			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING
-			+ "|" + CRITERIA_VALUE_RANGE_PATTERN_STRING
-			+ "|" + CRITERIA_VALUE_STAR_PATTERN_STRING
-			+ "|" + CRITERIA_VALUE_WORD_PATTERN_STRING
+			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 1-4
+			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING // group 5-8
+			+ "|" + CRITERIA_VALUE_RANGE_PATTERN_STRING // group 9-12
+			+ "|" + CRITERIA_VALUE_STAR_PATTERN_STRING // group 13-16
+			+ "|" + CRITERIA_VALUE_WORD_PATTERN_STRING // group 17-20
 			+ ")";
 	private final static Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
 
@@ -188,16 +189,17 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String indexFieldName = queryMatcher.group(1);
 			final String preExpression = queryMatcher.group(2);
 			final String fieldExpression = queryMatcher.group(3);
-			final String postExpression = queryMatcher.group(4);
-			final String separator = queryMatcher.group(5);
+			final String defaultValue = queryMatcher.group(4);
+			final String postExpression = queryMatcher.group(5);
+			final String separator = queryMatcher.group(6);
 			//On traite l'expression avant de concaténer, car si le critère est null on retire tout
-			appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, postExpression);
+			appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, postExpression, defaultValue);
 			query.append(separator);
 		}
 		return query.toString();
 	}
 
-	private void appendFieldExpression(final StringBuilder query, final String indexFieldName, final String preExpression, final String fieldExpression, final String postExpression) {
+	private void appendFieldExpression(final StringBuilder query, final String indexFieldName, final String preExpression, final String fieldExpression, final String postExpression, final String defaultValue) {
 		if (fieldExpression != null) {
 			final Matcher expressionMatcher = FIELD_EXPRESSION_PATTERN.matcher(fieldExpression);
 			Assertion.checkArgument(expressionMatcher.matches(), "BuildQuery syntax error, field ({0}) in query ({1}) should match a criteria fieldName", fieldExpression, myBuildQuery);
@@ -213,13 +215,15 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 				value = BeanUtil.getValue(myCriteria, fieldName);
 			}
 			if (value instanceof String) { //so not null too
-				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value);
+				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, (String) value, defaultValue);
 			} else if (value instanceof Date) { //so not null too
 				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, formatDate((Date) value));
 			} else if (value != null) {
 				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value.toString());
+			} else if (defaultValue != null) { //if value null => defaultValue
+				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, null, null, defaultValue);
 			}
-			//if value null => no criteria (TODO : CHECKME)
+			//if defaultValue null => no criteria
 		} else {
 			//no fieldExpression : fixed param
 			appendIfNotNull(query, indexFieldName);
@@ -231,17 +235,15 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private void appendSimpleCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value) {
 		appendIfNotNull(query, indexFieldName);
 		appendIfNotNull(query, preExpression);
-		query.append('(');
 		appendIfNotNull(query, preModifier);
 		appendIfNotNull(query, value);
 		appendIfNotNull(query, postModifier);
-		query.append(')');
 		appendIfNotNull(query, postExpression);
 	}
 
-	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final Object value) {
+	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value, final String defaultValue) {
 
-		final String stringValue = cleanUserQuery((String) value);
+		final String stringValue = cleanUserQuery(value, defaultValue != null ? defaultValue : "*");
 		/*if ("*".equals(stringValue)) {
 			appendSimpleCriteria(query, indexFieldName != null ? indexFieldName : "*", preExpression, postExpression, "", "", stringValue);
 			return;
@@ -329,20 +331,25 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
 	}
 
-	private String cleanUserQuery(final String value) {
+	private String cleanUserQuery(final String value, final String defaultValue) {
 		if (value.trim().isEmpty()) {
-			return "*";
+			return defaultValue;
 		}
 		return value;
 	}
 
 	private void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
 		if (expressionValue.length() > 0) {
+			final boolean useParenthesis = (indexFieldName != null && !indexFieldName.isEmpty());
 			appendIfNotNull(query, indexFieldName);
 			appendIfNotNull(query, preExpression);
-			query.append('(');
+			if (useParenthesis) {
+				query.append('(');
+			}
 			query.append(expressionValue.toString());
-			query.append(')');
+			if (useParenthesis) {
+				query.append(')');
+			}
 			appendIfNotNull(query, postExpression);
 			expressionValue.setLength(0); //on la remet à 0
 		}
@@ -370,7 +377,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return la chaine de caractere formattée.
 	 */
 	private String formatDate(final Date date) {
-		final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+		final DateFormat formatter = new SimpleDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"", Locale.getDefault());
 		final TimeZone tz = TimeZone.getTimeZone("UTC");
 		formatter.setTimeZone(tz);
 		return formatter.format(date);

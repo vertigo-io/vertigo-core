@@ -36,7 +36,7 @@ public final class HexEncoder implements Encoder<byte[], String> {
 		//-----
 		final StringBuilder output = new StringBuilder(data.length * 2);
 		for (final byte element : data) {
-			output.append(Integer.toHexString(element >> 4 & 0xf)).append(Integer.toHexString(element & 0xf));
+			output.append(Integer.toHexString((element >> 4) & 0xf)).append(Integer.toHexString(element & 0xf));
 		}
 		return output.toString();
 	}

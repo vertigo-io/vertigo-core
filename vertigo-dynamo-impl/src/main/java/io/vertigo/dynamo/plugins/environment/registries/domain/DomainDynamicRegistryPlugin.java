@@ -19,6 +19,12 @@
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.impl.environment.KernelGrammar;
+import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -38,15 +44,10 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.impl.environment.KernelGrammar;
-import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
 		final Definition definition;
 		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
@@ -108,7 +109,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
-		definitionSpace.put(definition);
+		return Option.some(definition);
 	}
 
 	/**

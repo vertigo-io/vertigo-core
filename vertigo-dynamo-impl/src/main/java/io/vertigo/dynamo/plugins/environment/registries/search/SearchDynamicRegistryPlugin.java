@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -29,12 +31,11 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		final Definition definition;
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			definition = createIndexDefinition(xdefinition);
@@ -63,7 +64,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		} else {
 			throw new IllegalStateException("unknown definition :" + xdefinition);
 		}
-		Home.getDefinitionSpace().put(definition);
+		return Option.some(definition);
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {

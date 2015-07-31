@@ -20,7 +20,7 @@ package io.vertigo.struts2.core;
 
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.core.Home;
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
@@ -259,7 +259,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			response.setCharacterEncoding("UTF-8");
 			return new AjaxResponseBuilder(response.getWriter(), false);
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de récupérer la response.");
+			throw new RuntimeException("Impossible de récupérer la response.", e);
 		}
 	}
 

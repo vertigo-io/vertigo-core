@@ -31,6 +31,7 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParser;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
+import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
 import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
@@ -55,6 +56,7 @@ import io.vertigo.dynamo.store.kvstore.KVStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
+import io.vertigo.dynamox.search.DefaultListFilterBuilderTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -67,6 +69,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+		JavaParserStereotypesTest.class,
 		JavaEnvironmentManagerTest.class,
 		//--OOM
 		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, OOMParserTest.class, OOMParserAATest.class, OOMParserIdentifiersTest.class,
@@ -101,6 +104,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerTest.class,
 		//---
 		ExportManagerTest.class,
+		DefaultListFilterBuilderTest.class,
 })
 public final class DynamoTestSuite {
 	//

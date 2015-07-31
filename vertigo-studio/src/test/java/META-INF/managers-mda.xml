@@ -1,18 +1,16 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	<boot>
+		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-	</module>
-	<module name="vertigo-dynamo">
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 		</component>
-	</module>
+	</boot>
 
 	<module name="vertigo-studio">
 		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
@@ -51,6 +49,8 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="{kpr}" />
+		<definitions>	
+			<resource type="kpr" path="{kpr}" />
+		</definitions>	
 	</module>
 </config>

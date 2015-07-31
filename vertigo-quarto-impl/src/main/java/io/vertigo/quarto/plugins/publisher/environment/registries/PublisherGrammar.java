@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.plugins.publisher.environment.registries;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 
 /**
  * Grammaire de publisher.
@@ -53,7 +53,8 @@ final class PublisherGrammar {
 	/**Définition des champs typés.*/
 	private static final Entity publisherDataFieldDefinition;
 
-	static final Grammar grammar;
+	/** Publisher Grammar instance. */
+	public static final Grammar GRAMMAR;
 	/**
 	 * Initialisation des métadonnées permettant de décrire le métamodèle de Dynamo.
 	 */
@@ -80,7 +81,7 @@ final class PublisherGrammar {
 				.addAttribute("root", publisherNodeDefinition, true)//
 				.build();
 		//-----
-		grammar = new Grammar(publisherDefinition, //
+		GRAMMAR = new Grammar(publisherDefinition, //
 				publisherNodeDefinition, //
 				publisherFieldDefinition, //
 				publisherDataFieldDefinition);

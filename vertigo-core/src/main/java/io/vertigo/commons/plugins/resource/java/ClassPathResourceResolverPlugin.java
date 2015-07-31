@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.plugins.resource.java;
 
-import io.vertigo.commons.impl.resource.ResourceResolverPlugin;
+import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

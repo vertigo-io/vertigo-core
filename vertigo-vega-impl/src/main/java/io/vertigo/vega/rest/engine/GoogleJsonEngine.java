@@ -204,26 +204,157 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {
 		final Type[] typeArguments = { paramType };
-		return new ParameterizedType() {
+		return new KnowedParameterizedType(rawClass, typeArguments);
+	}
 
-			@Override
-			public Type[] getActualTypeArguments() {
-				return typeArguments;
+	private static final class JsonExclusionStrategy implements ExclusionStrategy {
+		/** {@inheritDoc} */
+		@Override
+		public boolean shouldSkipField(final FieldAttributes arg0) {
+			if (arg0.getAnnotation(JsonExclude.class) != null) {
+				return true;
 			}
+			return false;
+		}
 
-			@Override
-			public Type getOwnerType() {
+		@Override
+		public boolean shouldSkipClass(final Class<?> arg0) {
+			return false;
+		}
+	}
+
+	private static final class ClassJsonSerializer implements JsonSerializer<Class> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(src.getName());
+		}
+	}
+
+	private static final class OptionJsonSerializer implements JsonSerializer<Option> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isDefined()) {
+				return context.serialize(src.get());
+			}
+			return null; //rien
+		}
+	}
+
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return context.serialize(src.get().getName());
+		}
+	}
+
+	private static final class MapJsonSerializer implements JsonSerializer<Map> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isEmpty()) {
 				return null;
 			}
+			return context.serialize(src);
+		}
+	}
 
-			@Override
-			public Type getRawType() {
-				return rawClass;
+	private static final class ListJsonSerializer implements JsonSerializer<List> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isEmpty()) {
+				return null;
 			}
-		};
+			return context.serialize(src);
+		}
+	}
+
+	private static final class ComponentInfoJsonSerializer implements JsonSerializer<ComponentInfo> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
+			final JsonObject jsonObject = new JsonObject();
+			jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
+			return jsonObject;
+		}
+	}
+
+	private static final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final FacetedQueryResult<?, ?> facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
+			final JsonObject jsonObject = new JsonObject();
+
+			//1- add result list as data
+			if (facetedQueryResult.getClusters().isEmpty()) {
+				final JsonArray jsonList = (JsonArray) context.serialize(facetedQueryResult.getDtList());
+				jsonObject.add("list", jsonList);
+			} else {
+				//if it's a cluster add data's cluster
+				final JsonObject jsonCluster = new JsonObject();
+				for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
+					final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
+					jsonCluster.add(cluster.getKey().getLabel().getDisplay(), jsonList);
+				}
+				jsonObject.add("groups", jsonCluster);
+			}
+
+			//2- add facet list as facets
+			final List<Facet> facets = facetedQueryResult.getFacets();
+			final JsonObject jsonFacet = new JsonObject();
+			for (final Facet facet : facets) {
+				final Map<String, Long> maps = new HashMap<>();
+				for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
+					maps.put(entry.getKey().getLabel().getDisplay(), entry.getValue());
+				}
+				final JsonObject jsonFacetValues = (JsonObject) context.serialize(maps);
+				final String facetName = facet.getDefinition().getName();
+				jsonFacet.add(facetName, jsonFacetValues);
+			}
+			jsonObject.add("facets", jsonFacet);
+
+			//3 -add totalCount
+			jsonObject.addProperty(DtList.TOTAL_COUNT_META, facetedQueryResult.getCount());
+			return jsonObject;
+		}
+	}
+
+	private static final class KnowedParameterizedType implements ParameterizedType {
+		private final Class<?> rawClass;
+		private final Type[] typeArguments;
+
+		KnowedParameterizedType(final Class<?> rawClass, final Type[] typeArguments) {
+			this.rawClass = rawClass;
+			this.typeArguments = typeArguments;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type[] getActualTypeArguments() {
+			return typeArguments;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type getOwnerType() {
+			return null;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type getRawType() {
+			return rawClass;
+		}
 	}
 
 	private static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+		/** {@inheritDoc} */
 		@Override
 		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
@@ -287,6 +418,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	private static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
+		/** {@inheritDoc} */
 		@Override
 		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
@@ -317,6 +449,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	private static class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiList<D>> {
+		/** {@inheritDoc} */
 		@Override
 		public UiList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
@@ -357,109 +490,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 						return jsonObject;
 					}
 				})*/
-				.registerTypeAdapter(FacetedQueryResult.class, new JsonSerializer<FacetedQueryResult<?, ?>>() {
-					@Override
-					public JsonElement serialize(final FacetedQueryResult<?, ?> facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
-						final JsonObject jsonObject = new JsonObject();
-
-						//1- add result list as data
-						if (facetedQueryResult.getClusters().isEmpty()) {
-							final JsonArray jsonList = (JsonArray) context.serialize(facetedQueryResult.getDtList());
-							jsonObject.add("list", jsonList);
-						} else {
-							//if it's a cluster add data's cluster
-							final JsonObject jsonCluster = new JsonObject();
-							for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
-								final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
-								jsonCluster.add(cluster.getKey().getLabel().getDisplay(), jsonList);
-							}
-							jsonObject.add("groups", jsonCluster);
-						}
-
-						//2- add facet list as facets
-						final List<Facet> facets = facetedQueryResult.getFacets();
-						final JsonObject jsonFacet = new JsonObject();
-						for (final Facet facet : facets) {
-							final Map<String, Long> maps = new HashMap<>();
-							for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-								maps.put(entry.getKey().getLabel().getDisplay(), entry.getValue());
-							}
-							final JsonObject jsonFacetValues = (JsonObject) context.serialize(maps);
-							final String facetName = facet.getDefinition().getName();
-							jsonFacet.add(facetName, jsonFacetValues);
-						}
-						jsonObject.add("facets", jsonFacet);
-
-						//3 -add totalCount
-						jsonObject.addProperty(DtList.TOTAL_COUNT_META, facetedQueryResult.getCount());
-						return jsonObject;
-					}
-				})
-				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
-					@Override
-					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
-						final JsonObject jsonObject = new JsonObject();
-						jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
-						return jsonObject;
-					}
-				})
-				.registerTypeAdapter(List.class, new JsonSerializer<List>() {
-
-					@Override
-					public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})
-				.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
-
-					@Override
-					public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})
-				.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
-
-					@Override
-					public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
-						return context.serialize(src.get().getName());
-					}
-				})
-				.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
-
-					@Override
-					public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isDefined()) {
-							return context.serialize(src.get());
-						}
-						return null; //rien
-					}
-				})
-				.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
-
-					@Override
-					public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
-						return new JsonPrimitive(src.getName());
-					}
-				})
-				.addSerializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(final FieldAttributes arg0) {
-						if (arg0.getAnnotation(JsonExclude.class) != null) {
-							return true;
-						}
-						return false;
-					}
-
-					@Override
-					public boolean shouldSkipClass(final Class<?> arg0) {
-						return false;
-					}
-				}).create();
+				.registerTypeAdapter(FacetedQueryResult.class, new FacetedQueryResultJsonSerializer())
+				.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
+				.registerTypeAdapter(List.class, new ListJsonSerializer())
+				.registerTypeAdapter(Map.class, new MapJsonSerializer())
+				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
+				.registerTypeAdapter(Option.class, new OptionJsonSerializer())
+				.registerTypeAdapter(Class.class, new ClassJsonSerializer())
+				.addSerializationExclusionStrategy(new JsonExclusionStrategy())
+				.create();
 	}
 }

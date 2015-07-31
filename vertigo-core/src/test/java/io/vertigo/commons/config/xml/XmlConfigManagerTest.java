@@ -22,12 +22,12 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.config.ServerConfig;
 import io.vertigo.commons.impl.config.ConfigManagerImpl;
-import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.impl.resource.ResourceManagerImpl;
+import io.vertigo.core.resource.ResourceManager;
 
 import javax.inject.Inject;
 
@@ -89,13 +89,13 @@ public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test5() {
 		final boolean value = configManager.getBooleanValue("test5", "boolProp");
-		Assert.assertEquals(true, value);
+		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void test6() {
 		final boolean value = configManager.getBooleanValue("test6", "boolBadProp1");
-		Assert.assertEquals(true, value);
+		Assert.assertTrue(value);
 	}
 
 	@Test(expected = Exception.class)
@@ -110,6 +110,6 @@ public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 }

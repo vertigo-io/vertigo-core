@@ -52,6 +52,7 @@ import com.sleepycat.je.Transaction;
  * @author pchretien, npiedeloup
  */
 public final class BerkeleyContextCachePlugin implements Activeable, ContextCachePlugin {
+
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
@@ -110,9 +111,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 
 				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
 				if (!OperationStatus.SUCCESS.equals(status)) {
-					throw new DatabaseException("la sauvegarde a �chou�e") { //DatabaseException est abstract, mais aucun fils ne semble correct
-						private static final long serialVersionUID = -2201117970033615366L;
-					};
+					throw new MsgDatabaseException("la sauvegarde a échouée");
 				}
 				transaction.commit();
 				committed = true;
@@ -261,4 +260,11 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		return db;
 	}
 
+	private static final class MsgDatabaseException extends DatabaseException {
+		private static final long serialVersionUID = -2201117970033615366L;
+
+		MsgDatabaseException(final String message) {
+			super(message);
+		}
+	}
 }

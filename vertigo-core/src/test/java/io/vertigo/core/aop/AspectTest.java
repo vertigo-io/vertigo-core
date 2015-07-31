@@ -68,38 +68,38 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doAfterTearDown() throws Exception {
 		if (a != null) {
-			Assert.assertEquals(true, a.isInitialized());
-			Assert.assertEquals(true, a.isFinalized());
+			Assert.assertTrue(a.isInitialized());
+			Assert.assertTrue(a.isFinalized());
 		}
 		if (b != null) {
-			Assert.assertEquals(true, b.isInitialized());
-			Assert.assertEquals(true, b.isFinalized());
+			Assert.assertTrue(b.isInitialized());
+			Assert.assertTrue(b.isFinalized());
 		}
 		if (c != null) {
-			Assert.assertEquals(true, c.isInitialized());
-			Assert.assertEquals(true, c.isFinalized());
+			Assert.assertTrue(c.isInitialized());
+			Assert.assertTrue(c.isFinalized());
 		}
 	}
 
 	@Test
 	public void testNonProxiedWithAnnotation() {
 		a = Home.getComponentSpace().resolve("a", A.class);
-		Assert.assertEquals(true, a.isInitialized());
-		Assert.assertEquals(false, a.isFinalized());
+		Assert.assertTrue(a.isInitialized());
+		Assert.assertFalse(a.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithInterface() {
 		b = Home.getComponentSpace().resolve(B.class);
-		Assert.assertEquals(true, b.isInitialized());
-		Assert.assertEquals(false, b.isFinalized());
+		Assert.assertTrue(b.isInitialized());
+		Assert.assertFalse(b.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithObjectInterface() {
 		c = Home.getComponentSpace().resolve("c", C.class);
-		Assert.assertEquals(true, c.isInitialized());
-		Assert.assertEquals(false, c.isFinalized());
+		Assert.assertTrue(c.isInitialized());
+		Assert.assertFalse(c.isFinalized());
 	}
 
 	@Test(expected = MyException.class)

@@ -20,6 +20,7 @@ package io.vertigo.dynamo.search;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -31,6 +32,7 @@ import io.vertigo.lang.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Gestionnaire des indexes de recherche.
@@ -49,14 +51,14 @@ public interface SearchManager extends Component {
 
 	/**
 	 * Check if a keyConcept have an IndexDefinition.
-	 * @param keyConceptClass KeyConcept class
+	 * @param keyConceptDefinition KeyConcept definition
 	 * @return if there is a IndexDefinition for this keyConcept
 	 */
-	boolean hasIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+	boolean hasIndexDefinitionByKeyConcept(DtDefinition keyConceptDefinition);
 
 	/**
 	 * Mark an uri list as dirty. Index of these elements will be reindexed.
-	 * Reindexation isn't syncrhone, strategy is dependant of plugin's parameters.
+	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
 	 * @param keyConceptUris Uri of keyConcept marked as dirty.
 	 */
 	void markAsDirty(List<URI<? extends KeyConcept>> keyConceptUris);
@@ -64,8 +66,9 @@ public interface SearchManager extends Component {
 	/**
 	 * Launch a complete reindexation of an index.
 	 * @param indexDefinition Type de l'index
+	 * @return Future of number elements indexed
 	 */
-	void reindexAll(SearchIndexDefinition indexDefinition);
+	Future<Long> reindexAll(SearchIndexDefinition indexDefinition);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.

@@ -41,18 +41,19 @@ limitations under the License. -->
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
 
+		<module>vertigo-vega-api</module>
+		<module>vertigo-vega-impl</module>
+
+		<module>vertigo-studio</module>
+
 		<module>vertigo-quarto-api</module>
 		<module>vertigo-quarto-impl</module>
 
 		<module>vertigo-tempo-api</module>
 		<module>vertigo-tempo-impl</module>
 
-		<module>vertigo-vega-api</module>
-		<module>vertigo-vega-impl</module>
-
 		<module>vertigo-struts2</module>
 		
-		<module>vertigo-studio</module>
 
 		<module>vertigo-ccc</module>
 		

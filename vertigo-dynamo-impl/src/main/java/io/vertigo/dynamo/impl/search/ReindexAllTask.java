@@ -39,20 +39,35 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Reindex all data taks.
+ * @author npiedeloup (27 juil. 2015 14:35:14)
+ * @param <S> KeyConcept type
+ */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
-	private static long REINDEX_COUNT = 0;
-	private static boolean REINDEXATION_IN_PROGRESS = false;
+	private static volatile long REINDEX_COUNT = 0;
+	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
+	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
 	private final VTransactionManager transactionManager;
 
-	public ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	/**
+	 * Constructor.
+	 * @param searchIndexDefinition Search index definition
+	 * @param reindexFuture Future for result
+	 * @param searchManager Search manager
+	 * @param transactionManager Transaction manager
+	 */
+	public ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
+		Assertion.checkNotNull(reindexFuture);
 		Assertion.checkNotNull(searchManager);
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
+		this.reindexFuture = reindexFuture;
 		this.searchManager = searchManager;
 		this.transactionManager = transactionManager;
 	}
@@ -61,7 +76,9 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	@Override
 	public void run() {
 		if (REINDEXATION_IN_PROGRESS) {
-			LOGGER.warn("Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + REINDEX_COUNT + " elements done)");
+			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + REINDEX_COUNT + " elements done)";
+			LOGGER.warn(warnMessage);
+			reindexFuture.fail(new RuntimeException(warnMessage));
 		} else {
 			//-----
 			REINDEXATION_IN_PROGRESS = true;
@@ -98,9 +115,10 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					lastUri = maxUri;
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
-				//TODO : à valider
+				reindexFuture.success(REINDEX_COUNT);
 			} catch (final Exception e) {
 				LOGGER.error("Reindexation error", e);
+				reindexFuture.fail(e);
 			} finally {
 				REINDEXATION_IN_PROGRESS = false;
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + REINDEX_COUNT + " elements done)");

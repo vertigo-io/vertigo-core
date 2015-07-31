@@ -19,8 +19,8 @@
 package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
@@ -81,8 +81,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		nop(result);
-		Assert.assertTrue(true);
+		Assert.assertNotNull(result);
 	}
 
 	@Test
@@ -98,8 +97,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		nop(result);
-		Assert.assertTrue(true);
+		Assert.assertNotNull(result);
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -124,9 +122,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		nop(result);
-		Assert.assertTrue(true);
-
+		Assert.assertNotNull(result);
 	}
 
 	@Test
@@ -139,9 +135,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		nop(result);
-		Assert.assertTrue(true);
-
+		Assert.assertNotNull(result);
 	}
 
 	@Test
@@ -178,10 +172,10 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquete." + getExtension(), modelFileURL, publisherData);
-		nop(result);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
+		Assert.assertNotNull(result);
 	}
 
 	@Test
@@ -203,10 +197,10 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquetePerField." + getExtension(), modelFileURL, publisherData);
-		nop(result);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
+		Assert.assertNotNull(result);
 	}
 
 	@Test
@@ -221,8 +215,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		nop(result);
-		Assert.assertTrue(true);
+		Assert.assertNotNull(result);
 	}
 
 	//	/**

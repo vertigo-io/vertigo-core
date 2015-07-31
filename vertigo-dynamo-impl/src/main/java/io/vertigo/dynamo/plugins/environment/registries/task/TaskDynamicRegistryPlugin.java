@@ -19,14 +19,16 @@
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -42,12 +44,13 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
-			final TaskDefinition definition = createTaskDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition);
+			final Definition definition = createTaskDefinition(xdefinition);
+			return Option.some(definition);
 		}
+		return Option.none();
 	}
 
 	private static Class<? extends TaskEngine> getTaskEngineClass(final DynamicDefinition xtaskDefinition) {

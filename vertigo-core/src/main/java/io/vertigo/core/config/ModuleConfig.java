@@ -38,28 +38,40 @@ import java.util.List;
  */
 public final class ModuleConfig {
 	private final String name;
-	private final List<ResourceConfig> resources;
+	private final List<DefinitionProviderConfig> definitionProviders;
+	private final List<DefinitionResourceConfig> definitionResources;
 	private final List<ComponentConfig> components;
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
 
-	ModuleConfig(final String name, final List<ResourceConfig> resourceConfigs, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules) {
+	ModuleConfig(final String name,
+			final List<DefinitionProviderConfig> definitionProviderConfigs,
+			final List<DefinitionResourceConfig> definitionResourceConfigs,
+			final List<ComponentConfig> componentConfigs,
+			final List<AspectConfig> aspectConfigs,
+			final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(resourceConfigs);
+		Assertion.checkNotNull(definitionProviderConfigs);
+		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
 		//-----
 		this.name = name;
-		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
+		this.definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
+		this.definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
 
-	public List<ResourceConfig> getResourceConfigs() {
-		return resources;
+	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
+		return definitionProviders;
+	}
+
+	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
+		return definitionResources;
 	}
 
 	/**

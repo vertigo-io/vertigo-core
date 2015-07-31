@@ -30,15 +30,20 @@ import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Classe de base des fournisseurs de connexions dynamo.
  *
  * @author pchretien
  */
 public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin, Describable {
+
+	private static final Logger LOG = Logger.getLogger(AbstractSqlConnectionProviderPlugin.class);
+
 	/**
-	 * Base de données utilisée
-	 */
+	* Base de données utilisée
+	*/
 	private final SqlDataBase dataBase;
 
 	/**
@@ -84,8 +89,8 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 				}
 			}
 
-		} catch (final Exception ex) {
-			//
+		} catch (final Exception e) {
+			LOG.warn("Can't get database infos", e);
 		}
 		return componentInfos;
 	}

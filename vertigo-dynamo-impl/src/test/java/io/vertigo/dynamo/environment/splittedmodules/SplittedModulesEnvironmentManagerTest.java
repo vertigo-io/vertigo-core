@@ -18,20 +18,20 @@
  */
 package io.vertigo.dynamo.environment.splittedmodules;
 
-import io.vertigo.commons.impl.locale.LocaleManagerImpl;
-import io.vertigo.commons.impl.resource.ResourceManagerImpl;
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
+import io.vertigo.core.environment.EnvironmentManager;
+import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
+import io.vertigo.core.impl.locale.LocaleManagerImpl;
+import io.vertigo.core.impl.resource.ResourceManagerImpl;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.environment.EnvironmentManager;
-import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -55,7 +55,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 	@Test
 	public void testFirstModule() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp").addResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
+				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
 				.build();
 
 		try (final App app = new App(appConfig)) {
@@ -69,8 +69,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.addResource("kpr", "io/vertigo/dynamock/execution.kpr")
-					.addResource("classes", DtDefinitions.class.getCanonicalName())
+					.addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
@@ -88,8 +88,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.addResource("kpr", "io/vertigo/dynamock/execution.kpr")
-					.addResource("classes", DtDefinitions.class.getCanonicalName())
+					.addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
@@ -104,22 +104,25 @@ public final class SplittedModulesEnvironmentManagerTest {
 
 	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
-		.withLogConfig(new LogConfig("/log4j.xml"))
-		.beginModule("vertigo")
-			.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				.addParam("locales", "locales")
-			.endComponent()
-			.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-			.endComponent()
-			.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-				.beginPlugin(KprLoaderPlugin.class).endPlugin()
-				.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-			.endComponent()
-		.endModule();
+		
+		return 
+			new AppConfigBuilder()
+			.beginBoot()
+				.withLogConfig(new LogConfig("/log4j.xml"))
+			.endBoot()	
+			.beginBootModule()
+				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+					.addParam("locales", "locales")
+				.endComponent()
+				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
+					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+				.endComponent()
+				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+					.beginPlugin(KprLoaderPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endComponent()
+			.endModule();	
 		// @formatter:on
-		return appConfigBuilder;
 	}
 }

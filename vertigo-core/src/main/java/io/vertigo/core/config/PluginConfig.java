@@ -18,14 +18,9 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,44 +37,23 @@ import java.util.Map;
  * @author npiedeloup, pchretien
  */
 public final class PluginConfig {
+	private final String id;
 	private final Class<? extends Plugin> implClass;
 	private final Map<String, String> params;
-	@JsonExclude
-	private final String pluginType;
 
 	/**
 	 * Constructeur.
 	 * @param pluginImplClass Class du plugin
 	 * @param params paramètres du plugin
 	 */
-	PluginConfig(final Class<? extends Plugin> pluginImplClass, final Map<String, String> params) {
+	PluginConfig(final String id, final Class<? extends Plugin> pluginImplClass, final Map<String, String> params) {
+		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(pluginImplClass);
 		Assertion.checkNotNull(params);
 		//-----
-		this.pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
+		this.id = id;
 		implClass = pluginImplClass;
 		this.params = new HashMap<>(params);
-	}
-
-	/*
-	 * On cherche le type du plugin qui correspond à la première interface ou classe qui hérite de Plugin.
-	 */
-	private static String getType(final Class<? extends Plugin> pluginImplClass) {
-		//We are seeking the first and unique Object that extends Plugin.
-		//This Interface defines the type of the plugin.
-
-		for (final Class intf : ClassUtil.getAllInterfaces(pluginImplClass)) {
-			if (Arrays.asList(intf.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(intf);
-			}
-		}
-		//On n'a pas trouvé dans les interfaces on attaque les classes en cherchant une classe qui implémente Plugin
-		for (Class currentClass = pluginImplClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
-			if (Arrays.asList(currentClass.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(currentClass);
-			}
-		}
-		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + pluginImplClass);
 	}
 
 	/**
@@ -90,10 +64,10 @@ public final class PluginConfig {
 	}
 
 	/**
-	 * @return Type du plugin
+	 * @return Id 
 	 */
-	public String getType() {
-		return pluginType;
+	public String getId() {
+		return id;
 	}
 
 	/**

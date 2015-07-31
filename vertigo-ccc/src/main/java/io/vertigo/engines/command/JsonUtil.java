@@ -41,9 +41,18 @@ import com.google.gson.JsonSerializer;
  * @author pchretien
  */
 public final class JsonUtil {
+
 	private static final Gson gson = createGson();
 
-	public static String toJson(Object data) {
+	private JsonUtil() {
+		//private
+	}
+
+	/**
+	 * @param data Object to encode
+	 * @return Json string
+	 */
+	public static String toJson(final Object data) {
 		return gson.toJson(data);
 	}
 
@@ -51,71 +60,80 @@ public final class JsonUtil {
 		return new GsonBuilder()
 				//.setPrettyPrinting()
 				//.serializeNulls()//On veut voir les null
-				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
-					@Override
-					public JsonElement serialize(ComponentInfo componentInfo, Type typeOfSrc, JsonSerializationContext context) {
-						JsonObject jsonObject = new JsonObject();
-						jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
-						return jsonObject;
-					}
-				})	
-				.registerTypeAdapter(List.class, new JsonSerializer<List>() {
+				.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
+				.registerTypeAdapter(List.class, new ListJsonSerializer())
+				.registerTypeAdapter(Map.class, new MapJsonSerializer())
+				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
+				.registerTypeAdapter(Option.class, new OptionJsonSerializer())
+				.registerTypeAdapter(Class.class, new ClassJsonSerializer())//
+				.addSerializationExclusionStrategy(new JsonExclusionStrategy()).create();
+	}
 
-					@Override
-					public JsonElement serialize(List src, Type typeOfSrc, JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})	
-				.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
+	private static final class JsonExclusionStrategy implements ExclusionStrategy {
+		@Override
+		public boolean shouldSkipField(final FieldAttributes arg0) {
+			if (arg0.getAnnotation(JsonExclude.class) != null) {
+				return true;
+			}
+			return false;
+		}
 
-					@Override
-					public JsonElement serialize(Map src, Type typeOfSrc, JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})
-				.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
+		@Override
+		public boolean shouldSkipClass(final Class<?> arg0) {
+			return false;
+		}
+	}
 
-					@Override
-					public JsonElement serialize(DefinitionReference src, Type typeOfSrc, JsonSerializationContext context) {
-						return context.serialize(src.get().getName());
-					}
-				})
-				.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
+	private static final class ClassJsonSerializer implements JsonSerializer<Class> {
+		@Override
+		public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(src.getName());
+		}
+	}
 
-					@Override
-					public JsonElement serialize(Option src, Type typeOfSrc, JsonSerializationContext context) {
-						if (src.isDefined()) {
-							return context.serialize(src.get());
-						}
-						return null; //rien
-					}
-				})	
-				.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
+	private static final class OptionJsonSerializer implements JsonSerializer<Option> {
+		@Override
+		public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isDefined()) {
+				return context.serialize(src.get());
+			}
+			return null; //rien
+		}
+	}
 
-					@Override
-					public JsonElement serialize(Class src, Type typeOfSrc, JsonSerializationContext context) {
-						return new JsonPrimitive(src.getName());
-					}
-				})//
-				.addSerializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(FieldAttributes arg0) {
-						if (arg0.getAnnotation(JsonExclude.class) != null) {
-							return true;
-						}
-						return false;
-					}
+	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
+		@Override
+		public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return context.serialize(src.get().getName());
+		}
+	}
 
-					@Override
-					public boolean shouldSkipClass(Class<?> arg0) {
-						return false;
-					}
-				}).create();
+	private static final class MapJsonSerializer implements JsonSerializer<Map> {
+		@Override
+		public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isEmpty()) {
+				return null;
+			}
+			return context.serialize(src);
+		}
+	}
+
+	private static final class ListJsonSerializer implements JsonSerializer<List> {
+		@Override
+		public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (src.isEmpty()) {
+				return null;
+			}
+			return context.serialize(src);
+		}
+	}
+
+	private static final class ComponentInfoJsonSerializer implements JsonSerializer<ComponentInfo> {
+		@Override
+		public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
+			final JsonObject jsonObject = new JsonObject();
+			jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
+			return jsonObject;
+		}
 	}
 }

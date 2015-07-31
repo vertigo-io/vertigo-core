@@ -42,7 +42,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return new AppConfigBuilder()
-				.withLogConfig(new LogConfig("/log4j.xml"))
+				.beginBoot().withLogConfig(new LogConfig("/log4j.xml")).endBoot()
 				.build();
 	}
 

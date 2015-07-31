@@ -20,7 +20,15 @@ package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
 import io.vertigo.lang.Assertion;
 
+/**
+ * XMLUtil for loaders.
+ * @author npiedeloup
+ */
 final class XmlUtil {
+
+	private XmlUtil() {
+		//private
+	}
 
 	/**
 	 * Conversion français vers Java avec remplacement d'accents : Xxx éèà zzz -> XxxEeaZzz.

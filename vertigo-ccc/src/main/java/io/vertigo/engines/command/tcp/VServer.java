@@ -29,15 +29,23 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
 /**
  * A server using non blocking TCP socket .
  * @author pchretien
  */
 public final class VServer implements Runnable/*, VEventListener */{
+	private static final Logger LOG = Logger.getLogger(VServer.class);
 	private final int port;
 	private final VCommandHandler commandHandler;
 	private final VProtocol protocol = new VProtocol();
 
+	/**
+	 * Constructor.
+	 * @param commandHandler Command handler
+	 * @param port tcp port
+	 */
 	public VServer(final VCommandHandler commandHandler, final int port) {
 		Assertion.checkNotNull(commandHandler);
 		//-----
@@ -45,6 +53,7 @@ public final class VServer implements Runnable/*, VEventListener */{
 		this.port = port;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		try (Selector selector = Selector.open()) {
@@ -79,7 +88,7 @@ public final class VServer implements Runnable/*, VEventListener */{
 				}
 			}
 		} catch (final IOException e) {
-			// nothing
+			LOG.error("VServer", e);
 		}
 	}
 

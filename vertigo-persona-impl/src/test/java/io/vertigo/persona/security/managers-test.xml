@@ -1,16 +1,16 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-boot">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	<boot>
+		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
 		</component>
-	</module>
+	</boot>
 	
 	<module name="vertigo-commons">
-		<component api="LocaleManager" class="io.vertigo.commons.impl.locale.LocaleManagerImpl">
+		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
 	</module>
@@ -22,6 +22,8 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
+		<definitions>
+			<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
+		</definitions>
 	</module>
 </config>

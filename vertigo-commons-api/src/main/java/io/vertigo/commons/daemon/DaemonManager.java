@@ -20,6 +20,8 @@ package io.vertigo.commons.daemon;
 
 import io.vertigo.lang.Component;
 
+import java.util.List;
+
 /**
  * Manages daemons.
  * A daemon is technical (vs job or batch).
@@ -27,9 +29,9 @@ import io.vertigo.lang.Component;
  * @author tingargiola
  */
 public interface DaemonManager extends Component {
-
 	/**
-	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
+	 * Provides a snapshot/copy of execution's stats.
+	 * @return Stats
 	 */
-	void startAllDaemons();
+	List<DaemonStat> getStats();
 }

@@ -18,21 +18,25 @@
  */
 package io.vertigo.engines.command;
 
+import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.command.VResponse;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.engines.VCommandEngine;
-import io.vertigo.engines.command.samples.VDescribableCommandExecutor;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.engines.command.samples.VPingCommandExecutor;
 import io.vertigo.engines.command.samples.VSystemCommandExecutor;
 import io.vertigo.engines.command.tcp.VServer;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
+import io.vertigo.lang.Component;
+import io.vertigo.util.MapBuilder;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -41,17 +45,20 @@ import javax.inject.Named;
 /**
  * @author pchretien
  */
-public final class TcpVCommandEngine implements VCommandEngine, Activeable {
+public final class TcpVCommandEngine implements VCommandEngine, Component, Activeable {
 	private final int port;
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
+	private Thread tcpServerThread;
 
+	/**
+	 * @param port port
+	 */
 	@Inject
 	public TcpVCommandEngine(@Named("port") final int port) {
 		this.port = port;
 	}
 
-	private Thread tcpServerThread;
-
+	/** {@inheritDoc} */
 	@Override
 	public void registerCommandExecutor(final String name, final VCommandExecutor commandExecutor) {
 		Assertion.checkArgNotEmpty(name);
@@ -61,19 +68,22 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		commmandExecutors.put(name, commandExecutor);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start() {
+		Home.getApp().registerAppListener(new AppListener() {
+			@Override
+			public void onPostStart() {
+				registerCommandAndStartServer();
+			}
+		});
+	}
+
+	private void registerCommandAndStartServer() {
 		//Chargement des commandes
 		registerCommandExecutor("ping", new VPingCommandExecutor());
 		registerCommandExecutor("system", new VSystemCommandExecutor());
 
-		for (final String componentId : Home.getComponentSpace().keySet()) {
-			final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
-			final VDescribableCommandExecutor describableCommandExecutor = new VDescribableCommandExecutor();
-			if (component instanceof Describable) {
-				registerCommandExecutor(componentId, describableCommandExecutor);
-			}
-		}
 		//---
 		registerCommandExecutor("help", new VCommandExecutor<Set<String>>() {
 			//All commands are listed
@@ -87,11 +97,41 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 			}
 		});
 
+		registerCommandExecutor("config", new VCommandExecutor<AppConfig>() {
+			@Override
+			public AppConfig exec(final VCommand command) {
+				return Home.getApp().getConfig();
+			}
+		});
+
+		registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
+			/** {@inheritDoc} */
+			@Override
+			public DefinitionSpace exec(final VCommand command) {
+				Assertion.checkNotNull(command);
+				//-----
+				return Home.getDefinitionSpace();
+			}
+		});
+
+		scanAllComponents();
+
 		final VServer tcpServer = new VServer(this, port);
 		tcpServerThread = new Thread(tcpServer);
 		tcpServerThread.start();
 
 		//	new TcpBroadcaster().hello(port);
+	}
+
+	private void scanAllComponents() {
+		final MapBuilder<String, VCommandExecutor> mapBuilder = new MapBuilder<>();
+		for (final String componentId : Home.getComponentSpace().keySet()) {
+			CommandScannerUtil.scan(mapBuilder, componentId, Home.getComponentSpace().resolve(componentId, Object.class));
+		}
+
+		for (final Entry<String, VCommandExecutor> entry : mapBuilder.build().entrySet()) {
+			registerCommandExecutor(entry.getKey(), entry.getValue());
+		}
 	}
 
 	@Override

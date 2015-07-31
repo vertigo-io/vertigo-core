@@ -21,9 +21,14 @@ package io.vertigo.commons.impl.daemon;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,20 +37,41 @@ import javax.inject.Inject;
  *
  * @author TINGARGIOLA
  */
-public final class DaemonManagerImpl implements DaemonManager {
-
-	private final DaemonPlugin daemonPlugin;
+public final class DaemonManagerImpl implements DaemonManager, Activeable {
+	private final DaemonExecutor daemonExecutor;
 
 	/**
 	 * Construct an instance of DeamonManagerImpl.
-	 *
-	 * @param daemonPlugin Plugin de gestion du deamon.
 	 */
 	@Inject
-	public DaemonManagerImpl(final DaemonPlugin daemonPlugin) {
-		Assertion.checkNotNull(daemonPlugin);
-		// -----
-		this.daemonPlugin = daemonPlugin;
+	public DaemonManagerImpl() {
+		daemonExecutor = new DaemonExecutor();
+
+		Home.getApp().registerAppListener(new AppListener() {
+
+			@Override
+			public void onPostStart() {
+				startAllDaemons();
+			}
+		});
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<DaemonStat> getStats() {
+		return daemonExecutor.getStats();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void start() {
+		daemonExecutor.start();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		daemonExecutor.stop();
 	}
 
 	/**
@@ -60,7 +86,7 @@ public final class DaemonManagerImpl implements DaemonManager {
 		Assertion.checkNotNull(daemonDefinition);
 		// -----
 		final Daemon daemon = createDaemon(daemonDefinition);
-		daemonPlugin.scheduleDaemon(daemonDefinition.getName(), daemon, daemonDefinition.getPeriodInSeconds());
+		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
 	}
 
 	/**
@@ -71,11 +97,13 @@ public final class DaemonManagerImpl implements DaemonManager {
 		return Injector.newInstance(daemonDefinition.getDaemonClass(), Home.getComponentSpace());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void startAllDaemons() {
+	/**
+	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
+	 */
+	void startAllDaemons() {
 		for (final DaemonDefinition daemonDefinition : Home.getDefinitionSpace().getAll(DaemonDefinition.class)) {
 			startDaemon(daemonDefinition);
 		}
 	}
+
 }

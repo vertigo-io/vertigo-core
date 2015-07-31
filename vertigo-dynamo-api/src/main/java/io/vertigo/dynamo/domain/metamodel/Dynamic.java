@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+
 /**
  * Permet d'accéder aux données d'un objet de façon dynamique.
  * @author  pchretien
@@ -33,7 +34,7 @@ public interface Dynamic {
 	* Garantit que la valeur passée est conforme
 	*  - au type enregistré pour le champ
 	*  - les contraintes ne sont pas vérifiées.
-	*
+	* @param dtField Field
 	* @param value Object
 	*/
 	void setValue(final DtField dtField, final Object value);
@@ -43,6 +44,7 @@ public interface Dynamic {
 	 * Garantit que la valeur retournée est conforme
 	 *  - au type enregistré pour le champ
 	 *
+	 * @param dtField Field
 	 * @return valeur non typée
 	 */
 	Object getValue(final DtField dtField);

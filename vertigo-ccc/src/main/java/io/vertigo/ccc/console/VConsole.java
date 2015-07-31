@@ -65,7 +65,7 @@ public final class VConsole {
 	private boolean jsonMode = true;
 
 	public VConsole() {
-		this.consoleHandler = new VConsoleHandler();
+		consoleHandler = new VConsoleHandler();
 	}
 
 	boolean isJsonMode() {
@@ -147,14 +147,7 @@ public final class VConsole {
 		});
 		toggleButton.setText("json");
 
-		clearButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				output.setText("");
-				input.setText("");
-				inputKeyListener.reset();
-			}
-		});
+		clearButton.addActionListener(new ClearActionListener(inputKeyListener, output, input));
 		output.append("Hello World.");
 		output.setEditable(false);
 
@@ -172,6 +165,25 @@ public final class VConsole {
 		frame.getContentPane().add(new JScrollPane(output), BorderLayout.CENTER);
 		frame.getContentPane().add(clearButton, BorderLayout.SOUTH);
 		frame.setVisible(true);
+	}
+
+	private static final class ClearActionListener implements ActionListener {
+		private final InputKeyListener inputKeyListener;
+		private final JTextArea output;
+		private final JTextField input;
+
+		private ClearActionListener(final InputKeyListener inputKeyListener, final JTextArea output, final JTextField input) {
+			this.inputKeyListener = inputKeyListener;
+			this.output = output;
+			this.input = input;
+		}
+
+		@Override
+		public void actionPerformed(final ActionEvent arg0) {
+			output.setText("");
+			input.setText("");
+			inputKeyListener.reset();
+		}
 	}
 
 	private static final class InputKeyListener implements KeyListener {
@@ -193,7 +205,7 @@ public final class VConsole {
 			//-----
 			this.console = console;
 			this.consoleHandler = consoleHandler;
-			this.commands = new LinkedHashSet<>();
+			commands = new LinkedHashSet<>();
 			matchingCommands = new ArrayList<>();
 			this.input = input;
 			this.output = output;

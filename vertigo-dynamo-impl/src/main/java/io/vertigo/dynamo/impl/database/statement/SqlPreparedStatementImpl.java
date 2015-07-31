@@ -44,7 +44,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * Cet objet possède un état interne.
 	 * Le fonctionnement du KPreparedStatement est régi par un automate s'appuyant sur ces états.
 	 */
-	static enum State {
+	enum State {
 		/**
 		 *  Etat inconnu (Le prepareStatement n'est pas encore initialisé)
 		 */

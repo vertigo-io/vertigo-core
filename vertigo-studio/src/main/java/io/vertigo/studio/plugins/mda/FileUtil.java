@@ -28,6 +28,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.apache.log4j.Logger;
+
 /**
  * Utilitaire de lecture/écriture des fichiers.
  *
@@ -35,6 +37,7 @@ import java.io.Writer;
  */
 final class FileUtil {
 
+	private static final Logger LOG = Logger.getLogger(FileUtil.class);
 	private static final String EOL = System.getProperty("line.separator");
 
 	/**
@@ -57,6 +60,7 @@ final class FileUtil {
 			writer.write(content);
 			return true;
 		} catch (final IOException e) {
+			LOG.error("Can't writeFile", e);
 			return false;
 		}
 	}

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
@@ -31,6 +31,7 @@ final class FileGrammar {
 	/**Définition de tache.*/
 	public static final Entity FILE_INFO_DEFINITION_ENTITY;
 
+	/** File Grammar instance. */
 	public static final Grammar GRAMMAR;
 
 	static {
@@ -38,5 +39,9 @@ final class FileGrammar {
 				.addProperty(KspProperty.ROOT, true)
 				.build();
 		GRAMMAR = new Grammar(FILE_INFO_DEFINITION_ENTITY);
+	}
+
+	private FileGrammar() {
+		//private
 	}
 }

@@ -18,22 +18,24 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
  * @author pchretien
  */
-public final class TaskGrammar {
+final class TaskGrammar {
+	/** Attribute name. */
 	public static final String TASK_ATTRIBUTE = "attribute";
 
 	/**Définition d'un attribut de tache.*/
-	public static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
+	private static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
 	/**Définition de tache.*/
 	public static final Entity TASK_DEFINITION_ENTITY;
+	/** Task Grammar instance. */
 	public static final Grammar GRAMMAR;
 
 	static {
@@ -50,6 +52,9 @@ public final class TaskGrammar {
 				.build();
 
 		GRAMMAR = new Grammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
+	}
 
+	private TaskGrammar() {
+		//private
 	}
 }

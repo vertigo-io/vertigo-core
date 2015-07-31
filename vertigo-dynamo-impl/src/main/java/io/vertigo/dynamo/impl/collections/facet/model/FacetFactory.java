@@ -31,6 +31,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,8 +47,13 @@ import java.util.TreeMap;
  * @author pchretien, npiedeloup
  */
 public final class FacetFactory {
+
 	private final CollectionsManager collectionManager;
 
+	/**
+	 * Constructor.
+	 * @param collectionManager Collections Manager
+	 */
 	public FacetFactory(final CollectionsManager collectionManager) {
 		Assertion.checkNotNull(collectionManager);
 		//-----
@@ -171,15 +177,25 @@ public final class FacetFactory {
 		}
 
 		//tri des facettes
-		final Comparator<FacetValue> facetComparator = new Comparator<FacetValue>() {
-			@Override
-			public int compare(final FacetValue o1, final FacetValue o2) {
-				final int compareNbDoc = clusterValues.get(o2).size() - clusterValues.get(o1).size();
-				return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
-			}
-		};
+		final Comparator<FacetValue> facetComparator = new FacetComparator<>(clusterValues);
 		final Map<FacetValue, DtList<D>> sortedFacetValues = new TreeMap<>(facetComparator);
 		sortedFacetValues.putAll(clusterValues);
 		return sortedFacetValues;
 	}
+
+	private static final class FacetComparator<O extends DtObject> implements Comparator<FacetValue>, Serializable {
+		private static final long serialVersionUID = 6149508435834977887L;
+		private final Map<FacetValue, DtList<O>> clusterValues;
+
+		FacetComparator(final Map<FacetValue, DtList<O>> clusterValues) {
+			this.clusterValues = clusterValues;
+		}
+
+		@Override
+		public int compare(final FacetValue o1, final FacetValue o2) {
+			final int compareNbDoc = clusterValues.get(o2).size() - clusterValues.get(o1).size();
+			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+		}
+	}
+
 }

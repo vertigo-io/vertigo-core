@@ -22,13 +22,13 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.config.ServerConfig;
 import io.vertigo.commons.impl.config.ConfigManagerImpl;
-import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.config.properties.PropertiesConfigPlugin;
 import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.impl.resource.ResourceManagerImpl;
+import io.vertigo.core.resource.ResourceManager;
 
 import javax.inject.Inject;
 
@@ -91,19 +91,19 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testBoolean1() {
 		final boolean value = configManager.getBooleanValue("server.en", "active");
-		Assert.assertEquals(true, value);
+		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testBoolean2() {
 		final boolean value = configManager.getBooleanValue("server.en", "closed");
-		Assert.assertEquals(false, value);
+		Assert.assertFalse(value);
 	}
 
 	@Test
 	public void testBoolean3() {
 		final boolean value = configManager.getBooleanValue("server.fr", "changed");
-		Assert.assertEquals(true, value);
+		Assert.assertTrue(value);
 	}
 
 	@Test
@@ -118,6 +118,6 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("myBeautifullServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 }

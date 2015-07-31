@@ -36,6 +36,7 @@ import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +97,7 @@ public final class RestManagerImpl implements RestManager {
 	 * Scan and register ResfulServices as EndPointDefinitions.
 	 */
 	@Override
-	public void scanAndRegisterRestfulServices() {
+	public List<EndPointDefinition> scanRestfulServices() {
 		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
 
 		//1- We introspect all RestfulService class
@@ -109,27 +110,29 @@ public final class RestManagerImpl implements RestManager {
 		}
 
 		//2- We sort by path, parameterized path should be after strict path
-		Collections.sort(allEndPointDefinitions, new Comparator<EndPointDefinition>() {
+		Collections.sort(allEndPointDefinitions, new EndPointComparator());
 
-			/** {@inheritDoc} */
-			@Override
-			public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
-				return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
-			}
-
-		});
-
-		//3- We register EndPoint Definition in this order
-		for (final EndPointDefinition endPointDefinition : allEndPointDefinitions) {
-			Home.getDefinitionSpace().put(endPointDefinition);
-		}
+		return allEndPointDefinitions;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void createAndRegisterWsRestRoute(final EndPointDefinition endPointDefinition) {
+	public void registerWsRoute(final EndPointDefinition endPointDefinition) {
 		//1- register handlerChain for this endPointDefinition
-		routesRegisterPlugin.register(handlerChain, endPointDefinition);
+		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
 	}
 
+	private static final class EndPointComparator implements Comparator<EndPointDefinition>, Serializable {
+		private static final long serialVersionUID = -3628192753809615711L;
+
+		EndPointComparator() {
+			//rien
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
+			return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
+		}
+	}
 }

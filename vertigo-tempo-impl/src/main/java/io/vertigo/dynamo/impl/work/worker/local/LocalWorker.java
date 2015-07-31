@@ -91,15 +91,12 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 				workResultHandler.get().onDone(result, null);
 			}
 			return result;
-		} catch (final Throwable t) {
+		} catch (final Exception e) {
 			if (workResultHandler.isDefined()) {
-				workResultHandler.get().onDone(null, t);
+				workResultHandler.get().onDone(null, e);
 			}
-			logError(t);
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException) t;
-			}
-			throw new RuntimeException(t);
+			logError(e);
+			throw asRuntimeException(e);
 		} finally {
 			try {
 				//Vide le threadLocal
@@ -113,6 +110,13 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 
 	private void logError(final Throwable e) {
 		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
+	}
+
+	private RuntimeException asRuntimeException(final Exception e) {
+		if (e instanceof RuntimeException) {
+			return (RuntimeException) e;
+		}
+		return new RuntimeException(e);
 	}
 
 	/**

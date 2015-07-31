@@ -103,7 +103,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withSecurityFilter(final ListFilter securityListFilter) {
-		Assertion.checkNotNull(mySecurityListFilter);
+		Assertion.checkNotNull(securityListFilter);
 		//-----
 		mySecurityListFilter = securityListFilter;
 		return this;

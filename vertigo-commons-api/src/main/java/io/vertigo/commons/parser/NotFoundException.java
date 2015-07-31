@@ -20,6 +20,7 @@ package io.vertigo.commons.parser;
 
 import io.vertigo.util.StringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public final class NotFoundException extends Exception {
 	private final int index;
 	private final String s;
 	private final String comment;
-	private final Object[] commentValues;
+	private final Serializable[] commentValues;
 
 	/**
 	 * Constructeur.
@@ -42,7 +43,7 @@ public final class NotFoundException extends Exception {
 	 * @param comment Explication de l'erreur au format MessageFormat si il y a des valeurs
 	 * @param commentValues Valeurs pour le MessageFormat de comment (il n'est pas conseillé de les fusionner au préalable dans comment)
 	 */
-	public NotFoundException(final String s, final int index, final NotFoundException rootException, final String comment, final Object... commentValues) {
+	public NotFoundException(final String s, final int index, final NotFoundException rootException, final String comment, final Serializable... commentValues) {
 		super(rootException);
 		this.index = index;
 		this.s = s;
@@ -108,7 +109,7 @@ public final class NotFoundException extends Exception {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("regle : ");
 		if (commentValues != null && commentValues.length != 0) {
-			sb.append(StringUtil.format(comment, commentValues));
+			sb.append(StringUtil.format(comment, (Object[]) commentValues));
 		} else {
 			sb.append(comment);
 		}

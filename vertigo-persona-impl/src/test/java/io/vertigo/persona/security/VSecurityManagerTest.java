@@ -54,7 +54,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertEquals(true, securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
 			Assert.assertEquals(userSession, securityManager.getCurrentUserSession().get());
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -64,14 +64,14 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testAuthenticate() {
 		final UserSession userSession = securityManager.createUserSession();
-		Assert.assertEquals(false, userSession.isAuthenticated());
+		Assert.assertFalse(userSession.isAuthenticated());
 		userSession.authenticate();
 	}
 
 	@Test
 	public void testNoUserSession() {
 		final Option<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertEquals(true, userSession.isEmpty());
+		Assert.assertTrue(userSession.isEmpty());
 	}
 
 	@Test
@@ -79,12 +79,12 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertEquals(true, securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
 			//
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
-		Assert.assertEquals(false, securityManager.getCurrentUserSession().isDefined());
+		Assert.assertFalse(securityManager.getCurrentUserSession().isDefined());
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -120,14 +120,14 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			final Set<Role> roles = new HashSet<>();
 			roles.add(admin);
 			roles.add(secretary);
-			Assert.assertEquals(true, securityManager.hasRole(userSession, roles));
+			Assert.assertTrue(securityManager.hasRole(userSession, roles));
 
 			roles.clear();
 			roles.add(secretary);
-			Assert.assertEquals(false, securityManager.hasRole(userSession, roles));
+			Assert.assertFalse(securityManager.hasRole(userSession, roles));
 
 			roles.clear(); //Si aucun droit necessaire alors c'est bon
-			Assert.assertEquals(true, securityManager.hasRole(userSession, roles));
+			Assert.assertTrue(securityManager.hasRole(userSession, roles));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}

@@ -151,11 +151,6 @@ final class CSVExporter {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
 			sValue = ExportUtil.getText(storeManager, referenceCache, denormCache, dto, exportColumn);
-			// si toutes les colonnes de cette ligne sont vides,
-			// on n'obtient pas une ligne correctement formatée ...
-			if ("".equals(sValue)) {
-				sValue = " ";
-			}
 			if (dtField.getDomain().getDataType() == DataType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {

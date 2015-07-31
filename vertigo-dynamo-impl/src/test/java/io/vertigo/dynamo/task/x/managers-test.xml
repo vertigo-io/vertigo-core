@@ -1,14 +1,21 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-core">
-		<component api="LocaleManager" class="io.vertigo.commons.impl.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-	</module>	
-	<module name="vertigo-commons">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	<boot>
+		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
+		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
+			<param name="locales" value="fr_FR" />
+		</component>
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+		</component>
+	</boot>	
+	
+	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
@@ -17,18 +24,10 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
-		
 	</module>
 
 	<module name="vertigo-dynamo">
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
-
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-		</component>
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
 				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
@@ -50,7 +49,9 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/task/data/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamo/task/data/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
+		</definitions>
 	</module>
 </config>

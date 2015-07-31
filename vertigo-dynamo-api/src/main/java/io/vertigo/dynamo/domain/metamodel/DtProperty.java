@@ -67,10 +67,18 @@ public final class DtProperty {
 	public static final Property<String> INDEX_TYPE = new Property<>("indexType", String.class);
 
 	/**
-	 * Propriété standard : Type de données pour la persistence. 
+	 * Propriété standard : Type de données pour la persistence.
 	 */
 	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
 
+	private DtProperty() {
+		//private
+	}
+
+	/**
+	 * @param propertyName Property name
+	 * @return Property
+	 */
 	public static Property<?> valueOf(final String propertyName) {
 		try {
 			final Field field = DtProperty.class.getDeclaredField(propertyName);

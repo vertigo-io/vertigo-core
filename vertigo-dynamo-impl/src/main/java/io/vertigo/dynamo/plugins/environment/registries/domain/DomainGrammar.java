@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import io.vertigo.dynamo.impl.environment.KernelGrammar;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.KernelGrammar;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
@@ -72,6 +72,7 @@ public final class DomainGrammar {
 	/**Définition d'une association NN.*/
 	public static final Entity ASSOCIATION_NN_ENTITY;
 
+	/** Domain Grammar instance. */
 	public static final Grammar GRAMMAR;
 
 	static {
@@ -160,5 +161,9 @@ public final class DomainGrammar {
 				ASSOCIATION_ENTITY,
 				ASSOCIATION_NN_ENTITY
 				);
+	}
+
+	private DomainGrammar() {
+		//private
 	}
 }

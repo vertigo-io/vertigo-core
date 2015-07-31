@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.facet;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 
 /**
  * @author pchretien
@@ -29,4 +29,7 @@ final class FacetGrammar {
 	 */
 	public static final Grammar GRAMMAR = new Grammar();
 
+	private FacetGrammar() {
+		//private
+	}
 }

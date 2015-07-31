@@ -152,24 +152,8 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	}
 
 	private static String readExplainPlan(final TaskDefinition taskDefinition, final int currentSequence) {
-		//		final String taskDefinitionName = "TK_EXPLAIN_PLAN";
-		//		final TaskDefinitionFactory taskDefinitionFactory = getTaskManager().createTaskDefinitionFactory();
-		//		final String explainPlanRequest = "select * from plan_table where statement_id = #STATEMENT_ID# order by id";
-		//		taskDefinitionFactory.init(taskDefinitionName, TaskEngineSelect.class, explainPlanRequest, TaskEngineSelect.class.getPackage().getName());
-		//		taskDefinitionFactory.addAttribute(taskDefinitionName, "STATEMENT_ID", getDomainManager().getNameSpace().getDomain("DO_LIBELLE_LONG"), true, true);
-		//
-		//		final TaskDefinition taskExplain = taskDefinitionFactory.createTaskDefinition(taskDefinitionName);
-		//		try {
-		//			final Task currentTask = getTaskManager().getFactory().createTask(taskExplain);
-		//			currentTask.setValue("STATEMENT_ID", taskDefinition.getShortName());
-		//			getWorkManager().process(currentTask);
-		//			return new ExplainPlanMetric();
-		//		} catch (final Exception e) {
-		//			throw new KSystemException("explainPlanElement", e);
-		//		}
 		final StringBuilder sb = new StringBuilder();
 		final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'PLAN_" + currentSequence + "'))";
-		//final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY())";
 		final SqlConnection kConnection = getCurrentConnection();
 		final Connection connection = kConnection.getJdbcConnection();
 		try (final PreparedStatement statement = connection.prepareStatement(sql)) {

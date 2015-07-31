@@ -19,7 +19,6 @@
 package io.vertigo.commons.daemon;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 
 import javax.inject.Inject;
 
@@ -34,30 +33,38 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private DaemonManager daemonManager;
 
-	@Override
-	public void doSetUp() {
-		final DaemonDefinition daemonDefinition = new DaemonDefinition("DMN_SIMPLE", SimpleDaemon.class, 3);
-		Home.getDefinitionSpace().put(daemonDefinition);
-	}
-
 	@Test
 	public void testSimple() throws Exception {
+		DaemonStat daemonStat = daemonManager.getStats().get(0);
+		Assert.assertEquals(0, daemonStat.getCount());
+		Assert.assertEquals(0, daemonStat.getFailures());
+		Assert.assertEquals(0, daemonStat.getSuccesses());
+		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
+
 		Assert.assertEquals(0, SimpleDaemon.executions);
 		// -----
-		daemonManager.startAllDaemons();
-		Assert.assertEquals(0, SimpleDaemon.executions);
-		Thread.sleep(3000);
+		Thread.sleep(5000); //soit deux execs
+
+		daemonStat = daemonManager.getStats().get(0);
+		Assert.assertEquals(2, daemonStat.getCount());
+		Assert.assertEquals(1, daemonStat.getFailures());
+		Assert.assertEquals(1, daemonStat.getSuccesses());
+		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
+
 		Assert.assertTrue(SimpleDaemon.executions > 0);
+
 	}
 
 	public static final class SimpleDaemon implements Daemon {
-
 		static int executions = 0;
 
 		/** {@inheritDoc} */
 		@Override
 		public void run() throws Exception {
 			executions++;
+			if (executions == 1) {
+				throw new RuntimeException();
+			}
 		}
 	}
 }

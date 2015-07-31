@@ -24,20 +24,20 @@ import io.vertigo.commons.event.EventManager;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.event.EventManagerImpl;
-import io.vertigo.commons.impl.locale.LocaleManagerImpl;
-import io.vertigo.commons.impl.resource.ResourceManagerImpl;
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.environment.EnvironmentManager;
+import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
+import io.vertigo.core.impl.locale.LocaleManagerImpl;
+import io.vertigo.core.impl.resource.ResourceManagerImpl;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
-import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
@@ -88,16 +88,24 @@ public final class MyApp {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-		.withBootConfig(new BootConfigBuilder()
-			.silently()
-			.build())
-			.beginModule("commons")
+			.beginBootModule()
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.addParam("locales", "fr")
 				.endComponent()
 				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 				.endComponent()
+				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+					.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(KprLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endComponent()				
+			.endModule()
+			.beginBoot()	
+				.silently()
+			.endBoot()
+			.beginModule("persona")
 				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
 					.addParam("userSessionClassName", TestUserSession.class.getName())
 				.endComponent()
@@ -120,13 +128,6 @@ public final class MyApp {
 					.beginPlugin( MemoryCachePlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
-
-				.beginComponent(EnvironmentManagerImpl.class)
-				.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
-					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-					.beginPlugin(KprLoaderPlugin.class).endPlugin()
-					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-				.endComponent()
 			.endModule()
 			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)
 			.beginComponent(ExportManager.class, ExportManagerImpl.class)
@@ -142,7 +143,6 @@ public final class MyApp {
 				.beginComponent(WsContactsRestServices.class).endComponent()
 				.beginComponent(WsRestServices.class).endComponent()
 				.beginComponent(WsFileDownload.class).endComponent()
-
 			.endModule()
 			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
 				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()
@@ -170,8 +170,8 @@ public final class MyApp {
 				.endComponent()
 			.endModule()
 			.beginModule("myApp")
-				.addResource("classes", DtDefinitions.class.getName())
-				.addResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
+				.addDefinitionResource("classes", DtDefinitions.class.getName())
+				.addDefinitionResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
 			.endModule()
 		.build();
 		// @formatter:on

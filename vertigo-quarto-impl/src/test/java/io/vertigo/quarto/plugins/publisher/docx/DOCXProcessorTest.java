@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.publisher.docx;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,22 +84,24 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	 * Extraction puis rechargement d'un DOCX.
 	 * Permet de tester l'accès aux fichiers dans le docx.
 	 * @throws URISyntaxException
+	 * @throws IOException 
 	 */
 	@Test
-	public void testExtractionReecritureDOCX() throws URISyntaxException {
+	public void testExtractionReecritureDOCX() throws URISyntaxException, IOException {
 
-		ZipFile docxFile = null;
-		Map<String, String> fichiers = null;
+		final ZipFile docxFile;
+		final Map<String, String> files;
 		try {
 			final URL modelFileURL = resourceManager.resolve(TEST_FILE);
 			docxFile = new ZipFile(new File(modelFileURL.toURI()));
-			fichiers = DOCXUtil.extractDOCXContents(docxFile); // méthode testée.
+			files = DOCXUtil.extractDOCXContents(docxFile); // méthode testée.
 		} catch (final IOException e) {
 			Assert.fail("impossible de lire le modèle " + TEST_FILE);
+			throw e;
 		}
 
 		try {
-			DOCXUtil.createDOCX(docxFile, fichiers);
+			DOCXUtil.createDOCX(docxFile, files);
 		} catch (final IOException e) {
 			Assert.fail("impossible de réécrire le fichier " + TEST_FILE);
 		}

@@ -18,8 +18,8 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
@@ -64,6 +64,7 @@ import org.xml.sax.SAXException;
  * @author prahmoune
  */
 final class XmlSecurityLoader {
+
 	private static final String OPERATION_KEY = "operation";
 	private static final String PERMISSION_KEY = "permission";
 	private static final String ROLE_KEY = "role";
@@ -113,12 +114,7 @@ final class XmlSecurityLoader {
 	private static Element create(final URL url, final String dtdResource) {
 		Assertion.checkArgNotEmpty(dtdResource);
 		//-----
-		final EntityResolver entityResolver = new EntityResolver() {
-			@Override
-			public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
-				return new InputSource(getClass().getResourceAsStream(dtdResource));
-			}
-		};
+		final EntityResolver entityResolver = new ClassPathEntityResolver(dtdResource);
 		return createDocument(url, entityResolver).getRootElement();
 	}
 
@@ -164,4 +160,19 @@ final class XmlSecurityLoader {
 		}
 		return new Role(name, description, permissions);
 	}
+
+	private static final class ClassPathEntityResolver implements EntityResolver {
+		private final String dtdResource;
+
+		ClassPathEntityResolver(final String dtdResource) {
+			this.dtdResource = dtdResource;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
+			return new InputSource(getClass().getResourceAsStream(dtdResource));
+		}
+	}
+
 }

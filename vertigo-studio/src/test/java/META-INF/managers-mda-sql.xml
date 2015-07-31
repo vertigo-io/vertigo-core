@@ -1,13 +1,20 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
-		<component api="LocaleManager" class="io.vertigo.commons.impl.locale.LocaleManagerImpl">
+	<boot>
+		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-	</module>
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+		</component>
+	</boot>
 
 	<module name="vertigo-commons">
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
@@ -15,16 +22,6 @@
 		</component>
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
-	</module>
-
-	<module name="vertigo-dynamo">
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-		</component>
 	</module>
 
 	<module name="vertigo-studio">
@@ -66,6 +63,8 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="{kpr}" />
+		<definitions>
+			<resource type="kpr" path="{kpr}" />
+		</definitions>
 	</module>
 </config>

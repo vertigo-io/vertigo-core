@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
  * @author npiedeloup, evernat
  */
 public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
+
 	private static final Logger LOGGER = Logger.getLogger(AbstractSqlExceptionHandler.class);
 
 	/**
@@ -96,15 +97,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		// recherche le message pour l'utilisateur
 		//On crée une clé de MessageText dynamiquement sur le nom de la contrainte d'intégrité
 		//Ex: CK_PERSON_FULL_NAME_UNIQUE
-		final MessageKey constraintKey = new MessageKey() {
-			private static final long serialVersionUID = -3457399434625437700L;
-
-			/** {@inheritDoc} */
-			@Override
-			public String name() {
-				return constraintName;
-			}
-		};
+		final MessageKey constraintKey = new SQLConstraintMessageKey(constraintName);
 
 		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
 		final String defaultConstraintMsg = new MessageText(defaultMsg).getDisplay();
@@ -135,5 +128,20 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		throw new RuntimeException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
+	}
+
+	private static final class SQLConstraintMessageKey implements MessageKey {
+		private final String constraintName;
+		private static final long serialVersionUID = -3457399434625437700L;
+
+		SQLConstraintMessageKey(final String constraintName) {
+			this.constraintName = constraintName;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String name() {
+			return constraintName;
+		}
 	}
 }

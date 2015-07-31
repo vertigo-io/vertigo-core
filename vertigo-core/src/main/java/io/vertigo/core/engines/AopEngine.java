@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.engines;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Engine;
 
 import java.lang.reflect.Method;

@@ -19,7 +19,7 @@
 package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -54,6 +54,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,15 +87,15 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	private final JsonEngine jsonWriterEngine;
 
 	private final Map<Class, List<JsonConverter>> jsonConverters = new HashMap<>();
-	private final Map<RestParamType, List<JsonReader<?>>> jsonReaders = new HashMap<>();
+	private final EnumMap<RestParamType, List<JsonReader<?>>> jsonReaders = new EnumMap<>(RestParamType.class);
 
 	private final Option<TokenManager> tokenManager;
 
 	/**
 	 * encodeType.
-     * jgarnier le 20/05/2015 : les content-type ne doivent pas contenir de ":" mais des "=" pour les paramètres.
-     * http://www.w3.org/Protocols/rfc1341/4_Content-Type.html : Content-Type := type "/" subtype *[";" parameter]
-     * avec : parameter := attribute "=" value
+	 * jgarnier le 20/05/2015 : les content-type ne doivent pas contenir de ":" mais des "=" pour les paramètres.
+	 * http://www.w3.org/Protocols/rfc1341/4_Content-Type.html : Content-Type := type "/" subtype *[";" parameter]
+	 * avec : parameter := attribute "=" value
 	 */
 	enum EncoderType {
 		/** Type JSON simple */

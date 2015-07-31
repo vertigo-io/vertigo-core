@@ -55,7 +55,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 * @author npiedeloup
 	 */
-	private static enum DtoFields {
+	private enum DtoFields {
 		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA
 	}
 

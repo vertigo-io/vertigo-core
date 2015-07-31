@@ -73,7 +73,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends RestfulService> restfulServiceClass) {
 		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();
 		for (final Method method : restfulServiceClass.getMethods()) {
-			final Option<EndPointDefinition> endPointDefinition = buildEndPoint(method, restfulServiceClass);
+			final Option<EndPointDefinition> endPointDefinition = buildEndPointDefinition(method, restfulServiceClass);
 			if (endPointDefinition.isDefined()) {
 				endPointDefinitions.add(endPointDefinition.get());
 			}
@@ -81,7 +81,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		return endPointDefinitions;
 	}
 
-	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPoint(final Method method, final Class<C> restFullServiceClass) {
+	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPointDefinition(final Method method, final Class<C> restFullServiceClass) {
 		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {

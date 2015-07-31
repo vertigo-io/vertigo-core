@@ -157,7 +157,7 @@ public final class ClassUtilTest {
 				found = true;
 			}
 		}
-		Assert.assertEquals(true, found);
+		Assert.assertTrue(found);
 	}
 
 	@Test

@@ -26,7 +26,6 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -76,11 +75,9 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 	}
 
 	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) {
-		final List<EndPointParam> innerBodyEndPointParams = new ArrayList<>();
 		final Map<String, Type> innerBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
 			if (endPointParam.getParamType() == RestParamType.InnerBody || endPointParam.getParamType() == RestParamType.Implicit) {
-				innerBodyEndPointParams.add(endPointParam);
 				innerBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
 			}
 		}

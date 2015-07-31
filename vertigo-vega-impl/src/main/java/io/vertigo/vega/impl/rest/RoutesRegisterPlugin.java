@@ -32,6 +32,6 @@ public interface RoutesRegisterPlugin extends Plugin {
 	 * @param handlerChain HandlerChain of this route
 	 * @param endPointDefinition EndPointDefinition
 	 */
-	void register(HandlerChain handlerChain, EndPointDefinition endPointDefinition);
+	void registerWsRoute(HandlerChain handlerChain, EndPointDefinition endPointDefinition);
 
 }
