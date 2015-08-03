@@ -25,6 +25,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Classe utilitaire.
@@ -53,6 +56,18 @@ final class FileRendererUtil {
 			}
 			final File file = new File(rootPath + "" + fileName);
 
+			//Si il en existe déjà un, on le renomme avec la date
+			if (file.exists()) {
+				final DateFormat dateFormat = new SimpleDateFormat("-yyMMdd-HHmm");
+				final Date lastModified = new Date(file.lastModified());
+				final String dateSuffix = dateFormat.format(lastModified);
+				final int extensionIndex = fileName.lastIndexOf('.');
+				final String simpleFileName = fileName.substring(0, extensionIndex);
+				final String simplefileExtension = fileName.substring(extensionIndex);
+				final File newNameFile = new File(rootPath + "" + simpleFileName + dateSuffix + simplefileExtension);
+				newNameFile.delete(); //on s'assure que le nom est dispo
+				file.renameTo(newNameFile);
+			}
 			//On crée un fichier si il n'en existe pas déjà un
 			//Atomically creates a new, empty file named by this abstract pathname if and only if a file with this name does not yet exis
 			if (!file.createNewFile()) {
