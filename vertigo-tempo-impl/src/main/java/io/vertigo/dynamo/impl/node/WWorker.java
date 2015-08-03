@@ -27,6 +27,8 @@ import io.vertigo.lang.Option;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.log4j.Logger;
+
 final class WWorker implements Runnable {
 	private final LocalCoordinator localWorker;
 	private final String workType;
@@ -57,30 +59,39 @@ final class WWorker implements Runnable {
 	}
 
 	private <WR, W> void doRun() throws InterruptedException {
-		final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType);
-		if (workItem != null) {
-			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
-				@Override
-				public void onStart() {
-					workerPlugin.putStart(workItem.getId());
-				}
+		boolean done = false;
+		boolean doneSubmit = false;
+		Logger.getLogger(WWorker.class).info("start doRun");
+		try {
+			final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType);
+			if (workItem != null) {
+				final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
+					@Override
+					public void onStart() {
+						workerPlugin.putStart(workItem.getId());
+					}
 
-				@Override
-				public void onDone(final WR result, final Throwable error) {
-					//nothing here, should be done by waiting the future result
+					@Override
+					public void onDone(final WR result, final Throwable error) {
+						//nothing here, should be done by waiting the future result
+					}
+				});
+				//---Et on fait executer par le workerLocal
+				final Future<WR> futureResult = localWorker.submit(workItem, workResultHandler);
+				doneSubmit = true;
+				WR result;
+				try {
+					result = futureResult.get();
+					workerPlugin.putResult(workItem.getId(), result, null);
+				} catch (final ExecutionException e) {
+					workerPlugin.putResult(workItem.getId(), null, e.getCause());
 				}
-			});
-			//---Et on fait executer par le workerLocal
-			final Future<WR> futureResult = localWorker.submit(workItem, workResultHandler);
-			WR result;
-			try {
-				result = futureResult.get();
-				workerPlugin.putResult(workItem.getId(), result, null);
-			} catch (final ExecutionException e) {
-				workerPlugin.putResult(workItem.getId(), null, e.getCause());
 			}
+			done = true;
+			//if workitem is null, that's mean there is no workitem available;
+		} finally {
+			Logger.getLogger(WWorker.class).info("end doRun done:" + done + " , doneSubmit:" + doneSubmit);
 		}
-		//if workitem is null, that's mean there is no workitem available;
 	}
 
 }

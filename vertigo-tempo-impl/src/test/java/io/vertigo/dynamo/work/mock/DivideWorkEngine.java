@@ -27,7 +27,7 @@ public final class DivideWorkEngine implements WorkEngine<Long, DivideWork> {
 	@Override
 	public Long process(final DivideWork work) {
 		if (i++ % 5000 == 0) {
-			System.out.print("\nDivideWork : i=" + i);
+			System.out.println("\nDivideWork : i=" + i);
 		}
 		return work.getValue1() / work.getValue2();
 	}
