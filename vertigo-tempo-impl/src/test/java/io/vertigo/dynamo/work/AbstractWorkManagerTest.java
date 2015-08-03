@@ -114,6 +114,9 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 		//---
 		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
+		if (!finished) {
+			System.err.println("Not finished (" + workResultHanlder.toString());
+		}
 		Assert.assertTrue(finished);
 		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
 		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
