@@ -107,11 +107,12 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	 * test of 2 async executions
 	 */
 	@Test
-	public void testSchedule() {
+	public void testSchedule() throws InterruptedException {
 		final DivideWork work = new DivideWork(10, 5);
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
 		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		Thread.sleep(1000);
 		//---
 		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
 		if (!finished) {
