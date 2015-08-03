@@ -31,6 +31,7 @@ import java.net.URI;
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +44,7 @@ import com.sun.jersey.api.core.ResourceConfig;
  * @author npiedeloup
  */
 public final class RestWorkManagerTest extends AbstractWorkManagerTest {
+	private static final Logger LOG = Logger.getLogger(RestWorkManagerTest.class);
 	@Inject
 	private WorkManager workManager;
 	private HttpServer httpServer;
@@ -55,7 +57,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	public static final URI BASE_URI = getBaseURI();
 
 	protected static HttpServer startServer() throws IOException {
-		System.out.println("Starting grizzly...");
+		LOG.info("Starting grizzly...");
 		final ResourceConfig rc = new PackagesResourceConfig("io.vertigo.dynamo.plugins.work.rest");
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
@@ -63,7 +65,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	}
 
 	protected static ClientNode startClientNode(final int numClient) throws IOException {
-		System.out.println("Starting ClientNode " + numClient + "...");
+		LOG.info("Starting ClientNode " + numClient + "...");
 		final ClientNode clientNode = new ClientNode(numClient, 30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
@@ -77,9 +79,9 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	protected void doSetUp() throws Exception {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		httpServer = startServer();
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		clientNode1 = startClientNode(1);
-		System.out.println(String.format("Jersey app started with WADL available at " + "%sapplication.wadl", BASE_URI));
+		LOG.info(String.format("Jersey app started with WADL available at " + "%sapplication.wadl", BASE_URI));
 	}
 
 	/**
@@ -89,7 +91,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doTearDown() throws Exception {
 		if (httpServer != null) {
-			System.out.println("Stopping grizzly...");
+			LOG.info("Stopping grizzly...");
 			httpServer.stop(); //TODO this stop don't interrupt handler threads. check with an 2.3.x grizzly version
 			httpServer = null;
 			/*for (final Thread thread : Thread.getAllStackTraces().keySet()) {
@@ -99,11 +101,11 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 			}*/
 		}
 		if (clientNode1 != null) {
-			System.out.println("Stopping ClientNode...");
+			LOG.info("Stopping ClientNode...");
 			clientNode1.stop();
 			clientNode1 = null;
 		}
-		System.out.println("All was stopped, quit now");
+		LOG.info("All was stopped, quit now");
 	}
 
 	/**
@@ -122,7 +124,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
 			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
-			System.out.println(workResultHanlder);
+			LOG.info(workResultHanlder);
 			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assert.assertTrue(finished);
 		} finally {
