@@ -106,6 +106,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 						searchIndexes = searchLoader.loadData(uris);
 					}
 					// <<< Tx end
+					REINDEX_COUNT += uris.size();
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
 					final String maxUri = String.valueOf(chunkMaxUri.getId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
