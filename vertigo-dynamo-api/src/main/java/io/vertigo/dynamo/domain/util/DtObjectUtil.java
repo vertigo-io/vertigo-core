@@ -76,6 +76,19 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une URI de DTO.
+	 * On récupère l'URI d'un DTO à partir de sa classe et sa clée.
+	 * @param dtObjectClass Class du DTO
+	 * @param uriValue key value
+	 * @param <D> DtObject type
+	 * @return URI du DTO
+	 */
+	public static <D extends DtObject> URI<D> createURI(final Class<D> dtObjectClass, final Object uriValue) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
+		return new URI<>(dtDefinition, uriValue);
+	}
+
+	/**
+	 * Récupération d'une URI de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
 	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.
@@ -88,7 +101,7 @@ public final class DtObjectUtil {
 	 * @param dto DtObject
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <D extends DtObject> URI createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
+	public static <D extends DtObject> URI<D> createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
