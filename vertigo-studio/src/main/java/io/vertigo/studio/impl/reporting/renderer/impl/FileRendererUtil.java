@@ -54,7 +54,7 @@ final class FileRendererUtil {
 			if (!pathFile.exists() && !pathFile.mkdirs()) {
 				throw new IOException("Can't create directory: " + pathFile.getAbsolutePath());
 			}
-			final File file = new File(rootPath + "" + fileName);
+			final File file = new File(rootPath + fileName);
 
 			//Si il en existe déjà un, on le renomme avec la date
 			if (file.exists()) {
@@ -64,7 +64,7 @@ final class FileRendererUtil {
 				final int extensionIndex = fileName.lastIndexOf('.');
 				final String simpleFileName = fileName.substring(0, extensionIndex);
 				final String simplefileExtension = fileName.substring(extensionIndex);
-				final File newNameFile = new File(rootPath + "" + simpleFileName + dateSuffix + simplefileExtension);
+				final File newNameFile = new File(rootPath + simpleFileName + dateSuffix + simplefileExtension);
 				newNameFile.delete(); //on s'assure que le nom est dispo
 				file.renameTo(newNameFile);
 			}
