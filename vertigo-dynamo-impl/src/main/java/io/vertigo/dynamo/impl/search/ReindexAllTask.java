@@ -46,8 +46,8 @@ import org.apache.log4j.Logger;
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
-	private static volatile long REINDEX_COUNT = 0;
 	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
+	private static volatile long REINDEX_COUNT = 0;
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -75,14 +75,14 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		if (REINDEXATION_IN_PROGRESS) {
-			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + REINDEX_COUNT + " elements done)";
+		if (isReindexInProgress()) {
+			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + getReindexCount() + " elements done)";
 			LOGGER.warn(warnMessage);
 			reindexFuture.fail(new RuntimeException(warnMessage));
 		} else {
 			//-----
-			REINDEXATION_IN_PROGRESS = true;
-			REINDEX_COUNT = 0;
+			startReindex();
+			long reindexCount = 0;
 			final long startTime = System.currentTimeMillis();
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
@@ -106,7 +106,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 						searchIndexes = searchLoader.loadData(uris);
 					}
 					// <<< Tx end
-					REINDEX_COUNT += uris.size();
+					reindexCount += uris.size();
+					updateReindexCount(reindexCount);
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
 					final String maxUri = String.valueOf(chunkMaxUri.getId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
@@ -116,15 +117,35 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					lastUri = maxUri;
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
-				reindexFuture.success(REINDEX_COUNT);
+				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
 				LOGGER.error("Reindexation error", e);
 				reindexFuture.fail(e);
 			} finally {
-				REINDEXATION_IN_PROGRESS = false;
-				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + REINDEX_COUNT + " elements done)");
+				stopReindex();
+				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + reindexCount + " elements done)");
 			}
 		}
+	}
+
+	private static boolean isReindexInProgress() {
+		return REINDEXATION_IN_PROGRESS;
+	}
+
+	private static void startReindex() {
+		REINDEXATION_IN_PROGRESS = true;
+	}
+
+	private static void stopReindex() {
+		REINDEXATION_IN_PROGRESS = false;
+	}
+
+	private static void updateReindexCount(final long reindexCount) {
+		REINDEX_COUNT = reindexCount;
+	}
+
+	private static long getReindexCount() {
+		return REINDEX_COUNT;
 	}
 
 	private ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
