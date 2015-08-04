@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 10000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+	private final long warmupTime = 3000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -107,26 +107,16 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	 * test of 2 async executions
 	 */
 	@Test
-	public void testSchedule() throws InterruptedException {
-		try {
-			final DivideWork work = new DivideWork(10, 5);
-			final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-			workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-			workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-			Thread.sleep(1000);
-			//---
-			final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
-			if (!finished) {
-				System.err.println("Not finished (" + workResultHanlder.toString());
-			}
-			Assert.assertTrue(finished);
-			Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
-			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
-		} catch (final Throwable th) {
-			System.err.println("testSchedule error :" + th.getMessage());
-			th.printStackTrace();
-			throw th;
-		}
+	public void testSchedule() {
+		final DivideWork work = new DivideWork(10, 5);
+		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
+		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		//---
+		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
+		Assert.assertTrue(finished);
+		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
+		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 	}
 
 	@Test(expected = NullPointerException.class)
