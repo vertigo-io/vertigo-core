@@ -51,7 +51,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	private ClientNode clientNode1;
 
 	private static URI getBaseURI() {
-		return UriBuilder.fromUri("http://0.0.0.0/").port(10998).build();
+		return UriBuilder.fromUri("http://127.0.0.1/").port(10998).build();
 	}
 
 	public static final URI BASE_URI = getBaseURI();
