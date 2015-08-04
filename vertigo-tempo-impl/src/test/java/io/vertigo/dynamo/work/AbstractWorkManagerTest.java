@@ -108,19 +108,25 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testSchedule() throws InterruptedException {
-		final DivideWork work = new DivideWork(10, 5);
-		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-		Thread.sleep(1000);
-		//---
-		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
-		if (!finished) {
-			System.err.println("Not finished (" + workResultHanlder.toString());
+		try {
+			final DivideWork work = new DivideWork(10, 5);
+			final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
+			workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+			workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+			Thread.sleep(1000);
+			//---
+			final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
+			if (!finished) {
+				System.err.println("Not finished (" + workResultHanlder.toString());
+			}
+			Assert.assertTrue(finished);
+			Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
+			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
+		} catch (final Throwable th) {
+			System.err.println("testSchedule error :" + th.getMessage());
+			th.printStackTrace();
+			throw th;
 		}
-		Assert.assertTrue(finished);
-		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
-		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 	}
 
 	@Test(expected = NullPointerException.class)

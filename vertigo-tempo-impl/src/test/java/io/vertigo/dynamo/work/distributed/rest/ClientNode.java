@@ -28,6 +28,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author npiedeloup
  */
@@ -53,7 +55,7 @@ final class ClientNode {
 
 	public void start() throws IOException {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("java -Dhttp.nonProxyHosts=\"localhost|127.0.0.1\" -cp ");
+		sb.append("java -cp ");
 		sb.append(System.getProperty("java.class.path"));
 		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime);
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
@@ -83,7 +85,7 @@ final class ClientNode {
 	public void stop() throws InterruptedException {
 		nodeProcess.destroy();
 		nodeProcess.waitFor();
-		System.out.println("ClientNode stopped");
+		Logger.getLogger(ClientNode.class).info("ClientNode stopped");
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}
@@ -101,7 +103,7 @@ final class ClientNode {
 							while ((line = br.readLine()) != null) {
 								out.println(prefix + line);
 							}
-							Thread.sleep(250);
+							Thread.sleep(50);
 						}
 					}
 				} catch (final InterruptedException | IOException e) {
