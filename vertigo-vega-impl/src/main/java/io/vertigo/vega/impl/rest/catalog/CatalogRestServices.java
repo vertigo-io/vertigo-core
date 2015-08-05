@@ -26,6 +26,8 @@ import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.SessionLess;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,14 +43,24 @@ public final class CatalogRestServices implements RestfulService {
 	@GET("/catalog")
 	public List<String> publishCatalog() {
 		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
+		return publishCatalog(endPointDefinitions);
+	}
+
+	private List<String> publishCatalog(final Collection<EndPointDefinition> endPointDefinitions) {
 		final List<String> result = new ArrayList<>();
 
 		final StringBuilder sb = new StringBuilder();
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			final String doc = endPointDefinition.getDoc();
-			sb.append(endPointDefinition.getVerb().name()).append(":")
+			if (!doc.isEmpty()) {
+				sb.append(" /*")
+						.append(endPointDefinition.getDoc())
+						.append("*/")
+						.append("\n");
+			}
+			sb.append(endPointDefinition.getVerb().name()).append(" ")
 					.append(endPointDefinition.getPath())
-					.append("(");
+					.append(" (");
 			String sep = "";
 			for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 				sb.append(sep);
@@ -56,14 +68,34 @@ public final class CatalogRestServices implements RestfulService {
 				sep = ", ";
 			}
 			sb.append(")");
-			if (!doc.isEmpty()) {
-				sb.append(" /*")
-						.append(endPointDefinition.getDoc())
-						.append("*/");
+			final Type returnType = endPointDefinition.getMethod().getGenericReturnType();
+			if (!void.class.isAssignableFrom(endPointDefinition.getMethod().getReturnType())) {
+				sb.append(" -> ");
+				appendTypeToString(sb, returnType);
 			}
 			result.add(sb.toString());
 			sb.setLength(0);
 		}
 		return result;
+	}
+
+	private void appendTypeToString(final StringBuilder sb, final Type returnType) {
+		String sep;
+		if (returnType instanceof ParameterizedType) {
+			sb.append(((ParameterizedType) returnType).getRawType())
+					.append("<");
+			sep = "";
+			for (final Type typeArgument : ((ParameterizedType) returnType).getActualTypeArguments()) {
+				sb.append(sep);
+				appendTypeToString(sb, typeArgument);
+				sep = ",";
+			}
+			sb.append(">");
+		} else if (returnType instanceof Class) {
+			sb.append(((Class) returnType).getSimpleName());
+		} else {
+			//le toString colle pour les autres cas
+			sb.append(returnType.toString());
+		}
 	}
 }
