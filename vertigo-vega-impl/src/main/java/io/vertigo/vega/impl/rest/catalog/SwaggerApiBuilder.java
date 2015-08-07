@@ -84,9 +84,9 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	 * @return this builder
 	 */
 	public SwaggerApiBuilder withContextPath(final String contextPath) {
-		Assertion.checkArgNotEmpty(contextPath, "contextPath can't be empty (minimal should be '/')");
+		//Le contrat de l'api de servlet fait que le contextPath peut-être null ou vide
 		//-----
-		builderContextPath = contextPath;
+		builderContextPath = (contextPath == null || contextPath.isEmpty()) ? "/" : contextPath;
 		return this;
 	}
 
