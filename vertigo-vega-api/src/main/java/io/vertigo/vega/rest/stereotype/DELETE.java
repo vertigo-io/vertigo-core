@@ -33,5 +33,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DELETE {
+	/**
+	 * Defines a URI template for the resource class.
+	 **/
 	String value();
 }

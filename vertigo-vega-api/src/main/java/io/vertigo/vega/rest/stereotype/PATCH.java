@@ -25,14 +25,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that the annotated method responds to HTTP POST requests.
+ * Indicates that the annotated method responds to HTTP PUT requests.
  * Inspirated from jax-rs api, but merged with Path for simplicity.
  * @author npiedeloup
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface POST {
+public @interface PATCH {
 	/**
 	 * Defines a URI template for the resource class.
 	 **/
