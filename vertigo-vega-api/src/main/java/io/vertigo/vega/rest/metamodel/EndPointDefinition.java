@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 public final class EndPointDefinition implements Definition {
 
 	public enum Verb {
-		GET, POST, PUT, DELETE,
+		GET, POST, PUT, PATCH, DELETE,
 	}
 
 	private final String name;

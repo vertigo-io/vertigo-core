@@ -44,6 +44,9 @@ public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin
 			case PUT:
 				Spark.put(wsRestRoute);
 				break;
+			case PATCH:
+				Spark.patch(wsRestRoute);
+				break;
 			case DELETE:
 				Spark.delete(wsRestRoute);
 				break;

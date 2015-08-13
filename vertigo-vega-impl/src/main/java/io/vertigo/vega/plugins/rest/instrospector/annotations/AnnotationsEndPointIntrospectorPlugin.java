@@ -44,6 +44,7 @@ import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.HeaderParam;
 import io.vertigo.vega.rest.stereotype.IncludedFields;
 import io.vertigo.vega.rest.stereotype.InnerBodyParam;
+import io.vertigo.vega.rest.stereotype.PATCH;
 import io.vertigo.vega.rest.stereotype.POST;
 import io.vertigo.vega.rest.stereotype.PUT;
 import io.vertigo.vega.rest.stereotype.PathParam;
@@ -94,6 +95,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 				builder.with(Verb.POST, ((POST) annotation).value());
 			} else if (annotation instanceof PUT) {
 				builder.with(Verb.PUT, ((PUT) annotation).value());
+			} else if (annotation instanceof PATCH) {
+				builder.with(Verb.PATCH, ((PATCH) annotation).value());
 			} else if (annotation instanceof DELETE) {
 				builder.with(Verb.DELETE, ((DELETE) annotation).value());
 			} else if (annotation instanceof AnonymousAccessAllowed) {
