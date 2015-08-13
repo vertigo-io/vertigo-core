@@ -5,19 +5,17 @@
  */
 -->
 <#if parameters.dynamicAttributes['layout']??>
-	<#if parameters.dynamicAttributes['layout'] = "table" > 
-	</table><#lt/>
-	<#else>
-	<#-- none -->
-	</#if>
+    <#if parameters.dynamicAttributes['layout'] = "table" > 
+    </table><#lt/>
+    <#else>
+    <#-- none -->
+    </#if>
 <#else>
 </div>
 </#if>
-${stack.setValue('#controlLayout_type', controlLayout_previoustype?default('none'))}
-${stack.setValue('#controlLayout_currentColumnCount', controlLayout_previousColumnCount?default(0))}
-<#assign currentLayout = controlLayout_type?default('none') />
+<#include "/${parameters.templateDir}/xhtml/popLayoutType.ftl" />
 <#if currentLayout = 'table'>
-	</td><#lt/>
-	<#-- Write out the closing td for the html input -->
-	<#include "/${parameters.templateDir}/xhtml/controlfooter-trlogic.ftl" />
+    </td><#lt/>
+    <#-- Write out the closing td for the html input -->
+    <#include "/${parameters.templateDir}/xhtml/controlfooter-trlogic.ftl" />
 </#if>
