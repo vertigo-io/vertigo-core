@@ -30,7 +30,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 
 	@Override
 	public Grammar getGrammar() {
-		return PersonnGrammar.GRAMMAR;
+		return PersonGrammar.GRAMMAR;
 	}
 
 	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();

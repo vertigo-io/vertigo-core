@@ -27,7 +27,7 @@ import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 /**
  * @author npiedeloup
  */
-public final class PersonnGrammar {
+public final class PersonGrammar {
 
 	static final EntityProperty NAME = new EntityProperty("name", EntityPropertyType.String);
 	static final EntityProperty FIRST_NAME = new EntityProperty("firstName", EntityPropertyType.String);
@@ -52,7 +52,7 @@ public final class PersonnGrammar {
 				.addProperty(POSTAL_CODE, false)
 				.addProperty(CITY, false)
 				.build();
-		PERSONN_ENTITY = new EntityBuilder("personn")
+		PERSONN_ENTITY = new EntityBuilder("person")
 				.addProperty(NAME, true)
 				.addProperty(FIRST_NAME, true)
 				.addProperty(AGE, false)
@@ -68,7 +68,7 @@ public final class PersonnGrammar {
 				);
 	}
 
-	private PersonnGrammar() {
+	private PersonGrammar() {
 		//private
 	}
 }

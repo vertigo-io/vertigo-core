@@ -1,5 +1,14 @@
 package io.vertigo.core.environment;
 
+import static io.vertigo.core.environment.PersonGrammar.AGE;
+import static io.vertigo.core.environment.PersonGrammar.CITY;
+import static io.vertigo.core.environment.PersonGrammar.FIRST_NAME;
+import static io.vertigo.core.environment.PersonGrammar.HEIGHT;
+import static io.vertigo.core.environment.PersonGrammar.MAIN_ADDRESS;
+import static io.vertigo.core.environment.PersonGrammar.MALE;
+import static io.vertigo.core.environment.PersonGrammar.NAME;
+import static io.vertigo.core.environment.PersonGrammar.POSTAL_CODE;
+import static io.vertigo.core.environment.PersonGrammar.STREET;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
@@ -25,28 +34,28 @@ public class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void simpleTest() {
 
-		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MAIN_ADDRESS", PersonnGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
-				.addPropertyValue(PersonnGrammar.STREET, "1, rue du louvre")
-				.addPropertyValue(PersonnGrammar.POSTAL_CODE, "75008")
-				.addPropertyValue(PersonnGrammar.CITY, "Paris")
+		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+				.addPropertyValue(STREET, "1, rue du louvre")
+				.addPropertyValue(POSTAL_CODE, "75008")
+				.addPropertyValue(CITY, "Paris")
 				.build();
 		dynamicDefinitionRepository.addDefinition(address1Definition);
 
-		final DynamicDefinition address2Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("SECOND_ADDRESS", PersonnGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
-				.addPropertyValue(PersonnGrammar.STREET, "105, rue martin")
-				.addPropertyValue(PersonnGrammar.POSTAL_CODE, "75008")
-				.addPropertyValue(PersonnGrammar.CITY, "Paris CEDEX")
+		final DynamicDefinition address2Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("SECOND_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+				.addPropertyValue(STREET, "105, rue martin")
+				.addPropertyValue(POSTAL_CODE, "75008")
+				.addPropertyValue(CITY, "Paris CEDEX")
 				.build();
 		dynamicDefinitionRepository.addDefinition(address2Definition);
 
-		final DynamicDefinition personnDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonnGrammar.PERSONN_ENTITY, "io.vertigo.test.model")
-				.addPropertyValue(PersonnGrammar.NAME, "105, rue martin")
-				.addPropertyValue(PersonnGrammar.FIRST_NAME, "75008")
-				.addPropertyValue(PersonnGrammar.AGE, 42)
-				.addPropertyValue(PersonnGrammar.HEIGHT, 175.0d)
-				.addPropertyValue(PersonnGrammar.MALE, Boolean.TRUE)
-				.addDefinition(PersonnGrammar.MAIN_ADDRESS, new DynamicDefinitionKey("MAIN_ADDRESS"))
-				.addDefinition(PersonnGrammar.SECOND_ADDRESS, new DynamicDefinitionKey("SECOND_ADDRESS"))
+		final DynamicDefinition personnDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonGrammar.PERSONN_ENTITY, "io.vertigo.test.model")
+				.addPropertyValue(NAME, "105, rue martin")
+				.addPropertyValue(FIRST_NAME, "75008")
+				.addPropertyValue(AGE, 42)
+				.addPropertyValue(HEIGHT, 175.0d)
+				.addPropertyValue(MALE, Boolean.TRUE)
+				.addDefinition(MAIN_ADDRESS, new DynamicDefinitionKey("MAIN_ADDRESS"))
+				.addDefinition(PersonGrammar.SECOND_ADDRESS, new DynamicDefinitionKey("SECOND_ADDRESS"))
 				.build();
 		dynamicDefinitionRepository.addDefinition(personnDefinition);
 
