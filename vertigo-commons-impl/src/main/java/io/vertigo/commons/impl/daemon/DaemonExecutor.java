@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 final class DaemonExecutor implements Activeable {
 	private boolean isActive;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-	private final List<DeamonTimerTask> myTimerTasks = new ArrayList<>();
+	private final List<DaemonTimerTask> myTimerTasks = new ArrayList<>();
 
 	/**
 	* Enregistre un démon.
@@ -36,17 +36,17 @@ final class DaemonExecutor implements Activeable {
 		Assertion.checkNotNull(daemonDefinition);
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final DeamonTimerTask timerTask = new DeamonTimerTask(daemonDefinition, daemon);
+		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonDefinition, daemon);
 		myTimerTasks.add(timerTask);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
 	/**
-	 * @return Deamons stats
+	 * @return Daemons stats
 	 */
 	List<DaemonStat> getStats() {
 		final ListBuilder<DaemonStat> listBuilder = new ListBuilder<>();
-		for (final DeamonTimerTask timerTask : myTimerTasks) {
+		for (final DaemonTimerTask timerTask : myTimerTasks) {
 			listBuilder.add(timerTask.getStat());
 		}
 		return listBuilder.unmodifiable().build();
@@ -65,9 +65,9 @@ final class DaemonExecutor implements Activeable {
 		isActive = false;
 	}
 
-	private static final class DeamonTimerTask implements Runnable {
+	private static final class DaemonTimerTask implements Runnable {
 
-		private static final Logger LOG = Logger.getLogger(DeamonTimerTask.class);
+		private static final Logger LOG = Logger.getLogger(DaemonTimerTask.class);
 		private final Daemon daemon;
 		private final DaemonDefinition daemonDefinition;
 		//-----
@@ -76,7 +76,7 @@ final class DaemonExecutor implements Activeable {
 		private long failures;
 		private DaemonStat.Status status = DaemonStat.Status.pending;
 
-		DeamonTimerTask(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+		DaemonTimerTask(final DaemonDefinition daemonDefinition, final Daemon daemon) {
 			Assertion.checkNotNull(daemonDefinition);
 			Assertion.checkNotNull(daemon);
 			// -----

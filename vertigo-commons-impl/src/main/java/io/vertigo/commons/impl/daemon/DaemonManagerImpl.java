@@ -33,7 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Manager de gestion du deamon.
+ * Manager of all the daemons.
  *
  * @author TINGARGIOLA
  */
@@ -41,7 +41,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor;
 
 	/**
-	 * Construct an instance of DeamonManagerImpl.
+	 * Construct an instance of DaemonManagerImpl.
 	 */
 	@Inject
 	public DaemonManagerImpl() {

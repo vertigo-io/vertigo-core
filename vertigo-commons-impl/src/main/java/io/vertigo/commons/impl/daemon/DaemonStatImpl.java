@@ -18,7 +18,7 @@ public final class DaemonStatImpl implements DaemonStat {
 
 	/**
 	 * Constructor.
-	 * @param daemonDefinition Deamon definition
+	 * @param daemonDefinition Daemon's definition
 	 * @param successes Nb success
 	 * @param failures Nb failure
 	 * @param status Current status

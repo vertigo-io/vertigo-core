@@ -6,7 +6,7 @@ package io.vertigo.commons.daemon;
  */
 public interface DaemonStat {
 
-	/** Deamon execution status. */
+	/** Daemon execution status. */
 	enum Status {
 		/** Waiting next execution. */
 		pending,
