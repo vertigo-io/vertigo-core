@@ -280,7 +280,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		}
 	}
 
-	private EncodedType findEncodedType(final Object result) {
+	private static EncodedType findEncodedType(final Object result) {
 		final EncodedType encodedType;
 		if (result instanceof List) {
 			if (result instanceof DtList) {
@@ -306,7 +306,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 	}
 
-	private boolean hasComplexTypeMeta(final DtList<?> dtList) {
+	private static boolean hasComplexTypeMeta(final DtList<?> dtList) {
 		for (final String entry : dtList.getMetaDataNames()) {
 			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
 			if (value.isDefined()) {
@@ -395,7 +395,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		} //else nothing, there is no meta on standard list
 	}
 
-	private Map<String, Serializable> getListMetas(final DtList<?> dtList) {
+	private static Map<String, Serializable> getListMetas(final DtList<?> dtList) {
 		final Map<String, Serializable> metaDatas = new HashMap<>();
 		for (final String entry : dtList.getMetaDataNames()) {
 			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);

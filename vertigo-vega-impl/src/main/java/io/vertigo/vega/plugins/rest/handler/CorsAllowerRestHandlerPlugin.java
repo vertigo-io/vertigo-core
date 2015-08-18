@@ -87,14 +87,14 @@ public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
 		return chain.handle(request, response, routeContext);
 	}
 
-	private boolean isAllowed(final String currentValue, final Set<String> allowedValues) {
+	private static boolean isAllowed(final String currentValue, final Set<String> allowedValues) {
 		if (allowedValues.contains("*")) {
 			return true;
 		}
 		return allowedValues.contains(currentValue);
 	}
 
-	private Set<String> parseStringToSet(final String param) {
+	private static Set<String> parseStringToSet(final String param) {
 		final String[] values = param.split(",");
 		final Set<String> parsedConfig = new HashSet<>(values.length);
 		for (final String value : values) {

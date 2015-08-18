@@ -232,7 +232,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		}
 	}
 
-	private void appendSimpleCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value) {
+	private static void appendSimpleCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value) {
 		appendIfNotNull(query, indexFieldName);
 		appendIfNotNull(query, preExpression);
 		appendIfNotNull(query, preModifier);
@@ -241,7 +241,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		appendIfNotNull(query, postExpression);
 	}
 
-	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value, final String defaultValue) {
+	private static void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value, final String defaultValue) {
 
 		final String stringValue = cleanUserQuery(value, defaultValue != null ? defaultValue : "*");
 		/*if ("*".equals(stringValue)) {
@@ -331,14 +331,14 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
 	}
 
-	private String cleanUserQuery(final String value, final String defaultValue) {
+	private static String cleanUserQuery(final String value, final String defaultValue) {
 		if (value.trim().isEmpty()) {
 			return defaultValue;
 		}
 		return value;
 	}
 
-	private void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
+	private static void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
 		if (expressionValue.length() > 0) {
 			final boolean useParenthesis = (indexFieldName != null && !indexFieldName.isEmpty());
 			appendIfNotNull(query, indexFieldName);
@@ -355,14 +355,14 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		}
 	}
 
-	private StringBuilder appendIfNotNull(final StringBuilder query, final String str) {
+	private static StringBuilder appendIfNotNull(final StringBuilder query, final String str) {
 		if (str != null) {
 			query.append(str);
 		}
 		return query;
 	}
 
-	private void appendMissingPart(final StringBuilder expressionValue, final StringBuilder query, final String missingPart) {
+	private static void appendMissingPart(final StringBuilder expressionValue, final StringBuilder query, final String missingPart) {
 		if (expressionValue.length() > 0) {
 			expressionValue.append(missingPart);
 		} else {
@@ -376,7 +376,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @param date la date.
 	 * @return la chaine de caractere formattée.
 	 */
-	private String formatDate(final Date date) {
+	private static String formatDate(final Date date) {
 		final DateFormat formatter = new SimpleDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"", Locale.getDefault());
 		final TimeZone tz = TimeZone.getTimeZone("UTC");
 		formatter.setTimeZone(tz);

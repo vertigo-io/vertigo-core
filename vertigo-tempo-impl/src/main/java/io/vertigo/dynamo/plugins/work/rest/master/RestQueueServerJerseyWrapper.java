@@ -39,7 +39,7 @@ import com.sun.jersey.spi.resource.Singleton;
 @Singleton
 public final class RestQueueServerJerseyWrapper {
 
-	private RestQueueServer getWorkQueueRestServer() {
+	private static RestQueueServer getWorkQueueRestServer() {
 		final RestMasterPlugin masterPlugin = Home.getComponentSpace().resolve("masterPlugin", RestMasterPlugin.class);
 		return masterPlugin.getWorkQueueRestServer();
 	}

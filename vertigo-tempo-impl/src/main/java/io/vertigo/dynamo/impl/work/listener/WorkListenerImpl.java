@@ -34,13 +34,13 @@ public final class WorkListenerImpl implements WorkListener {
 	/** Mécanisme de log utilisé pour les performances. */
 	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");
 
-	private void logWorkStart(final String workName) {
+	private static void logWorkStart(final String workName) {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Execution tache : " + workName);
 		}
 	}
 
-	private void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
+	private static void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
 		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
 			LOGGER_PERFORMANCE.info(">> Tache : " + workName + " : time = " + elapsedTime);
 		}

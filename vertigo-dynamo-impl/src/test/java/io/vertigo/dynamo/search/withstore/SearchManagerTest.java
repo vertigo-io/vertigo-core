@@ -216,7 +216,7 @@ public final class SearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0L, resize);
 	}
 
-	private Car createNewCar() {
+	private static Car createNewCar() {
 		final Car car = new Car();
 		car.setId(null);
 		car.setPrice(12000);

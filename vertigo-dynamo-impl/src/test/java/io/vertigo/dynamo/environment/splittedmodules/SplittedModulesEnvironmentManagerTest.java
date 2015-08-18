@@ -102,7 +102,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 		}
 	}
 
-	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
+	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
 		
 		return 

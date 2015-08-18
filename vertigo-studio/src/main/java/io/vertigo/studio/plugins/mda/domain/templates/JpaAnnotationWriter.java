@@ -173,7 +173,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return String Nom de la sequence
 	 */
-	private String getSequenceName(final DtDefinition dtDefinition) {
+	private static String getSequenceName(final DtDefinition dtDefinition) {
 		//oracle n'autorise pas de sequence de plus de 30 char.
 		String seqName = SEQUENCE_PREFIX + getTableName(dtDefinition);
 		if (seqName.length() > 30) {

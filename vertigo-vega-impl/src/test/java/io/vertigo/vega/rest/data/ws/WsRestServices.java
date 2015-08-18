@@ -502,7 +502,7 @@ public final class WsRestServices implements RestfulService {
 		//this service must declared VFile as return type because it should return VFile when file was modified
 	}
 
-	private File asFile(final URL url) {
+	private static File asFile(final URL url) {
 		File f;
 		try {
 			f = new File(url.toURI());
@@ -626,7 +626,7 @@ public final class WsRestServices implements RestfulService {
 		return result;
 	}*/
 
-	private <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
 		final DtList<D> result = new DtList<>(dtObjectClass);
 		for (final D element : values) {
 			result.add(element);

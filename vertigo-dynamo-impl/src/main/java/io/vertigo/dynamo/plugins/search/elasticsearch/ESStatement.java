@@ -259,7 +259,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1d));
 	}
 
-	private void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
+	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
@@ -287,7 +287,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 	}
 
-	private AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition) {
+	private static AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition) {
 		//Récupération des noms des champs correspondant aux facettes.
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {

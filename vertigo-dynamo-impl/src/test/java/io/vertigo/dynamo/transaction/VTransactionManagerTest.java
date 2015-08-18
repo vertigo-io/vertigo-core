@@ -480,7 +480,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			}
 		}
 
-		private void doThrow(final Throwable t) throws Exception {
+		private static void doThrow(final Throwable t) throws Exception {
 			if (t instanceof Exception) {
 				throw (Exception) t;
 			}

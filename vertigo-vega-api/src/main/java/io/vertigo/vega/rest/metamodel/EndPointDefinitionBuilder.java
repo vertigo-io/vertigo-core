@@ -93,7 +93,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				myDoc);
 	}
 
-	private String normalizePath(final String servicePath) {
+	private static String normalizePath(final String servicePath) {
 		return servicePath.replaceAll("\\{.*?\\}", "_")//.*? : reluctant quantifier;
 				.replaceAll("[//\\*]", "_");
 	}

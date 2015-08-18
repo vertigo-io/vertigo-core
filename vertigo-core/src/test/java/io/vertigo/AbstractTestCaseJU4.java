@@ -46,7 +46,7 @@ public abstract class AbstractTestCaseJU4 {
 		app = new App(buildAppConfig());
 	}
 
-	private synchronized void stopHome() {
+	private static synchronized void stopHome() {
 		if (app != null) {
 			app.close();
 		}

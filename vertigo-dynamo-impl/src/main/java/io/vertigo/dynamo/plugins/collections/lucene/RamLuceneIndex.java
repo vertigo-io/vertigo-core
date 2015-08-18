@@ -36,8 +36,6 @@ import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
@@ -354,15 +352,15 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		return query;
 	}
 
-	private void writeObject(final ObjectOutputStream oos) throws IOException {
-		// default serialization
-		oos.defaultWriteObject();
-
-	}
-
-	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
-		// default deserialization
-		ois.defaultReadObject();
-	}
+	//	private static void writeObject(final ObjectOutputStream oos) throws IOException {
+	//		// default serialization
+	//		oos.defaultWriteObject();
+	//
+	//	}
+	//
+	//	private static void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
+	//		// default deserialization
+	//		ois.defaultReadObject();
+	//	}
 
 }

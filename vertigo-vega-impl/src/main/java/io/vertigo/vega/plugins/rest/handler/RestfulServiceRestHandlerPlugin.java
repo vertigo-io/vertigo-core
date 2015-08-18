@@ -85,7 +85,7 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 		}
 	}
 
-	private Object[] makeArgs(final RouteContext routeContext, final EndPointDefinition endPointDefinition) {
+	private static Object[] makeArgs(final RouteContext routeContext, final EndPointDefinition endPointDefinition) {
 		if (endPointDefinition.isAutoSortAndPagination()) {
 			final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size() - 1];
 			int i = 0;

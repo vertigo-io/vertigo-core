@@ -297,7 +297,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private Type getFieldType(final DtField dtField) {
+	private static Type getFieldType(final DtField dtField) {
 		final DataType dataType = dtField.getDomain().getDataType();
 		if (DataType.DtObject == dataType) {
 			return ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
@@ -414,7 +414,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 	}
 
-	private List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {
+	private static List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {
 		final List<EndPointParam> pseudoEndPointParams = new ArrayList<>();
 		final String prefix = (!endPointParam.getName().isEmpty()) ? (endPointParam.getName() + ".") : "";
 		if (UiListState.class.isAssignableFrom(endPointParam.getType())) {

@@ -247,7 +247,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		testDescription(securityManager);
 	}
 
-	private Role getRole(final String name) {
+	private static Role getRole(final String name) {
 		return Home.getDefinitionSpace().resolve(name, Role.class);
 	}
 

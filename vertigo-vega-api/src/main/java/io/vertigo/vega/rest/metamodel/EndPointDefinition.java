@@ -106,7 +106,7 @@ public final class EndPointDefinition implements Definition {
 		this.doc = doc;
 	}
 
-	private void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams, final String methodName) {
+	private static void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams, final String methodName) {
 		final Set<String> inputPathParam = new HashSet<>();
 		final Set<String> urlPathParam = new HashSet<>();
 		for (final EndPointParam myEndPointParam : myEndPointParams) {

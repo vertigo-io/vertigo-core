@@ -89,7 +89,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return "DataCache:" + dtDefinition.getName();
 	}
 
-	private <D extends DtObject> LuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private static <D extends DtObject> LuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition());

@@ -37,7 +37,7 @@ final class VProtocol {
 
 	//private final VEventListener eventListener;
 
-	VProtocol(/*VEventListener eventListener*/) {
+	VProtocol(/* VEventListener eventListener */) {
 		//	Assertion.checkNotNull(eventListener);
 		//-----
 		//Todo à optimiser
@@ -151,7 +151,7 @@ final class VProtocol {
 		}
 	}
 
-	private VResponse onDataReceived(final String dataReceived, final VCommandHandler commandHandler) {
+	private static VResponse onDataReceived(final String dataReceived, final VCommandHandler commandHandler) {
 		Assertion.checkNotNull(dataReceived);
 		//-----
 		if (!dataReceived.startsWith("$")) {

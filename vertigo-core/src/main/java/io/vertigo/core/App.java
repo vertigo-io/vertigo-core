@@ -96,10 +96,8 @@ public final class App implements AutoCloseable {
 		return new DefinitionLoader();
 	}
 
-	private ComponentLoader createComponentLoader(final AppConfig currentAppConfig) {
-		final ComponentLoader componentLoader;
-		componentLoader = new ComponentLoader(currentAppConfig.getBootConfig());
-		return componentLoader;
+	private static ComponentLoader createComponentLoader(final AppConfig appConfig) {
+		return new ComponentLoader(appConfig.getBootConfig());
 	}
 
 	/**

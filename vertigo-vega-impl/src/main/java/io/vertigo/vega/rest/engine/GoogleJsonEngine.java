@@ -466,7 +466,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private Gson createGson() {
+	private static Gson createGson() {
 		return new GsonBuilder()
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 				.setPrettyPrinting()

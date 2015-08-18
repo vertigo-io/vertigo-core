@@ -73,7 +73,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		this.dtDefinition = dtDefinition;
 	}
 
-	private String getDtcName(final DtDefinition dtDef) {
+	private static String getDtcName(final DtDefinition dtDef) {
 		return "DTC_" + dtDef.getLocalName();
 	}
 

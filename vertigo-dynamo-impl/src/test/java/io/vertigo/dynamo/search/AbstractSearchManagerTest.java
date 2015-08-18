@@ -778,7 +778,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private long containsDescription(final List<Car> cars, final String word) {
+	private static long containsDescription(final List<Car> cars, final String word) {
 		long count = 0;
 		for (final Car car : cars) {
 			if (car.getDescription().toLowerCase().contains(word)) {
@@ -788,7 +788,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return count;
 	}
 
-	private long before(final List<Car> cars, final int year) {
+	private static long before(final List<Car> cars, final int year) {
 		long count = 0;
 		for (final Car car : cars) {
 			if (car.getYear() <= year) {

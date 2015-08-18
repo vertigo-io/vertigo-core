@@ -56,7 +56,7 @@ public final class ImplicitJsonConverter implements JsonConverter {
 		return new Class[] { Request.class };
 	}
 
-	private Object readImplicitValue(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
+	private static Object readImplicitValue(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
 		switch (ImplicitParam.valueOf(endPointParam.getName())) {
 			case UiMessageStack:
 				return routeContext.getUiMessageStack();

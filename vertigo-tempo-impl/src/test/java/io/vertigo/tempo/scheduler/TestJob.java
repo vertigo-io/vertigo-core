@@ -32,7 +32,7 @@ public final class TestJob implements Runnable {
 		incCount();
 	}
 
-	private synchronized void incCount() {
+	private static synchronized void incCount() {
 		count++;
 	}
 

@@ -96,7 +96,7 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private static void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
 		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
 			componentSpace.registerAspect(aspect);

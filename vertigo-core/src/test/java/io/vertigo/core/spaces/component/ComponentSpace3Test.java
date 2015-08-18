@@ -79,11 +79,11 @@ public final class ComponentSpace3Test {
 		}
 	}
 
-	private AppConfig createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
+	private static AppConfig createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
 		return startHomeWithFunctionManager(FunctionManager1Impl.class, withNullMult);
 	}
 
-	private AppConfig createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
+	private static AppConfig createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
 		return startHomeWithFunctionManager(FunctionManager2Impl.class, withNullMult);
 	}
 

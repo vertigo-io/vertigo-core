@@ -95,7 +95,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	 *            label associated with the field
 	 */
 	public final void addDtList(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final Map<String, String> specificLabelMap) {
-		Assertion.checkArgument(dtcToExport != null && ! dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty");
+		Assertion.checkArgument(dtcToExport != null && !dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty");
 		Assertion.checkArgument(collectionColumnNameList != null && !collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
 
 		//-----
@@ -166,7 +166,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	 *            Liste des noms de champs à NE PAS exporter
 	 * @return Liste des DtField à exporter
 	 */
-	private List<DtField> getExportCriterionFields(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
+	private static List<DtField> getExportCriterionFields(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
 		final List<DtField> exportColumns = new ArrayList<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		addFieldToExcludedExportColumnNameList(dtDefinition, criterionExcludedColumnNameList);
@@ -179,7 +179,7 @@ public class ExportXlsHelper<R extends DtObject> {
 		return exportColumns;
 	}
 
-	private void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {
+	private static void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {
 		if (definition.getIdField().isDefined()) {
 			final DtField keyField = definition.getIdField().get();
 			if ("DO_IDENTIFIER".equals(keyField.getDomain().getName())) {

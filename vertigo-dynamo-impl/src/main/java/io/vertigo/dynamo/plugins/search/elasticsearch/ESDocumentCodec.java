@@ -155,7 +155,7 @@ final class ESDocumentCodec {
 		return xContentBuilder;
 	}
 
-	private List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
+	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		final List<DtField> notStoredFields = new ArrayList<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (!isIndexStoredDomain(dtField.getDomain())) {
@@ -165,7 +165,7 @@ final class ESDocumentCodec {
 		return notStoredFields;
 	}
 
-	private <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
+	private static <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
 		final I clonedDto = (I) DtObjectUtil.createDtObject(dtDefinition);
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {

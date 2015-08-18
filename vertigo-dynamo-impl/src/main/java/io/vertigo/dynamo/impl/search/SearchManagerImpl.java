@@ -147,7 +147,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return indexDefinition != null;
 	}
 
-	private SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+	private static SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
 		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			if (indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition)) {
 				return indexDefinition;

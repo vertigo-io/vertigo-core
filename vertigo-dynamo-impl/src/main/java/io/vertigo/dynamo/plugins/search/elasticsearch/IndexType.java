@@ -65,7 +65,7 @@ final class IndexType {
 		}
 	}
 
-	private void checkIndexType(final String indexType, final Domain domain) {
+	private static void checkIndexType(final String indexType, final Domain domain) {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
 		switch (domain.getDataType()) {

@@ -1466,11 +1466,11 @@ public final class RestManagerTest {
 
 	//=========================================================================
 
-	private ResponseSpecification expect() {
+	private static ResponseSpecification expect() {
 		return RestAssured.expect();
 	}
 
-	private RequestSpecification given() {
+	private static RequestSpecification given() {
 		return RestAssured.given();
 	}
 
@@ -1499,19 +1499,19 @@ public final class RestManagerTest {
 		return contact;
 	}
 
-	private String convertDate(final String dateStr) throws ParseException {
+	private static String convertDate(final String dateStr) throws ParseException {
 		final Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
 	}
 
-	private Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
+	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
 		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"),
 				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
 	}
 
-	private Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address, final String email, final String... tels) {
+	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address, final String email, final String... tels) {
 		final Map<String, Object> contact = new HashMap<>();
 		if (conId != null) {
 			contact.put("conId", conId);
@@ -1526,7 +1526,7 @@ public final class RestManagerTest {
 		return contact;
 	}
 
-	private Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
+	private static Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
 		return new MapBuilder<String, Object>()
 				.put("street1", street1)
 				.put("street2", street2)

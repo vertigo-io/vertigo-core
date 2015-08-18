@@ -121,7 +121,7 @@ public final class SwaggerRestServices implements RestfulService {
 		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}
 
-	private void sendFile(final URL url, final String contentType, final HttpServletResponse response, final String resourceName) throws IOException {
+	private static void sendFile(final URL url, final String contentType, final HttpServletResponse response, final String resourceName) throws IOException {
 		if (url != null) {
 			final URLConnection connection = url.openConnection();
 			connection.connect();
