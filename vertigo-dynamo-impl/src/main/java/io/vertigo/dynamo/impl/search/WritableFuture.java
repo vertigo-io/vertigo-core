@@ -69,15 +69,13 @@ public final class WritableFuture<V> implements Future<V> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean cancel(final boolean mayInterruptIfRunning) {
-		synchronized (this) {
-			if (this.completed) {
-				return false; //@see Future api
-			}
-			this.completed = true;
-			this.cancelled = true;
-			notifyAll();
+	public synchronized boolean cancel(final boolean mayInterruptIfRunning) {
+		if (this.completed) {
+			return false; //@see Future api
 		}
+		this.completed = true;
+		this.cancelled = true;
+		notifyAll();
 		return true;
 	}
 
@@ -85,28 +83,24 @@ public final class WritableFuture<V> implements Future<V> {
 	 * Mark this execution as success.
 	 * @param result Result of execution
 	 */
-	public void success(final V result) {
-		synchronized (this) {
-			Assertion.checkState(!this.completed, "Task already completed");
-			//-----
-			this.completed = true;
-			this.futureResult = result;
-			notifyAll();
-		}
+	public synchronized void success(final V result) {
+		Assertion.checkState(!this.completed, "Task already completed");
+		//-----
+		this.completed = true;
+		this.futureResult = result;
+		notifyAll();
 	}
 
 	/**
 	 * Mark this execution as failed.
 	 * @param exception Failure reason
 	 */
-	public void fail(final Exception exception) {
-		synchronized (this) {
-			Assertion.checkState(!this.completed, "Task already completed");
-			//-----
-			this.completed = true;
-			this.futureException = exception;
-			notifyAll();
-		}
+	public synchronized void fail(final Exception exception) {
+		Assertion.checkState(!this.completed, "Task already completed");
+		//-----
+		this.completed = true;
+		this.futureException = exception;
+		notifyAll();
 	}
 
 	private V getResult() throws ExecutionException {
