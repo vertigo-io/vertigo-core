@@ -42,11 +42,11 @@ import org.junit.Before;
 public abstract class AbstractTestCaseJU4 {
 	private static App app;
 
-	private synchronized void startHome() {
+	private synchronized void startApp() {
 		app = new App(buildAppConfig());
 	}
 
-	private static synchronized void stopHome() {
+	private static synchronized void stopApp() {
 		if (app != null) {
 			app.close();
 		}
@@ -58,7 +58,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @return valeur de homeStarted
 	 */
-	private static synchronized boolean isHomeStarted() {
+	private static synchronized boolean isAppStarted() {
 		return app != null;
 	}
 
@@ -68,7 +68,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @return booléen
 	 */
-	protected boolean cleanHomeForTest() {
+	protected boolean cleanAppForTest() {
 		return true;
 	}
 
@@ -90,11 +90,11 @@ public abstract class AbstractTestCaseJU4 {
 	public final void setUp() throws Exception {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
-		if (cleanHomeForTest() && isHomeStarted()) {
-			stopHome();
+		if (cleanAppForTest() && isAppStarted()) {
+			stopApp();
 		}
-		if (!isHomeStarted()) {
-			startHome();
+		if (!isAppStarted()) {
+			startApp();
 		}
 		// On injecte les managers sur la classe de test.
 		Injector.injectMembers(this, Home.getComponentSpace());
@@ -111,8 +111,8 @@ public abstract class AbstractTestCaseJU4 {
 		try {
 			doTearDown();
 		} finally {
-			if (cleanHomeForTest()) {
-				stopHome();
+			if (cleanAppForTest()) {
+				stopApp();
 			}
 		}
 		doAfterTearDown();
