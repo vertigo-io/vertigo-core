@@ -20,7 +20,7 @@ import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EnvironmentManagerTest extends AbstractTestCaseJU4 {
+public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -48,7 +48,7 @@ public class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 		dynamicDefinitionRepository.addDefinition(address2Definition);
 
-		final DynamicDefinition personnDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonGrammar.PERSONN_ENTITY, "io.vertigo.test.model")
+		final DynamicDefinition personDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonGrammar.PERSONN_ENTITY, "io.vertigo.test.model")
 				.addPropertyValue(NAME, "105, rue martin")
 				.addPropertyValue(FIRST_NAME, "75008")
 				.addPropertyValue(AGE, 42)
@@ -57,9 +57,9 @@ public class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addDefinition(MAIN_ADDRESS, new DynamicDefinitionKey("MAIN_ADDRESS"))
 				.addDefinition(PersonGrammar.SECOND_ADDRESS, new DynamicDefinitionKey("SECOND_ADDRESS"))
 				.build();
-		dynamicDefinitionRepository.addDefinition(personnDefinition);
+		dynamicDefinitionRepository.addDefinition(personDefinition);
 
 		dynamicDefinitionRepository.solve();
-		Assert.assertNotNull(personnDefinition);
+		Assert.assertNotNull(personDefinition);
 	}
 }
