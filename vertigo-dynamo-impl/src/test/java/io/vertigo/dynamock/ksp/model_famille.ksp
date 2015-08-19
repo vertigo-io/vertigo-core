@@ -16,3 +16,36 @@ alter DtDefinition DT_FAMILLE {
         return builder.toString();"
         }
 }
+
+create Association A_FAM_CAR_FAMILLE {
+	dtDefinitionA : DT_FAMILLE,
+	dtDefinitionB : DT_CAR,
+
+	fkFieldName : "FAM_ID",
+
+	navigabilityA : "false",
+	navigabilityB : "true",
+
+	multiplicityA : "1..1",
+	multiplicityB : "0..*",
+	
+	roleA : "Famille",
+	labelA : "Famille",
+	roleB : "VoituresFamille",
+	labelB : "Voitures de la famille",
+}
+
+create AssociationNN ANN_FAM_CAR_LOCATION {
+	tableName : "FAM_CAR_LOCATION"
+
+	dtDefinitionA : DT_FAMILLE,
+	dtDefinitionB : DT_CAR,
+
+	navigabilityA : "false",
+	navigabilityB : "true",
+	
+	roleA : "Famille",
+	labelA : "Famille",
+	roleB : "VoituresLocation",
+	labelB : "Voitures de location",
+}
