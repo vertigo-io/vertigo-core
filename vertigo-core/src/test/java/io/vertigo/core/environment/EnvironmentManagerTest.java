@@ -48,7 +48,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 		dynamicDefinitionRepository.addDefinition(address2Definition);
 
-		final DynamicDefinition personDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonGrammar.PERSONN_ENTITY, "io.vertigo.test.model")
+		final DynamicDefinition personDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MISTER_BEAN", PersonGrammar.PERSON_ENTITY, "io.vertigo.test.model")
 				.addPropertyValue(NAME, "105, rue martin")
 				.addPropertyValue(FIRST_NAME, "75008")
 				.addPropertyValue(AGE, 42)

@@ -34,7 +34,7 @@ public final class PersonGrammar {
 	static final EntityProperty AGE = new EntityProperty("age", EntityPropertyType.Integer);
 	static final EntityProperty HEIGHT = new EntityProperty("height", EntityPropertyType.Double);
 	static final EntityProperty MALE = new EntityProperty("male", EntityPropertyType.Boolean);
-	static final Entity PERSONN_ENTITY;
+	static final Entity PERSON_ENTITY;
 
 	static final String MAIN_ADDRESS = "mainAddress";
 	static final String SECOND_ADDRESS = "secondaryAddress";
@@ -52,7 +52,7 @@ public final class PersonGrammar {
 				.addProperty(POSTAL_CODE, false)
 				.addProperty(CITY, false)
 				.build();
-		PERSONN_ENTITY = new EntityBuilder("person")
+		PERSON_ENTITY = new EntityBuilder("person")
 				.addProperty(NAME, true)
 				.addProperty(FIRST_NAME, true)
 				.addProperty(AGE, false)
@@ -64,7 +64,7 @@ public final class PersonGrammar {
 
 		GRAMMAR = new Grammar(
 				ADDRESS_ENTITY,
-				PERSONN_ENTITY
+				PERSON_ENTITY
 				);
 	}
 
