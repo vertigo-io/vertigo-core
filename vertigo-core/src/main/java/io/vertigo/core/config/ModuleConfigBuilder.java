@@ -23,7 +23,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,11 +91,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/**
 	 * Ajout de définitions définie par un iterable.
 	 */
-	public ModuleConfigBuilder addDefinitionProvider(final String definitionProviderClassName) {
+	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
-		Assertion.checkArgNotEmpty(definitionProviderClassName);
+		Assertion.checkNotNull(definitionProviderClass);
 		//-----
-		final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
 		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
 		return this;
 	}

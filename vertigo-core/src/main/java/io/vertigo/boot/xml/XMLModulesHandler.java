@@ -21,6 +21,7 @@ package io.vertigo.boot.xml;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
+import io.vertigo.core.config.DefinitionProvider;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
@@ -137,7 +138,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case provider:
 				final String definitionProviderClassName = attrs.getValue("className");
-				moduleConfigBuilder.addDefinitionProvider(definitionProviderClassName);
+				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
+				moduleConfigBuilder.addDefinitionProvider(definitionProviderClass);
 				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");
