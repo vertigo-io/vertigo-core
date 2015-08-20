@@ -27,6 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
@@ -284,6 +285,22 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	private static final class URIJsonAdapter implements JsonSerializer<URI>, JsonDeserializer<URI> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final URI uri, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(uri.toURN());
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext)
+				throws JsonParseException {
+			return URI.fromURN(json.getAsString());
+		}
+	}
+
 	private static final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
 
 		/** {@inheritDoc} */
@@ -497,6 +514,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
 				.registerTypeAdapter(Option.class, new OptionJsonSerializer())
 				.registerTypeAdapter(Class.class, new ClassJsonSerializer())
+				.registerTypeAdapter(URI.class, new URIJsonAdapter())
 				.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 				.create();
 	}
