@@ -61,10 +61,11 @@ public final class URI<D extends DtObject> implements Serializable {
 	public URI(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
+		definition.getIdField().get().getDomain().getDataType().checkValue(id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);
-
+		//---
 		//Calcul de l'urn
 		urn = toURN(this);
 		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
