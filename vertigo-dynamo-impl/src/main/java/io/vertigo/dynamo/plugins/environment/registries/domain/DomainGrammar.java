@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Integer;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
@@ -47,7 +50,6 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
 import io.vertigo.core.impl.environment.KernelGrammar;
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
 import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
 import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 
 /**
@@ -103,74 +105,74 @@ public final class DomainGrammar {
 
 	static {
 		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
-				.addProperty(CLASS_NAME, EntityPropertyType.String, true)
-				.addProperty(ARGS, EntityPropertyType.String, false)
-				.addProperty(MSG, EntityPropertyType.String, false)
+				.addProperty(CLASS_NAME, String, true)
+				.addProperty(ARGS, String, false)
+				.addProperty(MSG, String, false)
 				.build();
 		FORMATTER_ENTITY = new EntityBuilder("Formatter")
-				.addProperty(CLASS_NAME, EntityPropertyType.String, true)
-				.addProperty(ARGS, EntityPropertyType.String, false)
+				.addProperty(CLASS_NAME, String, true)
+				.addProperty(ARGS, String, false)
 				.build();
 		PROPERTY_ENTITY = new EntityBuilder("Property").build();
 
 		DOMAIN_ENTITY = new EntityBuilder("Domain")
-				.addProperty(MAX_LENGTH, EntityPropertyType.Integer, false)
-				.addProperty(TYPE, EntityPropertyType.String, false)
-				.addProperty(UNIT, EntityPropertyType.String, false)
-				.addProperty(INDEX_TYPE, EntityPropertyType.String, false)
-				.addProperty(STORE_TYPE, EntityPropertyType.String, false)
+				.addProperty(MAX_LENGTH, Integer, false)
+				.addProperty(TYPE, String, false)
+				.addProperty(UNIT, String, false)
+				.addProperty(INDEX_TYPE, String, false)
+				.addProperty(STORE_TYPE, String, false)
 				.addAttribute("formatter", FORMATTER_ENTITY, true)
 				.addAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
 				.addAttributes("constraint", CONSTAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
-				.addProperty(LABEL, EntityPropertyType.String, true)
-				.addProperty(NOT_NULL, EntityPropertyType.Boolean, true)
+				.addProperty(LABEL, String, true)
+				.addProperty(NOT_NULL, Boolean, true)
 				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(PERSISTENT, EntityPropertyType.Boolean, false)
+				.addProperty(PERSISTENT, Boolean, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
-				.addProperty(LABEL, EntityPropertyType.String, true)
+				.addProperty(LABEL, String, true)
 				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(EXPRESSION, EntityPropertyType.String, true)
+				.addProperty(EXPRESSION, String, true)
 				.build();
 
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
-				.addProperty(DISPLAY_FIELD, EntityPropertyType.String, false)
-				.addProperty(SORT_FIELD, EntityPropertyType.String, false)
+				.addProperty(DISPLAY_FIELD, String, false)
+				.addProperty(SORT_FIELD, String, false)
 				.addAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
 				.addAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
 				.addAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
-				.addProperty(PERSISTENT, EntityPropertyType.Boolean, false)
-				.addProperty(DYNAMIC, EntityPropertyType.Boolean, false)
-				.addProperty(STEREOTYPE, EntityPropertyType.String, false)
+				.addProperty(PERSISTENT, Boolean, false)
+				.addProperty(DYNAMIC, Boolean, false)
+				.addProperty(STEREOTYPE, String, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
-				.addProperty(FK_FIELD_NAME, EntityPropertyType.String, false)
-				.addProperty(MULTIPLICITY_A, EntityPropertyType.String, true)
-				.addProperty(NAVIGABILITY_A, EntityPropertyType.Boolean, true)
-				.addProperty(ROLE_A, EntityPropertyType.String, true)
-				.addProperty(LABEL_A, EntityPropertyType.String, true)
-				.addProperty(MULTIPLICITY_B, EntityPropertyType.String, true)
-				.addProperty(NAVIGABILITY_B, EntityPropertyType.Boolean, true)
-				.addProperty(ROLE_B, EntityPropertyType.String, true)
-				.addProperty(LABEL_B, EntityPropertyType.String, true)
+				.addProperty(FK_FIELD_NAME, String, false)
+				.addProperty(MULTIPLICITY_A, String, true)
+				.addProperty(NAVIGABILITY_A, Boolean, true)
+				.addProperty(ROLE_A, String, true)
+				.addProperty(LABEL_A, String, true)
+				.addProperty(MULTIPLICITY_B, String, true)
+				.addProperty(NAVIGABILITY_B, Boolean, true)
+				.addProperty(ROLE_B, String, true)
+				.addProperty(LABEL_B, String, true)
 				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
 				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
-				.addProperty(TABLE_NAME, EntityPropertyType.String, true)
-				.addProperty(NAVIGABILITY_A, EntityPropertyType.Boolean, true)
-				.addProperty(ROLE_A, EntityPropertyType.String, true)
-				.addProperty(LABEL_A, EntityPropertyType.String, true)
-				.addProperty(NAVIGABILITY_B, EntityPropertyType.Boolean, true)
-				.addProperty(ROLE_B, EntityPropertyType.String, true)
-				.addProperty(LABEL_B, EntityPropertyType.String, true)
+				.addProperty(TABLE_NAME, String, true)
+				.addProperty(NAVIGABILITY_A, Boolean, true)
+				.addProperty(ROLE_A, String, true)
+				.addProperty(LABEL_A, String, true)
+				.addProperty(NAVIGABILITY_B, Boolean, true)
+				.addProperty(ROLE_B, String, true)
+				.addProperty(LABEL_B, String, true)
 				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
 				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();

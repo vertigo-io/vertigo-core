@@ -18,9 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
 import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
 import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
@@ -41,14 +42,14 @@ final class TaskGrammar {
 
 	static {
 		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
-				.addProperty(KspProperty.NOT_NULL, EntityPropertyType.Boolean, true)
-				.addProperty(KspProperty.IN_OUT, EntityPropertyType.String, true)
+				.addProperty(KspProperty.NOT_NULL, Boolean, true)
+				.addProperty(KspProperty.IN_OUT, String, true)
 				.addAttribute("domain", DomainGrammar.DOMAIN_ENTITY, true)
 				.build();
 
 		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")
-				.addProperty(KspProperty.REQUEST, EntityPropertyType.String, true)
-				.addProperty(KspProperty.CLASS_NAME, EntityPropertyType.String, true)
+				.addProperty(KspProperty.REQUEST, String, true)
+				.addProperty(KspProperty.CLASS_NAME, String, true)
 				.addAttributes(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
 				.build();
 
