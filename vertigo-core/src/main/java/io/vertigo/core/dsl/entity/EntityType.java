@@ -1,4 +1,4 @@
-package io.vertigo.core.impl.environment.kernel.meta;
+package io.vertigo.core.dsl.entity;
 
 public interface EntityType {
 	boolean isPrimitive();

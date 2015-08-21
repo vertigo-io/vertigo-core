@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;

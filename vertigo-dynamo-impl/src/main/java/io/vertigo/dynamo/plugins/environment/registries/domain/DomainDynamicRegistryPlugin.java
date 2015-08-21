@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.impl.environment.KernelGrammar;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;

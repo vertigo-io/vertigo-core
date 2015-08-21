@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import io.vertigo.core.impl.environment.DynamicRegistry;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.dynamic.DynamicRegistry;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Option;
@@ -48,7 +48,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	}
 
 	@Override
-	public Grammar getGrammar() {
+	public EntityGrammar getGrammar() {
 		return DomainGrammar.GRAMMAR;
 	}
 

@@ -16,15 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment.kernel.impl.model;
+package io.vertigo.core.dsl.dynamic;
 
-import io.vertigo.core.Home;
-import io.vertigo.core.impl.environment.DynamicRegistry;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -53,7 +50,7 @@ public final class DynamicDefinitionRepository {
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
 	private final DynamicRegistry dynamicRegistry;
-	private final Grammar grammar;
+	private final EntityGrammar grammar;
 
 	/**
 	 * Constructeur.
@@ -69,7 +66,7 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * @return Grammaire
 	 */
-	public Grammar getGrammar() {
+	public EntityGrammar getGrammar() {
 		return grammar;
 	}
 
@@ -103,12 +100,14 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * Résolution des références de définitions.
 	 */
-	public void solve() {
+	public void solve(final DefinitionSpace definitionSpace) {
+		Assertion.checkNotNull(definitionSpace);
+		//-----
 		final DynamicSolver solver = new DynamicSolver();
 
 		solveTemplates();
-		final List<DynamicDefinition> orderedDefinitionList = solver.solve(this);
-		registerAllDefinitions(orderedDefinitionList);
+		final List<DynamicDefinition> orderedDefinitionList = solver.solve(definitionSpace, this);
+		registerAllDefinitions(definitionSpace, orderedDefinitionList);
 	}
 
 	private void solveTemplates() {
@@ -117,12 +116,12 @@ public final class DynamicDefinitionRepository {
 		}
 	}
 
-	private void registerAllDefinitions(final List<DynamicDefinition> orderedDefinitionList) {
+	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> orderedDefinitionList) {
 		for (final DynamicDefinition xdefinition : orderedDefinitionList) {
 			xdefinition.check();
 			final Option<Definition> definitionOption = dynamicRegistry.createDefinition(xdefinition);
 			if (definitionOption.isDefined()) {
-				Home.getDefinitionSpace().put(definitionOption.get());
+				definitionSpace.put(definitionOption.get());
 			}
 		}
 	}

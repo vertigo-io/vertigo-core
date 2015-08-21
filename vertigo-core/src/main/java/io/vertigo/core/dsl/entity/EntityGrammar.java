@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment.kernel.meta;
+package io.vertigo.core.dsl.entity;
 
 import io.vertigo.lang.Assertion;
 
@@ -33,20 +33,20 @@ import java.util.List;
  *
  * @author pchretien
  */
-public final class Grammar {
+public final class EntityGrammar {
 	private final List<Entity> entities;
 
 	/**
 	 * Ajout d'une grammaire.
 	 */
-	public Grammar(final Entity... entities) {
+	public EntityGrammar(final Entity... entities) {
 		this(Arrays.asList(entities));
 	}
 
 	/**
 	 * Ajout d'une grammaire.
 	 */
-	public Grammar(final List<Entity> entities) {
+	public EntityGrammar(final List<Entity> entities) {
 		Assertion.checkNotNull(entities);
 		//-----
 		this.entities = Collections.unmodifiableList(new ArrayList<>(entities));

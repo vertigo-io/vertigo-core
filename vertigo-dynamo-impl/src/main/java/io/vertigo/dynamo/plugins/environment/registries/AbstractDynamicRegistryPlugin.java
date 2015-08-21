@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries;
 
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.impl.environment.DynamicRegistryPlugin;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
@@ -31,20 +31,20 @@ import java.util.List;
  * @author pchretien
  */
 public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPlugin {
-	private final Grammar grammar;
+	private final EntityGrammar grammar;
 
 	/**
 	 * Constructeur.
 	 * @param grammar Grammaire
 	 */
-	protected AbstractDynamicRegistryPlugin(final Grammar grammar) {
+	protected AbstractDynamicRegistryPlugin(final EntityGrammar grammar) {
 		Assertion.checkNotNull(grammar);
 		//-----
 		this.grammar = grammar;
 	}
 
 	@Override
-	public Grammar getGrammar() {
+	public EntityGrammar getGrammar() {
 		return grammar;
 	}
 

@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.impl.environment;
 
+import io.vertigo.core.dsl.dynamic.DynamicRegistry;
 import io.vertigo.lang.Plugin;
 
 /**

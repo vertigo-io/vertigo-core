@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment.kernel.model;
+package io.vertigo.core.dsl.dynamic;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
+import io.vertigo.core.dsl.entity.Entity;
 
 import java.util.List;
 import java.util.Set;
@@ -52,7 +52,7 @@ public interface DynamicDefinition {
 	 * @param property Propriété
 	 * @return valeur de la propriété
 	 */
-	Object getPropertyValue(String propertyName);
+	Object getPropertyValue(String fieldName);
 
 	/**
 	 * Set des propriétés gérées.

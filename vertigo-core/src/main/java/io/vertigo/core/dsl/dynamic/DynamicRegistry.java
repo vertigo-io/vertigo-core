@@ -16,11 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment;
+package io.vertigo.core.dsl.dynamic;
 
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Option;
 
@@ -34,7 +32,7 @@ public interface DynamicRegistry {
 	/**
 	 * @return Grammaire
 	 */
-	Grammar getGrammar();
+	EntityGrammar getGrammar();
 
 	/**
 	 * 

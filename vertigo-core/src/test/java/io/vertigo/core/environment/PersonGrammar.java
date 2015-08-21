@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.environment;
 
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Double;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Integer;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Double;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Integer;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 
 /**
  * @author npiedeloup
@@ -46,7 +46,7 @@ public final class PersonGrammar {
 	static final Entity ADDRESS_ENTITY;
 
 	/** Personn Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	static {
 		ADDRESS_ENTITY = new EntityBuilder("address")
@@ -64,7 +64,7 @@ public final class PersonGrammar {
 				.addField("secondaryAddress", ADDRESS_ENTITY, false)
 				.build();
 
-		GRAMMAR = new Grammar(
+		GRAMMAR = new EntityGrammar(
 				ADDRESS_ENTITY,
 				PERSON_ENTITY
 				);

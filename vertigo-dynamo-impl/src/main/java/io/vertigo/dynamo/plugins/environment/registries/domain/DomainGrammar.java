@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Integer;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Integer;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
@@ -47,10 +47,10 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.impl.environment.KernelGrammar;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 
 /**
  * @author pchretien
@@ -101,7 +101,7 @@ public final class DomainGrammar {
 	public static final Entity ASSOCIATION_NN_ENTITY;
 
 	/** Domain Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	static {
 		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
@@ -177,7 +177,7 @@ public final class DomainGrammar {
 				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
-		GRAMMAR = new Grammar(
+		GRAMMAR = new EntityGrammar(
 				PROPERTY_ENTITY,
 				CONSTAINT_ENTITY,
 				FORMATTER_ENTITY,

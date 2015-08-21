@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.impl.environment.LoaderPlugin;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

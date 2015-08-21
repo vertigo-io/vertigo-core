@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.impl.environment;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 
 /**
  * @author pchretien
@@ -33,7 +33,7 @@ public final class KernelGrammar {
 	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
 
 	/** Kernel Grammar instance. */
-	public static final Grammar GRAMMAR = new Grammar(DATA_TYPE_ENTITY);
+	public static final EntityGrammar GRAMMAR = new EntityGrammar(DATA_TYPE_ENTITY);
 
 	private KernelGrammar() {
 		//private

@@ -16,11 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment.kernel.impl.model;
+package io.vertigo.core.dsl.dynamic;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
+import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;

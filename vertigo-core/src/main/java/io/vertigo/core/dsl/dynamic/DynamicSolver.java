@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment.kernel.impl.model;
+package io.vertigo.core.dsl.dynamic;
 
-import io.vertigo.core.Home;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,16 +39,19 @@ final class DynamicSolver {
 	* Résoltuion des références.
 	* On appelle SyntaxHandler dans le bon Ordre
 	*/
-	List<DynamicDefinition> solve(final DynamicDefinitionRepository definitionModelRepository) {
+	List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionRepository) {
+		Assertion.checkNotNull(definitionSpace);
+		Assertion.checkNotNull(definitionRepository);
+		//-----	
 		//Liste des clés résolues
 		final List<DynamicDefinition> orderedList = new ArrayList<>();
 
-		final Collection<String> orphanCollection = definitionModelRepository.getOrphanDefinitionKeys();
+		final Collection<String> orphanCollection = definitionRepository.getOrphanDefinitionKeys();
 		if (!orphanCollection.isEmpty()) {
 			throw new RuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
 		}
 		//-----
-		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionModelRepository.getDefinitions());
+		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
 
 		DynamicDefinition xdef;
 		int size = coll.size();
@@ -58,7 +61,7 @@ final class DynamicSolver {
 				//==============================================================
 				//==============================================================
 				//On vérifie que les sous éléments sont résolues
-				if (isSolved(definitionModelRepository, orderedList, xdef, xdef)) {
+				if (isSolved(definitionSpace, definitionRepository, orderedList, xdef, xdef)) {
 					orderedList.add(xdef);
 					it.remove();
 				}
@@ -72,13 +75,13 @@ final class DynamicSolver {
 		return orderedList;
 	}
 
-	private boolean isSolved(final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef, final DynamicDefinition xdefRoot) {
+	private boolean isSolved(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef, final DynamicDefinition xdefRoot) {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
 		for (final String dynamicDefinitionName : xdef.getAllDefinitionNames()) {
 			//reference should be already solved in a previous resources module : then continue
-			if (!Home.getDefinitionSpace().containsDefinitionName(dynamicDefinitionName)) {
+			if (!definitionSpace.containsDefinitionName(dynamicDefinitionName)) {
 				//or references should be in currently parsed resources
 				if (!definitionModelRepository.containsDefinitionKey(dynamicDefinitionName)) {
 					throw new RuntimeException("Clé " + dynamicDefinitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
@@ -92,7 +95,7 @@ final class DynamicSolver {
 
 		//On vérifie que les composites sont résolues.
 		for (final DynamicDefinition dynamicDefinition : xdef.getAllChildDefinitions()) {
-			if (!isSolved(definitionModelRepository, orderedList, dynamicDefinition, xdefRoot)) {
+			if (!isSolved(definitionSpace, definitionModelRepository, orderedList, dynamicDefinition, xdefRoot)) {
 				return false;
 			}
 		}

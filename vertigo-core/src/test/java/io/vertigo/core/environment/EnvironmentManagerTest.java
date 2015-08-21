@@ -10,11 +10,12 @@ import static io.vertigo.core.environment.PersonGrammar.NAME;
 import static io.vertigo.core.environment.PersonGrammar.POSTAL_CODE;
 import static io.vertigo.core.environment.PersonGrammar.STREET;
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 		dynamicDefinitionRepository.addDefinition(personDefinition);
 
-		dynamicDefinitionRepository.solve();
+		dynamicDefinitionRepository.solve(Home.getDefinitionSpace());
 		Assert.assertNotNull(personDefinition);
 	}
 }

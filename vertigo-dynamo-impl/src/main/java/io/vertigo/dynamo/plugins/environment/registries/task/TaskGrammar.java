@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
@@ -38,7 +38,7 @@ final class TaskGrammar {
 	/**Définition de tache.*/
 	public static final Entity TASK_DEFINITION_ENTITY;
 	/** Task Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	static {
 		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
@@ -53,7 +53,7 @@ final class TaskGrammar {
 				.addFields(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
 				.build();
 
-		GRAMMAR = new Grammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
+		GRAMMAR = new EntityGrammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
 	}
 
 	private TaskGrammar() {

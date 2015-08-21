@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
@@ -51,7 +51,7 @@ final class SearchGrammar {
 	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
 
 	/** Search Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -105,7 +105,7 @@ final class SearchGrammar {
 				.addFields("facets", FACET_DEFINITION_ENTITY, true)
 				.build();
 
-		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
+		GRAMMAR = new EntityGrammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
 	}
 
 	private SearchGrammar() {
