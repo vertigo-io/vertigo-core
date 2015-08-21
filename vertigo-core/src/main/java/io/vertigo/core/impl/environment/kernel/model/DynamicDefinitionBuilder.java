@@ -43,11 +43,11 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	DynamicDefinitionBuilder addBody(DynamicDefinition dynamicDefinition);
 
 	/**
-	 * @param property Propriété
+	 * @param fieldName Nom du champ
 	 * @param value Valeur de la propriété
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value);
+	DynamicDefinitionBuilder addPropertyValue(final String fieldName, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.

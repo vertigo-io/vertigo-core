@@ -57,7 +57,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	/**
 	 * Ajout d'un attribut.
 	 * @param fieldName Nom
-	 * @param entity Entité référencée
+	 * @param type Entité référencée
 	 * @param notNull Si l'attribut est obligatoire
 	 */
 	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean notNull) {
