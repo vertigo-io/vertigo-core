@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author  pchretien
  */
-public enum EntityPropertyType {
+public enum EntityPropertyType implements EntityType {
 	/** Integer. */
 	Integer(Integer.class),
 	/** Double. */
@@ -74,5 +74,10 @@ public enum EntityPropertyType {
 			default:
 				throw new IllegalArgumentException("cast de la propriété '" + javaClass + "' non implémenté");
 		}
+	}
+
+	@Override
+	public boolean isPrimitive() {
+		return true;
 	}
 }

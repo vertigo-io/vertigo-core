@@ -36,15 +36,9 @@ public final class EntityBuilder implements Builder<Entity> {
 	private final String name;
 
 	/**
-	 * Liste de TOUTES les définitions (composites et références) acceptées.
+	 * Fields of the entity.
 	 */
-	private final Set<EntityAttribute> attributes;
-	/**
-	 * Map permettant de savoir si une propriété est obligatoire, facultative (Property, Boolean)
-	 * Set des propriétés autorisées pour la définition
-	 * est représenté par la liste des clés de la Map.
-	 */
-	private final Set<EntityProperty> properties;
+	private final Set<EntityField> fields;
 
 	/**
 	 * Constructeur de la MetaDefinition
@@ -56,8 +50,7 @@ public final class EntityBuilder implements Builder<Entity> {
 		Assertion.checkNotNull(name);
 		//-----
 		this.name = name;
-		attributes = new HashSet<>();
-		properties = new HashSet<>();
+		fields = new HashSet<>();
 
 	}
 
@@ -67,18 +60,19 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param entity Entité référencée
 	 * @param notNull Si l'attribut est obligatoire
 	 */
-	public EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean notNull) {
-		return addAttribute(fieldName, entity, false, notNull);
+	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean notNull) {
+		return addField(fieldName, type, false, notNull);
 	}
 
 	/**
 	 * Ajout d'un attribut multiple.
 	 * @param fieldName Nom
 	 * @param entity Entité référencée
-	 * @param notNull Si l'attribut est obligatoire
+	 * @param required Si l'attribut est obligatoire
 	 */
-	public EntityBuilder addAttributes(final String fieldName, final Entity entity, final boolean notNull) {
-		return addAttribute(fieldName, entity, true, notNull);
+	public EntityBuilder addFields(final String fieldName, final Entity entity, final boolean required) {
+		//Only Entities may be multiple
+		return addField(fieldName, entity, true, required);
 	}
 
 	/**
@@ -88,30 +82,20 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param multiple Si il y a plusieurs entités référencées
 	 * @param required Si l'attribut est obligatoire
 	 */
-	private EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean required) {
+	private EntityBuilder addField(final String fieldName, final EntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(type);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.
 		//-----
-		final EntityAttribute entityAttribute = new EntityAttribute(fieldName, entity, multiple, required);
+		final EntityField field = new EntityField(fieldName, type, multiple, required);
 		//-----
-		attributes.add(entityAttribute);
-		return this;
-	}
-
-	/**
-	 * Ajout d'une propriété.
-	 * @param property Propriété
-	 * @param notNull Si la propriété est obligatoire
-	 */
-	public EntityBuilder addProperty(final String propertyName, final EntityPropertyType type, final boolean required) {
-		properties.add(new EntityProperty(propertyName, type, required));
+		fields.add(field);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Entity build() {
-		return new Entity(name, attributes, properties);
+		return new Entity(name, fields);
 	}
 }

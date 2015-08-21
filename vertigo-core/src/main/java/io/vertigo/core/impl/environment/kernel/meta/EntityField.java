@@ -25,11 +25,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class EntityAttribute {
+public final class EntityField {
 	private final String name;
 	private final boolean multiple;
 	private final boolean required;
-	private final Entity entity;
+	private final EntityType type;
 
 	/**
 	 * Constructeur.
@@ -38,14 +38,14 @@ public final class EntityAttribute {
 	 * @param multiple Si multiple
 	 * @param required Si not null
 	 */
-	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean required) {
+	EntityField(final String name, final EntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(type);
 		//-----
 		this.name = name;
 		this.multiple = multiple;
 		this.required = required;
-		this.entity = entity;
+		this.type = type;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class EntityAttribute {
 	/**
 	 * @return Entité référencée. (composition ou référence)
 	 */
-	public Entity getEntity() {
-		return entity;
+	public EntityType getType() {
+		return type;
 	}
 }

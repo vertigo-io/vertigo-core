@@ -105,76 +105,76 @@ public final class DomainGrammar {
 
 	static {
 		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
-				.addProperty(CLASS_NAME, String, true)
-				.addProperty(ARGS, String, false)
-				.addProperty(MSG, String, false)
+				.addField(CLASS_NAME, String, true)
+				.addField(ARGS, String, false)
+				.addField(MSG, String, false)
 				.build();
 		FORMATTER_ENTITY = new EntityBuilder("Formatter")
-				.addProperty(CLASS_NAME, String, true)
-				.addProperty(ARGS, String, false)
+				.addField(CLASS_NAME, String, true)
+				.addField(ARGS, String, false)
 				.build();
 		PROPERTY_ENTITY = new EntityBuilder("Property").build();
 
 		DOMAIN_ENTITY = new EntityBuilder("Domain")
-				.addProperty(MAX_LENGTH, Integer, false)
-				.addProperty(TYPE, String, false)
-				.addProperty(UNIT, String, false)
-				.addProperty(INDEX_TYPE, String, false)
-				.addProperty(STORE_TYPE, String, false)
-				.addAttribute("formatter", FORMATTER_ENTITY, true)
-				.addAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
-				.addAttributes("constraint", CONSTAINT_ENTITY, false)
+				.addField(MAX_LENGTH, Integer, false)
+				.addField(TYPE, String, false)
+				.addField(UNIT, String, false)
+				.addField(INDEX_TYPE, String, false)
+				.addField(STORE_TYPE, String, false)
+				.addField("formatter", FORMATTER_ENTITY, true)
+				.addField("dataType", KernelGrammar.getDataTypeEntity(), true)
+				.addFields("constraint", CONSTAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
-				.addProperty(LABEL, String, true)
-				.addProperty(NOT_NULL, Boolean, true)
-				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(PERSISTENT, Boolean, false)
+				.addField(LABEL, String, true)
+				.addField(NOT_NULL, Boolean, true)
+				.addField("domain", DOMAIN_ENTITY, true)
+				.addField(PERSISTENT, Boolean, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
-				.addProperty(LABEL, String, true)
-				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(EXPRESSION, String, true)
+				.addField(LABEL, String, true)
+				.addField("domain", DOMAIN_ENTITY, true)
+				.addField(EXPRESSION, String, true)
 				.build();
 
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
-				.addProperty(DISPLAY_FIELD, String, false)
-				.addProperty(SORT_FIELD, String, false)
-				.addAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
-				.addAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
-				.addAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
-				.addProperty(PERSISTENT, Boolean, false)
-				.addProperty(DYNAMIC, Boolean, false)
-				.addProperty(STEREOTYPE, String, false)
+				.addField(DISPLAY_FIELD, String, false)
+				.addField(SORT_FIELD, String, false)
+				.addFields(FIELD, DT_FIELD_ENTITY, false)// facultative
+				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
+				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
+				.addField(PERSISTENT, Boolean, false)
+				.addField(DYNAMIC, Boolean, false)
+				.addField(STEREOTYPE, String, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
-				.addProperty(FK_FIELD_NAME, String, false)
-				.addProperty(MULTIPLICITY_A, String, true)
-				.addProperty(NAVIGABILITY_A, Boolean, true)
-				.addProperty(ROLE_A, String, true)
-				.addProperty(LABEL_A, String, true)
-				.addProperty(MULTIPLICITY_B, String, true)
-				.addProperty(NAVIGABILITY_B, Boolean, true)
-				.addProperty(ROLE_B, String, true)
-				.addProperty(LABEL_B, String, true)
-				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField(FK_FIELD_NAME, String, false)
+				.addField(MULTIPLICITY_A, String, true)
+				.addField(NAVIGABILITY_A, Boolean, true)
+				.addField(ROLE_A, String, true)
+				.addField(LABEL_A, String, true)
+				.addField(MULTIPLICITY_B, String, true)
+				.addField(NAVIGABILITY_B, Boolean, true)
+				.addField(ROLE_B, String, true)
+				.addField(LABEL_B, String, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
-				.addProperty(TABLE_NAME, String, true)
-				.addProperty(NAVIGABILITY_A, Boolean, true)
-				.addProperty(ROLE_A, String, true)
-				.addProperty(LABEL_A, String, true)
-				.addProperty(NAVIGABILITY_B, Boolean, true)
-				.addProperty(ROLE_B, String, true)
-				.addProperty(LABEL_B, String, true)
-				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField(TABLE_NAME, String, true)
+				.addField(NAVIGABILITY_A, Boolean, true)
+				.addField(ROLE_A, String, true)
+				.addField(LABEL_A, String, true)
+				.addField(NAVIGABILITY_B, Boolean, true)
+				.addField(ROLE_B, String, true)
+				.addField(LABEL_B, String, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(

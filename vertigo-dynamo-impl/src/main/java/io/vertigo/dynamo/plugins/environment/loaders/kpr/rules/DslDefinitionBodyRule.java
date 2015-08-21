@@ -29,7 +29,7 @@ import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityAttribute;
+import io.vertigo.core.impl.environment.kernel.meta.EntityField;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
@@ -75,10 +75,10 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
 
-		for (final EntityAttribute attribute : entity.getAttributes()) {
+		for (final EntityField attribute : entity.getAttributes()) {
 			final String attributeName = attribute.getName();
 			attributeNames.add(attributeName);
-			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, attribute.getEntity()));
+			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, (Entity) attribute.getType()));
 		}
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());

@@ -20,8 +20,8 @@ package io.vertigo.core.impl.environment.kernel.meta;
 
 import io.vertigo.lang.Assertion;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,22 +36,16 @@ import java.util.Set;
  *
  * @author pchretien
  */
-public final class Entity {
+public final class Entity implements EntityType {
 	/**
 	 * Nom de la metadefinition (Type de la définition).
 	 */
 	private final String name;
 
 	/**
-	 * Liste de TOUTES les définitions (composites et références) acceptées.
+	 * Map : Field by names
 	 */
-	private final Set<EntityAttribute> attributes;
-	/**
-	 * Map permettant de savoir si une propriété est obligatoire, facultative (Property, Boolean)
-	 * Set des propriétés autorisées pour la définition
-	 * est représenté par la liste des clés de la Map.
-	 */
-	private final Map<String, EntityProperty> properties;
+	private final Map<String, EntityField> fields;
 
 	/**
 	 * Constructeur de la MetaDefinition
@@ -59,22 +53,19 @@ public final class Entity {
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<EntityAttribute> attributes, final Set<EntityProperty> properties) {
+	Entity(final String name, final Set<EntityField> fields) {
 		Assertion.checkNotNull(name);
-		Assertion.checkNotNull(attributes);
-		Assertion.checkNotNull(properties);
+		Assertion.checkNotNull(fields);
 		//-----
 		this.name = name;
-		this.attributes = Collections.unmodifiableSet(attributes);
+		this.fields = new HashMap<>();
 
-		final Map<String, EntityProperty> map = new HashMap<>();
-		for (final EntityProperty entityProperty : properties) {
-			Assertion.checkArgument(!map.containsKey(entityProperty.getName()), "property {0} is already registerd for {1}", entityProperty, this);
+		for (final EntityField field : fields) {
+			Assertion.checkArgument(!fields.contains(field.getName()), "field {0} is already registerd for {1}", field, this);
 			//Une propriété est unique pour une définition donnée.
 			//Il n'y a jamais de multiplicité
-			map.put(entityProperty.getName(), entityProperty);
+			this.fields.put(field.getName(), field);
 		}
-		this.properties = Collections.unmodifiableMap(map);
 	}
 
 	/**
@@ -88,31 +79,48 @@ public final class Entity {
 	 * @return Ensemble de toutes les propriétés gérées (obligatoires ou non).
 	 */
 	public Set<String> getPropertyNames() {
-		return properties.keySet();
+		final Set<String> names = new HashSet<>();
+		for (final EntityField field : fields.values()) {
+			if (field.getType().isPrimitive()) {
+				names.add(field.getName());
+			}
+		}
+		return names;
 	}
 
-	public EntityPropertyType getPrimitiveType(final String propertyName) {
-		Assertion.checkNotNull(propertyName);
-		Assertion.checkArgument(properties.containsKey(propertyName), "property {0} not found on {1}", propertyName, this);
+	public EntityPropertyType getPrimitiveType(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkArgument(fields.containsKey(fieldName), "property {0} not found on {1}", fieldName, this);
 		//-----
-		return properties.get(propertyName).getPrimitiveType();
+		return (EntityPropertyType) fields.get(fieldName).getType();
 	}
 
 	/**
 	 * @param property Propriété
 	 * @return Si la propriété mentionnée est nulle
 	 */
-	public boolean isRequired(final String propertyName) {
-		Assertion.checkNotNull(propertyName);
-		Assertion.checkArgument(properties.containsKey(propertyName), "la propriete {0} n'est pas declaree pour {1}", propertyName, this);
+	public boolean isRequired(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkArgument(fields.containsKey(fieldName), "la propriete {0} n'est pas declaree pour {1}", fieldName, this);
 		//-----
-		return properties.get(propertyName).isRequired();
+		return fields.get(fieldName).isRequired();
 	}
 
 	/**
 	 * @return Set des attributs de l'entité
 	 */
-	public Set<EntityAttribute> getAttributes() {
+	public Set<EntityField> getAttributes() {
+		final Set<EntityField> attributes = new HashSet<>();
+		for (final EntityField field : fields.values()) {
+			if (!field.getType().isPrimitive()) {
+				attributes.add(field);
+			}
+		}
 		return attributes;
+	}
+
+	@Override
+	public boolean isPrimitive() {
+		return false;
 	}
 }

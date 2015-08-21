@@ -80,29 +80,29 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
-				.addAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addProperty(SEARCH_LOADER_PROPERTY, String, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 
 		FACET_RANGE_ENTITY = new EntityBuilder("range")
-				.addProperty(RANGE_FILTER_PROPERTY, String, true)
-				.addProperty(KspProperty.LABEL, String, true)
+				.addField(RANGE_FILTER_PROPERTY, String, true)
+				.addField(KspProperty.LABEL, String, true)
 				.build();
 
 		FACET_DEFINITION_ENTITY = new EntityBuilder("FacetDefinition")
-				.addAttribute("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addProperty(FIELD_NAME, String, true)
-				.addProperty(KspProperty.LABEL, String, true)
-				.addAttributes("range", FACET_RANGE_ENTITY, false)// facultative
+				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField(FIELD_NAME, String, true)
+				.addField(KspProperty.LABEL, String, true)
+				.addFields("range", FACET_RANGE_ENTITY, false)// facultative
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
-				.addAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addAttribute("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
-				.addProperty(LIST_FILTER_BUILDER_CLASS, String, true)
-				.addProperty(LIST_FILTER_BUILDER_QUERY, String, true)
-				.addAttributes("facets", FACET_DEFINITION_ENTITY, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
+				.addField(LIST_FILTER_BUILDER_CLASS, String, true)
+				.addField(LIST_FILTER_BUILDER_QUERY, String, true)
+				.addFields("facets", FACET_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
