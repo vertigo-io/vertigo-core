@@ -38,26 +38,22 @@ import java.util.Set;
  * @author  pchretien
  */
 final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDefinition {
-	/** Type de l'objet. */
+	/** Type. */
 	private final Entity entity;
 
-	/** Nom du package. */
+	/** Name of the package. */
 	private String packageName;
-	//-----
-	//-----BODY
-	//-----
-	/**
-	 * Clé de la définition.
-	 */
-	private final String dynamicDefinitionName;
-	/**
-	 * Conteneur des couples (propriétés, valeur)
-	 */
-	private final Map<String, Object> properties = new HashMap<>();
-	/**
-	 * Map des (FieldName, definitionKeyList)
-	 */
+
+	/**name of this definition.*/
+	private final String name;
+
+	/** Map  (fieldName, propertyValue)  */
+	private final Map<String, Object> propertyValueByFieldName = new HashMap<>();
+
+	/** Map (fieldName, definitions identified by its name)*/
 	private final Map<String, List<String>> definitionNamesByFieldName = new LinkedHashMap<>();
+
+	/** Map (fieldName, definitions*/
 	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/**
@@ -70,7 +66,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		//packageName peut être null
 		Assertion.checkNotNull(entity);
 		//-----
-		this.dynamicDefinitionName = dynamicDefinitionName;
+		this.name = dynamicDefinitionName;
 		this.entity = entity;
 	}
 
@@ -95,25 +91,25 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public final String getName() {
-		return dynamicDefinitionName;
+		return name;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getPropertyValue(final String propertyName) {
-		Assertion.checkNotNull(propertyName);
+	public Object getPropertyValue(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
 		//-----
 		// Conformémément au contrat, on retourne null si pas de propriété
 		// trouvée
-		return properties.get(propertyName);
+		return propertyValueByFieldName.get(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> getPropertyNames() {
-		return Collections.unmodifiableSet(properties.keySet());
+		return Collections.unmodifiableSet(propertyValueByFieldName.keySet());
 	}
 
 	/** {@inheritDoc} */
@@ -177,7 +173,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	@Override
 	public final DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
 		getEntity().getPrimitiveType(propertyName).checkValue(value);
-		properties.put(propertyName, value);
+		propertyValueByFieldName.put(propertyName, value);
 		return this;
 	}
 
@@ -276,8 +272,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		//nécessaire pour le log
-		return dynamicDefinitionName;
+		return name;
 	}
 
 }
