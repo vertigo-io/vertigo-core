@@ -133,7 +133,11 @@ public final class DynamicDefinitionRepository {
 	public void addDefinition(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		put(definition.getName(), definition);
+		//On enregistre la définition qu'elle soit renseignée ou null.
+		final DynamicDefinition previousDefinition = definitions.put(definition.getName(), definition);
+		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
+		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", definition.getName());
+		//-----
 		registry.onNewDefinition(definition, this);
 	}
 
@@ -144,8 +148,6 @@ public final class DynamicDefinitionRepository {
 	public void addTemplate(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		//On enregistre la définition qu'elle soit renseignée ou null.
-		//---
 		templates.add(definition);
 	}
 
@@ -158,27 +160,6 @@ public final class DynamicDefinitionRepository {
 	 */
 	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final Entity entity, final String packageName) {
 		return new DynamicDefinitionImpl(definitionName, entity).withPackageName(packageName);
-	}
-
-	/**
-	 * On ajoute une clé (non null) et sa définition (null)
-	 * @param definitionKey Clé de la définition
-	 * @param definition DynamicDefinition
-	 */
-	private void put(final String definitionName, final DynamicDefinition definition) {
-		Assertion.checkNotNull(definitionName);
-		if (definition != null) {
-			Assertion.checkArgument(definition.getName().equals(definitionName), "si la définition est renseignée la clé doit correspondre !");
-		}
-		//-----
-		final DynamicDefinition previousDefinition = definitions.get(definitionName);
-		if (previousDefinition == null) {
-			//On enregistre la définition qu'elle soit renseignée ou null.
-			definitions.put(definitionName, definition);
-		} else {
-			//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
-			Assertion.checkState(definition == null, "la définition {0} est déjà enregistrée", definitionName);
-		}
 	}
 
 	/**
