@@ -49,18 +49,18 @@ public final class DynamicDefinitionRepository {
 	private final Map<String, DynamicDefinition> definitions = new LinkedHashMap<>();
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
-	private final DynamicRegistry dynamicRegistry;
+	private final DynamicRegistry registry;
 	private final EntityGrammar grammar;
 
 	/**
 	 * Constructeur.
-	 * @param dynamicRegistry DynamicDefinitionHandler
+	 * @param registry DynamicDefinitionHandler
 	 */
-	public DynamicDefinitionRepository(final DynamicRegistry dynamicRegistry) {
-		Assertion.checkNotNull(dynamicRegistry);
+	public DynamicDefinitionRepository(final DynamicRegistry registry) {
+		Assertion.checkNotNull(registry);
 		//-----
-		this.dynamicRegistry = dynamicRegistry;
-		grammar = dynamicRegistry.getGrammar();
+		this.registry = registry;
+		grammar = registry.getGrammar();
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class DynamicDefinitionRepository {
 	 * @param definitionKey Clé de la définition
 	 * @return Si la définition a déjà été enregistrée
 	 */
-	public boolean containsDefinitionKey(final String definitionName) {
+	public boolean containsDefinitionName(final String definitionName) {
 		return definitions.containsKey(definitionName);
 	}
 
@@ -118,8 +118,8 @@ public final class DynamicDefinitionRepository {
 
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> orderedDefinitionList) {
 		for (final DynamicDefinition xdefinition : orderedDefinitionList) {
-			xdefinition.check();
-			final Option<Definition> definitionOption = dynamicRegistry.createDefinition(xdefinition);
+			DynamicValidator.check(xdefinition);
+			final Option<Definition> definitionOption = registry.createDefinition(xdefinition);
 			if (definitionOption.isDefined()) {
 				definitionSpace.put(definitionOption.get());
 			}
@@ -134,19 +134,19 @@ public final class DynamicDefinitionRepository {
 		Assertion.checkNotNull(definition);
 		//-----
 		put(definition.getName(), definition);
-		dynamicRegistry.onNewDefinition(definition, this);
+		registry.onNewDefinition(definition, this);
 	}
 
 	/**
 	 * Ajoute un template.
-	 * @param dynamicDefinition Template de définition
+	 * @param definition Template de définition
 	 */
-	public void addTemplate(final DynamicDefinition dynamicDefinition) {
-		Assertion.checkNotNull(dynamicDefinition);
+	public void addTemplate(final DynamicDefinition definition) {
+		Assertion.checkNotNull(definition);
 		//-----
 		//On enregistre la définition qu'elle soit renseignée ou null.
 		//---
-		templates.add(dynamicDefinition);
+		templates.add(definition);
 	}
 
 	/**
@@ -156,8 +156,8 @@ public final class DynamicDefinitionRepository {
 	 * @param entity Entité
 	 * @return Nouvelle Définition
 	 */
-	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String dynamicDefinitionName, final Entity entity, final String packageName) {
-		return new DynamicDefinitionImpl(dynamicDefinitionName, entity).withPackageName(packageName);
+	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final Entity entity, final String packageName) {
+		return new DynamicDefinitionImpl(definitionName, entity).withPackageName(packageName);
 	}
 
 	/**

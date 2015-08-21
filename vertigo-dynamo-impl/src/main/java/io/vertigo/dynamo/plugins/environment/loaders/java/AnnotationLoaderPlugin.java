@@ -184,7 +184,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(FK_FIELD_NAME, association.fkFieldName())
 						.build();
 
-				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getName())) {
+				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
 				}
@@ -212,7 +212,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addDefinition("dtDefinitionB", association.dtDefinitionB())
 						.build();
 
-				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getName())) {
+				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
 				}

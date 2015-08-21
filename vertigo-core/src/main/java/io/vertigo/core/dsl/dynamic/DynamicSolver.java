@@ -75,27 +75,31 @@ final class DynamicSolver {
 		return orderedList;
 	}
 
-	private boolean isSolved(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef, final DynamicDefinition xdefRoot) {
+	private boolean isSolved(final DefinitionSpace definitionSpace,
+			final DynamicDefinitionRepository definitionRepository,
+			final List<DynamicDefinition> orderedList,
+			final DynamicDefinition definition,
+			final DynamicDefinition xdefRoot) {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final String dynamicDefinitionName : xdef.getAllDefinitionNames()) {
+		for (final String definitionName : definition.getAllDefinitionNames()) {
 			//reference should be already solved in a previous resources module : then continue
-			if (!definitionSpace.containsDefinitionName(dynamicDefinitionName)) {
+			if (!definitionSpace.containsDefinitionName(definitionName)) {
 				//or references should be in currently parsed resources
-				if (!definitionModelRepository.containsDefinitionKey(dynamicDefinitionName)) {
-					throw new RuntimeException("Clé " + dynamicDefinitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
+				if (!definitionRepository.containsDefinitionName(definitionName)) {
+					throw new RuntimeException("Clé " + definitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
 				}
-				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionName);
-				if (!orderedList.contains(subDefinition)) {
+				final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
+				if (!orderedList.contains(linkedDefinition)) {
 					return false;
 				}
 			}
 		}
 
 		//On vérifie que les composites sont résolues.
-		for (final DynamicDefinition dynamicDefinition : xdef.getAllChildDefinitions()) {
-			if (!isSolved(definitionSpace, definitionModelRepository, orderedList, dynamicDefinition, xdefRoot)) {
+		for (final DynamicDefinition child : definition.getAllChildDefinitions()) {
+			if (!isSolved(definitionSpace, definitionRepository, orderedList, child, xdefRoot)) {
 				return false;
 			}
 		}

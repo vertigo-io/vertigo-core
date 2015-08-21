@@ -24,7 +24,6 @@ import io.vertigo.lang.Assertion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,12 +84,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	@Override
 	public Entity getEntity() {
 		return entity;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void check() {
-		check(getEntity());
 	}
 
 	/** {@inheritDoc} */
@@ -280,34 +273,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	public void check(final Entity myEntity) {
-		Assertion.checkNotNull(myEntity);
-		//-----
-		// 1.On vérifie la définition par rapport à la métadéfinition
-		// 1.1 on vérifie les propriétés.
-		final Set<String> propertyNames = getPropertyNames();
-		final Set<String> metaDefinitionPropertyNames = myEntity.getPropertyNames();
-		// 1.1.1 on vérifie que toutes les propriétés sont déclarées sur le
-		// métamodèle
-		checkProperties(propertyNames, metaDefinitionPropertyNames);
-
-		// 1.1.2 on vérifie les propriétés obligatoires
-		checkMandatoryProperties(myEntity, propertyNames, metaDefinitionPropertyNames);
-
-		// 1.1.3 on vérifie les types des propriétés déclarées
-		for (final String propertyName : propertyNames) {
-			getEntity().getPrimitiveType(propertyName).checkValue(getPropertyValue(propertyName));
-		}
-
-		// 1.2 on vérifie les définitions composites (sous définitions).
-		for (final DynamicDefinition dynamicDefinition : getAllChildDefinitions()) {
-			dynamicDefinition.check();
-		}
-
-		// 1.3 on vérifie les définitions références.
-		// TODO vérifier les définitions références
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
@@ -315,34 +280,4 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return dynamicDefinitionName;
 	}
 
-	private void checkProperties(final Set<String> propertyNames, final Set<String> metaDefinitionPropertyNames) {
-		// Vérification que toutes les propriétés sont déclarées sur le
-		// métamodèle
-		final Set<String> undeclaredPropertyNames = new HashSet<>();
-		for (final String propertyName : propertyNames) {
-			if (!metaDefinitionPropertyNames.contains(propertyName)) {
-				// Si la propriété n'est pas déclarée alors erreur
-				undeclaredPropertyNames.add(propertyName);
-			}
-		}
-		if (!undeclaredPropertyNames.isEmpty()) {
-			throw new IllegalStateException("Sur l'objet '" + getName() + "' Il existe des propriétés non déclarées " + undeclaredPropertyNames);
-		}
-	}
-
-	private void checkMandatoryProperties(final Entity myEntity, final Set<String> propertyNames, final Set<String> metaDefinitionPropertyNames) {
-		// Vérification des propriétés obligatoires
-		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
-		for (final String propertyName : metaDefinitionPropertyNames) {
-			if (myEntity.isRequired(propertyName) && (!propertyNames.contains(propertyName) || getPropertyValue(propertyName) == null)) {
-				// Si la propriété obligatoire n'est pas renseignée alors erreur
-				// Ou si la propriété obligatoire est renseignée mais qu'elle
-				// est nulle alors erreur !
-				unusedMandatoryPropertySet.add(propertyName);
-			}
-		}
-		if (!unusedMandatoryPropertySet.isEmpty()) {
-			throw new IllegalStateException(getName() + " Il existe des propriétés obligatoires non renseignées " + unusedMandatoryPropertySet);
-		}
-	}
 }

@@ -51,8 +51,8 @@ public interface DynamicRegistry {
 	 * Utilisé pour créer des définitions à partir d'autres Definitions.
 	 * Exemple : création des domaines à partir d'un DT.
 	 * 
-	 * @param xdefinition DynamicDefinition
-	 * @param dynamicModelrepository DynamicModelRepository
+	 * @param definition DynamicDefinition
+	 * @param definitionRepository DynamicModelRepository
 	 */
-	void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository);
+	void onNewDefinition(final DynamicDefinition definition, final DynamicDefinitionRepository definitionRepository);
 }

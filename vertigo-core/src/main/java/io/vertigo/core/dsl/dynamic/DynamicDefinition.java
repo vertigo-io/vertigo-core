@@ -100,10 +100,4 @@ public interface DynamicDefinition {
 	 * @return Collection des listes de définitions composites.
 	 */
 	List<DynamicDefinition> getAllChildDefinitions();
-
-	//-----
-	/**
-	 * Controle et valide les données de cette définition.
-	 */
-	void check();
 }
