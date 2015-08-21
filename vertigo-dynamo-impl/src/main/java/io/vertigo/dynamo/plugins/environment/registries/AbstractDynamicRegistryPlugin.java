@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.environment.registries;
 
 import io.vertigo.core.impl.environment.DynamicRegistryPlugin;
 import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
@@ -66,8 +65,8 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param property Propriété
 	 * @return Propriété de type Boolean uniquement
 	 */
-	protected static final Boolean getPropertyValueAsBoolean(final DynamicDefinition xdefinition, final EntityProperty property) {
-		return (Boolean) xdefinition.getPropertyValue(property);
+	protected static final Boolean getPropertyValueAsBoolean(final DynamicDefinition xdefinition, final String propertyName) {
+		return (Boolean) xdefinition.getPropertyValue(propertyName);
 	}
 
 	/**
@@ -76,8 +75,8 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param property Propriété
 	 * @return Propriété de type String uniquement
 	 */
-	protected static final String getPropertyValueAsString(final DynamicDefinition xdefinition, final EntityProperty property) {
-		return (String) xdefinition.getPropertyValue(property);
+	protected static final String getPropertyValueAsString(final DynamicDefinition xdefinition, final String propertyName) {
+		return (String) xdefinition.getPropertyValue(propertyName);
 	}
 
 }

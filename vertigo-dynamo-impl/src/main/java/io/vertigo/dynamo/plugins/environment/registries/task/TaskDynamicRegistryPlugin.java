@@ -59,7 +59,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	}
 
 	private static TaskDefinition createTaskDefinition(final DynamicDefinition xtaskDefinition) {
-		final String taskDefinitionName = xtaskDefinition.getDefinitionKey().getName();
+		final String taskDefinitionName = xtaskDefinition.getName();
 		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
@@ -68,10 +68,10 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 				.withRequest(request)
 				.withPackageName(xtaskDefinition.getPackageName());
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
-			final String attributeName = xtaskAttribute.getDefinitionKey().getName();
+			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
-			final String domainUrn = xtaskAttribute.getDefinitionKey("domain").getName();
-			final Domain domain = Home.getDefinitionSpace().resolve(domainUrn, Domain.class);
+			final String domainName = xtaskAttribute.getDefinitionName("domain");
+			final Domain domain = Home.getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {

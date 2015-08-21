@@ -21,6 +21,7 @@ package io.vertigo.core.impl.environment.kernel.meta;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public final class Entity {
 	 * Set des propriétés autorisées pour la définition
 	 * est représenté par la liste des clés de la Map.
 	 */
-	private final Map<EntityProperty, Boolean> properties;
+	private final Map<String, EntityProperty> properties;
 
 	/**
 	 * Constructeur de la MetaDefinition
@@ -58,14 +59,22 @@ public final class Entity {
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<EntityAttribute> attributes, final Map<EntityProperty, Boolean> properties) {
+	Entity(final String name, final Set<EntityAttribute> attributes, final Set<EntityProperty> properties) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(attributes);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
 		this.attributes = Collections.unmodifiableSet(attributes);
-		this.properties = Collections.unmodifiableMap(properties);
+
+		final Map<String, EntityProperty> map = new HashMap<>();
+		for (final EntityProperty entityProperty : properties) {
+			Assertion.checkArgument(!map.containsKey(entityProperty.getName()), "property {0} is already registerd for {1}", entityProperty, this);
+			//Une propriété est unique pour une définition donnée.
+			//Il n'y a jamais de multiplicité
+			map.put(entityProperty.getName(), entityProperty);
+		}
+		this.properties = Collections.unmodifiableMap(map);
 	}
 
 	/**
@@ -78,19 +87,26 @@ public final class Entity {
 	/**
 	 * @return Ensemble de toutes les propriétés gérées (obligatoires ou non).
 	 */
-	public Set<EntityProperty> getProperties() {
+	public Set<String> getPropertyNames() {
 		return properties.keySet();
+	}
+
+	public EntityPropertyType getPrimitiveType(final String propertyName) {
+		Assertion.checkNotNull(propertyName);
+		Assertion.checkArgument(properties.containsKey(propertyName), "property {0} not found on {1}", propertyName, this);
+		//-----
+		return properties.get(propertyName).getPrimitiveType();
 	}
 
 	/**
 	 * @param property Propriété
 	 * @return Si la propriété mentionnée est nulle
 	 */
-	public boolean isNotNull(final EntityProperty property) {
-		Assertion.checkNotNull(property);
-		Assertion.checkArgument(properties.containsKey(property), "la propriete {0} n'est pas declaree pour {1}", property, this);
+	public boolean isRequired(final String propertyName) {
+		Assertion.checkNotNull(propertyName);
+		Assertion.checkArgument(properties.containsKey(propertyName), "la propriete {0} n'est pas declaree pour {1}", propertyName, this);
 		//-----
-		return properties.get(property);
+		return properties.get(propertyName).isRequired();
 	}
 
 	/**

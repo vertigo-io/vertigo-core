@@ -19,7 +19,6 @@
 package io.vertigo.core.impl.environment.kernel.model;
 
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 
 import java.util.List;
 import java.util.Set;
@@ -33,9 +32,9 @@ import java.util.Set;
  */
 public interface DynamicDefinition {
 	/**
-	 * @return Clé de la Définition
+	 * @return Nom de la Définition
 	 */
-	DynamicDefinitionKey getDefinitionKey();
+	String getName();
 
 	/**
 	 * @return Nom du package
@@ -53,13 +52,15 @@ public interface DynamicDefinition {
 	 * @param property Propriété
 	 * @return valeur de la propriété
 	 */
-	Object getPropertyValue(EntityProperty property);
+	Object getPropertyValue(String propertyName);
 
 	/**
 	 * Set des propriétés gérées.
 	 * @return Collection
 	 */
-	Set<EntityProperty> getProperties();
+	Set<String> getPropertyNames();
+
+	//	EntityProperty getProperty(final String propertyName);
 
 	/**
 	 * Permet de récupérer la liste des définitions d'un champ.
@@ -67,26 +68,26 @@ public interface DynamicDefinition {
 	 * @param fieldName Nom du champ.
 	 * @return List
 	 */
-	List<DynamicDefinitionKey> getDefinitionKeys(final String fieldName);
+	List<String> getDefinitionNames(final String fieldName);
 
 	/**
 	 * Uniquement si il y a une et une seule référence pour ce champ.
 	 * @param fieldName Nom du champ.
 	 * @return Clé de la définition
 	 */
-	DynamicDefinitionKey getDefinitionKey(final String fieldName);
+	String getDefinitionName(final String fieldName);
 
 	/**
 	 * @param fieldName Nom du champ.
 	 * @return Si la définition contient le champ
 	 */
-	boolean containsDefinitionKey(final String fieldName);
+	boolean containsDefinitionName(final String fieldName);
 
 	/**
 	 * Permet de récupérer la collection de toutes les liste de définitions utilisées par référence.
 	 * @return Collection de toutes les liste de définitions référencées.
 	 */
-	List<DynamicDefinitionKey> getAllDefinitionKeys();
+	List<String> getAllDefinitionNames();
 
 	/**
 	 * Récupération de la liste des definitions dont est composée la définition principale.

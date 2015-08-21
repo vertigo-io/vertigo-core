@@ -24,7 +24,6 @@ import io.vertigo.core.impl.environment.kernel.meta.Entity;
 import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -50,7 +49,7 @@ public final class DynamicDefinitionRepository {
 	 * On retient les définitions dans l'ordre pour
 	 * créer les fichiers toujours de la même façon.
 	 */
-	private final Map<DynamicDefinitionKey, DynamicDefinition> definitions = new LinkedHashMap<>();
+	private final Map<String, DynamicDefinition> definitions = new LinkedHashMap<>();
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
 	private final DynamicRegistry dynamicRegistry;
@@ -79,8 +78,8 @@ public final class DynamicDefinitionRepository {
 	 * @param definitionKey Clé de la définition
 	 * @return Si la définition a déjà été enregistrée
 	 */
-	public boolean containsDefinitionKey(final DynamicDefinitionKey definitionKey) {
-		return definitions.containsKey(definitionKey);
+	public boolean containsDefinitionKey(final String definitionName) {
+		return definitions.containsKey(definitionName);
 	}
 
 	/**
@@ -92,12 +91,12 @@ public final class DynamicDefinitionRepository {
 	 * @param definitionKey Clé de la définition
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
-	public DynamicDefinition getDefinition(final DynamicDefinitionKey definitionKey) {
-		Assertion.checkArgument(definitions.containsKey(definitionKey), "Aucune clé enregistrée pour :{0} parmi {1}", definitionKey, definitions.keySet());
+	public DynamicDefinition getDefinition(final String definitionName) {
+		Assertion.checkArgument(definitions.containsKey(definitionName), "Aucune clé enregistrée pour :{0} parmi {1}", definitionName, definitions.keySet());
 		//-----
-		final DynamicDefinition definition = definitions.get(definitionKey);
+		final DynamicDefinition definition = definitions.get(definitionName);
 		//-----
-		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionKey);
+		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionName);
 		return definition;
 	}
 
@@ -114,7 +113,7 @@ public final class DynamicDefinitionRepository {
 
 	private void solveTemplates() {
 		for (final DynamicDefinition template : templates) {
-			((DynamicDefinitionBuilder) getDefinition(template.getDefinitionKey())).addBody(template);
+			((DynamicDefinitionBuilder) getDefinition(template.getName())).addBody(template);
 		}
 	}
 
@@ -135,7 +134,7 @@ public final class DynamicDefinitionRepository {
 	public void addDefinition(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		put(definition.getDefinitionKey(), definition);
+		put(definition.getName(), definition);
 		dynamicRegistry.onNewDefinition(definition, this);
 	}
 
@@ -158,9 +157,8 @@ public final class DynamicDefinitionRepository {
 	 * @param entity Entité
 	 * @return Nouvelle Définition
 	 */
-	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String keyName, final Entity entity, final String packageName) {
-		final DynamicDefinitionKey dynamicDefinitionKey = new DynamicDefinitionKey(keyName);
-		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity).withPackageName(packageName);
+	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String dynamicDefinitionName, final Entity entity, final String packageName) {
+		return new DynamicDefinitionImpl(dynamicDefinitionName, entity).withPackageName(packageName);
 	}
 
 	/**
@@ -168,28 +166,28 @@ public final class DynamicDefinitionRepository {
 	 * @param definitionKey Clé de la définition
 	 * @param definition DynamicDefinition
 	 */
-	private void put(final DynamicDefinitionKey definitionKey, final DynamicDefinition definition) {
-		Assertion.checkNotNull(definitionKey);
+	private void put(final String definitionName, final DynamicDefinition definition) {
+		Assertion.checkNotNull(definitionName);
 		if (definition != null) {
-			Assertion.checkArgument(definition.getDefinitionKey().equals(definitionKey), "si la définition est renseignée la clé doit correspondre !");
+			Assertion.checkArgument(definition.getName().equals(definitionName), "si la définition est renseignée la clé doit correspondre !");
 		}
 		//-----
-		final DynamicDefinition previousDefinition = definitions.get(definitionKey);
+		final DynamicDefinition previousDefinition = definitions.get(definitionName);
 		if (previousDefinition == null) {
 			//On enregistre la définition qu'elle soit renseignée ou null.
-			definitions.put(definitionKey, definition);
+			definitions.put(definitionName, definition);
 		} else {
 			//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
-			Assertion.checkState(definition == null, "la définition {0} est déjà enregistrée", definitionKey);
+			Assertion.checkState(definition == null, "la définition {0} est déjà enregistrée", definitionName);
 		}
 	}
 
 	/**
 	 *  @return Liste des clés orphelines.
 	 */
-	Collection<DynamicDefinitionKey> getOrphanDefinitionKeys() {
-		final Collection<DynamicDefinitionKey> collection = new ArrayList<>();
-		for (final Entry<DynamicDefinitionKey, DynamicDefinition> entry : definitions.entrySet()) {
+	Collection<String> getOrphanDefinitionKeys() {
+		final Collection<String> collection = new ArrayList<>();
+		for (final Entry<String, DynamicDefinition> entry : definitions.entrySet()) {
 			if (entry.getValue() == null) {
 				collection.add(entry.getKey());
 			}

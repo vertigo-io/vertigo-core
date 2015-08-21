@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
 public final class EntityAttribute {
 	private final String name;
 	private final boolean multiple;
-	private final boolean notNull;
+	private final boolean required;
 	private final Entity entity;
 
 	/**
@@ -36,15 +36,15 @@ public final class EntityAttribute {
 	 * @param name Nom
 	 * @param entity Entité / Méta-définition parente (composition ou référence)
 	 * @param multiple Si multiple
-	 * @param notNull Si not null
+	 * @param required Si not null
 	 */
-	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean notNull) {
+	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(entity);
 		//-----
 		this.name = name;
 		this.multiple = multiple;
-		this.notNull = notNull;
+		this.required = required;
 		this.entity = entity;
 	}
 
@@ -58,15 +58,15 @@ public final class EntityAttribute {
 	/**
 	 * @return Si multiple
 	 */
-	public boolean isMultiple() {
+	boolean isMultiple() {
 		return multiple;
 	}
 
 	/**
 	 * @return Si not null
 	 */
-	public boolean isNotNull() {
-		return notNull;
+	boolean isRequired() {
+		return required;
 	}
 
 	/**

@@ -22,7 +22,6 @@ import io.vertigo.core.impl.environment.LoaderPlugin;
 import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -151,8 +150,6 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
 				//============================================================
 				//Attention pamc inverse dans oom les déclarations des objets !!
-				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
-				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
 				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)
 						// associationDefinition.
@@ -168,13 +165,13 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(KspProperty.ROLE_B, association.foreignRole())
 						.addPropertyValue(KspProperty.LABEL_B, association.foreignRole())
 						//---
-						.addDefinition("dtDefinitionA", primaryDtDefinitionKey)
-						.addDefinition("dtDefinitionB", foreignDtDefinitionKey)
+						.addDefinition("dtDefinitionA", association.primaryDtDefinitionName())
+						.addDefinition("dtDefinitionB", association.foreignDtDefinitionName())
 						//---
 						.addPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())
 						.build();
 
-				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
+				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getName())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
 				}
@@ -183,9 +180,6 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				//============================================================
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
-				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
-				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
-
 				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)
 						.addPropertyValue(KspProperty.TABLE_NAME, association.tableName())
 
@@ -201,11 +195,11 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(KspProperty.ROLE_B, association.roleB())
 						.addPropertyValue(KspProperty.LABEL_B, association.labelB())
 
-						.addDefinition("dtDefinitionA", dtDefinitionAKey)
-						.addDefinition("dtDefinitionB", dtDefinitionBKey)
+						.addDefinition("dtDefinitionA", association.dtDefinitionA())
+						.addDefinition("dtDefinitionB", association.dtDefinitionB())
 						.build();
 
-				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
+				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getName())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
 				}
@@ -239,9 +233,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
 		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
-				.addDefinition("domain", fieldDomainKey)
+				.addDefinition("domain", field.domain())
 				.addPropertyValue(KspProperty.LABEL, field.label())
 				.addPropertyValue(KspProperty.NOT_NULL, field.notNull())
 				.addPropertyValue(KspProperty.PERSISTENT, field.persistent())

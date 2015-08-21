@@ -21,9 +21,7 @@ package io.vertigo.core.impl.environment.kernel.meta;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,7 +44,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * Set des propriétés autorisées pour la définition
 	 * est représenté par la liste des clés de la Map.
 	 */
-	private final Map<EntityProperty, Boolean> properties;
+	private final Set<EntityProperty> properties;
 
 	/**
 	 * Constructeur de la MetaDefinition
@@ -59,7 +57,7 @@ public final class EntityBuilder implements Builder<Entity> {
 		//-----
 		this.name = name;
 		attributes = new HashSet<>();
-		properties = new HashMap<>();
+		properties = new HashSet<>();
 
 	}
 
@@ -88,16 +86,16 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param fieldName Nom
 	 * @param entity Entité référencée
 	 * @param multiple Si il y a plusieurs entités référencées
-	 * @param notNull Si l'attribut est obligatoire
+	 * @param required Si l'attribut est obligatoire
 	 */
-	private EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean notNull) {
+	private EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(entity);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.
 		//-----
-		final EntityAttribute metaFieldDefinition = new EntityAttribute(fieldName, entity, multiple, notNull);
+		final EntityAttribute entityAttribute = new EntityAttribute(fieldName, entity, multiple, required);
 		//-----
-		attributes.add(metaFieldDefinition);
+		attributes.add(entityAttribute);
 		return this;
 	}
 
@@ -106,13 +104,8 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param property Propriété
 	 * @param notNull Si la propriété est obligatoire
 	 */
-	public EntityBuilder addProperty(final EntityProperty property, final boolean notNull) {
-		Assertion.checkNotNull(property);
-		Assertion.checkArgument(!properties.containsKey(property), "la propriete {0} est deja declaree pour {1}", property, this);
-		//-----
-		//Une propriété est unique pour une définition donnée.
-		//Il n'y a jamais de multiplicité
-		properties.put(property, notNull);
+	public EntityBuilder addProperty(final String propertyName, final EntityPropertyType type, final boolean required) {
+		properties.add(new EntityProperty(propertyName, type, required));
 		return this;
 	}
 

@@ -20,7 +20,6 @@ package io.vertigo.core.impl.environment.kernel.impl.model;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,14 +43,14 @@ final class DynamicSolver {
 		//Liste des clés résolues
 		final List<DynamicDefinition> orderedList = new ArrayList<>();
 
-		final Collection<DynamicDefinitionKey> orphanCollection = definitionModelRepository.getOrphanDefinitionKeys();
+		final Collection<String> orphanCollection = definitionModelRepository.getOrphanDefinitionKeys();
 		if (!orphanCollection.isEmpty()) {
 			throw new RuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
 		}
 		//-----
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionModelRepository.getDefinitions());
 
-		DynamicDefinition xdef ;
+		DynamicDefinition xdef;
 		int size = coll.size();
 		while (size > 0) {
 			for (final Iterator<DynamicDefinition> it = coll.iterator(); it.hasNext();) {
@@ -77,14 +76,14 @@ final class DynamicSolver {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final DynamicDefinitionKey dynamicDefinitionKey : xdef.getAllDefinitionKeys()) {
+		for (final String dynamicDefinitionName : xdef.getAllDefinitionNames()) {
 			//reference should be already solved in a previous resources module : then continue
-			if (!Home.getDefinitionSpace().containsDefinitionName(dynamicDefinitionKey.getName())) {
+			if (!Home.getDefinitionSpace().containsDefinitionName(dynamicDefinitionName)) {
 				//or references should be in currently parsed resources
-				if (!definitionModelRepository.containsDefinitionKey(dynamicDefinitionKey)) {
-					throw new RuntimeException("Clé " + dynamicDefinitionKey.getName() + " référencée par " + xdefRoot.getDefinitionKey().getName() + " non trouvée");
+				if (!definitionModelRepository.containsDefinitionKey(dynamicDefinitionName)) {
+					throw new RuntimeException("Clé " + dynamicDefinitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
 				}
-				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
+				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionName);
 				if (!orderedList.contains(subDefinition)) {
 					return false;
 				}

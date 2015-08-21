@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.impl.environment.kernel.model;
 
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.Entity;
 import io.vertigo.lang.Builder;
 
 import java.util.List;
@@ -28,6 +28,8 @@ import java.util.List;
  * @author  pchretien
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
+	Entity getEntity();
+
 	/**
 	 * @param packageName Package name
 	 * @return Builder
@@ -45,7 +47,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param value Valeur de la propriété
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addPropertyValue(final EntityProperty property, final Object value);
+	DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
@@ -54,7 +56,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definitionKey Clé de la définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
+	DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.
@@ -63,7 +65,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definitionKeys  Liste des clés de définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
+	DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<String> definitionNames);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.

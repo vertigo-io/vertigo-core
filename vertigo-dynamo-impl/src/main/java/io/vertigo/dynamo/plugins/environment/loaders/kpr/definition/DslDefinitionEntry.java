@@ -36,21 +36,21 @@ public final class DslDefinitionEntry {
 	 */
 	private final String fieldName;
 	private final DynamicDefinition definition;
-	private final List<String> definitionKeys;
+	private final List<String> definitionNames;
 
 	/**
 	 * Constructeur.
 	 *
-	 * @param definitionKeys Liste des clés de définition
+	 * @param definitionNames Liste des clés de définition
 	 * @param fieldName Nom du champ
 	 */
-	public DslDefinitionEntry(final String fieldName, final List<String> definitionKeys) {
+	public DslDefinitionEntry(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(definitionKeys);
+		Assertion.checkNotNull(definitionNames);
 		//-----
 		this.fieldName = fieldName;
 		definition = null;
-		this.definitionKeys = definitionKeys;
+		this.definitionNames = definitionNames;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public final class DslDefinitionEntry {
 		//-----
 		this.fieldName = fieldName;
 		this.definition = definition;
-		definitionKeys = null;
+		definitionNames = null;
 	}
 
 	/**
@@ -96,9 +96,7 @@ public final class DslDefinitionEntry {
 	/**
 	 * @return List des clés de définition
 	 */
-	public List<String> getDefinitionKeys() {
-		Assertion.checkNotNull(definitionKeys);
-		//-----
-		return definitionKeys;
+	public List<String> getDefinitionNames() {
+		return definitionNames;
 	}
 }

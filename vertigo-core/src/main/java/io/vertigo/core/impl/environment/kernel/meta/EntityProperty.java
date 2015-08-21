@@ -28,20 +28,26 @@ import io.vertigo.lang.Assertion;
 public final class EntityProperty {
 	private final String name;
 	private final EntityPropertyType primitiveType;
+	private final boolean required;
 
-	public EntityProperty(final String name, final EntityPropertyType primitiveType) {
+	EntityProperty(final String name, final EntityPropertyType primitiveType, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(primitiveType);
 		//-----
 		this.name = name;
 		this.primitiveType = primitiveType;
+		this.required = required;
 	}
 
 	/**
 	 * @return Nom de la propriété (Const)
 	 */
-	public String getName() {
+	String getName() {
 		return name;
+	}
+
+	public boolean isRequired() {
+		return required;
 	}
 
 	/**

@@ -81,7 +81,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, attribute.getEntity()));
 		}
 
-		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getProperties());
+		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
 		final FirstOfRule firstOfRule = new FirstOfRule(
 				xPropertyEntryRule, // 0

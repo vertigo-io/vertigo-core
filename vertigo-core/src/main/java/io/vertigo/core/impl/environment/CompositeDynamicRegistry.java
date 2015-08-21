@@ -98,7 +98,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			return dynamicRegistry.createDefinition(xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);
+			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getName(), e);
 		}
 	}
 
@@ -110,6 +110,6 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			}
 		}
 		//Si on n'a pas trouvé de définition c'est qu'il manque la registry.
-		throw new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getDefinitionKey().getName() + " non traitée. Il manque une DynamicRegistry ad hoc.");
+		throw new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc.");
 	}
 }

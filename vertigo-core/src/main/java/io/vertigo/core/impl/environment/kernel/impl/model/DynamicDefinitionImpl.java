@@ -19,10 +19,8 @@
 package io.vertigo.core.impl.environment.kernel.impl.model;
 
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -54,15 +52,15 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/**
 	 * Clé de la définition.
 	 */
-	private final DynamicDefinitionKey dynamicDefinitionKey;
+	private final String dynamicDefinitionName;
 	/**
 	 * Conteneur des couples (propriétés, valeur)
 	 */
-	private final Map<EntityProperty, Object> properties = new HashMap<>();
+	private final Map<String, Object> properties = new HashMap<>();
 	/**
 	 * Map des (FieldName, definitionKeyList)
 	 */
-	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<String>> definitionNamesByFieldName = new LinkedHashMap<>();
 	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/**
@@ -70,12 +68,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	 * @param dynamicDefinitionKey Clé de la définition
 	 * @param entity Entité
 	 */
-	DynamicDefinitionImpl(final DynamicDefinitionKey dynamicDefinitionKey, final Entity entity) {
-		Assertion.checkNotNull(dynamicDefinitionKey);
+	DynamicDefinitionImpl(final String dynamicDefinitionName, final Entity entity) {
+		Assertion.checkNotNull(dynamicDefinitionName);
 		//packageName peut être null
 		Assertion.checkNotNull(entity);
 		//-----
-		this.dynamicDefinitionKey = dynamicDefinitionKey;
+		this.dynamicDefinitionName = dynamicDefinitionName;
 		this.entity = entity;
 	}
 
@@ -105,32 +103,32 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionKey getDefinitionKey() {
-		return dynamicDefinitionKey;
+	public final String getName() {
+		return dynamicDefinitionName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getPropertyValue(final EntityProperty property) {
-		Assertion.checkNotNull(property);
+	public Object getPropertyValue(final String propertyName) {
+		Assertion.checkNotNull(propertyName);
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
 		//-----
 		// Conformémément au contrat, on retourne null si pas de propriété
 		// trouvée
-		return properties.get(property);
+		return properties.get(propertyName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<EntityProperty> getProperties() {
+	public Set<String> getPropertyNames() {
 		return Collections.unmodifiableSet(properties.keySet());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<DynamicDefinitionKey> getDefinitionKeys(final String fieldName) {
-		return obtainDefinitionKeys(fieldName);
+	public final List<String> getDefinitionNames(final String fieldName) {
+		return obtainDefinitionNames(fieldName);
 	}
 
 	/** {@inheritDoc} */
@@ -151,30 +149,30 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final boolean containsDefinitionKey(final String fieldName) {
-		return definitionKeysByFieldName.containsKey(fieldName);
+	public final boolean containsDefinitionName(final String fieldName) {
+		return definitionNamesByFieldName.containsKey(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
-		Assertion.checkArgument(containsDefinitionKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
-		final List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
-		final DynamicDefinitionKey definitionKey = list.get(0);
+	public final String getDefinitionName(final String fieldName) {
+		Assertion.checkArgument(containsDefinitionName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
+		final List<String> list = definitionNamesByFieldName.get(fieldName);
+		final String definitionName = list.get(0);
 		//-----
 		// On vérifie qu'il y a une définition pour le champ demandé
-		Assertion.checkNotNull(definitionKey);
-		return definitionKey;
+		Assertion.checkNotNull(definitionName);
+		return definitionName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<DynamicDefinitionKey> getAllDefinitionKeys() {
-		final List<DynamicDefinitionKey> dynamicDefinitionKeys = new ArrayList<>();
-		for (final List<DynamicDefinitionKey> dynamicDefinitionKeyList : definitionKeysByFieldName.values()) {
-			dynamicDefinitionKeys.addAll(dynamicDefinitionKeyList);
+	public final List<String> getAllDefinitionNames() {
+		final List<String> allDefinitionNames = new ArrayList<>();
+		for (final List<String> dynamicDefinitionNames : definitionNamesByFieldName.values()) {
+			allDefinitionNames.addAll(dynamicDefinitionNames);
 		}
-		return dynamicDefinitionKeys;
+		return allDefinitionNames;
 	}
 
 	/** {@inheritDoc} */
@@ -186,20 +184,20 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addPropertyValue(final EntityProperty property, final Object value) {
-		property.getPrimitiveType().checkValue(value);
-		properties.put(property, value);
+	public final DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
+		getEntity().getPrimitiveType(propertyName).checkValue(value);
+		properties.put(propertyName, value);
 		return this;
 	}
 
-	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
+	private List<String> obtainDefinitionNames(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		//-----
-		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
+		List<String> list = definitionNamesByFieldName.get(fieldName);
 		//-----
 		if (list == null) {
 			list = new ArrayList<>();
-			definitionKeysByFieldName.put(fieldName, list);
+			definitionNamesByFieldName.put(fieldName, list);
 		}
 		return list;
 	}
@@ -213,21 +211,21 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	private void doAddDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
-		Assertion.checkNotNull(definitionKey);
+	private void doAddDefinition(final String fieldName, final String definitionName) {
+		Assertion.checkNotNull(definitionName);
 		//-----
-		obtainDefinitionKeys(fieldName).add(definitionKey);
+		obtainDefinitionNames(fieldName).add(definitionName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
-		Assertion.checkNotNull(definitionKeys);
-		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite : multi {0}", fieldName);
+	public final DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<String> definitionNames) {
+		Assertion.checkNotNull(definitionNames);
+		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite : multi {0}", fieldName);
 		//On vérifie que la liste est vide pour éviter les syntaxe avec multi déclarations
 		//-----
-		for (final DynamicDefinitionKey definitionKey : definitionKeys) {
-			doAddDefinition(fieldName, definitionKey);
+		for (final String definitionName : definitionNames) {
+			doAddDefinition(fieldName, definitionName);
 		}
 		return this;
 	}
@@ -250,15 +248,15 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 			public final
 			DynamicDefinitionBuilder addBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
-		for (final EntityProperty property : dynamicDefinition.getProperties()) {
-			addPropertyValue(property, dynamicDefinition.getPropertyValue(property));
+		for (final String propertyName : dynamicDefinition.getPropertyNames()) {
+			addPropertyValue(propertyName, dynamicDefinition.getPropertyValue(propertyName));
 		}
 
 		// 2. maj fieldNameDefinitionKeyListMap
 		final DynamicDefinitionImpl other = (DynamicDefinitionImpl) dynamicDefinition;
 
-		for (final Entry<String, List<DynamicDefinitionKey>> entry : other.definitionKeysByFieldName.entrySet()) {
-			obtainDefinitionKeys(entry.getKey()).addAll(entry.getValue());
+		for (final Entry<String, List<String>> entry : other.definitionNamesByFieldName.entrySet()) {
+			obtainDefinitionNames(entry.getKey()).addAll(entry.getValue());
 		}
 
 		// 3.
@@ -270,12 +268,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
+	public DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
-		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
+		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite");
 		//-----
-		doAddDefinition(fieldName, definitionKey);
+		doAddDefinition(fieldName, definitionName);
 		return this;
 	}
 
@@ -284,18 +282,18 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		//-----
 		// 1.On vérifie la définition par rapport à la métadéfinition
 		// 1.1 on vérifie les propriétés.
-		final Set<EntityProperty> propertySet = getProperties();
-		final Set<EntityProperty> metaDefinitionPropertySet = myEntity.getProperties();
+		final Set<String> propertyNames = getPropertyNames();
+		final Set<String> metaDefinitionPropertyNames = myEntity.getPropertyNames();
 		// 1.1.1 on vérifie que toutes les propriétés sont déclarées sur le
 		// métamodèle
-		checkProperties(propertySet, metaDefinitionPropertySet);
+		checkProperties(propertyNames, metaDefinitionPropertyNames);
 
 		// 1.1.2 on vérifie les propriétés obligatoires
-		checkMandatoryProperties(myEntity, propertySet, metaDefinitionPropertySet);
+		checkMandatoryProperties(myEntity, propertyNames, metaDefinitionPropertyNames);
 
 		// 1.1.3 on vérifie les types des propriétés déclarées
-		for (final EntityProperty prop : propertySet) {
-			prop.getPrimitiveType().checkValue(getPropertyValue(prop));
+		for (final String propertyName : propertyNames) {
+			getEntity().getPrimitiveType(propertyName).checkValue(getPropertyValue(propertyName));
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).
@@ -311,44 +309,37 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	@Override
 	public String toString() {
 		//nécessaire pour le log
-		return dynamicDefinitionKey.getName();
+		return dynamicDefinitionName;
 	}
 
-	private void checkProperties(final Set<EntityProperty> propertySet, final Set<EntityProperty> metaDefinitionPropertySet) {
+	private void checkProperties(final Set<String> propertyNames, final Set<String> metaDefinitionPropertyNames) {
 		// Vérification que toutes les propriétés sont déclarées sur le
 		// métamodèle
-		Set<EntityProperty> undeclaredPropertySet = null;
-		for (final EntityProperty property : propertySet) {
-			if (!metaDefinitionPropertySet.contains(property)) {
+		final Set<String> undeclaredPropertyNames = new HashSet<>();
+		for (final String propertyName : propertyNames) {
+			if (!metaDefinitionPropertyNames.contains(propertyName)) {
 				// Si la propriété n'est pas déclarée alors erreur
-				if (undeclaredPropertySet == null) {
-					undeclaredPropertySet = new HashSet<>();
-				}
-				undeclaredPropertySet.add(property);
+				undeclaredPropertyNames.add(propertyName);
 			}
 		}
-		if (undeclaredPropertySet != null) {
-			throw new IllegalStateException("Sur l'objet '" + getDefinitionKey().getName() + "' Il existe des propriétés non déclarées " + undeclaredPropertySet);
+		if (!undeclaredPropertyNames.isEmpty()) {
+			throw new IllegalStateException("Sur l'objet '" + getName() + "' Il existe des propriétés non déclarées " + undeclaredPropertyNames);
 		}
 	}
 
-	private void checkMandatoryProperties(final Entity myEntity, final Set<EntityProperty> propertySet, final Set<EntityProperty> metaDefinitionPropertySet) {
+	private void checkMandatoryProperties(final Entity myEntity, final Set<String> propertyNames, final Set<String> metaDefinitionPropertyNames) {
 		// Vérification des propriétés obligatoires
-		Set<EntityProperty> unusedMandatoryPropertySet = null;
-		for (final EntityProperty property : metaDefinitionPropertySet) {
-			if (myEntity.isNotNull(property) && (!propertySet.contains(property) || getPropertyValue(property) == null)) {
+		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
+		for (final String propertyName : metaDefinitionPropertyNames) {
+			if (myEntity.isRequired(propertyName) && (!propertyNames.contains(propertyName) || getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
 				// est nulle alors erreur !
-				if (unusedMandatoryPropertySet == null) {
-					unusedMandatoryPropertySet = new HashSet<>();
-				}
-				unusedMandatoryPropertySet.add(property);
+				unusedMandatoryPropertySet.add(propertyName);
 			}
 		}
-		if (unusedMandatoryPropertySet != null) {
-			throw new IllegalStateException(getDefinitionKey().getName() + " Il existe des propriétés obligatoires non renseignées " + unusedMandatoryPropertySet);
+		if (!unusedMandatoryPropertySet.isEmpty()) {
+			throw new IllegalStateException(getName() + " Il existe des propriétés obligatoires non renseignées " + unusedMandatoryPropertySet);
 		}
 	}
-
 }
