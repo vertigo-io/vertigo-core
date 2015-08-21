@@ -18,10 +18,12 @@
  */
 package io.vertigo.core.environment;
 
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Boolean;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Double;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.Integer;
+import static io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType.String;
 import io.vertigo.core.impl.environment.kernel.meta.Entity;
 import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
 import io.vertigo.core.impl.environment.kernel.meta.Grammar;
 
 /**
@@ -29,18 +31,18 @@ import io.vertigo.core.impl.environment.kernel.meta.Grammar;
  */
 public final class PersonGrammar {
 
-	static final EntityProperty NAME = new EntityProperty("name", EntityPropertyType.String);
-	static final EntityProperty FIRST_NAME = new EntityProperty("firstName", EntityPropertyType.String);
-	static final EntityProperty AGE = new EntityProperty("age", EntityPropertyType.Integer);
-	static final EntityProperty HEIGHT = new EntityProperty("height", EntityPropertyType.Double);
-	static final EntityProperty MALE = new EntityProperty("male", EntityPropertyType.Boolean);
+	static final String NAME = "name";
+	static final String FIRST_NAME = "firstName";
+	static final String AGE = "age"; //,
+	static final String HEIGHT = "height"; //.Double);
+	static final String MALE = "male";
 	static final Entity PERSON_ENTITY;
 
 	static final String MAIN_ADDRESS = "mainAddress";
 	static final String SECOND_ADDRESS = "secondaryAddress";
-	static final EntityProperty STREET = new EntityProperty("street", EntityPropertyType.String);
-	static final EntityProperty POSTAL_CODE = new EntityProperty("postalCode", EntityPropertyType.String);
-	static final EntityProperty CITY = new EntityProperty("city", EntityPropertyType.String);
+	static final String STREET = "street";
+	static final String POSTAL_CODE = "postalCode";
+	static final String CITY = "city";
 	static final Entity ADDRESS_ENTITY;
 
 	/** Personn Grammar instance. */
@@ -48,18 +50,18 @@ public final class PersonGrammar {
 
 	static {
 		ADDRESS_ENTITY = new EntityBuilder("address")
-				.addProperty(STREET, true)
-				.addProperty(POSTAL_CODE, false)
-				.addProperty(CITY, false)
+				.addField(STREET, String, true)
+				.addField(POSTAL_CODE, String, false)
+				.addField(CITY, String, false)
 				.build();
 		PERSON_ENTITY = new EntityBuilder("person")
-				.addProperty(NAME, true)
-				.addProperty(FIRST_NAME, true)
-				.addProperty(AGE, false)
-				.addProperty(HEIGHT, false)
-				.addProperty(MALE, true)
-				.addAttribute(MAIN_ADDRESS, ADDRESS_ENTITY, true)
-				.addAttribute("secondaryAddress", ADDRESS_ENTITY, false)
+				.addField(NAME, String, true)
+				.addField(FIRST_NAME, String, true)
+				.addField(AGE, Integer, false)
+				.addField(HEIGHT, Double, false)
+				.addField(MALE, Boolean, true)
+				.addField(MAIN_ADDRESS, ADDRESS_ENTITY, true)
+				.addField("secondaryAddress", ADDRESS_ENTITY, false)
 				.build();
 
 		GRAMMAR = new Grammar(

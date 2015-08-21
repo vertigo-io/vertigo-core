@@ -15,7 +15,6 @@ import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,8 +53,8 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addPropertyValue(AGE, 42)
 				.addPropertyValue(HEIGHT, 175.0d)
 				.addPropertyValue(MALE, Boolean.TRUE)
-				.addDefinition(MAIN_ADDRESS, new DynamicDefinitionKey("MAIN_ADDRESS"))
-				.addDefinition(PersonGrammar.SECOND_ADDRESS, new DynamicDefinitionKey("SECOND_ADDRESS"))
+				.addDefinition(MAIN_ADDRESS, "MAIN_ADDRESS")
+				.addDefinition(PersonGrammar.SECOND_ADDRESS, "SECOND_ADDRESS")
 				.build();
 		dynamicDefinitionRepository.addDefinition(personDefinition);
 
