@@ -60,15 +60,17 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	public ComponentConfigBuilder withInitializer(final Class<? extends ComponentInitializer<?>> managerInitialierClass) {
 		Assertion.checkNotNull(managerInitialierClass);
 		//-----
-		this.managerInitializerClass = managerInitialierClass;
+		managerInitializerClass = managerInitialierClass;
 		return this;
 	}
 
 	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
-		Assertion.checkNotNull(paramValue);
+		//paramValue can be null
 		//-----
-		params.put(paramName, paramValue);
+		if (paramValue != null) {
+			params.put(paramName, paramValue);
+		}
 		return this;
 	}
 
