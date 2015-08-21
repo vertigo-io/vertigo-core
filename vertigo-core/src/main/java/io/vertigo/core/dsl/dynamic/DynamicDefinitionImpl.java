@@ -50,10 +50,17 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** Map  (fieldName, propertyValue)  */
 	private final Map<String, Object> propertyValueByFieldName = new HashMap<>();
 
-	/** Map (fieldName, definitions identified by its name)*/
+	/**
+	 * Links.  
+	 * Map (fieldName, definitions identified by its name)
+	 */
+
 	private final Map<String, List<String>> definitionNamesByFieldName = new LinkedHashMap<>();
 
-	/** Map (fieldName, definitions*/
+	/** 
+	 * Children.
+	 * Map (fieldName, definitions
+	 */
 	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/**
@@ -63,7 +70,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	 */
 	DynamicDefinitionImpl(final String dynamicDefinitionName, final Entity entity) {
 		Assertion.checkNotNull(dynamicDefinitionName);
-		//packageName peut être null
 		Assertion.checkNotNull(entity);
 		//-----
 		this.name = dynamicDefinitionName;
@@ -101,8 +107,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
 		//-----
-		// Conformémément au contrat, on retourne null si pas de propriété
-		// trouvée
+		// Conformémément au contrat, on retourne null si pas de propriété trouvée
 		return propertyValueByFieldName.get(fieldName);
 	}
 
@@ -115,13 +120,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public final List<String> getDefinitionNames(final String fieldName) {
-		return obtainDefinitionNames(fieldName);
+		return obtainList(definitionNamesByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
-		return obtainComposites(fieldName);
+		return obtainList(definitionsByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
@@ -177,14 +182,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	private List<String> obtainDefinitionNames(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
+	private static <K, V> List<V> obtainList(final Map<K, List<V>> map, final K key) {
+		Assertion.checkNotNull(map);
+		Assertion.checkNotNull(key);
 		//-----
-		List<String> list = definitionNamesByFieldName.get(fieldName);
-		//-----
+		List<V> list = map.get(key);
 		if (list == null) {
 			list = new ArrayList<>();
-			definitionNamesByFieldName.put(fieldName, list);
+			map.put(key, list);
 		}
 		return list;
 	}
@@ -192,53 +197,31 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition) {
-		doAddChildDefinition(fieldName, Collections.singletonList(definition));
+		addAllChildrenDefinition(fieldName, Collections.singletonList(definition));
 		return this;
 	}
 
-	private final void doAddChildDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
+	private final void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
 		//-----
-		obtainComposites(fieldName).addAll(definitions);
-	}
-
-	private void doAddDefinitions(final String fieldName, final List<String> definitionNames) {
-		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(definitionNames);
-		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
-		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite");
-		//-----
-		obtainDefinitionNames(fieldName).addAll(definitionNames);
+		obtainList(definitionsByFieldName, fieldName).addAll(definitions);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
-		doAddDefinitions(fieldName, definitionNames);
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(definitionNames);
+		//-----
+		obtainList(definitionNamesByFieldName, fieldName).addAll(definitionNames);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
-		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(definitionName);
-		//-----
-		doAddDefinitions(fieldName, Collections.singletonList(definitionName));
-		return this;
-	}
-
-	private List<DynamicDefinition> obtainComposites(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
-		//-----
-		List<DynamicDefinition> list = definitionsByFieldName.get(fieldName);
-		//-----
-		if (list == null) {
-			list = new ArrayList<>();
-			definitionsByFieldName.put(fieldName, list);
-		}
-		return list;
+		return addAllDefinitions(fieldName, Collections.singletonList(definitionName));
 	}
 
 	/** {@inheritDoc} */
@@ -256,7 +239,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 			final String fieldName = entry.getKey();
 			final List<String> definitionNames = entry.getValue();
 			//-----
-			doAddDefinitions(fieldName, definitionNames);
+			addAllDefinitions(fieldName, definitionNames);
 		}
 
 		// 3.
@@ -264,7 +247,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 			final String fieldName = entry.getKey();
 			final List<DynamicDefinition> definitions = entry.getValue();
 			//-----
-			doAddChildDefinition(fieldName, definitions);
+			addAllChildrenDefinition(fieldName, definitions);
 		}
 		return this;
 	}
