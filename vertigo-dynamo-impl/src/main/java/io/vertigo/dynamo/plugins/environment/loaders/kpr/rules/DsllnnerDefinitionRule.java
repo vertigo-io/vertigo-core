@@ -87,10 +87,10 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dynamicDefinitionBuilder.addDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addDefinitions(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
+				dynamicDefinitionBuilder.addAllDefinitions(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
 			}
 		}
 		for (final DslPropertyEntry dslPropertyEntry : definitionBody.getPropertyEntries()) {

@@ -255,14 +255,14 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		switch (type) {
 			case PRIMARY_KEY:
-				dtDefinition.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+				dtDefinition.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition("field", dtField);
+				dtDefinition.addDefinition("field", dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition("computed", dtField);
+				dtDefinition.addDefinition("computed", dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

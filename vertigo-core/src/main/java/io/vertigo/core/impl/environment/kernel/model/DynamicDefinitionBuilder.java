@@ -65,7 +65,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definitionKeys  Liste des clés de définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<String> definitionNames);
+	DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
@@ -73,5 +73,5 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definition Définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition);
+	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition);
 }

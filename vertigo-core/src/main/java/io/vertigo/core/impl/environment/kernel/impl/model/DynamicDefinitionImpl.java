@@ -204,29 +204,41 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition) {
-		Assertion.checkNotNull(definition);
-		//-----
-		obtainComposites(fieldName).add(definition);
+	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition) {
+		doAddChildDefinition(fieldName, Collections.singletonList(definition));
 		return this;
 	}
 
-	private void doAddDefinition(final String fieldName, final String definitionName) {
-		Assertion.checkNotNull(definitionName);
+	private final void doAddChildDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(definitions);
 		//-----
-		obtainDefinitionNames(fieldName).add(definitionName);
+		obtainComposites(fieldName).addAll(definitions);
+	}
+
+	private void doAddDefinitions(final String fieldName, final List<String> definitionNames) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(definitionNames);
+		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
+		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite");
+		//-----
+		obtainDefinitionNames(fieldName).addAll(definitionNames);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<String> definitionNames) {
-		Assertion.checkNotNull(definitionNames);
-		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite : multi {0}", fieldName);
-		//On vérifie que la liste est vide pour éviter les syntaxe avec multi déclarations
+	public final DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
+		doAddDefinitions(fieldName, definitionNames);
+		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(definitionName);
 		//-----
-		for (final String definitionName : definitionNames) {
-			doAddDefinition(fieldName, definitionName);
-		}
+		doAddDefinitions(fieldName, Collections.singletonList(definitionName));
 		return this;
 	}
 
@@ -254,24 +266,19 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		final DynamicDefinitionImpl other = (DynamicDefinitionImpl) dynamicDefinition;
 
 		for (final Entry<String, List<String>> entry : other.definitionNamesByFieldName.entrySet()) {
-			obtainDefinitionNames(entry.getKey()).addAll(entry.getValue());
+			final String fieldName = entry.getKey();
+			final List<String> definitionNames = entry.getValue();
+			//-----
+			doAddDefinitions(fieldName, definitionNames);
 		}
 
 		// 3.
 		for (final Entry<String, List<DynamicDefinition>> entry : other.definitionsByFieldName.entrySet()) {
-			obtainComposites(entry.getKey()).addAll(entry.getValue());
+			final String fieldName = entry.getKey();
+			final List<DynamicDefinition> definitions = entry.getValue();
+			//-----
+			doAddChildDefinition(fieldName, definitions);
 		}
-		return this;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
-		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
-		// déclarations
-		Assertion.checkArgument(obtainDefinitionNames(fieldName).isEmpty(), "syntaxe interdite");
-		//-----
-		doAddDefinition(fieldName, definitionName);
 		return this;
 	}
 

@@ -91,11 +91,11 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
