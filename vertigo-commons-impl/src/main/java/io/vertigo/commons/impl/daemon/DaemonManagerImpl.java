@@ -39,8 +39,8 @@ import javax.inject.Inject;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor;
-	private final List<DaemonInfo> daemonDefinitions = new ArrayList<>();
-	private boolean started = false;
+	private final List<DaemonInfo> daemonInfos = new ArrayList<>();
+	private boolean started;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
@@ -54,7 +54,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 			/** {@inheritDoc} */
 			@Override
 			public void onPostStart() {
-				startAllDaemons();
+				DaemonManagerImpl.this.startAllDaemons();
 			}
 		});
 	}
@@ -68,11 +68,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+		Assertion.checkState(!started, "daemon must be registerd before app has started.");
+		//-----
 		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds);
-		daemonDefinitions.add(daemonInfo);
-		if (started) {
-			startDaemon(daemonInfo);
-		}
+		daemonInfos.add(daemonInfo);
 	}
 
 	/** {@inheritDoc} */
@@ -103,19 +102,19 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	}
 
 	/**
-	 * @param daemonDefinition
+	 * @param daemonInfo
 	 * @return Dameon
 	 */
-	private static Daemon createDaemon(final DaemonInfo daemonDefinition) {
-		return Injector.newInstance(daemonDefinition.getDaemonClass(), Home.getComponentSpace());
+	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
+		return Injector.newInstance(daemonInfo.getDaemonClass(), Home.getComponentSpace());
 	}
 
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
-	void startAllDaemons() {
-		for (final DaemonInfo daemonDefinition : daemonDefinitions) {
-			startDaemon(daemonDefinition);
+	private void startAllDaemons() {
+		for (final DaemonInfo daemonInfo : daemonInfos) {
+			this.startDaemon(daemonInfo);
 		}
 		started = true;
 	}

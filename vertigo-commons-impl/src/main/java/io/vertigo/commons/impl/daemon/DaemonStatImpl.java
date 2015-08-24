@@ -24,7 +24,7 @@ public final class DaemonStatImpl implements DaemonStat {
 	 * @param status Current status
 	 * @param lastExecSuccess if last exec was a success
 	 */
-	public DaemonStatImpl(final DaemonInfo daemonInfo, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
+	DaemonStatImpl(final DaemonInfo daemonInfo, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
 		Assertion.checkNotNull(daemonInfo);
 		Assertion.checkNotNull(status);
 		//-----

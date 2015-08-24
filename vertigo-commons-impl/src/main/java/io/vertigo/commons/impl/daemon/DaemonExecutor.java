@@ -28,16 +28,16 @@ final class DaemonExecutor implements Activeable {
 	* Enregistre un démon.
 	* Il sera lancé après le temp delay (en milliseconde) et sera réexécuté périodiquement toutes les period (en milliseconde).
 	*
-	* @param daemonDefinition Daemono's definition (DMN_XXX)
+	* @param daemonInfo Daemono's info
 	* @param daemon Daemon to schedule.
 	*/
-	void scheduleDaemon(final DaemonInfo daemonDefinition, final Daemon daemon) {
-		Assertion.checkNotNull(daemonDefinition);
+	void scheduleDaemon(final DaemonInfo daemonInfo, final Daemon daemon) {
+		Assertion.checkNotNull(daemonInfo);
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonDefinition, daemon);
+		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonInfo, daemon);
 		myTimerTasks.add(timerTask);
-		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
+		scheduler.scheduleWithFixedDelay(timerTask, daemonInfo.getPeriodInSeconds(), daemonInfo.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
 	/**
@@ -68,30 +68,30 @@ final class DaemonExecutor implements Activeable {
 
 		private static final Logger LOG = Logger.getLogger(DaemonTimerTask.class);
 		private final Daemon daemon;
-		private final DaemonInfo daemonDefinition;
+		private final DaemonInfo daemonInfo;
 		//-----
 		private long successes;
 		private boolean lastExecSucceed;
 		private long failures;
 		private DaemonStat.Status status = DaemonStat.Status.pending;
 
-		DaemonTimerTask(final DaemonInfo daemonDefinition, final Daemon daemon) {
-			Assertion.checkNotNull(daemonDefinition);
+		DaemonTimerTask(final DaemonInfo daemonInfo, final Daemon daemon) {
+			Assertion.checkNotNull(daemonInfo);
 			Assertion.checkNotNull(daemon);
 			// -----
 			this.daemon = daemon;
-			this.daemonDefinition = daemonDefinition;
+			this.daemonInfo = daemonInfo;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
 			try {//try catch needed to ensure execution aren't suppressed
-				onStart();
+				this.onStart();
 				daemon.run();
-				onSuccess();
+				this.onSuccess();
 			} catch (final Exception e) {
-				onFailure(e);
+				this.onFailure(e);
 			}
 		}
 
@@ -100,26 +100,26 @@ final class DaemonExecutor implements Activeable {
 
 		private synchronized DaemonStat getStat() {
 			//On copie les données
-			return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
+			return new DaemonStatImpl(daemonInfo, successes, failures, status, lastExecSucceed);
 		}
 
 		private synchronized void onStart() {
 			status = DaemonStat.Status.running;
-			LOG.info("Start daemon: " + daemonDefinition.getName());
+			LOG.info("Start daemon: " + daemonInfo.getName());
 		}
 
 		private synchronized void onFailure(final Exception e) {
 			status = DaemonStat.Status.pending;
 			failures++;
 			lastExecSucceed = false;
-			LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.getName(), e);
+			LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonInfo.getName(), e);
 		}
 
 		private synchronized void onSuccess() {
 			status = DaemonStat.Status.pending;
 			successes++;
 			lastExecSucceed = true;
-			LOG.info("Executio succeeded on daemon: " + daemonDefinition.getName());
+			LOG.info("Executio succeeded on daemon: " + daemonInfo.getName());
 		}
 	}
 }

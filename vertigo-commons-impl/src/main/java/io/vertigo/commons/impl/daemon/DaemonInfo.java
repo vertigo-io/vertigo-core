@@ -22,25 +22,25 @@ import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
 
 /**
- * Daemon's definition.
+ * Daemon's info.
  *
  * @author TINGARGIOLA
  */
 final class DaemonInfo {
 
-	/** Nom du daemon. */
+	/** Name of the daemon. */
 	private final String name;
 	private final int periodInSeconds;
 	private final Class<? extends Daemon> daemonClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
-	 * @param name Nom du Daemon
-	 * @param daemonClass Class du démon.
-	 * @param periodInSeconds La période d'exécution du démon.
+	 * @param name Name of the daemon
+	 * @param daemonClass Class .
+	 * @param periodInSeconds Période d'exécution du démon.
 	 */
-	public DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+	DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(daemonClass);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
@@ -50,7 +50,7 @@ final class DaemonInfo {
 		this.periodInSeconds = periodInSeconds;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
@@ -59,7 +59,7 @@ final class DaemonInfo {
 	 *
 	 * @return DaemonClass.
 	 */
-	public Class<? extends Daemon> getDaemonClass() {
+	Class<? extends Daemon> getDaemonClass() {
 		return daemonClass;
 	}
 
@@ -68,7 +68,7 @@ final class DaemonInfo {
 	 *
 	 * @return PeriodInSeconds.
 	 */
-	public int getPeriodInSeconds() {
+	int getPeriodInSeconds() {
 		return periodInSeconds;
 	}
 }
