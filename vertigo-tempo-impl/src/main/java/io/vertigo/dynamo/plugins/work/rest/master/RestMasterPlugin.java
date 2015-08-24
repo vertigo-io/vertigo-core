@@ -90,10 +90,6 @@ public final class RestMasterPlugin implements MasterPlugin {
 		@Inject
 		private MasterPlugin restMasterPlugin;
 
-		public DeadNodeDetectorDaemon() {
-			//rien
-		}
-
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
