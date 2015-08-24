@@ -29,14 +29,8 @@ import org.junit.Test;
  * @author TINGARGIOLA
  */
 public final class DaemonManagerTest extends AbstractTestCaseJU4 {
-
 	@Inject
 	private DaemonManager daemonManager;
-
-	@Override
-	public void doSetUp() {
-		daemonManager.registerDaemon("simple", SimpleDaemon.class, 2);
-	}
 
 	@Test
 	public void testSimple() throws Exception {
