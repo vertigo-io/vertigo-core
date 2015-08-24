@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
 
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 
@@ -41,12 +41,11 @@ import org.apache.log4j.Logger;
  *
  * @author pchretien, npiedeloup
  */
-public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, Activeable {
+public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 
 	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVDataStorePlugin.class);
 
 	private final String dataStoreName;
-	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
 	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
 	private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
@@ -62,6 +61,10 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 		//-----
 		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
+
+		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
+		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", RemoveTooOldElementsDaemon.class, purgePeriod);
+		Home.getDefinitionSpace().put(purgeDaemonDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -103,25 +106,6 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 		throw new UnsupportedOperationException("This implementation doesn't use ordered datas. Method findAll can't be called.");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		final long purgePeriod = 1 * 60 * 1000;
-		purgeTimer = new Timer("PurgeMemoryUiSecurityTokenCache", true);
-		purgeTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				removeTooOldElements();
-			}
-		}, purgePeriod, purgePeriod);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		purgeTimer.cancel();
-	}
-
 	/**
 	 * Purge les elements trop vieux.
 	 */
@@ -143,5 +127,20 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 
 	private boolean isTooOld(final DelayedMemoryCacheValue cacheValue) {
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
+	}
+
+	/**
+	 *
+	 * @author npiedeloup
+	 */
+	static final class RemoveTooOldElementsDaemon implements Daemon {
+		@Inject
+		private DelayedMemoryKVDataStorePlugin delayedMemoryKVDataStorePlugin;
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			delayedMemoryKVDataStorePlugin.removeTooOldElements();
+		}
 	}
 }

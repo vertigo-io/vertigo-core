@@ -18,19 +18,19 @@
  */
 package io.vertigo.vega.plugins.rest.handler;
 
-import io.vertigo.lang.Activeable;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,15 +45,15 @@ import spark.Response;
  * Rate limit handler.
  * @author npiedeloup
  */
-public final class RateLimitingRestHandlerPlugin implements Activeable, RestHandlerPlugin {
+public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
-	private static final long DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
+	private static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
 	private static final String RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining"; //the number of requests left for the M minute window
 	private static final String RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets
 
 	private final VSecurityManager securityManager;
-	private final long windowSeconds;
+	private final int windowSeconds;
 	private final long limitValue;
 
 	/**
@@ -64,7 +64,6 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 	 * Last window start time.
 	 */
 	long lastRateLimitResetTime = System.currentTimeMillis();
-	private Timer purgeTimer;
 
 	/**
 	 * Constructor.
@@ -73,7 +72,7 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, @Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
+	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
@@ -81,25 +80,9 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
-	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		purgeTimer = new Timer("RateLimitWindowReset", true);
-		purgeTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				hitsCounter.clear();
-				lastRateLimitResetTime = System.currentTimeMillis();
-			}
-		}, windowSeconds * 1000, windowSeconds * 1000);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		purgeTimer.cancel();
+		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", RateLimitWindowResetDaemon.class, this.windowSeconds);
+		Home.getDefinitionSpace().put(purgeDaemonDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -139,6 +122,28 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 		final AtomicLong value = new AtomicLong(0);
 		final AtomicLong oldValue = hitsCounter.putIfAbsent(userKey, value);
 		return (oldValue != null ? oldValue : value).incrementAndGet();
+	}
+
+	/**
+	 * Reset current limitWindow.
+	 */
+	void resetRateLimitWindow() {
+		hitsCounter.clear();
+		lastRateLimitResetTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * @author npiedeloup
+	 */
+	static final class RateLimitWindowResetDaemon implements Daemon {
+		@Inject
+		private RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin;
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			rateLimitingRestHandlerPlugin.resetRateLimitWindow();
+		}
 	}
 
 }

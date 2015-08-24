@@ -56,7 +56,6 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConverterPlugin.class);
 
-	//private final Timer checkTimeoutTimer = new Timer("OpenOfficeConverterTimeoutCheck", true);
 	private final ExecutorService executors = Executors.newFixedThreadPool(1);
 
 	private final FileManager fileManager;

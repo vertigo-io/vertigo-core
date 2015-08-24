@@ -2,6 +2,7 @@
 <config>
 	<module name="kasper-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 
 		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">

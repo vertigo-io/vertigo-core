@@ -19,10 +19,12 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import java.util.Arrays;
@@ -36,7 +38,7 @@ import javax.inject.Named;
  *
  * @author npiedeloup, pchretien
  */
-public final class RestMasterPlugin implements MasterPlugin, Activeable {
+public final class RestMasterPlugin implements MasterPlugin {
 	private final RestQueueServer restQueueRestServer;
 	private final List<String> distributedWorkTypes;
 
@@ -54,24 +56,15 @@ public final class RestMasterPlugin implements MasterPlugin, Activeable {
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
 		restQueueRestServer = new RestQueueServer(20, codecManager, 5);
+
+		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_WORK_QUEUE_TIMEOUT_CHECK", DeadNodeDetectorDaemon.class, 10);
+		Home.getDefinitionSpace().put(purgeDaemonDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<String> acceptedWorkTypes() {
 		return distributedWorkTypes;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		restQueueRestServer.start();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		restQueueRestServer.stop();
 	}
 
 	/**
@@ -91,6 +84,22 @@ public final class RestMasterPlugin implements MasterPlugin, Activeable {
 	@Override
 	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		getWorkQueueRestServer().putWorkItem(workItem);
+	}
+
+	public static class DeadNodeDetectorDaemon implements Daemon {
+		@Inject
+		private MasterPlugin restMasterPlugin;
+
+		public DeadNodeDetectorDaemon() {
+			//rien
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			((RestMasterPlugin) restMasterPlugin).getWorkQueueRestServer().checkDeadNodes();
+			((RestMasterPlugin) restMasterPlugin).getWorkQueueRestServer().checkDeadWorkItems();
+		}
 	}
 
 }

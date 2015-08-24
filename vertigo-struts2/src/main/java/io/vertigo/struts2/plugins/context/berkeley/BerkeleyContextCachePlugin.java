@@ -19,14 +19,15 @@
 package io.vertigo.struts2.plugins.context.berkeley;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.core.Home;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.core.KActionContext;
 import io.vertigo.struts2.impl.context.ContextCachePlugin;
 
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +48,7 @@ import com.sleepycat.je.Transaction;
 
 /**
  * Implémentation Berkeley du ContextCachePlugin.
- * La purge est assur�e par un Timer et passe toutes les Math.min(15 min, timeToLiveSeconds).
+ * La purge est assurée par un Timer et passe toutes les Math.min(15 min, timeToLiveSeconds).
  *
  * @author pchretien, npiedeloup
  */
@@ -61,7 +62,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	private final TupleBinding<CacheValue> cacheValueBinding;
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
-	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
 	private Database cacheDatas;
 
@@ -85,6 +85,10 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		Assertion.checkState(myCacheEnvPath.canWrite(), "L'espace de stockage du cache n'est pas accessible ({0})", myCacheEnvPath.getAbsolutePath());
 
 		cacheValueBinding = new CacheValueBinding(new SerializableBinding(codecManager.getCompressedSerializationCodec()));
+
+		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
+		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_PURGE_CONTEXT_CACHE", RemoveTooOldElementsDaemon.class, purgePeriod);
+		Home.getDefinitionSpace().put(purgeDaemonDefinition);
 	}
 
 	private static String translatePath(final String path) {
@@ -203,27 +207,11 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
-
-		final long purgePeriod = Math.min(15 * 60 * 1000, timeToLiveSeconds * 1000);
-		purgeTimer = new Timer("PurgeContextCache", true);
-		purgeTimer.schedule(new TimerTask() {
-			private final Logger timerLogger = Logger.getLogger(getClass());
-
-			@Override
-			public void run() {
-				try {
-					removeTooOldElements();
-				} catch (final DatabaseException dbe) {
-					timerLogger.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
-				}
-			}
-		}, purgePeriod, purgePeriod);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		purgeTimer.cancel();
 		if (myEnv != null) {
 			try {
 				cacheDatas.close();
@@ -265,6 +253,26 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 
 		MsgDatabaseException(final String message) {
 			super(message);
+		}
+	}
+
+	/**
+	 * @author npiedeloup
+	 */
+	static final class RemoveTooOldElementsDaemon implements Daemon {
+		private static final Logger TIMER_LOGGER = Logger.getLogger(RemoveTooOldElementsDaemon.class);
+
+		@Inject
+		private BerkeleyContextCachePlugin berkeleyContextCachePlugin;
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			try {
+				berkeleyContextCachePlugin.removeTooOldElements();
+			} catch (final DatabaseException dbe) {
+				TIMER_LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
+			}
 		}
 	}
 }

@@ -31,8 +31,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -56,7 +54,6 @@ final class RestQueueServer {
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
 	private final ConcurrentMap<String, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
-	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
@@ -77,21 +74,6 @@ final class RestQueueServer {
 		this.pullTimeoutSec = pullTimeoutSec;
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
-	}
-
-	/**
-	 * Démarrage du serveur.
-	 */
-	public void start() {
-		//On lance le démon qui détecte les noeuds morts
-		checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(this), 10 * 1000, 10 * 1000);
-	}
-
-	/**
-	 * Arret du serveur.
-	 */
-	public void stop() {
-		checkTimeOutTimer.cancel();
 	}
 
 	/**
@@ -291,21 +273,6 @@ final class RestQueueServer {
 
 		public String getNodeUID() {
 			return nodeUID;
-		}
-	}
-
-	private static class DeadNodeDetectorTask extends TimerTask {
-		private final RestQueueServer restQueueServer;
-
-		public DeadNodeDetectorTask(final RestQueueServer restQueueServer) {
-			this.restQueueServer = restQueueServer;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			restQueueServer.checkDeadNodes();
-			restQueueServer.checkDeadWorkItems();
 		}
 	}
 
