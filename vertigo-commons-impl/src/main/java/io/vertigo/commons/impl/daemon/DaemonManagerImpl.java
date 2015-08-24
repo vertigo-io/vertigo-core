@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.daemon;
 
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.core.AppListener;
@@ -28,6 +27,7 @@ import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,6 +39,8 @@ import javax.inject.Inject;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor;
+	private final List<DaemonInfo> daemonDefinitions = new ArrayList<>();
+	private boolean started = false;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
@@ -49,6 +51,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 		Home.getApp().registerAppListener(new AppListener() {
 
+			/** {@inheritDoc} */
 			@Override
 			public void onPostStart() {
 				startAllDaemons();
@@ -60,6 +63,16 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	@Override
 	public List<DaemonStat> getStats() {
 		return daemonExecutor.getStats();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds);
+		daemonDefinitions.add(daemonInfo);
+		if (started) {
+			startDaemon(daemonInfo);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -80,20 +93,20 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * Il sera lancé puis réexécuté périodiquement.
 	 * L'instance du démon est créée par injection de dépendances.
 	 *
-	 * @param daemonDefinition Le démon à lancer.
+	 * @param daemonInfo Le démon à lancer.
 	 */
-	private void startDaemon(final DaemonDefinition daemonDefinition) {
-		Assertion.checkNotNull(daemonDefinition);
+	private void startDaemon(final DaemonInfo daemonInfo) {
+		Assertion.checkNotNull(daemonInfo);
 		// -----
-		final Daemon daemon = createDaemon(daemonDefinition);
-		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
+		final Daemon daemon = createDaemon(daemonInfo);
+		daemonExecutor.scheduleDaemon(daemonInfo, daemon);
 	}
 
 	/**
 	 * @param daemonDefinition
 	 * @return Dameon
 	 */
-	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+	private static Daemon createDaemon(final DaemonInfo daemonDefinition) {
 		return Injector.newInstance(daemonDefinition.getDaemonClass(), Home.getComponentSpace());
 	}
 
@@ -101,9 +114,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
 	void startAllDaemons() {
-		for (final DaemonDefinition daemonDefinition : Home.getDefinitionSpace().getAll(DaemonDefinition.class)) {
+		for (final DaemonInfo daemonDefinition : daemonDefinitions) {
 			startDaemon(daemonDefinition);
 		}
+		started = true;
 	}
 
 }

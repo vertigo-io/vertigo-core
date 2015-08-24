@@ -15,9 +15,19 @@ public interface DaemonStat {
 	}
 
 	/**
-	 * @return Daemon definition
+	 * @return Daemon name
 	 */
-	DaemonDefinition getDaemonDefinition();
+	String getDaemonName();
+
+	/**
+	 * @return Daemon name
+	 */
+	Class<? extends Daemon> getDaemonClass();
+
+	/**
+	 * @return Daemon period
+	 */
+	int getDaemonPeriodInSecond();
 
 	/**
 	 * @return Nb exec for daemon start

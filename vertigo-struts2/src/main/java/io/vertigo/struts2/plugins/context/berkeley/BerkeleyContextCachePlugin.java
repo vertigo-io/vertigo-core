@@ -20,8 +20,7 @@ package io.vertigo.struts2.plugins.context.berkeley;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.Home;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.core.KActionContext;
@@ -71,11 +70,12 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	/**
 	 * Constructeur.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
+	 * @param daemonManager Manager des daemons
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public BerkeleyContextCachePlugin(final CodecManager codecManager, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public BerkeleyContextCachePlugin(final CodecManager codecManager, final DaemonManager daemonManager, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
@@ -87,8 +87,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		cacheValueBinding = new CacheValueBinding(new SerializableBinding(codecManager.getCompressedSerializationCodec()));
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
-		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_PURGE_CONTEXT_CACHE", RemoveTooOldElementsDaemon.class, purgePeriod);
-		Home.getDefinitionSpace().put(purgeDaemonDefinition);
+		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod);
 	}
 
 	private static String translatePath(final String path) {

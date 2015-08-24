@@ -16,10 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.daemon;
+package io.vertigo.commons.impl.daemon;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -27,8 +26,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author TINGARGIOLA
  */
-@DefinitionPrefix("DMN_")
-public final class DaemonDefinition implements Definition {
+final class DaemonInfo {
 
 	/** Nom du daemon. */
 	private final String name;
@@ -38,11 +36,11 @@ public final class DaemonDefinition implements Definition {
 	/**
 	 * Constructeur.
 	 *
-	 * @param name Nom du Daemon (DMN_XXX)
+	 * @param name Nom du Daemon
 	 * @param daemonClass Class du démon.
 	 * @param periodInSeconds La période d'exécution du démon.
 	 */
-	public DaemonDefinition(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+	public DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(daemonClass);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
@@ -52,8 +50,6 @@ public final class DaemonDefinition implements Definition {
 		this.periodInSeconds = periodInSeconds;
 	}
 
-	/** {@inheritDoc} */
-	@Override
 	public String getName() {
 		return name;
 	}

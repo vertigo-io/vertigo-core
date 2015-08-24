@@ -19,8 +19,7 @@
 package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
 
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.Home;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -52,19 +51,19 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 
 	/**
 	 * Constructor.
+	 * @param daemonManager Manager des daemons
 	 * @param dataStoreName Store utilisé
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
-	public DelayedMemoryKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedMemoryKVDataStorePlugin(final DaemonManager daemonManager, final @Named("dataStoreName") String dataStoreName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		//-----
 		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", RemoveTooOldElementsDaemon.class, purgePeriod);
-		Home.getDefinitionSpace().put(purgeDaemonDefinition);
+		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod);
 	}
 
 	/** {@inheritDoc} */

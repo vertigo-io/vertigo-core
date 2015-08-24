@@ -1,6 +1,6 @@
 package io.vertigo.commons.impl.daemon;
 
-import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
@@ -10,7 +10,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DaemonStatImpl implements DaemonStat {
-	private final DaemonDefinition daemonDefinition;
+	private final DaemonInfo daemonInfo;
 	private final DaemonStat.Status status;
 	private final long sucesses;
 	private final long failures;
@@ -18,17 +18,17 @@ public final class DaemonStatImpl implements DaemonStat {
 
 	/**
 	 * Constructor.
-	 * @param daemonDefinition Daemon's definition
+	 * @param daemonInfo Daemon's info
 	 * @param successes Nb success
 	 * @param failures Nb failure
 	 * @param status Current status
 	 * @param lastExecSuccess if last exec was a success
 	 */
-	public DaemonStatImpl(final DaemonDefinition daemonDefinition, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
-		Assertion.checkNotNull(daemonDefinition);
+	public DaemonStatImpl(final DaemonInfo daemonInfo, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
+		Assertion.checkNotNull(daemonInfo);
 		Assertion.checkNotNull(status);
 		//-----
-		this.daemonDefinition = daemonDefinition;
+		this.daemonInfo = daemonInfo;
 		this.failures = failures;
 		sucesses = successes;
 		this.status = status;
@@ -37,8 +37,20 @@ public final class DaemonStatImpl implements DaemonStat {
 
 	/** {@inheritDoc} */
 	@Override
-	public DaemonDefinition getDaemonDefinition() {
-		return daemonDefinition;
+	public String getDaemonName() {
+		return daemonInfo.getName();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Class<? extends Daemon> getDaemonClass() {
+		return daemonInfo.getDaemonClass();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int getDaemonPeriodInSecond() {
+		return daemonInfo.getPeriodInSeconds();
 	}
 
 	/** {@inheritDoc} */
@@ -70,4 +82,5 @@ public final class DaemonStatImpl implements DaemonStat {
 	public Status getStatus() {
 		return status;
 	}
+
 }

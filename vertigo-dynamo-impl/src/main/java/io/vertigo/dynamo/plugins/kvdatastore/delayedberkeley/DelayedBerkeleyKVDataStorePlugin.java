@@ -20,8 +20,7 @@ package io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.Home;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -74,12 +73,13 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	/**
 	 * Constructeur.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
+	 * @param daemonManager Manager des daemons
 	 * @param dataStoreName Store utilisé
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final DaemonManager daemonManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(dataStoreName);
 		//-----
@@ -94,8 +94,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
-		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_PURGE_CONTEXT_CACHE", RemoveTooOldElementsDaemon.class, purgePeriod);
-		Home.getDefinitionSpace().put(purgeDaemonDefinition);
+		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod);
 	}
 
 	private static String translatePath(final String path) {

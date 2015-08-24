@@ -20,8 +20,7 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.Home;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
@@ -44,21 +43,20 @@ public final class RestMasterPlugin implements MasterPlugin {
 
 	/**
 	 * Constructeur.
+	 * @param daemonManager Manager des daemons
 	 * @param timeoutSeconds Timeout des travaux en attente de traitement
 	 * @param distributedWorkTypes Liste des types de work distribués (séparateur ;)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
-	public RestMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
+	public RestMasterPlugin(final DaemonManager daemonManager, final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
 		restQueueRestServer = new RestQueueServer(20, codecManager, 5);
-
-		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_WORK_QUEUE_TIMEOUT_CHECK", DeadNodeDetectorDaemon.class, 10);
-		Home.getDefinitionSpace().put(purgeDaemonDefinition);
+		daemonManager.registerDaemon("workQueueTimeoutCheck", DeadNodeDetectorDaemon.class, 10);
 	}
 
 	/** {@inheritDoc} */
@@ -97,5 +95,4 @@ public final class RestMasterPlugin implements MasterPlugin {
 			((RestMasterPlugin) restMasterPlugin).getWorkQueueRestServer().checkDeadWorkItems();
 		}
 	}
-
 }

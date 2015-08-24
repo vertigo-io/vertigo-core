@@ -19,8 +19,7 @@
 package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.Home;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
@@ -70,9 +69,10 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param windowSeconds the time windows use to limit calls rate
 	 * @param limitValue the rate limit ceiling value
 	 * @param securityManager Security Manager
+	 * @param daemonManager Manager des daemons
 	 */
 	@Inject
-	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
+	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
@@ -80,9 +80,8 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
-
-		final DaemonDefinition purgeDaemonDefinition = new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", RateLimitWindowResetDaemon.class, this.windowSeconds);
-		Home.getDefinitionSpace().put(purgeDaemonDefinition);
+		//RateLimitingRestHandlerPlugin::resetRateLimitWindow
+		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds);
 	}
 
 	/** {@inheritDoc} */

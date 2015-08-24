@@ -1,7 +1,6 @@
 package io.vertigo.commons.impl.daemon;
 
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -32,7 +31,7 @@ final class DaemonExecutor implements Activeable {
 	* @param daemonDefinition Daemono's definition (DMN_XXX)
 	* @param daemon Daemon to schedule.
 	*/
-	void scheduleDaemon(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+	void scheduleDaemon(final DaemonInfo daemonDefinition, final Daemon daemon) {
 		Assertion.checkNotNull(daemonDefinition);
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
@@ -69,14 +68,14 @@ final class DaemonExecutor implements Activeable {
 
 		private static final Logger LOG = Logger.getLogger(DaemonTimerTask.class);
 		private final Daemon daemon;
-		private final DaemonDefinition daemonDefinition;
+		private final DaemonInfo daemonDefinition;
 		//-----
 		private long successes;
 		private boolean lastExecSucceed;
 		private long failures;
 		private DaemonStat.Status status = DaemonStat.Status.pending;
 
-		DaemonTimerTask(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+		DaemonTimerTask(final DaemonInfo daemonDefinition, final Daemon daemon) {
 			Assertion.checkNotNull(daemonDefinition);
 			Assertion.checkNotNull(daemon);
 			// -----

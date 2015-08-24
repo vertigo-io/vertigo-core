@@ -34,4 +34,6 @@ public interface DaemonManager extends Component {
 	 * @return Stats
 	 */
 	List<DaemonStat> getStats();
+
+	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds);
 }
