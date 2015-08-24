@@ -40,7 +40,7 @@ import javax.inject.Inject;
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor;
 	private final List<DaemonInfo> daemonInfos = new ArrayList<>();
-	private boolean started;
+	private boolean appStarted;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
@@ -55,6 +55,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 			@Override
 			public void onPostStart() {
 				DaemonManagerImpl.this.startAllDaemons();
+				appStarted = true;
 			}
 		});
 	}
@@ -68,7 +69,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
-		Assertion.checkState(!started, "daemon must be registerd before app has started.");
+		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
 		//-----
 		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds);
 		daemonInfos.add(daemonInfo);
@@ -116,7 +117,6 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		for (final DaemonInfo daemonInfo : daemonInfos) {
 			this.startDaemon(daemonInfo);
 		}
-		started = true;
 	}
 
 }
