@@ -26,11 +26,11 @@ import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
+import io.vertigo.util.ClassUtil;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -68,10 +68,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Map<String, Object> daemonParams) {
+	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs) {
 		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
 		//-----
-		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds, daemonParams);
+		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds, constructorArgs);
 		daemonInfos.add(daemonInfo);
 	}
 
@@ -107,8 +107,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * @return Daemon
 	 */
 	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
-		final Container daemonContainer = new DualContainer(Home.getComponentSpace(), daemonInfo.getDaemonParams());
-		return Injector.newInstance(daemonInfo.getDaemonClass(), daemonContainer);
+		final Constructor<? extends Daemon> constructor = findConstructor(daemonInfo.getDaemonClass(), daemonInfo.getConstructorArgs());
+		final Daemon daemon = ClassUtil.newInstance(constructor, daemonInfo.getConstructorArgs());
+		Injector.injectMembers(daemon, Home.getComponentSpace());
+		return daemon;
 	}
 
 	/**
@@ -120,4 +122,16 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		}
 	}
 
+	private static <T extends Daemon> Constructor<T> findConstructor(final Class<T> clazz, final Object[] args) {
+		Assertion.checkNotNull(clazz);
+		//-----
+		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
+		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
+		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
+		Assertion.checkArgument(constructors[0].getParameterTypes().length == args.length, "Les paramètres passés ne sont pas compatible avec ceux du constructeur sur {0}.", clazz.getName());
+		Assertion.checkArgument(constructors[0].getAnnotation(Inject.class) == null, "Le constructeur des daemons ne support pas @Inject, utiliser @Inject sur les attributs d'instance sur {0}.", clazz.getName());
+		//-----
+		//On a un et un seul constructeur.
+		return constructors[0];
+	}
 }
