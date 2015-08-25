@@ -84,7 +84,7 @@ import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
-public final class MyApp {
+public final class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
