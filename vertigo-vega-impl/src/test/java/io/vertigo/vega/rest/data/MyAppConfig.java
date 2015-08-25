@@ -20,9 +20,11 @@ package io.vertigo.vega.rest.data;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.event.EventManagerImpl;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
@@ -95,14 +97,15 @@ public final class MyAppConfig {
 				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 				.endComponent()
+				.beginComponent(DaemonManager.class, DaemonManagerImpl.class).endComponent()
 				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 					.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
 					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
 					.beginPlugin(KprLoaderPlugin.class).endPlugin()
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-				.endComponent()				
+				.endComponent()
 			.endModule()
-			.beginBoot()	
+			.beginBoot()
 				.silently()
 			.endBoot()
 			.beginModule("persona")

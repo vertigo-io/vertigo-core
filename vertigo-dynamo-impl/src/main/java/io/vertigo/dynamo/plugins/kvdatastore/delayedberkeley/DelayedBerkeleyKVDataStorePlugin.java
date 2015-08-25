@@ -94,7 +94,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod);
+		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
 	}
 
 	private static String translatePath(final String path) {
@@ -320,8 +320,16 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * @author npiedeloup
 	 */
 	static final class RemoveTooOldElementsDaemon implements Daemon {
-		@Inject
-		private DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin;
+		private final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin;
+
+		/**
+		 * @param delayedBerkeleyKVDataStorePlugin This plugin
+		 */
+		public RemoveTooOldElementsDaemon(final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin) {
+			Assertion.checkNotNull(delayedBerkeleyKVDataStorePlugin);
+			//------
+			this.delayedBerkeleyKVDataStorePlugin = delayedBerkeleyKVDataStorePlugin;
+		}
 
 		/** {@inheritDoc} */
 		@Override
