@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 final class DaemonExecutor implements Activeable {
 	private boolean isActive;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-	private final List<DaemonTimerTask> myTimerTasks = new ArrayList<>();
+	private final List<DaemonTimerTask> daemonTimerTasks = new ArrayList<>();
 
 	/**
 	* Enregistre un démon.
@@ -36,7 +36,7 @@ final class DaemonExecutor implements Activeable {
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonInfo, daemon);
-		myTimerTasks.add(timerTask);
+		daemonTimerTasks.add(timerTask);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonInfo.getPeriodInSeconds(), daemonInfo.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
@@ -45,8 +45,8 @@ final class DaemonExecutor implements Activeable {
 	 */
 	List<DaemonStat> getStats() {
 		final ListBuilder<DaemonStat> listBuilder = new ListBuilder<>();
-		for (final DaemonTimerTask timerTask : myTimerTasks) {
-			listBuilder.add(timerTask.getStat());
+		for (final DaemonTimerTask daemonTimerTask : daemonTimerTasks) {
+			listBuilder.add(daemonTimerTask.getStat());
 		}
 		return listBuilder.unmodifiable().build();
 	}

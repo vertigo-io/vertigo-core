@@ -38,7 +38,7 @@ import javax.inject.Inject;
  * @author TINGARGIOLA
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
-	private final DaemonExecutor daemonExecutor;
+	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
 	private final List<DaemonInfo> daemonInfos = new ArrayList<>();
 	private boolean appStarted;
 
@@ -47,8 +47,6 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		daemonExecutor = new DaemonExecutor();
-
 		Home.getApp().registerAppListener(new AppListener() {
 
 			/** {@inheritDoc} */
@@ -113,7 +111,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
-	private void startAllDaemons() {
+	void startAllDaemons() {
 		for (final DaemonInfo daemonInfo : daemonInfos) {
 			this.startDaemon(daemonInfo);
 		}
