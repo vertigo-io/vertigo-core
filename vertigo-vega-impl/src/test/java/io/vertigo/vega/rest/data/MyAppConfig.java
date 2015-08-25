@@ -74,7 +74,8 @@ import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPoin
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
-import io.vertigo.vega.rest.WsRestHandler.DtDefinitions;
+import io.vertigo.vega.rest.data.domain.Contact;
+import io.vertigo.vega.rest.data.domain.ContactCriteria;
 import io.vertigo.vega.rest.data.domain.ContactDao;
 import io.vertigo.vega.rest.data.user.TestUserSession;
 import io.vertigo.vega.rest.data.ws.WsCommonRestServices;
@@ -86,8 +87,20 @@ import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
+
+	public static final class DtDefinitions implements Iterable<Class<?>> {
+		@Override
+		public Iterator<Class<?>> iterator() {
+			return Arrays.asList(new Class<?>[] {
+					Contact.class, ContactCriteria.class
+			}).iterator();
+		}
+	}
 
 	public static AppConfig config() {
 		// @formatter:off
