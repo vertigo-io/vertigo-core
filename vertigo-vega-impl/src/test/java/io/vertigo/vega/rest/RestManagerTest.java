@@ -23,7 +23,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.vega.rest.data.MyAppConfig;
 import io.vertigo.vega.rest.stereotype.POST;
 import io.vertigo.vega.rest.stereotype.QueryParam;
@@ -103,9 +102,6 @@ public final class RestManagerTest {
 		//RestAsssured init
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
-
-		//init must be done foreach tests as Home was restarted each times
-		new VegaSparkApplication().init();
 	}
 
 	@Test

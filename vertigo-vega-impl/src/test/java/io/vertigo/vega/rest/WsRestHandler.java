@@ -21,7 +21,6 @@ package io.vertigo.vega.rest;
 import io.vertigo.core.App;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.vega.rest.data.MyAppConfig;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
@@ -62,8 +61,6 @@ public final class WsRestHandler {
 		//Translate EndPoint to route
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));
-		//Spark.before(new VegaMultipartConfig(tempDir));
-		new VegaSparkApplication().init();
 	}
 
 	private static class OnCloseThread extends Thread {
