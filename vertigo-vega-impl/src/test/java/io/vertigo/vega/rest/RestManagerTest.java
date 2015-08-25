@@ -22,7 +22,6 @@ import io.vertigo.core.App;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.rest.data.MyAppConfig;
 import io.vertigo.vega.rest.stereotype.POST;
 import io.vertigo.vega.rest.stereotype.QueryParam;
@@ -49,8 +48,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import spark.Spark;
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
@@ -62,15 +59,17 @@ public final class RestManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 
-	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
 	private static App app;
 
+	static {
+		//RestAsssured init
+		RestAssured.port = MyAppConfig.WS_PORT;
+	}
+
 	@BeforeClass
 	public static void setUp() {
-		beforeSetUp();
 		app = new App(MyAppConfig.config());
-		//doSetUp();
 	}
 
 	@Before
@@ -84,24 +83,6 @@ public final class RestManagerTest {
 	@AfterClass
 	public static void tearDown() {
 		app.close();
-	}
-
-	private static void beforeSetUp() {
-		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
-		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
-		//Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
-		//Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");
-		//Spark.before(new IE8CompatibilityFix("8"));
-		//Spark.before(new CorsAllower());
-		//Translate EndPoint to route
-
-		Spark.setPort(WS_PORT);
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		Spark.before(new JettyMultipartConfig(tempDir));
-
-		//RestAsssured init
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = WS_PORT;
 	}
 
 	@Test

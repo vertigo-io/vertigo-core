@@ -83,13 +83,15 @@ public final class RestManagerImpl implements RestManager {
 	 * @param restHandlerPlugins RestHandler plugins
 	 */
 	@Inject
-	public RestManagerImpl(final EndPointIntrospectorPlugin endPointIntrospectorPlugin, final RoutesRegisterPlugin routesRegisterPlugin, final List<RestHandlerPlugin> restHandlerPlugins) {
+	public RestManagerImpl(
+			final EndPointIntrospectorPlugin endPointIntrospectorPlugin,
+			final RoutesRegisterPlugin routesRegisterPlugin,
+			final List<RestHandlerPlugin> restHandlerPlugins) {
 		Assertion.checkNotNull(endPointIntrospectorPlugin);
 		Assertion.checkNotNull(routesRegisterPlugin);
 		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No RestHandlerPlugins found, check you have declared your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkArgument(restHandlerPlugins.get(restHandlerPlugins.size() - 1) instanceof RestfulServiceRestHandlerPlugin,
 				"RestHandlerPlugins must end with a RestfulServiceHandler in order to dispatsh request to WebService, check your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
-
 		//-----
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
 		this.routesRegisterPlugin = routesRegisterPlugin;
@@ -112,7 +114,7 @@ public final class RestManagerImpl implements RestManager {
 		}
 
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			this.registerWsRoute(endPointDefinition);
+			registerWsRoute(endPointDefinition);
 		}
 	}
 
@@ -133,7 +135,6 @@ public final class RestManagerImpl implements RestManager {
 
 		//2- We sort by path, parameterized path should be after strict path
 		Collections.sort(allEndPointDefinitions, new EndPointComparator());
-
 		return allEndPointDefinitions;
 	}
 

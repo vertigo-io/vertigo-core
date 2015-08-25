@@ -20,8 +20,13 @@ package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.RoutesRegisterPlugin;
+import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import spark.Spark;
 
 /**
@@ -30,6 +35,15 @@ import spark.Spark;
  */
 public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
+
+	@Inject
+	public SparkJavaRoutesRegisterPlugin(@Named("port") final int port) {
+		Spark.setPort(port);
+		//---
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		Spark.before(new JettyMultipartConfig(tempDir));
+
+	}
 
 	/** {@inheritDoc} */
 	@Override

@@ -87,6 +87,8 @@ import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 public final class MyAppConfig {
+	public static final int WS_PORT = 8088;
+
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
@@ -156,7 +158,9 @@ public final class MyAppConfig {
 				.endComponent()
 				.beginComponent(RestManager.class, RestManagerImpl.class)
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
-					.beginPlugin(SparkJavaRoutesRegisterPlugin.class).endPlugin()
+					.beginPlugin(SparkJavaRoutesRegisterPlugin.class)
+						.addParam("port", Integer.toString(WS_PORT))
+					.endPlugin()
 					//-- Handlers plugins
 					.beginPlugin(ExceptionRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(CorsAllowerRestHandlerPlugin.class).endPlugin()
