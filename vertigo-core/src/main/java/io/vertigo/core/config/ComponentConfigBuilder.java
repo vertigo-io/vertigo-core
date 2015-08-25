@@ -43,7 +43,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final Class<?> implClass;
 	private final boolean elastic;
 	private Class<? extends ComponentInitializer<?>> managerInitializerClass;
-	private final Map<String, String> params = new HashMap<>();
+	private final Map<String, String> myParams = new HashMap<>();
 	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
@@ -69,7 +69,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		//paramValue can be null
 		//-----
 		if (paramValue != null) {
-			params.put(paramName, paramValue);
+			myParams.put(paramName, paramValue);
 		}
 		return this;
 	}
@@ -88,7 +88,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	public ComponentConfig build() {
 		//Création des pluginConfigs
 		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
-		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, params);
+		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, myParams);
 	}
 
 	private List<PluginConfig> buildPluginConfigs() {
