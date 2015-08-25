@@ -34,13 +34,13 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class DataCache {
+public final class CacheData {
 	private final CacheManager cacheManager;
 
 	/**
 	 * Constructeur.
 	 */
-	DataCache(final CacheManager cacheManager) {
+	CacheData(final CacheManager cacheManager) {
 		Assertion.checkNotNull(cacheManager);
 		//-----
 		this.cacheManager = cacheManager;
