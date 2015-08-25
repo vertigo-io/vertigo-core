@@ -131,43 +131,23 @@ public final class RestManagerTest {
 				.get("/swaggerApi");
 	}
 
+	private static void assertStatusCode(final int expectedStatusCode, final String path) {
+		RestAssured
+				.given()
+				.expect()
+				.statusCode(expectedStatusCode)
+				.when()
+				.get(path);
+	}
+
 	@Test
 	public void testSwaggerUi() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/swaggerUi");
-
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/swaggerUi/swagger-ui.min.js");
-
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/swaggerUi/css/screen.css");
-
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/swaggerUi/images/logo_small.png");
-
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/swaggerUi/images/throbber.gif");
-
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_NOT_FOUND)
-				.when()
-				.get("/swaggerUi/test404.mp4");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui.min.js");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/css/screen.css");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/images/logo_small.png");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/images/throbber.gif");
+		assertStatusCode(HttpStatus.SC_NOT_FOUND, "/swaggerUi/test404.mp4");
 	}
 
 	@Test
@@ -180,18 +160,12 @@ public final class RestManagerTest {
 
 	@Test
 	public void testLogin() {
-		RestAssured.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
-				.when()
-				.get("/test/login");
+		assertStatusCode(HttpStatus.SC_NO_CONTENT, "/test/login");
 	}
 
 	@Test
 	public void testAnonymousTest() {
-		RestAssured.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.when()
-				.get("/test/anonymousTest");
+		assertStatusCode(HttpStatus.SC_OK, "/test/anonymousTest");
 	}
 
 	@Test
@@ -205,10 +179,7 @@ public final class RestManagerTest {
 
 	@Test
 	public void testUnauthentifiedTest() {
-		expect()
-				.statusCode(HttpStatus.SC_UNAUTHORIZED)
-				.when()
-				.get("/test/authentifiedTest");
+		assertStatusCode(HttpStatus.SC_UNAUTHORIZED, "/test/authentifiedTest");
 	}
 
 	@Test
@@ -1462,10 +1433,6 @@ public final class RestManagerTest {
 	}
 
 	//=========================================================================
-
-	private static ResponseSpecification expect() {
-		return RestAssured.expect();
-	}
 
 	private static RequestSpecification given() {
 		return RestAssured.given();
