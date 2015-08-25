@@ -45,9 +45,9 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		Assertion.checkNotNull(componentConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
-		this.myPluginImplClass = pluginImplClass;
-		this.myComponentConfigBuilder = componentConfigBuilder;
-		this.pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
+		myPluginImplClass = pluginImplClass;
+		myComponentConfigBuilder = componentConfigBuilder;
+		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
 	}
 
 	void withIndex(final int index) {
@@ -81,9 +81,11 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 
 	public PluginConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
-		Assertion.checkNotNull(paramValue, "parameter '{0}' is required ", paramName);
+		//paramValue can be null
 		//-----
-		myParams.put(paramName, paramValue);
+		if (paramValue != null) {
+			myParams.put(paramName, paramValue);
+		}
 		return this;
 	}
 

@@ -23,7 +23,7 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import spark.Request;
 
-public final class DefaultJsonReader implements JsonReader<Request> {
+public final class RequestJsonReader implements JsonReader<Request> {
 
 	/** {@inheritDoc} */
 	@Override

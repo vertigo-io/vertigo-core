@@ -81,7 +81,7 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingRestHandlerPlugin::resetRateLimitWindow
-		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds);
+		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds, this);
 	}
 
 	/** {@inheritDoc} */
@@ -134,9 +134,17 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 	/**
 	 * @author npiedeloup
 	 */
-	static final class RateLimitWindowResetDaemon implements Daemon {
-		@Inject
-		private RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin;
+	public static final class RateLimitWindowResetDaemon implements Daemon {
+		private final RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin;
+
+		/**
+		 * @param rateLimitingRestHandlerPlugin This plugin
+		 */
+		public RateLimitWindowResetDaemon(final RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin) {
+			Assertion.checkNotNull(rateLimitingRestHandlerPlugin);
+			//------
+			this.rateLimitingRestHandlerPlugin = rateLimitingRestHandlerPlugin;
+		}
 
 		/** {@inheritDoc} */
 		@Override

@@ -34,7 +34,7 @@ import io.vertigo.vega.plugins.rest.handler.converter.JsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.PrimitiveJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.VFileJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.reader.BodyJsonReader;
-import io.vertigo.vega.plugins.rest.handler.reader.DefaultJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.RequestJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.HeaderJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.InnerBodyJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.JsonReader;
@@ -82,7 +82,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			VFileJsonConverter.class, DefaultJsonConverter.class };
 	private static final Class<? extends JsonReader<?>>[] JSON_READER_CLASSES = new Class[] {
 			BodyJsonReader.class, InnerBodyJsonReader.class, HeaderJsonReader.class,
-			PathJsonReader.class, QueryJsonReader.class, DefaultJsonReader.class };
+			PathJsonReader.class, QueryJsonReader.class, RequestJsonReader.class };
 
 	private final JsonEngine jsonWriterEngine;
 

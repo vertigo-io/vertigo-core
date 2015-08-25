@@ -22,7 +22,7 @@ import io.vertigo.core.App;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
-import io.vertigo.vega.rest.data.MyApp;
+import io.vertigo.vega.rest.data.MyAppConfig;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
 
@@ -51,7 +51,7 @@ public final class WsRestHandler {
 		Spark.setPort(8088);
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
-		final App app = new App(MyApp.config());
+		final App app = new App(MyAppConfig.config());
 		Runtime.getRuntime().addShutdownHook(new OnCloseThread(app));
 
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.

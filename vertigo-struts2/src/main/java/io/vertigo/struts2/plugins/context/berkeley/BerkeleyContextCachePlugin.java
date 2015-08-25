@@ -87,7 +87,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		cacheValueBinding = new CacheValueBinding(new SerializableBinding(codecManager.getCompressedSerializationCodec()));
 
 		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod);
+		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
 	}
 
 	private static String translatePath(final String path) {
@@ -261,8 +261,16 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	static final class RemoveTooOldElementsDaemon implements Daemon {
 		private static final Logger TIMER_LOGGER = Logger.getLogger(RemoveTooOldElementsDaemon.class);
 
-		@Inject
-		private BerkeleyContextCachePlugin berkeleyContextCachePlugin;
+		private final BerkeleyContextCachePlugin berkeleyContextCachePlugin;
+
+		/**
+		 * @param berkeleyContextCachePlugin This plugin
+		 */
+		public RemoveTooOldElementsDaemon(final BerkeleyContextCachePlugin berkeleyContextCachePlugin) {
+			Assertion.checkNotNull(berkeleyContextCachePlugin);
+			//------
+			this.berkeleyContextCachePlugin = berkeleyContextCachePlugin;
+		}
 
 		/** {@inheritDoc} */
 		@Override

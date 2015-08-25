@@ -24,7 +24,7 @@ import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
-import io.vertigo.vega.rest.data.MyApp;
+import io.vertigo.vega.rest.data.MyAppConfig;
 import io.vertigo.vega.rest.stereotype.POST;
 import io.vertigo.vega.rest.stereotype.QueryParam;
 
@@ -69,7 +69,7 @@ public final class RestManagerTest {
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyApp.config());
+		app = new App(MyAppConfig.config());
 		doSetUp();
 	}
 

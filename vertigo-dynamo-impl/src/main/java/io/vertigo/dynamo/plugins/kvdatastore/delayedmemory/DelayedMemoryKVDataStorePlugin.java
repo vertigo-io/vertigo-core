@@ -63,7 +63,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod);
+		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
 	}
 
 	/** {@inheritDoc} */
@@ -132,9 +132,17 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 	 *
 	 * @author npiedeloup
 	 */
-	static final class RemoveTooOldElementsDaemon implements Daemon {
-		@Inject
-		private DelayedMemoryKVDataStorePlugin delayedMemoryKVDataStorePlugin;
+	public static final class RemoveTooOldElementsDaemon implements Daemon {
+		private final DelayedMemoryKVDataStorePlugin delayedMemoryKVDataStorePlugin;
+
+		/**
+		 * @param delayedMemoryKVDataStorePlugin This plugin
+		 */
+		public RemoveTooOldElementsDaemon(final DelayedMemoryKVDataStorePlugin delayedMemoryKVDataStorePlugin) {
+			Assertion.checkNotNull(delayedMemoryKVDataStorePlugin);
+			//------
+			this.delayedMemoryKVDataStorePlugin = delayedMemoryKVDataStorePlugin;
+		}
 
 		/** {@inheritDoc} */
 		@Override

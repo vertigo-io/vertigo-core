@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.lang.Assertion;
@@ -66,14 +68,17 @@ final class RestQueueServer {
 	 * @param nodeTimeOutSec Timeout (secondes) avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
+	 * @param daemonManager Daemons manager
 	 */
-	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
+	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
+
+		daemonManager.registerDaemon("workQueueTimeoutCheck", DeadNodeDetectorDaemon.class, 10);
 	}
 
 	/**
@@ -279,6 +284,26 @@ final class RestQueueServer {
 	private static void checkInterrupted() throws InterruptedException {
 		if (Thread.currentThread().isInterrupted()) {
 			throw new InterruptedException("Thread interruption required");
+		}
+	}
+
+	public static class DeadNodeDetectorDaemon implements Daemon {
+		private final RestQueueServer restQueueServer;
+
+		/**
+		 * @param restQueueServer This queueServer
+		 */
+		public DeadNodeDetectorDaemon(final RestQueueServer restQueueServer) {
+			Assertion.checkNotNull(restQueueServer);
+			//------
+			this.restQueueServer = restQueueServer;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			restQueueServer.checkDeadNodes();
+			restQueueServer.checkDeadWorkItems();
 		}
 	}
 

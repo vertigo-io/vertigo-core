@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
@@ -55,8 +54,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
-		restQueueRestServer = new RestQueueServer(20, codecManager, 5);
-		daemonManager.registerDaemon("workQueueTimeoutCheck", DeadNodeDetectorDaemon.class, 10);
+		restQueueRestServer = new RestQueueServer(20, codecManager, 5, daemonManager);
 	}
 
 	/** {@inheritDoc} */
@@ -84,15 +82,4 @@ public final class RestMasterPlugin implements MasterPlugin {
 		getWorkQueueRestServer().putWorkItem(workItem);
 	}
 
-	public static class DeadNodeDetectorDaemon implements Daemon {
-		@Inject
-		private MasterPlugin restMasterPlugin;
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			((RestMasterPlugin) restMasterPlugin).getWorkQueueRestServer().checkDeadNodes();
-			((RestMasterPlugin) restMasterPlugin).getWorkQueueRestServer().checkDeadWorkItems();
-		}
-	}
 }
