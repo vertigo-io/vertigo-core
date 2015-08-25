@@ -18,7 +18,10 @@
  */
 package io.vertigo.vega.impl.rest;
 
+import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
+import io.vertigo.core.spaces.component.ComponentSpace;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
@@ -91,18 +94,37 @@ public final class RestManagerImpl implements RestManager {
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
 		this.routesRegisterPlugin = routesRegisterPlugin;
 		handlerChain = new HandlerChain(restHandlerPlugins);
+
+		Home.getApp().registerAppListener(new AppListener() {
+
+			@Override
+			public void onPostStart() {
+				final List<EndPointDefinition> endPointDefinitions = RestManagerImpl.this.scanComponents(Home.getComponentSpace());
+				RestManagerImpl.this.registerEndPointDefinitions(Home.getDefinitionSpace(), endPointDefinitions);
+			}
+		});
+	}
+
+	private void registerEndPointDefinitions(final DefinitionSpace definitionSpace, final List<EndPointDefinition> endPointDefinitions) {
+		// We register EndPoint Definition in this order
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
+			Home.getDefinitionSpace().put(endPointDefinition);
+		}
+
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
+			this.registerWsRoute(endPointDefinition);
+		}
 	}
 
 	/**
-	 * Scan and register ResfulServices as EndPointDefinitions.
+	 * Scan ResfulServices as EndPointDefinitions on all the components.
 	 */
-	@Override
-	public List<EndPointDefinition> scanRestfulServices() {
+	private List<EndPointDefinition> scanComponents(final ComponentSpace componentSpace) {
 		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
 
 		//1- We introspect all RestfulService class
-		for (final String componentId : Home.getComponentSpace().keySet()) {
-			final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
+		for (final String componentId : componentSpace.keySet()) {
+			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof RestfulService) {
 				final List<EndPointDefinition> endPointDefinitions = endPointIntrospectorPlugin.instrospectEndPoint(((RestfulService) component).getClass());
 				allEndPointDefinitions.addAll(endPointDefinitions);
@@ -115,9 +137,11 @@ public final class RestManagerImpl implements RestManager {
 		return allEndPointDefinitions;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void registerWsRoute(final EndPointDefinition endPointDefinition) {
+	/**
+		 * Create WsRestRoute with RestHandlerPlugins list, and register route with the RoutesRegisterPlugin.
+	 * @param endPointDefinition EndPointDefinifition to register
+		 */
+	private void registerWsRoute(final EndPointDefinition endPointDefinition) {
 		//1- register handlerChain for this endPointDefinition
 		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
 	}

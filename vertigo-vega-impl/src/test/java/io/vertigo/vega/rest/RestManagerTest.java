@@ -69,8 +69,9 @@ public final class RestManagerTest {
 
 	@BeforeClass
 	public static void setUp() {
+		beforeSetUp();
 		app = new App(MyAppConfig.config());
-		doSetUp();
+		//doSetUp();
 	}
 
 	@Before
@@ -86,7 +87,7 @@ public final class RestManagerTest {
 		app.close();
 	}
 
-	private static void doSetUp() {
+	private static void beforeSetUp() {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		//Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");

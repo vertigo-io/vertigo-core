@@ -19,23 +19,11 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.lang.Component;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-
-import java.util.List;
 
 /**
  * Restful webservice manager.
  * @author npiedeloup
  */
 public interface RestManager extends Component {
-	/**
-	 * Scan and register ResfulServices as EndPointDefinitions.
-	 */
-	List<EndPointDefinition> scanRestfulServices();
-
-	/**
-	 * Create WsRestRoute with RestHandlerPlugins list, and register route with the RoutesRegisterPlugin.
-	 * @param endPointDefinition EndPointDefinifition to register
-	 */
-	void registerWsRoute(EndPointDefinition endPointDefinition);
+	//
 }

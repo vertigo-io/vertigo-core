@@ -18,12 +18,6 @@
  */
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
-import io.vertigo.core.Home;
-import io.vertigo.vega.rest.RestManager;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-
-import java.util.List;
-
 import spark.servlet.SparkApplication;
 
 /**
@@ -33,23 +27,13 @@ import spark.servlet.SparkApplication;
  * @author npiedeloup
  */
 public final class VegaSparkApplication implements SparkApplication {
-
+	//
 	/**
 	 * Spark-java application class.
 	 * Translate EndPointDefinitions to Spark routes.
 	 */
 	@Override
 	public void init() {
-		final RestManager restManager = Home.getComponentSpace().resolve(RestManager.class);
-
-		List<EndPointDefinition> endPointDefinitions = restManager.scanRestfulServices();
-		// We register EndPoint Definition in this order
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			Home.getDefinitionSpace().put(endPointDefinition);
-		}
-
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			restManager.registerWsRoute(endPointDefinition);
-		}
+		//
 	}
 }
