@@ -60,7 +60,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	 * @param searchManager Search manager
 	 * @param transactionManager Transaction manager
 	 */
-	public ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(reindexFuture);
 		Assertion.checkNotNull(searchManager);

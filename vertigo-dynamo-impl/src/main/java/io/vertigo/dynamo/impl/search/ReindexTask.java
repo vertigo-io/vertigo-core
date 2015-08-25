@@ -48,7 +48,7 @@ final class ReindexTask implements Runnable {
 
 	private final VTransactionManager transactionManager;
 
-	public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(dirtyElements);
 		Assertion.checkNotNull(searchManager);
