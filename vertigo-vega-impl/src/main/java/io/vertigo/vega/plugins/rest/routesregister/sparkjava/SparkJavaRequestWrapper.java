@@ -39,9 +39,9 @@ import spark.utils.IOUtils;
  *
  * @author npiedeloup
  */
-final class SparkRequestWrapper extends Request {
+final class SparkJavaRequestWrapper extends Request {
 	private static final Pattern CHARSET_PATTERN = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
-	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SparkRequestWrapper.class);
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SparkJavaRequestWrapper.class);
 
 	private final Request innerRequest;
 	private final String defaultContentCharset;
@@ -52,7 +52,7 @@ final class SparkRequestWrapper extends Request {
 	 * @param innerRequest Inner request
 	 * @param defaultContentCharset Default content charset (if not in content-type header)
 	 */
-	SparkRequestWrapper(final Request innerRequest, final String defaultContentCharset) {
+	SparkJavaRequestWrapper(final Request innerRequest, final String defaultContentCharset) {
 		this.innerRequest = innerRequest;
 		this.defaultContentCharset = defaultContentCharset;
 	}

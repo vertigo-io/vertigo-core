@@ -32,9 +32,9 @@ import spark.Route;
  * Webservice Route for Spark.
  * @author npiedeloup
  */
-final class WsRestRoute extends Route {
+final class SparkJavaRoute extends Route {
 
-	private static final Logger LOGGER = Logger.getLogger(WsRestRoute.class);
+	private static final Logger LOGGER = Logger.getLogger(SparkJavaRoute.class);
 
 	private final EndPointDefinition endPointDefinition;
 	private final HandlerChain handlerChain;
@@ -45,7 +45,7 @@ final class WsRestRoute extends Route {
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	WsRestRoute(final EndPointDefinition endPointDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
+	SparkJavaRoute(final EndPointDefinition endPointDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
 		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
 		this.endPointDefinition = endPointDefinition;
 		this.handlerChain = handlerChain;
@@ -56,7 +56,7 @@ final class WsRestRoute extends Route {
 	@Override
 	public Object handle(final Request request, final Response response) {
 		try {
-			final Request requestWrapper = new SparkRequestWrapper(request, defaultContentCharset);
+			final Request requestWrapper = new SparkJavaRequestWrapper(request, defaultContentCharset);
 			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper, response, endPointDefinition));
 		} catch (final Throwable th) {
 			LOGGER.error(th);

@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.RoutesRegisterPlugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -33,22 +34,25 @@ public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin
 	/** {@inheritDoc} */
 	@Override
 	public void registerWsRoute(final HandlerChain handlerChain, final EndPointDefinition endPointDefinition) {
-		final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+		Assertion.checkNotNull(handlerChain);
+		Assertion.checkNotNull(endPointDefinition);
+		//-----
+		final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(endPointDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 		switch (endPointDefinition.getVerb()) {
 			case GET:
-				Spark.get(wsRestRoute);
+				Spark.get(sparkJavaRoute);
 				break;
 			case POST:
-				Spark.post(wsRestRoute);
+				Spark.post(sparkJavaRoute);
 				break;
 			case PUT:
-				Spark.put(wsRestRoute);
+				Spark.put(sparkJavaRoute);
 				break;
 			case PATCH:
-				Spark.patch(wsRestRoute);
+				Spark.patch(sparkJavaRoute);
 				break;
 			case DELETE:
-				Spark.delete(wsRestRoute);
+				Spark.delete(sparkJavaRoute);
 				break;
 			default:
 				throw new UnsupportedOperationException();

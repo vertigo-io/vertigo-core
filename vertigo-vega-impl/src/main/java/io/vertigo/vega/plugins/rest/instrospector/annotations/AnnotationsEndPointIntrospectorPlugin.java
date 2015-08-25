@@ -19,6 +19,7 @@
 package io.vertigo.vega.plugins.rest.instrospector.annotations;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.EndPointTypeUtil;
@@ -72,6 +73,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	/** {@inheritDoc} */
 	@Override
 	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends RestfulService> restfulServiceClass) {
+		Assertion.checkNotNull(restfulServiceClass);
+		//-----
 		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();
 		for (final Method method : restfulServiceClass.getMethods()) {
 			final Option<EndPointDefinition> endPointDefinition = buildEndPointDefinition(method, restfulServiceClass);
