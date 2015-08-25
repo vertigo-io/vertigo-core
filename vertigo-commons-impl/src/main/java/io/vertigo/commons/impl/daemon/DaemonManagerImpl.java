@@ -26,9 +26,11 @@ import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -66,10 +68,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Map<String, Object> daemonParams) {
 		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
 		//-----
-		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds);
+		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds, daemonParams);
 		daemonInfos.add(daemonInfo);
 	}
 
@@ -102,10 +104,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 	/**
 	 * @param daemonInfo
-	 * @return Dameon
+	 * @return Daemon
 	 */
 	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
-		return Injector.newInstance(daemonInfo.getDaemonClass(), Home.getComponentSpace());
+		final Container daemonContainer = new DualContainer(Home.getComponentSpace(), daemonInfo.getDaemonParams());
+		return Injector.newInstance(daemonInfo.getDaemonClass(), daemonContainer);
 	}
 
 	/**
@@ -113,7 +116,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	void startAllDaemons() {
 		for (final DaemonInfo daemonInfo : daemonInfos) {
-			this.startDaemon(daemonInfo);
+			startDaemon(daemonInfo);
 		}
 	}
 

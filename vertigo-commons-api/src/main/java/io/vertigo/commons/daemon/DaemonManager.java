@@ -21,6 +21,7 @@ package io.vertigo.commons.daemon;
 import io.vertigo.lang.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manages daemons.
@@ -35,5 +36,12 @@ public interface DaemonManager extends Component {
 	 */
 	List<DaemonStat> getStats();
 
-	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds);
+	/**
+	 * Register Daemon.
+	 * @param name Name
+	 * @param daemonClass Daemon class (must be public)
+	 * @param periodInSeconds Execution period in second
+	 * @param daemonParams Daemon params
+	 */
+	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Map<String, Object> daemonParams);
 }

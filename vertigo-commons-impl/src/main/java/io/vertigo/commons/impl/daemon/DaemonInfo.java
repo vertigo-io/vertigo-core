@@ -21,6 +21,8 @@ package io.vertigo.commons.impl.daemon;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
 
+import java.util.Map;
+
 /**
  * Daemon's info.
  *
@@ -32,15 +34,17 @@ final class DaemonInfo {
 	private final String name;
 	private final int periodInSeconds;
 	private final Class<? extends Daemon> daemonClass;
+	private final Map<String, Object> daemonParams;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param name Name of the daemon
-	 * @param daemonClass Class .
-	 * @param periodInSeconds Période d'exécution du démon.
+	 * @param daemonClass Class.
+	 * @param periodInSeconds daemon execution period.
+	 * @param daemonParams Daemon params
 	 */
-	DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds) {
+	DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Map<String, Object> daemonParams) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(daemonClass);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
@@ -48,6 +52,7 @@ final class DaemonInfo {
 		this.name = name;
 		this.daemonClass = daemonClass;
 		this.periodInSeconds = periodInSeconds;
+		this.daemonParams = daemonParams;
 	}
 
 	String getName() {
@@ -70,5 +75,13 @@ final class DaemonInfo {
 	 */
 	int getPeriodInSeconds() {
 		return periodInSeconds;
+	}
+
+	/**
+	 * Give the daemon params.
+	 * @return Daemon params.
+	 */
+	Map<String, Object> getDaemonParams() {
+		return daemonParams;
 	}
 }
