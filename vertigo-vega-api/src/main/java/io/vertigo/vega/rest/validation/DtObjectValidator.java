@@ -33,9 +33,9 @@ public interface DtObjectValidator<O extends DtObject> {
 	/**
 	 * Effectue les validations prévu d'un objet.
 	 * @param dtObject Objet à tester
-	 * @param modifiedFieldNameSet Liste des champs modifiés
+	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param dtObjectErrors Pile des erreurs
 	 */
-	void validate(O dtObject, Set<String> modifiedFieldNameSet, DtObjectErrors dtObjectErrors);
+	void validate(O dtObject, Set<String> modifiedFieldNames, DtObjectErrors dtObjectErrors);
 
 }

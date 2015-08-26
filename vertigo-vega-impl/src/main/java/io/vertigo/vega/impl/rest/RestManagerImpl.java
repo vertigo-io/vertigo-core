@@ -34,7 +34,6 @@ import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
-import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;

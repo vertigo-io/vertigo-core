@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.rest.instrospector.annotations;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
+import io.vertigo.vega.impl.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;

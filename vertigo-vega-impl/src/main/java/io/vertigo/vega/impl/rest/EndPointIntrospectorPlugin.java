@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.rest;
+package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
+import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.List;
