@@ -43,13 +43,13 @@ public final class ComponentSpaceTest {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()	
 			.beginModule("Bio")
-				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
+				.addComponent(BioManager.class, BioManagerImpl.class)
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
-					.beginPlugin( MathPlugin.class)
-						.addParam("factor", "20")
-					.endPlugin()
 				.endComponent()
+				.beginPlugin( MathPlugin.class)
+					.addParam("factor", "20")
+				.endPlugin()
 			.endModule()
 		.build();
 		// @formatter:on
@@ -70,16 +70,15 @@ public final class ComponentSpaceTest {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
 			.beginModule("Bio")
-				.beginComponent(BioManager.class, BioManagerImpl.class)
-					//This plugin DummyPlugin is not used By BioManager !!
-					.beginPlugin(DummyPlugin.class).endPlugin()
-				.endComponent()
+				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
+				//This plugin DummyPlugin is not used By BioManager !!
+				.beginPlugin(DummyPlugin.class).endPlugin()
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
-					.beginPlugin( MathPlugin.class)
-						.addParam("factor", "20")
-					.endPlugin()
 				.endComponent()
+				.beginPlugin( MathPlugin.class)
+					.addParam("factor", "20")
+				.endPlugin()
 			.endModule()
 		.build();
 		// @formatter:on
@@ -99,14 +98,13 @@ public final class ComponentSpaceTest {
 			.beginModule("Bio-core")
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
-					.beginPlugin( MathPlugin.class)
-						.addParam("factor", "20")
-					.endPlugin()
 				.endComponent()
+				.beginPlugin( MathPlugin.class)
+					.addParam("factor", "20")
+				.endPlugin()
 			.endModule()
 			.beginModule("Bio-spe") //This module depends of Bio-core module
-				.beginComponent(BioManager.class, BioManagerImpl.class)
-				.endComponent()
+				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
 			.endModule()
 		.build();
 		// @formatter:on

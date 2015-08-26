@@ -116,6 +116,7 @@ public final class DIReactor {
 		final List<String> sorted = new ArrayList<>();
 
 		//. Par défaut on considére comme triés tous les parents
+		//On va trier les nouveaux composants.
 		while (!unsorted.isEmpty()) {
 			final int countSorted = sorted.size();
 			for (final Iterator<DIComponentInfo> iterator = unsorted.iterator(); iterator.hasNext();) {
@@ -169,7 +170,8 @@ public final class DIReactor {
 		} else if (dependency.isList()) {
 			//Si l'objet fait partie de la liste alors il doit être résolu.
 			for (final String id : allComponentInfos) {
-				if (id.startsWith(dependency.getName() + '#') && !sorted.contains(id)) {
+				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
+				if (match && !sorted.contains(id)) {
 					//L'objet id fait partie de la liste
 					return sorted.contains(id);
 				}

@@ -23,10 +23,7 @@ import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +40,6 @@ public final class ComponentConfig {
 	private final Class<?> implClass;
 	private final Map<String, String> params;
 	private final Class<? extends ComponentInitializer<?>> componentInitializerClass;
-	private final List<PluginConfig> plugins;
 	private final boolean elastic;
 
 	/**
@@ -53,27 +49,18 @@ public final class ComponentConfig {
 	 * @param pluginConfigurations Liste des plugins du composant
 	 * @param params paramètres du composant
 	 */
-	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Class<? extends ComponentInitializer<?>> componentInitializerClass, final List<PluginConfig> pluginConfigurations, final Map<String, String> params) {
+	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Class<? extends ComponentInitializer<?>> componentInitializerClass, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(pluginConfigurations);
 		Assertion.checkNotNull(params);
 		//-----
 		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
 		this.elastic = elastic;
 		this.componentInitializerClass = componentInitializerClass;
-		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigurations));
 		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;
 		this.params = new HashMap<>(params);
-	}
-
-	/**
-	 * @return Liste des configurations de plugins
-	 */
-	public List<PluginConfig> getPluginConfigs() {
-		return plugins;
 	}
 
 	/**

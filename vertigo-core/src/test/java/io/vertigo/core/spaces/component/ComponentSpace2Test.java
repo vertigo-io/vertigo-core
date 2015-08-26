@@ -52,14 +52,14 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		// @formatter:off
 		return new AppConfigBuilder()
-		.beginModule("bio").
-			beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
+		.beginModule("bio")
+			.addComponent(BioManager.class, BioManagerImpl.class)
 			.beginComponent(MathManager.class, MathManagerImpl.class)
 				.addParam("start", "100")
-				.beginPlugin(MathPlugin.class)
-					.addParam("factor", "20")
-				.endPlugin()
 			.endComponent()
+			.beginPlugin(MathPlugin.class)
+				.addParam("factor", "20")
+			.endPlugin()
 		.endModule()
 		.build();
 		// @formatter:on

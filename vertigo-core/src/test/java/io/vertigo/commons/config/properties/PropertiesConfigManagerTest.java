@@ -45,16 +45,14 @@ public final class PropertiesConfigManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginModule("spaces").
-				beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
-				.endComponent()
-				.beginComponent(ConfigManager.class, ConfigManagerImpl.class)
-					.beginPlugin( PropertiesConfigPlugin.class)
-						.addParam("url", "io/vertigo/commons/config/properties/app-config.properties")
-						.addParam("configPath", "server")
-					.endPlugin()
-				.endComponent()
+			.beginModule("spaces")
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
+				.addComponent(ConfigManager.class, ConfigManagerImpl.class)
+				.beginPlugin( PropertiesConfigPlugin.class)
+					.addParam("url", "io/vertigo/commons/config/properties/app-config.properties")
+					.addParam("configPath", "server")
+				.endPlugin()
 			.endModule()
 			.build();
 		// @formatter:on

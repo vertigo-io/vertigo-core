@@ -21,56 +21,45 @@ package io.vertigo.core.spaces.component;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Super Conteneur.
+ * Conteneur permettant de compter les clés non utilisées.
  *
  * @author pchretien
  */
-final class ComponentDualContainer implements Container {
-	private final Container container1, container2;
-	private final Set<String> ids;
+final class ComponentProxyContainer implements Container {
+	private final Container container;
+	private final Set<String> usedKeys = new HashSet<>();
 
-	ComponentDualContainer(final Container container1, final Container container2) {
-		Assertion.checkNotNull(container1);
-		Assertion.checkNotNull(container2);
+	ComponentProxyContainer(final Container container) {
+		Assertion.checkNotNull(container);
 		//-----
-		this.container1 = container1;
-		this.container2 = container2;
-		ids = new LinkedHashSet<>();
-		ids.addAll(container1.keySet());
-		ids.addAll(container2.keySet());
-		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
+		this.container = container;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.checkNotNull(id);
-		//-----
-		return ids.contains(id);
+		return container.contains(id);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O resolve(final String id, final Class<O> clazz) {
-		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(clazz);
-		//-----
-		if (container1.contains(id)) {
-			return container1.resolve(id, clazz);
-		}
-		if (container2.contains(id)) {
-			return container2.resolve(id, clazz);
-		}
-		throw new RuntimeException("component info with id '" + id + "' not found.");
+	public <O> O resolve(final String id, final Class<O> componentClass) {
+		final O result = container.resolve(id, componentClass);
+		usedKeys.add(id);
+		return result;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		return ids;
+		return container.keySet();
+	}
+
+	Set<String> getUsedKeys() {
+		return usedKeys;
 	}
 }

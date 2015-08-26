@@ -23,10 +23,13 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Paramétrage de l'application.
@@ -41,6 +44,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
+	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
 	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
@@ -134,6 +138,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return doBeginComponent(Option.<Class<?>> none(), implClass, false);
 	}
 
+	public ModuleConfigBuilder addComponent(final Class<?> apiClass, final Class<?> implClass) {
+		return beginComponent(apiClass, implClass).endComponent();
+	}
+
 	/**
 	* Ajout d'un composant.
 	* @param apiClass Classe du composant (Interface)
@@ -174,6 +182,31 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return myAppConfigBuilder;
 	}
 
+	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {
+		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
+		plugins.add(pluginConfigBuilder);
+		return pluginConfigBuilder;
+	}
+
+	private List<PluginConfig> buildPluginConfigs() {
+		final List<PluginConfig> pluginConfigs = new ArrayList<>();
+		final Set<String> pluginTypes = new HashSet<>();
+		int index = 1;
+		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
+			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
+			if (added) {
+				//If added, its the first plugin to this type.
+				pluginConfigBuilder.withIndex(0);
+			} else {
+				pluginConfigBuilder.withIndex(index);
+				index++;
+			}
+
+			pluginConfigs.add(pluginConfigBuilder.build());
+		}
+		return pluginConfigs;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
@@ -190,7 +223,14 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(myName, myDefinitionProviderConfigs, myDefinitionResourceConfigs, componentConfig, myAspectConfigs, moduleRules);
+
+		//Création des pluginConfigs
+		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
+
+		final ModuleConfig moduleConfig = new ModuleConfig(myName, myDefinitionProviderConfigs, myDefinitionResourceConfigs,
+				componentConfig,
+				pluginConfigs,
+				myAspectConfigs, moduleRules);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

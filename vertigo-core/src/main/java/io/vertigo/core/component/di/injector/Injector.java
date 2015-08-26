@@ -120,7 +120,8 @@ public final class Injector {
 			final List<Object> list = new ArrayList<>();
 			for (final String id : container.keySet()) {
 				//On prend tous les objets ayant l'identifiant requis 
-				if (id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#')) {
+				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
+				if (match) {
 					final Object injected = container.resolve(id, Object.class);
 					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);

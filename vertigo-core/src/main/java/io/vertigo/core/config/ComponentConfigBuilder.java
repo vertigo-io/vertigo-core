@@ -22,14 +22,9 @@ import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
-import io.vertigo.lang.Plugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Paramétrage de l'application.
@@ -44,7 +39,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final boolean elastic;
 	private Class<? extends ComponentInitializer<?>> managerInitializerClass;
 	private final Map<String, String> myParams = new HashMap<>();
-	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
 		Assertion.checkNotNull(moduleConfigBuilder);
@@ -74,40 +68,10 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return this;
 	}
 
-	//=========================================================================
-	//==============================Plugin=====================================
-	//=========================================================================
-	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {
-		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
-		plugins.add(pluginConfigBuilder);
-		return pluginConfigBuilder;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		//Création des pluginConfigs
-		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
-		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, myParams);
-	}
-
-	private List<PluginConfig> buildPluginConfigs() {
-		final List<PluginConfig> pluginConfigs = new ArrayList<>();
-		final Set<String> pluginTypes = new HashSet<>();
-		int index = 1;
-		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
-			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
-			if (added) {
-				//If added, its the first plugin to this type.
-				pluginConfigBuilder.withIndex(0);
-			} else {
-				pluginConfigBuilder.withIndex(index);
-				index++;
-			}
-
-			pluginConfigs.add(pluginConfigBuilder.build());
-		}
-		return pluginConfigs;
+		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, myParams);
 	}
 
 	public ModuleConfigBuilder endComponent() {

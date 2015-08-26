@@ -76,4 +76,9 @@ public final class PluginConfig {
 	public Map<String, String> getParams() {
 		return params;
 	}
+
+	@Override
+	public String toString() {
+		return id;
+	}
 }

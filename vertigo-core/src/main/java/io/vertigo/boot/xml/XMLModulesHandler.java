@@ -134,7 +134,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
-				pluginConfigBuilder = componentConfigBuilder.beginPlugin(pluginImplClass);
+				pluginConfigBuilder = moduleConfigBuilder.beginPlugin(pluginImplClass);
 				break;
 			case provider:
 				final String definitionProviderClassName = attrs.getValue("className");

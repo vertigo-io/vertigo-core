@@ -37,16 +37,16 @@ import java.util.Map;
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final Map<String, String> myParams = new HashMap<>();
-	private final ComponentConfigBuilder myComponentConfigBuilder;
+	private final ModuleConfigBuilder myModuleConfigBuilder;
 	private final String pluginType;
 	private Integer myIndex;
 
-	PluginConfigBuilder(final ComponentConfigBuilder componentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
-		Assertion.checkNotNull(componentConfigBuilder);
+	PluginConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
+		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;
-		myComponentConfigBuilder = componentConfigBuilder;
+		myModuleConfigBuilder = moduleConfigBuilder;
 		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
 	}
 
@@ -89,8 +89,8 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		return this;
 	}
 
-	public ComponentConfigBuilder endPlugin() {
-		return myComponentConfigBuilder;
+	public ModuleConfigBuilder endPlugin() {
+		return myModuleConfigBuilder;
 	}
 
 	/** {@inheritDoc} */

@@ -71,7 +71,6 @@ public final class ComponentSpace implements Container, Activeable {
 	//Map des composant démarrés dans l'ordre de démarrage
 	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
-	private final Map<String, List<Plugin>> pluginsByComponentId = new LinkedHashMap<>();
 
 	private final boolean silently;
 
@@ -152,18 +151,11 @@ public final class ComponentSpace implements Container, Activeable {
 	/**
 	 * Enregistrement des plugins .
 	 */
-	void registerPlugins(final String componentId, final Map<String, Plugin> plugins) {
-		Assertion.checkNotNull(componentId);
-		Assertion.checkNotNull(plugins);
+	void registerPlugin(final String pluginId, final Plugin plugin) {
+		Assertion.checkNotNull(pluginId);
+		Assertion.checkNotNull(plugin);
 		//-----
-		//On crée le container des sous composants (plugins) associés au Manager.
-		final Object previous = pluginsByComponentId.put(componentId, new ArrayList<>(plugins.values()));
-		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentId);
-		//-----
-		// Il est nécessaire d'enregistrer tous les plugins.
-		for (final Entry<String, Plugin> entry : plugins.entrySet()) {
-			registerComponent(entry.getKey(), entry.getValue());
-		}
+		registerComponent(pluginId, plugin);
 	}
 
 	/** {@inheritDoc} */
@@ -215,7 +207,7 @@ public final class ComponentSpace implements Container, Activeable {
 		//On nettoie les maps.
 		components.clear();
 		startedComponents.clear();
-		pluginsByComponentId.clear();
+		//	pluginsByComponentId.clear();
 		initializers.clear();
 		aspects.clear();
 	}
@@ -261,9 +253,9 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private void printComponent(final PrintStream out, final String componentId, final Object component) {
 		printComponent(out, componentId, component.getClass().getSimpleName(), null);
-		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
-			printComponent(out, null, null, plugin.getClass().getSimpleName());
-		}
+		//		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
+		//			printComponent(out, null, null, plugin.getClass().getSimpleName());
+		//		}
 		//			final ComponentDescription componentDescription = entry.getValue().getDescription();
 		//final String info;
 		//			if (componentDescription != null && componentDescription.getMainSummaryInfo() != null) {
