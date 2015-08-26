@@ -20,7 +20,6 @@ package io.vertigo.vega.plugins.rest.handler.converter;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.plugins.rest.handler.RouteContext;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
@@ -28,7 +27,6 @@ import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.token.TokenManager;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -37,18 +35,15 @@ import javax.inject.Inject;
 
 public final class DtObjectJsonConverter implements JsonConverter {
 	private final JsonEngine jsonReaderEngine;
-	private final Option<TokenManager> tokenManager;
 
 	/**
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public DtObjectJsonConverter(final JsonEngine jsonReaderEngine, final Option<TokenManager> tokenManager) {
+	public DtObjectJsonConverter(final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonReaderEngine);
-		Assertion.checkNotNull(tokenManager);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
-		this.tokenManager = tokenManager;
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +73,7 @@ public final class DtObjectJsonConverter implements JsonConverter {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));
 		}
 		//-----
-		UiObjectUtil.postReadUiObject(uiObject, objectPath, endPointParam, tokenManager);
+		UiObjectUtil.postReadUiObject(uiObject, objectPath, endPointParam);
 		routeContext.setParamValue(endPointParam, uiObject);
 	}
 

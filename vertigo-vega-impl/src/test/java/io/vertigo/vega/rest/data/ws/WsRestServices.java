@@ -53,7 +53,7 @@ import io.vertigo.vega.rest.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.model.DtListDelta;
-import io.vertigo.vega.rest.model.DtObjectExtended;
+import io.vertigo.vega.rest.model.ExtendedObject;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
@@ -589,21 +589,21 @@ public final class WsRestServices implements RestfulService {
 	}
 
 	@GET("/contactExtended/{conId}")
-	public DtObjectExtended<Contact> testGetExtended(@PathParam("conId") final long conId) {
+	public ExtendedObject<Contact> testGetExtended(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
-		final DtObjectExtended<Contact> result = new DtObjectExtended<>(contact);
+		final ExtendedObject<Contact> result = new ExtendedObject<>(contact);
 		result.put("vanillaUnsupportedMultipleIds", new int[] { 1, 2, 3 });
 		//200
 		return result;
 	}
 
 	@PUT("/contactExtended/{conId}")
-	public DtObjectExtended<Contact> testGetExtended(@PathParam("conId") final long conId,
+	public ExtendedObject<Contact> testGetExtended(@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("vanillaUnsupportedMultipleIds") final int[] multipleIds) {
 		contact.setConId(conId);
 		contactDao.put(contact);
-		final DtObjectExtended<Contact> result = new DtObjectExtended<>(contact);
+		final ExtendedObject<Contact> result = new ExtendedObject<>(contact);
 		result.put("vanillaUnsupportedMultipleIds", multipleIds);
 		//200
 		return result;

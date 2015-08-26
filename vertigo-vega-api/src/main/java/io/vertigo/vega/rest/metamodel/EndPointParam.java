@@ -21,7 +21,6 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.EndPointTypeUtil;
-import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
@@ -120,7 +119,6 @@ public final class EndPointParam {
 		Assertion.checkNotNull(dtObjectValidatorClasses);
 		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty()
 				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type)
-				|| EndPointTypeUtil.isAssignableFrom(DtObjectExtended.class, type)
 				|| EndPointTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
 		//-----
 		this.paramType = paramType;

@@ -25,13 +25,12 @@ import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
-import io.vertigo.vega.rest.engine.UiObjectExtended;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.model.DtListDelta;
-import io.vertigo.vega.rest.model.DtObjectExtended;
+import io.vertigo.vega.rest.model.ExtendedObject;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
@@ -63,46 +62,48 @@ public final class ValidatorRestHandlerPlugin implements RestHandlerPlugin {
 		final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value = routeContext.getParamValue(endPointParam);
-			if (value instanceof UiObject) {
-				final UiObject<DtObject> uiObject = (UiObject<DtObject>) value;
-				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
-				//Only authorized fields have already been checked (JsonConverterHandler)
-				final DtObject updatedDto = uiObject.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
-				routeContext.registerUpdatedDto(endPointParam, uiObject.getInputKey(), updatedDto);
-			} else if (value instanceof UiListDelta) {
-				final UiListDelta<DtObject> uiListDelta = (UiListDelta<DtObject>) value;
-				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
-				final Map<String, DtObject> contextKeyMap = new HashMap<>();
-
-				//Only authorized fields have already been checked (JsonConverterHandler)
-				final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
-				final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
-				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
-				final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
-				routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
-			} else if (value instanceof UiList) {
-				final UiList<DtObject> uiList = (UiList<DtObject>) value;
-				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
-				final Map<String, DtObject> contextKeyMap = new HashMap<>();
-
-				//Only authorized fields have already been checked (JsonConverterHandler)
-				final DtList<DtObject> dtList = mergeAndCheckInput(uiList.getObjectType(), uiList, dtObjectValidators, uiMessageStack, contextKeyMap);
-				routeContext.registerUpdatedDtList(endPointParam, dtList, contextKeyMap);
-			} else if (value instanceof UiObjectExtended) {
-				final UiObjectExtended<DtObject> uiObjectExtended = (UiObjectExtended<DtObject>) value;
-				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
-				//Only authorized fields have already been checked (JsonConverterHandler)
-				final DtObject updatedDto = uiObjectExtended.getInnerObject().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
-				final DtObjectExtended<DtObject> dtObjectExtended = new DtObjectExtended(updatedDto);
-				dtObjectExtended.putAll(uiObjectExtended);
-				routeContext.registerUpdatedDto(endPointParam, uiObjectExtended.getInnerObject().getInputKey(), updatedDto);
-				routeContext.setParamValue(endPointParam, dtObjectExtended);
-			}
+			validateParam(value, uiMessageStack, endPointParam, routeContext);
 		}
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
 		return chain.handle(request, response, routeContext);
+	}
+
+	private void validateParam(final Object value, final UiMessageStack uiMessageStack, final EndPointParam endPointParam, final RouteContext routeContext) {
+		if (value instanceof UiObject) {
+			final UiObject<DtObject> uiObject = (UiObject<DtObject>) value;
+			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+			//Only authorized fields have already been checked (JsonConverterHandler)
+			final DtObject updatedDto = uiObject.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
+			routeContext.registerUpdatedDto(endPointParam, uiObject.getInputKey(), updatedDto);
+		} else if (value instanceof UiListDelta) {
+			final UiListDelta<DtObject> uiListDelta = (UiListDelta<DtObject>) value;
+			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+			final Map<String, DtObject> contextKeyMap = new HashMap<>();
+
+			//Only authorized fields have already been checked (JsonConverterHandler)
+			final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
+			final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
+			final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
+			final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
+			routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
+		} else if (value instanceof UiList) {
+			final UiList<DtObject> uiList = (UiList<DtObject>) value;
+			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+			final Map<String, DtObject> contextKeyMap = new HashMap<>();
+
+			//Only authorized fields have already been checked (JsonConverterHandler)
+			final DtList<DtObject> dtList = mergeAndCheckInput(uiList.getObjectType(), uiList, dtObjectValidators, uiMessageStack, contextKeyMap);
+			routeContext.registerUpdatedDtList(endPointParam, dtList, contextKeyMap);
+		} else if (value instanceof ExtendedObject) {
+			final ExtendedObject<?> extendedObject = (ExtendedObject) value;
+			validateParam(extendedObject.getInnerObject(), uiMessageStack, endPointParam, routeContext);
+			final Object updatedValue = routeContext.getParamValue(endPointParam);
+			final ExtendedObject<?> updatedExtendedObject = new ExtendedObject(updatedValue);
+			updatedExtendedObject.putAll(extendedObject);
+			routeContext.setParamValue(endPointParam, updatedExtendedObject);
+		}
 	}
 
 	private static List<DtObjectValidator<DtObject>> obtainDtObjectValidators(final EndPointParam endPointParam) {

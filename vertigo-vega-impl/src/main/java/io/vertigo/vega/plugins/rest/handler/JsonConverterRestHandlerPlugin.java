@@ -34,12 +34,12 @@ import io.vertigo.vega.plugins.rest.handler.converter.JsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.PrimitiveJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.VFileJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.reader.BodyJsonReader;
-import io.vertigo.vega.plugins.rest.handler.reader.RequestJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.HeaderJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.InnerBodyJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.JsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.PathJsonReader;
 import io.vertigo.vega.plugins.rest.handler.reader.QueryJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.RequestJsonReader;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.SessionException;
@@ -47,8 +47,7 @@ import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.vega.rest.model.DtObjectExtended;
-import io.vertigo.vega.token.TokenManager;
+import io.vertigo.vega.rest.model.ExtendedObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -89,8 +88,6 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	private final Map<Class, List<JsonConverter>> jsonConverters = new HashMap<>();
 	private final EnumMap<RestParamType, List<JsonReader<?>>> jsonReaders = new EnumMap<>(RestParamType.class);
 
-	private final Option<TokenManager> tokenManager;
-
 	/**
 	 * encodeType.
 	 * jgarnier le 20/05/2015 : les content-type ne doivent pas contenir de ":" mais des "=" pour les paramètres.
@@ -98,19 +95,17 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	 * avec : parameter := attribute "=" value
 	 */
 	enum EncoderType {
+
 		/** Type JSON simple */
 		JSON(""),
 		/** Type JSON UiContext */
 		JSON_UI_CONTEXT("json+uicontext"),
 		/** Type JSON list */
 		JSON_LIST("json+list=%s"),
-		/** Type JSON list with meta */
-		JSON_LIST_META("json+list=%s+meta"),
 		/** Type JSON entity */
-		JSON_ENTITY("json+entity=%s"),
-		/** Type JSON entity + meta */
-		JSON_ENTITY_META("json+entity=%s+meta");
+		JSON_ENTITY("json+entity=%s");
 
+		private final String HAS_META_MARKER = "+meta";
 		private final Pattern contentTypePattern;
 		private final String contentType;
 
@@ -121,10 +116,11 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 		/**
 		 * @param entityName Entity name
+		 * @param meta has meta
 		 * @return contentType
 		 */
-		public String createContentType(final String entityName) {
-			return String.format(contentType, entityName);
+		public String createContentType(final String entityName, final boolean meta) {
+			return String.format(contentType, entityName) + (meta ? HAS_META_MARKER : "");
 		}
 
 		/**
@@ -137,20 +133,23 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	}
 
 	/**
-	 * EncodedType : encoderType + entityName.
+	 * EncodedType : encoderType + hasMeta + entityName.
 	 */
 	static class EncodedType {
 		private final EncoderType encoderType;
-		private final String contentType;
+		private final boolean meta;
+		private final String entityName;
 
 		/**
 		 * constructor.
 		 * @param encoderType encoderType
+		 * @param meta has meta
 		 * @param entityName entityName
 		 */
-		EncodedType(final EncoderType encoderType, final String entityName) {
+		EncodedType(final EncoderType encoderType, final boolean meta, final String entityName) {
 			this.encoderType = encoderType;
-			contentType = encoderType.createContentType(entityName);
+			this.meta = meta;
+			this.entityName = entityName;
 		}
 
 		/**
@@ -163,8 +162,22 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		/**
 		 * @return contentType
 		 */
-		public String getContentType() {
-			return contentType;
+		public boolean hasMeta() {
+			return meta;
+		}
+
+		/**
+		 * @return entityName
+		 */
+		public String getEntityName() {
+			return entityName;
+		}
+
+		/**
+		 * @return contentType
+		 */
+		public String obtainContentType() {
+			return encoderType.createContentType(entityName, meta);
 		}
 	}
 
@@ -174,12 +187,10 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public JsonConverterRestHandlerPlugin(final Option<TokenManager> tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(tokenManager);
+	public JsonConverterRestHandlerPlugin(final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
-		this.tokenManager = tokenManager;
 		this.jsonWriterEngine = jsonWriterEngine;
 
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
@@ -218,41 +229,44 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
 		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
-			try {
-				boolean found = false;
-				JsonReader jsonReaderToApply = null;
-				JsonConverter jsonConverterToApply = null;
-				for (final JsonReader jsonReader : jsonReaders.get(endPointParam.getParamType())) {
-					jsonReaderToApply = jsonReader;
+			readParameterValue(request, routeContext, endPointParam);
+		}
+		final Object result = chain.handle(request, response, routeContext);
+		return convertResultToJson(result, request, response, routeContext);
+	}
 
-					for (final JsonConverter jsonConverter : jsonConverters.get(jsonReader.getSupportedOutput())) {
-						if (jsonConverter.canHandle(endPointParam.getType())) {
-							jsonConverterToApply = jsonConverter;
-							found = true;
-							break;
-						}
-					}
-					if (found) {
+	private void readParameterValue(final Request request, final RouteContext routeContext, final EndPointParam endPointParam) throws VSecurityException {
+		try {
+			boolean found = false;
+			JsonReader jsonReaderToApply = null;
+			JsonConverter jsonConverterToApply = null;
+			for (final JsonReader jsonReader : jsonReaders.get(endPointParam.getParamType())) {
+				jsonReaderToApply = jsonReader;
+
+				for (final JsonConverter jsonConverter : jsonConverters.get(jsonReader.getSupportedOutput())) {
+					if (jsonConverter.canHandle(endPointParam.getType())) {
+						jsonConverterToApply = jsonConverter;
+						found = true;
 						break;
 					}
 				}
-				//-----
-				Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType());
-				Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType(), endPointParam.getType());
-				//-----
-				final Object converterSource = jsonReaderToApply.extractData(request, endPointParam, routeContext);
-				jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
-				Assertion.checkNotNull(routeContext.getParamValue(endPointParam), "RestParam not found : {0}", endPointParam);
-			} catch (final JsonSyntaxException e) {
-				throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
+				if (found) {
+					break;
+				}
 			}
+			//-----
+			Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType());
+			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType(), endPointParam.getType());
+			//-----
+			final Object converterSource = jsonReaderToApply.extractData(request, endPointParam, routeContext);
+			jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
+			Assertion.checkNotNull(routeContext.getParamValue(endPointParam), "RestParam not found : {0}", endPointParam);
+		} catch (final JsonSyntaxException e) {
+			throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
 		}
-
-		final Object result = chain.handle(request, response, routeContext);
-		return convertResult(result, request, response, routeContext);
 	}
 
-	private String convertResult(final Object result, final Request request, final Response response, final RouteContext routeContext) {
+	private String convertResultToJson(final Object result, final Request request, final Response response, final RouteContext routeContext) {
 		if (result == null) {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
 			return ""; //jetty understand null as 404 not found
@@ -273,34 +287,38 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			final EncodedType encodedType = findEncodedType(result);
 			final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 			if (encodedType.getEncoderType() != EncoderType.JSON) {
-				contentType.append(";").append(encodedType.getContentType());
+				contentType.append(";").append(encodedType.obtainContentType());
 			}
 			response.type(contentType.toString());
-			return writeValue(result, response, encodedType, routeContext.getEndPointDefinition());
+			return writeValue(result, response, routeContext.getEndPointDefinition());
 		}
 	}
 
-	private static EncodedType findEncodedType(final Object result) {
+	private static EncodedType findEncodedType(final Object value) {
 		final EncodedType encodedType;
-		if (result instanceof List) {
-			if (result instanceof DtList) {
-				final DtList<?> dtList = (DtList<?>) result;
-				if (hasComplexTypeMeta(dtList)) {
-					encodedType = new EncodedType(EncoderType.JSON_LIST_META, dtList.getDefinition().getClassSimpleName());
-				} else {
-					encodedType = new EncodedType(EncoderType.JSON_LIST, dtList.getDefinition().getClassSimpleName());
-				}
+		if (value instanceof DtList) {
+			final DtList<?> dtList = (DtList<?>) value;
+			encodedType = new EncodedType(EncoderType.JSON_LIST, hasComplexTypeMeta(dtList), dtList.getDefinition().getClassSimpleName());
+		} else if (value instanceof List) {
+			final String entityName = ((List) value).isEmpty() ? Object.class.getSimpleName() : ((List) value).get(0).getClass().getSimpleName();
+			encodedType = new EncodedType(EncoderType.JSON_LIST, false, entityName);
+		} else if (value instanceof DtObject) {
+			encodedType = new EncodedType(EncoderType.JSON_ENTITY, false, value.getClass().getSimpleName());
+		} else if (value instanceof UiContext) {
+			encodedType = new EncodedType(EncoderType.JSON_UI_CONTEXT, false, value.getClass().getSimpleName());
+		} else if (value instanceof ExtendedObject<?>) {
+			//ce type n'est qu'un conteneur de l'objet sous jacent, lorsqu'il ne contient que le tokenId il ne modifie par le type mime
+			final EncodedType innerEncodedType = findEncodedType(((ExtendedObject) value).getInnerObject());
+			//si le type interne n'as pas de meta, et que le ExtendedObject contient d'autres metas que le seul serverSideToken, on change le type mime
+			if (!innerEncodedType.hasMeta()
+					&& !(((ExtendedObject) value).isEmpty()
+					|| (((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)))) {
+				encodedType = new EncodedType(innerEncodedType.getEncoderType(), true, innerEncodedType.getEntityName());
 			} else {
-				encodedType = new EncodedType(EncoderType.JSON_LIST, Object.class.getSimpleName());
+				encodedType = innerEncodedType;
 			}
-		} else if (result instanceof DtObject) {
-			encodedType = new EncodedType(EncoderType.JSON_ENTITY, result.getClass().getSimpleName());
-		} else if (result instanceof DtObjectExtended<?>) {
-			encodedType = new EncodedType(EncoderType.JSON_ENTITY_META, ((DtObjectExtended<?>) result).getInnerObject().getClass().getSimpleName());
-		} else if (result instanceof UiContext) {
-			encodedType = new EncodedType(EncoderType.JSON_UI_CONTEXT, result.getClass().getSimpleName());
 		} else {
-			encodedType = new EncodedType(EncoderType.JSON, result.getClass().getSimpleName());
+			encodedType = new EncodedType(EncoderType.JSON, false, value.getClass().getSimpleName());
 		}
 		return encodedType;
 
@@ -325,57 +343,33 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		return false;
 	}
 
-	private String writeValue(final Object value, final Response response, final EncodedType encodedType, final EndPointDefinition endPointDefinition) {
+	private String writeValue(final Object value, final Response response, final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(value);
 		//-----
-		final String tokenId;
-		if (endPointDefinition.isServerSideSave()) {
-			Assertion.checkArgument(tokenManager.isDefined(), "TokenManager must be declared in order to use Vega ServerSide features");
-			Assertion.checkArgument(DtObject.class.isInstance(value)
-					|| DtObjectExtended.class.isInstance(value)
-					|| DtList.class.isInstance(value)
-					|| UiContext.class.isInstance(value), "Return type can't be ServerSide : {0}", value.getClass().getSimpleName());
-			tokenId = tokenManager.get().put((Serializable) value);
+		if (value instanceof DtList && hasComplexTypeMeta((DtList) value)) {
+			return toJson(value, getListMetas((DtList) value), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+		} else if (value instanceof List) {
+			writeListMetaToHeader((List) value, response);
+			return toJson(value, Collections.<String, Serializable> emptyMap(), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+		} else if (value instanceof DtObject) {
+			return toJson(value, Collections.<String, Serializable> emptyMap(), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+		} else if (value instanceof UiContext) {
+			//TODO build json in jsonWriterEngine
+			final StringBuilder sb = new StringBuilder().append("{");
+			String sep = "";
+			for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
+				sb.append(sep);
+				final String encodedValue = writeValue(entry.getValue(), response, endPointDefinition);
+				sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
+				sep = ", ";
+			}
+			sb.append("}");
+			return sb.toString();
+		} else if (value instanceof ExtendedObject<?>) {
+			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
+			return toJson(extendedObject.getInnerObject(), extendedObject, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 		} else {
-			tokenId = null;
-		}
-
-		switch (encodedType.getEncoderType()) {
-			case JSON:
-				return jsonWriterEngine.toJson(value);
-			case JSON_ENTITY:
-				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
-			case JSON_ENTITY_META:
-				final DtObjectExtended<?> dtoExtended = (DtObjectExtended<?>) value;
-				return toJson(dtoExtended.getInnerObject(), dtoExtended, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
-			case JSON_LIST:
-				writeListMetaToHeader((List) value, response);
-				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
-			case JSON_LIST_META:
-				return toJson(value, getListMetas((DtList) value), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
-			case JSON_UI_CONTEXT:
-				//TODO build json in jsonWriterEngine
-				final StringBuilder sb = new StringBuilder().append("{");
-				String sep = "";
-				for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
-					sb.append(sep);
-					final Serializable entryValue = entry.getValue();
-					String encodedValue;
-					if (entryValue instanceof DtList) {
-						final DtList<?> dtList = (DtList<?>) entryValue;
-						encodedValue = writeValue(entryValue, response, new EncodedType(EncoderType.JSON_LIST_META, dtList.getDefinition().getClassSimpleName()), endPointDefinition);
-					} else if (entryValue instanceof DtObject || entryValue instanceof DtObjectExtended) {
-						encodedValue = writeValue(entryValue, response, findEncodedType(entryValue), endPointDefinition);
-					} else {
-						encodedValue = jsonWriterEngine.toJson(entryValue);
-					}
-					sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
-					sep = ", ";
-				}
-				sb.append("}");
-				return sb.toString();
-			default:
-				throw new IllegalArgumentException("Return type :" + value.getClass().getSimpleName() + " is not supported");
+			return jsonWriterEngine.toJson(value);
 		}
 	}
 
@@ -406,14 +400,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		return metaDatas;
 	}
 
-	private String toJson(final Object value, final Map<String, Serializable> metaData, final String tokenId, final Set<String> includedFields, final Set<String> excludedFields) {
-		final Map<String, Serializable> metaDataToSend;
-		if (tokenId != null) {
-			metaDataToSend = new HashMap<>(metaData);
-			metaDataToSend.put(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-		} else {
-			metaDataToSend = metaData;
-		}
-		return jsonWriterEngine.toJsonWithMeta(value, metaDataToSend, includedFields, excludedFields);
+	private String toJson(final Object value, final Map<String, Serializable> metaData, final Set<String> includedFields, final Set<String> excludedFields) {
+		return jsonWriterEngine.toJsonWithMeta(value, metaData, includedFields, excludedFields);
 	}
 }

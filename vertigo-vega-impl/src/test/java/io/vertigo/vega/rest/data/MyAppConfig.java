@@ -67,6 +67,7 @@ import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ServerSideStateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
@@ -177,8 +178,8 @@ public final class MyAppConfig {
 					.addPlugin(RateLimitingRestHandlerPlugin.class)
 					.addPlugin(SecurityRestHandlerPlugin.class)
 					.addPlugin(AccessTokenRestHandlerPlugin.class)
-					//.beginPlugin(OldJsonConverterRestHandlerPlugin.class).endPlugin()
 					.addPlugin(JsonConverterRestHandlerPlugin.class)
+					.addPlugin(ServerSideStateRestHandlerPlugin.class)
 					.addPlugin(PaginatorAndSortRestHandlerPlugin.class)
 					.addPlugin(ValidatorRestHandlerPlugin.class)
 					.addPlugin(RestfulServiceRestHandlerPlugin.class)
