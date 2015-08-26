@@ -241,7 +241,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 */
 	private void print(final PrintStream out) {
 		out.println("####################################################################################################");
-		printComponent(out, "Module", "ClassName", "Plugins");
+		printComponent(out, "Module", "component");
 		out.println("# -------------------------+------------------------+----------------------------------------------#");
 		//-----
 		for (final Entry<String, Object> entry : components.entrySet()) {

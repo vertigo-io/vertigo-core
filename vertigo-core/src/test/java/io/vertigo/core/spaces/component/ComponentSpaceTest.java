@@ -72,7 +72,7 @@ public final class ComponentSpaceTest {
 			.beginModule("Bio")
 				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
 				//This plugin DummyPlugin is not used By BioManager !!
-				.beginPlugin(DummyPlugin.class).endPlugin()
+				.addPlugin(DummyPlugin.class)
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
 				.endComponent()

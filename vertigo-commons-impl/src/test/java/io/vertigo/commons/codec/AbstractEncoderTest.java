@@ -44,7 +44,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 		// @formatter:off
 		return new AppConfigBuilder()
 			.beginModule("commons").
-				beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
+				addComponent(CodecManager.class, CodecManagerImpl.class)
 			.endModule()
 			.build();
 		// @formatter:on

@@ -47,7 +47,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		return new AppConfigBuilder()
 			.beginModule("commons")
 				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
+				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addComponent(ConfigManager.class, ConfigManagerImpl.class)
 				.beginPlugin(XmlConfigPlugin.class)
 					.addParam("url", "io/vertigo/commons/config/hierarchy/basic-app-config.xml")

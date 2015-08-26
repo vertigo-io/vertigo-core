@@ -48,7 +48,7 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 		return new AppConfigBuilder()
 			.beginModule("vertigo")
 				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
+				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.beginComponent(ConfigManager.class, ConfigManagerImpl.class).endComponent()
 				.beginPlugin(XmlConfigPlugin.class)
 					.addParam("url", "io/vertigo/commons/config/multi/app-config.xml")

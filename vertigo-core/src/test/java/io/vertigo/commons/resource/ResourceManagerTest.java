@@ -44,8 +44,8 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 		//@formatter:off
 		return new AppConfigBuilder()
 			.beginModule("spaces")
-				.beginComponent(ResourceManager.class, ResourceManagerImpl.class).endComponent()
-				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
 			.endModule()
 			.build();
 		// @formatter:on

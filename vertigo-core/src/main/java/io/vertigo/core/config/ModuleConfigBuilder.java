@@ -138,6 +138,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return doBeginComponent(Option.<Class<?>> none(), implClass, false);
 	}
 
+	public ModuleConfigBuilder addComponent(final Class<?> implClass) {
+		return beginComponent(implClass).endComponent();
+	}
+
 	public ModuleConfigBuilder addComponent(final Class<?> apiClass, final Class<?> implClass) {
 		return beginComponent(apiClass, implClass).endComponent();
 	}
@@ -180,6 +184,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		}
 		ended = true;
 		return myAppConfigBuilder;
+	}
+
+	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass) {
+		return beginPlugin(pluginImplClass).endPlugin();
 	}
 
 	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {

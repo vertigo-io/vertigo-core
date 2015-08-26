@@ -114,12 +114,12 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.addParam("locales", "locales")
 				.endComponent()
-				.beginComponent(ResourceManager.class, ResourceManagerImpl.class).endComponent()
-				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class).endComponent()
-				.beginPlugin(KprLoaderPlugin.class).endPlugin()
-				.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+				.addPlugin(KprLoaderPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule();	
 		// @formatter:on
 	}

@@ -47,7 +47,7 @@ public final class PropertiesConfigManagerTest extends AbstractTestCaseJU4 {
 		return new AppConfigBuilder()
 			.beginModule("spaces")
 				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
+				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addComponent(ConfigManager.class, ConfigManagerImpl.class)
 				.beginPlugin( PropertiesConfigPlugin.class)
 					.addParam("url", "io/vertigo/commons/config/properties/app-config.properties")
