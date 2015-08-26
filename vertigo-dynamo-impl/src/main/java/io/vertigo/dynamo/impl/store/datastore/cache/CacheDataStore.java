@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.store.datastore.BrokerConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
@@ -47,7 +47,7 @@ public final class CacheDataStore {
 	 * Constructeur.
 	 * @param brokerConfig Configuration
 	 */
-	public CacheDataStore(final BrokerConfigImpl brokerConfig) {
+	public CacheDataStore(final DataStoreConfigImpl brokerConfig) {
 		Assertion.checkNotNull(brokerConfig);
 		//-----
 		storeManager = brokerConfig.getStoreManager();

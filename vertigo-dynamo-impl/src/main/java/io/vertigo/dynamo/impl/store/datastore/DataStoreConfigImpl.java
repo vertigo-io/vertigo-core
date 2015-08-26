@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.datastore.BrokerConfig;
+import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
@@ -33,7 +33,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class BrokerConfigImpl implements BrokerConfig {
+public final class DataStoreConfigImpl implements DataStoreConfig {
 	private final CacheDataStoreConfig cacheStoreConfig;
 	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
@@ -47,7 +47,7 @@ public final class BrokerConfigImpl implements BrokerConfig {
 	 * @param storeManager Manager de persistence
 	 * @param eventsManager Manager d'events
 	 */
-	public BrokerConfigImpl(final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
+	public DataStoreConfigImpl(final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(eventsManager);

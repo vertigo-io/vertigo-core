@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  *
  * @author pchretien
  */
-public interface BrokerConfig {
+public interface DataStoreConfig {
 
 	/**
 	 * Enregistre si un DT peut être mis en cache et la façon de charger les données.

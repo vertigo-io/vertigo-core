@@ -21,8 +21,8 @@ package io.vertigo.dynamo.impl.store;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.impl.store.datastore.BrokerConfigImpl;
-import io.vertigo.dynamo.impl.store.datastore.BrokerImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileBrokerConfig;
 import io.vertigo.dynamo.impl.store.filestore.FileInfoBrokerImpl;
@@ -31,9 +31,9 @@ import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
 import io.vertigo.dynamo.impl.store.util.BrokerNNImpl;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.datastore.BrokerConfig;
 import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
+import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
@@ -56,7 +56,7 @@ import javax.inject.Inject;
 */
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
-	private final BrokerConfigImpl brokerConfig;
+	private final DataStoreConfigImpl dataStoreConfig;
 	/** Broker des objets métier et des listes. */
 	private final DataStore broker;
 	private final FileStore fileInfoBroker;
@@ -87,12 +87,12 @@ public final class StoreManagerImpl implements StoreManager {
 		Assertion.checkNotNull(eventManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
-		brokerConfig = new BrokerConfigImpl(cacheManager, this, eventManager);
+		dataStoreConfig = new DataStoreConfigImpl(cacheManager, this, eventManager);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
-		brokerConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
-		broker = new BrokerImpl(brokerConfig);
+		dataStoreConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
+		broker = new DataStoreImpl(dataStoreConfig);
 		//-----
 		kvStore = new KVStoreImpl(kvDataStorePlugins);
 		//-----
@@ -129,8 +129,8 @@ public final class StoreManagerImpl implements StoreManager {
 	 * @return Configuration du StoreManager
 	 */
 	@Override
-	public BrokerConfig getBrokerConfig() {
-		return brokerConfig;
+	public DataStoreConfig getDataStoreConfig() {
+		return dataStoreConfig;
 	}
 
 	/** {@inheritDoc} */

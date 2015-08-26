@@ -42,7 +42,7 @@ import io.vertigo.lang.Assertion;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-public final class BrokerImpl implements DataStore {
+public final class DataStoreImpl implements DataStore {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
@@ -53,7 +53,7 @@ public final class BrokerImpl implements DataStore {
 	 * Une fois le broker construit la configuration est bloquée.
 	 * @param brokerConfig Configuration du broker
 	 */
-	public BrokerImpl(final BrokerConfigImpl brokerConfig) {
+	public DataStoreImpl(final DataStoreConfigImpl brokerConfig) {
 		Assertion.checkNotNull(brokerConfig);
 		//-----
 		//On vérrouille la configuration.
