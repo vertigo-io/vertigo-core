@@ -1457,18 +1457,16 @@ public final class RestManagerTest {
 	}
 
 	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address, final String email, final String... tels) {
-		final Map<String, Object> contact = new HashMap<>();
-		if (conId != null) {
-			contact.put("conId", conId);
-		}
-		contact.put("honorificCode", honorific);
-		contact.put("name", name);
-		contact.put("firstName", firstName);
-		contact.put("birthday", birthday);
-		contact.put("address", address);
-		contact.put("email", email);
-		contact.put("tels", Arrays.asList(tels));
-		return contact;
+		return new MapBuilder<String, Object>()
+				.putNullable("conId", conId)
+				.put("honorificCode", honorific)
+				.put("name", name)
+				.put("firstName", firstName)
+				.put("birthday", birthday)
+				.put("address", address)
+				.put("email", email)
+				.put("tels", Arrays.asList(tels))
+				.build();
 	}
 
 	private static Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
