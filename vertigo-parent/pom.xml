@@ -112,6 +112,7 @@ limitations under the License. -->
 			    <artifactId>maven-surefire-plugin</artifactId>
 			    <version>2.18.1</version>
 			    <configuration>
+			        <testFailureIgnore>true</testFailureIgnore>
 			        <junitArtifactName>junit:junit</junitArtifactName>
 			        <encoding>${project.build.sourceEncoding}</encoding>
 			        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
