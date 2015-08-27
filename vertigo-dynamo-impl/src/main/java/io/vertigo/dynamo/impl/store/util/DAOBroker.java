@@ -51,7 +51,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
-	protected final DataStore broker;
+	protected final DataStore dataStore;
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<D, P> brokerBatch;
 	private final TaskManager taskManager;
@@ -79,7 +79,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
-		broker = storeManager.getDataStore();
+		dataStore = storeManager.getDataStore();
 		brokerNN = storeManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
 		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);
@@ -97,9 +97,9 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 */
 	public final void save(final D dto) {
 		if (DtObjectUtil.getId(dto) == null) {
-			broker.create(dto);
+			dataStore.create(dto);
 		} else {
-			broker.update(dto);
+			dataStore.update(dto);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dto Object to create
 	 */
 	public final void create(final D dto) {
-		broker.create(dto);
+		dataStore.create(dto);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dto Object to update
 	 */
 	public final void update(final D dto) {
-		broker.update(dto);
+		dataStore.update(dto);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param uri URI de l'objet à supprimer
 	 */
 	public final void delete(final URI<D> uri) {
-		broker.delete(uri);
+		dataStore.delete(uri);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return broker.<D> get(uri);
+		return dataStore.<D> get(uri);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().addFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */

@@ -45,18 +45,18 @@ public final class CacheDataStore {
 
 	/**
 	 * Constructeur.
-	 * @param brokerConfig Configuration
+	 * @param dataStoreConfig Configuration
 	 */
-	public CacheDataStore(final DataStoreConfigImpl brokerConfig) {
-		Assertion.checkNotNull(brokerConfig);
+	public CacheDataStore(final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(dataStoreConfig);
 		//-----
-		storeManager = brokerConfig.getStoreManager();
-		cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
-		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
+		storeManager = dataStoreConfig.getStoreManager();
+		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
+		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {

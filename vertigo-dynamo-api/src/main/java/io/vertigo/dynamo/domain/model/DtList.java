@@ -148,11 +148,6 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @return URI de la ressource
 	 */
 	public DtListURI getURI() {
-		/*
-		 * if (uri == null) {
-		 * uri = broker.Helper.createURI(this);
-		 * }
-		 */
 		return uri;
 	}
 

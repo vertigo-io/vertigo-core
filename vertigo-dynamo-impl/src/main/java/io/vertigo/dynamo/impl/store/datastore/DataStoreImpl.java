@@ -36,7 +36,7 @@ import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 /**
- * Implémentation Standard du Broker.
+ * DataStore.
  * Cette implémentation s'appuie sur le concept de Store.
  * Un store définit les modalités du stockage
  * alors que le broker se concentre sur la problématique des accès aux ressources.
@@ -50,18 +50,18 @@ public final class DataStoreImpl implements DataStore {
 
 	/**
 	 * Constructeur.
-	 * Une fois le broker construit la configuration est bloquée.
-	 * @param brokerConfig Configuration du broker
+	 * Une fois le dataStore construit la configuration est bloquée.
+	 * @param dataStoreConfig Configuration du broker
 	 */
-	public DataStoreImpl(final DataStoreConfigImpl brokerConfig) {
-		Assertion.checkNotNull(brokerConfig);
+	public DataStoreImpl(final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		//On vérrouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(brokerConfig);
-		eventsManager = brokerConfig.getEventsManager();
+		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
+		cacheDataStore = new CacheDataStore(dataStoreConfig);
+		eventsManager = dataStoreConfig.getEventsManager();
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {

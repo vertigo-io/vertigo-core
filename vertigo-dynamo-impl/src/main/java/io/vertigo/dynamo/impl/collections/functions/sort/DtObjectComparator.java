@@ -142,10 +142,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		Assertion.checkNotNull(dtcURIForMasterData);
 		Assertion.checkNotNull(sortStateParam);
 		//-----
-		final DataStore broker = storeManager.getDataStore();
+		final DataStore dataStore = storeManager.getDataStore();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
-		return new MasterDataComparator(dtcURIForMasterData, sortState, broker, mdFieldSort);
+		return new MasterDataComparator(dtcURIForMasterData, sortState, dataStore, mdFieldSort);
 	}
 
 	private static final class DefaultComparator implements Comparator<Object> {
@@ -165,13 +165,13 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	private static final class MasterDataComparator implements Comparator<Object> {
 		private final DtListURIForMasterData dtcURIForMasterData;
 		private final SortState sortState;
-		private final DataStore broker;
+		private final DataStore dataStore;
 		private final DtField mdFieldSort;
 
 		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final SortState sortState, final DataStore broker, final DtField mdFieldSort) {
 			this.dtcURIForMasterData = dtcURIForMasterData;
 			this.sortState = sortState;
-			this.broker = broker;
+			this.dataStore = broker;
 			this.mdFieldSort = mdFieldSort;
 		}
 
@@ -179,7 +179,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
-				dto = broker.get(uri);
+				dto = dataStore.get(uri);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
 				throw new RuntimeException(e);
