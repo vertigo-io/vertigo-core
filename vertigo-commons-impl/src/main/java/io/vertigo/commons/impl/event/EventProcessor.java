@@ -21,14 +21,13 @@ package io.vertigo.commons.impl.event;
 import io.vertigo.commons.event.Event;
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.commons.event.EventListener;
-import io.vertigo.lang.Plugin;
 
 import java.io.Serializable;
 
 /**
  * @author pchretien
  */
-public interface EventPlugin extends Plugin {
+interface EventProcessor {
 
 	/**
 	 * Emit an event on a channel.

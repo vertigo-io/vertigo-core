@@ -23,7 +23,6 @@ import io.vertigo.commons.event.EventBuilder;
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.commons.event.EventListener;
 import io.vertigo.commons.event.EventManager;
-import io.vertigo.commons.plugins.event.local.LocalEventsPlugin;
 
 import java.io.Serializable;
 
@@ -31,12 +30,12 @@ import java.io.Serializable;
  * @author pchretien, npiedeloup
  */
 public final class EventManagerImpl implements EventManager {
-	private final EventPlugin localEventsPlugin = new LocalEventsPlugin();
+	private final EventProcessor eventProcessor = new LocalEventProcessor();
 
 	@Override
 	public <P extends Serializable> void fire(final EventChannel<P> channel, final P payload) {
 		final Event<P> event = new EventBuilder().withPayload(payload).build();
-		localEventsPlugin.emit(channel, event);
+		eventProcessor.emit(channel, event);
 	}
 
 	/**
@@ -46,6 +45,6 @@ public final class EventManagerImpl implements EventManager {
 	 */
 	@Override
 	public <P extends Serializable> void register(final EventChannel<P> channel, final EventListener<P> eventsListener) {
-		localEventsPlugin.register(channel, eventsListener);
+		eventProcessor.register(channel, eventsListener);
 	}
 }

@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.event.local;
+package io.vertigo.commons.impl.event;
 
 import io.vertigo.commons.event.Event;
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.commons.event.EventListener;
-import io.vertigo.commons.impl.event.EventPlugin;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ import java.util.Set;
 /**
  * @author npiedeloup
  */
-public final class LocalEventsPlugin implements EventPlugin {
+final class LocalEventProcessor implements EventProcessor {
 	private final Map<EventChannel<?>, Set<EventListener<?>>> listenersPerChannel = new HashMap<>();
 
 	/** {@inheritDoc} */
