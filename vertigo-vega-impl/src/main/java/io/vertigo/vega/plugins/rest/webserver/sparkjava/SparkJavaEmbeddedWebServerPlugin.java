@@ -16,13 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
+package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.vega.impl.rest.RoutesRegisterPlugin;
+import io.vertigo.lang.Activeable;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
-import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,43 +30,30 @@ import spark.Spark;
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin {
-	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
+public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin implements Activeable {
 
+	private final int port;
+
+	/**
+	 * @param port Server port
+	 */
 	@Inject
-	public SparkJavaRoutesRegisterPlugin(@Named("port") final int port) {
-		Spark.setPort(port);
-		//---
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		Spark.before(new JettyMultipartConfig(tempDir));
-
+	public SparkJavaEmbeddedWebServerPlugin(@Named("port") final int port) {
+		this.port = port;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerWsRoute(final HandlerChain handlerChain, final EndPointDefinition endPointDefinition) {
-		Assertion.checkNotNull(handlerChain);
-		Assertion.checkNotNull(endPointDefinition);
-		//-----
-		final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(endPointDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
-		switch (endPointDefinition.getVerb()) {
-			case GET:
-				Spark.get(sparkJavaRoute);
-				break;
-			case POST:
-				Spark.post(sparkJavaRoute);
-				break;
-			case PUT:
-				Spark.put(sparkJavaRoute);
-				break;
-			case PATCH:
-				Spark.patch(sparkJavaRoute);
-				break;
-			case DELETE:
-				Spark.delete(sparkJavaRoute);
-				break;
-			default:
-				throw new UnsupportedOperationException();
-		}
+	public void start() {
+		Spark.setPort(port);
+		//---
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		Spark.before(new JettyMultipartConfig(tempDir));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		//nothing
 	}
 }

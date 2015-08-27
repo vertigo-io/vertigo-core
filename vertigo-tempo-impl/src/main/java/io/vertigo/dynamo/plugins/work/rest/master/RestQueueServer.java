@@ -155,6 +155,12 @@ final class RestQueueServer {
 		}
 	}
 
+	/**
+	 * Get a work todo. returned as Json.
+	 * @param workType Type of work
+	 * @param nodeId client node id
+	 * @return Work as json array : [workItemId, base64WorkItem]
+	 */
 	String pollWork(final String workType, final String nodeId) {
 		//-----
 		touchNode(nodeId, workType);
@@ -174,10 +180,20 @@ final class RestQueueServer {
 		return json;
 	}
 
+	/**
+	 * Signal the start of the work.
+	 * @param workId work id
+	 */
 	void onStart(final String workId) {
 		LOG.info("onStart(" + workId + ")");
 	}
 
+	/**
+	 * Signal the end of the work.
+	 * @param success if success
+	 * @param workId work id
+	 * @param base64Result result base64 encoded
+	 */
 	void onDone(final boolean success, final String workId, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + workId + ")");
 		//-----
@@ -191,6 +207,11 @@ final class RestQueueServer {
 		resultQueue.add(new WorkResult(workId, result, error));
 	}
 
+	/**
+	 * Poll next result.
+	 * @param waitTimeSeconds Time to wait next result
+	 * @return WorkResult or null
+	 */
 	WorkResult pollResult(final int waitTimeSeconds) {
 		try {
 			return resultQueue.poll(waitTimeSeconds, TimeUnit.SECONDS);
@@ -200,6 +221,9 @@ final class RestQueueServer {
 		}
 	}
 
+	/**
+	 * @return Api version
+	 */
 	String getApiVersion() {
 		return "1.0.0";
 	}
@@ -287,6 +311,12 @@ final class RestQueueServer {
 		}
 	}
 
+	/**
+	 * Deamon used to detect dead node.
+	 * Detection use the plugin param 'deadWorkTypeTimeoutSec'
+	 * Work items bind to dead nodes are send to another node.
+	 * @author npiedeloup
+	 */
 	public static class DeadNodeDetectorDaemon implements Daemon {
 		private final RestQueueServer restQueueServer;
 

@@ -72,32 +72,33 @@ public final class RestManagerImpl implements RestManager {
 			+ "- " + RestfulServiceRestHandlerPlugin.class.getSimpleName() + "\n";
 
 	private final EndPointIntrospectorPlugin endPointIntrospectorPlugin;
-	private final RoutesRegisterPlugin routesRegisterPlugin;
+	private final WebServerPlugin webServerPlugin;
 	private final HandlerChain handlerChain;
 
 	/**
 	 * Constructor.
 	 * @param endPointIntrospectorPlugin EndPointIntrospector Plugin
-	 * @param routesRegisterPlugin Routes register plugin
+	 * @param webServerPlugin WebServer use to serve routes
 	 * @param restHandlerPlugins RestHandler plugins
 	 */
 	@Inject
 	public RestManagerImpl(
 			final EndPointIntrospectorPlugin endPointIntrospectorPlugin,
-			final RoutesRegisterPlugin routesRegisterPlugin,
+			final WebServerPlugin webServerPlugin,
 			final List<RestHandlerPlugin> restHandlerPlugins) {
 		Assertion.checkNotNull(endPointIntrospectorPlugin);
-		Assertion.checkNotNull(routesRegisterPlugin);
+		Assertion.checkNotNull(webServerPlugin);
 		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No RestHandlerPlugins found, check you have declared your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkArgument(restHandlerPlugins.get(restHandlerPlugins.size() - 1) instanceof RestfulServiceRestHandlerPlugin,
 				"RestHandlerPlugins must end with a RestfulServiceHandler in order to dispatsh request to WebService, check your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
+		Assertion.checkNotNull(webServerPlugin);
 		//-----
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
-		this.routesRegisterPlugin = routesRegisterPlugin;
+		this.webServerPlugin = webServerPlugin;
 		handlerChain = new HandlerChain(restHandlerPlugins);
-
+		//we do nothing with webServerPlugin
 		Home.getApp().registerAppListener(new AppListener() {
-
+			/** {@inheritDoc} */
 			@Override
 			public void onPostStart() {
 				final List<EndPointDefinition> endPointDefinitions = RestManagerImpl.this.scanComponents(Home.getComponentSpace());
@@ -106,21 +107,12 @@ public final class RestManagerImpl implements RestManager {
 		});
 	}
 
-	private void registerEndPointDefinitions(final DefinitionSpace definitionSpace, final List<EndPointDefinition> endPointDefinitions) {
-		// We register EndPoint Definition in this order
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			Home.getDefinitionSpace().put(endPointDefinition);
-		}
-
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			registerWsRoute(endPointDefinition);
-		}
-	}
-
 	/**
-	 * Scan ResfulServices as EndPointDefinitions on all the components.
+	 * Scan WebServices as EndPointDefinitions on all the components.
+	 * @param componentSpace ComponentSpace
+	 * @return Scanned endPointDefinitions
 	 */
-	private List<EndPointDefinition> scanComponents(final ComponentSpace componentSpace) {
+	List<EndPointDefinition> scanComponents(final ComponentSpace componentSpace) {
 		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
 
 		//1- We introspect all RestfulService class
@@ -138,12 +130,16 @@ public final class RestManagerImpl implements RestManager {
 	}
 
 	/**
-		 * Create WsRestRoute with RestHandlerPlugins list, and register route with the RoutesRegisterPlugin.
-	 * @param endPointDefinition EndPointDefinifition to register
-		 */
-	private void registerWsRoute(final EndPointDefinition endPointDefinition) {
-		//1- register handlerChain for this endPointDefinition
-		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
+	 * Register EndPointDefinitions to DefinitionSpace.
+	 * @param definitionSpace DefinitionSpace
+	 * @param endPointDefinitions EndPointDefinitions
+	 */
+	void registerEndPointDefinitions(final DefinitionSpace definitionSpace, final List<EndPointDefinition> endPointDefinitions) {
+		// We register EndPoint Definition in this order
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
+			definitionSpace.put(endPointDefinition);
+		}
+		webServerPlugin.registerWsRoute(handlerChain, endPointDefinitions);
 	}
 
 	private static final class EndPointComparator implements Comparator<EndPointDefinition>, Serializable {

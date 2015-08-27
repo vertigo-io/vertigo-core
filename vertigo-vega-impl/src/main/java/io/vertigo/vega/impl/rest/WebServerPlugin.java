@@ -22,16 +22,18 @@ import io.vertigo.lang.Plugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
+import java.util.List;
+
 /**
  * Register an handlerchain as a route for this endpoint.
  * @author npiedeloup
  */
-public interface RoutesRegisterPlugin extends Plugin {
+public interface WebServerPlugin extends Plugin {
 
 	/**
 	 * @param handlerChain HandlerChain of this route
-	 * @param endPointDefinition EndPointDefinition
+	 * @param endPointDefinitions EndPointDefinitions to register
 	 */
-	void registerWsRoute(HandlerChain handlerChain, EndPointDefinition endPointDefinition);
+	void registerWsRoute(HandlerChain handlerChain, List<EndPointDefinition> endPointDefinitions);
 
 }

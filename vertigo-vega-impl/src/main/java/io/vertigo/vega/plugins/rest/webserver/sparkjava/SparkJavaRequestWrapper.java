@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
+package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -65,7 +65,8 @@ import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
+import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
+import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.data.domain.Contact;
@@ -122,7 +123,7 @@ public final class MyAppConfig {
 			.beginModule(CommonsFeatures.class)
 				.withCache(MemoryCachePlugin.class)
 			.endModule()
-			
+
 			.beginModule("dynamo").withNoAPI()
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
@@ -134,7 +135,7 @@ public final class MyAppConfig {
 						.addParam("dataStoreName", "UiSecurityStore")
 						.addParam("timeToLiveSeconds", "120")
 					.endPlugin()
-			
+
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
 			.endModule()
 			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)
@@ -160,8 +161,9 @@ public final class MyAppConfig {
 				.endComponent()
 				.addComponent(RestManager.class, RestManagerImpl.class)
 					.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
-					.beginPlugin(SparkJavaRoutesRegisterPlugin.class)
-						.addParam("port", Integer.toString(WS_PORT))
+					.addPlugin(SparkJavaServletFilterWebServerPlugin.class)
+					.beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
+						.addParam("port", String.valueOf(WS_PORT))
 					.endPlugin()
 					//-- Handlers plugins
 					.addPlugin(ExceptionRestHandlerPlugin.class)

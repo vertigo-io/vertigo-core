@@ -11,7 +11,7 @@ import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
+import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
@@ -53,7 +53,7 @@ public final class VegaFeatures extends Features {
 	}
 
 	public VegaFeatures withPort(final int port) {
-		getModuleConfigBuilder().beginPlugin(SparkJavaRoutesRegisterPlugin.class)
+		getModuleConfigBuilder().beginPlugin(SparkJavaServletFilterWebServerPlugin.class)
 				.addParam("port", Integer.toString(port))
 				.endPlugin();
 		return this;
