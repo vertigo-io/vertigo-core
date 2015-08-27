@@ -18,14 +18,7 @@
  */
 package io.vertigo.vega.rest.data;
 
-import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.commons.event.EventManager;
-import io.vertigo.commons.impl.cache.CacheManagerImpl;
-import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
-import io.vertigo.commons.impl.event.EventManagerImpl;
+import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
@@ -112,7 +105,6 @@ public final class MyAppConfig {
 				.endComponent()
 				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.addPlugin( ClassPathResourceResolverPlugin.class)
-				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
 				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 					.addPlugin(SecurityResourceLoaderPlugin.class)
 					.addPlugin(AnnotationLoaderPlugin.class)
@@ -127,11 +119,13 @@ public final class MyAppConfig {
 					.addParam("userSessionClassName", TestUserSession.class.getName())
 				.endComponent()
 			.endModule()
+			.beginModule(CommonsFeatures.class)
+				.withCache(MemoryCachePlugin.class)
+			.endModule()
+			
 			.beginModule("dynamo").withNoAPI()
-				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
-				.addComponent(EventManager.class, EventManagerImpl.class)
 				.addComponent(StoreManager.class, StoreManagerImpl.class)
 					.beginPlugin(PostgreSqlDataStorePlugin.class)
 						.addParam("sequencePrefix","SEQ_")
@@ -140,8 +134,7 @@ public final class MyAppConfig {
 						.addParam("dataStoreName", "UiSecurityStore")
 						.addParam("timeToLiveSeconds", "120")
 					.endPlugin()
-				.addComponent(CacheManager.class, CacheManagerImpl.class)
-					.addPlugin( MemoryCachePlugin.class)
+			
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
 			.endModule()
 			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)

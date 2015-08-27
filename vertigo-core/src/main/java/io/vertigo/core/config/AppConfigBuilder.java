@@ -20,6 +20,7 @@ package io.vertigo.core.config;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,12 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
 		return new ModuleConfigBuilder(this, name);
+	}
+
+	public <F extends Features> F beginModule(final Class<F> featuresClass) {
+		final F features = ClassUtil.newInstance(featuresClass);
+		features.init(this);
+		return features;
 	}
 
 	/**
