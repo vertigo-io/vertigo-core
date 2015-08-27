@@ -128,8 +128,28 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Ajout d'un composant.
-	* @param implClass Classe d'implémentation du composant
+	 * Add a component.
+	 * @param implClass impl of the component
+	 * @return Builder
+	 */
+	public ModuleConfigBuilder addComponent(final Class<?> implClass) {
+		return beginComponent(implClass).endComponent();
+	}
+
+	/**
+	 * Add a component.
+	 * @param apiClass api of the component
+	 * @param implClass impl of the component
+	 * @return Builder
+	 */
+	public ModuleConfigBuilder addComponent(final Class<?> apiClass, final Class<?> implClass) {
+		return beginComponent(apiClass, implClass).endComponent();
+	}
+
+	/**
+	* Open the builder of a component.
+	* Component is added when you close the builder uising end() method. 
+	* @param implClass impl of the component
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> implClass) {
@@ -138,18 +158,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return doBeginComponent(Option.<Class<?>> none(), implClass, false);
 	}
 
-	public ModuleConfigBuilder addComponent(final Class<?> implClass) {
-		return beginComponent(implClass).endComponent();
-	}
-
-	public ModuleConfigBuilder addComponent(final Class<?> apiClass, final Class<?> implClass) {
-		return beginComponent(apiClass, implClass).endComponent();
-	}
-
 	/**
-	* Ajout d'un composant.
-	* @param apiClass Classe du composant (Interface)
-	* @param implClass Classe d'implémentation du composant
+	* Open the builder of a component.
+	* @param apiClass api of the component
+	* Component is added when you close the builder uising end() method. 
+	* @param implClass impl of the component
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> apiClass, final Class<?> implClass) {
