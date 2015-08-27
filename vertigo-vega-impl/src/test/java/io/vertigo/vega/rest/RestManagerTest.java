@@ -20,6 +20,7 @@ package io.vertigo.vega.rest;
 
 import io.vertigo.core.App;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.rest.data.MyAppConfig;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.HttpStatus;
@@ -1403,12 +1406,33 @@ public final class RestManagerTest {
 	}
 
 	@Test
-	public void testDownloadNotModifiedFile() {
-		loggedAndExpect(given().queryParam("id", 10))
+	public void testDownloadNotModifiedFile() throws ParseException {
+		final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+		//Sans préciser le if-Modified-Since, le serveur retourne le fichier
+		final Response response = loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/downloadNotModifiedFile");
+		final String lastModified = response.getHeader("Last-Modified");
+		final Date lastModifiedDate = httpDateFormat.parse(lastModified);
+		final String now = httpDateFormat.format(new Date());
+
+		//On test avec le if-Modified-Since now : le server test mais ne retourne pas le fichier
+		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", now))
 				.statusCode(HttpStatus.SC_NOT_MODIFIED)
+				.when()
+				.get("/test/downloadNotModifiedFile");
+
+		//On test avec le if-Modified-Since 10 min avant le lastModified : le server test et retourne le fichier
+		final String beforeLastModified = httpDateFormat.format(new DateBuilder(lastModifiedDate).addMinutes(-10).build());
+		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", beforeLastModified))
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/downloadNotModifiedFile");
 	}

@@ -59,9 +59,8 @@ public final class Entity implements EntityType {
 		//-----
 		this.name = name;
 		this.fields = new HashMap<>();
-
 		for (final EntityField field : fields) {
-			Assertion.checkArgument(!fields.contains(field.getName()), "field {0} is already registerd for {1}", field, this);
+			Assertion.checkArgument(!this.fields.containsKey(field.getName()), "field {0} is already registered for {1}", field, this);
 			//Une propriété est unique pour une définition donnée.
 			//Il n'y a jamais de multiplicité
 			this.fields.put(field.getName(), field);

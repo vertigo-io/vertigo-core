@@ -25,8 +25,11 @@ import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -96,10 +99,27 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 		} else if (Double.class.isAssignableFrom(paramClass)) {
 			return paramClass.cast(Double.valueOf(json));
 		} else if (Date.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(jsonReaderEngine.fromJson(json, paramClass));
+			return paramClass.cast(deserialize(json));
 		} else {
 			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
 		}
 	}
 
+	private static final String[] INPUT_DATE_FORMATS = new String[] {
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", //ISO8601
+			"EEE, dd MMM yyyy HH:mm:ss zzz", // RFC 822, updated by RFC 1123
+			"EEEE, dd-MMM-yy HH:mm:ss zzz", // RFC 850, obsoleted by RFC 1036
+	//not supported : "EEE MMM d HH:mm:ss yyyy", // ANSI C's asctime() format
+	};
+
+	private static Date deserialize(final String dateAsString) {
+		for (final String format : INPUT_DATE_FORMATS) {
+			try {
+				return new SimpleDateFormat(format, Locale.US).parse(dateAsString);
+			} catch (final ParseException e) {
+				//nothing
+			}
+		}
+		throw new IllegalArgumentException("Unsupported Date " + dateAsString);
+	}
 }

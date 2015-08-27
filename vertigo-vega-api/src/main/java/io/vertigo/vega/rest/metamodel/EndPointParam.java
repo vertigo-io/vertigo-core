@@ -79,6 +79,7 @@ public final class EndPointParam {
 	private final RestParamType paramType;
 	private final String name;
 	private final Type type;
+	private final boolean optional;
 	private final String fullName;
 	private final Set<String> includedFields;
 	private final Set<String> excludedFields;
@@ -95,8 +96,8 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	EndPointParam(final RestParamType paramType, final String name, final Type type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
+	EndPointParam(final RestParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		this(":" + paramType.name() + ":" + name, paramType, name, type, optional, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
 		Assertion.checkArgument(!name.isEmpty() || (EndPointTypeUtil.isAssignableFrom(UiListState.class, type) || EndPointTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
@@ -111,7 +112,7 @@ public final class EndPointParam {
 		return false;
 	}
 
-	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Type type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(includedFields);
@@ -123,6 +124,7 @@ public final class EndPointParam {
 		//-----
 		this.paramType = paramType;
 		this.type = type;
+		this.optional = optional;
 		this.name = name;
 		this.fullName = fullName;
 		this.includedFields = Collections.unmodifiableSet(new LinkedHashSet<>(includedFields));
@@ -168,6 +170,13 @@ public final class EndPointParam {
 	 */
 	public Type getGenericType() {
 		return type;
+	}
+
+	/**
+	 * @return is optional
+	 */
+	public boolean isOptional() {
+		return optional;
 	}
 
 	/**
