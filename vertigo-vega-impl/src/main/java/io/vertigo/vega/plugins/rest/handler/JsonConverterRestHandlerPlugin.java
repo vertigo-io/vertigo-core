@@ -275,8 +275,8 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 	private String convertResultToJson(final Object result, final Request request, final Response response, final RouteContext routeContext) {
 		if (result == null) {
-			//if status was already set in set we don't change it
-			if (response.raw().getStatus() == HttpServletResponse.SC_OK) {
+			//if status was not set, or set to OK we set it to NO_CONTENT
+			if (response.raw().getStatus() == HttpServletResponse.SC_OK || response.raw().getStatus() == 0) {
 				response.status(HttpServletResponse.SC_NO_CONTENT);
 			}
 			return ""; //jetty understand null as 404 not found
