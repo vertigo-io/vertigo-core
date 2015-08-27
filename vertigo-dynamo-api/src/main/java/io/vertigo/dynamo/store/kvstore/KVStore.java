@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public interface KVStore extends Component {
+public interface KVStore {
 
 	void put(String dataStoreName, String id, Object object);
 
