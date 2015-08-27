@@ -86,6 +86,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -496,10 +497,14 @@ public final class WsRestServices implements RestfulService {
 	}
 
 	@GET("/downloadNotModifiedFile")
-	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final HttpServletResponse response) {
-		response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-		return null;
-		//this service must declared VFile as return type because it should return VFile when file was modified
+	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Option<Date> ifModifiedSince, final HttpServletResponse response) {
+		final VFile imageFile = testDownloadFile(id);
+		if (ifModifiedSince.isDefined() && DateUtil.compareDateTime(imageFile.getLastModified(), ifModifiedSince.get()) <= 0) {
+			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+			return null;
+			//this service must declared VFile as return type because it should return VFile when file was modified
+		}
+		return imageFile;
 	}
 
 	private static File asFile(final URL url) {

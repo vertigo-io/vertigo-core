@@ -20,9 +20,12 @@ package io.vertigo.vega.rest.metamodel;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
+import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +40,7 @@ import java.util.Set;
  */
 public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	private final Type myParamType;
+	private final boolean optional;
 	private RestParamType myRestParamType = RestParamType.Body; // default;
 	private String myRestParamName = "[1]"; //default body Name
 	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
@@ -46,13 +50,20 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	private boolean myConsumeServerSideToken;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param paramType param type
 	 */
 	public EndPointParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
 		//-----
-		myParamType = paramType;
+		optional = EndPointTypeUtil.isAssignableFrom(Option.class, paramType);
+		if (optional) {
+			//si option, le type du paramètre est le sub type
+			final Type[] typeArguments = ((ParameterizedType) paramType).getActualTypeArguments();
+			myParamType = typeArguments[0]; //on sait qu'il n'y a qu'un paramètre à Option<>
+		} else {
+			myParamType = paramType;
+		}
 	}
 
 	/**
@@ -127,6 +138,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 				myRestParamType,
 				myRestParamName,
 				myParamType,
+				optional,
 				myIncludedFields,
 				myExcludedFields,
 				myNeedServerSideToken,

@@ -54,6 +54,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 	/** {@inheritDoc}*/
 	@Override
 	public void populateRouteContext(final Object input, final EndPointParam endPointParam, final RouteContext routeContext) throws VSecurityException {
+		Assertion.checkNotNull(input, "This JsonConverter doesn't support null input");
 		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Class<?> paramClass = endPointParam.getType();

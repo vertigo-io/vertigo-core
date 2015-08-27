@@ -244,6 +244,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 				jsonReaderToApply = jsonReader;
 
 				for (final JsonConverter jsonConverter : jsonConverters.get(jsonReader.getSupportedOutput())) {
+
 					if (jsonConverter.canHandle(endPointParam.getType())) {
 						jsonConverterToApply = jsonConverter;
 						found = true;
@@ -259,7 +260,13 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType(), endPointParam.getType());
 			//-----
 			final Object converterSource = jsonReaderToApply.extractData(request, endPointParam, routeContext);
-			jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
+			if (converterSource != null) { //On ne convertit pas les null
+				jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
+			}
+			if (endPointParam.isOptional()) {
+				final Object paramValue = routeContext.getParamValue(endPointParam);
+				routeContext.setParamValue(endPointParam, Option.option(paramValue));
+			}
 			Assertion.checkNotNull(routeContext.getParamValue(endPointParam), "RestParam not found : {0}", endPointParam);
 		} catch (final JsonSyntaxException e) {
 			throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
@@ -268,7 +275,10 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 	private String convertResultToJson(final Object result, final Request request, final Response response, final RouteContext routeContext) {
 		if (result == null) {
-			response.status(HttpServletResponse.SC_NO_CONTENT);
+			//if status was already set in set we don't change it
+			if (response.raw().getStatus() == HttpServletResponse.SC_OK) {
+				response.status(HttpServletResponse.SC_NO_CONTENT);
+			}
 			return ""; //jetty understand null as 404 not found
 		} else if (VFileUtil.isVFileResult(result)) {
 			VFileUtil.sendVFile(result, request, response);
