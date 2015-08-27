@@ -31,18 +31,18 @@ import io.vertigo.lang.Assertion;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-public final class FileInfoBrokerImpl implements FileStore {
+public final class FileStoreImpl implements FileStore {
 	private final FileStorePlugin fileStore;
 
 	/**
 	 * Constructeur.
 	 * Une fois le broker construit la configuration est bloquée.
-	 * @param fileBrokerConfiguration Configuration du broker
+	 * @param fileStoreConfig Configuration du broker
 	 */
-	public FileInfoBrokerImpl(final FileBrokerConfig fileBrokerConfiguration) {
-		Assertion.checkNotNull(fileBrokerConfiguration);
+	public FileStoreImpl(final FileStoreConfig fileStoreConfig) {
+		Assertion.checkNotNull(fileStoreConfig);
 		//-----
-		fileStore = new LogicalFileStore(fileBrokerConfiguration.getLogicalFileStoreConfiguration());
+		fileStore = new LogicalFileStore(fileStoreConfig.getLogicalFileStoreConfiguration());
 	}
 
 	//	/** {@inheritDoc} */

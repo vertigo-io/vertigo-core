@@ -86,7 +86,7 @@ public abstract class DtListURI implements Serializable {
 	 */
 	@Deprecated
 	public final synchronized String toURN() {
-		//synchronized car appellée par des traitements métiers (notament le broker)
+		//synchronized car appellée par des traitements métiers (notament le dataStore)
 		if (urn == null) {
 			urn = DtListURICodec.writeURN(this);
 			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);

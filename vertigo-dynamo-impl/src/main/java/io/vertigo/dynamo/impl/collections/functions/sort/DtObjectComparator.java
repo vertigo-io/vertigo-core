@@ -168,10 +168,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		private final DataStore dataStore;
 		private final DtField mdFieldSort;
 
-		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final SortState sortState, final DataStore broker, final DtField mdFieldSort) {
+		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final SortState sortState, final DataStore dataStore, final DtField mdFieldSort) {
 			this.dtcURIForMasterData = dtcURIForMasterData;
 			this.sortState = sortState;
-			this.dataStore = broker;
+			this.dataStore = dataStore;
 			this.mdFieldSort = mdFieldSort;
 		}
 

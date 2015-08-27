@@ -26,13 +26,13 @@ import io.vertigo.dynamo.impl.store.filestore.logical.LogicalFileStoreConfig;
  *
  * @author pchretien
  */
-public final class FileBrokerConfig {
+public final class FileStoreConfig {
 	private final LogicalFileStoreConfig logicalFileStoreConfig;
 
 	/**
 	 * Constructeur.
 	 */
-	public FileBrokerConfig() {
+	public FileStoreConfig() {
 		//-----
 		logicalFileStoreConfig = new LogicalFileStoreConfig();
 	}

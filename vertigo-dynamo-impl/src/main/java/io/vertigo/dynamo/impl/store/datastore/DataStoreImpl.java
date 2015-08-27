@@ -51,7 +51,7 @@ public final class DataStoreImpl implements DataStore {
 	/**
 	 * Constructeur.
 	 * Une fois le dataStore construit la configuration est bloquée.
-	 * @param dataStoreConfig Configuration du broker
+	 * @param dataStoreConfig config of the dataStore
 	 */
 	public DataStoreImpl(final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(dataStoreConfig);

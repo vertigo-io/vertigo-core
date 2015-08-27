@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
 
 /**
- * Un objet est automatiquement géré par le broker.
+ * Defines the way to store and access all the files.
  * Les méthodes de mises à jour lacent des erreurs utilisateurs et techniques.
  * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *

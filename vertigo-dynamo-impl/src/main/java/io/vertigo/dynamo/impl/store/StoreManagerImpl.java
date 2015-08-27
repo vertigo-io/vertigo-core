@@ -24,8 +24,8 @@ import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
-import io.vertigo.dynamo.impl.store.filestore.FileBrokerConfig;
-import io.vertigo.dynamo.impl.store.filestore.FileInfoBrokerImpl;
+import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
+import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
@@ -58,8 +58,8 @@ public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
 	/** Broker des objets métier et des listes. */
-	private final DataStore broker;
-	private final FileStore fileInfoBroker;
+	private final DataStore dataStore;
+	private final FileStore fileStore;
 	private final BrokerNN brokerNN;
 	private final KVStore kvStore;
 
@@ -92,11 +92,11 @@ public final class StoreManagerImpl implements StoreManager {
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
 		dataStoreConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
-		broker = new DataStoreImpl(dataStoreConfig);
+		dataStore = new DataStoreImpl(dataStoreConfig);
 		//-----
 		kvStore = new KVStoreImpl(kvDataStorePlugins);
 		//-----
-		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
+		fileStore = createFileIStore(fileStorePlugin);
 		//-----
 		final Map<String, KVDataStorePlugin> map = new HashMap<>();
 		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
@@ -105,13 +105,13 @@ public final class StoreManagerImpl implements StoreManager {
 		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
 	}
 
-	private static FileStore createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
-		final FileBrokerConfig fileBrokerConfiguration = new FileBrokerConfig();
+	private static FileStore createFileIStore(final Option<FileStorePlugin> fileStorePlugin) {
+		final FileStoreConfig fileBrokerConfiguration = new FileStoreConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
 			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
 		}
-		return new FileInfoBrokerImpl(fileBrokerConfiguration);
+		return new FileStoreImpl(fileBrokerConfiguration);
 	}
 
 	@Override
@@ -136,13 +136,13 @@ public final class StoreManagerImpl implements StoreManager {
 	/** {@inheritDoc} */
 	@Override
 	public DataStore getDataStore() {
-		return broker;
+		return dataStore;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public FileStore getFileStore() {
-		return fileInfoBroker;
+		return fileStore;
 	}
 
 	@Override
