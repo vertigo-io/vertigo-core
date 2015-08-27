@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.store.kvstore;
 
-import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.List;
