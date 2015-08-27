@@ -25,10 +25,7 @@ import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.lang.Assertion;
 
 /**
- * Implémentation Standard du Broker.
- * Cette implémentation s'appuie sur le concept de Store.
- * Un store définit les modalités du stockage
- * alors que le broker se concentre sur la problématique des accès aux ressources.
+ * Implementation of FileStore.
  * @author pchretien
  */
 public final class FileStoreImpl implements FileStore {
@@ -36,8 +33,7 @@ public final class FileStoreImpl implements FileStore {
 
 	/**
 	 * Constructeur.
-	 * Une fois le broker construit la configuration est bloquée.
-	 * @param fileStoreConfig Configuration du broker
+	 * @param fileStoreConfig Config of the fileStore
 	 */
 	public FileStoreImpl(final FileStoreConfig fileStoreConfig) {
 		Assertion.checkNotNull(fileStoreConfig);

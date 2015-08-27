@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment;
 
-
 /**
  * Métadonnée liée à la grammaire.
  *
@@ -56,7 +55,7 @@ public final class KspProperty {
 	public static final String NOT_NULL = "NOT_NULL";
 
 	/**
-	 * Propriété liée au broker : La donnée est-elle gérée en mode write par le Broker.
+	 * Propriété liée au dataStore : La donnée est-elle gérée en mode write par le dataSore.
 	 */
 	public static final String PERSISTENT = "PERSISTENT";
 

@@ -36,10 +36,7 @@ import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 /**
- * DataStore.
- * Cette implémentation s'appuie sur le concept de Store.
- * Un store définit les modalités du stockage
- * alors que le broker se concentre sur la problématique des accès aux ressources.
+ * Implementation of DataStore.
  * @author pchretien
  */
 public final class DataStoreImpl implements DataStore {

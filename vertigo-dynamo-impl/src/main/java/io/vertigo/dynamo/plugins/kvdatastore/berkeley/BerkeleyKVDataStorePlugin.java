@@ -187,7 +187,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//					break;
 	//		//				}*/
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
-	//		//			final D item = getStoreeManager().getBroker().<D> get(uri);
+	//		//			final D item = getStoreeManager().getDataStore().<D> get(uri);
 	//-----
 	//		//			dtc.add(item);
 	//		//		}
@@ -207,7 +207,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//		for (final String urn : list) {
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
 	//		//			try {
-	//		//				final D item = getStoreManager().getBroker().<D> get(uri);
+	//		//				final D item = getStoreManager().getDataStore().<D> get(uri);
 	//-----
 	//		//				dtc.add(item);
 	//		//			} catch (final Exception e) {

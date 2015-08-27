@@ -57,7 +57,7 @@ import javax.inject.Inject;
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
-	/** Broker des objets métier et des listes. */
+	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
 	private final FileStore fileStore;
 	private final BrokerNN brokerNN;
@@ -106,12 +106,12 @@ public final class StoreManagerImpl implements StoreManager {
 	}
 
 	private static FileStore createFileIStore(final Option<FileStorePlugin> fileStorePlugin) {
-		final FileStoreConfig fileBrokerConfiguration = new FileStoreConfig();
+		final FileStoreConfig fileStoreConfig = new FileStoreConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
-			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
+			fileStoreConfig.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
 		}
-		return new FileStoreImpl(fileBrokerConfiguration);
+		return new FileStoreImpl(fileStoreConfig);
 	}
 
 	@Override
