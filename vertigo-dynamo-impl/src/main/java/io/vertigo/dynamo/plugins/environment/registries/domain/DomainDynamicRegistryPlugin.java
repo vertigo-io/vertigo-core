@@ -100,7 +100,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			definition = createAssociationSimpleDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
 			definition = createAssociationNNDefinition(xdefinition);
-		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
 			definition = createConstraint(xdefinition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
 			definition = createFormatter(xdefinition);

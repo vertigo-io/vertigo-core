@@ -81,7 +81,7 @@ public final class DomainGrammar {
 	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
 
 	/**Définition d'une constraint.*/
-	static final Entity CONSTAINT_ENTITY;
+	static final Entity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
 	static final Entity FORMATTER_ENTITY;
 	/**Définition d'une propriété.*/
@@ -104,7 +104,7 @@ public final class DomainGrammar {
 	public static final EntityGrammar GRAMMAR;
 
 	static {
-		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
+		CONSTRAINT_ENTITY = new EntityBuilder("Constraint")
 				.addField(CLASS_NAME, String, true)
 				.addField(ARGS, String, false)
 				.addField(MSG, String, false)
@@ -123,7 +123,7 @@ public final class DomainGrammar {
 				.addField(STORE_TYPE, String, false)
 				.addField("formatter", FORMATTER_ENTITY, true)
 				.addField("dataType", KernelGrammar.getDataTypeEntity(), true)
-				.addFields("constraint", CONSTAINT_ENTITY, false)
+				.addFields("constraint", CONSTRAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
@@ -142,9 +142,9 @@ public final class DomainGrammar {
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
 				.addField(DISPLAY_FIELD, String, false)
 				.addField(SORT_FIELD, String, false)
-				.addFields(FIELD, DT_FIELD_ENTITY, false)// facultative
-				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
-				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
+				.addFields(FIELD, DT_FIELD_ENTITY, false)
+				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
+				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false)
 				.addField(PERSISTENT, Boolean, false)
 				.addField(DYNAMIC, Boolean, false)
 				.addField(STEREOTYPE, String, false)
@@ -179,7 +179,7 @@ public final class DomainGrammar {
 
 		GRAMMAR = new EntityGrammar(
 				PROPERTY_ENTITY,
-				CONSTAINT_ENTITY,
+				CONSTRAINT_ENTITY,
 				FORMATTER_ENTITY,
 				//---
 				DOMAIN_ENTITY,
