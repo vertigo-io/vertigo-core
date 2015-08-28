@@ -34,7 +34,7 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.dynamox.search.DefaultSearchLoader;
+import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import javax.inject.Inject;
  * SearchLoader of Car keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
-public final class CarSearchLoader extends DefaultSearchLoader<Long, Car, Car> {
+public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
 	private final SearchIndexDefinition indexDefinition;
 
 	/**

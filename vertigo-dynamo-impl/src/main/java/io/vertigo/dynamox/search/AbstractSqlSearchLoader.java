@@ -21,7 +21,6 @@ package io.vertigo.dynamox.search;
 import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -30,8 +29,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.metamodel.SearchChunk;
-import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -43,23 +40,30 @@ import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> implements
-		SearchLoader<S, I> {
+/**
+ * Default SearchLoader for Database datasource.
+ * @author npiedeloup
+ * @param <P> Primary key type
+ * @param <S> KeyConcept type
+ * @param <I> Index type
+ */
+public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 
+	/**
+	 * Constructor.
+	 * @param taskManager Task manager
+	 */
 	@Inject
-	public DefaultSearchLoader(final TaskManager taskManager) {
-		Assertion.checkNotNull(taskManager);
+	public AbstractSqlSearchLoader(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
 		// -----
 		this.taskManager = taskManager;
@@ -67,64 +71,7 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<SearchChunk<S>> chunk(final Class<S> keyConceptClass) {
-		return new Iterable<SearchChunk<S>>() {
-
-			private final Iterator<SearchChunk<S>> iterator = new Iterator<SearchChunk<S>>() {
-
-				private SearchChunk<S> current = null;
-				private SearchChunk<S> next = null;
-
-				/** {@inheritDoc} */
-				@Override
-				public boolean hasNext() {
-					return hasNextChunk(keyConceptClass, next);
-				}
-
-				/** {@inheritDoc} */
-				@Override
-				public SearchChunk<S> next() {
-					if (next == null) {
-						next = nextChunk(keyConceptClass, null);
-					}
-					current = next;
-					next = nextChunk(keyConceptClass, current);
-					return current;
-				}
-
-				/** {@inheritDoc} */
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException("This list is unmodifiable");
-				}
-			};
-
-			/** {@inheritDoc} */
-			@Override
-			public Iterator<SearchChunk<S>> iterator() {
-				return iterator;
-			}
-		};
-	}
-
-	private SearchChunk<S> nextChunk(final Class<S> keyConceptClass, final SearchChunk<S> previousChunck) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
-		P lastId = getLowestIdValue(dtDefinition);
-		if (previousChunck != null) {
-			final List<URI<S>> previousUris = previousChunck.getAllURIs();
-			Assertion
-					.checkState(
-							!previousUris.isEmpty(),
-							"No more SearchChunk for KeyConcept {0}, ensure you use Iterable pattern or call hasNext before next",
-							keyConceptClass.getSimpleName());
-			lastId = (P) previousUris.get(previousUris.size() - 1).getId();
-		}
-		// call loader service
-		final List<URI<S>> uris = loadNextURI(lastId, dtDefinition);
-		return new SearchChunkImpl<>(uris);
-	}
-
-	private List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
+	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
 		final DtField pk = dtDefinition.getIdField().get();
@@ -146,11 +93,17 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		final DtList<S> resultDtc = getDtList(taskResult);
 		final List<URI<S>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		for (final S dto : resultDtc) {
-			uris.add(new URI(dtDefinition, DtObjectUtil.getId(dto)));
+			uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
 		}
 		return uris;
 	}
 
+	/**
+	 * Create a SQL query to get next chunk's ids next in table from previous chunk
+	 * @param tableName Table name to use
+	 * @param pkFieldName Pk field name
+	 * @return SQL query
+	 */
 	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
 		final StringBuilder request = new StringBuilder()
 				.append(" select " + pkFieldName + " from ")
@@ -166,6 +119,9 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		return request.toString();
 	}
 
+	/**
+	 * @return Specific SqlQuery filter
+	 */
 	protected String getSqlQueryFilter() {
 		//nothing, but overrideable
 		return "";
@@ -185,39 +141,6 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		return taskResult.getValue("dtc");
 	}
 
-	private P getLowestIdValue(final DtDefinition dtDefinition) {
-		final DtField pkField = dtDefinition.getIdField().get();
-		final DataType pkDataType = pkField.getDomain().getDataType();
-		P pkValue;
-		switch (pkDataType) {
-			case Integer:
-				pkValue = (P) Integer.valueOf(-1);
-				break;
-			case Long:
-				pkValue = (P) Long.valueOf(-1);
-				break;
-			case String:
-				pkValue = (P) "";
-				break;
-			case BigDecimal:
-			case DataStream:
-			case Boolean:
-			case Double:
-			case Date:
-			case DtList:
-			case DtObject:
-			default:
-				throw new IllegalArgumentException("Type's PK " + pkDataType.name() + " of "
-						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
-		}
-		return pkValue;
-	}
-
-	private boolean hasNextChunk(final Class<S> keyConceptClass, final SearchChunk<S> currentChunck) {
-		// il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
-		return currentChunck == null || !currentChunck.getAllURIs().isEmpty();
-	}
-
 	/**
 	 * Nom de la table en fonction de la définition du DT mappé.
 	 *
@@ -228,23 +151,4 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		return dtDefinition.getLocalName();
 	}
 
-	public static class SearchChunkImpl<S extends KeyConcept> implements SearchChunk<S> {
-
-		private final List<URI<S>> uris;
-
-		/**
-		 * @param uris Liste des uris du chunk
-		 */
-		public SearchChunkImpl(final List<URI<S>> uris) {
-			Assertion.checkNotNull(uris);
-			// ----
-			this.uris = Collections.unmodifiableList(uris); // pas de clone pour l'instant
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public List<URI<S>> getAllURIs() {
-			return uris;
-		}
-	}
 }
