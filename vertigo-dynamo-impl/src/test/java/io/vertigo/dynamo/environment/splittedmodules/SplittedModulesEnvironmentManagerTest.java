@@ -89,7 +89,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
 					.addDefinitionResource("kpr", "io/vertigo/dynamock/generation.kpr")
-//					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
+					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
