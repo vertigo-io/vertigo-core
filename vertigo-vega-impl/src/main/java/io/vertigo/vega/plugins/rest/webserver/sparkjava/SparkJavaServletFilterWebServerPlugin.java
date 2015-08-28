@@ -18,12 +18,25 @@
  */
 package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 
+import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import spark.Spark;
+
 /**
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
 public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
 
-	//nothing
+	@Inject
+	public SparkJavaServletFilterWebServerPlugin(@Named("port") final int port) {
+		Spark.setPort(port);
+		//---
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		Spark.before(new JettyMultipartConfig(tempDir));
+	}
 
 }
