@@ -66,7 +66,6 @@ import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
-import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.data.domain.Contact;
@@ -161,7 +160,6 @@ public final class MyAppConfig {
 				.endComponent()
 				.addComponent(RestManager.class, RestManagerImpl.class)
 					.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
-					.addPlugin(SparkJavaServletFilterWebServerPlugin.class)
 					.beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
 						.addParam("port", String.valueOf(WS_PORT))
 					.endPlugin()
