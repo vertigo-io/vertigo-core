@@ -36,20 +36,20 @@ public final class DynamoFeatures extends Features {
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class);
 	}
 
-	DynamoFeatures withStore() {
+	public DynamoFeatures withStore() {
 		getModuleConfigBuilder()
 				.addComponent(StoreManager.class, StoreManagerImpl.class);
 		return this;
 	}
 
-	DynamoFeatures withSQL(final Class<SqlConnectionProviderPlugin> connectionProviderPluginClass) {
+	public DynamoFeatures withSQL(final Class<SqlConnectionProviderPlugin> connectionProviderPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class)
 				.addPlugin(connectionProviderPluginClass);
 		return this;
 	}
 
-	DynamoFeatures withSearch(final Class<SearchServicesPlugin> searchServicesPluginClass) {
+	public DynamoFeatures withSearch(final Class<SearchServicesPlugin> searchServicesPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
 				.addPlugin(searchServicesPluginClass);
