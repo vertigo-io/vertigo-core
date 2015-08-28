@@ -18,7 +18,6 @@
  */
 package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 
-import io.vertigo.lang.Activeable;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 
 import javax.inject.Inject;
@@ -30,30 +29,17 @@ import spark.Spark;
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin implements Activeable {
-
-	private final int port;
+public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
 
 	/**
 	 * @param port Server port
 	 */
 	@Inject
 	public SparkJavaEmbeddedWebServerPlugin(@Named("port") final int port) {
-		this.port = port;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
 		Spark.setPort(port);
 		//---
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		//nothing
-	}
 }
