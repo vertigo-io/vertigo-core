@@ -29,25 +29,15 @@ import io.vertigo.core.impl.locale.LocaleManagerImpl;
 import io.vertigo.core.impl.resource.ResourceManagerImpl;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.export.ExportManager;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
-import io.vertigo.dynamo.impl.export.ExportManagerImpl;
-import io.vertigo.dynamo.impl.file.FileManagerImpl;
-import io.vertigo.dynamo.impl.store.StoreManagerImpl;
-import io.vertigo.dynamo.impl.task.TaskManagerImpl;
+import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.persona.impl.security.VSecurityManagerImpl;
+import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
@@ -114,33 +104,22 @@ public final class MyAppConfig {
 			.beginBoot()
 				.silently()
 			.endBoot()
-			.beginModule("persona")
-				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
-					.addParam("userSessionClassName", TestUserSession.class.getName())
-				.endComponent()
-			.endModule()
+			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class)
 				.withCache(MemoryCachePlugin.class)
 			.endModule()
-
-			.beginModule("dynamo").withNoAPI()
-				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
-				.addComponent(FileManager.class, FileManagerImpl.class)
-				.addComponent(StoreManager.class, StoreManagerImpl.class)
-					.beginPlugin(PostgreSqlDataStorePlugin.class)
-						.addParam("sequencePrefix","SEQ_")
-					.endPlugin()
-					.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
-						.addParam("dataStoreName", "UiSecurityStore")
-						.addParam("timeToLiveSeconds", "120")
-					.endPlugin()
-
-				.addComponent(TaskManager.class, TaskManagerImpl.class)
-			.endModule()
-			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)
-			.addComponent(ExportManager.class, ExportManagerImpl.class)
-					.addPlugin(PDFExporterPlugin.class)
-			.endModule()
+			.beginModule(DynamoFeatures.class)
+			.withStore()
+			.getModuleConfigBuilder()
+				.addPlugin(PDFExporterPlugin.class) //pour exportManager
+				.beginPlugin(PostgreSqlDataStorePlugin.class)
+					.addParam("sequencePrefix","SEQ_")
+				.endPlugin()
+				.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
+					.addParam("dataStoreName", "UiSecurityStore")
+					.addParam("timeToLiveSeconds", "120")
+				.endPlugin()
+			.endModule()		
 			.beginModule("dao").withNoAPI().withInheritance(Object.class)
 				.addComponent(ContactDao.class)
 			.endModule()
