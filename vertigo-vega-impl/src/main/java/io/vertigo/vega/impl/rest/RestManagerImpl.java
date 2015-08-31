@@ -34,6 +34,7 @@ import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -45,7 +46,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.xml.validation.ValidatorHandler;
 
 /**
  * Restful webservice manager.
@@ -68,7 +68,7 @@ public final class RestManagerImpl implements RestManager {
 			+ "- " + AccessTokenRestHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + JsonConverterRestHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + PaginatorAndSortRestHandlerPlugin.class.getSimpleName() + "\n"
-			+ "- " + ValidatorHandler.class.getSimpleName() + "\n"
+			+ "- " + ValidatorRestHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + RestfulServiceRestHandlerPlugin.class.getSimpleName() + "\n";
 
 	private final EndPointIntrospectorPlugin endPointIntrospectorPlugin;

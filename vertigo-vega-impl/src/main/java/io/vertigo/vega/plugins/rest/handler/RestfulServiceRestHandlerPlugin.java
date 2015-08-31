@@ -58,7 +58,8 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 		final Method method = endPointDefinition.getMethod();
 		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
-		if (method.getName().startsWith("create")) { //by convention, if method start with 'create', we return http 201 status code (if ok)
+		if (method.getName().startsWith("create")) {
+			//by convention, if method starts with 'create', an http 201 status code is returned (if ok)
 			response.status(HttpServletResponse.SC_CREATED);
 		}
 		try {
