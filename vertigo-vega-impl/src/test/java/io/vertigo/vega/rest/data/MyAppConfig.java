@@ -38,25 +38,7 @@ import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataSt
 import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
-import io.vertigo.vega.impl.rest.RestManagerImpl;
-import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
-import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
-import io.vertigo.vega.impl.token.TokenManagerImpl;
-import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ExceptionRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.JsonConverterRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ServerSideStateRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
-import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
-import io.vertigo.vega.rest.RestManager;
+import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
@@ -66,9 +48,6 @@ import io.vertigo.vega.rest.data.ws.WsCommonRestServices;
 import io.vertigo.vega.rest.data.ws.WsContactsRestServices;
 import io.vertigo.vega.rest.data.ws.WsFileDownload;
 import io.vertigo.vega.rest.data.ws.WsRestServices;
-import io.vertigo.vega.rest.engine.GoogleJsonEngine;
-import io.vertigo.vega.rest.engine.JsonEngine;
-import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 import java.util.Arrays;
@@ -105,12 +84,10 @@ public final class MyAppConfig {
 				.silently()
 			.endBoot()
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(CommonsFeatures.class)
-				.withCache(MemoryCachePlugin.class)
-			.endModule()
+			.beginModule(CommonsFeatures.class).withCache(MemoryCachePlugin.class).endModule()
 			.beginModule(DynamoFeatures.class)
-			.withStore()
-			.getModuleConfigBuilder()
+				.withStore()
+				.getModuleConfigBuilder()
 				.addPlugin(PDFExporterPlugin.class) //pour exportManager
 				.beginPlugin(PostgreSqlDataStorePlugin.class)
 					.addParam("sequencePrefix","SEQ_")
@@ -119,42 +96,22 @@ public final class MyAppConfig {
 					.addParam("dataStoreName", "UiSecurityStore")
 					.addParam("timeToLiveSeconds", "120")
 				.endPlugin()
-			.endModule()		
-			.beginModule("dao").withNoAPI().withInheritance(Object.class)
+			.endModule()	
+			.beginModule(VegaFeatures.class)
+				.withTokens()
+				.withMisc()
+				.withEmbeddedServer(WS_PORT)
+			.endModule()
+			//-----
+			.beginModule("dao-app").withNoAPI().withInheritance(Object.class)
 				.addComponent(ContactDao.class)
 			.endModule()
-			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
+			.beginModule("webservices-app").withNoAPI().withInheritance(RestfulService.class)
 				.addComponent(ComponentCmdRestServices.class)
 				.addComponent(WsCommonRestServices.class)
 				.addComponent(WsContactsRestServices.class)
 				.addComponent(WsRestServices.class)
 				.addComponent(WsFileDownload.class)
-			.endModule()
-			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
-				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
-				.addComponent(SwaggerRestServices.class)
-				.addComponent(CatalogRestServices.class)
-				.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("dataStoreName", "UiSecurityStore")
-				.endComponent()
-				.addComponent(RestManager.class, RestManagerImpl.class)
-					.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
-					.beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-						.addParam("port", String.valueOf(WS_PORT))
-					.endPlugin()
-					//-- Handlers plugins
-					.addPlugin(ExceptionRestHandlerPlugin.class)
-					.addPlugin(CorsAllowerRestHandlerPlugin.class)
-					.addPlugin(SessionInvalidateRestHandlerPlugin.class)
-					.addPlugin(SessionRestHandlerPlugin.class)
-					.addPlugin(RateLimitingRestHandlerPlugin.class)
-					.addPlugin(SecurityRestHandlerPlugin.class)
-					.addPlugin(AccessTokenRestHandlerPlugin.class)
-					.addPlugin(JsonConverterRestHandlerPlugin.class)
-					.addPlugin(ServerSideStateRestHandlerPlugin.class)
-					.addPlugin(PaginatorAndSortRestHandlerPlugin.class)
-					.addPlugin(ValidatorRestHandlerPlugin.class)
-					.addPlugin(RestfulServiceRestHandlerPlugin.class)
 			.endModule()
 			.beginModule("myApp")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())

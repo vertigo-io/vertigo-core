@@ -89,13 +89,16 @@ public final class RestManagerImpl implements RestManager {
 		Assertion.checkNotNull(endPointIntrospectorPlugin);
 		Assertion.checkNotNull(webServerPlugin);
 		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No RestHandlerPlugins found, check you have declared your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
-		Assertion.checkArgument(restHandlerPlugins.get(restHandlerPlugins.size() - 1) instanceof RestfulServiceRestHandlerPlugin,
-				"RestHandlerPlugins must end with a RestfulServiceHandler in order to dispatsh request to WebService, check your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkNotNull(webServerPlugin);
+		//-----
+		final List<RestHandlerPlugin> sortedRestHandlerPlugins = sortRestHandlerPlugins(restHandlerPlugins);
+		//-----
+		Assertion.checkArgument(sortedRestHandlerPlugins.get(sortedRestHandlerPlugins.size() - 1) instanceof RestfulServiceRestHandlerPlugin,
+				"RestHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
 		this.webServerPlugin = webServerPlugin;
-		handlerChain = new HandlerChain(restHandlerPlugins);
+		handlerChain = new HandlerChain(sortedRestHandlerPlugins);
 		//we do nothing with webServerPlugin
 		Home.getApp().registerAppListener(new AppListener() {
 			/** {@inheritDoc} */
@@ -105,6 +108,23 @@ public final class RestManagerImpl implements RestManager {
 				RestManagerImpl.this.registerEndPointDefinitions(Home.getDefinitionSpace(), endPointDefinitions);
 			}
 		});
+	}
+
+	private List<RestHandlerPlugin> sortRestHandlerPlugins(final List<RestHandlerPlugin> restHandlerPlugins) {
+		final List<RestHandlerPlugin> sortedRestHandlerPlugins = new ArrayList<>();
+		RestHandlerPlugin restfulServiceRestHandlerPlugin = null;
+		for (final RestHandlerPlugin restHandlerPlugin : restHandlerPlugins) {
+			if (restHandlerPlugin instanceof RestfulServiceRestHandlerPlugin) {
+				restfulServiceRestHandlerPlugin = restHandlerPlugin;
+			} else {
+				sortedRestHandlerPlugins.add(restHandlerPlugin);
+			}
+		}
+		//Rule : RestfulServiceRestHandlerPlugin is at the end 
+		if (restfulServiceRestHandlerPlugin != null) {
+			sortedRestHandlerPlugins.add(restfulServiceRestHandlerPlugin);
+		}
+		return sortedRestHandlerPlugins;
 	}
 
 	/**

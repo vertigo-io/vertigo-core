@@ -85,7 +85,9 @@ public final class RestManagerTest {
 
 	@AfterClass
 	public static void tearDown() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	@Test

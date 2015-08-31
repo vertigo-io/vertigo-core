@@ -2,11 +2,18 @@ package io.vertigo.vega;
 
 import io.vertigo.core.config.Features;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
+import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
+import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
+import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ExceptionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.JsonConverterRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ServerSideStateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
@@ -34,9 +41,12 @@ public final class VegaFeatures extends Features {
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(RestManager.class, RestManagerImpl.class)
 				.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
+				.addComponent(SwaggerRestServices.class)
+				.addComponent(CatalogRestServices.class)
 
 				//-- Handlers plugins
 				.addPlugin(ExceptionRestHandlerPlugin.class)
+				.addPlugin(CorsAllowerRestHandlerPlugin.class)
 				.addPlugin(SessionInvalidateRestHandlerPlugin.class)
 				.addPlugin(SessionRestHandlerPlugin.class)
 				.addPlugin(SecurityRestHandlerPlugin.class)
@@ -48,11 +58,22 @@ public final class VegaFeatures extends Features {
 
 	public VegaFeatures withTokens() {
 		getModuleConfigBuilder()
-				.addComponent(TokenManager.class, TokenManagerImpl.class);
+				.addPlugin(AccessTokenRestHandlerPlugin.class)
+				.beginComponent(TokenManager.class, TokenManagerImpl.class)
+				.addParam("dataStoreName", "UiSecurityStore")
+				.endComponent();
 		return this;
 	}
 
-	public VegaFeatures withPort(final int port) {
+	public VegaFeatures withMisc() {
+		getModuleConfigBuilder()
+				.addPlugin(ServerSideStateRestHandlerPlugin.class)
+				.addPlugin(PaginatorAndSortRestHandlerPlugin.class)
+				.addPlugin(RateLimitingRestHandlerPlugin.class);
+		return this;
+	}
+
+	public VegaFeatures withEmbeddedServer(final int port) {
 		getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
 				.addParam("port", Integer.toString(port))
 				.endPlugin();
