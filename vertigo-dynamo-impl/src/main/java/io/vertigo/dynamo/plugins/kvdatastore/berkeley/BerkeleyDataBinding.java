@@ -22,6 +22,8 @@ import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.bind.tuple.TupleInput;
@@ -74,6 +76,13 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 				return ti.readDouble();
 			case "S":
 				return ti.readString();
+			case "*":
+				int size = ti.readInt();
+				Set set = new HashSet();
+				for (int i = 0; i < size; i++) {
+					set.add(readValue(ti));
+				}
+				return set;
 			default:
 				throw new IllegalArgumentException(" type " + type + " non reconnu");
 		}
@@ -120,6 +129,12 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 		} else if (value instanceof String) {
 			to.writeString("S");
 			to.writeString(String.class.cast(value));
+		} else if (value instanceof Set) {
+			to.writeString("*");
+			to.writeInt(Set.class.cast(value).size());
+			for (Object item : Set.class.cast(value)) {
+				writeValue(to, item);
+			}
 		} else {
 			throw new IllegalArgumentException(" type " + value.getClass() + " non reconnu");
 		}
