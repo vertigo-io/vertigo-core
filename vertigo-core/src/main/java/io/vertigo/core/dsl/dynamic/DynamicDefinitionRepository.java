@@ -106,8 +106,8 @@ public final class DynamicDefinitionRepository {
 		final DynamicSolver solver = new DynamicSolver();
 
 		solveTemplates();
-		final List<DynamicDefinition> orderedDefinitionList = solver.solve(definitionSpace, this);
-		registerAllDefinitions(definitionSpace, orderedDefinitionList);
+		final List<DynamicDefinition> sortedDynamicDefinitions = solver.solve(definitionSpace, this);
+		registerAllDefinitions(definitionSpace, sortedDynamicDefinitions);
 	}
 
 	private void solveTemplates() {
@@ -116,8 +116,8 @@ public final class DynamicDefinitionRepository {
 		}
 	}
 
-	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> orderedDefinitionList) {
-		for (final DynamicDefinition xdefinition : orderedDefinitionList) {
+	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
+		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
 			final Option<Definition> definitionOption = registry.createDefinition(xdefinition);
 			if (definitionOption.isDefined()) {
