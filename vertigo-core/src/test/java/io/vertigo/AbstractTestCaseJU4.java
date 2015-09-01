@@ -40,45 +40,7 @@ import org.junit.Before;
  * @author jmforhan
  */
 public abstract class AbstractTestCaseJU4 {
-	private static App app;
-
-	private synchronized void startApp() {
-		app = new App(buildAppConfig());
-	}
-
-	private static synchronized void stopApp() {
-		if (app != null) {
-			app.close();
-		}
-		app = null;
-	}
-
-	/**
-	 *
-	 * @return If app is started
-	 */
-	private static synchronized boolean isAppStarted() {
-		return app != null;
-	}
-
-	/**
-	 * Doit-on s'assurer que le Home est réinitialisé avant le début de chaque test?
-	 * Par défaut, return true.
-	 *
-	 * @return booléen
-	 */
-	protected boolean cleanAppForTest() {
-		return true;
-	}
-
-	/**
-	 * Méthode ne faisant rien.
-	 *
-	 * @param o object
-	 */
-	protected static final void nop(final Object o) {
-		// rien
-	}
+	private App app;
 
 	/**
 	 * Set up de l'environnement de test.
@@ -87,15 +49,8 @@ public abstract class AbstractTestCaseJU4 {
 	 */
 	@Before
 	public final void setUp() throws Exception {
-		// Création de l'état de l'application
-		// Initialisation de l'état de l'application
-		if (cleanAppForTest() && isAppStarted()) {
-			stopApp();
-		}
-		if (!isAppStarted()) {
-			startApp();
-		}
-		// On injecte les managers sur la classe de test.
+		app = new App(buildAppConfig());
+		// On injecte les comosants sur la classe de test.
 		Injector.injectMembers(this, Home.getComponentSpace());
 		doSetUp();
 	}
@@ -110,11 +65,20 @@ public abstract class AbstractTestCaseJU4 {
 		try {
 			doTearDown();
 		} finally {
-			if (cleanAppForTest()) {
-				stopApp();
+			if (app != null) {
+				app.close();
 			}
 		}
 		doAfterTearDown();
+	}
+
+	/**
+	 * Méthode ne faisant rien.
+	 *
+	 * @param o object
+	 */
+	protected static final void nop(final Object o) {
+		// rien
 	}
 
 	/**
