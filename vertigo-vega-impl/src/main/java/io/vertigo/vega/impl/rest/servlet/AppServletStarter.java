@@ -38,8 +38,8 @@ import org.apache.log4j.Logger;
 /**
  * @author npiedeloup
  */
-final class HomeServletStarter {
-	private static final Logger LOG = Logger.getLogger(HomeServletStarter.class);
+final class AppServletStarter {
+	private static final Logger LOG = Logger.getLogger(AppServletStarter.class);
 
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
@@ -48,7 +48,7 @@ final class HomeServletStarter {
 	/** clés dans le fichier Web.xml */
 
 	/** Servlet listener */
-	private final ServletListener servletListener = new ServletListener();
+	private final AppServletListener appServletListener = new AppServletListener();
 	private App app = null;
 
 	/**
@@ -88,7 +88,7 @@ final class HomeServletStarter {
 			// Initialisation de l'état de l'application
 			app = new App(appConfigBuilder.build());
 
-			servletListener.onServletStart(getClass().getName());
+			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 			throw new RuntimeException("Problème d'initialisation de l'application", e);
@@ -188,7 +188,7 @@ final class HomeServletStarter {
 	 */
 	public final void contextDestroyed(final ServletContext servletContext) {
 		app.close();
-		servletListener.onServletDestroy(getClass().getName());
+		appServletListener.onServletDestroy(getClass().getName());
 
 	}
 }

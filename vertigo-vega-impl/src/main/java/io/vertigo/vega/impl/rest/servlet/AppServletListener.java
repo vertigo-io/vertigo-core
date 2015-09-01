@@ -18,27 +18,36 @@
  */
 package io.vertigo.vega.impl.rest.servlet;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import org.apache.log4j.Logger;
 
 /**
- * Abstract to start vertigo Home.
- * @author npiedeloup
+ * Implémentation du listener des événements produits par la servlet.
+ * @author pchretien
  */
-public abstract class AbstractServletContextListener implements ServletContextListener {
+final class AppServletListener {
 
-	/** Servlet listener */
-	private final HomeServletStarter servlerHomeStarter = new HomeServletStarter();
+	/**
+	 * Mécanisme de log racine
+	 */
+	private static final Logger LOGGER = Logger.getRootLogger();
 
-	/** {@inheritDoc} */
-	@Override
-	public final void contextInitialized(final ServletContextEvent servletContextEvent) {
-		servlerHomeStarter.contextInitialized(servletContextEvent.getServletContext());
+	/**
+	 * Evénement remonté lors du démarrage de la servlet.
+	 * @param servletName Nom de la servlet
+	 */
+	public void onServletStart(final String servletName) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Start servlet " + servletName);
+		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
-		servlerHomeStarter.contextDestroyed(servletContextEvent.getServletContext());
+	/**
+	 * Evénement remonté lors de l'arrêt de la servlet.
+	 * @param servletName Nom de la servlet
+	 */
+	public void onServletDestroy(final String servletName) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Destroy servlet " + servletName);
+		}
 	}
 }

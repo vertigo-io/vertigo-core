@@ -18,11 +18,28 @@
  */
 package io.vertigo.vega.impl.rest.servlet;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
 /**
  * Classe d'initialisation.
  * 
  * @author pforhan
  */
-public class ApplicationServletContextListener extends AbstractServletContextListener {
-	// rien
+public class AppServletContextListener implements ServletContextListener {
+
+	/** Servlet listener */
+	private final AppServletStarter appServletStarter = new AppServletStarter();
+
+	/** {@inheritDoc} */
+	@Override
+	public final void contextInitialized(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextInitialized(servletContextEvent.getServletContext());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextDestroyed(servletContextEvent.getServletContext());
+	}
 }
