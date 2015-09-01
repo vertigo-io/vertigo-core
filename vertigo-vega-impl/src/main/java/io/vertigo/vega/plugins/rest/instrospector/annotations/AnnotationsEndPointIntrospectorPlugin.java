@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.EndPointTypeUtil;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointDefinitionBuilder;
@@ -71,12 +71,12 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 	/** {@inheritDoc} */
 	@Override
-	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends RestfulService> restfulServiceClass) {
-		Assertion.checkNotNull(restfulServiceClass);
+	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends WebServices> webServicesClass) {
+		Assertion.checkNotNull(webServicesClass);
 		//-----
 		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();
-		for (final Method method : restfulServiceClass.getMethods()) {
-			final Option<EndPointDefinition> endPointDefinition = buildEndPointDefinition(method, restfulServiceClass);
+		for (final Method method : webServicesClass.getMethods()) {
+			final Option<EndPointDefinition> endPointDefinition = buildEndPointDefinition(method, webServicesClass);
 			if (endPointDefinition.isDefined()) {
 				endPointDefinitions.add(endPointDefinition.get());
 			}
@@ -84,7 +84,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		return endPointDefinitions;
 	}
 
-	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPointDefinition(final Method method, final Class<C> restFullServiceClass) {
+	private static <C extends WebServices> Option<EndPointDefinition> buildEndPointDefinition(final Method method, final Class<C> webServicesClass) {
 		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {

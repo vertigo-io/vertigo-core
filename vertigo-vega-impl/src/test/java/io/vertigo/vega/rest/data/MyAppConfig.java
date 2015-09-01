@@ -39,16 +39,16 @@ import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStoreP
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
 import io.vertigo.vega.rest.data.domain.ContactDao;
 import io.vertigo.vega.rest.data.user.TestUserSession;
-import io.vertigo.vega.rest.data.ws.WsCommonRestServices;
-import io.vertigo.vega.rest.data.ws.WsContactsRestServices;
-import io.vertigo.vega.rest.data.ws.WsFileDownload;
-import io.vertigo.vega.rest.data.ws.WsRestServices;
-import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
+import io.vertigo.vega.rest.data.ws.WsCommonWebServices;
+import io.vertigo.vega.rest.data.ws.WsContactsWebServices;
+import io.vertigo.vega.rest.data.ws.WsFileDownloadWebServices;
+import io.vertigo.vega.rest.data.ws.WsWebServices;
+import io.vertigoimpl.engines.rest.cmd.ComponentCmdWebServices;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -106,12 +106,12 @@ public final class MyAppConfig {
 			.beginModule("dao-app").withNoAPI().withInheritance(Object.class)
 				.addComponent(ContactDao.class)
 			.endModule()
-			.beginModule("webservices-app").withNoAPI().withInheritance(RestfulService.class)
-				.addComponent(ComponentCmdRestServices.class)
-				.addComponent(WsCommonRestServices.class)
-				.addComponent(WsContactsRestServices.class)
-				.addComponent(WsRestServices.class)
-				.addComponent(WsFileDownload.class)
+			.beginModule("webservices-app").withNoAPI().withInheritance(WebServices.class)
+				.addComponent(ComponentCmdWebServices.class)
+				.addComponent(WsCommonWebServices.class)
+				.addComponent(WsContactsWebServices.class)
+				.addComponent(WsWebServices.class)
+				.addComponent(WsFileDownloadWebServices.class)
 			.endModule()
 			.beginModule("myApp")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())

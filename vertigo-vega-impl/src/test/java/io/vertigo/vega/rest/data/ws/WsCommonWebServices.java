@@ -19,14 +19,14 @@
 package io.vertigo.vega.rest.data.ws;
 
 import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 
 import javax.inject.Inject;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
-public final class WsCommonRestServices implements RestfulService {
+public final class WsCommonWebServices implements WebServices {
 
 	@Inject
 	private VSecurityManager securityManager;

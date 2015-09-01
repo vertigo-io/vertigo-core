@@ -20,7 +20,7 @@ package io.vertigo.vega.rest.data.ws;
 
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
 import io.vertigo.vega.rest.data.domain.ContactDao;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/contacts")
-public final class WsContactsRestServices implements RestfulService {
+public final class WsContactsWebServices implements WebServices {
 
 	@Inject
 	private ContactDao contactDao;

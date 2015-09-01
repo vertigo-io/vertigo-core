@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.List;
@@ -35,6 +35,6 @@ public interface EndPointIntrospectorPlugin extends Plugin {
 	 * @param resfultServiceClass Class to introspect
 	 * @return List of EndPointDefinition found
 	 */
-	List<EndPointDefinition> instrospectEndPoint(Class<? extends RestfulService> resfultServiceClass);
+	List<EndPointDefinition> instrospectEndPoint(Class<? extends WebServices> resfultServiceClass);
 
 }

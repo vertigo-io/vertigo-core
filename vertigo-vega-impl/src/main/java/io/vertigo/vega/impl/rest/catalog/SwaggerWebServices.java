@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
-public final class SwaggerRestServices implements RestfulService {
+public final class SwaggerWebServices implements WebServices {
 	private static final String[][] SUPPORTED_CONTENT_TYPE = {
 			{ ".html", "text/html" },
 			{ ".css", "text/css" },
@@ -102,7 +102,7 @@ public final class SwaggerRestServices implements RestfulService {
 		if (resourceUrl.isEmpty()) {
 			response.sendRedirect("./index.html");
 		}
-		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourceUrl);
+		final URL url = SwaggerWebServices.class.getResource("/swagger-site/" + resourceUrl);
 		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}
 
@@ -117,7 +117,7 @@ public final class SwaggerRestServices implements RestfulService {
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/{resourcePathUrl}/{resourceUrl}")
 	public void getSwapperUi(@PathParam("resourcePathUrl") final String resourcePathUrl, @PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
-		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
+		final URL url = SwaggerWebServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
 		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}
 

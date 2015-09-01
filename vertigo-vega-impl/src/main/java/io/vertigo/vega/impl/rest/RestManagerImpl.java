@@ -36,7 +36,7 @@ import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.rest.RestManager;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.io.Serializable;
@@ -110,7 +110,7 @@ public final class RestManagerImpl implements RestManager {
 		});
 	}
 
-	private List<RestHandlerPlugin> sortRestHandlerPlugins(final List<RestHandlerPlugin> restHandlerPlugins) {
+	private static List<RestHandlerPlugin> sortRestHandlerPlugins(final List<RestHandlerPlugin> restHandlerPlugins) {
 		final List<RestHandlerPlugin> sortedRestHandlerPlugins = new ArrayList<>();
 		RestHandlerPlugin restfulServiceRestHandlerPlugin = null;
 		for (final RestHandlerPlugin restHandlerPlugin : restHandlerPlugins) {
@@ -138,8 +138,8 @@ public final class RestManagerImpl implements RestManager {
 		//1- We introspect all RestfulService class
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
-			if (component instanceof RestfulService) {
-				final List<EndPointDefinition> endPointDefinitions = endPointIntrospectorPlugin.instrospectEndPoint(((RestfulService) component).getClass());
+			if (component instanceof WebServices) {
+				final List<EndPointDefinition> endPointDefinitions = endPointIntrospectorPlugin.instrospectEndPoint(((WebServices) component).getClass());
 				allEndPointDefinitions.addAll(endPointDefinitions);
 			}
 		}

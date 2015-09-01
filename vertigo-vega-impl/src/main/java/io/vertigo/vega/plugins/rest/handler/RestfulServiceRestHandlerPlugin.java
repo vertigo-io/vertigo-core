@@ -22,7 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -56,14 +56,14 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext, endPointDefinition);
 		final Method method = endPointDefinition.getMethod();
-		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());
+		final WebServices webServices = (WebServices) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
 		if (method.getName().startsWith("create")) {
 			//by convention, if method starts with 'create', an http 201 status code is returned (if ok)
 			response.status(HttpServletResponse.SC_CREATED);
 		}
 		try {
-			return ClassUtil.invoke(service, method, serviceArgs);
+			return ClassUtil.invoke(webServices, method, serviceArgs);
 		} catch (final RuntimeException e) {
 			//If throwed exception was ValidationUserException, VUserException, SessionException, VSecurityException, RuntimeException
 			//we re throw it

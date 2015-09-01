@@ -19,11 +19,10 @@
 package io.vertigo.vega.rest;
 
 /**
- * RestfullService marker.
- * Inspired from javax.ws.rs : http://docs.oracle.com/javaee/6/api/index.html?javax/ws/rs/package-summary.html
- * and vert.x
+ * WebServices.
+ * Used to mark a class, which defines a set of webservices.   
  * @author npiedeloup
  */
-public interface RestfulService {
+public interface WebServices {
 	//
 }

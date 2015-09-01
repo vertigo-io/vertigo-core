@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
@@ -36,7 +36,7 @@ import java.util.List;
  * Default RestService to list services published.
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
-public final class CatalogRestServices implements RestfulService {
+public final class CatalogRestServices implements WebServices {
 
 	@SessionLess
 	@AnonymousAccessAllowed

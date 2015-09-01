@@ -43,7 +43,7 @@ import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
 import io.vertigo.vega.rest.data.domain.ContactDao;
@@ -97,7 +97,7 @@ import javax.servlet.http.HttpServletResponse;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
-public final class WsRestServices implements RestfulService {
+public final class WsWebServices implements WebServices {
 
 	@Inject
 	private VSecurityManager securityManager;

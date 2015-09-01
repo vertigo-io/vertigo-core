@@ -23,7 +23,7 @@ import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
@@ -36,7 +36,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public final class ComponentCmdRestServices implements RestfulService {
+public final class ComponentCmdWebServices implements WebServices {
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
 
 	@AnonymousAccessAllowed

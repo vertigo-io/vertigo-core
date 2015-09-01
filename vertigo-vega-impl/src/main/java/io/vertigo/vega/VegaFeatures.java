@@ -3,7 +3,7 @@ package io.vertigo.vega;
 import io.vertigo.core.config.Features;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
-import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
+import io.vertigo.vega.impl.rest.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
@@ -41,7 +41,7 @@ public final class VegaFeatures extends Features {
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(RestManager.class, RestManagerImpl.class)
 				.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
-				.addComponent(SwaggerRestServices.class)
+				.addComponent(SwaggerWebServices.class)
 				.addComponent(CatalogRestServices.class)
 
 				//-- Handlers plugins
