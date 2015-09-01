@@ -35,7 +35,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -361,7 +360,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getFileStore().create(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().getFileInfo(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 

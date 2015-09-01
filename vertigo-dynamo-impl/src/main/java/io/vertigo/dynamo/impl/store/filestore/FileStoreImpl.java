@@ -41,20 +41,6 @@ public final class FileStoreImpl implements FileStore {
 		fileStore = new LogicalFileStore(fileStoreConfig.getLogicalFileStoreConfiguration());
 	}
 
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	@Deprecated
-	//	public void save(final FileInfo fileInfo) {
-	//		Assertion.checkNotNull(fileInfo);
-	//		//-----
-	//
-	//		if (fileInfo.getURI() == null) {
-	//			create(fileInfo);
-	//		} else {
-	//			update(fileInfo);
-	//		}
-	//	}
-
 	/** {@inheritDoc} */
 	@Override
 	public void create(final FileInfo fileInfo) {
@@ -73,7 +59,7 @@ public final class FileStoreImpl implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void deleteFileInfo(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		fileStore.remove(uri);
@@ -81,7 +67,7 @@ public final class FileStoreImpl implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo getFileInfo(final FileInfoURI uri) {
+	public FileInfo get(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final FileInfo fileInfo = fileStore.load(uri);
