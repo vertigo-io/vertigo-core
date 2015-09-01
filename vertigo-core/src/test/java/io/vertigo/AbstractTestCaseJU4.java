@@ -54,9 +54,8 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Récupère la valeur de homeStarted.
 	 *
-	 * @return valeur de homeStarted
+	 * @return If app is started
 	 */
 	private static synchronized boolean isAppStarted() {
 		return app != null;
