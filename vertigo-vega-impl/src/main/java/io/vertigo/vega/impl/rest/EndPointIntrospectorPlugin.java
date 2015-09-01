@@ -32,9 +32,9 @@ public interface EndPointIntrospectorPlugin extends Plugin {
 
 	/**
 	 * Introspect RestfulService class, looking for "Rest End Point Definitions. 
-	 * @param resfultServiceClass Class to introspect
+	 * @param webServicesServiceClass Class to introspect
 	 * @return List of EndPointDefinition found
 	 */
-	List<EndPointDefinition> instrospectEndPoint(Class<? extends WebServices> resfultServiceClass);
+	List<EndPointDefinition> instrospectEndPoint(Class<? extends WebServices> webServicesServiceClass);
 
 }

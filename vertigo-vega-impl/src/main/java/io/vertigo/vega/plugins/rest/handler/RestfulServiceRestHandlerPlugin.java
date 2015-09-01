@@ -54,7 +54,7 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
-		final Object[] serviceArgs = makeArgs(routeContext, endPointDefinition);
+		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = endPointDefinition.getMethod();
 		final WebServices webServices = (WebServices) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
@@ -86,7 +86,8 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 		}
 	}
 
-	private static Object[] makeArgs(final RouteContext routeContext, final EndPointDefinition endPointDefinition) {
+	private static Object[] makeArgs(final RouteContext routeContext) {
+		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
 		if (endPointDefinition.isAutoSortAndPagination()) {
 			final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size() - 1];
 			int i = 0;
