@@ -44,24 +44,25 @@ public final class TemplateTaskDefinition {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
-		TemplateTaskAttribute outTemp = null;
 		boolean hasOption = false;
-		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
 
+		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
 			attributes.add(templateTaskAttribute);
-			if (attribute.isIn()) {
-				ins.add(templateTaskAttribute);
-			} else {
-				//On est dans le cas des paramètres OUT
-				if (outTemp != null) {
-					throw new Error("Les générations acceptent au plus un paramètre OUT");
-				}
-				outTemp = templateTaskAttribute;
-			}
+			ins.add(templateTaskAttribute);
 			hasOption = hasOption || !attribute.isNotNull();
 		}
-		out = outTemp;
+
+		if (taskDefinition.getOutAttributeOption().isDefined()) {
+			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
+			attributes.add(templateTaskAttribute);
+			//On est dans le cas des paramètres OUT
+			out = templateTaskAttribute;
+			hasOption = hasOption || !attribute.isNotNull();
+		} else {
+			out = null;
+		}
 		hasOptions = hasOption;
 	}
 

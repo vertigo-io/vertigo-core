@@ -49,15 +49,23 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 	private static int count(final DtDefinition dtDefinition) {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
-			for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()) {
-				if (!taskAttribute.getDomain().getDataType().isPrimitive()) {
-					if (taskAttribute.getDomain().hasDtDefinition()) {
-						if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
-							count++;
-						}
-					}
-				}
+			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
+				count += count(dtDefinition, taskAttribute);
+			}
+			for (final TaskAttribute taskAttribute : taskDefinition.getOutAttributeOption()) {
+				count += count(dtDefinition, taskAttribute);
+			}
+		}
+		return count;
+	}
 
+	private static int count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
+		int count = 0;
+		if (!taskAttribute.getDomain().getDataType().isPrimitive()) {
+			if (taskAttribute.getDomain().hasDtDefinition()) {
+				if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
+					count++;
+				}
 			}
 		}
 		return count;
