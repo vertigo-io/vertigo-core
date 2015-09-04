@@ -119,7 +119,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 			final Future<File> targetFileFuture = executors.submit(convertTask);
 			targetFile = targetFileFuture.get(convertTimeoutSeconds, TimeUnit.SECONDS);
 		} catch (final Exception e) {
-			throw new RuntimeException("Erreur de conversion du document au format " + targetFormat.name(), e);
+			throw new RuntimeException("Erreur de conversion du document au format " + targetFormat.name() + " (" + e.getClass().getSimpleName() + ")", e);
 		}
 		return fileManager.createFile(targetFile);
 	}
