@@ -170,7 +170,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true)
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true)
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true)
-				.addOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
+				.withOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
 				.build();
 	}
 

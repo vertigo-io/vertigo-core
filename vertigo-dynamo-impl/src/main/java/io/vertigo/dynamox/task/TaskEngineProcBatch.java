@@ -89,8 +89,8 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 
 	private int getBatchSize() {
 		Integer batchSize = null;
-		for (final TaskAttribute attribute : getTaskDefinition().getAttributes()) {
-			if (attribute.isIn() && attribute.getDomain().getDataType() == DataType.DtList) {
+		for (final TaskAttribute attribute : getTaskDefinition().getInAttributes()) {
+			if (attribute.getDomain().getDataType() == DataType.DtList) {
 				Assertion.checkState(batchSize == null, "Pour un traitement Batch, il ne doit y avoir qu'une seule liste en entrée.");
 				final DtList<?> dtc = getValue(attribute.getName());
 				batchSize = dtc.size();

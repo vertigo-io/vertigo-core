@@ -107,7 +107,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param domain Domain of the attribute
 	 * @param notNull If attribute must be not null
 	 */
-	public TaskDefinitionBuilder addOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
+	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
 		return addAttribute(attributeName, domain, notNull, false);
 	}
 

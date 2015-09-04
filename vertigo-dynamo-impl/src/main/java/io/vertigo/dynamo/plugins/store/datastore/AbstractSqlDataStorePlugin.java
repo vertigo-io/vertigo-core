@@ -129,7 +129,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
-				.addOutAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
+				.withOutAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -176,7 +176,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
 				.addInAttribute(fkFieldName, fkField.getDomain(), true)
-				.addOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
 				.build();
 
 		final URI uri = dtcUri.getSource();
@@ -250,7 +250,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.addOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
@@ -443,7 +443,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
 				.withRequest(request)
 				.addInAttribute("DTO", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class), true)
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
 				.build();
 
 		/*
@@ -486,7 +486,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -523,7 +523,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.addOutAttribute("dto", countDomain, true)//OUT, obligatoire
+				.withOutAttribute("dto", countDomain, true)//OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -550,7 +550,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

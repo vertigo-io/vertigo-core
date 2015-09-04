@@ -135,7 +135,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 				.withRequest(request.toString())
 				.addInAttribute(inDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true)
-				.addOutAttribute(outDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
+				.withOutAttribute(outDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true);
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.build();
 		// On exécute par paquet

@@ -23,6 +23,8 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -133,12 +135,43 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
+	 * Retourne l' attribut OUT
+	 *
+	 * @return Attribut OUT
+	 */
+	public Option<TaskAttribute> getOutAttributeOption() {
+		TaskAttribute foundAttribute = null;
+		for (final TaskAttribute attribute : getAttributes()) {
+			if (!attribute.isIn()) {
+				Assertion.checkState(foundAttribute == null, "TaskEngineSelect ne peut créer qu'un seul DtObject ou DtList !");
+				foundAttribute = attribute;
+			}
+		}
+		return Option.option(foundAttribute);
+	}
+
+	/**
+	 * Retourne la liste des attributs IN
+	 *
+	 * @return Liste des attributs IN
+	 */
+	public List<TaskAttribute> getInAttributes() {
+		final ListBuilder<TaskAttribute> builder = new ListBuilder<>();
+		for (final TaskAttribute attribute : getAttributes()) {
+			if (attribute.isIn()) {
+				builder.add(attribute);
+			}
+		}
+		return builder.unmodifiable().build();
+	}
+
+	/**
 	 * Retourne la liste des attributs de la tache sous forme d'une Collection
 	 * de TaskAttribute.
 	 *
 	 * @return Liste des attributs de la tache
 	 */
-	public Collection<TaskAttribute> getAttributes() {
+	private Collection<TaskAttribute> getAttributes() {
 		return taskAttributes.values();
 	}
 

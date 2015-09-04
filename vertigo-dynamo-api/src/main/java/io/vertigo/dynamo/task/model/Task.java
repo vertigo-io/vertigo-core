@@ -74,13 +74,11 @@ public final class Task {
 	}
 
 	private void checkValues() {
-		for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()) {
-			if (taskAttribute.isIn()) {
-				//on ne prend que les attributes correspondant au mode.
-				//We check all attributes
-				final Object value = taskAttributes.get(taskAttribute);
-				taskAttribute.checkAttribute(value);
-			}
+		for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
+			//on ne prend que les attributes correspondant au mode.
+			//We check all attributes
+			final Object value = taskAttributes.get(taskAttribute);
+			taskAttribute.checkAttribute(value);
 		}
 	}
 

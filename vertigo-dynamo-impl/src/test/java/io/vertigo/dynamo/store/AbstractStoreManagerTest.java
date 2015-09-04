@@ -197,7 +197,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withRequest("select * from CAR where ID = #ID#")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("ID", doId, true)
-				.addOutAttribute("DTO_CAR_OUT", doCar, true)
+				.withOutAttribute("DTO_CAR_OUT", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition);
@@ -211,7 +211,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addOutAttribute("DTC_CAR_OUT", doCarList, true)
+				.withOutAttribute("DTC_CAR_OUT", doCarList, true)
 				.build();
 	}
 

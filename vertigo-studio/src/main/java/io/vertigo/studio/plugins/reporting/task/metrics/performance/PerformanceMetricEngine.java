@@ -19,7 +19,6 @@
 package io.vertigo.studio.plugins.reporting.task.metrics.performance;
 
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -97,11 +96,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 	}
 
 	private static boolean hasNotNullOutParams(final TaskDefinition taskDefinition) {
-		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
-			if (!attribute.isIn() && attribute.isNotNull()) {
-				return true;
-			}
-		}
-		return false;
+		return taskDefinition.getOutAttributeOption().isDefined()
+				&& taskDefinition.getOutAttributeOption().get().isNotNull();
 	}
 }

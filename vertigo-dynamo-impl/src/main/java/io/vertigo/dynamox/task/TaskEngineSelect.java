@@ -23,7 +23,6 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
 
@@ -70,17 +69,10 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Récupération de l'attribut OUT. Il doit être unique. 
 	 */
 	private TaskAttribute getOutTaskAttribute() {
-		TaskAttribute foundedAttribute = null;
-		for (final TaskAttribute attribute : getTaskDefinition().getAttributes()) {
-			if (!attribute.isIn()) {
-				Assertion.checkState(foundedAttribute == null, "TaskEngineSelect ne peut créer qu'un seul DtObject ou DtList !");
-				foundedAttribute = attribute;
-			}
-		}
-		if (foundedAttribute == null) {
+		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
 			throw new RuntimeException("TaskEngineSelect doit affecter au moins UN DtObject ou DtList!");
 		}
-		return foundedAttribute;
+		return getTaskDefinition().getOutAttributeOption().get();
 
 	}
 
