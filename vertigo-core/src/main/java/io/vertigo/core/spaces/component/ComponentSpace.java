@@ -26,11 +26,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -183,16 +181,14 @@ public final class ComponentSpace implements Container, Activeable {
 	}
 
 	private static void startComponent(final Object component) {
-		final Method startMethod = ComponentLifeCycleUtil.getStartMethod(component.getClass());
-		if (startMethod != null) {
-			ClassUtil.invoke(component, startMethod);
+		if (component instanceof Activeable) {
+			Activeable.class.cast(component).start();
 		}
 	}
 
 	private static void stopComponent(final Object component) {
-		final Method stopMethod = ComponentLifeCycleUtil.getStopMethod(component.getClass());
-		if (stopMethod != null) {
-			ClassUtil.invoke(component, stopMethod);
+		if (component instanceof Activeable) {
+			Activeable.class.cast(component).stop();
 		}
 	}
 
