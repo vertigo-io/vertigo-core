@@ -24,7 +24,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,7 +34,6 @@ import java.util.List;
 public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;
 	private final List<TemplateTaskAttribute> ins = new ArrayList<>();
-	private final Collection<TemplateTaskAttribute> attributes = new ArrayList<>();
 
 	private final TemplateTaskAttribute out;
 	private final boolean hasOptions;
@@ -48,7 +46,6 @@ public final class TemplateTaskDefinition {
 
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
 			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
-			attributes.add(templateTaskAttribute);
 			ins.add(templateTaskAttribute);
 			hasOption = hasOption || !attribute.isNotNull();
 		}
@@ -56,7 +53,6 @@ public final class TemplateTaskDefinition {
 		if (taskDefinition.getOutAttributeOption().isDefined()) {
 			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
 			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
-			attributes.add(templateTaskAttribute);
 			//On est dans le cas des paramètres OUT
 			out = templateTaskAttribute;
 			hasOption = hasOption || !attribute.isNotNull();
@@ -67,9 +63,9 @@ public final class TemplateTaskDefinition {
 	}
 
 	/**
-	 * @return Urn de la taskDefinition
+	 * @return Name of taskDefinition
 	 */
-	public String getUrn() {
+	public String getName() {
 		return taskDefinition.getName();
 	}
 
@@ -79,13 +75,6 @@ public final class TemplateTaskDefinition {
 	public String getMethodName() {
 		final String localName = taskDefinition.getLocalName();
 		return StringUtil.constToLowerCamelCase(localName);
-	}
-
-	/**
-	 * @return Liste des attributs
-	 */
-	public Collection<TemplateTaskAttribute> getAttributes() {
-		return attributes;
 	}
 
 	/**

@@ -28,7 +28,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 </#if>
 <#if dao.keyConcept>
 import io.vertigo.dynamo.domain.model.URI;
@@ -74,7 +73,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * @param uri URI du keyConcept modifié
 	 */
 	 public void workOnKeyConcept(final URI<${dao.dtClassSimpleName}> uri) {
-		broker.workOn(uri);
+		dataStore.workOn(uri);
 	}
 
 	/**
@@ -109,7 +108,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * Récupération du résultat issu d'une requête.
 	 * @param searchQuery critères initiaux
 	 * @param listState Etat de la liste (tri et pagination)
-	 * @return Résultat correspondant à la requête (de type ${dao.indexDtClassSimpleName}) 
+	 * @ret² Résultat correspondant à la requête (de type ${dao.indexDtClassSimpleName}) 
 	 */
 	public FacetedQueryResult<${dao.indexDtClassSimpleName}, SearchQuery> loadList(final SearchQuery searchQuery, final DtListState listState) {
 		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(${dao.dtClassSimpleName}.class);

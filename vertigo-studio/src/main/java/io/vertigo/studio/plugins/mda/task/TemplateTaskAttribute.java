@@ -53,8 +53,7 @@ public final class TemplateTaskAttribute {
 	 * @return Nom de la constante
 	 */
 	public String getConstantName() {
-		final String inOut = taskAttribute.isIn() ? "IN_" : "OUT_";
-		return "ATTR_" + inOut + taskDefinition.getName() + '_' + taskAttribute.getName();
+		return "ATTR_" + taskDefinition.getName() + '_' + taskAttribute.getName();
 	}
 
 	/**
