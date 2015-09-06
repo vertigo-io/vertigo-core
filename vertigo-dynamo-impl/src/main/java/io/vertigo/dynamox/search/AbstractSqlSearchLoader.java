@@ -34,7 +34,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
@@ -83,14 +82,17 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
-				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
+				.withOutAttribute(Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(pkFieldName, lastId)
 				.build();
-		final TaskResult taskResult = process(task);
-		final DtList<S> resultDtc = getDtList(taskResult);
+
+		final DtList<S> resultDtc = taskManager
+				.execute(task)
+				.getResult();
+
 		final List<URI<S>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		for (final S dto : resultDtc) {
 			uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
@@ -127,18 +129,8 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		return "";
 	}
 
-	/**
-	 * Exécution d'une tache de façon synchrone.
-	 *
-	 * @param task Tache à executer.
-	 * @return TaskResult de la tache
-	 */
-	protected final TaskResult process(final Task task) {
-		return taskManager.execute(task);
-	}
-
-	private static <D extends DtObject> DtList<D> getDtList(final TaskResult taskResult) {
-		return taskResult.getValue("dtc");
+	protected final TaskManager getTaskManager() {
+		return taskManager;
 	}
 
 	/**

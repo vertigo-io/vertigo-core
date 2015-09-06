@@ -83,7 +83,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 
 		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());
-		setValue(outAttribute.getName(), result.getValue());
+		this.setResult(result.getValue());
 		return result.getSQLRowCount();
 	}
 

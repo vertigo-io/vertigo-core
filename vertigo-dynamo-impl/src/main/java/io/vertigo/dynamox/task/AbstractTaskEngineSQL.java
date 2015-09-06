@@ -367,7 +367,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		if (param.isPrimitive()) {
 			final TaskAttribute attribute = getTaskDefinition().getAttribute(param.getAttributeName());
 			Assertion.checkArgument(!attribute.isIn(), "{0} must have the attribute ATTR_OUT", param.getAttributeName());
-			setValue(param.getAttributeName(), value);
+			setResult(value);
 		} else if (param.isObject()) {
 			//DtObject
 			final DtObject dto = getValue(param.getAttributeName());
@@ -467,7 +467,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		if (getTaskDefinition().containsAttribute(SQL_ROWCOUNT)) {
 			Assertion.checkArgument(!getTaskDefinition().getAttribute(SQL_ROWCOUNT).isIn(), "Attribut Rowcount est obligatoirement OUT");
 			// SI le paramètre (out) INT_SQL_ROWCOUNT est défini, il reçoit le sql%rowcount
-			setValue(SQL_ROWCOUNT, sqlRowcount);
+			setResult(sqlRowcount);
 		}
 	}
 }

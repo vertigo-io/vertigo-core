@@ -32,7 +32,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -77,8 +76,10 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 
 		final Task task = new TaskBuilder(taskLoadCars)
 				.build();
-		final TaskResult taskResult = process(task);
-		return taskResult.getValue("DTC_CAR_OUT");
+
+		return getTaskManager()
+				.execute(task)
+				.getResult();
 	}
 
 	private static TaskDefinition getTaskLoadCarList(final List<URI<Car>> uris) {
@@ -95,7 +96,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql.toString())
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute("DTC_CAR_OUT", doCarList, true)
+				.withOutAttribute(doCarList, true)
 				.build();
 	}
 }

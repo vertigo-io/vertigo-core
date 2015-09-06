@@ -197,7 +197,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withRequest("select * from CAR where ID = #ID#")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("ID", doId, true)
-				.withOutAttribute("DTO_CAR_OUT", doCar, true)
+				.withOutAttribute(doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition);
@@ -211,7 +211,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute("DTC_CAR_OUT", doCarList, true)
+				.withOutAttribute(doCarList, true)
 				.build();
 	}
 
@@ -240,15 +240,17 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final Task task = new TaskBuilder(taskLoadCar)
 				.addValue("CAR_ID", carId)
 				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.getValue("DTO_CAR_OUT");
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final Task task = new TaskBuilder(taskLoadCars)
 				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.getValue("DTC_CAR_OUT");
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	protected final List<Map<String, String>> execPreparedStatement(final SqlConnection connection, final String sql) throws SQLException {

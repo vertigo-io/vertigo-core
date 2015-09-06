@@ -35,7 +35,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
@@ -118,7 +117,6 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		final DtDefinition dtDef = dtc.getDefinition();
 		final String dtcName = getDtcName(dtDef);
 		final String inDtcName = dtcName + "_IN";
-		final String outDtcName = dtcName + "_OUT";
 
 		request.append(dtDef.getLocalName())
 				.append(" where ")
@@ -135,7 +133,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 				.withRequest(request.toString())
 				.addInAttribute(inDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true)
-				.withOutAttribute(outDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
+				.withOutAttribute(Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true);
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.build();
 		// On exécute par paquet
@@ -145,8 +143,10 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
 			taskBuilder.addValue(inDtcName, paq);
 			// Exécution de la tache
-			final TaskResult taskResult = taskManager.execute(taskBuilder.build());
-			ret.addAll((DtList<D>) taskResult.getValue(outDtcName));
+			DtList<D> result = taskManager
+					.execute(taskBuilder.build())
+					.getResult();
+			ret.addAll(result);
 		}
 		return ret;
 	}

@@ -25,7 +25,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 
 import javax.inject.Inject;
 
@@ -135,12 +134,17 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.addValue(TaskEngineMock.ATTR_IN_INT_3, 7)
 				.build();
 
-		final TaskResult taskResult1 = taskManager.execute(task);
-		Assert.assertEquals(Integer.valueOf(16), taskResult1.getValue(TaskEngineMock.ATTR_OUT));
+		Integer result1 = taskManager
+				.execute(task)
+				.getResult();
 
-		final TaskResult taskResult2 = taskManager.execute(task);
-		Assert.assertEquals(Integer.valueOf(16), taskResult2.getValue(TaskEngineMock.ATTR_OUT));
+		Assert.assertEquals(Integer.valueOf(16), result1);
 
+		Integer result2 = taskManager
+				.execute(task)
+				.getResult();
+
+		Assert.assertEquals(Integer.valueOf(16), result2);
 	}
 
 	/**
@@ -156,8 +160,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.addValue(TaskEngineMock.ATTR_IN_INT_3, value3)
 				.build();
 
-		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.getValue(TaskEngineMock.ATTR_OUT);
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	private static TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
@@ -170,7 +175,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true)
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true)
 				.addInAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true)
-				.withOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
+				.withOutAttribute(doInteger, true)
 				.build();
 	}
 

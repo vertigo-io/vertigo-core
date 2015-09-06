@@ -31,7 +31,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
@@ -46,7 +45,6 @@ import javax.inject.Named;
  * @author  pchretien
  */
 public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
-	private static final String DTO_SEQUENCE = "DTO_SEQUENCE";
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 	/**
 	 * Prefix de la tache : SELECT
@@ -87,12 +85,14 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
+				.withOutAttribute(resultDomain, true)// OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition).build();
-		final TaskResult taskResult = process(task);
-		final DtObject dto = taskResult.getValue(DTO_SEQUENCE);
+
+		final DtObject dto = getTaskManager()
+				.execute(task)
+				.getResult();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(SEQUENCE_FIELD);
 

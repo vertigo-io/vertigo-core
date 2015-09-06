@@ -47,7 +47,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
 		//-----
-		this.myTaskDefinitionName = taskDefinitionName;
+		myTaskDefinitionName = taskDefinitionName;
 	}
 
 	/**
@@ -62,7 +62,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 			throw new ClassCastException("La classe doit être une sous classe de ServiceProvider");
 		}
 		//-----
-		this.myTaskEngineClass = taskEngineClass;
+		myTaskEngineClass = taskEngineClass;
 		return this;
 	}
 
@@ -75,7 +75,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		//Pour unifier la saisie de la request sous un environnement unix ou dos
 		// et pour éviter la disparité de gestion des retours chariot
 		//par certains drivers de base de données.
-		this.myRequest = request.replace("\r", "");
+		myRequest = request.replace("\r", "");
 		return this;
 	}
 
@@ -85,7 +85,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
 		//-----
-		this.myPackageName = packageName;
+		myPackageName = packageName;
 		return this;
 	}
 
@@ -107,8 +107,8 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param domain Domain of the attribute
 	 * @param notNull If attribute must be not null
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
-		return addAttribute(attributeName, domain, notNull, false);
+	public TaskDefinitionBuilder withOutAttribute(final Domain domain, final boolean notNull) {
+		return addAttribute("out", domain, notNull, false);
 	}
 
 	/**
