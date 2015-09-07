@@ -45,6 +45,7 @@ import javax.inject.Named;
  * @author  pchretien
  */
 public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
+	private static final String DTO_SEQUENCE = "DTO_SEQUENCE";
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 	/**
 	 * Prefix de la tache : SELECT
@@ -85,7 +86,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withOutAttribute(resultDomain, true)// OUT, obligatoire
+				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition).build();

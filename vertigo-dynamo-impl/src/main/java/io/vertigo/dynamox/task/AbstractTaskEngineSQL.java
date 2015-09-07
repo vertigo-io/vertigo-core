@@ -165,13 +165,22 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 				//Execute le Statement JDBC.
 				final int sqlRowcount = doExecute(connection, statement);
 				//On positionne le nombre de lignes affectées.
-				setResult(sqlRowcount);
+				setRowCount(sqlRowcount);
 			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 				// Gère les erreurs d'exécution Batch JDBC.
 				handleSQLException(connection, sqle.getNextException(), statement);
 			} catch (final SQLException sqle) {
 				//Gère les erreurs d'exécution JDBC.
 				handleSQLException(connection, sqle, statement);
+			}
+		}
+	}
+
+	private void setRowCount(final int sqlRowcount) {
+		if (getTaskDefinition().getOutAttributeOption().isDefined()) {
+			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
+			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
+				setResult(sqlRowcount);
 			}
 		}
 	}

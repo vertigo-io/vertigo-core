@@ -31,6 +31,8 @@ public final class TaskEngineMock extends TaskEngine {
 	public static final String ATTR_IN_INT_2 = "ATTR_IN_INT_2";
 	/** entier 3. */
 	public static final String ATTR_IN_INT_3 = "ATTR_IN_INT_3";
+	/** Somme. */
+	public static final String ATTR_OUT = "ATTR_OUT";
 
 	private Integer getValue1() {
 		return getValue(ATTR_IN_INT_1);

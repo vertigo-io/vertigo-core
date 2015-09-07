@@ -1,5 +1,5 @@
 /**
- * vertigo - simple java starter
+" * vertigo - simple java starter
  *
  * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -133,7 +133,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 				.withRequest(request.toString())
 				.addInAttribute(inDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true)
-				.withOutAttribute(Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
+				.withOutAttribute("out", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true);
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.build();
 		// On exécute par paquet

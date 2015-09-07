@@ -96,7 +96,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql.toString())
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute(doCarList, true)
+				.withOutAttribute("dtc", doCarList, true)
 				.build();
 	}
 }

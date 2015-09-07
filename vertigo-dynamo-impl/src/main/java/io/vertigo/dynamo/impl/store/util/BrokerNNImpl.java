@@ -31,6 +31,7 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 
@@ -188,7 +189,7 @@ public final class BrokerNNImpl implements BrokerNN {
 			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), true);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(integerDomain, true)
+		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
 				.build();
 
 		/* Création de la tache. */
