@@ -127,7 +127,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	//private final static String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//private final static String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//\p{Punct}:  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-	private final static String WORD_RESERVERD_PATTERN = "^\\s\\p{Punct}";
+	private final static String WORD_RESERVERD_PATTERN = "^\\s!\"#$%&'()*+,-./:;<=>?@[\\\\]^`{|}~"; //Punct sauf _
 	private final static String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	private final static String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	//private final static String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";

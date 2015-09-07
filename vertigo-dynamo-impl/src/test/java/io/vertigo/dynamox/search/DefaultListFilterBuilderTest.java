@@ -230,6 +230,27 @@ public class DefaultListFilterBuilderTest {
 		testObjectFixedQuery(testQueries);
 	}
 
+	@Test
+	public void testMultiQuery() {
+		final TestBean testBeanNull = new TestBean(null, "Test test2", null, null, null, null);
+		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, null, null, null);
+		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
+		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null);
+		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
+		final Object[][] testQueries = new Object[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //0
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanEmpty, "+PRO_ID:(*) +ALL:(Test test2)" }, //1
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanOne, "+PRO_ID:(12) +ALL:(Test test2)" }, //2
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(12 13) +ALL:(Test test2)" }, //3
+				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(+12 +13) +ALL:(Test test2)" }, //4
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
+				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
+
+		};
+		testObjectFixedQuery(testQueries);
+	}
+
 	private void testStringFixedQuery(final String[]... testData) {
 		int i = 0;
 		for (final String[] testParam : testData) {
