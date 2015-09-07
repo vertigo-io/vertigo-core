@@ -20,7 +20,6 @@ package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -39,9 +38,6 @@ import java.util.Map;
 public final class TaskDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;
-
-	/** Nom sans prefix de la définition. */
-	private final String localName;
 
 	/** Nom du package. */
 	private final String packageName;
@@ -76,7 +72,6 @@ public final class TaskDefinition implements Definition {
 		Assertion.checkNotNull(outTaskAttributeOption);
 		//-----
 		this.name = name;
-		localName = DefinitionUtil.getLocalName(name, TaskDefinition.class);
 		this.packageName = packageName;
 		this.request = request;
 		this.inTaskAttributes = createMap(inTaskAttributes);
@@ -155,13 +150,6 @@ public final class TaskDefinition implements Definition {
 	 */
 	public String getPackageName() {
 		return packageName;
-	}
-
-	/**
-	 * @return Nom de la définition sans prefix (XXX_YYYY).
-	 */
-	public String getLocalName() {
-		return localName;
 	}
 
 	/** {@inheritDoc} */

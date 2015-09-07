@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
@@ -73,7 +74,8 @@ public final class TemplateTaskDefinition {
 	 * @return Nom de la méthode en CamelCase
 	 */
 	public String getMethodName() {
-		final String localName = taskDefinition.getLocalName();
+		// Nom de la définition sans prefix (XXX_YYYY).
+		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
 		return StringUtil.constToLowerCamelCase(localName);
 	}
 
