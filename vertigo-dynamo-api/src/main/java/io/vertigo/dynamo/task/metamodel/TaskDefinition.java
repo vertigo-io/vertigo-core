@@ -114,15 +114,6 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
-	 * Retourne si l'attribut fait partie de l'API de la tache.
-	 * @param attributeName Nom de l'attribut
-	 * @return Si l'attribut fait partie de l'API de la tache
-	 */
-	public boolean containsInAttribute(final String attributeName) {
-		return inTaskAttributes.containsKey(attributeName);
-	}
-
-	/**
 	 * Retourne la classe réalisant l'implémentation de la tache.
 	 *
 	 * @return Classe réalisant l'implémentation
