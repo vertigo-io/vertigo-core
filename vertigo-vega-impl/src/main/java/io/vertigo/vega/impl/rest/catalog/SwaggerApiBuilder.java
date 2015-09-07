@@ -374,7 +374,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
-			final String bodyName = StringUtil.constToUpperCamelCase(endPointDefinition.getName().replaceAll("__", "_")) + "Body";
+			final String bodyName = StringUtil.constToUpperCamelCase(endPointDefinition.getName().replaceAll("__", "_").replaceAll("__", "_")) + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
