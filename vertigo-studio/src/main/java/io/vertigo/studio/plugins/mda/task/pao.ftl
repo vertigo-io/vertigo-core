@@ -18,7 +18,6 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
  * ${pao.classSimpleName}
  */
 public final class ${pao.classSimpleName} {
-	<@lib.generateHeader pao.taskDefinitions/>  
 	private final TaskManager taskManager;
 
 	/**

@@ -129,7 +129,8 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
 			taskDefinitionBuilder.addInAttribute(attribute.getName(), attribute.getDomain(), attribute.isNotNull());
 		}
-		for (final TaskAttribute attribute : taskDefinition.getOutAttributeOption()) {
+		if (taskDefinition.getOutAttributeOption().isDefined()) {
+			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
 			taskDefinitionBuilder.withOutAttribute(attribute.getName(), attribute.getDomain(), false);
 		}
 

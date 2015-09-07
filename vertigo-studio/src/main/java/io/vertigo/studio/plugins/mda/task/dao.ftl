@@ -45,9 +45,6 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	<#if dao.keyConcept && dao.hasSearchBehavior()>
 	private final SearchManager searchManager;
 	</#if>
-	<#if !dao.taskDefinitions.empty>
-	<@lib.generateHeader dao.taskDefinitions/>  
-	</#if>
 	 
 	/**
 	 * Contructeur.

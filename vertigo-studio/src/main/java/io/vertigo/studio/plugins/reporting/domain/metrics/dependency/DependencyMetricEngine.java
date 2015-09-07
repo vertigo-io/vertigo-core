@@ -52,7 +52,8 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 				count += count(dtDefinition, taskAttribute);
 			}
-			for (final TaskAttribute taskAttribute : taskDefinition.getOutAttributeOption()) {
+			if (taskDefinition.getOutAttributeOption().isDefined()) {
+				final TaskAttribute taskAttribute = taskDefinition.getOutAttributeOption().get();
 				count += count(dtDefinition, taskAttribute);
 			}
 		}

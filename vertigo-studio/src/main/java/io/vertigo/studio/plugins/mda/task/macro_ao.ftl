@@ -1,21 +1,4 @@
-<#macro generateHeader taskDefinitions>
-	/** Liste des taches. */
-	private enum Tasks {
-<#list taskDefinitions as taskDefinition>
-		/** Tache ${taskDefinition.name} */
-		${taskDefinition.name},
-</#list>
-	}
-
-<#list taskDefinitions as taskDefinition>
-	<#list taskDefinition.inAttributes as taskAttribute>
-	/** Constante de paramètre de la tache ${taskAttribute.name}. */
-	private static final String ${taskAttribute.constantName} = "${taskAttribute.name}";
-
-	</#list>
-</#list>
-</#macro> 
-   
+ 
 <#macro generateBody taskDefinitions>
 
 	/**
@@ -23,8 +6,8 @@
 	 * @param task Type de la tache
 	 * @return Builder de la tache
 	 */
-	private static TaskBuilder createTaskBuilder(final Tasks task) {
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(task.toString(), TaskDefinition.class);
+	private static TaskBuilder createTaskBuilder(final String name) {
+		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(name, TaskDefinition.class);
 		return new TaskBuilder(taskDefinition);
 	}
 
@@ -39,9 +22,9 @@
 	</#if>
 	*/
 	public <#if taskDefinition.out><#if !taskDefinition.outAttribute.notNull>Option<</#if>${taskDefinition.outAttribute.dataType}<#if !taskDefinition.outAttribute.notNull>></#if><#else>void</#if> ${taskDefinition.methodName}(<#list taskDefinition.inAttributes as taskAttribute>final <#if !taskAttribute.notNull>Option<</#if>${taskAttribute.dataType}<#if !taskAttribute.notNull>></#if> ${taskAttribute.variableName}<#if taskAttribute_has_next>, </#if></#list>) {
-		final Task task = createTaskBuilder(Tasks.${taskDefinition.name})
+		final Task task = createTaskBuilder("${taskDefinition.name}")
 	<#list taskDefinition.inAttributes as taskAttribute>
-				.addValue(${taskAttribute.constantName}, ${taskAttribute.variableName}<#if !taskAttribute.notNull>.getOrElse(null)</#if>)
+				.addValue("${taskAttribute.name}", ${taskAttribute.variableName}<#if !taskAttribute.notNull>.getOrElse(null)</#if>)
     </#list>
 				.build();
     <#if taskDefinition.out>

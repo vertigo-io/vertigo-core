@@ -20,7 +20,6 @@ package io.vertigo.studio.plugins.mda.task;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.domain.DomainUtil;
 import io.vertigo.util.StringUtil;
@@ -32,14 +31,11 @@ import io.vertigo.util.StringUtil;
  */
 public final class TemplateTaskAttribute {
 	private final TaskAttribute taskAttribute;
-	private final TaskDefinition taskDefinition;
 
-	TemplateTaskAttribute(final TaskDefinition taskDefinition, final TaskAttribute taskAttribute) {
-		Assertion.checkNotNull(taskDefinition);
+	TemplateTaskAttribute(final TaskAttribute taskAttribute) {
 		Assertion.checkNotNull(taskAttribute);
 		//-----
 		this.taskAttribute = taskAttribute;
-		this.taskDefinition = taskDefinition;
 	}
 
 	/**
@@ -47,13 +43,6 @@ public final class TemplateTaskAttribute {
 	 */
 	public String getName() {
 		return taskAttribute.getName();
-	}
-
-	/**
-	 * @return Nom de la constante
-	 */
-	public String getConstantName() {
-		return "ATTR_" + taskDefinition.getName() + '_' + taskAttribute.getName();
 	}
 
 	/**

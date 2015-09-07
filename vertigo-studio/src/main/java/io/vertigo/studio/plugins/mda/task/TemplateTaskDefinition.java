@@ -45,14 +45,14 @@ public final class TemplateTaskDefinition {
 		boolean hasOption = false;
 
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
 			ins.add(templateTaskAttribute);
 			hasOption = hasOption || !attribute.isNotNull();
 		}
 
 		if (taskDefinition.getOutAttributeOption().isDefined()) {
 			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
 			//On est dans le cas des paramètres OUT
 			out = templateTaskAttribute;
 			hasOption = hasOption || !attribute.isNotNull();

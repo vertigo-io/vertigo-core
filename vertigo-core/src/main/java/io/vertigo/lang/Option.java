@@ -18,8 +18,6 @@
  */
 package io.vertigo.lang;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -32,7 +30,7 @@ import java.util.NoSuchElementException;
  * @author jmainaud
  * @param <T> Type de l'objet optionnel.
  */
-public final class Option<T> implements Iterable<T> {
+public final class Option<T> {
 	/** Constante déclarant l'option None. */
 	private static final Option<Object> NONE = new Option<>(null);
 
@@ -130,13 +128,5 @@ public final class Option<T> implements Iterable<T> {
 	public String toString() {
 		return value == null ? "" : value.toString();
 
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		if (isEmpty()) {
-			return Collections.<T> emptyList().iterator();
-		}
-		return Collections.<T> singletonList(get()).iterator();
 	}
 }
