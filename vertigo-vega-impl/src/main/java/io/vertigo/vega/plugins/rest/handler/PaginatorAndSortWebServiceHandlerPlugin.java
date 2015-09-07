@@ -24,11 +24,11 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.token.TokenManager;
 
@@ -41,7 +41,7 @@ import spark.Response;
  * Auto paginator and Sort handler.
  * @author npiedeloup
  */
-public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugin {
+public final class PaginatorAndSortWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
 	private final TokenManager tokenManager;
@@ -53,7 +53,7 @@ public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugi
 	 * @param tokenManager token manager
 	 */
 	@Inject
-	public PaginatorAndSortRestHandlerPlugin(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
+	public PaginatorAndSortWebServiceHandlerPlugin(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(tokenManager);
 		//-----
@@ -63,23 +63,23 @@ public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugi
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isAutoSortAndPagination();
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		return webServiceDefinition.isAutoSortAndPagination();
 	}
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 
-		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
+		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		//Criteria in body
-		//UiListState in query //see at EndPointDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
+		//UiListState in query //see at WebServiceDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
 		//serverToken in UiListState
 
-		final EndPointParam uiListEndPointParams = lookupEndPointParam(endPointDefinition, UiListState.class);
-		Assertion.checkNotNull(uiListEndPointParams, "sort and pagination need a UiListState endpointParams. It should have been added by EndPointParamBuilder.");
+		final WebServiceParam uiListWebServiceParams = lookupWebServiceParam(webServiceDefinition, UiListState.class);
+		Assertion.checkNotNull(uiListWebServiceParams, "sort and pagination need a UiListState endpointParams. It should have been added by WebServiceParamBuilder.");
 
-		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListEndPointParams);
+		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListWebServiceParams);
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String listServerToken = uiListState.getListServerToken();
@@ -112,14 +112,14 @@ public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugi
 
 	/**
 	 * Lookup for a parameter of the asked type, return the first found.
-	 * @param endPointDefinition EndPoint definition
+	 * @param webServiceDefinition WebService definition
 	 * @param paramType Type asked
-	 * @return first EndPointParam of this type, null if not found
+	 * @return first WebServiceParam of this type, null if not found
 	 */
-	private static EndPointParam lookupEndPointParam(final EndPointDefinition endPointDefinition, final Class<UiListState> paramType) {
-		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-			if (paramType.equals(endPointParam.getType())) {
-				return endPointParam;
+	private static WebServiceParam lookupWebServiceParam(final WebServiceDefinition webServiceDefinition, final Class<UiListState> paramType) {
+		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
+			if (paramType.equals(webServiceParam.getType())) {
+				return webServiceParam;
 			}
 		}
 		return null;

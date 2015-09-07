@@ -22,10 +22,10 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ import spark.Response;
  * Ensure user is authenticated, throw VSecurityException if not.
  * @author npiedeloup
  */
-public final class SecurityRestHandlerPlugin implements RestHandlerPlugin {
+public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	private final VSecurityManager securityManager;
 
@@ -46,7 +46,7 @@ public final class SecurityRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public SecurityRestHandlerPlugin(final VSecurityManager securityManager) {
+	public SecurityWebServiceHandlerPlugin(final VSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
@@ -54,13 +54,13 @@ public final class SecurityRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isNeedAuthentification();
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		return webServiceDefinition.isNeedAuthentification();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		// 2. Check user is authentified
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {

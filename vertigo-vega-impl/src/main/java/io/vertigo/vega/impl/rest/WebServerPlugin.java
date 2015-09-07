@@ -20,20 +20,20 @@ package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import java.util.List;
 
 /**
- * Register an handlerchain as a route for this endpoint.
+ * Register an handlerchain as a route for this webService.
  * @author npiedeloup
  */
 public interface WebServerPlugin extends Plugin {
 
 	/**
 	 * @param handlerChain HandlerChain of this route
-	 * @param endPointDefinitions EndPointDefinitions to register
+	 * @param webServiceDefinitions WebServiceDefinitions to register
 	 */
-	void registerWsRoute(HandlerChain handlerChain, List<EndPointDefinition> endPointDefinitions);
+	void registerWsRoute(HandlerChain handlerChain, List<WebServiceDefinition> webServiceDefinitions);
 
 }

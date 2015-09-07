@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.WebServerPlugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import java.util.List;
 
@@ -36,13 +36,13 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void registerWsRoute(final HandlerChain handlerChain, final List<EndPointDefinition> endPointDefinitions) {
+	public final void registerWsRoute(final HandlerChain handlerChain, final List<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.checkNotNull(handlerChain);
-		Assertion.checkNotNull(endPointDefinitions);
+		Assertion.checkNotNull(webServiceDefinitions);
 		//-----
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(endPointDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
-			switch (endPointDefinition.getVerb()) {
+		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
+			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+			switch (webServiceDefinition.getVerb()) {
 				case GET:
 					Spark.get(sparkJavaRoute);
 					break;

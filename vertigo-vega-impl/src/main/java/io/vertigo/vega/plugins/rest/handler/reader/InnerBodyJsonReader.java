@@ -19,11 +19,11 @@
 package io.vertigo.vega.plugins.rest.handler.reader;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -51,8 +51,8 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 
 	/** {@inheritDoc} */
 	@Override
-	public RestParamType[] getSupportedInput() {
-		return new RestParamType[] { RestParamType.InnerBody };
+	public WebServiceParamType[] getSupportedInput() {
+		return new WebServiceParamType[] { WebServiceParamType.InnerBody };
 	}
 
 	/** {@inheritDoc} */
@@ -63,22 +63,22 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UiContext extractData(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
-		Assertion.checkArgument(getSupportedInput()[0].equals(endPointParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", endPointParam.getParamType(), Arrays.toString(getSupportedInput()));
+	public UiContext extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+		Assertion.checkArgument(getSupportedInput()[0].equals(webServiceParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
 		UiContext uiContext = (UiContext) routeContext.getRequest().attribute("InnerBodyValues");
 		if (uiContext == null) {
-			uiContext = readInnerBodyValue(request.body(), routeContext.getEndPointDefinition().getEndPointParams());
+			uiContext = readInnerBodyValue(request.body(), routeContext.getWebServiceDefinition().getWebServiceParams());
 			routeContext.getRequest().attribute("InnerBodyValues", uiContext);
 		}
 		return uiContext;
 	}
 
-	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) {
+	private UiContext readInnerBodyValue(final String jsonBody, final List<WebServiceParam> webServiceParams) {
 		final Map<String, Type> innerBodyParams = new HashMap<>();
-		for (final EndPointParam endPointParam : endPointParams) {
-			if (endPointParam.getParamType() == RestParamType.InnerBody || endPointParam.getParamType() == RestParamType.Implicit) {
-				innerBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
+		for (final WebServiceParam webServiceParam : webServiceParams) {
+			if (webServiceParam.getParamType() == WebServiceParamType.InnerBody || webServiceParam.getParamType() == WebServiceParamType.Implicit) {
+				innerBodyParams.put(webServiceParam.getName(), webServiceParam.getGenericType());
 			}
 		}
 		return jsonReaderEngine.uiContextFromJson(jsonBody, innerBodyParams);

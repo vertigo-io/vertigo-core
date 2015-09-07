@@ -44,10 +44,10 @@ import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
 import io.vertigo.vega.rest.data.domain.ContactDao;
 import io.vertigo.vega.rest.data.user.TestUserSession;
-import io.vertigo.vega.rest.data.ws.WsCommonWebServices;
-import io.vertigo.vega.rest.data.ws.WsContactsWebServices;
-import io.vertigo.vega.rest.data.ws.WsFileDownloadWebServices;
-import io.vertigo.vega.rest.data.ws.WsWebServices;
+import io.vertigo.vega.rest.data.ws.CommonWebServices;
+import io.vertigo.vega.rest.data.ws.ContactsWebServices;
+import io.vertigo.vega.rest.data.ws.FileDownloadWebServices;
+import io.vertigo.vega.rest.data.ws.TestWebServices;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdWebServices;
 
 import java.util.Arrays;
@@ -108,10 +108,10 @@ public final class MyAppConfig {
 			.endModule()
 			.beginModule("webservices-app").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(ComponentCmdWebServices.class)
-				.addComponent(WsCommonWebServices.class)
-				.addComponent(WsContactsWebServices.class)
-				.addComponent(WsWebServices.class)
-				.addComponent(WsFileDownloadWebServices.class)
+				.addComponent(CommonWebServices.class)
+				.addComponent(ContactsWebServices.class)
+				.addComponent(TestWebServices.class)
+				.addComponent(FileDownloadWebServices.class)
 			.endModule()
 			.beginModule("myApp")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())

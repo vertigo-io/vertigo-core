@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.plugins.rest.handler.converter;
 
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 /**
  * Converter source object into value object and put it into RouteContext.
@@ -37,11 +37,11 @@ public interface JsonConverter {
 	/**
 	 * Converter source object into value object and put it into RouteContext.
 	 * @param source Source
-	 * @param endPointParam Param
+	 * @param webServiceParam Param
 	 * @param routeContext RouteContext
 	 * @throws VSecurityException Security exception
 	 */
-	void populateRouteContext(Object source, EndPointParam endPointParam, RouteContext routeContext) throws VSecurityException;
+	void populateWebServiceCallContext(Object source, WebServiceParam webServiceParam, WebServiceCallContext routeContext) throws VSecurityException;
 
 	/**
 	 * @return Input types

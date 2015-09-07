@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.plugins.rest.handler;
 
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
 import spark.Session;
@@ -30,17 +30,17 @@ import spark.Session;
  * Invalidate session handler.
  * @author npiedeloup
  */
-public final class SessionInvalidateRestHandlerPlugin implements RestHandlerPlugin {
+public final class SessionInvalidateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isSessionInvalidate();
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		return webServiceDefinition.isSessionInvalidate();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		try {
 			return chain.handle(request, response, routeContext);
 		} finally {

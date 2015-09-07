@@ -20,12 +20,12 @@ package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
@@ -43,18 +43,18 @@ import com.google.gson.JsonSyntaxException;
  * Exceptions handler. Convert exception to response.
  * @author npiedeloup
  */
-public final class ExceptionRestHandlerPlugin implements RestHandlerPlugin {
+public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
-	private static final Logger LOGGER = Logger.getLogger(ExceptionRestHandlerPlugin.class);
+	private static final Logger LOGGER = Logger.getLogger(ExceptionWebServiceHandlerPlugin.class);
 	private final JsonEngine jsonWriterEngine;
 
 	/**
 	 * @param jsonWriterEngine JsonEngine
 	 */
 	@Inject
-	public ExceptionRestHandlerPlugin(final JsonEngine jsonWriterEngine) {
+	public ExceptionWebServiceHandlerPlugin(final JsonEngine jsonWriterEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
@@ -62,13 +62,13 @@ public final class ExceptionRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) {
 		try {
 			return chain.handle(request, response, routeContext);
 		} catch (final ValidationUserException e) {

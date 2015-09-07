@@ -22,8 +22,8 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.rest.model.UiListState;
 
 import java.lang.reflect.Method;
@@ -34,11 +34,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * EndPointDefinition Builder.
+ * WebServiceDefinition Builder.
  *
  * @author npiedeloup
  */
-public final class EndPointDefinitionBuilder implements Builder<EndPointDefinition> {
+public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefinition> {
 	private final Method myMethod;
 	private Verb myVerb;
 	private String myPathPrefix;
@@ -54,13 +54,13 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	private boolean myServerSideSave;
 	private boolean myAutoSortAndPagination;
 	private String myDoc = "";
-	private final List<EndPointParam> myEndPointParams = new ArrayList<>();
+	private final List<WebServiceParam> myWebServiceParams = new ArrayList<>();
 
 	/**
 	 * Constructeur.
-	 * @param method Method to bind to this endpoint
+	 * @param method Method to bind to this webService
 	 */
-	public EndPointDefinitionBuilder(final Method method) {
+	public WebServiceDefinitionBuilder(final Method method) {
 		Assertion.checkNotNull(method);
 		//-----
 		myMethod = method;
@@ -68,13 +68,13 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	/** {@inheritDoc} */
 	@Override
-	public EndPointDefinition build() {
+	public WebServiceDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
 		final String normalizedPath = normalizePath(usedPath);
 		final String acceptedType = computeAcceptedType();
-		return new EndPointDefinition(
-				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
-				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(),
+		return new WebServiceDefinition(
+				//"WS_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
+				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(),
 				myVerb,
 				usedPath,
 				acceptedType,
@@ -89,7 +89,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				myAutoSortAndPagination,
 				myIncludedFields,
 				myExcludedFields,
-				myEndPointParams,
+				myWebServiceParams,
 				myDoc);
 	}
 
@@ -102,7 +102,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param pathPrefix Path prefix
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withPathPrefix(final String pathPrefix) {
+	public WebServiceDefinitionBuilder withPathPrefix(final String pathPrefix) {
 		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}.{1}", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
@@ -115,7 +115,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param path Path
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder with(final Verb verb, final String path) {
+	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
 		Assertion.checkArgument(!StringUtil.isEmpty(myPathPrefix) || !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
@@ -135,7 +135,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param accessTokenConsume accessTokenConsume
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withAccessTokenConsume(final boolean accessTokenConsume) {
+	public WebServiceDefinitionBuilder withAccessTokenConsume(final boolean accessTokenConsume) {
 		myAccessTokenConsume = accessTokenConsume;
 		return this;
 	}
@@ -144,7 +144,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param needAuthentication needAuthentication
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withNeedAuthentication(final boolean needAuthentication) {
+	public WebServiceDefinitionBuilder withNeedAuthentication(final boolean needAuthentication) {
 		myNeedAuthentication = needAuthentication;
 		return this;
 	}
@@ -153,7 +153,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param needSession needSession
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withNeedSession(final boolean needSession) {
+	public WebServiceDefinitionBuilder withNeedSession(final boolean needSession) {
 		myNeedSession = needSession;
 		return this;
 	}
@@ -162,7 +162,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param sessionInvalidate sessionInvalidate
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withSessionInvalidate(final boolean sessionInvalidate) {
+	public WebServiceDefinitionBuilder withSessionInvalidate(final boolean sessionInvalidate) {
 		mySessionInvalidate = sessionInvalidate;
 		return this;
 	}
@@ -171,7 +171,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param excludedFields list of excludedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder addExcludedFields(final String... excludedFields) {
+	public WebServiceDefinitionBuilder addExcludedFields(final String... excludedFields) {
 		Assertion.checkNotNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
@@ -182,7 +182,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param includedFields list of includedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder addIncludedFields(final String... includedFields) {
+	public WebServiceDefinitionBuilder addIncludedFields(final String... includedFields) {
 		Assertion.checkNotNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
@@ -193,7 +193,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param accessTokenPublish accessTokenPublish
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withAccessTokenPublish(final boolean accessTokenPublish) {
+	public WebServiceDefinitionBuilder withAccessTokenPublish(final boolean accessTokenPublish) {
 		myAccessTokenPublish = accessTokenPublish;
 		return this;
 	}
@@ -202,7 +202,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param accessTokenMandatory accessTokenMandatory
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withAccessTokenMandatory(final boolean accessTokenMandatory) {
+	public WebServiceDefinitionBuilder withAccessTokenMandatory(final boolean accessTokenMandatory) {
 		myAccessTokenMandatory = accessTokenMandatory;
 		return this;
 	}
@@ -211,7 +211,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param serverSideSave serverSideSave
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withServerSideSave(final boolean serverSideSave) {
+	public WebServiceDefinitionBuilder withServerSideSave(final boolean serverSideSave) {
 		myServerSideSave = serverSideSave;
 		return this;
 	}
@@ -220,15 +220,15 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param autoSortAndPagination autoSortAndPagination
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withAutoSortAndPagination(final boolean autoSortAndPagination) {
+	public WebServiceDefinitionBuilder withAutoSortAndPagination(final boolean autoSortAndPagination) {
 		myAutoSortAndPagination = autoSortAndPagination;
 
 		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
-		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
+		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to webServiceParams
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
-			addEndPointParam(new EndPointParamBuilder(UiListState.class)
-					.with(RestParamType.Query, "") // We declare ListState in query without prefix
+			addWebServiceParam(new WebServiceParamBuilder(UiListState.class)
+					.with(WebServiceParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}
 		return this;
@@ -238,29 +238,29 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param doc doc
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withDoc(final String doc) {
+	public WebServiceDefinitionBuilder withDoc(final String doc) {
 		myDoc = doc;
 		return this;
 	}
 
 	/**
-	 * @param endPointParam endPointParam
+	 * @param webServiceParam webServiceParam
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder addEndPointParam(final EndPointParam endPointParam) {
-		myEndPointParams.add(endPointParam);
+	public WebServiceDefinitionBuilder addWebServiceParam(final WebServiceParam webServiceParam) {
+		myWebServiceParams.add(webServiceParam);
 		return this;
 	}
 
 	private String computeAcceptedType() {
-		for (final EndPointParam endPointParam : myEndPointParams) {
-			if (VFile.class.isAssignableFrom(endPointParam.getType())) {
+		for (final WebServiceParam webServiceParam : myWebServiceParams) {
+			if (VFile.class.isAssignableFrom(webServiceParam.getType())) {
 				return "multipart/form-data";
-			} else if (endPointParam.getParamType() == RestParamType.Query) {
+			} else if (webServiceParam.getParamType() == WebServiceParamType.Query) {
 				if (myVerb != Verb.GET) {//if GET => nothing
 					return "application/x-www-form-urlencoded";
 				}
-			} else if (endPointParam.getParamType() == RestParamType.Body || endPointParam.getParamType() == RestParamType.InnerBody) {
+			} else if (webServiceParam.getParamType() == WebServiceParamType.Body || webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
 				return "application/json";
 			}
 		}

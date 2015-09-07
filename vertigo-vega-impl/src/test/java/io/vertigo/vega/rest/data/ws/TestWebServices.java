@@ -97,7 +97,7 @@ import javax.servlet.http.HttpServletResponse;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
-public final class WsWebServices implements WebServices {
+public final class TestWebServices implements WebServices {
 
 	@Inject
 	private VSecurityManager securityManager;

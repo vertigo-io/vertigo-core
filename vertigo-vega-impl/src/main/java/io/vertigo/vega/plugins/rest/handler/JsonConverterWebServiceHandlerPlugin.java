@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.converter.DefaultJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.DtListDeltaJsonConverter;
 import io.vertigo.vega.plugins.rest.handler.converter.DtListJsonConverter;
@@ -44,9 +44,9 @@ import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.rest.model.ExtendedObject;
 
 import java.io.Serializable;
@@ -74,7 +74,7 @@ import com.google.gson.JsonSyntaxException;
  * Extract and Json convert.
  * @author npiedeloup
  */
-public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
+public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	private static final Class<? extends JsonConverter>[] JSON_CONVERTER_CLASSES = new Class[] {
 			ImplicitJsonConverter.class, PrimitiveJsonConverter.class,
 			DtListJsonConverter.class, DtObjectJsonConverter.class, DtListDeltaJsonConverter.class,
@@ -86,7 +86,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	private final JsonEngine jsonWriterEngine;
 
 	private final Map<Class, List<JsonConverter>> jsonConverters = new HashMap<>();
-	private final EnumMap<RestParamType, List<JsonReader<?>>> jsonReaders = new EnumMap<>(RestParamType.class);
+	private final EnumMap<WebServiceParamType, List<JsonReader<?>>> jsonReaders = new EnumMap<>(WebServiceParamType.class);
 
 	/**
 	 * encodeType.
@@ -187,7 +187,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public JsonConverterRestHandlerPlugin(final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
+	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
@@ -207,7 +207,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
 			final JsonReader<?> jsonReader = Injector.newInstance(jsonReaderClass, Home.getComponentSpace());
-			for (final RestParamType restParamType : jsonReader.getSupportedInput()) {
+			for (final WebServiceParamType restParamType : jsonReader.getSupportedInput()) {
 				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
 				if (jsonReaderByRestParamType == null) {
 					jsonReaderByRestParamType = new ArrayList<>();
@@ -220,32 +220,32 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
 		return true;
 	}
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
-		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
-			readParameterValue(request, routeContext, endPointParam);
+		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
+			readParameterValue(request, routeContext, webServiceParam);
 		}
 		final Object result = chain.handle(request, response, routeContext);
 		return convertResultToJson(result, request, response, routeContext);
 	}
 
-	private void readParameterValue(final Request request, final RouteContext routeContext, final EndPointParam endPointParam) throws VSecurityException {
+	private void readParameterValue(final Request request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) throws VSecurityException {
 		try {
 			boolean found = false;
 			JsonReader jsonReaderToApply = null;
 			JsonConverter jsonConverterToApply = null;
-			for (final JsonReader jsonReader : jsonReaders.get(endPointParam.getParamType())) {
+			for (final JsonReader jsonReader : jsonReaders.get(webServiceParam.getParamType())) {
 				jsonReaderToApply = jsonReader;
 
 				for (final JsonConverter jsonConverter : jsonConverters.get(jsonReader.getSupportedOutput())) {
 
-					if (jsonConverter.canHandle(endPointParam.getType())) {
+					if (jsonConverter.canHandle(webServiceParam.getType())) {
 						jsonConverterToApply = jsonConverter;
 						found = true;
 						break;
@@ -256,24 +256,24 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 				}
 			}
 			//-----
-			Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType());
-			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType(), endPointParam.getType());
+			Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType());
+			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType(), webServiceParam.getType());
 			//-----
-			final Object converterSource = jsonReaderToApply.extractData(request, endPointParam, routeContext);
+			final Object converterSource = jsonReaderToApply.extractData(request, webServiceParam, routeContext);
 			if (converterSource != null) { //On ne convertit pas les null
-				jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
+				jsonConverterToApply.populateWebServiceCallContext(converterSource, webServiceParam, routeContext);
 			}
-			if (endPointParam.isOptional()) {
-				final Object paramValue = routeContext.getParamValue(endPointParam);
-				routeContext.setParamValue(endPointParam, Option.option(paramValue));
+			if (webServiceParam.isOptional()) {
+				final Object paramValue = routeContext.getParamValue(webServiceParam);
+				routeContext.setParamValue(webServiceParam, Option.option(paramValue));
 			}
-			Assertion.checkNotNull(routeContext.getParamValue(endPointParam), "RestParam not found : {0}", endPointParam);
+			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {
-			throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
+			throw new JsonSyntaxException("Error parsing param " + webServiceParam.getFullName() + " on service " + routeContext.getWebServiceDefinition().getVerb() + " " + routeContext.getWebServiceDefinition().getPath(), e);
 		}
 	}
 
-	private String convertResultToJson(final Object result, final Request request, final Response response, final RouteContext routeContext) {
+	private String convertResultToJson(final Object result, final Request request, final Response response, final WebServiceCallContext routeContext) {
 		if (result == null) {
 			//if status was not set, or set to OK we set it to NO_CONTENT
 			if (response.raw().getStatus() == HttpServletResponse.SC_OK || response.raw().getStatus() == 0) {
@@ -300,7 +300,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 				contentType.append(";").append(encodedType.obtainContentType());
 			}
 			response.type(contentType.toString());
-			return writeValue(result, response, routeContext.getEndPointDefinition());
+			return writeValue(result, response, routeContext.getWebServiceDefinition());
 		}
 	}
 
@@ -353,23 +353,23 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		return false;
 	}
 
-	private String writeValue(final Object value, final Response response, final EndPointDefinition endPointDefinition) {
+	private String writeValue(final Object value, final Response response, final WebServiceDefinition webServiceDefinition) {
 		Assertion.checkNotNull(value);
 		//-----
 		if (value instanceof DtList && hasComplexTypeMeta((DtList) value)) {
-			return toJson(value, getListMetas((DtList) value), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+			return toJson(value, getListMetas((DtList) value), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof List) {
 			writeListMetaToHeader((List) value, response);
-			return toJson(value, Collections.<String, Serializable> emptyMap(), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof DtObject) {
-			return toJson(value, Collections.<String, Serializable> emptyMap(), endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof UiContext) {
 			//TODO build json in jsonWriterEngine
 			final StringBuilder sb = new StringBuilder().append("{");
 			String sep = "";
 			for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 				sb.append(sep);
-				final String encodedValue = writeValue(entry.getValue(), response, endPointDefinition);
+				final String encodedValue = writeValue(entry.getValue(), response, webServiceDefinition);
 				sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
 				sep = ", ";
 			}
@@ -377,7 +377,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			return sb.toString();
 		} else if (value instanceof ExtendedObject<?>) {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
-			return toJson(extendedObject.getInnerObject(), extendedObject, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+			return toJson(extendedObject.getInnerObject(), extendedObject, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else {
 			return jsonWriterEngine.toJson(value);
 		}

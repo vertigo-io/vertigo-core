@@ -20,7 +20,7 @@ package io.vertigo.vega.rest.metamodel;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.rest.EndPointTypeUtil;
+import io.vertigo.vega.rest.WebServiceTypeUtil;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * EndPoint param infos :
+ * WebService param infos :
  * - source type (query, path, body, innerBody or implicit)
  * - name
  * - type (class)
@@ -49,12 +49,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author npiedeloup
  */
-public final class EndPointParam {
+public final class WebServiceParam {
 
 	/**
 	 * Parameter's source types.
 	 */
-	public enum RestParamType {
+	public enum WebServiceParamType {
 		Query, Path, Header, Body, InnerBody, Implicit
 	}
 
@@ -76,7 +76,7 @@ public final class EndPointParam {
 
 	}
 
-	private final RestParamType paramType;
+	private final WebServiceParamType paramType;
 	private final String name;
 	private final Type type;
 	private final boolean optional;
@@ -96,11 +96,11 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	EndPointParam(final RestParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	WebServiceParam(final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, optional, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
-		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
+		Assertion.checkArgument(paramType != WebServiceParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
-		Assertion.checkArgument(!name.isEmpty() || (EndPointTypeUtil.isAssignableFrom(UiListState.class, type) || EndPointTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
+		Assertion.checkArgument(!name.isEmpty() || (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
 	private static boolean isImplicitParam(final String testedName) {
@@ -112,15 +112,15 @@ public final class EndPointParam {
 		return false;
 	}
 
-	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(dtObjectValidatorClasses);
 		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty()
-				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type)
-				|| EndPointTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
+				|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
+				|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
 		//-----
 		this.paramType = paramType;
 		this.type = type;
@@ -137,7 +137,7 @@ public final class EndPointParam {
 	/**
 	 * @return Parameter's source type
 	 */
-	public RestParamType getParamType() {
+	public WebServiceParamType getParamType() {
 		return paramType;
 	}
 

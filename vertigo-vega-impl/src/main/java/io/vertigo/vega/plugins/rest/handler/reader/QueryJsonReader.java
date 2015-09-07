@@ -20,10 +20,10 @@ package io.vertigo.vega.plugins.rest.handler.reader;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.engine.JsonEngine;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.rest.model.UiListState;
 
 import java.util.Arrays;
@@ -52,8 +52,8 @@ public final class QueryJsonReader implements JsonReader<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public RestParamType[] getSupportedInput() {
-		return new RestParamType[] { RestParamType.Query };
+	public WebServiceParamType[] getSupportedInput() {
+		return new WebServiceParamType[] { WebServiceParamType.Query };
 	}
 
 	/** {@inheritDoc} */
@@ -64,21 +64,21 @@ public final class QueryJsonReader implements JsonReader<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public String extractData(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
-		Assertion.checkArgument(getSupportedInput()[0].equals(endPointParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", endPointParam.getParamType(), Arrays.toString(getSupportedInput()));
+	public String extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+		Assertion.checkArgument(getSupportedInput()[0].equals(webServiceParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
-		return readQueryValue(request.queryMap(), endPointParam);
+		return readQueryValue(request.queryMap(), webServiceParam);
 	}
 
-	private String readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam) {
-		final Class<?> paramClass = endPointParam.getType();
-		final String paramName = endPointParam.getName();
+	private String readQueryValue(final QueryParamsMap queryMap, final WebServiceParam webServiceParam) {
+		final Class<?> paramClass = webServiceParam.getType();
+		final String paramName = webServiceParam.getName();
 		if (queryMap == null) {
 			return null;
 		}
 		if (UiListState.class.isAssignableFrom(paramClass)
 				|| DtObject.class.isAssignableFrom(paramClass)) {
-			return convertToJson(queryMap, endPointParam.getName());
+			return convertToJson(queryMap, webServiceParam.getName());
 		}
 		return queryMap.get(paramName).value();
 	}

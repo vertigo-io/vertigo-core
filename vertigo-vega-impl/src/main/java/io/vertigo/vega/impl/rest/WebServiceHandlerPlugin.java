@@ -20,24 +20,24 @@ package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
 
 /**
- * Handler of WebService Route, are defined as plugins of RestManager.
+ * Handler of WebService Route, are defined as plugins of WebServiceManager.
  * @author npiedeloup
  */
-public interface RestHandlerPlugin extends Plugin {
+public interface WebServiceHandlerPlugin extends Plugin {
 
 	/**
-	 * @param endPointDefinition EndPointDefinition
-	 * @return If this handler should be use for this endPoint
+	 * @param webServiceDefinition WebServiceDefinition
+	 * @return If this handler should be use for this webService
 	 */
-	boolean accept(EndPointDefinition endPointDefinition);
+	boolean accept(WebServiceDefinition webServiceDefinition);
 
 	/**
 	 * Do handle of this route.
@@ -50,6 +50,6 @@ public interface RestHandlerPlugin extends Plugin {
 	 * @throws SessionException Session expired exception
 	 * @throws VSecurityException Security exception
 	 */
-	Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
+	Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
 
 }

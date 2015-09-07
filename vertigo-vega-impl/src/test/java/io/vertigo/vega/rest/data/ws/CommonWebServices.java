@@ -16,14 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.rest;
+package io.vertigo.vega.rest.data.ws;
 
-import io.vertigo.lang.Component;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.vega.rest.WebServices;
+import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.rest.stereotype.GET;
 
-/**
- * Restful webservice manager.
- * @author npiedeloup
- */
-public interface RestManager extends Component {
-	//
+import javax.inject.Inject;
+
+//basé sur http://www.restapitutorial.com/lessons/httpmethods.html
+public final class CommonWebServices implements WebServices {
+
+	@Inject
+	private VSecurityManager securityManager;
+
+	@AnonymousAccessAllowed
+	@GET("/login")
+	public void login() {
+		//code 200
+		securityManager.getCurrentUserSession().get().authenticate();
+	}
 }

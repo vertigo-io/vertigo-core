@@ -19,7 +19,7 @@
 package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 
@@ -35,14 +35,14 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class HandlerChain {
-	private final List<RestHandlerPlugin> handlers;
+	private final List<WebServiceHandlerPlugin> handlers;
 	private final int offset;
 
 	/**
 	 * Constructor.
 	 * @param handlers Handlers
 	 */
-	public HandlerChain(final List<RestHandlerPlugin> handlers) {
+	public HandlerChain(final List<WebServiceHandlerPlugin> handlers) {
 		Assertion.checkNotNull(handlers);
 		//-----
 		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
@@ -52,7 +52,7 @@ public final class HandlerChain {
 	/**
 	 * private constructor for go forward in chain
 	 */
-	private HandlerChain(final List<RestHandlerPlugin> handlers, final int offset) {
+	private HandlerChain(final List<WebServiceHandlerPlugin> handlers, final int offset) {
 		Assertion.checkState(offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
 		//-----
 		this.handlers = handlers;
@@ -69,19 +69,19 @@ public final class HandlerChain {
 	 * @throws VSecurityException Security exception
 	 * @throws SessionException Session exception
 	 */
-	public Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext) throws VSecurityException, SessionException {
 		int lookAhead = 0;
 		while (offset + lookAhead < handlers.size()) {
-			final RestHandlerPlugin nextHandler = handlers.get(offset + lookAhead);
+			final WebServiceHandlerPlugin nextHandler = handlers.get(offset + lookAhead);
 			// >>> before doFilter " + nextHandler
-			if (nextHandler.accept(routeContext.getEndPointDefinition())) {
+			if (nextHandler.accept(routeContext.getWebServiceDefinition())) {
 				return nextHandler.handle(request, response, routeContext, new HandlerChain(handlers, offset + lookAhead));
 			}
-			//if current  doesn't apply for this EndPointDefinition we look ahead
+			//if current  doesn't apply for this WebServiceDefinition we look ahead
 			lookAhead++;
 			// <<< after doFilter " + nextHandler
 		}
-		throw new IllegalStateException("Last RestHandlerPlugin haven't send a response body");
+		throw new IllegalStateException("Last WebServiceHandlerPlugin haven't send a response body");
 	}
 
 }

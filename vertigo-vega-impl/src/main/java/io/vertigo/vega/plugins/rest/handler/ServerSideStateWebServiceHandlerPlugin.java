@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiList;
@@ -30,8 +30,8 @@ import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 import io.vertigo.vega.rest.model.ExtendedObject;
 import io.vertigo.vega.token.TokenManager;
 
@@ -51,7 +51,7 @@ import spark.Response;
  * On response : keep result server side and add token to response
  * @author npiedeloup
  */
-public final class ServerSideStateRestHandlerPlugin implements RestHandlerPlugin {
+public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
 	private final TokenManager tokenManager;
 
@@ -60,7 +60,7 @@ public final class ServerSideStateRestHandlerPlugin implements RestHandlerPlugin
 	 * @param tokenManager TokenManager
 	 */
 	@Inject
-	public ServerSideStateRestHandlerPlugin(final TokenManager tokenManager) {
+	public ServerSideStateWebServiceHandlerPlugin(final TokenManager tokenManager) {
 		Assertion.checkNotNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
@@ -68,12 +68,12 @@ public final class ServerSideStateRestHandlerPlugin implements RestHandlerPlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		if (endPointDefinition.isServerSideSave()) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		if (webServiceDefinition.isServerSideSave()) {
 			return true;
 		}
-		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-			if (endPointParam.isNeedServerSideToken()) {
+		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
+			if (webServiceParam.isNeedServerSideToken()) {
 				return true;
 			}
 		}
@@ -82,25 +82,25 @@ public final class ServerSideStateRestHandlerPlugin implements RestHandlerPlugin
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
-			if (endPointParam.isNeedServerSideToken()) {
-				final Object endPointValue = routeContext.getParamValue(endPointParam);
-				if (endPointValue instanceof UiObject) {
-					readServerSideUiObject((UiObject<DtObject>) endPointValue, endPointParam.isConsumeServerSideToken());
-				} else if (endPointValue instanceof UiList) {
-					readServerSideUiList((UiList<DtObject>) endPointValue, endPointParam.isConsumeServerSideToken());
-				} else if (endPointValue instanceof UiListDelta) {
-					readServerSideUiListDelta((UiListDelta<DtObject>) endPointValue, endPointParam.isConsumeServerSideToken());
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
+			if (webServiceParam.isNeedServerSideToken()) {
+				final Object webServiceValue = routeContext.getParamValue(webServiceParam);
+				if (webServiceValue instanceof UiObject) {
+					readServerSideUiObject((UiObject<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+				} else if (webServiceValue instanceof UiList) {
+					readServerSideUiList((UiList<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+				} else if (webServiceValue instanceof UiListDelta) {
+					readServerSideUiListDelta((UiListDelta<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else {
-					throw new UnsupportedOperationException("Can't read serverSide state for this object type : " + endPointParam.getGenericType().toString());
+					throw new UnsupportedOperationException("Can't read serverSide state for this object type : " + webServiceParam.getGenericType().toString());
 				}
 			}
 		}
 
 		final Object returnValue = chain.handle(request, response, routeContext);
 
-		if (routeContext.getEndPointDefinition().isServerSideSave()) {
+		if (routeContext.getWebServiceDefinition().isServerSideSave()) {
 			//On ecrit le résultat coté serveur, l'objet de retour est overridé avec les méta données de token
 			//On garde la variable pour gagner en lisibilité et en sémentique
 			final Serializable overridedReturnValue = writeServerSideObject(returnValue);

@@ -20,8 +20,8 @@ package io.vertigo.vega.plugins.rest.handler.converter;
 
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 import java.util.Arrays;
 
@@ -37,11 +37,11 @@ public final class VFileJsonConverter implements JsonConverter {
 
 	/** {@inheritDoc} */
 	@Override
-	public void populateRouteContext(final Object input, final EndPointParam endPointParam, final RouteContext routeContext) {
+	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
-		final VFile value = VFileUtil.readVFileParam((Request) input, endPointParam);
-		routeContext.setParamValue(endPointParam, value);
+		final VFile value = VFileUtil.readVFileParam((Request) input, webServiceParam);
+		routeContext.setParamValue(webServiceParam, value);
 	}
 
 	/** {@inheritDoc} */

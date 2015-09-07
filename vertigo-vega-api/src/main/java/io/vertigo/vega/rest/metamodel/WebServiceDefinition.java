@@ -21,7 +21,7 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,11 +34,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * End point definition.
+ * Web service definition.
  * @author npiedeloup
  */
-@DefinitionPrefix("EP_")
-public final class EndPointDefinition implements Definition {
+@DefinitionPrefix("WS_")
+public final class WebServiceDefinition implements Definition {
 
 	public enum Verb {
 		GET, POST, PUT, PATCH, DELETE,
@@ -49,7 +49,7 @@ public final class EndPointDefinition implements Definition {
 	private final Verb verb;
 	private final String acceptType;
 
-	private final Method method; //method use to handle this endpoint
+	private final Method method; //method use to handle this WebService
 	private final boolean needSession;
 	private final boolean sessionInvalidate;
 	private final boolean needAuthentification;
@@ -63,11 +63,12 @@ public final class EndPointDefinition implements Definition {
 	private final Set<String> includedFields;
 	private final Set<String> excludedFields;
 
-	private final List<EndPointParam> endPointParams;
+	private final List<WebServiceParam> webServiceParams;
 	private final String doc;
 
-	EndPointDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields,
-			final List<EndPointParam> endPointParams, final String doc) {
+	WebServiceDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields,
+			final List<WebServiceParam> webServiceParams
+			, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -75,13 +76,13 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkNotNull(method);
 		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
-		Assertion.checkNotNull(endPointParams);
+		Assertion.checkNotNull(webServiceParams);
 		Assertion.checkNotNull(doc); //doc can be empty
 		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
 		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
 		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
-		checkPathParams(path, endPointParams, userFriendlyMethodName);
+		checkPathParams(path, webServiceParams, userFriendlyMethodName);
 		//-----
 		this.name = name;
 		this.verb = verb;
@@ -101,17 +102,17 @@ public final class EndPointDefinition implements Definition {
 
 		this.includedFields = Collections.unmodifiableSet(new LinkedHashSet<>(includedFields));
 		this.excludedFields = Collections.unmodifiableSet(new LinkedHashSet<>(excludedFields));
-		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
+		this.webServiceParams = Collections.unmodifiableList(new ArrayList<>(webServiceParams));
 
 		this.doc = doc;
 	}
 
-	private static void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams, final String methodName) {
+	private static void checkPathParams(final String myPath, final List<WebServiceParam> myWebServiceParams, final String methodName) {
 		final Set<String> inputPathParam = new HashSet<>();
 		final Set<String> urlPathParam = new HashSet<>();
-		for (final EndPointParam myEndPointParam : myEndPointParams) {
-			if (myEndPointParam.getParamType() == RestParamType.Path) {
-				inputPathParam.add(myEndPointParam.getName());
+		for (final WebServiceParam myWebServiceParam : myWebServiceParams) {
+			if (myWebServiceParam.getParamType() == WebServiceParamType.Path) {
+				inputPathParam.add(myWebServiceParam.getName());
 			}
 		}
 		final Pattern pattern = Pattern.compile("\\{(.+?)\\}");
@@ -149,8 +150,8 @@ public final class EndPointDefinition implements Definition {
 		return method;
 	}
 
-	public List<EndPointParam> getEndPointParams() {
-		return endPointParams;
+	public List<WebServiceParam> getWebServiceParams() {
+		return webServiceParams;
 	}
 
 	public boolean isNeedSession() {

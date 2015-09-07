@@ -21,16 +21,16 @@ package io.vertigo.vega.plugins.rest.instrospector.annotations;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.rest.EndPointIntrospectorPlugin;
-import io.vertigo.vega.rest.EndPointTypeUtil;
+import io.vertigo.vega.impl.rest.WebServiceIntrospectorPlugin;
+import io.vertigo.vega.rest.WebServiceTypeUtil;
 import io.vertigo.vega.rest.WebServices;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
-import io.vertigo.vega.rest.metamodel.EndPointDefinitionBuilder;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.vega.rest.metamodel.EndPointParamBuilder;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinitionBuilder;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.ImplicitParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
@@ -67,25 +67,25 @@ import java.util.List;
 /**
  * @author npiedeloup
  */
-public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntrospectorPlugin {
+public final class AnnotationsWebServiceIntrospectorPlugin implements WebServiceIntrospectorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends WebServices> webServicesClass) {
+	public List<WebServiceDefinition> instrospectWebService(final Class<? extends WebServices> webServicesClass) {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
-		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();
+		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
 		for (final Method method : webServicesClass.getMethods()) {
-			final Option<EndPointDefinition> endPointDefinition = buildEndPointDefinition(method, webServicesClass);
-			if (endPointDefinition.isDefined()) {
-				endPointDefinitions.add(endPointDefinition.get());
+			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method, webServicesClass);
+			if (webServiceDefinition.isDefined()) {
+				webServiceDefinitions.add(webServiceDefinition.get());
 			}
 		}
-		return endPointDefinitions;
+		return webServiceDefinitions;
 	}
 
-	private static <C extends WebServices> Option<EndPointDefinition> buildEndPointDefinition(final Method method, final Class<C> webServicesClass) {
-		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
+	private static <C extends WebServices> Option<WebServiceDefinition> buildWebServiceDefinition(final Method method, final Class<C> webServicesClass) {
+		final WebServiceDefinitionBuilder builder = new WebServiceDefinitionBuilder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
 			builder.withPathPrefix(pathPrefix.value());
@@ -131,8 +131,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
 
 			for (int i = 0; i < paramType.length; i++) {
-				final EndPointParam endPointParam = buildEndPointParam(parameterAnnotation[i], paramType[i]);
-				builder.addEndPointParam(endPointParam);
+				final WebServiceParam webServiceParam = buildWebServiceParam(parameterAnnotation[i], paramType[i]);
+				builder.addWebServiceParam(webServiceParam);
 			}
 			//---
 			return Option.some(builder.build());
@@ -140,26 +140,26 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		return Option.none();
 	}
 
-	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Type paramType) {
-		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
-		if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
+	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
+		final WebServiceParamBuilder builder = new WebServiceParamBuilder(paramType);
+		if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
-		} else if (EndPointTypeUtil.isParameterizedBy(DtObject.class, paramType)) {
+		} else if (WebServiceTypeUtil.isParameterizedBy(DtObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
-			builder.with(RestParamType.Implicit, getImplicitParam(paramType).name());
+			builder.with(WebServiceParamType.Implicit, getImplicitParam(paramType).name());
 		} else if (UiListState.class.equals(paramType)) {
-			builder.with(RestParamType.Query, "listState"); //UiListState don't need to be named, it will be retrieve from query
+			builder.with(WebServiceParamType.Query, "listState"); //UiListState don't need to be named, it will be retrieve from query
 		}
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
-				builder.with(RestParamType.Path, ((PathParam) annotation).value());
+				builder.with(WebServiceParamType.Path, ((PathParam) annotation).value());
 			} else if (annotation instanceof QueryParam) {
-				builder.with(RestParamType.Query, ((QueryParam) annotation).value());
+				builder.with(WebServiceParamType.Query, ((QueryParam) annotation).value());
 			} else if (annotation instanceof HeaderParam) {
-				builder.with(RestParamType.Header, ((HeaderParam) annotation).value());
+				builder.with(WebServiceParamType.Header, ((HeaderParam) annotation).value());
 			} else if (annotation instanceof InnerBodyParam) {
-				builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
+				builder.with(WebServiceParamType.InnerBody, ((InnerBodyParam) annotation).value());
 			} else if (annotation instanceof Validate) {
 				builder.addValidatorClasses(((Validate) annotation).value());
 			} else if (annotation instanceof ExcludedFields) {

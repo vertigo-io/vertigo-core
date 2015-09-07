@@ -58,7 +58,7 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 
-public final class RestManagerTest {
+public final class WebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 

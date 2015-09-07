@@ -43,7 +43,7 @@ import javax.inject.Inject;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/contacts")
-public final class WsContactsWebServices implements WebServices {
+public final class ContactsWebServices implements WebServices {
 
 	@Inject
 	private ContactDao contactDao;

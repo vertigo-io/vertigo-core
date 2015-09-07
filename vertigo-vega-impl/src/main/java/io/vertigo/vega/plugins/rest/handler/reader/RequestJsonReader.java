@@ -18,17 +18,17 @@
  */
 package io.vertigo.vega.plugins.rest.handler.reader;
 
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 import spark.Request;
 
 public final class RequestJsonReader implements JsonReader<Request> {
 
 	/** {@inheritDoc} */
 	@Override
-	public RestParamType[] getSupportedInput() {
-		return RestParamType.values(); //default support all
+	public WebServiceParamType[] getSupportedInput() {
+		return WebServiceParamType.values(); //default support all
 	}
 
 	/** {@inheritDoc} */
@@ -39,7 +39,7 @@ public final class RequestJsonReader implements JsonReader<Request> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Request extractData(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
+	public Request extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		return request;
 	}
 }

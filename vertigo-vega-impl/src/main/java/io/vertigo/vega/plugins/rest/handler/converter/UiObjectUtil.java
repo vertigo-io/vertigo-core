@@ -23,7 +23,7 @@ import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 import java.util.Map;
 import java.util.Set;
@@ -38,44 +38,44 @@ final class UiObjectUtil {
 		//nothing
 	}
 
-	static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam) throws VSecurityException {
+	static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getUpdatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getDeletesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, webServiceParam);
 		}
 	}
 
-	static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final EndPointParam endPointParam) throws VSecurityException {
+	static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		int index = 0;
 		for (final UiObject<DtObject> entry : uiList) {
 			final String uiObjectInputKey = prefix + "idx" + index;
-			postReadUiObject(entry, uiObjectInputKey, endPointParam);
+			postReadUiObject(entry, uiObjectInputKey, webServiceParam);
 			index++;
 		}
 	}
 
-	static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam) throws VSecurityException {
+	static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
 		uiObject.setInputKey(inputKey);
-		checkUnauthorizedFieldModifications(uiObject, endPointParam);
+		checkUnauthorizedFieldModifications(uiObject, webServiceParam);
 	}
 
-	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final EndPointParam endPointParam) throws VSecurityException {
-		for (final String excludedField : endPointParam.getExcludedFields()) {
+	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) throws VSecurityException {
+		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
 				throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + excludedField);
 			}
 		}
-		final Set<String> includedFields = endPointParam.getIncludedFields();
+		final Set<String> includedFields = webServiceParam.getIncludedFields();
 		if (!includedFields.isEmpty()) {
 			for (final String modifiedField : uiObject.getModifiedFields()) {
 				if (!includedFields.contains(modifiedField)) {

@@ -20,13 +20,13 @@ package io.vertigo.vega.plugins.rest.handler.converter;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -54,27 +54,27 @@ public final class DtObjectJsonConverter implements JsonConverter {
 
 	/** {@inheritDoc}*/
 	@Override
-	public void populateRouteContext(final Object input, final EndPointParam endPointParam, final RouteContext routeContext) throws VSecurityException {
-		final Class<?> paramClass = endPointParam.getType();
+	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) throws VSecurityException {
+		final Class<?> paramClass = webServiceParam.getType();
 		Assertion.checkArgument(DtObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), DtObject.class.getSimpleName());
 		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
-		final Type paramGenericType = endPointParam.getGenericType();
+		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
 		final UiObject<DtObject> uiObject;
 		if (input instanceof String) {
 			uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
-			uiObject = (UiObject<DtObject>) ((UiContext) input).get(endPointParam.getName());
-			Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", endPointParam);
-			objectPath = endPointParam.getName();
+			uiObject = (UiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());
+			Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", webServiceParam);
+			objectPath = webServiceParam.getName();
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));
 		}
 		//-----
-		UiObjectUtil.postReadUiObject(uiObject, objectPath, endPointParam);
-		routeContext.setParamValue(endPointParam, uiObject);
+		UiObjectUtil.postReadUiObject(uiObject, objectPath, webServiceParam);
+		routeContext.setParamValue(webServiceParam, uiObject);
 	}
 
 	/** {@inheritDoc} */

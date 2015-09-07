@@ -20,7 +20,7 @@ package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
 import io.vertigo.vega.rest.WebServices;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathParam;
@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Swagger RestService to list services published.
+ * Swagger WebService to list services published.
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
@@ -61,7 +61,7 @@ public final class SwaggerWebServices implements WebServices {
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
 		return new SwaggerApiBuilder()
 				.withContextPath(request.getContextPath())
-				.withEndPointDefinitions(Home.getDefinitionSpace().getAll(EndPointDefinition.class))
+				.withWebServiceDefinitions(Home.getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}
 

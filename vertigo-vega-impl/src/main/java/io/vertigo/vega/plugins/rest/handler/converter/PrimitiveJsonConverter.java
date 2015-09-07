@@ -19,11 +19,11 @@
 package io.vertigo.vega.plugins.rest.handler.converter;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiListDelta;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,19 +61,19 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 
 	/** {@inheritDoc} */
 	@Override
-	public void populateRouteContext(final Object input, final EndPointParam endPointParam, final RouteContext routeContext) {
+	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
-		final Class<?> paramClass = endPointParam.getType();
+		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;
 		if (input instanceof String) {
 			value = readPrimitiveValue((String) input, paramClass);
 		} else if (input instanceof UiContext) {
-			value = ((UiContext) input).get(endPointParam.getName());
+			value = ((UiContext) input).get(webServiceParam.getName());
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));
 		}
-		routeContext.setParamValue(endPointParam, value);
+		routeContext.setParamValue(webServiceParam, value);
 
 	}
 

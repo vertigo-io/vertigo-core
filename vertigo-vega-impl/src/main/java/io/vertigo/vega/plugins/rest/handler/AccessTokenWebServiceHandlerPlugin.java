@@ -20,10 +20,10 @@ package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
@@ -37,7 +37,7 @@ import spark.Response;
  * Params handler. Extract and Json convert.
  * @author npiedeloup
  */
-public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
+public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	private static final Serializable TOKEN_DATA = new UniqueToken();
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -49,7 +49,7 @@ public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param tokenManager TokenManager
 	 */
 	@Inject
-	public AccessTokenRestHandlerPlugin(final TokenManager tokenManager) {
+	public AccessTokenWebServiceHandlerPlugin(final TokenManager tokenManager) {
 		Assertion.checkNotNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
@@ -57,15 +57,15 @@ public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isAccessTokenMandatory() || endPointDefinition.isAccessTokenConsume() || endPointDefinition.isAccessTokenPublish();
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		return webServiceDefinition.isAccessTokenMandatory() || webServiceDefinition.isAccessTokenConsume() || webServiceDefinition.isAccessTokenPublish();
 	}
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		final String accessTokenKey;
-		if (routeContext.getEndPointDefinition().isAccessTokenMandatory()) {
+		if (routeContext.getWebServiceDefinition().isAccessTokenMandatory()) {
 			accessTokenKey = request.headers(HEADER_ACCESS_TOKEN);
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
@@ -78,10 +78,10 @@ public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
 			accessTokenKey = null;
 		}
 		final Object result = chain.handle(request, response, routeContext);
-		if (accessTokenKey != null && routeContext.getEndPointDefinition().isAccessTokenConsume()) {
+		if (accessTokenKey != null && routeContext.getWebServiceDefinition().isAccessTokenConsume()) {
 			tokenManager.getAndRemove(accessTokenKey);
 		}
-		if (routeContext.getEndPointDefinition().isAccessTokenPublish()) {
+		if (routeContext.getWebServiceDefinition().isAccessTokenPublish()) {
 			final String newAccessTokenKey = tokenManager.put(TOKEN_DATA);
 			response.header(HEADER_ACCESS_TOKEN, newAccessTokenKey);
 		}

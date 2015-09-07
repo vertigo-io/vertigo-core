@@ -21,8 +21,8 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.rest.EndPointTypeUtil;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.WebServiceTypeUtil;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,15 +34,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * EndPointParam Builder.
+ * WebServiceParam Builder.
  *
  * @author npiedeloup
  */
-public final class EndPointParamBuilder implements Builder<EndPointParam> {
+public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	private final Type myParamType;
 	private final boolean optional;
-	private RestParamType myRestParamType = RestParamType.Body; // default;
-	private String myRestParamName = "[1]"; //default body Name
+	private WebServiceParamType myWebServiceParamType = WebServiceParamType.Body; // default;
+	private String myWebServiceParamName = "[1]"; //default body Name
 	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
 	private final Set<String> myIncludedFields = new HashSet<>();
 	private final Set<String> myExcludedFields = new HashSet<>();
@@ -53,10 +53,10 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * Constructor.
 	 * @param paramType param type
 	 */
-	public EndPointParamBuilder(final Type paramType) {
+	public WebServiceParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
 		//-----
-		optional = EndPointTypeUtil.isAssignableFrom(Option.class, paramType);
+		optional = WebServiceTypeUtil.isAssignableFrom(Option.class, paramType);
 		if (optional) {
 			//si option, le type du paramètre est le sub type
 			final Type[] typeArguments = ((ParameterizedType) paramType).getActualTypeArguments();
@@ -71,12 +71,12 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param restParamName paramName
 	 * @return Builder
 	 */
-	public EndPointParamBuilder with(final RestParamType restParamType, final String restParamName) {
+	public WebServiceParamBuilder with(final WebServiceParamType restParamType, final String restParamName) {
 		Assertion.checkNotNull(restParamType);
-		Assertion.checkNotNull(restParamName); //empty names were check on EndPointParam constructor
+		Assertion.checkNotNull(restParamName); //empty names were check on WebServiceParam constructor
 		//-----
-		myRestParamType = restParamType;
-		myRestParamName = restParamName;
+		myWebServiceParamType = restParamType;
+		myWebServiceParamName = restParamName;
 		return this;
 	}
 
@@ -84,7 +84,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param validatorClasses List of validator to check
 	 * @return Builder
 	 */
-	public EndPointParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+	public WebServiceParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
 		Assertion.checkNotNull(validatorClasses);
 		//-----
 		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
@@ -95,7 +95,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param excludedFields List of exluded fields
 	 * @return Builder
 	 */
-	public EndPointParamBuilder addExcludedFields(final String... excludedFields) {
+	public WebServiceParamBuilder addExcludedFields(final String... excludedFields) {
 		Assertion.checkNotNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
@@ -106,7 +106,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param includedFields list of included fields (empty means all fields included)
 	 * @return Builder
 	 */
-	public EndPointParamBuilder addIncludedFields(final String... includedFields) {
+	public WebServiceParamBuilder addIncludedFields(final String... includedFields) {
 		Assertion.checkNotNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
@@ -117,7 +117,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * If serverSide token is needed and used
 	 * @return Builder
 	 */
-	public EndPointParamBuilder needServerSideToken() {
+	public WebServiceParamBuilder needServerSideToken() {
 		myNeedServerSideToken = true;
 		return this;
 	}
@@ -126,17 +126,17 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * If serverSide token is consume
 	 * @return Builder
 	 */
-	public EndPointParamBuilder consumeServerSideToken() {
+	public WebServiceParamBuilder consumeServerSideToken() {
 		myConsumeServerSideToken = true;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public EndPointParam build() {
-		return new EndPointParam(
-				myRestParamType,
-				myRestParamName,
+	public WebServiceParam build() {
+		return new WebServiceParam(
+				myWebServiceParamType,
+				myWebServiceParamName,
 				myParamType,
 				optional,
 				myIncludedFields,

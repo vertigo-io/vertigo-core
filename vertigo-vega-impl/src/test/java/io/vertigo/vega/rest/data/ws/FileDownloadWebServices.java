@@ -36,7 +36,7 @@ import javax.inject.Inject;
 //bas� sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
-public final class WsFileDownloadWebServices implements WebServices {
+public final class FileDownloadWebServices implements WebServices {
 
 	@Inject
 	private ResourceManager resourcetManager;

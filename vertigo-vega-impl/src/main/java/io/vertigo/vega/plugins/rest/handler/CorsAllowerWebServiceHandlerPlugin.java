@@ -19,10 +19,10 @@
 package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,7 @@ import spark.Response;
  * Handler of Cross-Origin Resource Sharing (CORS).
  * @author npiedeloup
  */
-public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
+public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
@@ -56,7 +56,7 @@ public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param methodCORSFilter Method CORS Allowed
 	 */
 	@Inject
-	public CorsAllowerRestHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
+	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
@@ -65,13 +65,13 @@ public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
 		if (origin != null) {
 			final String method = request.raw().getMethod();

@@ -23,7 +23,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,29 +60,29 @@ final class VFileUtil {
 	}
 
 	/**
-	 * @param endPointParam EndPoint param
+	 * @param webServiceParam WebService param
 	 * @return If this is a VFile param
 	 */
-	static boolean isVFileParam(final EndPointParam endPointParam) {
-		return VFile.class.isAssignableFrom(endPointParam.getType());
+	static boolean isVFileParam(final WebServiceParam webServiceParam) {
+		return VFile.class.isAssignableFrom(webServiceParam.getType());
 	}
 
 	/**
 	 * @param request Request
-	 * @param endPointParam EndPoint param
+	 * @param webServiceParam WebService param
 	 * @return All VFile informations
 	 */
-	static VFile readVFileParam(final Request request, final EndPointParam endPointParam) {
-		switch (endPointParam.getParamType()) {
+	static VFile readVFileParam(final Request request, final WebServiceParam webServiceParam) {
+		switch (webServiceParam.getParamType()) {
 			case Query:
-				return readQueryFile(request, endPointParam);
+				return readQueryFile(request, webServiceParam);
 			case Body:
 			case Header:
 			case InnerBody:
 			case Path:
 			case Implicit:
 			default:
-				throw new IllegalArgumentException("Files are only read from a Multipart Form parameter (use @QueryParam) : " + endPointParam.getFullName());
+				throw new IllegalArgumentException("Files are only read from a Multipart Form parameter (use @QueryParam) : " + webServiceParam.getFullName());
 		}
 	}
 
@@ -112,11 +112,11 @@ final class VFileUtil {
 		// response already send
 	}
 
-	private static VFile readQueryFile(final Request request, final EndPointParam endPointParam) {
+	private static VFile readQueryFile(final Request request, final WebServiceParam webServiceParam) {
 		try {
-			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", endPointParam.getName());
-			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", endPointParam.getName());
-			final Part file = request.raw().getPart(endPointParam.getName());
+			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName());
+			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", webServiceParam.getName());
+			final Part file = request.raw().getPart(webServiceParam.getName());
 			if (file == null) {
 				final StringBuilder sb = new StringBuilder();
 				String sep = "";
@@ -124,7 +124,7 @@ final class VFileUtil {
 					sb.append(sep).append(part.getName());
 					sep = ", ";
 				}
-				throw new IllegalArgumentException("File " + endPointParam.getName() + " not found. Parts sent : " + sb.toString());
+				throw new IllegalArgumentException("File " + webServiceParam.getName() + " not found. Parts sent : " + sb.toString());
 			}
 			return createVFile(file);
 		} catch (IOException | ServletException e) {

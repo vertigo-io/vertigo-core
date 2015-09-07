@@ -1,25 +1,25 @@
 package io.vertigo.vega;
 
 import io.vertigo.core.config.Features;
-import io.vertigo.vega.impl.rest.RestManagerImpl;
-import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
+import io.vertigo.vega.impl.rest.WebServiceManagerImpl;
+import io.vertigo.vega.impl.rest.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
-import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ExceptionRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.JsonConverterRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ServerSideStateRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
-import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
+import io.vertigo.vega.plugins.rest.handler.AccessTokenWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.CorsAllowerWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ExceptionWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.JsonConverterWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RateLimitingWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RestfulServiceWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SecurityWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ServerSideStateWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionInvalidateWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ValidatorWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin;
 import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
-import io.vertigo.vega.rest.RestManager;
+import io.vertigo.vega.rest.WebServiceManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.token.TokenManager;
@@ -39,26 +39,27 @@ public final class VegaFeatures extends Features {
 		getModuleConfigBuilder()
 				.withNoAPI().withInheritance(Object.class)
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
-				.addComponent(RestManager.class, RestManagerImpl.class)
-				.addPlugin(AnnotationsEndPointIntrospectorPlugin.class)
+				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
+				.addPlugin(AnnotationsWebServiceIntrospectorPlugin.class)
 				.addComponent(SwaggerWebServices.class)
-				.addComponent(CatalogRestServices.class)
+				.addComponent(CatalogWebServices.class)
 
 				//-- Handlers plugins
-				.addPlugin(ExceptionRestHandlerPlugin.class)
-				.addPlugin(CorsAllowerRestHandlerPlugin.class)
-				.addPlugin(SessionInvalidateRestHandlerPlugin.class)
-				.addPlugin(SessionRestHandlerPlugin.class)
-				.addPlugin(SecurityRestHandlerPlugin.class)
-				//.beginPlugin(OldJsonConverterRestHandlerPlugin.class).endPlugin()
-				.addPlugin(JsonConverterRestHandlerPlugin.class)
-				.addPlugin(ValidatorRestHandlerPlugin.class)
-				.addPlugin(RestfulServiceRestHandlerPlugin.class);
+				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
+				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
+				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
+				.addPlugin(SessionWebServiceHandlerPlugin.class)
+				.addPlugin(SecurityWebServiceHandlerPlugin.class)
+				//.beginPlugin(OldJsonConverterWebServiceHandlerPlugin.class).endPlugin()
+				.addPlugin(JsonConverterWebServiceHandlerPlugin.class)
+				.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
+				.addPlugin(ValidatorWebServiceHandlerPlugin.class)
+				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
 	}
 
 	public VegaFeatures withTokens() {
 		getModuleConfigBuilder()
-				.addPlugin(AccessTokenRestHandlerPlugin.class)
+				.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
 				.addParam("dataStoreName", "UiSecurityStore")
 				.endComponent();
@@ -67,9 +68,8 @@ public final class VegaFeatures extends Features {
 
 	public VegaFeatures withMisc() {
 		getModuleConfigBuilder()
-				.addPlugin(ServerSideStateRestHandlerPlugin.class)
-				.addPlugin(PaginatorAndSortRestHandlerPlugin.class)
-				.addPlugin(RateLimitingRestHandlerPlugin.class);
+				.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
+				.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		return this;
 	}
 

@@ -24,11 +24,11 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,7 +44,7 @@ import spark.Response;
  * Rate limit handler.
  * @author npiedeloup
  */
-public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
+public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
 	private static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
@@ -72,7 +72,7 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param daemonManager Manager des daemons
 	 */
 	@Inject
-	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
+	public RateLimitingWebServiceHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
@@ -80,19 +80,19 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
-		//RateLimitingRestHandlerPlugin::resetRateLimitWindow
+		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
 		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds, this);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
 		return true;
 	}
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		Assertion.checkNotNull(request);
 		Assertion.checkNotNull(response);
 		Assertion.checkNotNull(routeContext);
@@ -135,21 +135,21 @@ public final class RateLimitingRestHandlerPlugin implements RestHandlerPlugin {
 	 * @author npiedeloup
 	 */
 	public static final class RateLimitWindowResetDaemon implements Daemon {
-		private final RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin;
+		private final RateLimitingWebServiceHandlerPlugin rateLimitingWebServiceHandlerPlugin;
 
 		/**
-		 * @param rateLimitingRestHandlerPlugin This plugin
+		 * @param rateLimitingWebServiceHandlerPlugin This plugin
 		 */
-		public RateLimitWindowResetDaemon(final RateLimitingRestHandlerPlugin rateLimitingRestHandlerPlugin) {
-			Assertion.checkNotNull(rateLimitingRestHandlerPlugin);
+		public RateLimitWindowResetDaemon(final RateLimitingWebServiceHandlerPlugin rateLimitingWebServiceHandlerPlugin) {
+			Assertion.checkNotNull(rateLimitingWebServiceHandlerPlugin);
 			//------
-			this.rateLimitingRestHandlerPlugin = rateLimitingRestHandlerPlugin;
+			this.rateLimitingWebServiceHandlerPlugin = rateLimitingWebServiceHandlerPlugin;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
-			rateLimitingRestHandlerPlugin.resetRateLimitWindow();
+			rateLimitingWebServiceHandlerPlugin.resetRateLimitWindow();
 		}
 	}
 

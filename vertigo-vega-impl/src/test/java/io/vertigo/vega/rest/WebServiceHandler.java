@@ -27,7 +27,7 @@ import io.vertigo.vega.rest.data.MyAppConfig;
  * @author npiedeloup
  */
 
-public final class WsRestHandler {
+public final class WebServiceHandler {
 	// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 	// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 	//Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");

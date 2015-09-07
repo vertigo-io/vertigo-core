@@ -92,7 +92,7 @@
 			
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler -->
+			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsWebServiceHandler -->
 			<version>${project.version}</version>	
 		</dependency>
 		

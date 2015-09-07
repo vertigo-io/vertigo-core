@@ -21,12 +21,12 @@ package io.vertigo.vega.plugins.rest.handler;
 import io.vertigo.core.Home;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
@@ -42,20 +42,20 @@ import spark.Response;
  * RestfulServiceHandler : call service method.
  * @author npiedeloup
  */
-public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin {
+public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
-		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext);
-		final Method method = endPointDefinition.getMethod();
+		final Method method = webServiceDefinition.getMethod();
 		final WebServices webServices = (WebServices) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
 		if (method.getName().startsWith("create")) {
@@ -86,23 +86,23 @@ public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin 
 		}
 	}
 
-	private static Object[] makeArgs(final RouteContext routeContext) {
-		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
-		if (endPointDefinition.isAutoSortAndPagination()) {
-			final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size() - 1];
+	private static Object[] makeArgs(final WebServiceCallContext routeContext) {
+		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
+		if (webServiceDefinition.isAutoSortAndPagination()) {
+			final Object[] serviceArgs = new Object[webServiceDefinition.getWebServiceParams().size() - 1];
 			int i = 0;
-			for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-				if (!endPointParam.getType().isAssignableFrom(UiListState.class)) {
-					serviceArgs[i] = routeContext.getParamValue(endPointParam);
+			for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
+				if (!webServiceParam.getType().isAssignableFrom(UiListState.class)) {
+					serviceArgs[i] = routeContext.getParamValue(webServiceParam);
 					i++;
 				}
 			}
 			return serviceArgs;
 		}
-		final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size()];
+		final Object[] serviceArgs = new Object[webServiceDefinition.getWebServiceParams().size()];
 		int i = 0;
-		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-			serviceArgs[i] = routeContext.getParamValue(endPointParam);
+		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
+			serviceArgs[i] = routeContext.getParamValue(webServiceParam);
 			i++;
 		}
 		return serviceArgs;

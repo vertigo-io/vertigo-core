@@ -20,8 +20,8 @@ package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
 import io.vertigo.vega.rest.WebServices;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.SessionLess;
@@ -36,40 +36,40 @@ import java.util.List;
  * Default RestService to list services published.
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
-public final class CatalogRestServices implements WebServices {
+public final class CatalogWebServices implements WebServices {
 
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
-		return publishCatalog(endPointDefinitions);
+		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getDefinitionSpace().getAll(WebServiceDefinition.class);
+		return publishCatalog(webServiceDefinitions);
 	}
 
-	private List<String> publishCatalog(final Collection<EndPointDefinition> endPointDefinitions) {
+	private List<String> publishCatalog(final Collection<WebServiceDefinition> webServiceDefinitions) {
 		final List<String> result = new ArrayList<>();
 
 		final StringBuilder sb = new StringBuilder();
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			final String doc = endPointDefinition.getDoc();
+		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
+			final String doc = webServiceDefinition.getDoc();
 			if (!doc.isEmpty()) {
 				sb.append(" /*")
-						.append(endPointDefinition.getDoc())
+						.append(webServiceDefinition.getDoc())
 						.append("*/")
 						.append("\n");
 			}
-			sb.append(endPointDefinition.getVerb().name()).append(" ")
-					.append(endPointDefinition.getPath())
+			sb.append(webServiceDefinition.getVerb().name()).append(" ")
+					.append(webServiceDefinition.getPath())
 					.append(" (");
 			String sep = "";
-			for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+			for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
 				sb.append(sep);
-				sb.append(endPointParam);
+				sb.append(webServiceParam);
 				sep = ", ";
 			}
 			sb.append(")");
-			final Type returnType = endPointDefinition.getMethod().getGenericReturnType();
-			if (!void.class.isAssignableFrom(endPointDefinition.getMethod().getReturnType())) {
+			final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
+			if (!void.class.isAssignableFrom(webServiceDefinition.getMethod().getReturnType())) {
 				sb.append(" -> ");
 				appendTypeToString(sb, returnType);
 			}

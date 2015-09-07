@@ -21,10 +21,10 @@ package io.vertigo.vega.plugins.rest.handler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.impl.rest.WebServiceHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ import spark.Session;
  * Create and bind UserSession object with client.
  * @author npiedeloup
  */
-public final class SessionRestHandlerPlugin implements RestHandlerPlugin {
+public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
@@ -50,7 +50,7 @@ public final class SessionRestHandlerPlugin implements RestHandlerPlugin {
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public SessionRestHandlerPlugin(final VSecurityManager securityManager) {
+	public SessionWebServiceHandlerPlugin(final VSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
@@ -58,13 +58,13 @@ public final class SessionRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isNeedSession();
+	public boolean accept(final WebServiceDefinition webServiceDefinition) {
+		return webServiceDefinition.isNeedSession();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final Session session = request.session(true); //obtain session (create if needed)
 		final UserSession user = obtainUserSession(session);
 		try {

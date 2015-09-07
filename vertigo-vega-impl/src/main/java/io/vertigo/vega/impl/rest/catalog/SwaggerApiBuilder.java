@@ -31,12 +31,12 @@ import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.EndPointTypeUtil;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
-import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.vega.rest.metamodel.EndPointParamBuilder;
+import io.vertigo.vega.rest.WebServiceTypeUtil;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.rest.metamodel.WebServiceParam;
+import io.vertigo.vega.rest.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.rest.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Swagger RestService to list services published.
+ * Swagger WebService to list services published.
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
@@ -67,7 +67,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	private final Map<String, Object> unknownObjectRef = new LinkedHashMap<>();
 
 	private String builderContextPath = "/";
-	private Collection<EndPointDefinition> builderEndPointDefinitions;
+	private Collection<WebServiceDefinition> builderWebServiceDefinitions;
 
 	/**
 	 * Constructor.
@@ -91,22 +91,22 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	/**
-	 * @param endPointDefinitions EndPointDefinitions to use for swagger api
+	 * @param webServiceDefinitions WebServiceDefinitions to use for swagger api
 	 * @return this builder
 	 */
-	public SwaggerApiBuilder withEndPointDefinitions(final Collection<EndPointDefinition> endPointDefinitions) {
-		Assertion.checkNotNull(endPointDefinitions, "endPointDefinitions can't be null");
-		Assertion.checkArgument(!endPointDefinitions.isEmpty(), "endPointDefinitions can't be empty");
-		Assertion.checkState(builderEndPointDefinitions == null, "endPointDefinitions was already set");
+	public SwaggerApiBuilder withWebServiceDefinitions(final Collection<WebServiceDefinition> webServiceDefinitions) {
+		Assertion.checkNotNull(webServiceDefinitions, "webServiceDefinitions can't be null");
+		Assertion.checkArgument(!webServiceDefinitions.isEmpty(), "webServiceDefinitions can't be empty");
+		Assertion.checkState(builderWebServiceDefinitions == null, "webServiceDefinitions was already set");
 		//-----
-		builderEndPointDefinitions = endPointDefinitions;
+		builderWebServiceDefinitions = webServiceDefinitions;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<String, Object> build() {
-		Assertion.checkNotNull(builderEndPointDefinitions, "endPointDefinitions must be set");
+		Assertion.checkNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
 		final Map<String, Object> swagger = new LinkedHashMap<>();
 		swagger.put("swagger", 2.0);
@@ -122,42 +122,42 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private Map<String, Object> createPathsObject() {
 		final Map<String, Object> paths = new LinkedHashMap<>();
-		for (final EndPointDefinition endPointDefinition : builderEndPointDefinitions) {
-			final Map<String, Object> pathItem = (Map<String, Object>) paths.get(endPointDefinition.getPath());
+		for (final WebServiceDefinition webServiceDefinition : builderWebServiceDefinitions) {
+			final Map<String, Object> pathItem = (Map<String, Object>) paths.get(webServiceDefinition.getPath());
 			if (pathItem != null) {
-				pathItem.putAll(createPathItemObject(endPointDefinition));
-				paths.put(endPointDefinition.getPath(), pathItem);
+				pathItem.putAll(createPathItemObject(webServiceDefinition));
+				paths.put(webServiceDefinition.getPath(), pathItem);
 			} else {
-				paths.put(endPointDefinition.getPath(), createPathItemObject(endPointDefinition));
+				paths.put(webServiceDefinition.getPath(), createPathItemObject(webServiceDefinition));
 			}
 		}
 		return paths;
 	}
 
-	private Map<String, Object> createPathItemObject(final EndPointDefinition endPointDefinition) {
+	private Map<String, Object> createPathItemObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> pathItem = new LinkedHashMap<>();
-		pathItem.put(endPointDefinition.getVerb().name().toLowerCase(), createOperationObject(endPointDefinition));
+		pathItem.put(webServiceDefinition.getVerb().name().toLowerCase(), createOperationObject(webServiceDefinition));
 		return pathItem;
 	}
 
-	private Map<String, Object> createOperationObject(final EndPointDefinition endPointDefinition) {
+	private Map<String, Object> createOperationObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> operation = new LinkedHashMap<>();
-		operation.put("summary", endPointDefinition.getMethod().getName());
+		operation.put("summary", webServiceDefinition.getMethod().getName());
 		final StringBuilder description = new StringBuilder();
-		if (!endPointDefinition.getDoc().isEmpty()) {
-			description.append(endPointDefinition.getDoc());
+		if (!webServiceDefinition.getDoc().isEmpty()) {
+			description.append(webServiceDefinition.getDoc());
 			description.append("<br/>");
 		}
-		if (endPointDefinition.isServerSideSave()) {
+		if (webServiceDefinition.isServerSideSave()) {
 			description.append("This operation keep a full ServerSide state of returned object");
 			description.append("<br/>");
 		}
 		putIfNotEmpty(operation, "description", description.toString());
-		operation.put("operationId", endPointDefinition.getName());
-		putIfNotEmpty(operation, "consumes", createConsumesArray(endPointDefinition));
-		putIfNotEmpty(operation, "parameters", createParametersArray(endPointDefinition));
-		putIfNotEmpty(operation, "responses", createResponsesObject(endPointDefinition));
-		putIfNotEmpty(operation, "tags", createTagsArray(endPointDefinition));
+		operation.put("operationId", webServiceDefinition.getName());
+		putIfNotEmpty(operation, "consumes", createConsumesArray(webServiceDefinition));
+		putIfNotEmpty(operation, "parameters", createParametersArray(webServiceDefinition));
+		putIfNotEmpty(operation, "responses", createResponsesObject(webServiceDefinition));
+		putIfNotEmpty(operation, "tags", createTagsArray(webServiceDefinition));
 		return operation;
 	}
 
@@ -170,27 +170,27 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 	}
 
-	private Map<String, Object> createResponsesObject(final EndPointDefinition endPointDefinition) {
+	private Map<String, Object> createResponsesObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> responses = new LinkedHashMap<>();
-		final Map<String, Object> headers = createResponsesHeaders(endPointDefinition);
+		final Map<String, Object> headers = createResponsesHeaders(webServiceDefinition);
 
-		final Type returnType = endPointDefinition.getMethod().getGenericReturnType();
-		if (void.class.isAssignableFrom(endPointDefinition.getMethod().getReturnType())) {
+		final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
+		if (void.class.isAssignableFrom(webServiceDefinition.getMethod().getReturnType())) {
 			responses.put("204", createResponseObject("No content", returnType, headers));
-		} else if (endPointDefinition.getMethod().getName().startsWith("create")) {
+		} else if (webServiceDefinition.getMethod().getName().startsWith("create")) {
 			responses.put("201", createResponseObject("Created", returnType, headers));
 		} else {
 			responses.put("200", createResponseObject("Success", returnType, headers));
 		}
-		if (!endPointDefinition.getEndPointParams().isEmpty()) {
+		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
 			responses.put("400", createResponseObject("Bad request : parsing error (json, number, date, ...)", ErrorMessage.class, headers));
 		}
-		if (endPointDefinition.isNeedAuthentification()) {
-			//endPointDefinition.isNeedSession() don't mean that session is mandatory, it just say to create a session
+		if (webServiceDefinition.isNeedAuthentification()) {
+			//webServiceDefinition.isNeedSession() don't mean that session is mandatory, it just say to create a session
 			responses.put("401", createResponseObject("Unauthorized : no valid session", ErrorMessage.class, headers));
 			responses.put("403", createResponseObject("Forbidden : not enought rights", ErrorMessage.class, headers));
 		}
-		if (!endPointDefinition.getEndPointParams().isEmpty()) {
+		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
 			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, headers));
 		}
 		responses.put("429", createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, headers));
@@ -198,9 +198,9 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return responses;
 	}
 
-	private Map<String, Object> createResponsesHeaders(final EndPointDefinition endPointDefinition) {
+	private Map<String, Object> createResponsesHeaders(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> headers = new LinkedHashMap<>();
-		if (endPointDefinition.isAccessTokenPublish()) {
+		if (webServiceDefinition.isAccessTokenPublish()) {
 			headers.put("x-access-token", createSchemaObject(String.class));
 		}
 		return headers;
@@ -235,15 +235,15 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 		//-----
 		final Map<String, Object> schema = new LinkedHashMap<>();
-		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
+		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
 		final String[] typeAndFormat = toSwaggerType(objectClass);
 		schema.put("type", typeAndFormat[0]);
 		if (typeAndFormat[1] != null) {
 			schema.put("format", typeAndFormat[1]);
 		}
-		if (EndPointTypeUtil.isAssignableFrom(void.class, type)) {
+		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
 			return null;
-		} else if (EndPointTypeUtil.isAssignableFrom(List.class, type)) {
+		} else if (WebServiceTypeUtil.isAssignableFrom(List.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
 			schema.put("items", createSchemaObject(itemsType));
@@ -255,7 +255,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
-				parameterClass = EndPointTypeUtil.castAsClass(itemsType);
+				parameterClass = WebServiceTypeUtil.castAsClass(itemsType);
 				objectName = objectClass.getSimpleName() + "&lt;" + parameterClass.getSimpleName() + "&gt;";
 			} else {
 				objectName = objectClass.getSimpleName();
@@ -309,7 +309,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
-		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
+		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> requireds = new ArrayList<>(); //mandatory fields
@@ -342,29 +342,29 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return fieldSchema;
 	}
 
-	private static List<String> createTagsArray(final EndPointDefinition endPointDefinition) {
+	private static List<String> createTagsArray(final WebServiceDefinition webServiceDefinition) {
 		final List<String> tags = new ArrayList<>();
-		tags.add(endPointDefinition.getMethod().getDeclaringClass().getSimpleName());
+		tags.add(webServiceDefinition.getMethod().getDeclaringClass().getSimpleName());
 		return tags;
 	}
 
-	private static List<String> createConsumesArray(final EndPointDefinition endPointDefinition) {
-		if (endPointDefinition.getEndPointParams().isEmpty()) {
+	private static List<String> createConsumesArray(final WebServiceDefinition webServiceDefinition) {
+		if (webServiceDefinition.getWebServiceParams().isEmpty()) {
 			return Collections.emptyList();
 		}
-		return Collections.singletonList(endPointDefinition.getAcceptType());
+		return Collections.singletonList(webServiceDefinition.getAcceptType());
 	}
 
-	private List<Map<String, Object>> createParametersArray(final EndPointDefinition endPointDefinition) {
+	private List<Map<String, Object>> createParametersArray(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 		final List<Map<String, Object>> parameters = new ArrayList<>();
-		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-			if (endPointParam.getParamType() != RestParamType.Implicit) {//if implicit : no public parameter
-				appendParameters(endPointParam, endPointDefinition, parameters, bodyParameter);
+		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
+			if (webServiceParam.getParamType() != WebServiceParamType.Implicit) {//if implicit : no public parameter
+				appendParameters(webServiceParam, webServiceDefinition, parameters, bodyParameter);
 			}
 		}
 
-		if (endPointDefinition.isAccessTokenMandatory()) {
+		if (webServiceDefinition.isAccessTokenMandatory()) {
 			final Map<String, Object> parameter = new LinkedHashMap<>();
 			parameter.put("name", "x-access-token");
 			parameter.put("in", "header");
@@ -374,7 +374,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
-			final String bodyName = StringUtil.constToUpperCamelCase(endPointDefinition.getName().replaceAll("__", "_").replaceAll("__", "_")) + "Body";
+			final String bodyName = StringUtil.constToUpperCamelCase(webServiceDefinition.getName().replaceAll("__", "_").replaceAll("__", "_")) + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
@@ -388,15 +388,15 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return parameters;
 	}
 
-	private void appendParameters(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
-		if (isOneInMultipleOutParams(endPointParam)) {
-			for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
-				final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
+	private void appendParameters(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
+		if (isOneInMultipleOutParams(webServiceParam)) {
+			for (final WebServiceParam pseudoWebServiceParam : createPseudoWebServiceParams(webServiceParam)) {
+				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam, webServiceDefinition);
 				parameter.remove("required"); //query params aren't required
 				parameters.add(parameter);
 			}
-		} else if (isMultipleInOneOutParams(endPointParam)) {
-			final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+		} else if (isMultipleInOneOutParams(webServiceParam)) {
+			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
 			if (bodyParameter.isEmpty()) {
 				bodyParameter.putAll(parameter);
 			} else {
@@ -409,51 +409,51 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				oldSchema.putAll(newSchema);
 			}
 		} else {
-			final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
 			parameters.add(parameter);
 		}
 	}
 
-	private static List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {
-		final List<EndPointParam> pseudoEndPointParams = new ArrayList<>();
-		final String prefix = (!endPointParam.getName().isEmpty()) ? (endPointParam.getName() + ".") : "";
-		if (UiListState.class.isAssignableFrom(endPointParam.getType())) {
-			pseudoEndPointParams.add(new EndPointParamBuilder(int.class)
-					.with(endPointParam.getParamType(), prefix + "top").build());
-			pseudoEndPointParams.add(new EndPointParamBuilder(int.class)
-					.with(endPointParam.getParamType(), prefix + "skip").build());
-			pseudoEndPointParams.add(new EndPointParamBuilder(String.class)
-					.with(endPointParam.getParamType(), prefix + "sortFieldName").build());
-			pseudoEndPointParams.add(new EndPointParamBuilder(boolean.class)
-					.with(endPointParam.getParamType(), prefix + "sortDesc").build());
-		} else if (DtObject.class.isAssignableFrom(endPointParam.getType())) {
-			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) endPointParam.getType();
+	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
+		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
+		final String prefix = (!webServiceParam.getName().isEmpty()) ? (webServiceParam.getName() + ".") : "";
+		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
+			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+					.with(webServiceParam.getParamType(), prefix + "top").build());
+			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+					.with(webServiceParam.getParamType(), prefix + "skip").build());
+			pseudoWebServiceParams.add(new WebServiceParamBuilder(String.class)
+					.with(webServiceParam.getParamType(), prefix + "sortFieldName").build());
+			pseudoWebServiceParams.add(new WebServiceParamBuilder(boolean.class)
+					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
+		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
+			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = StringUtil.constToLowerCamelCase(dtField.name());
-				pseudoEndPointParams.add(new EndPointParamBuilder(dtField.getDomain().getDataType().getJavaClass())
-						.with(endPointParam.getParamType(), prefix + fieldName)
+				pseudoWebServiceParams.add(new WebServiceParamBuilder(dtField.getDomain().getDataType().getJavaClass())
+						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}
 		}
-		return pseudoEndPointParams;
+		return pseudoWebServiceParams;
 	}
 
-	private static boolean isOneInMultipleOutParams(final EndPointParam endPointParam) {
-		final Class<?> paramClass = endPointParam.getType();
-		return endPointParam.getParamType() == RestParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+	private static boolean isOneInMultipleOutParams(final WebServiceParam webServiceParam) {
+		final Class<?> paramClass = webServiceParam.getType();
+		return webServiceParam.getParamType() == WebServiceParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
 	}
 
-	private static boolean isMultipleInOneOutParams(final EndPointParam endPointParam) {
-		return endPointParam.getParamType() == RestParamType.InnerBody;
+	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {
+		return webServiceParam.getParamType() == WebServiceParamType.InnerBody;
 	}
 
-	private Map<String, Object> createParameterObject(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition) {
+	private Map<String, Object> createParameterObject(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition) {
 
 		final String inValue;
 		final String nameValue;
 		String description = null;
-		switch (endPointParam.getParamType()) {
+		switch (webServiceParam.getParamType()) {
 			case Body:
 				inValue = "body";
 				nameValue = "body";
@@ -461,23 +461,23 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			case InnerBody:
 				inValue = "body";
 				nameValue = "body"; //only one body parameter is accepted : must append in body
-				description = "InnerBody:" + endPointParam.getName();
+				description = "InnerBody:" + webServiceParam.getName();
 				break;
 			case Path:
 				inValue = "path";
-				nameValue = endPointParam.getName();
+				nameValue = webServiceParam.getName();
 				break;
 			case Query:
-				inValue = endPointDefinition.getVerb() == Verb.GET ? "query" : "formData";
-				nameValue = endPointParam.getName();
+				inValue = webServiceDefinition.getVerb() == Verb.GET ? "query" : "formData";
+				nameValue = webServiceParam.getName();
 				break;
 			case Header:
 				inValue = "header";
-				nameValue = endPointParam.getName();
+				nameValue = webServiceParam.getName();
 				break;
 			case Implicit://must be escape before
 			default:
-				throw new RuntimeException("Unsupported type : " + endPointParam.getParamType());
+				throw new RuntimeException("Unsupported type : " + webServiceParam.getParamType());
 		}
 
 		final Map<String, Object> parameter = new LinkedHashMap<>();
@@ -485,14 +485,14 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		parameter.put("in", inValue);
 		putIfNotEmpty(parameter, "description", description);
 		parameter.put("required", "true");
-		if (endPointParam.getParamType() == RestParamType.Body) {
-			parameter.put("schema", createSchemaObject(endPointParam.getGenericType()));
-		} else if (endPointParam.getParamType() == RestParamType.InnerBody) {
+		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
+			parameter.put("schema", createSchemaObject(webServiceParam.getGenericType()));
+		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
-			bodyParameter.put(endPointParam.getName(), createSchemaObject(endPointParam.getGenericType()));
+			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType()));
 			parameter.put("schema", bodyParameter);
 		} else {
-			final String[] typeAndFormat = toSwaggerType(endPointParam.getType());
+			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
 			if (typeAndFormat[1] != null) {
 				parameter.put("format", typeAndFormat[1]);

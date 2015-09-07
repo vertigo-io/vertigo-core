@@ -22,15 +22,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * EndPoint Type helper.
+ * WebService Type helper.
  * @author npiedeloup
  */
-public final class EndPointTypeUtil {
+public final class WebServiceTypeUtil {
 
 	/**
 	 * Private constructor for helper.
 	 */
-	private EndPointTypeUtil() {
+	private WebServiceTypeUtil() {
 		//nothing
 	}
 

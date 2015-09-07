@@ -19,8 +19,8 @@
 package io.vertigo.vega.plugins.rest.webserver.sparkjava;
 
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.plugins.rest.handler.RouteContext;
-import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+import io.vertigo.vega.plugins.rest.handler.WebServiceCallContext;
+import io.vertigo.vega.rest.metamodel.WebServiceDefinition;
 
 import org.apache.log4j.Logger;
 
@@ -36,18 +36,18 @@ final class SparkJavaRoute extends Route {
 
 	private static final Logger LOGGER = Logger.getLogger(SparkJavaRoute.class);
 
-	private final EndPointDefinition endPointDefinition;
+	private final WebServiceDefinition webServiceDefinition;
 	private final HandlerChain handlerChain;
 	private final String defaultContentCharset;
 
 	/**
-	 * @param endPointDefinition endPointDefinition
+	 * @param webServiceDefinition webServiceDefinition
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	SparkJavaRoute(final EndPointDefinition endPointDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
-		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
-		this.endPointDefinition = endPointDefinition;
+	SparkJavaRoute(final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
+		super(convertJaxRsPathToSpark(webServiceDefinition.getPath()), webServiceDefinition.getAcceptType());
+		this.webServiceDefinition = webServiceDefinition;
 		this.handlerChain = handlerChain;
 		this.defaultContentCharset = defaultContentCharset;
 	}
@@ -57,7 +57,7 @@ final class SparkJavaRoute extends Route {
 	public Object handle(final Request request, final Response response) {
 		try {
 			final Request requestWrapper = new SparkJavaRequestWrapper(request, defaultContentCharset);
-			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper, response, endPointDefinition));
+			return handlerChain.handle(requestWrapper, response, new WebServiceCallContext(requestWrapper, response, webServiceDefinition));
 		} catch (final Throwable th) {
 			LOGGER.error(th);
 			return th.getMessage();
