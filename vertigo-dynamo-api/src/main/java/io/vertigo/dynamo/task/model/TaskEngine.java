@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class TaskEngine {
 	private Task input;
-	private Object result;
+	private Object result = Void.TYPE;
 
 	/**
 	 * Réalise l'exécution d'une tache.
@@ -55,7 +55,7 @@ public abstract class TaskEngine {
 		//-----
 		input = task;
 		execute();
-		return new TaskResult(task.getDefinition(), result);
+		return new TaskResult(task.getDefinition(), result == Void.TYPE ? null : result);
 	}
 
 	/**
@@ -78,6 +78,9 @@ public abstract class TaskEngine {
 	 * @param o Valeur
 	 */
 	protected final void setResult(final Object o) {
+		Assertion.checkArgument(o != Void.TYPE, "you can't  invoke setResult with Void, use null instead");
+		Assertion.checkState(result == Void.TYPE, "you can't  invoke setResult more than one time");
+		//-----
 		result = o;
 	}
 

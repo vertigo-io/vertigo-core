@@ -752,24 +752,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testPerfCrudInsertCrudSelectRollback() {
 		final long start = System.currentTimeMillis();
 		int execCount = 0;
-		while (System.currentTimeMillis() - start < 5000) {
+		while (System.currentTimeMillis() - start < 1000) {
 			testTxCrudInsertCrudSelectRollback();
 			execCount++;
 		}
 		final long time = System.currentTimeMillis() - start;
-		System.out.println(execCount + " exec en 5s. moy=" + time * 1000 / execCount / 1000d + "ms");
+		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	@Test
 	public void testPerfNativeInsertNativeSelectRollback() {
 		final long start = System.currentTimeMillis();
 		int execCount = 0;
-		while (System.currentTimeMillis() - start < 5000) {
+		while (System.currentTimeMillis() - start < 1000) {
 			testTxNativeInsertNativeSelectRollback();
 			execCount++;
 		}
 		final long time = System.currentTimeMillis() - start;
-		System.out.println(execCount + " exec en 5s. moy=" + time * 1000 / execCount / 1000d + "ms");
+		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	private static Car createNewCar(final Long id) {
