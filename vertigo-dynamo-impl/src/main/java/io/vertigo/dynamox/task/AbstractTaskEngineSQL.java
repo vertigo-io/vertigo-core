@@ -41,10 +41,10 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -127,11 +127,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	private static List<ScriptSeparator> createSqlSeparators() {
-		final List<ScriptSeparator> list = new ArrayList<>(3);
-		list.add(new ScriptSeparator(InOutType.SQL_IN.separator));
-		list.add(new ScriptSeparator(InOutType.SQL_OUT.separator));
-		list.add(new ScriptSeparator(InOutType.SQL_INOUT.separator));
-		return list;
+		return new ListBuilder<ScriptSeparator>()
+				.add(new ScriptSeparator(InOutType.SQL_IN.separator))
+				.add(new ScriptSeparator(InOutType.SQL_OUT.separator))
+				.add(new ScriptSeparator(InOutType.SQL_INOUT.separator))
+				.unmodifiable().build();
 	}
 
 	/**
