@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ import java.util.List;
  * @author  fconstantin, pchretien
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
-	private final List<TaskAttribute> myTaskAttributes = new ArrayList<>();
-
+	private final List<TaskAttribute> myInTaskAttributes = new ArrayList<>();
+	private TaskAttribute myOutTaskAttribute;
 	private final String myTaskDefinitionName;
 	private Class<? extends TaskEngine> myTaskEngineClass;
 	private String myRequest;
@@ -97,7 +98,12 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param notNull If attribute must be not null
 	 */
 	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
-		return addAttribute(attributeName, domain, notNull, true);
+		Assertion.checkNotNull(attributeName);
+		Assertion.checkNotNull(domain);
+		//-----
+		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, notNull, true);
+		myInTaskAttributes.add(taskAttribute);
+		return this;
 	}
 
 	/**
@@ -108,29 +114,20 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param notNull If attribute must be not null
 	 */
 	public TaskDefinitionBuilder withOutAttribute(final Domain domain, final boolean notNull) {
-		return addAttribute("out", domain, notNull, false);
-	}
-
-	/**
-	 * Add an attribute.
-	 *
-	 * @param attributeName Name of the attribute
-	 * @param domain Domain of the attribute
-	 * @param notNull If attribute must be not null
-	 * @param in If attribute is an input (else it is an output)
-	 */
-	private TaskDefinitionBuilder addAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
-		Assertion.checkNotNull(attributeName);
-		Assertion.checkNotNull(domain);
 		//-----
-		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, notNull, in);
-		myTaskAttributes.add(taskAttribute);
+		myOutTaskAttribute = new TaskAttribute("out", domain, notNull, true);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public TaskDefinition build() {
-		return new TaskDefinition(myTaskDefinitionName, myPackageName, myTaskEngineClass, myRequest, myTaskAttributes);
+		return new TaskDefinition(
+				myTaskDefinitionName,
+				myPackageName,
+				myTaskEngineClass,
+				myRequest,
+				myInTaskAttributes,
+				Option.option(myOutTaskAttribute));
 	}
 }

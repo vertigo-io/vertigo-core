@@ -165,7 +165,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 				//Execute le Statement JDBC.
 				final int sqlRowcount = doExecute(connection, statement);
 				//On positionne le nombre de lignes affectées.
-				setRowCount(sqlRowcount);
+				setResult(sqlRowcount);
 			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 				// Gère les erreurs d'exécution Batch JDBC.
 				handleSQLException(connection, sqle.getNextException(), statement);
@@ -345,7 +345,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			// Paramètre primitif
 			// TODO reporter l'assertion dans le ServiceProviderSelect
 			//if Assertion.invariant((this.getAttribute(paramName).getInOut() & ServiceRegistry.ATTR_IN) > 0, paramName  " must have attribute  ATTR_IN.");
-			domain = getTaskDefinition().getAttribute(param.getAttributeName()).getDomain();
+			domain = getTaskDefinition().getInAttribute(param.getAttributeName()).getDomain();
 		} else if (param.isObject()) {
 			// DtObject
 			final DtObject dto = getValue(param.getAttributeName());
@@ -365,7 +365,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
 		if (param.isPrimitive()) {
-			final TaskAttribute attribute = getTaskDefinition().getAttribute(param.getAttributeName());
+			final TaskAttribute attribute = getTaskDefinition().getInAttribute(param.getAttributeName());
 			Assertion.checkArgument(!attribute.isIn(), "{0} must have the attribute ATTR_OUT", param.getAttributeName());
 			setResult(value);
 		} else if (param.isObject()) {
@@ -461,13 +461,5 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
 		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
-	}
-
-	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().containsAttribute(SQL_ROWCOUNT)) {
-			Assertion.checkArgument(!getTaskDefinition().getAttribute(SQL_ROWCOUNT).isIn(), "Attribut Rowcount est obligatoirement OUT");
-			// SI le paramètre (out) INT_SQL_ROWCOUNT est défini, il reçoit le sql%rowcount
-			setResult(sqlRowcount);
-		}
 	}
 }

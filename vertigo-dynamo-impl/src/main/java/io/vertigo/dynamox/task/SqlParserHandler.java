@@ -73,7 +73,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 	 * @param fieldName Nom du champ dont il faut vérifier l'existence
 	 */
 	private void checkFieldName(final String attributeName, final String fieldName) {
-		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
+		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
 		//Dans le cas des domaines de type DTO et DTC génériques,
 		//c'est à dire ne précisant pas un DT,
 		//il n'est pas possible d'eefectuer de vérification au niveau modèle.
@@ -96,7 +96,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 	private void addParam(final TaskEngineSQLParam param) {
 		//On vérifie la cohérence du Parmètre fourni
 		//On vérifie que l'attribut existe
-		if (!taskDefinition.containsAttribute(param.getAttributeName())) {
+		if (!taskDefinition.containsInAttribute(param.getAttributeName())) {
 			throw new RuntimeException("L'attribut " + param.getAttributeName() + " n'existe pas sur le service" + taskDefinition.getName());
 		}
 		//======================================================================

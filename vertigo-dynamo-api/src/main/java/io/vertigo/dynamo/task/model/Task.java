@@ -92,7 +92,7 @@ public final class Task {
 	 */
 	public <V> V getValue(final String attributeName) {
 		// on préfère centraliser le cast ici plutot que dans les classes générées.
-		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
+		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
 		Assertion.checkArgument(taskAttribute.isIn(), "only 'in' taskAttributes are allowed");
 		return (V) taskAttributes.get(taskAttribute);
 	}

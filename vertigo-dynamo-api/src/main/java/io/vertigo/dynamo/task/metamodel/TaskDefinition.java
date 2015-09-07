@@ -24,7 +24,6 @@ import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.util.ListBuilder;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -51,7 +50,9 @@ public final class TaskDefinition implements Definition {
 	private final String request;
 
 	/** Map des (Nom, TaskAttribute) définissant les attributs de tache. */
-	private final Map<String, TaskAttribute> taskAttributes;
+	private final Map<String, TaskAttribute> inTaskAttributes;
+
+	private final Option<TaskAttribute> outTaskAttributeOption;
 
 	/**
 	 * Moyen de réaliser la tache.
@@ -63,17 +64,23 @@ public final class TaskDefinition implements Definition {
 	 * @param taskEngineClass Classe réalisant l'implémentation
 	 * @param request Chaine de configuration
 	 */
-	TaskDefinition(final String name, final String packageName, final Class<? extends TaskEngine> taskEngineClass, final String request, final List<TaskAttribute> taskAttributes) {
+	TaskDefinition(final String name, final String packageName,
+			final Class<? extends TaskEngine> taskEngineClass,
+			final String request,
+			final List<TaskAttribute> inTaskAttributes,
+			final Option<TaskAttribute> outTaskAttributeOption) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
-		Assertion.checkNotNull(taskAttributes);
+		Assertion.checkNotNull(inTaskAttributes);
+		Assertion.checkNotNull(outTaskAttributeOption);
 		//-----
 		this.name = name;
 		localName = DefinitionUtil.getLocalName(name, TaskDefinition.class);
 		this.packageName = packageName;
 		this.request = request;
-		this.taskAttributes = createMap(taskAttributes);
+		this.inTaskAttributes = createMap(inTaskAttributes);
+		this.outTaskAttributeOption = outTaskAttributeOption;
 		this.taskEngineClass = taskEngineClass;
 	}
 
@@ -98,10 +105,10 @@ public final class TaskDefinition implements Definition {
 	 * @param attributeName Nom de l'attribut recherché.
 	 * @return Définition de l'attribut.
 	 */
-	public TaskAttribute getAttribute(final String attributeName) {
+	public TaskAttribute getInAttribute(final String attributeName) {
 		Assertion.checkNotNull(attributeName);
 		//-----
-		final TaskAttribute taskAttribute = taskAttributes.get(attributeName);
+		final TaskAttribute taskAttribute = inTaskAttributes.get(attributeName);
 		Assertion.checkNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;
 	}
@@ -111,8 +118,8 @@ public final class TaskDefinition implements Definition {
 	 * @param attributeName Nom de l'attribut
 	 * @return Si l'attribut fait partie de l'API de la tache
 	 */
-	public boolean containsAttribute(final String attributeName) {
-		return taskAttributes.containsKey(attributeName);
+	public boolean containsInAttribute(final String attributeName) {
+		return inTaskAttributes.containsKey(attributeName);
 	}
 
 	/**
@@ -140,14 +147,7 @@ public final class TaskDefinition implements Definition {
 	 * @return Attribut OUT
 	 */
 	public Option<TaskAttribute> getOutAttributeOption() {
-		TaskAttribute foundAttribute = null;
-		for (final TaskAttribute attribute : getAttributes()) {
-			if (!attribute.isIn()) {
-				Assertion.checkState(foundAttribute == null, "TaskEngineSelect ne peut créer qu'un seul DtObject ou DtList !");
-				foundAttribute = attribute;
-			}
-		}
-		return Option.option(foundAttribute);
+		return outTaskAttributeOption;
 	}
 
 	/**
@@ -155,24 +155,8 @@ public final class TaskDefinition implements Definition {
 	 *
 	 * @return Liste des attributs IN
 	 */
-	public List<TaskAttribute> getInAttributes() {
-		final ListBuilder<TaskAttribute> builder = new ListBuilder<>();
-		for (final TaskAttribute attribute : getAttributes()) {
-			if (attribute.isIn()) {
-				builder.add(attribute);
-			}
-		}
-		return builder.unmodifiable().build();
-	}
-
-	/**
-	 * Retourne la liste des attributs de la tache sous forme d'une Collection
-	 * de TaskAttribute.
-	 *
-	 * @return Liste des attributs de la tache
-	 */
-	private Collection<TaskAttribute> getAttributes() {
-		return taskAttributes.values();
+	public Collection<TaskAttribute> getInAttributes() {
+		return inTaskAttributes.values();
 	}
 
 	/**
