@@ -19,10 +19,12 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 
 import java.sql.SQLException;
 
@@ -55,8 +57,8 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineSelect(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */

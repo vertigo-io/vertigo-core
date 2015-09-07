@@ -21,7 +21,6 @@ package io.vertigo.dynamox.task;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
@@ -102,6 +101,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
 	 * Dans le cas des Batchs ce nombre correspond à la somme de toutes les lignes affectées par le batch.
 	 */
+	//Qui utilise ça ?? // peut on revenir à une forme explicite 
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
 	/**
@@ -109,21 +109,30 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private static final List<ScriptSeparator> SQL_SEPARATORS = createSqlSeparators();
 
-	private final ScriptManager scriptManager;
-
 	/**
 	 * Liste des paramètres
 	 */
 	private List<TaskEngineSQLParam> params;
 
+	private final ScriptManager scriptManager;
+	private final VTransactionManager transactionManager;
+	private final SqlDataBaseManager sqlDataBaseManager;
+
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
 	 */
-	protected AbstractTaskEngineSQL(final ScriptManager scriptManager) {
+	protected AbstractTaskEngineSQL(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(scriptManager);
+		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.scriptManager = scriptManager;
+		this.transactionManager = transactionManager;
+		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
 	private static List<ScriptSeparator> createSqlSeparators() {
@@ -421,7 +430,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Connexion SQL
 	 */
 	private SqlConnection obtainConnection() {
-		final VTransaction transaction = getTransactionManager().getCurrentTransaction();
+		final VTransaction transaction = transactionManager.getCurrentTransaction();
 		SqlConnection connection = transaction.getResource(getVTransactionResourceId());
 		if (connection == null) {
 			// On récupère une connexion du pool
@@ -443,15 +452,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		return SQL_RESOURCE_ID;
 	}
 
-	private static VTransactionManager getTransactionManager() {
-		return Home.getComponentSpace().resolve(VTransactionManager.class);
-	}
-
 	/**
 	 * @return Manager de base de données
 	 */
-	protected static final SqlDataBaseManager getDataBaseManager() {
-		return Home.getComponentSpace().resolve(SqlDataBaseManager.class);
+	protected final SqlDataBaseManager getDataBaseManager() {
+		return sqlDataBaseManager;
 	}
 
 	/**

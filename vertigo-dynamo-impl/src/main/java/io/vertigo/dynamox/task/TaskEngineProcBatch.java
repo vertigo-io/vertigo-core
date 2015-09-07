@@ -22,12 +22,14 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
@@ -44,8 +46,8 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineProcBatch(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
