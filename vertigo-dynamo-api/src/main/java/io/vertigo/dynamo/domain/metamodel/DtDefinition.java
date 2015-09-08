@@ -68,10 +68,16 @@ public final class DtDefinition implements Definition {
 	/**
 	 * Constructeur.
 	 */
-	DtDefinition(final String name, final String packageName, final DtStereotype stereotype, final boolean persistent, final List<DtField> dtFields, final boolean dynamic) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(dtFields);
+	DtDefinition(
+			final String name,
+			final String packageName,
+			final DtStereotype stereotype,
+			final boolean persistent,
+			final List<DtField> dtFields,
+			final boolean dynamic) {
+		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
+		Assertion.checkNotNull(dtFields);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;

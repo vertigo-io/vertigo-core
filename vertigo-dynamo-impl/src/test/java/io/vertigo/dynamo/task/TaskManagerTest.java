@@ -87,7 +87,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 * Test l'enregistrement d'une task avec une faute de nommage.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void testRegistryWithError() {
+	public void testTaskDefinitionWithError() {
 		//On ne respect pas le pattern TK_
 		final TaskDefinition taskDefinition = buildTaskDefinition("TZ_ADD_REGISTRY", "+");
 		nop(taskDefinition);

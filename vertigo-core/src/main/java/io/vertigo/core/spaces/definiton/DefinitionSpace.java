@@ -67,22 +67,13 @@ public final class DefinitionSpace implements Activeable {
 		}
 		final Map<String, Definition> tobjects = definitions.get(definition.getClass());
 		final String name = definition.getName();
-		checkName(name, definition.getClass());
+		DefinitionUtil.checkName(name, definition.getClass());
 		final Definition previous = tobjects.put(name, definition);
 		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", name);
 		//-----
 		final Definition previous2 = allObjects.put(name, definition);
 		//On vérifie l'unicité globale du nom.
 		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", name);
-	}
-
-	private static void checkName(final String name, final Class<? extends Definition> clazz) {
-		final String prefix = DefinitionUtil.getPrefix(clazz);
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgument(name.startsWith(prefix), "La définition {0} doit commencer par {1}", name, prefix);
-		Assertion.checkArgument(name.length() > prefix.length(), "Le nom de la définition doit être renseigné");
-		Assertion.checkArgument(name.toUpperCase().equals(name), "La définition {0} doit être en majuscules", name);
-		Assertion.checkArgument(Definition.REGEX_DEFINITION_URN.matcher(name).matches(), "urn de définition {0} doit matcher le pattern {1}", name, Definition.REGEX_DEFINITION_URN);
 	}
 
 	/**

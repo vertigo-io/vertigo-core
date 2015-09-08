@@ -20,6 +20,7 @@ package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -60,12 +61,14 @@ public final class TaskDefinition implements Definition {
 	 * @param taskEngineClass Classe réalisant l'implémentation
 	 * @param request Chaine de configuration
 	 */
-	TaskDefinition(final String name, final String packageName,
+	TaskDefinition(
+			final String name,
+			final String packageName,
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
 			final Option<TaskAttribute> outTaskAttributeOption) {
-		Assertion.checkArgNotEmpty(name);
+		DefinitionUtil.checkName(name, TaskDefinition.class);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(inTaskAttributes);
