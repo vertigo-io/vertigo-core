@@ -59,7 +59,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 	/** {@inheritDoc} */
 	@Override
 	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 
 		// gestion de generatedKey

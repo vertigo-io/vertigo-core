@@ -73,7 +73,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 		setOutParameter(statement);
 		return sqlRowcount;

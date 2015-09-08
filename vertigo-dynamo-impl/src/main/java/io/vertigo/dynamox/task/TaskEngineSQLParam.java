@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamox.task;
 
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -27,7 +26,6 @@ import io.vertigo.lang.Assertion;
  * Ces paramètres sont de trois types :
  * - IN 	: le séparateur utilisé est #
  * - OUT 	: le séparateur utilisé est %
- * - IN OUT : le séparateur utilisé est @
  *
  * @author pchretien
  */
@@ -44,11 +42,7 @@ final class TaskEngineSQLParam {
 		/**
 		 * Paramètre SQL de type OUT.
 		 */
-		SQL_OUT('%'),
-		/**
-		 * Paramètre SQL de type IN OUT.
-		 */
-		SQL_INOUT('@');
+		SQL_OUT('%');
 
 		final char separator;
 
@@ -62,14 +56,12 @@ final class TaskEngineSQLParam {
 		 * @param separator Séparateur
 		 * @return Type de paramètre SQL
 		 */
-		static SqlPreparedStatement.ParameterType getType(final char separator) {
+		static boolean isIn(final char separator) {
 			switch (separator) {
 				case '#':
-					return SqlPreparedStatement.ParameterType.IN;
+					return true;//IN;
 				case '%':
-					return SqlPreparedStatement.ParameterType.OUT;
-				case '@':
-					return SqlPreparedStatement.ParameterType.INOUT;
+					return false; //OUT;
 				default:
 					throw new IllegalArgumentException(separator + " non reconnu");
 			}
@@ -81,7 +73,7 @@ final class TaskEngineSQLParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
-	private final SqlPreparedStatement.ParameterType inOut;
+	private final boolean in;
 	private int index = -1;
 
 	/**
@@ -90,7 +82,7 @@ final class TaskEngineSQLParam {
 	 * @param betweenCar String
 	 * @param inOut Type du Parametre
 	 */
-	TaskEngineSQLParam(final String betweenCar, final SqlPreparedStatement.ParameterType inOut) {
+	TaskEngineSQLParam(final String betweenCar, final boolean in) {
 		String newAttributeName = betweenCar;
 		String newfieldName = null;
 		Integer dtcRowNumber = null;
@@ -113,12 +105,11 @@ final class TaskEngineSQLParam {
 		//-----
 		// Le paramètre n'est pas encore indexé
 		Assertion.checkNotNull(newAttributeName);
-		Assertion.checkNotNull(inOut);
 		// Si le numéro de ligne est renseignée alors le champ doit l'être aussi
 		Assertion.checkNotNull(dtcRowNumber == null || newfieldName != null);
 		//-----
 		attributeName = newAttributeName;
-		this.inOut = inOut;
+		this.in = in;
 		fieldName = newfieldName;
 		rowNumber = dtcRowNumber;
 	}
@@ -186,11 +177,8 @@ final class TaskEngineSQLParam {
 		return rowNumber;
 	}
 
-	/**
-	 * @return Type du paramètre
-	 */
-	SqlPreparedStatement.ParameterType getType() {
-		return inOut;
+	boolean isIn() {
+		return in;
 	}
 
 	/**

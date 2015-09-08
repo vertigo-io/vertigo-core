@@ -80,7 +80,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 
 		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());

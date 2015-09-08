@@ -57,7 +57,7 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
 		for (int i = 0; i < batchSize; i++) {
-			setBatchParameters(statement, i);
+			setBatchInParameters(statement, i);
 			statement.addBatch();
 		}
 
@@ -72,19 +72,12 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	 * @param rowNumber ligne de DTC à prendre en compte
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	private void setBatchParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
+	private void setBatchInParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : getParams()) {
-			switch (param.getType()) {
-				case IN:
-				case INOUT:
-					setParameter(statement, param, rowNumber);
-					break;
-				case OUT:
-				default:
-					// On ne fait rien
-					break;
+			if (param.isIn()) {
+				setInParameter(statement, param, rowNumber);
 			}
 		}
 	}

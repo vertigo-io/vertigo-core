@@ -169,37 +169,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
-	/**
-	 * Ajoute un paramètre en précisant son type
-	 * @param in Si le paramètre est in
-	 * @param out Si le paramètre est out
-	 * @param index Indexe du paramètre
-	 * @param dataType Type Kapser
-	 */
-	private void registerParameter(final int index, final DataType dataType, final boolean in, final boolean out) {
-		Assertion.checkArgument(state == State.CREATED, "L'enregistrement ne peut se faire que sur l'état STATE_CREATED");
-		final SqlParameter parameter = new SqlParameter(dataType, in, out);
-		parameters.add(index, parameter);
-	}
-
 	/** {@inheritDoc} */
 	@Override
-	public final void registerParameter(final int index, final DataType dataType, final ParameterType parameterType) {
-		Assertion.checkNotNull(parameterType);
-		//-----
-		switch (parameterType) {
-			case IN:
-				registerParameter(index, dataType, true, false);
-				break;
-			case OUT:
-				registerParameter(index, dataType, false, true);
-				break;
-			case INOUT:
-				registerParameter(index, dataType, true, true);
-				break;
-			default:
-				throw new IllegalArgumentException("case " + parameterType + " not implemented");
-		}
+	public final void registerParameter(final int index, final DataType dataType, final boolean in) {
+		Assertion.checkArgument(state == State.CREATED, "L'enregistrement ne peut se faire que sur l'état STATE_CREATED");
+		final SqlParameter parameter = new SqlParameter(dataType, in);
+		parameters.add(index, parameter);
 	}
 
 	//=========================================================================

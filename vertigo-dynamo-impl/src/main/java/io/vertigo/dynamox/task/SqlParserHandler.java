@@ -61,7 +61,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 		// Et on teste s'il s'agit d'un attribut du service.
 		// Dans le cas des DTO on ne teste que le nom du DTO et non (pour l'instant) son paramètre
 
-		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression, InOutType.getType(separator.getSeparator()));
+		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression, InOutType.isIn(separator.getSeparator()));
 		addParam(param);
 		//On binde paramètre, en le remplaçant par un "?"
 		appendSql("?");

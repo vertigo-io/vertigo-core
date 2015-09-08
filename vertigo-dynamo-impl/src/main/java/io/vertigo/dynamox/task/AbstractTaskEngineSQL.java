@@ -139,7 +139,6 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		return new ListBuilder<ScriptSeparator>()
 				.add(new ScriptSeparator(InOutType.SQL_IN.separator))
 				.add(new ScriptSeparator(InOutType.SQL_OUT.separator))
-				.add(new ScriptSeparator(InOutType.SQL_INOUT.separator))
 				.unmodifiable().build();
 	}
 
@@ -269,15 +268,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
 		//-----
 		for (final TaskEngineSQLParam param : params) {
-			switch (param.getType()) {
-				case OUT:
-				case INOUT:
-					setOutParameter(cs, param);
-					break;
-				case IN:
-				default:
-					//On ne calcule rien
-					break;
+			if (!param.isIn()) {
+				setOutParameter(cs, param);
 			}
 		}
 	}
@@ -310,7 +302,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private void initParameters(final SqlPreparedStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
-			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.getType());
+			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
 		}
 	}
 
@@ -321,20 +313,13 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final void setParameters(final SqlPreparedStatement statement) throws SQLException {
+	protected final void setInParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : params) {
-			switch (param.getType()) {
-				case IN:
-				case INOUT:
-					final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-					setParameter(statement, param, rowNumber);
-					break;
-				case OUT:
-				default:
-					//On ne fait rien
-					break;
+			if (param.isIn()) {
+				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+				setInParameter(statement, param, rowNumber);
 			}
 		}
 	}
@@ -353,7 +338,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param rowNumber Ligne des données d'entrée.
 	 * @throws SQLException Erreur sql
 	 */
-	protected final void setParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
+	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
@@ -383,8 +368,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
 		if (param.isPrimitive()) {
-			final TaskAttribute attribute = getTaskDefinition().getInAttribute(param.getAttributeName());
-			Assertion.checkArgument(!attribute.isIn(), "{0} must have the attribute ATTR_OUT", param.getAttributeName());
+			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isDefined(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
 			setResult(value);
 		} else if (param.isObject()) {
 			//DtObject
