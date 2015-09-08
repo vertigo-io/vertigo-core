@@ -53,8 +53,7 @@ import javax.inject.Inject;
 public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement> {
 
 	/**
-	 * Constructeur.
-	 * @param scriptManager Manager de traitment de scripts
+	 * Constructor.
 	 */
 	@Inject
 	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
@@ -72,7 +71,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 */
 	private TaskAttribute getOutTaskAttribute() {
 		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
-			throw new RuntimeException("TaskEngineSelect doit affecter au moins UN DtObject ou DtList!");
+			throw new RuntimeException("TaskEngineSelect must have at least on DtObject or one DtList!");
 		}
 		return getTaskDefinition().getOutAttributeOption().get();
 

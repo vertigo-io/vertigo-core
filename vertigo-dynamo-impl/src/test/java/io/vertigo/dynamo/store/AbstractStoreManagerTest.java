@@ -24,6 +24,7 @@ import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -163,6 +164,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		Home.getDefinitionSpace().put(taskDefinition);
 		return taskDefinition;
+	}
+
+	@Test
+	public void testSelectCountCars() {
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select count(*) from CAR")
+				.withOutAttribute("count", new Domain("DO_COUNT", DataType.Long), true)
+				.build();
+
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final Task task = new TaskBuilder(taskDefinition).build();
+			long count = taskManager
+					.execute(task)
+					.getResult();
+			//-----
+			Assert.assertEquals(9, count);
+		}
 	}
 
 	private static TaskDefinition registerTaskUpdateCar() {
