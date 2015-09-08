@@ -326,7 +326,7 @@ public final class TestWebServices implements WebServices {
 		contactDao.remove(conId);
 	}
 
-	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
+	@Doc("Test ws multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/innerbody")
 	public List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
 		final List<Contact> result = new ArrayList<>(2);
@@ -337,7 +337,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
+	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLong")
 	public List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
@@ -349,7 +349,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
+	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ServerSideSave
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLongToDtList")
@@ -362,7 +362,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@Doc("Test ws-rest returning UiContext. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long. You get partial Contacts with clientId in each one")
+	@Doc("Test ws returning UiContext. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long. You get partial Contacts with clientId in each one")
 	@ServerSideSave
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	@POST("/uiContext")
@@ -379,7 +379,7 @@ public final class TestWebServices implements WebServices {
 		return uiContext;
 	}
 
-	@Doc("Test ws-rest with multiple path params.")
+	@Doc("Test ws with multiple path params.")
 	@ExcludedFields({ "address", "tels" })
 	@POST("/multiPath/from/{conIdFrom}/to/{conIdTo}")
 	public DtList<Contact> testMultiPathParam(//
@@ -393,7 +393,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@Doc("Test ws-rest multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
+	@Doc("Test ws multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
 	@POST("/innerBodyServerClient")
 	public List<Contact> testInnerBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //

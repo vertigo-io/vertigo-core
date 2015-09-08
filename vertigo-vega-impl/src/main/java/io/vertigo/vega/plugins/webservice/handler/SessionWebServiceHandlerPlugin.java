@@ -19,8 +19,8 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.VSecurityException;
@@ -41,7 +41,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
-	private static final String USER_SESSION = "vertigo.rest.Session";
+	private static final String USER_SESSION = "vertigo.webservice.Session";
 
 	private final VSecurityManager securityManager;
 

@@ -96,7 +96,7 @@ public final class MyAppConfig {
 					.addParam("dataStoreName", "UiSecurityStore")
 					.addParam("timeToLiveSeconds", "120")
 				.endPlugin()
-			.endModule()	
+			.endModule()
 			.beginModule(VegaFeatures.class)
 				.withTokens()
 				.withMisc()
@@ -115,7 +115,7 @@ public final class MyAppConfig {
 			.endModule()
 			.beginModule("myApp")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
-				.addDefinitionResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
+				.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
 			.endModule()
 		.build();
 		// @formatter:on
