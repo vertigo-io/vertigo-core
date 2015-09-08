@@ -16,21 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.data.domain;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+public enum Honorific {
+	Mr("MR_"),
+	Miss("MIS"),
+	Mrs("MRS"),
+	Ms("MS_"),
+	Dr("DR_"),
+	Cpt("CAP"),
+	Cch("CCH"),
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+	Off("OFF"),
+	Rev("REV"),
+	Fth("FTH"),
+	PhD("PHD"),
+	Mst("MST");
 
-/**
- * Test de l'implementation standard.
- *
- * @author pchretien
- */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+	private final String code;
+
+	private Honorific(final String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
+	}
 }

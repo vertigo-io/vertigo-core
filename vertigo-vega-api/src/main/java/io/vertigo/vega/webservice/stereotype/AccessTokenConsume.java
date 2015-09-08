@@ -16,21 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.stereotype;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Annotation that may be use to limit access to service.
+ * An header access token must be send, and it will be consume after use.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface AccessTokenConsume {
+	//empty
 }

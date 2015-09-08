@@ -16,21 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.impl.webservice;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.lang.Plugin;
+import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * WebServices introspector.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public interface WebServiceIntrospectorPlugin extends Plugin {
+
+	/**
+	 * Introspect WebService class, looking for WebServiceDefinitions.
+	 * @param webServiceClass Class to introspect
+	 * @return List of WebServiceDefinition found
+	 */
+	List<WebServiceDefinition> instrospectWebService(Class<? extends WebServices> webServiceClass);
+
 }

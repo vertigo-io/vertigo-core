@@ -16,21 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.impl.webservice.servlet;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.log4j.Logger;
 
 /**
- * Test de l'implementation standard.
- *
+ * Implémentation du listener des événements produits par la servlet.
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+final class AppServletListener {
+
+	/**
+	 * Mécanisme de log racine
+	 */
+	private static final Logger LOGGER = Logger.getRootLogger();
+
+	/**
+	 * Evénement remonté lors du démarrage de la servlet.
+	 * @param servletName Nom de la servlet
+	 */
+	public void onServletStart(final String servletName) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Start servlet " + servletName);
+		}
+	}
+
+	/**
+	 * Evénement remonté lors de l'arrêt de la servlet.
+	 * @param servletName Nom de la servlet
+	 */
+	public void onServletDestroy(final String servletName) {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Destroy servlet " + servletName);
+		}
+	}
 }

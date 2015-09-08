@@ -16,21 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.impl.webservice.servlet;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Classe d'initialisation.
+ * 
+ * @author pforhan
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public class AppServletContextListener implements ServletContextListener {
+
+	/** Servlet listener */
+	private final AppServletStarter appServletStarter = new AppServletStarter();
+
+	/** {@inheritDoc} */
+	@Override
+	public final void contextInitialized(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextInitialized(servletContextEvent.getServletContext());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextDestroyed(servletContextEvent.getServletContext());
+	}
 }

@@ -16,21 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import spark.Spark;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * RoutesRegisterPlugin use to register Spark-java route.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
+
+	/**
+	 * @param port Server port
+	 */
+	@Inject
+	public SparkJavaEmbeddedWebServerPlugin(@Named("port") final int port) {
+		Spark.setPort(port);
+		//---
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		Spark.before(new JettyMultipartConfig(tempDir));
+	}
+
 }

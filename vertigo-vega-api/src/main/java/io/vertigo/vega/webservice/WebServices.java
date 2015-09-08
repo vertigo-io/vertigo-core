@@ -16,21 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
-
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package io.vertigo.vega.webservice;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * WebServices.
+ * Used to mark a class, which defines a set of webservices.   
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
+public interface WebServices {
 	//
 }

@@ -16,21 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
-
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * RoutesRegisterPlugin use to register Spark-java route.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
+
+	//nothing
+
 }

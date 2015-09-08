@@ -16,21 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
-
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package io.vertigo.vega.webservice.exception;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Rate limit exceeded exception.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public final class TooManyRequestException extends RuntimeException {
+	private static final long serialVersionUID = 4871828055854233637L;
+
+	/**
+	 * Constructor.
+	 * @param message Error message
+	 */
+	public TooManyRequestException(final String message) {
+		super(message);
+	}
 }

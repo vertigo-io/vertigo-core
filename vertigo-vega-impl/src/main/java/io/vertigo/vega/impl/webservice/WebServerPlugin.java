@@ -16,21 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.impl.webservice;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.lang.Plugin;
+import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Register an handlerchain as a route for this webService.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public interface WebServerPlugin extends Plugin {
+
+	/**
+	 * @param handlerChain HandlerChain of this route
+	 * @param webServiceDefinitions WebServiceDefinitions to register
+	 */
+	void registerWsRoute(HandlerChain handlerChain, List<WebServiceDefinition> webServiceDefinitions);
+
 }

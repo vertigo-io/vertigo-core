@@ -16,21 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.dynamo.domain.model.DtObject;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Set;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Validator of DtObject.
+ * Could check an object, for a modified fields set and append detected errors in an DtObjectErrors.
+ * @author npiedeloup
+ * @param <O> Type of DtObject
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public interface DtObjectValidator<O extends DtObject> {
+
+	/**
+	 * Effectue les validations prévu d'un objet.
+	 * @param dtObject Objet à tester
+	 * @param modifiedFieldNames Liste des champs modifiés
+	 * @param dtObjectErrors Pile des erreurs
+	 */
+	void validate(O dtObject, Set<String> modifiedFieldNames, DtObjectErrors dtObjectErrors);
+
 }

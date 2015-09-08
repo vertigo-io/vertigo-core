@@ -16,21 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.model;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.lang.Assertion;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * ExtendedObject to extends an object with meta data.
+ * @param <O> Inner object type
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public final class ExtendedObject<O> extends HashMap<String, Serializable> {
+	private static final long serialVersionUID = -8118714236186836600L;
+
+	private final O innerObject;
+
+	/**
+	 * Constructor.
+	 * @param innerObject inner object
+	 */
+	public ExtendedObject(final O innerObject) {
+		Assertion.checkNotNull(innerObject);
+		//-----
+		this.innerObject = innerObject;
+	}
+
+	/**
+	 * @return Inner object
+	 */
+	public O getInnerObject() {
+		return innerObject;
+	}
 }

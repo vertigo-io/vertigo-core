@@ -16,21 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import java.io.Serializable;
+import java.util.HashMap;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class UiContext extends HashMap<String, Serializable> {
+	private static final long serialVersionUID = 4981453220600689399L;
 
-/**
- * Test de l'implementation standard.
- *
- * @author pchretien
- */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
 }

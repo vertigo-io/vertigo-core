@@ -1,28 +1,28 @@
 package io.vertigo.vega;
 
 import io.vertigo.core.config.Features;
-import io.vertigo.vega.impl.rest.WebServiceManagerImpl;
-import io.vertigo.vega.impl.rest.catalog.CatalogWebServices;
-import io.vertigo.vega.impl.rest.catalog.SwaggerWebServices;
+import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
-import io.vertigo.vega.plugins.rest.handler.AccessTokenWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.CorsAllowerWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ExceptionWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.JsonConverterWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RateLimitingWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.RestfulServiceWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SecurityWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ServerSideStateWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionInvalidateWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.SessionWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.handler.ValidatorWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin;
-import io.vertigo.vega.plugins.rest.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
-import io.vertigo.vega.rest.WebServiceManager;
-import io.vertigo.vega.rest.engine.GoogleJsonEngine;
-import io.vertigo.vega.rest.engine.JsonEngine;
+import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
+import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
+import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
+import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.PaginatorAndSortWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.RateLimitingWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.SecurityWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.ServerSideStateWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.SessionInvalidateWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin;
+import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
+import io.vertigo.vega.webservice.WebServiceManager;
 
 /**
  * Defines module Vega.

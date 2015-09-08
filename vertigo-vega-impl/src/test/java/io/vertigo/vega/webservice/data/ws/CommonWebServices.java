@@ -16,21 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.data.ws;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.webservice.stereotype.GET;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.inject.Inject;
 
-/**
- * Test de l'implementation standard.
- *
- * @author pchretien
- */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+//basé sur http://www.restapitutorial.com/lessons/httpmethods.html
+public final class CommonWebServices implements WebServices {
+
+	@Inject
+	private VSecurityManager securityManager;
+
+	@AnonymousAccessAllowed
+	@GET("/login")
+	public void login() {
+		//code 200
+		securityManager.getCurrentUserSession().get().authenticate();
+	}
 }

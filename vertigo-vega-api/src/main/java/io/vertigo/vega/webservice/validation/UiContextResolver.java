@@ -16,21 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
+package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
+import io.vertigo.dynamo.domain.model.DtObject;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
- */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+* @author npiedeloup 
+*/
+public final class UiContextResolver {
+	private final Map<DtObject, String> dtObjectDictionary = new HashMap<>();
+
+	public void register(final String contextKey, final DtObject dtObject) {
+		dtObjectDictionary.put(dtObject, contextKey);
+	}
+
+	public String resolveContextKey(final DtObject dtObject) {
+		return dtObjectDictionary.get(dtObject);
+	}
+
 }

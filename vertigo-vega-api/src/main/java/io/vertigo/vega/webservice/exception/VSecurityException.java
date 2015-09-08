@@ -16,21 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega;
-
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package io.vertigo.vega.webservice.exception;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Security exception.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
-public final class VegaTestSuite {
-	//
+public final class VSecurityException extends Exception {
+	private static final long serialVersionUID = -8681804137431091875L;
+
+	/**
+	 * Constructor.
+	 * @param message Error message
+	 */
+	public VSecurityException(final String message) {
+		super(message);
+	}
+
 }
