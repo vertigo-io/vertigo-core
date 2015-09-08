@@ -159,7 +159,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
 			definitionSpace.put(webServiceDefinition);
 		}
-		webServerPlugin.registerWsRoute(handlerChain, webServiceDefinitions);
+		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
 	}
 
 	private static final class WebServiceDefinitionComparator implements Comparator<WebServiceDefinition>, Serializable {

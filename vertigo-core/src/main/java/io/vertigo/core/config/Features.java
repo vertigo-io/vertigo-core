@@ -3,7 +3,7 @@ package io.vertigo.core.config;
 import io.vertigo.lang.Assertion;
 
 /**
- * Defines a module by the features. 
+ * Defines a module by the features.
  * @author pchretien
  */
 public abstract class Features {
@@ -18,7 +18,7 @@ public abstract class Features {
 
 	public final void init(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkNotNull(appConfigBuilder);
-		Assertion.checkState(this.moduleConfigBuilder == null, "appConfigBuilder is alreay defined");
+		Assertion.checkState(moduleConfigBuilder == null, "appConfigBuilder is alreay defined");
 		//---
 		moduleConfigBuilder = appConfigBuilder.beginModule(name);
 		setUp();
@@ -30,7 +30,12 @@ public abstract class Features {
 		return moduleConfigBuilder;
 	}
 
+	protected void buildFeatures() {
+		//overrided if needed
+	}
+
 	public final AppConfigBuilder endModule() {
+		buildFeatures();
 		return moduleConfigBuilder.endModule();
 	}
 

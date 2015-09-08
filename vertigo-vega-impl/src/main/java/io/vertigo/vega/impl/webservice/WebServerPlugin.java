@@ -34,6 +34,6 @@ public interface WebServerPlugin extends Plugin {
 	 * @param handlerChain HandlerChain of this route
 	 * @param webServiceDefinitions WebServiceDefinitions to register
 	 */
-	void registerWsRoute(HandlerChain handlerChain, List<WebServiceDefinition> webServiceDefinitions);
+	void registerWebServiceRoute(HandlerChain handlerChain, List<WebServiceDefinition> webServiceDefinitions);
 
 }

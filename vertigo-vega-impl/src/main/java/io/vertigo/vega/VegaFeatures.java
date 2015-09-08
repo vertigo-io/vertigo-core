@@ -30,12 +30,37 @@ import io.vertigo.vega.webservice.WebServiceManager;
  */
 public final class VegaFeatures extends Features {
 
+	private boolean withTokens = false;
+	private boolean withMisc = false;
+
 	public VegaFeatures() {
 		super("vega");
 	}
 
 	@Override
 	protected void setUp() {
+		//rien
+	}
+
+	public VegaFeatures withTokens() {
+		withTokens = true;
+		return this;
+	}
+
+	public VegaFeatures withMisc() {
+		withMisc = true;
+		return this;
+	}
+
+	public VegaFeatures withEmbeddedServer(final int port) {
+		getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
+				.addParam("port", Integer.toString(port))
+				.endPlugin();
+		return this;
+	}
+
+	@Override
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.withNoAPI().withInheritance(Object.class)
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
@@ -51,32 +76,20 @@ public final class VegaFeatures extends Features {
 				.addPlugin(SessionWebServiceHandlerPlugin.class)
 				.addPlugin(SecurityWebServiceHandlerPlugin.class)
 				//.beginPlugin(OldJsonConverterWebServiceHandlerPlugin.class).endPlugin()
-				.addPlugin(JsonConverterWebServiceHandlerPlugin.class)
-				.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
-				.addPlugin(ValidatorWebServiceHandlerPlugin.class)
+				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
+		if (withTokens) {
+			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
+					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
+					.beginComponent(TokenManager.class, TokenManagerImpl.class)
+					.addParam("dataStoreName", "UiSecurityStore")
+					.endComponent();
+		}
+		if (withMisc) {
+			getModuleConfigBuilder()
+					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
+					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
+		}
+		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
 				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
-	}
-
-	public VegaFeatures withTokens() {
-		getModuleConfigBuilder()
-				.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
-				.beginComponent(TokenManager.class, TokenManagerImpl.class)
-				.addParam("dataStoreName", "UiSecurityStore")
-				.endComponent();
-		return this;
-	}
-
-	public VegaFeatures withMisc() {
-		getModuleConfigBuilder()
-				.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
-				.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
-		return this;
-	}
-
-	public VegaFeatures withEmbeddedServer(final int port) {
-		getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-				.addParam("port", Integer.toString(port))
-				.endPlugin();
-		return this;
 	}
 }

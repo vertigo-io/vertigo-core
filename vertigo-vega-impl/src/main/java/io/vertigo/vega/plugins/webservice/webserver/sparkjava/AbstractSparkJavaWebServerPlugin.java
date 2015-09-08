@@ -36,7 +36,7 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void registerWsRoute(final HandlerChain handlerChain, final List<WebServiceDefinition> webServiceDefinitions) {
+	public final void registerWebServiceRoute(final HandlerChain handlerChain, final List<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.checkNotNull(handlerChain);
 		Assertion.checkNotNull(webServiceDefinitions);
 		//-----
