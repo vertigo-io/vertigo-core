@@ -86,11 +86,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	private DtDefinition dtDefinitionFamille;
 
-	private TaskDefinition taskLoadCar;
-	private TaskDefinition taskInsertCar;
-	private TaskDefinition taskUpdateCar;
-	private TaskDefinition taskLoadCars;
-
 	private long initialDbCarSize = 0;
 
 	@Override
@@ -125,11 +120,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			}
 			transaction.commit();
 		}
-
-		taskLoadCar = registerTaskLoadCar();
-		taskInsertCar = registerTaskInsertCar();
-		taskUpdateCar = registerTaskUpdateCar();
-		taskLoadCars = registerTaskLoadCarList();
 	}
 
 	@Override
@@ -150,25 +140,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		callableStatement.executeUpdate();
 	}
 
-	private static TaskDefinition registerTaskInsertCar() {
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
-
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
-				.withEngine(TaskEngineProc.class)
-				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
-						//syntaxe HsqlDb pour sequence.nextval
-						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute("DTO_CAR", doCar, true)
-				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
-	}
-
 	@Test
 	public void testSelectCountCars() {
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_COUNT_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
 				.withOutAttribute("count", new Domain("DO_COUNT", DataType.Long), true)
@@ -184,7 +158,30 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static TaskDefinition registerTaskUpdateCar() {
+	protected final void nativeInsertCar(final Car car) {
+		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
+		//-----
+		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
+				.withEngine(TaskEngineProc.class)
+				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
+						//syntaxe HsqlDb pour sequence.nextval
+						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
+				.addInAttribute("DTO_CAR", doCar, true)
+				.build();
+
+		final Task task = new TaskBuilder(taskDefinition)
+				.addValue("DTO_CAR", car)
+				.build();
+		final TaskResult taskResult = taskManager
+				.execute(task);
+		nop(taskResult);
+	}
+
+	protected final void nativeUpdateCar(final Car car) {
+		Assertion.checkArgument(car.getId() != null, "L'id est null");
+		//-----
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
@@ -199,64 +196,28 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 						+ "PRICE = #DTO_CAR.PRICE#, "
 						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
 						+ "where CAR_ID = #DTO_CAR.ID#" + "")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("DTO_CAR", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
+		final Task task = new TaskBuilder(taskDefinition)
+				.addValue("DTO_CAR", car)
+				.build();
+		final TaskResult taskResult = taskManager.execute(task);
+		nop(taskResult);
 	}
 
-	private static TaskDefinition registerTaskLoadCar() {
+	protected final Car nativeLoadCar(final long carId) {
 		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR where ID = #ID#")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("ID", doId, true)
 				.withOutAttribute("dtc", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
-	}
-
-	private static TaskDefinition registerTaskLoadCarList() {
-		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
-
-		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
-				.withEngine(TaskEngineSelect.class)
-				.withRequest("select * from CAR")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute("dtc", doCarList, true)
-				.build();
-	}
-
-	protected final void nativeInsertCar(final Car car) {
-		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
-		//-----
-		final Task task = new TaskBuilder(taskInsertCar)
-				.addValue("DTO_CAR", car)
-				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		nop(taskResult);
-	}
-
-	protected final void nativeUpdateCar(final Car car) {
-		Assertion.checkArgument(car.getId() != null, "L'id est null");
-		//-----
-		final Task task = new TaskBuilder(taskUpdateCar)
-				.addValue("DTO_CAR", car)
-				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		nop(taskResult);
-
-	}
-
-	protected final Car nativeLoadCar(final long carId) {
-		final Task task = new TaskBuilder(taskLoadCar)
+		final Task task = new TaskBuilder(taskDefinition)
 				.addValue("CAR_ID", carId)
 				.build();
 		return taskManager
@@ -265,7 +226,15 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Task task = new TaskBuilder(taskLoadCars)
+		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
+
+		TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select * from CAR")
+				.withOutAttribute("dtc", doCarList, true)
+				.build();
+
+		final Task task = new TaskBuilder(taskDefinition)
 				.build();
 		return taskManager
 				.execute(task)
@@ -372,10 +341,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateFile() throws Exception {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final VFile vFile;
 			//1.Création du fichier depuis un fichier texte du FS
 
-			vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
+			final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
 			//2. Sauvegarde en BDD
 			final FileInfo fileInfo = new FileInfoStd(vFile);
 			storeManager.getFileStore().create(fileInfo);
