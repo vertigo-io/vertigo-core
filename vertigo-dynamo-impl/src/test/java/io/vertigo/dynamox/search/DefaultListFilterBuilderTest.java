@@ -246,6 +246,7 @@ public class DefaultListFilterBuilderTest {
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(+12 +13) +ALL:(Test test2)" }, //4
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
+				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //7
 
 		};
 		testObjectFixedQuery(testQueries);
