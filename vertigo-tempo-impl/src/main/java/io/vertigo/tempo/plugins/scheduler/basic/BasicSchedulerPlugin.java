@@ -53,11 +53,6 @@ import org.apache.log4j.Logger;
  * Stratégie implémentée bloque l'exécution en parallèle de deux jobs de même nom
  * (attention de ne pas multiplier à l'infini les noms de job et donc les threads).
  *
- * Sinon pour avoir des jobs synchronisés dans une ferme ou un cluster de serveurs, il vous est
- * possible d'utiliser MultiJVMJobManager qui utiliser Quartz d'Open Symphony
- * ou d'implémenter un JobManager héritant de ce JobManager et conditionnant l'exécution d'un job
- * dans doExecute à partir d'une synchronisation en base de données.
- *
  * Lorsque close() est appelé sur ce jobManager (undeploy de la webapp), les jobs
  * éventuellement en cours peuvent tester régulièrement Thread.currentThread().isInterrupted() pour
  * savoir s'il est préférable de s'arrêter promptement sans attendre la fin du job.
@@ -114,6 +109,10 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		// (ainsi pas de rafales si une lenteur momentanée survient)
 		timerPool.getTimer(jobDefinition.getName()).schedule(task, startDelay * 1000L, periodInSecond * 1000L);
 		getLogger(jobDefinition.getName()).info("Job " + jobDefinition.getName() + " programmé toutes les " + periodInSecond + " s");
+
+		//TODO : bug détecté sur u projet : La task s'arrête et n'est plus relancée :
+		//- soit exception dans le run ? normalement protégé par le catch (Throwable)
+		//- soit task plantée au milieu ? ajouter une notion de TimeOut, et une supervision des excutions, pas forcément de correction mais au moins une alerte
 	}
 
 	/** {@inheritDoc} */
