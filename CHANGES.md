@@ -7,7 +7,7 @@ Running 0.8.3-SNAPSHOT
 more to come :)
 
 
-Release 0.8.2 - 2015/09/08
+Release 0.8.2 - 2015/09/09
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-081-to-082)
 * [All] Lots of code cleaning and refactoring
@@ -15,46 +15,47 @@ Release 0.8.2 - 2015/09/08
 * [All] Refactored enties and dsl
 * [All] Refactor java.lang.Timer to DeamonManager
 * [All] Added Features to make AppConfig simpler
-* [Studio] Removed Constants to generate a pretty code
-* [Dynamo] Added support of multiple values criteria into DefaultListFilterBuilder
-* [Vega] Fixed swagger for some path
-* [Dynamo] Assertion to avoid multi TaskEngine invocation
-* [Studio] Task has 0 or 1 result	
-* [Core] Added Iterable on option ???? why ????
-* [Quarto] Error msg clearer
+* [Core] Added putNullable on MapBuilder
+* [Core] Param was nullable in builder and checked when injected
 * [Core] Removed injection JSR250 support. Use Activeable interface exclusively
+* [Core] Added check id type of URI (no more String into numeric PK)
+* [Core] Renamed Home into App in tests
+* [Commons] Plugged Analytics on WebService, Task, Job and Search
+* [Commons] Replaced LocalEventsPlugin by a simple processor
+* [Commons] Added DaemonManager for managed daemon task
+* [Dynamo] Removed inout params (now, a param is 'in' xor 'out')
+* [Dynamo] Added support of multiple values criteria into DefaultListFilterBuilder
+* [Dynamo] Assertion to avoid multi TaskEngine invocation
 * [Dynamo] Merged jpa into HibernateConnectionProviderPlugin
 * [Dynamo] changed FileStore's api to obtain the same api than dataStore
 * [Dynamo] Kvdatastore Berkeley can manage Set as HashSet
+* [Dynamo] Splitted SearchLoader SQL logic and chunk logic
+* [Dynamo] Renamed Broker to DataStore
+* [Dynamo] Added DtObjectUtil.createUri by class and id
+* [Dynamo] Fixed search reindex count
+* [Studio] Removed Constants to generate a pretty code
+* [Studio] Task has 0 or 1 result	
+* [Studio] Fixed if report file already exist
+* [Quarto] Error msg clearer
+* [Struts2] Fixed stacking previous state of layout in tags (allow div tree, use it carefully :))
+* [Persona] Added custom attributes on UserSession to register data from addons
+* [Tempo] Added more tests
+* [Tempo] Added log for error
+* [Vega] Fixed swagger for some path
 * [Vega] Renamed ApplicationServletContextListener to AppServletContextListener, and removed Abstract parent
 * [Vega] Renamed ServletListener to AppServletListener 
 * [Vega] Renamed HomeServletStarter to AppServletStarter 
 * [Vega] Renamed all RestXXX into WebServiceXXX
 * [Vega] Renamed all WebServices related objects with WebService prefix
-* [Dynamo] Splitted SearchLoader SQL logic and chunk logic
 * [Vega] No more override httpStatusCode if already set by WebService impl
 * [Vega] Refactored RoutesRegisterPlugin to WebServerPlugin
-* [Commons] Replaced LocalEventsPlugin by a simple processor
 * [Vega] Refactored JsonConverterHandler, extract ServerState behaviour in a new optional plugin
 * [Vega] Renamed DtObjectExtended to a more generic ExtendedObject
 * [Vega] Added option support in WS params
 * [Vega] Added support to HTTP NotModified 304 response 
-* [Dynamo] Renamed Broker to DataStore
 * [Vega] Renamed DefaultJsonReader to RequestJsonReader
 * [Vega] Added URI json serialization
-* [Core] Added check id type of URI (no more String into numeric PK)
-* [Core] Renamed Home into App in tests
-* [Commons] Added DaemonManager for managed daemon task
-* [Core] Added putNullable on MapBuilder
-* [Core] Param was nullable in builder and checked when injected
-* [Struts2] Fixed stacking previous state of layout in tags (allow div tree, use it carefully :))
-* [Persona] Added custom attributes on UserSession to register data from addons
 * [Vega] Added PATCH verb
-* [Dynamo] Added DtObjectUtil.createUri by class and id
-* [Dynamo] Fixed search reindex count
-* [Tempo] Added more tests
-* [Tempo] Added log for error
-* [Studio] Fixed if report file already exist
 
 
 Release 0.8.1 - 2015/07/31
