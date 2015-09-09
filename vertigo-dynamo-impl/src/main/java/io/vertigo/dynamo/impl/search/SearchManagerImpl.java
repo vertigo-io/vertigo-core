@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -55,7 +56,9 @@ import javax.inject.Inject;
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
+	private static final String ANALYTICS_TYPE = "Search";
 	private final VTransactionManager transactionManager;
+	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
@@ -68,10 +71,11 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		Assertion.checkNotNull(eventsManager);
 		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 
@@ -82,6 +86,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		this.transactionManager = transactionManager;
+		this.analyticsManager = analyticsManager;
 	}
 
 	@Override
@@ -99,37 +104,71 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		searchServicesPlugin.putAll(indexDefinition, indexCollection);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
+		try {
+			searchServicesPlugin.putAll(indexDefinition, indexCollection);
+			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", indexCollection.size());
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		searchServicesPlugin.put(indexDefinition, index);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
+		try {
+			searchServicesPlugin.put(indexDefinition, index);
+			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", 1);
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		return searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/LOAD");
+		try {
+			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
+			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", result.getCount());
+			return result;
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		return searchServicesPlugin.count(indexDefinition);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/COUNT");
+		try {
+			return searchServicesPlugin.count(indexDefinition);
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		searchServicesPlugin.remove(indexDefinition, uri);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
+		try {
+			searchServicesPlugin.remove(indexDefinition, uri);
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		searchServicesPlugin.remove(indexDefinition, listFilter);
+		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
+		try {
+			searchServicesPlugin.remove(indexDefinition, listFilter);
+		} finally {
+			analyticsManager.getAgent().stopProcess();
+		}
 	}
 
 	/** {@inheritDoc} */

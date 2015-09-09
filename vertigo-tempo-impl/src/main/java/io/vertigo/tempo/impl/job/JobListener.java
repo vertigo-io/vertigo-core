@@ -36,9 +36,9 @@ final class JobListener {
 	private static final String PROCESS_TYPE = "JOB";
 
 	/** Mesures des exceptions utilisateur. */
-	private static final String JOB_USER_EXCEPTION_COUNT = "JOB_USER_EXCEPTION_COUNT";
+	private static final String ME_USER_ERROR_PCT = "ME_USER_ERROR_PCT";
 	/** Mesures des exceptions system. */
-	private static final String JOB_SYSTEM_EXCEPTION_COUNT = "JOB_SYSTEM_EXCEPTION_COUNT";
+	private static final String ME_ERROR_PCT = "ME_ERROR_PCT";
 
 	private final AnalyticsManager analyticsManager;
 
@@ -54,6 +54,8 @@ final class JobListener {
 
 	void onStart(final JobDefinition jobDefinition) {
 		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
+		analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 0d);
+		analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 0d);
 		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 	}
 
@@ -69,10 +71,11 @@ final class JobListener {
 		getLogger(jobDefinition.getName()).warn(throwable.toString(), throwable);
 
 		if (isUserException(throwable)) {
-			analyticsManager.getAgent().setMeasure(JOB_USER_EXCEPTION_COUNT, 100);
+			analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 100d);
 		} else {
-			analyticsManager.getAgent().setMeasure(JOB_SYSTEM_EXCEPTION_COUNT, 100);
-		} //
+			analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 100d);
+		}
+		analyticsManager.getAgent().addMetaData("ME_ERROR_HEADER", String.valueOf(throwable));
 	}
 
 	private static boolean isUserException(final Throwable t) {

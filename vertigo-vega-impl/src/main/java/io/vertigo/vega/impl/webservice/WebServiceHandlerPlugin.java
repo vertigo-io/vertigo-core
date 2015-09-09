@@ -44,12 +44,12 @@ public interface WebServiceHandlerPlugin extends Plugin {
 	 *
 	 * @param request spark.Request
 	 * @param response spark.Response
-	 * @param routeContext Context of this request
+	 * @param webServiceCallContext Context of this request
 	 * @param chain current HandlerChain.
 	 * @return Response body
 	 * @throws SessionException Session expired exception
 	 * @throws VSecurityException Security exception
 	 */
-	Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
+	Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException, VSecurityException;
 
 }
