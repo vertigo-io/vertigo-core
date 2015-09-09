@@ -15,7 +15,7 @@ Release 0.8.2 - 2015/09/08
 * [All] Refactored enties and dsl
 * [All] Refactor java.lang.Timer to DeamonManager
 * [All] Added Features to make AppConfig simpler
-* [studio] Removed Constants to generate a pretty code
+* [Studio] Removed Constants to generate a pretty code
 * [Dynamo] Added support of multiple values criteria into DefaultListFilterBuilder
 * [Vega] Fixed swagger for some path
 * [Dynamo] Assertion to avoid multi TaskEngine invocation
