@@ -22,8 +22,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -51,16 +49,12 @@ import io.vertigo.dynamock.fileinfo.FileInfoStd;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 import java.io.OutputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -94,19 +88,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
-			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
+			final List<String> requests = new ListBuilder<String>()
+					.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
+					.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
+					.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
+					.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
+					.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
+					.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
+					.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+					.build();
 
-			execCallableStatement(connection, "create table fam_car_location(fam_id BIGINT , ID BIGINT);");
-
-			execCallableStatement(connection, "create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
-			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
-			//execPreparedStatement(connection, "SELECT * FROM   INFORMATION_SCHEMA.SYSTEM_SESSIONS;");
-			//execPreparedStatement(connection, "call next value for SEQ_CAR;");
-
-			execCallableStatement(connection, "create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
-			execCallableStatement(connection, "create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
+			for (String request : requests) {
+				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
+						.withEngine(TaskEngineProc.class)
+						.withRequest(request)
+						.build();
+				final Task task = new TaskBuilder(taskDefinition).build();
+				taskManager.execute(task);
+			}
 			transaction.commit();
 		}
 
@@ -126,18 +125,17 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected void doTearDown() throws Exception {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_SHUT_DOWN")
+						.withEngine(TaskEngineProc.class)
+						.withRequest("shutdown;")
+						.build();
+				final Task task = new TaskBuilder(taskDefinition).build();
+				taskManager.execute(task);
+
 				//A chaque fin de test on arréte la base.
-				final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-				execCallableStatement(connection, "shutdown;");
 				transaction.commit();
 			}
 		}
-	}
-
-	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
-		callableStatement.init();
-		callableStatement.executeUpdate();
 	}
 
 	@Test
@@ -202,7 +200,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue("DTO_CAR", car)
 				.build();
-		final TaskResult taskResult = taskManager.execute(task);
+		final TaskResult taskResult = taskManager
+				.execute(task);
 		nop(taskResult);
 	}
 
@@ -240,46 +239,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.execute(task)
 				.getResult();
 	}
-
-	protected final List<Map<String, String>> execPreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
-
-		final PreparedStatement preparedStatement = connection.getJdbcConnection().prepareStatement(sql);
-		final List<Map<String, String>> result = new ArrayList<>();
-
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		final ResultSetMetaData rsmd = resultSet.getMetaData();
-		final int columnCount = rsmd.getColumnCount();
-		String sep = "";
-		for (int i = 0; i < columnCount; i++) {
-			System.out.print(sep);
-			System.out.print(rsmd.getColumnName(i + 1));
-			sep = " | ";
-		}
-		System.out.print("\n");
-		while (resultSet.next()) {
-			sep = "";
-			for (int i = 0; i < columnCount; i++) {
-				System.out.print(sep);
-				System.out.print(resultSet.getString(i + 1));
-				sep = " | ";
-			}
-			System.out.print("\n");
-		}
-		return result;
-	}
-
-	//		//BIGINT > LONG
-	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table famille(ID BIGINT, LIBELLE varchar(255), PRIMARY KEY (ID))");
-	//	// TODO private
-	//	protected void createHsqlTablesFileInfo() throws SQLException {
-	//		statement.execute("drop table VX_FILE_INFO if exists");
-	//		statement.execute("drop sequence SEQ_VX_FILE_INFO if exists");
-	//		statement.execute("create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
-	//		//BIGINT > LONG
-	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table VX_FILE_INFO(FIL_ID BIGINT, " + "FILE_NAME varchar(50), " + "MIME_TYPE varchar(50), "
-	//				+ "LENGTH BIGINT, " + "LAST_MODIFIED date, " + "FILE_DATA LONGVARBINARY, " + "PRIMARY KEY (FIL_ID))");
-	//
-	//	}
 
 	/**
 	 * On vérifie que la liste est vide.
@@ -771,15 +730,4 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");
 		return car;
 	}
-	//
-	//	public void createSequence Datas() throws Exception {
-	//		final KConnection connection = dataBaseManager.getConnectionProviderPlugin().obtainConnection();
-	//		try {
-	//			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
-	//			execCallableStatement(connection, "insert into famille values (SEQ_FAMILLE.nextval, 'Aizoaceae')");
-	//			execCallableStatement(connection, "insert into famille values (SEQ_FAMILLE.nextval, 'Balsaminaceae')");
-	//		} finally {
-	//			connection.commit();
-	//		}
-	//	}
 }

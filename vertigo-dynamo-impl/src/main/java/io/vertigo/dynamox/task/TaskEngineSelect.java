@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * Paramètres d'entrée : n String, Date, Boolean, Double, Integer ou DTO, DTC<br>
  * Paramètres de sorties : 1 DTO <u>ou</u> DTC <u>
  * <br>
- * Dans le cas d'un DtObject en sortie, la requête SQL doit ramenée un et un seul
+ * Dans le cas d'un DtObject en sortie, la requête SQL doit ramener un et un seul
  * enregistrement. Dans le cas contraire, la méthode execute() de la classe service
  * remontera un SQLException().<br>
  * <br>
