@@ -18,17 +18,29 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+
 import spark.servlet.SparkApplication;
+import spark.servlet.SparkFilter;
 
 /**
- * SparkApplication for SparkFilter.
+ * SparkApplication for SparkFilter (mandatory).
  * @author npiedeloup
  */
-public final class VegaSparkApplication implements SparkApplication {
+public final class VegaSparkFilter extends SparkFilter {
 
 	/** {@inheritDoc} */
 	@Override
-	public void init() {
-		//nothing
+	protected SparkApplication getApplication(final FilterConfig filterConfig) throws ServletException {
+		return new SparkApplication() {
+
+			/** {@inheritDoc} */
+			@Override
+			public void init() {
+				// nothing
+			}
+
+		};
 	}
 }

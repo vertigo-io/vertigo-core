@@ -18,12 +18,23 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import javax.inject.Inject;
+
+import spark.Access;
+
 /**
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
 public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
 
-	//nothing
+	/**
+	 * Constructor.
+	 */
+	@Inject
+	public SparkJavaServletFilterWebServerPlugin() {
+		Access.runFromServlet();
+		//must start initialize JavaSpark before registering route, if not Spark will start a standalone Jetty server
+	}
 
 }
