@@ -25,7 +25,7 @@ import spark.servlet.SparkApplication;
 import spark.servlet.SparkFilter;
 
 /**
- * SparkApplication for SparkFilter (mandatory).
+ * VegaSparkFilter for SparkFilter (mandatory).
  * @author npiedeloup
  */
 public final class VegaSparkFilter extends SparkFilter {
