@@ -7,9 +7,10 @@ Running 0.8.3-SNAPSHOT
 more to come :)
 
 
-Release 0.8.2 - 2015/09/09
+Release 0.8.2 - 2015/09/10
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-081-to-082)
+__In Bold__ : Potential compatibility problems 
 * [All] Lots of code cleaning and refactoring
 * [All] Changed private methods that can be static to static
 * [All] Refactored enties and dsl
@@ -23,14 +24,15 @@ Release 0.8.2 - 2015/09/09
 * [Commons] Plugged Analytics on WebService, Task, Job and Search
 * [Commons] Replaced LocalEventsPlugin by a simple processor
 * [Commons] Added DaemonManager for managed daemon task
-* [Dynamo] Removed inout params (now, a param is 'in' xor 'out')
+* __[Dynamo] Added AnalyticsManager when using SearchManager__
+* __[Dynamo] Removed inout params (now, a param is 'in' xor 'out')__
 * [Dynamo] Added support of multiple values criteria into DefaultListFilterBuilder
 * [Dynamo] Assertion to avoid multi TaskEngine invocation
 * [Dynamo] Merged jpa into HibernateConnectionProviderPlugin
 * [Dynamo] changed FileStore's api to obtain the same api than dataStore
 * [Dynamo] Kvdatastore Berkeley can manage Set as HashSet
 * [Dynamo] Splitted SearchLoader SQL logic and chunk logic
-* [Dynamo] Renamed Broker to DataStore
+* __[Dynamo] Renamed Broker to DataStore__
 * [Dynamo] Added DtObjectUtil.createUri by class and id
 * [Dynamo] Fixed search reindex count
 * [Studio] Removed Constants to generate a pretty code
@@ -41,15 +43,16 @@ Release 0.8.2 - 2015/09/09
 * [Persona] Added custom attributes on UserSession to register data from addons
 * [Tempo] Added more tests
 * [Tempo] Added log for error
+* __[Vega] Replaced SparkApplication by simpler VegaSparkFilter__ 
 * [Vega] Fixed swagger for some path
-* [Vega] Renamed ApplicationServletContextListener to AppServletContextListener, and removed Abstract parent
-* [Vega] Renamed ServletListener to AppServletListener 
+* __[Vega] Renamed ApplicationServletContextListener to AppServletContextListener__, and removed Abstract parent
+* __[Vega] Renamed ServletListener to AppServletListener__ 
 * [Vega] Renamed HomeServletStarter to AppServletStarter 
-* [Vega] Renamed all RestXXX into WebServiceXXX
-* [Vega] Renamed all WebServices related objects with WebService prefix
+* __[Vega] Renamed all RestXXX into WebServiceXXX__
+* __[Vega] Renamed all WebServices related objects with WebService prefix__
 * [Vega] No more override httpStatusCode if already set by WebService impl
 * [Vega] Refactored RoutesRegisterPlugin to WebServerPlugin
-* [Vega] Refactored JsonConverterHandler, extract ServerState behaviour in a new optional plugin
+* [Vega] Refactored JsonConverterHandler, __extract ServerState behaviour in a new optional plugin__
 * [Vega] Renamed DtObjectExtended to a more generic ExtendedObject
 * [Vega] Added option support in WS params
 * [Vega] Added support to HTTP NotModified 304 response 
