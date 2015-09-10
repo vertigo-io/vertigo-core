@@ -14,6 +14,7 @@
 		</component>
 	</boot>	
 	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 	</module>
 	
