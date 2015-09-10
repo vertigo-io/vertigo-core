@@ -19,12 +19,14 @@
 package io.vertigo.dynamox.task.sqlserver;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 
 import java.sql.SQLException;
@@ -44,8 +46,8 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineInsertWithGeneratedKeys(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineInsertWithGeneratedKeys(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
@@ -57,7 +59,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 	/** {@inheritDoc} */
 	@Override
 	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 
 		// gestion de generatedKey

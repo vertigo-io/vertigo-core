@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega;
 
-import io.vertigo.vega.rest.RestManagerTest;
+import io.vertigo.vega.webservice.WebServiceManagerTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ RestManagerTest.class })
+@SuiteClasses({ WebServiceManagerTest.class })
 public final class VegaTestSuite {
 	//
 }

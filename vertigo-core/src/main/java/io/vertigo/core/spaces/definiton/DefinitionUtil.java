@@ -40,12 +40,27 @@ public final class DefinitionUtil {
 		return prefix.value();
 	}
 
-	public static String getLocalName(final String name, final Class<? extends Definition> definitionClass) {
+	public static String getLocalName(final String definitionName, final Class<? extends Definition> definitionClass) {
+		Assertion.checkArgNotEmpty(definitionName);
+		Assertion.checkNotNull(definitionClass);
+		//-----
 		//On enléve le prefix et le separateur.
 		//On vérifie aussi que le prefix est OK
 		final String prefix = getPrefix(definitionClass);
-		Assertion.checkArgument(name.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", name, prefix);
-		Assertion.checkArgument(name.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", name);
-		return name.substring(prefix.length() + 1);
+		Assertion.checkArgument(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
+		Assertion.checkArgument(definitionName.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", definitionName);
+		return definitionName.substring(prefix.length() + 1);
 	}
+
+	public static void checkName(final String definitionName, final Class<? extends Definition> definitionClass) {
+		Assertion.checkArgNotEmpty(definitionName);
+		Assertion.checkNotNull(definitionClass);
+		//-----
+		final String prefix = DefinitionUtil.getPrefix(definitionClass);
+		Assertion.checkArgument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix);
+		Assertion.checkArgument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné");
+		Assertion.checkArgument(definitionName.toUpperCase().equals(definitionName), "La définition {0} doit être en majuscules", definitionName);
+		Assertion.checkArgument(Definition.REGEX_DEFINITION_URN.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_URN);
+	}
+
 }

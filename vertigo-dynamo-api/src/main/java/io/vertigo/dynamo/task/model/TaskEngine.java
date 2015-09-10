@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class TaskEngine {
 	private Task input;
-	private TaskResultBuilder output;
+	private Object result = Void.TYPE;
 
 	/**
 	 * Réalise l'exécution d'une tache.
@@ -54,10 +54,8 @@ public abstract class TaskEngine {
 		Assertion.checkNotNull(task);
 		//-----
 		input = task;
-		output = new TaskResultBuilder(task.getDefinition());
-		// les implémentations de TaskEngine utilisent setValue qui remplit le result (ouput).
 		execute();
-		return output.build();
+		return new TaskResult(task.getDefinition(), result == Void.TYPE ? null : result);
 	}
 
 	/**
@@ -79,8 +77,11 @@ public abstract class TaskEngine {
 	 * @param attributeName Nom du paramètre
 	 * @param o Valeur
 	 */
-	protected final void setValue(final String attributeName, final Object o) {
-		output.addValue(attributeName, o);
+	protected final void setResult(final Object o) {
+		Assertion.checkArgument(o != Void.TYPE, "you can't  invoke setResult with Void, use null instead");
+		Assertion.checkState(result == Void.TYPE, "you can't  invoke setResult more than one time");
+		//-----
+		result = o;
 	}
 
 	/**

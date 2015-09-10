@@ -126,7 +126,7 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 		return new SearchChunkImpl<>(uris);
 	}
 
-	private boolean hasNextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
+	private static boolean hasNextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
 		//il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
 		return previousChunck == null || !previousChunck.getAllURIs().isEmpty();
 	}

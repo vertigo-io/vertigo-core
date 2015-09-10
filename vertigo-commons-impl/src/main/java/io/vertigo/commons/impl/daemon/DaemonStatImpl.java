@@ -1,6 +1,24 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.commons.impl.daemon;
 
-import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
@@ -10,7 +28,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DaemonStatImpl implements DaemonStat {
-	private final DaemonDefinition daemonDefinition;
+	private final DaemonInfo daemonInfo;
 	private final DaemonStat.Status status;
 	private final long sucesses;
 	private final long failures;
@@ -18,17 +36,17 @@ public final class DaemonStatImpl implements DaemonStat {
 
 	/**
 	 * Constructor.
-	 * @param daemonDefinition Deamon definition
+	 * @param daemonInfo Daemon's info
 	 * @param successes Nb success
 	 * @param failures Nb failure
 	 * @param status Current status
 	 * @param lastExecSuccess if last exec was a success
 	 */
-	public DaemonStatImpl(final DaemonDefinition daemonDefinition, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
-		Assertion.checkNotNull(daemonDefinition);
+	DaemonStatImpl(final DaemonInfo daemonInfo, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
+		Assertion.checkNotNull(daemonInfo);
 		Assertion.checkNotNull(status);
 		//-----
-		this.daemonDefinition = daemonDefinition;
+		this.daemonInfo = daemonInfo;
 		this.failures = failures;
 		sucesses = successes;
 		this.status = status;
@@ -37,8 +55,20 @@ public final class DaemonStatImpl implements DaemonStat {
 
 	/** {@inheritDoc} */
 	@Override
-	public DaemonDefinition getDaemonDefinition() {
-		return daemonDefinition;
+	public String getDaemonName() {
+		return daemonInfo.getName();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Class<? extends Daemon> getDaemonClass() {
+		return daemonInfo.getDaemonClass();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int getDaemonPeriodInSecond() {
+		return daemonInfo.getPeriodInSeconds();
 	}
 
 	/** {@inheritDoc} */
@@ -70,4 +100,5 @@ public final class DaemonStatImpl implements DaemonStat {
 	public Status getStatus() {
 		return status;
 	}
+
 }

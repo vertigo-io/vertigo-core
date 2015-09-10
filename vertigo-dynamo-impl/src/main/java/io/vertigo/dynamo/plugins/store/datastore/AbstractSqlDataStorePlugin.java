@@ -45,7 +45,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -111,6 +110,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getLocalName();
 	}
 
+	protected final TaskManager getTaskManager() {
+		return taskManager;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public final <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
@@ -129,15 +132,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
-				.addOutAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
+				.withOutAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(pkFieldName, uri.getId())
 				.build();
-		final TaskResult taskResult = process(task);
 
-		return taskResult.<D> getValue("dto");
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	/** {@inheritDoc} */
@@ -176,7 +180,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
 				.addInAttribute(fkFieldName, fkField.getDomain(), true)
-				.addOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final URI uri = dtcUri.getSource();
@@ -184,13 +188,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(fkFieldName, uri.getId())
 				.build();
-		final TaskResult taskResult = process(task);
-
-		return getDtList(taskResult);
-	}
-
-	private static <D extends DtObject> DtList<D> getDtList(final TaskResult taskResult) {
-		return taskResult.getValue("dtc");
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	/** {@inheritDoc} */
@@ -250,7 +250,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.addOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
@@ -260,18 +260,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		for (final Map.Entry<String, String> prefixEntry : filterCriteria.getPrefixMap().entrySet()) {
 			taskBuilder.addValue(prefixEntry.getKey(), prefixEntry.getValue());
 		}
-		final TaskResult taskResult = process(taskBuilder.build());
 
-		return getDtList(taskResult);
-	}
-
-	/**
-	 * Exécution d'une tache de façon synchrone.
-	 * @param task Tache à executer.
-	 * @return TaskResult de la tache
-	 */
-	protected final TaskResult process(final Task task) {
-		return taskManager.execute(task);
+		return taskManager
+				.execute(taskBuilder.build())
+				.getResult();
 	}
 
 	private <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
@@ -331,7 +323,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			final int indexOfList = result.indexOf("_LIST_");
 			result = result.substring(0, indexOfList + "_LIST_".length()) + result.substring(indexOfList + "_LIST_".length() + result.length() - 40);
 		}
-
 		return result;
 	}
 
@@ -443,7 +434,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
 				.withRequest(request)
 				.addInAttribute("DTO", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class), true)
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
 				.build();
 
 		/*
@@ -453,9 +444,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.addValue("DTO", dto)
 				.build();
 
-		final TaskResult taskResult = process(task);
+		final int sqlRowCount = taskManager
+				.execute(task)
+				.getResult();
 
-		final int sqlRowCount = getSqlRowCount(taskResult);
 		if (sqlRowCount > 1) {
 			throw new RuntimeException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée");
 		}
@@ -485,26 +477,23 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request.toString())
-				.addInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(pkFieldName, uri.getId())
 				.build();
 
-		final TaskResult taskResult = process(task);
+		final int sqlRowCount = taskManager
+				.execute(task)
+				.getResult();
 
-		final int sqlRowCount = getSqlRowCount(taskResult);
 		if (sqlRowCount > 1) {
 			throw new RuntimeException("Plus de 1 ligne a été supprimée");
 		} else if (sqlRowCount == 0) {
 			throw new RuntimeException("Aucune ligne supprimée");
 		}
-	}
-
-	private static int getSqlRowCount(final TaskResult taskResult) {
-		return taskResult.<Integer> getValue(AbstractTaskEngineSQL.SQL_ROWCOUNT).intValue();
 	}
 
 	/** {@inheritDoc} */
@@ -523,13 +512,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.addOutAttribute("dto", countDomain, true)//OUT, obligatoire
+				.withOutAttribute("dto", countDomain, true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.build();
-		final TaskResult taskResult = process(task);
-		final DtObject dto = taskResult.getValue("dto");
+
+		final DtObject dto = taskManager
+				.execute(task)
+				.getResult();
+
 		return (Integer) DtObjectUtil.findDtDefinition(dto).getField("COUNT").getDataAccessor().getValue(dto);
 	}
 
@@ -549,14 +541,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.addInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
-				.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(pkFieldName, uri.getId())
 				.build();
 
-		process(task);
+		taskManager.execute(task);
 	}
 }

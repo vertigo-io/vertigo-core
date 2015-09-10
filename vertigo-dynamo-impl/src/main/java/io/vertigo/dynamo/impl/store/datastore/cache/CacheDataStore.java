@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.store.datastore.BrokerConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
@@ -45,18 +45,18 @@ public final class CacheDataStore {
 
 	/**
 	 * Constructeur.
-	 * @param brokerConfig Configuration
+	 * @param dataStoreConfig Configuration
 	 */
-	public CacheDataStore(final BrokerConfigImpl brokerConfig) {
-		Assertion.checkNotNull(brokerConfig);
+	public CacheDataStore(final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(dataStoreConfig);
 		//-----
-		storeManager = brokerConfig.getStoreManager();
-		cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
-		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
+		storeManager = dataStoreConfig.getStoreManager();
+		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
+		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
+		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {

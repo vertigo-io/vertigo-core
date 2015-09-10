@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.8.2-SNAPSHOT</version>
+		<version>0.8.3-SNAPSHOT</version>
 		<relativePath>../vertigo-parent</relativePath>
 	</parent>
 
@@ -92,7 +92,7 @@
 			
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler -->
+			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsWebServiceHandler -->
 			<version>${project.version}</version>	
 		</dependency>
 		

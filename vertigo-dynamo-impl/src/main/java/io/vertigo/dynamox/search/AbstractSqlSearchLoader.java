@@ -1,0 +1,145 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.dynamox.search;
+
+import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
+import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+/**
+ * Default SearchLoader for Database datasource.
+ * @author npiedeloup
+ * @param <P> Primary key type
+ * @param <S> KeyConcept type
+ * @param <I> Index type
+ */
+public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
+
+	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
+	private static final char SEPARATOR = Definition.SEPARATOR;
+	private static final int SEARCH_CHUNK_SIZE = 500;
+	private final TaskManager taskManager;
+
+	/**
+	 * Constructor.
+	 * @param taskManager Task manager
+	 */
+	@Inject
+	public AbstractSqlSearchLoader(final TaskManager taskManager) {
+		Assertion.checkNotNull(taskManager);
+		// -----
+		this.taskManager = taskManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
+		final String tableName = getTableName(dtDefinition);
+		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
+		final DtField pk = dtDefinition.getIdField().get();
+		final String pkFieldName = pk.getName();
+		final String request = getNextIdsSqlQuery(tableName, pkFieldName);
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(request)
+				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
+				.build();
+
+		final Task task = new TaskBuilder(taskDefinition)
+				.addValue(pkFieldName, lastId)
+				.build();
+
+		final DtList<S> resultDtc = taskManager
+				.execute(task)
+				.getResult();
+
+		final List<URI<S>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+		for (final S dto : resultDtc) {
+			uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+		}
+		return uris;
+	}
+
+	/**
+	 * Create a SQL query to get next chunk's ids next in table from previous chunk
+	 * @param tableName Table name to use
+	 * @param pkFieldName Pk field name
+	 * @return SQL query
+	 */
+	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
+		final StringBuilder request = new StringBuilder()
+				.append(" select " + pkFieldName + " from ")
+				.append(tableName)
+				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
+		final String sqlQueryFilter = getSqlQueryFilter();
+		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
+		if (!sqlQueryFilter.isEmpty()) {
+			request.append("and (").append(sqlQueryFilter).append(")");
+		}
+		request.append(" order by " + pkFieldName + " ASC")
+				.append(" limit " + SEARCH_CHUNK_SIZE); //Attention : non compatible avec toutes les bases
+		return request.toString();
+	}
+
+	/**
+	 * @return Specific SqlQuery filter
+	 */
+	protected String getSqlQueryFilter() {
+		//nothing, but overrideable
+		return "";
+	}
+
+	protected final TaskManager getTaskManager() {
+		return taskManager;
+	}
+
+	/**
+	 * Nom de la table en fonction de la définition du DT mappé.
+	 *
+	 * @param dtDefinition Définition du DT mappé
+	 * @return Nom de la table
+	 */
+	protected static final String getTableName(final DtDefinition dtDefinition) {
+		return dtDefinition.getLocalName();
+	}
+
+}

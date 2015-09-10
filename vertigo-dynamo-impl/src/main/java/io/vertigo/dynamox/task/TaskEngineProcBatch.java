@@ -22,12 +22,14 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
@@ -44,8 +46,8 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineProcBatch(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
@@ -55,7 +57,7 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
 		for (int i = 0; i < batchSize; i++) {
-			setBatchParameters(statement, i);
+			setBatchInParameters(statement, i);
 			statement.addBatch();
 		}
 
@@ -70,27 +72,20 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	 * @param rowNumber ligne de DTC à prendre en compte
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	private void setBatchParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
+	private void setBatchInParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : getParams()) {
-			switch (param.getType()) {
-				case IN:
-				case INOUT:
-					setParameter(statement, param, rowNumber);
-					break;
-				case OUT:
-				default:
-					// On ne fait rien
-					break;
+			if (param.isIn()) {
+				setInParameter(statement, param, rowNumber);
 			}
 		}
 	}
 
 	private int getBatchSize() {
 		Integer batchSize = null;
-		for (final TaskAttribute attribute : getTaskDefinition().getAttributes()) {
-			if (attribute.isIn() && attribute.getDomain().getDataType() == DataType.DtList) {
+		for (final TaskAttribute attribute : getTaskDefinition().getInAttributes()) {
+			if (attribute.getDomain().getDataType() == DataType.DtList) {
 				Assertion.checkState(batchSize == null, "Pour un traitement Batch, il ne doit y avoir qu'une seule liste en entrée.");
 				final DtList<?> dtc = getValue(attribute.getName());
 				batchSize = dtc.size();

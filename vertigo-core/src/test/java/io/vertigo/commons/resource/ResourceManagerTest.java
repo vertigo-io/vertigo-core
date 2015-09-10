@@ -43,10 +43,9 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginModule("spaces").
-				beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-				.endComponent()
+			.beginModule("spaces")
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
 			.endModule()
 			.build();
 		// @formatter:on
@@ -69,24 +68,4 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 		final URL url = resourceManager.resolve(expected);
 		Assert.assertTrue(url.getPath().indexOf(expected) != -1);
 	}
-	//
-	//	@Test
-	//	public void subTypeOfClassSelector() {
-	//		final Set<Class<? extends I2>> subTypes = resourceManager.getClassSelector().getSubTypesOf(TestModel.I2.class);
-	//		Assert.assertEquals(4, subTypes.size());
-	//		Assert.assertTrue(subTypes.contains(TestModel.C1.class));
-	//		Assert.assertTrue(subTypes.contains(TestModel.C2.class));
-	//		Assert.assertTrue(subTypes.contains(TestModel.C3.class));
-	//		Assert.assertTrue(subTypes.contains(TestModel.C5.class));
-	//	}
-	//
-	//	@Test
-	//	public void SubTypeOfClassSelector() {
-	//		final Set<Class<?>> subTypes = resourceManager.getClassSelector().getTypesAnnotatedWith(TestModel.AC2.class);
-	//		Assert.assertEquals(3, subTypes.size());
-	//		Assert.assertTrue(subTypes.contains(TestModel.C2.class));
-	//		Assert.assertTrue(subTypes.contains(TestModel.C3.class));
-	//		Assert.assertTrue(subTypes.contains(TestModel.I3.class));
-	//	}
-
 }

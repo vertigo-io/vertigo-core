@@ -12,14 +12,12 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
 
 /**
  * PAO : Accès aux objects du package. 
  * ${pao.classSimpleName}
  */
 public final class ${pao.classSimpleName} {
-	<@lib.generateHeader pao.taskDefinitions/>  
 	private final TaskManager taskManager;
 
 	/**

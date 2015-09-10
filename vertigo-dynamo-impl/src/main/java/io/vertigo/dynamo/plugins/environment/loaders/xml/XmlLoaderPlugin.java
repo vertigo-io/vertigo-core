@@ -18,12 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionBuilder;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.impl.environment.LoaderPlugin;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -92,24 +91,23 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlAttribute attribute, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
-		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attribute.getDomain());
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
 				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
-				.addDefinition("domain", domainKey)
+				.addDefinition("domain", attribute.getDomain())
 				.build();
 	}
 
@@ -139,8 +137,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 				.addPropertyValue(KspProperty.LABEL_B, association.getRoleLabelB())
 				.addPropertyValue(KspProperty.ROLE_B, XmlUtil.french2Java(association.getRoleLabelB()))
 				//---
-				.addDefinition("dtDefinitionA", getDtDefinitionKey(association.getCodeA()))
-				.addDefinition("dtDefinitionB", getDtDefinitionKey(association.getCodeB()));
+				.addDefinition("dtDefinitionA", getDtDefinitionName(association.getCodeA()))
+				.addDefinition("dtDefinitionB", getDtDefinitionName(association.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
@@ -165,23 +163,23 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : où le nom de la FK est redéfini.
 		// Exemple : DOS_UTI_LIQUIDATION (relation entre dossier et utilisateur : FK >> UTILISATEUR_ID_LIQUIDATION)
-		final DynamicDefinition dtDefinitionA = dynamicModelrepository.getDefinition(getDtDefinitionKey(association.getCodeA()));
-		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionKey(association.getCodeB()));
+		final DynamicDefinition dtDefinitionA = dynamicModelrepository.getDefinition(getDtDefinitionName(association.getCodeA()));
+		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionName(association.getCodeB()));
 
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(association.getMultiplicityA(), association.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
 		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
 		if (primaryKeys.isEmpty()) {
-			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getName() + "'");
 		}
 		if (primaryKeys.size() > 1) {
-			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getName() + "'");
 		}
-		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && association.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
+		if (dtDefinitionA.getName().equals(dtDefinitionB.getName()) && association.getCodeName() == null) {
+			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getName() + "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
 		}
 
 		//On récupère le nom de LA clé primaire .
-		final String pkFieldName = primaryKeys.get(0).getDefinitionKey().getName();
+		final String pkFieldName = primaryKeys.get(0).getName();
 
 		//Par défaut le nom de la clé étrangère est constituée de la clé primaire référencée.
 		String fkFieldName = pkFieldName;
@@ -204,10 +202,6 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		//-----
 		Assertion.checkNotNull(fkFieldName, "La clé primaire n''a pas pu être définie pour l'association '{0}'", association.getCode());
 		return fkFieldName;
-	}
-
-	private static DynamicDefinitionKey getDtDefinitionKey(final String code) {
-		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
 
 	private static String getDtDefinitionName(final String code) {

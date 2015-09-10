@@ -29,7 +29,6 @@ import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -52,19 +51,19 @@ import java.util.Set;
  * @author pchretien
  */
 public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, List<?>> {
-	private final Map<String, EntityProperty> entityProperties;
+	private final Map<String, String> entityProperties;
 
 	/**
 	 * <propertyName> : "<propertyvalue>";
 	 */
-	public DslPropertyEntryRule(final Set<EntityProperty> entityProperties) {
+	public DslPropertyEntryRule(final Set<String> entityPropertyNames) {
 		super();
-		Assertion.checkNotNull(entityProperties);
+		Assertion.checkNotNull(entityPropertyNames);
 		//-----
 		this.entityProperties = new HashMap<>();
-		for (final EntityProperty entityProperty : entityProperties) {
-			final String propertyName = StringUtil.constToLowerCamelCase(entityProperty.getName());
-			this.entityProperties.put(propertyName, entityProperty);
+		for (final String entityPropertyName : entityPropertyNames) {
+			final String propertyName = StringUtil.constToLowerCamelCase(entityPropertyName);
+			this.entityProperties.put(propertyName, entityPropertyName);
 		}
 	}
 

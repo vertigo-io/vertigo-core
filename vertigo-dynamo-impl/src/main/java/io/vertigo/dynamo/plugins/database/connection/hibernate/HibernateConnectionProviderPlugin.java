@@ -19,7 +19,12 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,6 +32,7 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.ReturningWork;
@@ -36,7 +42,7 @@ import org.hibernate.jdbc.ReturningWork;
  *
  * @author pchretien, npiedeloup
  */
-public final class HibernateConnectionProviderPlugin extends JpaConnectionProviderPlugin {
+public final class HibernateConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
 
 	/**
 	 * Constructeur.
@@ -45,12 +51,18 @@ public final class HibernateConnectionProviderPlugin extends JpaConnectionProvid
 	 */
 	@Inject
 	public HibernateConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
-		super(persistenceUnit, dataBaseName, transactionManager);
+		super(new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+		Assertion.checkArgNotEmpty(persistenceUnit);
+		//-----
+		this.transactionManager = transactionManager;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public SqlConnection obtainWrappedConnection(final EntityManager em) {
+	/**
+	 * @param em EntityManager
+	 * @return KConnection sous jacente
+	 * @throws SQLException Exception sql
+	 */
+	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
 		return session.doReturningWork(new ReturningWork<SqlConnection>() {
@@ -59,5 +71,30 @@ public final class HibernateConnectionProviderPlugin extends JpaConnectionProvid
 				return new SqlConnection(connection, getDataBase(), false);
 			}
 		});
+	}
+
+	private final VTransactionManager transactionManager;
+
+	/** {@inheritDoc} */
+	@Override
+	public final SqlConnection obtainConnection() throws SQLException {
+		final EntityManager em = obtainJpaResource().getEntityManager();
+		return obtainWrappedConnection(em);
+	}
+
+	/** récupère la ressource JPA de la transaction et la créé si nécessaire. */
+	private JpaResource obtainJpaResource() {
+		final SqlDataBase dataBase = getDataBase();
+		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
+		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
+	}
+
+	/** récupère la transaction courante. */
+	private VTransaction getCurrentTransaction() {
+		return transactionManager.getCurrentTransaction();
+	}
+
+	private static SqlDataBase createDataBase(final String dataBaseName) {
+		return ClassUtil.newInstance(dataBaseName, SqlDataBase.class);
 	}
 }

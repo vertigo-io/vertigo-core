@@ -18,11 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
@@ -34,25 +33,25 @@ final class SearchGrammar {
 	/** Index definition. */
 	public static final Entity INDEX_DEFINITION_ENTITY;
 	/** Search loader id. */
-	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
+	public static final String SEARCH_LOADER_PROPERTY = "LOADER_ID";
 	/** List filter class. */
-	public static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
+	public static final String LIST_FILTER_BUILDER_CLASS = "LIST_FILTER_BUILDER_CLASS";
 	/** List filter query. */
-	public static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
+	public static final String LIST_FILTER_BUILDER_QUERY = "LIST_FILTER_BUILDER_QUERY";
 
 	/** Fieldname. */
-	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
+	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet definition. */
 	public static final Entity FACET_DEFINITION_ENTITY;
 	/** Facet range. */
 	private static final Entity FACET_RANGE_ENTITY;
 	/** Range filter. */
-	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
+	public static final String RANGE_FILTER_PROPERTY = "FILTER";
 	/** Faceted query definition. */
 	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
 
 	/** Search Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -81,32 +80,32 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
-				.addAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addProperty(SEARCH_LOADER_PROPERTY, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 
 		FACET_RANGE_ENTITY = new EntityBuilder("range")
-				.addProperty(RANGE_FILTER_PROPERTY, true)
-				.addProperty(KspProperty.LABEL, true)
+				.addField(RANGE_FILTER_PROPERTY, String, true)
+				.addField(KspProperty.LABEL, String, true)
 				.build();
 
 		FACET_DEFINITION_ENTITY = new EntityBuilder("FacetDefinition")
-				.addAttribute("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addProperty(FIELD_NAME, true)
-				.addProperty(KspProperty.LABEL, true)
-				.addAttributes("range", FACET_RANGE_ENTITY, false)// facultative
+				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField(FIELD_NAME, String, true)
+				.addField(KspProperty.LABEL, String, true)
+				.addFields("range", FACET_RANGE_ENTITY, false)// facultative
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
-				.addAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addAttribute("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
-				.addProperty(LIST_FILTER_BUILDER_CLASS, true)
-				.addProperty(LIST_FILTER_BUILDER_QUERY, true)
-				.addAttributes("facets", FACET_DEFINITION_ENTITY, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
+				.addField(LIST_FILTER_BUILDER_CLASS, String, true)
+				.addField(LIST_FILTER_BUILDER_QUERY, String, true)
+				.addFields("facets", FACET_DEFINITION_ENTITY, true)
 				.build();
 
-		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
+		GRAMMAR = new EntityGrammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
 	}
 
 	private SearchGrammar() {

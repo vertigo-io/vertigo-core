@@ -31,6 +31,11 @@ import java.util.Map;
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private Map<K, V> map = new HashMap<>();
 
+	/**
+	 * @param key Key
+	 * @param value Value not null
+	 * @return this builder
+	 */
 	public MapBuilder<K, V> put(final K key, final V value) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
@@ -39,11 +44,30 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return this;
 	}
 
+	/**
+	 * @param key Key
+	 * @param value Value nullable
+	 * @return this builder
+	 */
+	public MapBuilder<K, V> putNullable(final K key, final V value) {
+		Assertion.checkNotNull(key);
+		//-----
+		if (value != null) {
+			map.put(key, value);
+		}
+		return this;
+	}
+
+	/**
+	 * Make this map unmodifiable.
+	 * @return this build
+	 */
 	public MapBuilder<K, V> unmodifiable() {
 		this.map = Collections.unmodifiableMap(map);
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<K, V> build() {
 		return map;

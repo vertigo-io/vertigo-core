@@ -20,8 +20,6 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
 
@@ -37,10 +35,10 @@ public final class DslPropertyEntryRuleTest {
 
 	private static DslPropertyEntryRule MAIN;
 	static {
-		final Set<EntityProperty> entityProperties = new HashSet<>();
-		entityProperties.add(new EntityProperty(LABEL, EntityPropertyType.String));
-		entityProperties.add(new EntityProperty(SIZE, EntityPropertyType.String));
-		MAIN = new DslPropertyEntryRule(entityProperties);
+		final Set<String> propertyNames = new HashSet<>();
+		propertyNames.add(DslPropertyEntryRuleTest.LABEL);
+		propertyNames.add(DslPropertyEntryRuleTest.SIZE);
+		MAIN = new DslPropertyEntryRule(propertyNames);
 	}
 
 	@Test
@@ -50,7 +48,7 @@ public final class DslPropertyEntryRuleTest {
 		final String text = "label   : \"BLeU\", non reconnu";
 		final int end = parser.parse(text, 0);
 		final DslPropertyEntry propertyEntry = parser.get();
-		Assert.assertEquals(LABEL, propertyEntry.getProperty().getName());
+		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
 		Assert.assertEquals("BLeU", propertyEntry.getPropertyValueAsString());
 		Assert.assertEquals(text.length() - " non reconnu".length(), end); //On vérfifie que le pointeur a avancé jusqu'à 'non reconnu'
 
@@ -63,7 +61,7 @@ public final class DslPropertyEntryRuleTest {
 		final String text = "label  :    \" vert \"";
 		final int end = parser.parse(text, 0); //On ne met pas de séparateur final et on met un espace
 		final DslPropertyEntry propertyEntry = parser.get();
-		Assert.assertEquals(LABEL, propertyEntry.getProperty().getName());
+		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
 		Assert.assertEquals(" vert ", propertyEntry.getPropertyValueAsString()); //l'espace doit être conservé
 		Assert.assertEquals(text.length(), end);
 	}
@@ -75,7 +73,7 @@ public final class DslPropertyEntryRuleTest {
 		final String text = "size   : \"54\",";
 		final int end = parser.parse(text, 0);
 		final DslPropertyEntry propertyEntry = parser.get();
-		Assert.assertEquals(SIZE, propertyEntry.getProperty().getName());
+		Assert.assertEquals(SIZE, propertyEntry.getPropertyName());
 		Assert.assertEquals("54", propertyEntry.getPropertyValueAsString());
 		Assert.assertEquals(text.length(), end);
 	}

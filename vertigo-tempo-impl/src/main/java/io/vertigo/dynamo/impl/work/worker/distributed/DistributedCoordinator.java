@@ -56,7 +56,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 		return future;
 	}
 
-	private <WR, W> WFuture<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
+	private static <WR, W> WFuture<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workId);
 		//-----
 		final WFuture<WR> future;

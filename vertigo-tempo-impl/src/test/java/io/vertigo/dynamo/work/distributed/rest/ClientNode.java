@@ -28,6 +28,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author npiedeloup
  */
@@ -83,7 +85,7 @@ final class ClientNode {
 	public void stop() throws InterruptedException {
 		nodeProcess.destroy();
 		nodeProcess.waitFor();
-		System.out.println("ClientNode stopped");
+		Logger.getLogger(ClientNode.class).info("ClientNode stopped");
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}
@@ -101,7 +103,7 @@ final class ClientNode {
 							while ((line = br.readLine()) != null) {
 								out.println(prefix + line);
 							}
-							Thread.sleep(250);
+							Thread.sleep(50);
 						}
 					}
 				} catch (final InterruptedException | IOException e) {

@@ -39,8 +39,8 @@ public final class DslDefinitionEntryRuleTest {
 		final int end = parser.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(1, xDefinitionEntry.getDefinitionKeys().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionKeys().contains("BLEU"));
+		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
+		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
 		Assert.assertEquals(text.length() - " non reconnu".length(), end);
 	}
 
@@ -52,8 +52,8 @@ public final class DslDefinitionEntryRuleTest {
 		final int end = parser.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(4, xDefinitionEntry.getDefinitionKeys().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionKeys().contains("VerT"));
+		Assert.assertEquals(4, xDefinitionEntry.getDefinitionNames().size());
+		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
 		Assert.assertEquals(text.length() - " non reconnu".length(), end);
 
 	}
@@ -66,7 +66,7 @@ public final class DslDefinitionEntryRuleTest {
 		final int end = parser.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(0, xDefinitionEntry.getDefinitionKeys().size());
+		Assert.assertEquals(0, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertEquals(text.length(), end);
 	}
 
@@ -78,8 +78,8 @@ public final class DslDefinitionEntryRuleTest {
 		final int end = parser.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(3, xDefinitionEntry.getDefinitionKeys().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionKeys().contains("VerT"));
+		Assert.assertEquals(3, xDefinitionEntry.getDefinitionNames().size());
+		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
 		Assert.assertEquals(text.length(), end);
 	}
 
@@ -91,8 +91,8 @@ public final class DslDefinitionEntryRuleTest {
 		final int end = parser.parse("myFirstProperty : BLEU,", 0);
 		final DslDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(1, xDefinitionEntry.getDefinitionKeys().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionKeys().contains("BLEU"));
+		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
+		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
 		Assert.assertEquals(text.length(), end);
 	}
 

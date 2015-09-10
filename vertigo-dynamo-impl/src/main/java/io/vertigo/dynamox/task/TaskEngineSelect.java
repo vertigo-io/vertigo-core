@@ -19,11 +19,12 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.lang.Assertion;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 
 import java.sql.SQLException;
 
@@ -35,7 +36,7 @@ import javax.inject.Inject;
  * Paramètres d'entrée : n String, Date, Boolean, Double, Integer ou DTO, DTC<br>
  * Paramètres de sorties : 1 DTO <u>ou</u> DTC <u>
  * <br>
- * Dans le cas d'un DtObject en sortie, la requête SQL doit ramenée un et un seul
+ * Dans le cas d'un DtObject en sortie, la requête SQL doit ramener un et un seul
  * enregistrement. Dans le cas contraire, la méthode execute() de la classe service
  * remontera un SQLException().<br>
  * <br>
@@ -52,12 +53,11 @@ import javax.inject.Inject;
 public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement> {
 
 	/**
-	 * Constructeur.
-	 * @param scriptManager Manager de traitment de scripts
+	 * Constructor.
 	 */
 	@Inject
-	public TaskEngineSelect(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
@@ -70,28 +70,21 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Récupération de l'attribut OUT. Il doit être unique. 
 	 */
 	private TaskAttribute getOutTaskAttribute() {
-		TaskAttribute foundedAttribute = null;
-		for (final TaskAttribute attribute : getTaskDefinition().getAttributes()) {
-			if (!attribute.isIn()) {
-				Assertion.checkState(foundedAttribute == null, "TaskEngineSelect ne peut créer qu'un seul DtObject ou DtList !");
-				foundedAttribute = attribute;
-			}
+		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
+			throw new RuntimeException("TaskEngineSelect must have at least on DtObject or one DtList!");
 		}
-		if (foundedAttribute == null) {
-			throw new RuntimeException("TaskEngineSelect doit affecter au moins UN DtObject ou DtList!");
-		}
-		return foundedAttribute;
+		return getTaskDefinition().getOutAttributeOption().get();
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 
 		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());
-		setValue(outAttribute.getName(), result.getValue());
+		this.setResult(result.getValue());
 		return result.getSQLRowCount();
 	}
 

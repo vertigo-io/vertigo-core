@@ -1,11 +1,67 @@
 Version history
 ===============
 
-Running 0.8.2-SNAPSHOT
+Running 0.8.3-SNAPSHOT
 ----------------------
+
 more to come :)
 
-Running 0.8.1 - 2015/07/31
+
+Release 0.8.2 - 2015/09/10
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-081-to-082)
+__In Bold__ : Potential compatibility problems 
+* [All] Lots of code cleaning and refactoring
+* [All] Changed private methods that can be static to static
+* [All] Refactored enties and dsl
+* [All] Refactor java.lang.Timer to DeamonManager
+* [All] Added Features to make AppConfig simpler
+* [Core] Added putNullable on MapBuilder
+* [Core] Param was nullable in builder and checked when injected
+* [Core] Removed injection JSR250 support. Use Activeable interface exclusively
+* [Core] Added check id type of URI (no more String into numeric PK)
+* [Core] Renamed Home into App in tests
+* [Commons] Plugged Analytics on WebService, Task, Job and Search
+* [Commons] Replaced LocalEventsPlugin by a simple processor
+* [Commons] Added DaemonManager for managed daemon task
+* __[Dynamo] Added AnalyticsManager when using SearchManager__
+* __[Dynamo] Removed inout params (now, a param is 'in' xor 'out')__
+* [Dynamo] Added support of multiple values criteria into DefaultListFilterBuilder
+* [Dynamo] Assertion to avoid multi TaskEngine invocation
+* [Dynamo] Merged jpa into HibernateConnectionProviderPlugin
+* [Dynamo] changed FileStore's api to obtain the same api than dataStore
+* [Dynamo] Kvdatastore Berkeley can manage Set as HashSet
+* [Dynamo] Splitted SearchLoader SQL logic and chunk logic
+* __[Dynamo] Renamed Broker to DataStore__
+* [Dynamo] Added DtObjectUtil.createUri by class and id
+* [Dynamo] Fixed search reindex count
+* [Studio] Removed Constants to generate a pretty code
+* [Studio] Task has 0 or 1 result	
+* [Studio] Fixed if report file already exist
+* [Quarto] Error msg clearer
+* [Struts2] Fixed stacking previous state of layout in tags (allow div tree, use it carefully :))
+* [Persona] Added custom attributes on UserSession to register data from addons
+* [Tempo] Added more tests
+* [Tempo] Added log for error
+* __[Vega] Replaced SparkApplication by simpler VegaSparkFilter__ 
+* [Vega] Fixed swagger for some path
+* __[Vega] Renamed ApplicationServletContextListener to AppServletContextListener__, and removed Abstract parent
+* __[Vega] Renamed ServletListener to AppServletListener__ 
+* [Vega] Renamed HomeServletStarter to AppServletStarter 
+* __[Vega] Renamed all RestXXX into WebServiceXXX__
+* __[Vega] Renamed all WebServices related objects with WebService prefix__
+* [Vega] No more override httpStatusCode if already set by WebService impl
+* [Vega] Refactored RoutesRegisterPlugin to WebServerPlugin
+* [Vega] Refactored JsonConverterHandler, __extract ServerState behaviour in a new optional plugin__
+* [Vega] Renamed DtObjectExtended to a more generic ExtendedObject
+* [Vega] Added option support in WS params
+* [Vega] Added support to HTTP NotModified 304 response 
+* [Vega] Renamed DefaultJsonReader to RequestJsonReader
+* [Vega] Added URI json serialization
+* [Vega] Added PATCH verb
+
+
+Release 0.8.1 - 2015/07/31
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-080-to-081)
 * [All] Lots of code cleaning and refactoring

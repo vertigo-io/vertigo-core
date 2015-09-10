@@ -55,17 +55,4 @@ public final class ContextMdl<O extends DtObject> {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
 		action.getModel().put(contextKey, new UiMdList<O>(new DtListURIForMasterData(dtDefinition, code)));
 	}
-
-	//	public ContextMdl(final String contextKey, final Class<O> dtoClass, final String code, final AbstractActionSupport action) {
-	//		Assertion.checkArgNotEmpty(contextKey);
-	//		Assertion.checkNotNull(action);
-	//-----
-	//		this.contextKey = contextKey;
-	//		this.action = action;
-	//
-	//		final DtListURIForMasterData dtListURI = new DtListURIForMasterData(DtObjectUtil.findDtDefinition(dtoClass), code);
-	//		final DtList<O> fkMasterDataList = storeManager.get().getBroker().getList(dtListURI);
-	//		action.getModel().putTransient(contextKey, new UiList<O>(fkMasterDataList));
-	//	}
-
 }

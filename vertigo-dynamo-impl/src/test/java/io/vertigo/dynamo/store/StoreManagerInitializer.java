@@ -35,6 +35,6 @@ public class StoreManagerInitializer implements ComponentInitializer<StoreManage
 	@Override
 	public void init(final StoreManager storeManager) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		storeManager.getBrokerConfig().registerCacheable(dtDefinition, 3600, true);
+		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true);
 	}
 }

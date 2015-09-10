@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.impl.environment;
 
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.lang.Plugin;
 
 /**

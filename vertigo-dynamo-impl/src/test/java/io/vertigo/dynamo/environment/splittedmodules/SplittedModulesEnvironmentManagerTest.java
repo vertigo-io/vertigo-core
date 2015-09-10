@@ -102,7 +102,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 		}
 	}
 
-	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
+	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
 		
 		return 
@@ -114,14 +114,12 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.addParam("locales", "locales")
 				.endComponent()
-				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-				.endComponent()
-				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-					.beginPlugin(KprLoaderPlugin.class).endPlugin()
-					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-				.endComponent()
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+				.addPlugin(KprLoaderPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule();	
 		// @formatter:on
 	}

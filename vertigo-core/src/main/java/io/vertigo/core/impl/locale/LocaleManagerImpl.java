@@ -245,7 +245,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	 * Evènement remonté lorsqu'une ressource externalisée n'est pas trouvée.
 	 * @param resource  Nom de la ressource externalisée non trouvée
 	 */
-	private void logResourceNotFound(final String resource) {
+	private static void logResourceNotFound(final String resource) {
 		LOG.warn("Resource " + resource + " non trouvée");
 	}
 

@@ -18,10 +18,15 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.dynamo.plugins.environment.KspProperty;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
@@ -36,22 +41,22 @@ final class TaskGrammar {
 	/**Définition de tache.*/
 	public static final Entity TASK_DEFINITION_ENTITY;
 	/** Task Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	static {
 		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
-				.addProperty(KspProperty.NOT_NULL, true)
-				.addProperty(KspProperty.IN_OUT, true)
-				.addAttribute("domain", DomainGrammar.DOMAIN_ENTITY, true)
+				.addField(NOT_NULL, Boolean, true)
+				.addField(IN_OUT, String, true)
+				.addField("domain", DomainGrammar.DOMAIN_ENTITY, true)
 				.build();
 
 		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")
-				.addProperty(KspProperty.REQUEST, true)
-				.addProperty(KspProperty.CLASS_NAME, true)
-				.addAttributes(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
+				.addField(REQUEST, String, true)
+				.addField(CLASS_NAME, String, true)
+				.addFields(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
 				.build();
 
-		GRAMMAR = new Grammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
+		GRAMMAR = new EntityGrammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
 	}
 
 	private TaskGrammar() {

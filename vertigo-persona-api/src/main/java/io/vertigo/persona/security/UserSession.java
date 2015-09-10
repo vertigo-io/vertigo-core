@@ -24,6 +24,7 @@ import io.vertigo.persona.security.metamodel.Role;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -56,6 +57,11 @@ public abstract class UserSession implements Serializable {
 	 * Set des roles autorises pour la session utilisateur.
 	 */
 	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
+
+	/**
+	 * Attributs supplémentaires associées à la session.
+	 */
+	private final Map<String, Serializable> attributes = new HashMap<>();
 
 	/**
 	 * Indique si l'utilisateur est authentifie.
@@ -141,6 +147,25 @@ public abstract class UserSession implements Serializable {
 	 */
 	public final void authenticate() {
 		authenticated = true;
+	}
+
+	/**
+	 * Ajout d'attribut supplémentaire.
+	 * @param key Key
+	 * @param value Value
+	 */
+	public final void putAttribute(final String key, final Serializable value) {
+		attributes.put(key, value);
+	}
+
+	/**
+	 * Get d'attribut supplémentaire.
+	 * @param key Key
+	 * @param <O> Value type
+	 * @return attribute value.
+	 */
+	public final <O extends Serializable> O getAttribute(final String key) {
+		return (O) attributes.get(key);
 	}
 
 	/**

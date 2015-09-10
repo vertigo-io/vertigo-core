@@ -19,8 +19,10 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
@@ -56,8 +58,8 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineProc(final ScriptManager scriptManager) {
-		super(scriptManager);
+	public TaskEngineProc(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
@@ -71,7 +73,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
-		setParameters(statement);
+		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 		setOutParameter(statement);
 		return sqlRowcount;

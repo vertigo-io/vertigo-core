@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import java.util.Arrays;
@@ -36,42 +36,31 @@ import javax.inject.Named;
  *
  * @author npiedeloup, pchretien
  */
-public final class RestMasterPlugin implements MasterPlugin, Activeable {
+public final class RestMasterPlugin implements MasterPlugin {
 	private final RestQueueServer restQueueRestServer;
 	private final List<String> distributedWorkTypes;
 
 	/**
 	 * Constructeur.
+	 * @param daemonManager Manager des daemons
 	 * @param timeoutSeconds Timeout des travaux en attente de traitement
 	 * @param distributedWorkTypes Liste des types de work distribués (séparateur ;)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
-	public RestMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
+	public RestMasterPlugin(final DaemonManager daemonManager, final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
-		restQueueRestServer = new RestQueueServer(20, codecManager, 5);
+		restQueueRestServer = new RestQueueServer(20, codecManager, 5, daemonManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<String> acceptedWorkTypes() {
 		return distributedWorkTypes;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		restQueueRestServer.start();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		restQueueRestServer.stop();
 	}
 
 	/**

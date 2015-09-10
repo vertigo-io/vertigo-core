@@ -20,7 +20,7 @@ package io.vertigo.dynamo.store;
 
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.datastore.BrokerConfig;
+import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
@@ -66,7 +66,7 @@ public interface StoreManager extends Component {
 	/**
 	 * @return Configuration du composant de persistance
 	 */
-	BrokerConfig getBrokerConfig();
+	DataStoreConfig getDataStoreConfig();
 
 	/**
 	 * @return Configuration MDM

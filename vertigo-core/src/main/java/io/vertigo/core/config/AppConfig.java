@@ -32,7 +32,6 @@ public final class AppConfig {
 	private final List<ModuleConfig> modules;
 
 	AppConfig(
-
 			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(bootConfig);

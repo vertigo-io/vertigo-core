@@ -114,7 +114,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			executed = true;
 			nbResult = result != null ? 1L : 0L;
 			return result;
-			//Objet null géré par le broker
+			//Objet null géré par le dataStore
 		} finally {
 			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, null, nbResult);
 		}
@@ -397,7 +397,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final DtObject result = em.find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			executed = true;
 			nbResult = result != null ? 1L : 0L;
-			//Objet null géré par le broker
+			//Objet null géré par le dataStore
 		} finally {
 			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, null, nbResult);
 		}

@@ -21,8 +21,7 @@
 		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 	</#if>
 </#if>
-${stack.setValue('#controlLayout_previoustype', controlLayout_type?default('none'))}<#t/>
-${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColumnCount?default(0))}<#t/>
+<#include "/${parameters.templateDir}/xhtml/pushLayoutType.ftl" />
 <#if parameters.dynamicAttributes['layout']??>
 	<#if parameters.dynamicAttributes['layout'] = 'table' > 
 <#assign tablecolspan = parameters.dynamicAttributes['cols']?default(2)?number />
@@ -39,8 +38,8 @@ ${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColu
 ${stack.setValue('#controlLayout_type', 'table')}<#t/>
 ${stack.setValue('#controlLayout_currentColumnCount', 0)}<#t/>
 ${stack.setValue('#controlLayout_tablecolspan', tablecolspan)}<#t/>
-	<#elseif parameters.dynamicAttributes['layout'] = 'none'>
-	${stack.setValue('#controlLayout_type', 'none')}<#t/>
+<#elseif parameters.dynamicAttributes['layout'] = 'none'>
+${stack.setValue('#controlLayout_type', 'none')}<#t/>
 	<#-- none --><#t/>
 	</#if><#-- layout == 'table' -->
 <#else><#-- layout??--><#t/>

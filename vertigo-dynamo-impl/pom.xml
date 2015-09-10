@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.8.2-SNAPSHOT</version>
+		<version>0.8.3-SNAPSHOT</version>
 		<relativePath>../vertigo-parent</relativePath>
 	</parent>
 
@@ -192,7 +192,7 @@
 			<optional>true</optional>
 		</dependency>
 		 
-		 <!-- Jedis addon -->
+		 <!-- Jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>

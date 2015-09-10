@@ -45,15 +45,13 @@ public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginModule("vertigo").
-				beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-				.endComponent()
-				.beginComponent(ConfigManager.class, ConfigManagerImpl.class)
-					.beginPlugin( XmlConfigPlugin.class)
-						.addParam("url", "io/vertigo/commons/config/xml/basic-app-config.xml")
-					.endPlugin()
-				.endComponent()
+			.beginModule("vertigo")
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addComponent(ConfigManager.class, ConfigManagerImpl.class)
+				.beginPlugin( XmlConfigPlugin.class)
+					.addParam("url", "io/vertigo/commons/config/xml/basic-app-config.xml")
+				.endPlugin()
 			.endModule()
 			.build();
 		// @formatter:on

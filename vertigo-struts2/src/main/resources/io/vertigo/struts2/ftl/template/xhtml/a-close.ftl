@@ -26,8 +26,9 @@
 <#include "/${parameters.templateDir}/${parameters.expandTheme}/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/${parameters.expandTheme}/dynamic-attributes.ftl" />
 >${parameters.body}</a>
-${stack.setValue('#controlLayout_type', controlLayout_previoustype?default('none'))}
-${stack.setValue('#controlLayout_currentColumnCount', controlLayout_previousColumnCount?default(0))}
+
+<#include "/${parameters.templateDir}/xhtml/popLayoutType.ftl" />
+
 <#assign currentLayout = controlLayout_type?default('none') />
 <#if currentLayout = 'table'>
 	</td><#lt/>

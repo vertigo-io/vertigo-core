@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 
 /**
- * Un objet est automatiquement géré par le broker.
+ * Defines the way to acces and store all the data.
  * Les méthodes de mises à jour lacent des erreurs utilisateurs et techniques.
  * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *

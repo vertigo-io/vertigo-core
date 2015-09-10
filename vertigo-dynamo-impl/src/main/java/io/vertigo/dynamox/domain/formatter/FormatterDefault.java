@@ -94,28 +94,28 @@ public final class FormatterDefault implements Formatter {
 		return getFormatter(dataType).stringToValue(strValue, dataType);
 	}
 
-	private Formatter obtainFormatterBoolean() {
+	private static Formatter obtainFormatterBoolean() {
 		if (Home.getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
 			return Home.getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterBoolean("Oui; Non");
 	}
 
-	private Formatter obtainFormatterNumber() {
+	private static Formatter obtainFormatterNumber() {
 		if (Home.getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
 			return Home.getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterNumber("#,###.##");
 	}
 
-	private Formatter obtainFormatterDate() {
+	private static Formatter obtainFormatterDate() {
 		if (Home.getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
 			return Home.getDefinitionSpace().resolve(FMT_DATE_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterDate("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
 	}
 
-	private Formatter obtainFormatterString() {
+	private static Formatter obtainFormatterString() {
 		if (Home.getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
 			return Home.getDefinitionSpace().resolve(FMT_STRING_DEFAULT, FormatterDefinition.class);
 		}

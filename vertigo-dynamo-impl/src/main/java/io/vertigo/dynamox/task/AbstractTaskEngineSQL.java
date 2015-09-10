@@ -21,7 +21,6 @@ package io.vertigo.dynamox.task;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
@@ -41,10 +40,10 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -102,6 +101,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
 	 * Dans le cas des Batchs ce nombre correspond à la somme de toutes les lignes affectées par le batch.
 	 */
+	//Qui utilise ça ?? // peut on revenir à une forme explicite 
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
 	/**
@@ -109,29 +109,37 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private static final List<ScriptSeparator> SQL_SEPARATORS = createSqlSeparators();
 
-	private final ScriptManager scriptManager;
-
 	/**
 	 * Liste des paramètres
 	 */
 	private List<TaskEngineSQLParam> params;
 
+	private final ScriptManager scriptManager;
+	private final VTransactionManager transactionManager;
+	private final SqlDataBaseManager sqlDataBaseManager;
+
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
 	 */
-	protected AbstractTaskEngineSQL(final ScriptManager scriptManager) {
+	protected AbstractTaskEngineSQL(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(scriptManager);
+		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.scriptManager = scriptManager;
+		this.transactionManager = transactionManager;
+		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
 	private static List<ScriptSeparator> createSqlSeparators() {
-		final List<ScriptSeparator> list = new ArrayList<>(3);
-		list.add(new ScriptSeparator(InOutType.SQL_IN.separator));
-		list.add(new ScriptSeparator(InOutType.SQL_OUT.separator));
-		list.add(new ScriptSeparator(InOutType.SQL_INOUT.separator));
-		return list;
+		return new ListBuilder<ScriptSeparator>()
+				.add(new ScriptSeparator(InOutType.SQL_IN.separator))
+				.add(new ScriptSeparator(InOutType.SQL_OUT.separator))
+				.unmodifiable().build();
 	}
 
 	/**
@@ -176,6 +184,15 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		}
 	}
 
+	private void setRowCount(final int sqlRowcount) {
+		if (getTaskDefinition().getOutAttributeOption().isDefined()) {
+			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
+			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
+				setResult(sqlRowcount);
+			}
+		}
+	}
+
 	//-----
 	/**
 	 * Retourne la Query qui sera parsée
@@ -206,12 +223,10 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Requete évaluée
 	 **/
 	protected final String preProcessQuery(final String sqlQuery) {
-		final Collection<TaskAttribute> attributes = getTaskDefinition().getAttributes();
-		final Map<TaskAttribute, Object> parameterValuesMap = new HashMap<>(attributes.size());
-		for (final TaskAttribute taskAttribute : attributes) {
-			if (taskAttribute.isIn()) {
-				parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
-			}
+		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
+		final Map<TaskAttribute, Object> parameterValuesMap = new HashMap<>(inAttributes.size());
+		for (final TaskAttribute taskAttribute : inAttributes) {
+			parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
 		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, parameterValuesMap, SeparatorType.CLASSIC);
@@ -253,15 +268,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
 		//-----
 		for (final TaskEngineSQLParam param : params) {
-			switch (param.getType()) {
-				case OUT:
-				case INOUT:
-					setOutParameter(cs, param);
-					break;
-				case IN:
-				default:
-					//On ne calcule rien
-					break;
+			if (!param.isIn()) {
+				setOutParameter(cs, param);
 			}
 		}
 	}
@@ -294,7 +302,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private void initParameters(final SqlPreparedStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
-			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.getType());
+			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
 		}
 	}
 
@@ -305,20 +313,13 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final void setParameters(final SqlPreparedStatement statement) throws SQLException {
+	protected final void setInParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : params) {
-			switch (param.getType()) {
-				case IN:
-				case INOUT:
-					final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-					setParameter(statement, param, rowNumber);
-					break;
-				case OUT:
-				default:
-					//On ne fait rien
-					break;
+			if (param.isIn()) {
+				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+				setInParameter(statement, param, rowNumber);
 			}
 		}
 	}
@@ -337,7 +338,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param rowNumber Ligne des données d'entrée.
 	 * @throws SQLException Erreur sql
 	 */
-	protected final void setParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
+	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
@@ -347,7 +348,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			// Paramètre primitif
 			// TODO reporter l'assertion dans le ServiceProviderSelect
 			//if Assertion.invariant((this.getAttribute(paramName).getInOut() & ServiceRegistry.ATTR_IN) > 0, paramName  " must have attribute  ATTR_IN.");
-			domain = getTaskDefinition().getAttribute(param.getAttributeName()).getDomain();
+			domain = getTaskDefinition().getInAttribute(param.getAttributeName()).getDomain();
 		} else if (param.isObject()) {
 			// DtObject
 			final DtObject dto = getValue(param.getAttributeName());
@@ -367,9 +368,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
 		if (param.isPrimitive()) {
-			final TaskAttribute attribute = getTaskDefinition().getAttribute(param.getAttributeName());
-			Assertion.checkArgument(!attribute.isIn(), "{0} must have the attribute ATTR_OUT", param.getAttributeName());
-			setValue(param.getAttributeName(), value);
+			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isDefined(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
+			setResult(value);
 		} else if (param.isObject()) {
 			//DtObject
 			final DtObject dto = getValue(param.getAttributeName());
@@ -414,7 +414,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Connexion SQL
 	 */
 	private SqlConnection obtainConnection() {
-		final VTransaction transaction = getTransactionManager().getCurrentTransaction();
+		final VTransaction transaction = transactionManager.getCurrentTransaction();
 		SqlConnection connection = transaction.getResource(getVTransactionResourceId());
 		if (connection == null) {
 			// On récupère une connexion du pool
@@ -436,15 +436,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		return SQL_RESOURCE_ID;
 	}
 
-	private static VTransactionManager getTransactionManager() {
-		return Home.getComponentSpace().resolve(VTransactionManager.class);
-	}
-
 	/**
 	 * @return Manager de base de données
 	 */
-	protected static final SqlDataBaseManager getDataBaseManager() {
-		return Home.getComponentSpace().resolve(SqlDataBaseManager.class);
+	protected final SqlDataBaseManager getDataBaseManager() {
+		return sqlDataBaseManager;
 	}
 
 	/**
@@ -463,13 +459,5 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
 		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
-	}
-
-	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().containsAttribute(SQL_ROWCOUNT)) {
-			Assertion.checkArgument(!getTaskDefinition().getAttribute(SQL_ROWCOUNT).isIn(), "Attribut Rowcount est obligatoirement OUT");
-			// SI le paramètre (out) INT_SQL_ROWCOUNT est défini, il reçoit le sql%rowcount
-			setValue(SQL_ROWCOUNT, sqlRowcount);
-		}
 	}
 }

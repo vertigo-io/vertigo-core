@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -28,8 +30,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,8 +64,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
 	private final String dataStoreName;
-	private Timer purgeTimer;
-	private final long timeToLiveSeconds;
+	private final int timeToLiveSeconds;
 	private Database cacheDatas;
 
 	private final File myCacheEnvPath;
@@ -74,12 +73,13 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	/**
 	 * Constructeur.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
+	 * @param daemonManager Manager des daemons
 	 * @param dataStoreName Store utilisé
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final DaemonManager daemonManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(dataStoreName);
 		//-----
@@ -92,6 +92,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		Assertion.checkState(myCacheEnvPath.canWrite(), "Can't access cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
 
 		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
+
+		final int purgePeriod = Math.min(15 * 60, timeToLiveSeconds);
+		daemonManager.registerDaemon("purgeContextCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
 	}
 
 	private static String translatePath(final String path) {
@@ -255,16 +258,11 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
-
-		final long purgePeriod = Math.min(15 * 60 * 1000L, timeToLiveSeconds * 1000);
-		purgeTimer = new Timer("PurgeContextCache", true);
-		purgeTimer.schedule(new RemoveTooOldElementsTask(this), purgePeriod, purgePeriod);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		purgeTimer.cancel();
 		if (myEnv != null) {
 			try {
 				cacheDatas.close();
@@ -321,14 +319,15 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 *
 	 * @author npiedeloup
 	 */
-	static final class RemoveTooOldElementsTask extends TimerTask {
+	static final class RemoveTooOldElementsDaemon implements Daemon {
 		private final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin;
 
 		/**
-		 * Constructor.
-		 * @param delayedBerkeleyKVDataStorePlugin plugin
+		 * @param delayedBerkeleyKVDataStorePlugin This plugin
 		 */
-		public RemoveTooOldElementsTask(final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin) {
+		public RemoveTooOldElementsDaemon(final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin) {
+			Assertion.checkNotNull(delayedBerkeleyKVDataStorePlugin);
+			//------
 			this.delayedBerkeleyKVDataStorePlugin = delayedBerkeleyKVDataStorePlugin;
 		}
 
@@ -342,5 +341,4 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			}
 		}
 	}
-
 }

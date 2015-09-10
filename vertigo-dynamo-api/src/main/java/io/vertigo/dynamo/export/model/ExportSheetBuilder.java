@@ -175,7 +175,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		return resolveDtField(fieldName, dtDefinition);
 	}
 
-	private DtField resolveDtField(final DtFieldName fieldName, final DtDefinition definition) {
+	private static DtField resolveDtField(final DtFieldName fieldName, final DtDefinition definition) {
 		return definition.getField(fieldName);
 	}
 }

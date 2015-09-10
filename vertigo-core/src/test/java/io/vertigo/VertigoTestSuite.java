@@ -28,6 +28,7 @@ import io.vertigo.core.aop.AspectTest;
 import io.vertigo.core.config.AppConfigTest;
 import io.vertigo.core.di.injector.InjectorTest;
 import io.vertigo.core.di.reactor.ReactorTest;
+import io.vertigo.core.environment.EnvironmentManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;
@@ -84,6 +85,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		XmlConfigManagerTest.class,
 		//--resource
 		ResourceManagerTest.class,
+		EnvironmentManagerTest.class
 
 })
 public final class VertigoTestSuite {

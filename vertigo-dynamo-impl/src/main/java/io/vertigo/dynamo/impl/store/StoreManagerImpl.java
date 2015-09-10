@@ -21,19 +21,19 @@ package io.vertigo.dynamo.impl.store;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.impl.store.datastore.BrokerConfigImpl;
-import io.vertigo.dynamo.impl.store.datastore.BrokerImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
-import io.vertigo.dynamo.impl.store.filestore.FileBrokerConfig;
-import io.vertigo.dynamo.impl.store.filestore.FileInfoBrokerImpl;
+import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
+import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
 import io.vertigo.dynamo.impl.store.util.BrokerNNImpl;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.datastore.BrokerConfig;
 import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
+import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
@@ -56,10 +56,10 @@ import javax.inject.Inject;
 */
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
-	private final BrokerConfigImpl brokerConfig;
-	/** Broker des objets métier et des listes. */
-	private final DataStore broker;
-	private final FileStore fileInfoBroker;
+	private final DataStoreConfigImpl dataStoreConfig;
+	/** DataStore des objets métier et des listes. */
+	private final DataStore dataStore;
+	private final FileStore fileStore;
 	private final BrokerNN brokerNN;
 	private final KVStore kvStore;
 
@@ -87,16 +87,16 @@ public final class StoreManagerImpl implements StoreManager {
 		Assertion.checkNotNull(eventManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
-		brokerConfig = new BrokerConfigImpl(cacheManager, this, eventManager);
+		dataStoreConfig = new DataStoreConfigImpl(cacheManager, this, eventManager);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
-		brokerConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
-		broker = new BrokerImpl(brokerConfig);
+		dataStoreConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
+		dataStore = new DataStoreImpl(dataStoreConfig);
 		//-----
 		kvStore = new KVStoreImpl(kvDataStorePlugins);
 		//-----
-		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
+		fileStore = createFileIStore(fileStorePlugin);
 		//-----
 		final Map<String, KVDataStorePlugin> map = new HashMap<>();
 		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
@@ -105,13 +105,13 @@ public final class StoreManagerImpl implements StoreManager {
 		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
 	}
 
-	private static FileStore createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
-		final FileBrokerConfig fileBrokerConfiguration = new FileBrokerConfig();
+	private static FileStore createFileIStore(final Option<FileStorePlugin> fileStorePlugin) {
+		final FileStoreConfig fileStoreConfig = new FileStoreConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
-			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
+			fileStoreConfig.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
 		}
-		return new FileInfoBrokerImpl(fileBrokerConfiguration);
+		return new FileStoreImpl(fileStoreConfig);
 	}
 
 	@Override
@@ -129,20 +129,20 @@ public final class StoreManagerImpl implements StoreManager {
 	 * @return Configuration du StoreManager
 	 */
 	@Override
-	public BrokerConfig getBrokerConfig() {
-		return brokerConfig;
+	public DataStoreConfig getDataStoreConfig() {
+		return dataStoreConfig;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DataStore getDataStore() {
-		return broker;
+		return dataStore;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public FileStore getFileStore() {
-		return fileInfoBroker;
+		return fileStore;
 	}
 
 	@Override

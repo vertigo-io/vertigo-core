@@ -81,8 +81,8 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into movie values (?, ?)";
 		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.registerParameter(0, DataType.Long, SqlPreparedStatement.ParameterType.IN);
-			callableStatement.registerParameter(1, DataType.String, SqlPreparedStatement.ParameterType.IN);
+			callableStatement.registerParameter(0, DataType.Long, true);
+			callableStatement.registerParameter(1, DataType.String, true);
 			//-----
 			callableStatement.init();
 			//-----

@@ -22,8 +22,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -35,7 +34,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -51,16 +49,12 @@ import io.vertigo.dynamock.fileinfo.FileInfoStd;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 import java.io.OutputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -86,11 +80,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	private DtDefinition dtDefinitionFamille;
 
-	private TaskDefinition taskLoadCar;
-	private TaskDefinition taskInsertCar;
-	private TaskDefinition taskUpdateCar;
-	private TaskDefinition taskLoadCars;
-
 	private long initialDbCarSize = 0;
 
 	@Override
@@ -99,19 +88,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
-			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
+			final List<String> requests = new ListBuilder<String>()
+					.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
+					.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
+					.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
+					.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
+					.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
+					.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
+					.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+					.build();
 
-			execCallableStatement(connection, "create table fam_car_location(fam_id BIGINT , ID BIGINT);");
-
-			execCallableStatement(connection, "create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
-			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
-			//execPreparedStatement(connection, "SELECT * FROM   INFORMATION_SCHEMA.SYSTEM_SESSIONS;");
-			//execPreparedStatement(connection, "call next value for SEQ_CAR;");
-
-			execCallableStatement(connection, "create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
-			execCallableStatement(connection, "create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
+			for (String request : requests) {
+				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
+						.withEngine(TaskEngineProc.class)
+						.withRequest(request)
+						.build();
+				final Task task = new TaskBuilder(taskDefinition).build();
+				taskManager.execute(task);
+			}
 			transaction.commit();
 		}
 
@@ -125,32 +119,46 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			}
 			transaction.commit();
 		}
-
-		taskLoadCar = registerTaskLoadCar();
-		taskInsertCar = registerTaskInsertCar();
-		taskUpdateCar = registerTaskUpdateCar();
-		taskLoadCars = registerTaskLoadCarList();
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_SHUT_DOWN")
+						.withEngine(TaskEngineProc.class)
+						.withRequest("shutdown;")
+						.build();
+				final Task task = new TaskBuilder(taskDefinition).build();
+				taskManager.execute(task);
+
 				//A chaque fin de test on arréte la base.
-				final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-				execCallableStatement(connection, "shutdown;");
 				transaction.commit();
 			}
 		}
 	}
 
-	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
-		callableStatement.init();
-		callableStatement.executeUpdate();
+	@Test
+	public void testSelectCountCars() {
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_COUNT_CARS")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select count(*) from CAR")
+				.withOutAttribute("count", new Domain("DO_COUNT", DataType.Long), true)
+				.build();
+
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final Task task = new TaskBuilder(taskDefinition).build();
+			long count = taskManager
+					.execute(task)
+					.getResult();
+			//-----
+			Assert.assertEquals(9, count);
+		}
 	}
 
-	private static TaskDefinition registerTaskInsertCar() {
+	protected final void nativeInsertCar(final Car car) {
+		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
+		//-----
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
@@ -158,15 +166,20 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("DTO_CAR", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
+		final Task task = new TaskBuilder(taskDefinition)
+				.addValue("DTO_CAR", car)
+				.build();
+		final TaskResult taskResult = taskManager
+				.execute(task);
+		nop(taskResult);
 	}
 
-	private static TaskDefinition registerTaskUpdateCar() {
+	protected final void nativeUpdateCar(final Car car) {
+		Assertion.checkArgument(car.getId() != null, "L'id est null");
+		//-----
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
@@ -181,116 +194,51 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 						+ "PRICE = #DTO_CAR.PRICE#, "
 						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
 						+ "where CAR_ID = #DTO_CAR.ID#" + "")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("DTO_CAR", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
+		final Task task = new TaskBuilder(taskDefinition)
+				.addValue("DTO_CAR", car)
+				.build();
+		final TaskResult taskResult = taskManager
+				.execute(task);
+		nop(taskResult);
 	}
 
-	private static TaskDefinition registerTaskLoadCar() {
+	protected final Car nativeLoadCar(final long carId) {
 		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR where ID = #ID#")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute("ID", doId, true)
-				.addOutAttribute("DTO_CAR_OUT", doCar, true)
+				.withOutAttribute("dtc", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition);
-		return taskDefinition;
-	}
-
-	private static TaskDefinition registerTaskLoadCarList() {
-		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
-
-		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
-				.withEngine(TaskEngineSelect.class)
-				.withRequest("select * from CAR")
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addOutAttribute("DTC_CAR_OUT", doCarList, true)
-				.build();
-	}
-
-	protected final void nativeInsertCar(final Car car) {
-		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
-		//-----
-		final Task task = new TaskBuilder(taskInsertCar)
-				.addValue("DTO_CAR", car)
-				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		nop(taskResult);
-	}
-
-	protected final void nativeUpdateCar(final Car car) {
-		Assertion.checkArgument(car.getId() != null, "L'id est null");
-		//-----
-		final Task task = new TaskBuilder(taskUpdateCar)
-				.addValue("DTO_CAR", car)
-				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		nop(taskResult);
-
-	}
-
-	protected final Car nativeLoadCar(final long carId) {
-		final Task task = new TaskBuilder(taskLoadCar)
+		final Task task = new TaskBuilder(taskDefinition)
 				.addValue("CAR_ID", carId)
 				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.getValue("DTO_CAR_OUT");
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Task task = new TaskBuilder(taskLoadCars)
+		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
+
+		TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select * from CAR")
+				.withOutAttribute("dtc", doCarList, true)
 				.build();
-		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.getValue("DTC_CAR_OUT");
+
+		final Task task = new TaskBuilder(taskDefinition)
+				.build();
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
-
-	protected final List<Map<String, String>> execPreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
-
-		final PreparedStatement preparedStatement = connection.getJdbcConnection().prepareStatement(sql);
-		final List<Map<String, String>> result = new ArrayList<>();
-
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		final ResultSetMetaData rsmd = resultSet.getMetaData();
-		final int columnCount = rsmd.getColumnCount();
-		String sep = "";
-		for (int i = 0; i < columnCount; i++) {
-			System.out.print(sep);
-			System.out.print(rsmd.getColumnName(i + 1));
-			sep = " | ";
-		}
-		System.out.print("\n");
-		while (resultSet.next()) {
-			sep = "";
-			for (int i = 0; i < columnCount; i++) {
-				System.out.print(sep);
-				System.out.print(resultSet.getString(i + 1));
-				sep = " | ";
-			}
-			System.out.print("\n");
-		}
-		return result;
-	}
-
-	//		//BIGINT > LONG
-	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table famille(ID BIGINT, LIBELLE varchar(255), PRIMARY KEY (ID))");
-	//	// TODO private
-	//	protected void createHsqlTablesFileInfo() throws SQLException {
-	//		statement.execute("drop table VX_FILE_INFO if exists");
-	//		statement.execute("drop sequence SEQ_VX_FILE_INFO if exists");
-	//		statement.execute("create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
-	//		//BIGINT > LONG
-	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table VX_FILE_INFO(FIL_ID BIGINT, " + "FILE_NAME varchar(50), " + "MIME_TYPE varchar(50), "
-	//				+ "LENGTH BIGINT, " + "LAST_MODIFIED date, " + "FILE_DATA LONGVARBINARY, " + "PRIMARY KEY (FIL_ID))");
-	//
-	//	}
 
 	/**
 	 * On vérifie que la liste est vide.
@@ -352,16 +300,15 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateFile() throws Exception {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final VFile vFile;
 			//1.Création du fichier depuis un fichier texte du FS
 
-			vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
+			final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
 			//2. Sauvegarde en BDD
 			final FileInfo fileInfo = new FileInfoStd(vFile);
 			storeManager.getFileStore().create(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().getFileInfo(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 
@@ -751,24 +698,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testPerfCrudInsertCrudSelectRollback() {
 		final long start = System.currentTimeMillis();
 		int execCount = 0;
-		while (System.currentTimeMillis() - start < 5000) {
+		while (System.currentTimeMillis() - start < 1000) {
 			testTxCrudInsertCrudSelectRollback();
 			execCount++;
 		}
 		final long time = System.currentTimeMillis() - start;
-		System.out.println(execCount + " exec en 5s. moy=" + time * 1000 / execCount / 1000d + "ms");
+		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	@Test
 	public void testPerfNativeInsertNativeSelectRollback() {
 		final long start = System.currentTimeMillis();
 		int execCount = 0;
-		while (System.currentTimeMillis() - start < 5000) {
+		while (System.currentTimeMillis() - start < 1000) {
 			testTxNativeInsertNativeSelectRollback();
 			execCount++;
 		}
 		final long time = System.currentTimeMillis() - start;
-		System.out.println(execCount + " exec en 5s. moy=" + time * 1000 / execCount / 1000d + "ms");
+		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
 	private static Car createNewCar(final Long id) {
@@ -783,15 +730,4 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");
 		return car;
 	}
-	//
-	//	public void createSequence Datas() throws Exception {
-	//		final KConnection connection = dataBaseManager.getConnectionProviderPlugin().obtainConnection();
-	//		try {
-	//			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
-	//			execCallableStatement(connection, "insert into famille values (SEQ_FAMILLE.nextval, 'Aizoaceae')");
-	//			execCallableStatement(connection, "insert into famille values (SEQ_FAMILLE.nextval, 'Balsaminaceae')");
-	//		} finally {
-	//			connection.commit();
-	//		}
-	//	}
 }

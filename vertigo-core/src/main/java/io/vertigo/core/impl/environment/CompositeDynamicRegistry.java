@@ -18,10 +18,11 @@
  */
 package io.vertigo.core.impl.environment;
 
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.dynamic.DynamicRegistry;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
-	private final Grammar grammar;
+	private final EntityGrammar grammar;
 	private final List<DynamicDefinition> rootDynamicDefinitions;
 
 	/**
@@ -54,17 +55,17 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		}
 	}
 
-	private Grammar createGrammar() {
+	private EntityGrammar createGrammar() {
 		final List<Entity> entities = new ArrayList<>();
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new Grammar(entities);
+		return new EntityGrammar(entities);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Grammar getGrammar() {
+	public EntityGrammar getGrammar() {
 		return grammar;
 	}
 
@@ -98,7 +99,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			return dynamicRegistry.createDefinition(xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);
+			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getName(), e);
 		}
 	}
 
@@ -110,6 +111,6 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			}
 		}
 		//Si on n'a pas trouvé de définition c'est qu'il manque la registry.
-		throw new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getDefinitionKey().getName() + " non traitée. Il manque une DynamicRegistry ad hoc.");
+		throw new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc.");
 	}
 }

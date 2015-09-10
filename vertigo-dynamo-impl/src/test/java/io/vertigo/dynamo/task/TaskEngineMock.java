@@ -47,7 +47,7 @@ public final class TaskEngineMock extends TaskEngine {
 	}
 
 	private void setOutput(final Integer result) {
-		this.setValue(ATTR_OUT, result);
+		this.setResult(result);
 	}
 
 	/** {@inheritDoc} */
@@ -64,5 +64,4 @@ public final class TaskEngineMock extends TaskEngine {
 
 		setOutput(outPut);
 	}
-
 }

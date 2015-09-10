@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.publisher.environment.registries;
 
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
@@ -61,13 +61,13 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 			createPublisherNodeDefinition(xdefinition);
 			return Option.none();
 		} else {
-			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
+			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getName());
 		}
 	}
 
 	private PublisherDataDefinition createPublisherDataDefinition(final DynamicDefinition xpublisherDefinition) {
-		final String definitionName = xpublisherDefinition.getDefinitionKey().getName();
-		final String publisherNodeRootName = xpublisherDefinition.getDefinitionKey("root").getName();
+		final String definitionName = xpublisherDefinition.getName();
+		final String publisherNodeRootName = xpublisherDefinition.getDefinitionName("root");
 
 		final PublisherNodeDefinition rootDefinition = getNodeDefinitionBuilder(publisherNodeRootName, "root", definitionName).build();
 		return new PublisherDataDefinition(definitionName, rootDefinition);
@@ -75,32 +75,32 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 
 	private void createPublisherNodeDefinition(final DynamicDefinition xpublisherNodeDefinition) {
 		final PublisherNodeDefinitionBuilder publisherNodeDefinitionBuilder = new PublisherNodeDefinitionBuilder();
-		final String publisherNodeDefinitionName = xpublisherNodeDefinition.getDefinitionKey().getName();
+		final String publisherNodeDefinitionName = xpublisherNodeDefinition.getName();
 
 		//Déclaration des champs string
 		final List<DynamicDefinition> stringFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.STRING_FIELD);
 		for (final DynamicDefinition field : stringFields) {
-			final String fieldName = field.getDefinitionKey().getName();
+			final String fieldName = field.getName();
 			publisherNodeDefinitionBuilder.addStringField(fieldName);
 		}
 
 		//Déclaration des champs boolean
 		final List<DynamicDefinition> booleanFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.BOOLEAN_FIELD);
 		for (final DynamicDefinition field : booleanFields) {
-			publisherNodeDefinitionBuilder.addBooleanField(field.getDefinitionKey().getName());
+			publisherNodeDefinitionBuilder.addBooleanField(field.getName());
 		}
 
 		//Déclaration des champs images
 		final List<DynamicDefinition> imageFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.IMAGE_FIELD);
 		for (final DynamicDefinition field : imageFields) {
-			publisherNodeDefinitionBuilder.addImageField(field.getDefinitionKey().getName());
+			publisherNodeDefinitionBuilder.addImageField(field.getName());
 		}
 
 		//Déclaration des champs data
 		final List<DynamicDefinition> dataFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.DATA_FIELD);
 		for (final DynamicDefinition field : dataFields) {
-			final String fieldName = field.getDefinitionKey().getName();
-			final String refNodeName = field.getDefinitionKey("type").getName();
+			final String fieldName = field.getName();
+			final String refNodeName = field.getDefinitionName("type");
 			final PublisherNodeDefinition publisherNodeDefinition = getNodeDefinitionBuilder(refNodeName, fieldName, publisherNodeDefinitionName)
 					.build();
 			publisherNodeDefinitionBuilder.addNodeField(fieldName, publisherNodeDefinition);
@@ -109,8 +109,8 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 		//Déclaration des champs list
 		final List<DynamicDefinition> listFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.LIST_FIELD);
 		for (final DynamicDefinition field : listFields) {
-			final String fieldName = field.getDefinitionKey().getName();
-			final String refNodeName = field.getDefinitionKey("type").getName();
+			final String fieldName = field.getName();
+			final String refNodeName = field.getDefinitionName("type");
 			final PublisherNodeDefinition publisherNodeDefinition = getNodeDefinitionBuilder(refNodeName, fieldName, publisherNodeDefinitionName)
 					.build();
 			publisherNodeDefinitionBuilder.addListField(fieldName, publisherNodeDefinition);

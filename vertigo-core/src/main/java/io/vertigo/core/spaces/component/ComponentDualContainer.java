@@ -21,7 +21,6 @@ package io.vertigo.core.spaces.component;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,7 +32,6 @@ import java.util.Set;
 final class ComponentDualContainer implements Container {
 	private final Container container1, container2;
 	private final Set<String> ids;
-	private final Set<String> unusedKeys;
 
 	ComponentDualContainer(final Container container1, final Container container2) {
 		Assertion.checkNotNull(container1);
@@ -45,7 +43,6 @@ final class ComponentDualContainer implements Container {
 		ids.addAll(container1.keySet());
 		ids.addAll(container2.keySet());
 		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
-		unusedKeys = new HashSet<>(ids);
 	}
 
 	/** {@inheritDoc} */
@@ -62,7 +59,6 @@ final class ComponentDualContainer implements Container {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
 		//-----
-		unusedKeys.remove(id);
 		if (container1.contains(id)) {
 			return container1.resolve(id, clazz);
 		}
@@ -76,9 +72,5 @@ final class ComponentDualContainer implements Container {
 	@Override
 	public Set<String> keySet() {
 		return ids;
-	}
-
-	Set<String> getUnusedKeys() {
-		return unusedKeys;
 	}
 }

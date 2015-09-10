@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -28,17 +27,17 @@ import io.vertigo.lang.Assertion;
  */
 public final class DslPropertyEntry {
 	private final String propertyValue;
-	private final EntityProperty property;
+	private final String propertyName;
 
 	/**
 	 * Constructeur.
 	 * @param property Propriété
 	 * @param propertyValue Valeur de la propriété
 	 */
-	public DslPropertyEntry(final EntityProperty property, final String propertyValue) {
-		Assertion.checkNotNull(property);
+	public DslPropertyEntry(final String propertyName, final String propertyValue) {
+		Assertion.checkNotNull(propertyName);
 		//-----
-		this.property = property;
+		this.propertyName = propertyName;
 		this.propertyValue = propertyValue;
 	}
 
@@ -52,7 +51,7 @@ public final class DslPropertyEntry {
 	/**
 	 * @return Propriété
 	 */
-	public EntityProperty getProperty() {
-		return property;
+	public String getPropertyName() {
+		return propertyName;
 	}
 }

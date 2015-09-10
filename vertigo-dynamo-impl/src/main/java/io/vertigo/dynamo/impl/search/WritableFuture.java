@@ -1,3 +1,21 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.lang.Assertion;
@@ -69,15 +87,13 @@ public final class WritableFuture<V> implements Future<V> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean cancel(final boolean mayInterruptIfRunning) {
-		synchronized (this) {
-			if (this.completed) {
-				return false; //@see Future api
-			}
-			this.completed = true;
-			this.cancelled = true;
-			notifyAll();
+	public synchronized boolean cancel(final boolean mayInterruptIfRunning) {
+		if (this.completed) {
+			return false; //@see Future api
 		}
+		this.completed = true;
+		this.cancelled = true;
+		notifyAll();
 		return true;
 	}
 
@@ -85,28 +101,24 @@ public final class WritableFuture<V> implements Future<V> {
 	 * Mark this execution as success.
 	 * @param result Result of execution
 	 */
-	public void success(final V result) {
-		synchronized (this) {
-			Assertion.checkState(!this.completed, "Task already completed");
-			//-----
-			this.completed = true;
-			this.futureResult = result;
-			notifyAll();
-		}
+	public synchronized void success(final V result) {
+		Assertion.checkState(!this.completed, "Task already completed");
+		//-----
+		this.completed = true;
+		this.futureResult = result;
+		notifyAll();
 	}
 
 	/**
 	 * Mark this execution as failed.
 	 * @param exception Failure reason
 	 */
-	public void fail(final Exception exception) {
-		synchronized (this) {
-			Assertion.checkState(!this.completed, "Task already completed");
-			//-----
-			this.completed = true;
-			this.futureException = exception;
-			notifyAll();
-		}
+	public synchronized void fail(final Exception exception) {
+		Assertion.checkState(!this.completed, "Task already completed");
+		//-----
+		this.completed = true;
+		this.futureException = exception;
+		notifyAll();
 	}
 
 	private V getResult() throws ExecutionException {

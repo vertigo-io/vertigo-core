@@ -102,7 +102,7 @@ public final class EAXmiLoader implements XmlLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private XmlClass createClass(final EAXmiObject obj) {
+	private static XmlClass createClass(final EAXmiObject obj) {
 		LOG.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();

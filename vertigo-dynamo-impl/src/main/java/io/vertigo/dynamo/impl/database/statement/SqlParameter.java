@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 final class SqlParameter {
 	private final DataType dataType;
 	private final boolean in;
-	private final boolean out;
 	private Object value;
 
 	/**
@@ -36,10 +35,9 @@ final class SqlParameter {
 	 * @param in boolean
 	 * @param out boolean
 	 */
-	SqlParameter(final DataType dataType, final boolean in, final boolean out) {
+	SqlParameter(final DataType dataType, final boolean in) {
 		this.dataType = dataType;
 		this.in = in;
-		this.out = out;
 	}
 
 	/**
@@ -61,7 +59,7 @@ final class SqlParameter {
 	 * @return Si paramètre OUT
 	 */
 	boolean isOut() {
-		return out;
+		return !in;
 	}
 
 	/**

@@ -38,7 +38,7 @@ import javax.inject.Inject;
 /**
  * Injector.
  * Create new instances.
- * Warning : Activeable méthods (preDestroy and PostConstruct) are not managed by Injector. 
+ * Warning : Activeable méthods are not managed by Injector.
  *
  * @author pchretien
  */
@@ -119,8 +119,9 @@ public final class Injector {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();
 			for (final String id : container.keySet()) {
-				//On prend tous les objets ayant l'identifiant requis 
-				if (id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#')) {
+				//On prend tous les objets ayant l'identifiant requis
+				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
+				if (match) {
 					final Object injected = container.resolve(id, Object.class);
 					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);

@@ -23,6 +23,7 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -39,9 +40,6 @@ public final class TaskDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;
 
-	/** Nom sans prefix de la définition. */
-	private final String localName;
-
 	/** Nom du package. */
 	private final String packageName;
 
@@ -49,7 +47,9 @@ public final class TaskDefinition implements Definition {
 	private final String request;
 
 	/** Map des (Nom, TaskAttribute) définissant les attributs de tache. */
-	private final Map<String, TaskAttribute> taskAttributes;
+	private final Map<String, TaskAttribute> inTaskAttributes;
+
+	private final Option<TaskAttribute> outTaskAttributeOption;
 
 	/**
 	 * Moyen de réaliser la tache.
@@ -61,17 +61,24 @@ public final class TaskDefinition implements Definition {
 	 * @param taskEngineClass Classe réalisant l'implémentation
 	 * @param request Chaine de configuration
 	 */
-	TaskDefinition(final String name, final String packageName, final Class<? extends TaskEngine> taskEngineClass, final String request, final List<TaskAttribute> taskAttributes) {
-		Assertion.checkArgNotEmpty(name);
+	TaskDefinition(
+			final String name,
+			final String packageName,
+			final Class<? extends TaskEngine> taskEngineClass,
+			final String request,
+			final List<TaskAttribute> inTaskAttributes,
+			final Option<TaskAttribute> outTaskAttributeOption) {
+		DefinitionUtil.checkName(name, TaskDefinition.class);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
-		Assertion.checkNotNull(taskAttributes);
+		Assertion.checkNotNull(inTaskAttributes);
+		Assertion.checkNotNull(outTaskAttributeOption);
 		//-----
 		this.name = name;
-		localName = DefinitionUtil.getLocalName(name, TaskDefinition.class);
 		this.packageName = packageName;
 		this.request = request;
-		this.taskAttributes = createMap(taskAttributes);
+		this.inTaskAttributes = createMap(inTaskAttributes);
+		this.outTaskAttributeOption = outTaskAttributeOption;
 		this.taskEngineClass = taskEngineClass;
 	}
 
@@ -96,21 +103,12 @@ public final class TaskDefinition implements Definition {
 	 * @param attributeName Nom de l'attribut recherché.
 	 * @return Définition de l'attribut.
 	 */
-	public TaskAttribute getAttribute(final String attributeName) {
+	public TaskAttribute getInAttribute(final String attributeName) {
 		Assertion.checkNotNull(attributeName);
 		//-----
-		final TaskAttribute taskAttribute = taskAttributes.get(attributeName);
+		final TaskAttribute taskAttribute = inTaskAttributes.get(attributeName);
 		Assertion.checkNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;
-	}
-
-	/**
-	 * Retourne si l'attribut fait partie de l'API de la tache.
-	 * @param attributeName Nom de l'attribut
-	 * @return Si l'attribut fait partie de l'API de la tache
-	 */
-	public boolean containsAttribute(final String attributeName) {
-		return taskAttributes.containsKey(attributeName);
 	}
 
 	/**
@@ -133,13 +131,21 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
-	 * Retourne la liste des attributs de la tache sous forme d'une Collection
-	 * de TaskAttribute.
+	 * Retourne l' attribut OUT
 	 *
-	 * @return Liste des attributs de la tache
+	 * @return Attribut OUT
 	 */
-	public Collection<TaskAttribute> getAttributes() {
-		return taskAttributes.values();
+	public Option<TaskAttribute> getOutAttributeOption() {
+		return outTaskAttributeOption;
+	}
+
+	/**
+	 * Retourne la liste des attributs IN
+	 *
+	 * @return Liste des attributs IN
+	 */
+	public Collection<TaskAttribute> getInAttributes() {
+		return inTaskAttributes.values();
 	}
 
 	/**
@@ -147,13 +153,6 @@ public final class TaskDefinition implements Definition {
 	 */
 	public String getPackageName() {
 		return packageName;
-	}
-
-	/**
-	 * @return Nom de la définition sans prefix (XXX_YYYY).
-	 */
-	public String getLocalName() {
-		return localName;
 	}
 
 	/** {@inheritDoc} */

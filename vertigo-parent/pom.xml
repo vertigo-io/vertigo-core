@@ -20,7 +20,7 @@ limitations under the License. -->
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.8.2-SNAPSHOT</version>
+	<version>0.8.3-SNAPSHOT</version>
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -106,6 +106,19 @@ limitations under the License. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.18.1</version>
+			    <configuration>
+			        <testFailureIgnore>true</testFailureIgnore>
+			        <junitArtifactName>junit:junit</junitArtifactName>
+			        <encoding>${project.build.sourceEncoding}</encoding>
+			        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+			        <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+			        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+			    </configuration>
 			</plugin>
 			<plugin>
 				<!-- We need a test jar too  -->

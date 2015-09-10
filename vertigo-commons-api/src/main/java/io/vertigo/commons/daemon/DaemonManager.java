@@ -34,4 +34,13 @@ public interface DaemonManager extends Component {
 	 * @return Stats
 	 */
 	List<DaemonStat> getStats();
+
+	/**
+	 * Register Daemon.
+	 * @param name Name
+	 * @param daemonClass Daemon class (must be public)
+	 * @param periodInSeconds Execution period in second
+	 * @param constructorArgs Daemon constructor args
+	 */
+	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs);
 }

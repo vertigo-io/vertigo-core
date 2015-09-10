@@ -35,21 +35,21 @@ public final class CacheDataStoreConfig {
 	private final Map<DtDefinition, Boolean> cacheableDtDefinitionMap = new HashMap<>();
 
 	/* Délégation de la gestion du cache à un système tiers. */
-	private final DataCache dataCache;
+	private final CacheData dataCache;
 
 	/**
 	 * Constructeur.
 	 * @param cacheManager Manager du cache
 	 */
 	public CacheDataStoreConfig(final CacheManager cacheManager) {
-		dataCache = new DataCache(cacheManager);
+		dataCache = new CacheData(cacheManager);
 	}
 
 	boolean isCacheable(final DtDefinition dtDefinition) {
 		return cacheableDtDefinitionMap.containsKey(dtDefinition);
 	}
 
-	DataCache getDataCache() {
+	CacheData getDataCache() {
 		return dataCache;
 	}
 

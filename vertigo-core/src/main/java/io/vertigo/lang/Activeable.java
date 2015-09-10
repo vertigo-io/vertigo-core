@@ -19,29 +19,19 @@
 package io.vertigo.lang;
 
 /**
- * Interface assurant le cycle de vie des composants (Optionnelle). 
+ * Interface assurant le cycle de vie des composants (Optionnelle).
  * Comportement transverse permettant de démarrer et d'arréter des services.
- * Les annotations JSR #250 sont préférées.
- * 
- * @javax.annotation.PostConstruct et @javax.annotation.PreDestroy. 
- * Ex: public class MyComponent {
- * 	@PostConstruct 
- * 	public void init() { }
- * 	@PreDestroy 
- * 	public void destroy() { } 
- * }
+ *
  * @author pchretien, prahmoune
  */
 public interface Activeable {
 	/**
 	 * Called when component is starting.
-	 * == postConstruct
 	 */
 	void start();
 
 	/**
 	 * Called when component is stopped.
-	 * == preDestroy
 	 */
 	void stop();
 }

@@ -29,9 +29,10 @@ import org.junit.Test;
  * @author TINGARGIOLA
  */
 public final class DaemonManagerTest extends AbstractTestCaseJU4 {
-
 	@Inject
 	private DaemonManager daemonManager;
+	@Inject
+	private FakeComponent fakeComponent;
 
 	@Test
 	public void testSimple() throws Exception {
@@ -41,7 +42,7 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0, daemonStat.getSuccesses());
 		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
-		Assert.assertEquals(0, SimpleDaemon.executions);
+		Assert.assertEquals(0, fakeComponent.getExecutionCount());
 		// -----
 		Thread.sleep(5000); //soit deux execs
 
@@ -51,20 +52,8 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(1, daemonStat.getSuccesses());
 		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
-		Assert.assertTrue(SimpleDaemon.executions > 0);
+		Assert.assertTrue(fakeComponent.getExecutionCount() > 0);
 
 	}
 
-	public static final class SimpleDaemon implements Daemon {
-		static int executions = 0;
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() throws Exception {
-			executions++;
-			if (executions == 1) {
-				throw new RuntimeException();
-			}
-		}
-	}
 }

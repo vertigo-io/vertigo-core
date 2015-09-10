@@ -39,18 +39,6 @@ import java.sql.SQLException;
  * @author pchretien
  */
 public interface SqlPreparedStatement extends AutoCloseable {
-	/**
-	 * Type des paramètres.
-	 */
-	enum ParameterType {
-		/** in. */
-		IN,
-		/** out. */
-		OUT,
-		/** inout. */
-		INOUT
-	}
-
 	//=========================================================================
 	//------------------1ere Etape : Enregistrement-----------------------
 	//=========================================================================
@@ -61,7 +49,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @param dataType Type
 	 * @param inOut Type du paramètre
 	 */
-	void registerParameter(final int index, final DataType dataType, final ParameterType inOut);
+	void registerParameter(final int index, final DataType dataType, final boolean in);
 
 	//=========================================================================
 	//-----Clôture des affectations et 1ere Etape

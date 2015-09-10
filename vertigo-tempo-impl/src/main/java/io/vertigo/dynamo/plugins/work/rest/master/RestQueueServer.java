@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.lang.Assertion;
@@ -31,8 +33,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -56,7 +56,6 @@ final class RestQueueServer {
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
 	private final ConcurrentMap<String, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
-	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
@@ -69,29 +68,17 @@ final class RestQueueServer {
 	 * @param nodeTimeOutSec Timeout (secondes) avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
+	 * @param daemonManager Daemons manager
 	 */
-	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
+	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
-	}
 
-	/**
-	 * Démarrage du serveur.
-	 */
-	public void start() {
-		//On lance le démon qui détecte les noeuds morts
-		checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(this), 10 * 1000, 10 * 1000);
-	}
-
-	/**
-	 * Arret du serveur.
-	 */
-	public void stop() {
-		checkTimeOutTimer.cancel();
+		daemonManager.registerDaemon("workQueueTimeoutCheck", DeadNodeDetectorDaemon.class, 10, this);
 	}
 
 	/**
@@ -168,6 +155,12 @@ final class RestQueueServer {
 		}
 	}
 
+	/**
+	 * Get a work todo. returned as Json.
+	 * @param workType Type of work
+	 * @param nodeId client node id
+	 * @return Work as json array : [workItemId, base64WorkItem]
+	 */
 	String pollWork(final String workType, final String nodeId) {
 		//-----
 		touchNode(nodeId, workType);
@@ -187,10 +180,20 @@ final class RestQueueServer {
 		return json;
 	}
 
+	/**
+	 * Signal the start of the work.
+	 * @param workId work id
+	 */
 	void onStart(final String workId) {
 		LOG.info("onStart(" + workId + ")");
 	}
 
+	/**
+	 * Signal the end of the work.
+	 * @param success if success
+	 * @param workId work id
+	 * @param base64Result result base64 encoded
+	 */
 	void onDone(final boolean success, final String workId, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + workId + ")");
 		//-----
@@ -204,6 +207,11 @@ final class RestQueueServer {
 		resultQueue.add(new WorkResult(workId, result, error));
 	}
 
+	/**
+	 * Poll next result.
+	 * @param waitTimeSeconds Time to wait next result
+	 * @return WorkResult or null
+	 */
 	WorkResult pollResult(final int waitTimeSeconds) {
 		try {
 			return resultQueue.poll(waitTimeSeconds, TimeUnit.SECONDS);
@@ -213,6 +221,9 @@ final class RestQueueServer {
 		}
 	}
 
+	/**
+	 * @return Api version
+	 */
 	String getApiVersion() {
 		return "1.0.0";
 	}
@@ -294,10 +305,27 @@ final class RestQueueServer {
 		}
 	}
 
-	private static class DeadNodeDetectorTask extends TimerTask {
+	private static void checkInterrupted() throws InterruptedException {
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("Thread interruption required");
+		}
+	}
+
+	/**
+	 * Deamon used to detect dead node.
+	 * Detection use the plugin param 'deadWorkTypeTimeoutSec'
+	 * Work items bind to dead nodes are send to another node.
+	 * @author npiedeloup
+	 */
+	public static class DeadNodeDetectorDaemon implements Daemon {
 		private final RestQueueServer restQueueServer;
 
-		public DeadNodeDetectorTask(final RestQueueServer restQueueServer) {
+		/**
+		 * @param restQueueServer This queueServer
+		 */
+		public DeadNodeDetectorDaemon(final RestQueueServer restQueueServer) {
+			Assertion.checkNotNull(restQueueServer);
+			//------
 			this.restQueueServer = restQueueServer;
 		}
 
@@ -306,12 +334,6 @@ final class RestQueueServer {
 		public void run() {
 			restQueueServer.checkDeadNodes();
 			restQueueServer.checkDeadWorkItems();
-		}
-	}
-
-	private static void checkInterrupted() throws InterruptedException {
-		if (Thread.currentThread().isInterrupted()) {
-			throw new InterruptedException("Thread interruption required");
 		}
 	}
 

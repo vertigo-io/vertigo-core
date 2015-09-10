@@ -23,8 +23,8 @@ import io.vertigo.core.config.DefinitionProvider;
 import io.vertigo.core.config.DefinitionProviderConfig;
 import io.vertigo.core.config.DefinitionResourceConfig;
 import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -93,7 +93,7 @@ public final class DefinitionLoader {
 			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
-		dynamicModelRepository.solve();
+		dynamicModelRepository.solve(Home.getDefinitionSpace());
 	}
 
 	//	/**

@@ -18,11 +18,39 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.Integer;
+import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DYNAMIC;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.EXPRESSION;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.INDEX_TYPE;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MAX_LENGTH;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MSG;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.impl.environment.KernelGrammar;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
-import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
  * @author pchretien
@@ -53,7 +81,7 @@ public final class DomainGrammar {
 	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
 
 	/**Définition d'une constraint.*/
-	static final Entity CONSTAINT_ENTITY;
+	static final Entity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
 	static final Entity FORMATTER_ENTITY;
 	/**Définition d'une propriété.*/
@@ -73,85 +101,85 @@ public final class DomainGrammar {
 	public static final Entity ASSOCIATION_NN_ENTITY;
 
 	/** Domain Grammar instance. */
-	public static final Grammar GRAMMAR;
+	public static final EntityGrammar GRAMMAR;
 
 	static {
-		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
-				.addProperty(KspProperty.CLASS_NAME, true)
-				.addProperty(KspProperty.ARGS, false)
-				.addProperty(KspProperty.MSG, false)
+		CONSTRAINT_ENTITY = new EntityBuilder("Constraint")
+				.addField(CLASS_NAME, String, true)
+				.addField(ARGS, String, false)
+				.addField(MSG, String, false)
 				.build();
 		FORMATTER_ENTITY = new EntityBuilder("Formatter")
-				.addProperty(KspProperty.CLASS_NAME, true)
-				.addProperty(KspProperty.ARGS, false)
+				.addField(CLASS_NAME, String, true)
+				.addField(ARGS, String, false)
 				.build();
 		PROPERTY_ENTITY = new EntityBuilder("Property").build();
 
 		DOMAIN_ENTITY = new EntityBuilder("Domain")
-				.addProperty(KspProperty.MAX_LENGTH, false)
-				.addProperty(KspProperty.TYPE, false)
-				.addProperty(KspProperty.UNIT, false)
-				.addProperty(KspProperty.INDEX_TYPE, false)
-				.addProperty(KspProperty.STORE_TYPE, false)
-				.addAttribute("formatter", FORMATTER_ENTITY, true)
-				.addAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
-				.addAttributes("constraint", CONSTAINT_ENTITY, false)
+				.addField(MAX_LENGTH, Integer, false)
+				.addField(TYPE, String, false)
+				.addField(UNIT, String, false)
+				.addField(INDEX_TYPE, String, false)
+				.addField(STORE_TYPE, String, false)
+				.addField("formatter", FORMATTER_ENTITY, true)
+				.addField("dataType", KernelGrammar.getDataTypeEntity(), true)
+				.addFields("constraint", CONSTRAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
-				.addProperty(KspProperty.LABEL, true)
-				.addProperty(KspProperty.NOT_NULL, true)
-				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(KspProperty.PERSISTENT, false)
+				.addField(LABEL, String, true)
+				.addField(NOT_NULL, Boolean, true)
+				.addField("domain", DOMAIN_ENTITY, true)
+				.addField(PERSISTENT, Boolean, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
-				.addProperty(KspProperty.LABEL, true)
-				.addAttribute("domain", DOMAIN_ENTITY, true)
-				.addProperty(KspProperty.EXPRESSION, true)
+				.addField(LABEL, String, true)
+				.addField("domain", DOMAIN_ENTITY, true)
+				.addField(EXPRESSION, String, true)
 				.build();
 
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
-				.addProperty(KspProperty.DISPLAY_FIELD, false)
-				.addProperty(KspProperty.SORT_FIELD, false)
-				.addAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
-				.addAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
-				.addAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
-				.addProperty(KspProperty.PERSISTENT, false)
-				.addProperty(KspProperty.DYNAMIC, false)
-				.addProperty(KspProperty.STEREOTYPE, false)
+				.addField(DISPLAY_FIELD, String, false)
+				.addField(SORT_FIELD, String, false)
+				.addFields(FIELD, DT_FIELD_ENTITY, false)
+				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
+				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false)
+				.addField(PERSISTENT, Boolean, false)
+				.addField(DYNAMIC, Boolean, false)
+				.addField(STEREOTYPE, String, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
-				.addProperty(KspProperty.FK_FIELD_NAME, false)
-				.addProperty(KspProperty.MULTIPLICITY_A, true)
-				.addProperty(KspProperty.NAVIGABILITY_A, true)
-				.addProperty(KspProperty.ROLE_A, true)
-				.addProperty(KspProperty.LABEL_A, true)
-				.addProperty(KspProperty.MULTIPLICITY_B, true)
-				.addProperty(KspProperty.NAVIGABILITY_B, true)
-				.addProperty(KspProperty.ROLE_B, true)
-				.addProperty(KspProperty.LABEL_B, true)
-				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField(FK_FIELD_NAME, String, false)
+				.addField(MULTIPLICITY_A, String, true)
+				.addField(NAVIGABILITY_A, Boolean, true)
+				.addField(ROLE_A, String, true)
+				.addField(LABEL_A, String, true)
+				.addField(MULTIPLICITY_B, String, true)
+				.addField(NAVIGABILITY_B, Boolean, true)
+				.addField(ROLE_B, String, true)
+				.addField(LABEL_B, String, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
-				.addProperty(KspProperty.TABLE_NAME, true)
-				.addProperty(KspProperty.NAVIGABILITY_A, true)
-				.addProperty(KspProperty.ROLE_A, true)
-				.addProperty(KspProperty.LABEL_A, true)
-				.addProperty(KspProperty.NAVIGABILITY_B, true)
-				.addProperty(KspProperty.ROLE_B, true)
-				.addProperty(KspProperty.LABEL_B, true)
-				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField(TABLE_NAME, String, true)
+				.addField(NAVIGABILITY_A, Boolean, true)
+				.addField(ROLE_A, String, true)
+				.addField(LABEL_A, String, true)
+				.addField(NAVIGABILITY_B, Boolean, true)
+				.addField(ROLE_B, String, true)
+				.addField(LABEL_B, String, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
-		GRAMMAR = new Grammar(
+		GRAMMAR = new EntityGrammar(
 				PROPERTY_ENTITY,
-				CONSTAINT_ENTITY,
+				CONSTRAINT_ENTITY,
 				FORMATTER_ENTITY,
 				//---
 				DOMAIN_ENTITY,

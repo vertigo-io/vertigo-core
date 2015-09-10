@@ -112,7 +112,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
 	}
 
-	private RuntimeException asRuntimeException(final Exception e) {
+	private static RuntimeException asRuntimeException(final Exception e) {
 		if (e instanceof RuntimeException) {
 			return (RuntimeException) e;
 		}

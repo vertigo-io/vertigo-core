@@ -35,13 +35,13 @@ public final class TaskListenerImpl implements TaskListener {
 	/** Mécanisme de log utilisé pour les performances. */
 	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");
 
-	private void logWorkStart(final String taskName) {
+	private static void logWorkStart(final String taskName) {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Execution tache : " + taskName);
 		}
 	}
 
-	private void logWorkFinish(final String taskName, final long elapsedTime, final boolean success) {
+	private static void logWorkFinish(final String taskName, final long elapsedTime, final boolean success) {
 		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
 			LOGGER_PERFORMANCE.info(">> Tache : " + taskName + " : time = " + elapsedTime);
 		}

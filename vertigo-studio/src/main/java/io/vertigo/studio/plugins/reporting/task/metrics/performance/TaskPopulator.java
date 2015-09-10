@@ -54,52 +54,49 @@ public final class TaskPopulator {
 	 * @return Tache préparé à l'exécution
 	 */
 	public Task populateTask() {
-		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
+		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
 			populateTaskAttribute(attribute);
 		}
 		return taskBuilder.build();
 	}
 
 	private void populateTaskAttribute(final TaskAttribute attribute) {
-		if (attribute.isIn()) {
-			final String attributeName = attribute.getName();
-			Object value = null;
-			switch (attribute.getDomain().getDataType()) {
-				case Boolean:
-					value = Boolean.TRUE;
-					break;
-				case String:
-					value = "Test";
-					break;
-				case Date:
-					value = new Date();
-					break;
-				case Double:
-					value = Double.valueOf(1);
-					break;
-				case Integer:
-					value = Integer.valueOf(1);
-					break;
-				case BigDecimal:
-					value = BigDecimal.valueOf(1);
-					break;
-				case Long:
-					value = Long.valueOf(1);
-					break;
-				case DtObject:
-					value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
-					break;
-				case DtList:
-					value = new DtList(attribute.getDomain().getDtDefinition());
-					break;
-				case DataStream:
-				default:
-					//we do nothing
-					break;
-
-			}
-			taskBuilder.addValue(attributeName, value);
+		final String attributeName = attribute.getName();
+		Object value = null;
+		switch (attribute.getDomain().getDataType()) {
+			case Boolean:
+				value = Boolean.TRUE;
+				break;
+			case String:
+				value = "Test";
+				break;
+			case Date:
+				value = new Date();
+				break;
+			case Double:
+				value = Double.valueOf(1);
+				break;
+			case Integer:
+				value = Integer.valueOf(1);
+				break;
+			case BigDecimal:
+				value = BigDecimal.valueOf(1);
+				break;
+			case Long:
+				value = Long.valueOf(1);
+				break;
+			case DtObject:
+				value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
+				break;
+			case DtList:
+				value = new DtList(attribute.getDomain().getDtDefinition());
+				break;
+			case DataStream:
+			default:
+				//we do nothing
+				break;
 
 		}
+		taskBuilder.addValue(attributeName, value);
 	}
 }

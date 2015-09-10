@@ -22,21 +22,13 @@ import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
 
 /**
- * Un objet est automatiquement géré par le broker.
+ * Defines the way to store and access all the files.
  * Les méthodes de mises à jour lacent des erreurs utilisateurs et techniques.
  * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *
  * @author  pchretien
  */
 public interface FileStore {
-	//
-	//	/**
-	//	 * @param fileInfo File to save
-	//	 * @deprecated Use create or update instead. Will be removed in next version.
-	//	 */
-	//	@Deprecated
-	//	void save(FileInfo fileInfo);
-
 	/**
 	 * Create a new File.
 	 *
@@ -55,7 +47,7 @@ public interface FileStore {
 	 * Suppression d'un fichier.
 	 * @param uri URI du fichier à supprimmer
 	 */
-	void deleteFileInfo(FileInfoURI uri);
+	void delete(FileInfoURI uri);
 
 	/**
 	 * Récupération d'un fichier par son URI.
@@ -63,5 +55,5 @@ public interface FileStore {
 	 * @param uri FileURI du fichier à charger
 	 * @return VFileInfo correspondant à l'URI fournie.
 	 */
-	FileInfo getFileInfo(final FileInfoURI uri);
+	FileInfo get(final FileInfoURI uri);
 }

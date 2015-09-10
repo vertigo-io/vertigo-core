@@ -20,6 +20,5 @@
 		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 	</#if>
 </#if>
-${stack.setValue('#controlLayout_previoustype', controlLayout_type?default('none'))}<#t/>
-${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColumnCount?default(0))}<#t/>
+<#include "/${parameters.templateDir}/xhtml/pushLayoutType.ftl" />
 ${stack.setValue('#controlLayout_type', 'none')}<#t/>

@@ -18,13 +18,13 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,7 +35,6 @@ import java.util.List;
 public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;
 	private final List<TemplateTaskAttribute> ins = new ArrayList<>();
-	private final Collection<TemplateTaskAttribute> attributes = new ArrayList<>();
 
 	private final TemplateTaskAttribute out;
 	private final boolean hasOptions;
@@ -44,31 +43,30 @@ public final class TemplateTaskDefinition {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
-		TemplateTaskAttribute outTemp = null;
 		boolean hasOption = false;
-		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
 
-			attributes.add(templateTaskAttribute);
-			if (attribute.isIn()) {
-				ins.add(templateTaskAttribute);
-			} else {
-				//On est dans le cas des paramètres OUT
-				if (outTemp != null) {
-					throw new Error("Les générations acceptent au plus un paramètre OUT");
-				}
-				outTemp = templateTaskAttribute;
-			}
+		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
+			ins.add(templateTaskAttribute);
 			hasOption = hasOption || !attribute.isNotNull();
 		}
-		out = outTemp;
+
+		if (taskDefinition.getOutAttributeOption().isDefined()) {
+			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
+			//On est dans le cas des paramètres OUT
+			out = templateTaskAttribute;
+			hasOption = hasOption || !attribute.isNotNull();
+		} else {
+			out = null;
+		}
 		hasOptions = hasOption;
 	}
 
 	/**
-	 * @return Urn de la taskDefinition
+	 * @return Name of taskDefinition
 	 */
-	public String getUrn() {
+	public String getName() {
 		return taskDefinition.getName();
 	}
 
@@ -76,15 +74,9 @@ public final class TemplateTaskDefinition {
 	 * @return Nom de la méthode en CamelCase
 	 */
 	public String getMethodName() {
-		final String localName = taskDefinition.getLocalName();
+		// Nom de la définition sans prefix (XXX_YYYY).
+		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
 		return StringUtil.constToLowerCamelCase(localName);
-	}
-
-	/**
-	 * @return Liste des attributs
-	 */
-	public Collection<TemplateTaskAttribute> getAttributes() {
-		return attributes;
 	}
 
 	/**

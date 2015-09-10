@@ -19,16 +19,15 @@
 package io.vertigo.core.aop.data.components;
 
 import io.vertigo.core.aop.data.MyException;
+import io.vertigo.lang.Activeable;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Named;
 
 /**
  * @author prahmoune
  */
 @Named("a")
-public class A {
+public class A implements Activeable {
 	boolean initialized;
 	boolean finalized;
 
@@ -40,13 +39,13 @@ public class A {
 		return finalized;
 	}
 
-	@PostConstruct
-	public void init() {
+	@Override
+	public void start() {
 		initialized = true;
 	}
 
-	@PreDestroy
-	public void destroy() {
+	@Override
+	public void stop() {
 		finalized = true;
 	}
 

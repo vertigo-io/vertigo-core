@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.facet;
 
-import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 
 /**
  * @author pchretien
@@ -27,7 +27,7 @@ final class FacetGrammar {
 	/**
 	 * Initialisation des métadonnées permet tant de décrire le métamodèle de dynamo.
 	 */
-	public static final Grammar GRAMMAR = new Grammar();
+	public static final EntityGrammar GRAMMAR = new EntityGrammar();
 
 	private FacetGrammar() {
 		//private

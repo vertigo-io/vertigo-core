@@ -23,17 +23,14 @@ import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
-import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.kernel.meta.Entity;
-import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionBuilder;
-import io.vertigo.core.impl.environment.kernel.model.DynamicDefinitionKey;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionBuilder;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 
-import java.util.ArrayList;
 import java.util.List;
 
 final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
@@ -90,19 +87,19 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dynamicDefinitionBuilder.addDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addDefinitions(fieldDefinitionEntry.getFieldName(), toDefinitionKeys(fieldDefinitionEntry.getDefinitionKeys()));
+				dynamicDefinitionBuilder.addAllDefinitions(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
 			}
 		}
-		for (final DslPropertyEntry fieldPropertyEntry : definitionBody.getPropertyEntries()) {
+		for (final DslPropertyEntry dslPropertyEntry : definitionBody.getPropertyEntries()) {
 			//			// On vérifie que la propriété est enregistrée sur la metaDefinition
 			//			Assertion.precondition(definition.getEntity().getPropertySet().contains(fieldPropertyEntry.getProperty()), "Propriété {0} non enregistré sur {1}",
 			//					fieldPropertyEntry.getProperty(), definition.getEntity().getName());
 			//-----
-			final Object value = readProperty(fieldPropertyEntry.getProperty(), fieldPropertyEntry.getPropertyValueAsString());
-			dynamicDefinitionBuilder.addPropertyValue(fieldPropertyEntry.getProperty(), value);
+			final Object value = readProperty(dynamicDefinitionBuilder.getEntity(), dslPropertyEntry);
+			dynamicDefinitionBuilder.addPropertyValue(dslPropertyEntry.getPropertyName(), value);
 		}
 	}
 
@@ -118,18 +115,11 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	 * @param stringValue Valeur de la propriété sous forme String
 	 * @return J Valeur typée de la propriété
 	 */
-	private static Object readProperty(final EntityProperty property, final String stringValue) {
-		Assertion.checkNotNull(property);
+	private static Object readProperty(final Entity entity, final DslPropertyEntry dslPropertyEntry) {
+		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(dslPropertyEntry);
 		//-----
-		return property.getPrimitiveType().cast(stringValue);
-	}
-
-	private static List<DynamicDefinitionKey> toDefinitionKeys(final List<String> list) {
-		final List<DynamicDefinitionKey> definitionKeys = new ArrayList<>();
-		for (final String item : list) {
-			definitionKeys.add(new DynamicDefinitionKey(item));
-		}
-		return definitionKeys;
+		return entity.getPrimitiveType(dslPropertyEntry.getPropertyName()).cast(dslPropertyEntry.getPropertyValueAsString());
 	}
 
 }
