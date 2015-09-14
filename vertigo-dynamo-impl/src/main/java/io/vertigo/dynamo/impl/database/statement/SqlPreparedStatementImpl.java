@@ -155,14 +155,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc}  */
 	@Override
 	public final void close() {
-		if (statement == null) {
-			return;
-		}
-		//Dans tout les cas on clôture le PS.
-		try {
-			statement.close();
-		} catch (final SQLException e) {
-			throw new RuntimeException(e);
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (final SQLException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -250,10 +248,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		try {
 			// ResultSet JDBC
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
-			final SqlQueryResult result;
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				//Le Handler a la responsabilité de créer les données.
-				result = statementHandler.retrieveData(domain, mapping, resultSet);
+				final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
 				stats.setNbSelectedRow(result.getSQLRowCount());
 				ok = true;
 				return result;
@@ -267,17 +264,16 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public final int executeUpdate() throws SQLException {
 		boolean ok = false;
-		int res;
 		beginExecution();
 		try {
 			//execution de la Requête
-			res = statement.executeUpdate();
+			int res = statement.executeUpdate();
 			ok = true;
 			stats.setNbModifiedRow(res);
+			return res;
 		} finally {
 			endExecution(ok);
 		}
-		return res;
 	}
 
 	/** {@inheritDoc} */
@@ -290,10 +286,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public int executeBatch() throws SQLException {
 		boolean ok = false;
-		final int[] res;
 		beginExecution();
 		try {
-			res = statement.executeBatch();
+			final int[] res = statement.executeBatch();
 			ok = true;
 			stats.setNbModifiedRow(res.length);
 
