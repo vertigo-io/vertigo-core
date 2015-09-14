@@ -28,7 +28,7 @@ public interface AnalyticsAgent {
 	 * @param processType Type du processus
 	 * @param processName Nom du processus
 	 */
-	void startProcess(final String processType, final String processName);
+	void startProcess(final String processType, final String category);
 
 	/**
 	 * Incrémente une mesure (set si pas présente).

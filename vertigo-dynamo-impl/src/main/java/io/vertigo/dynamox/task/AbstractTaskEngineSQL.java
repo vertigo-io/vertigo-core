@@ -166,7 +166,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 		try (final S statement = createStatement(sql, connection)) {
 			//Inialise les paramètres.
-			initParameters(statement);
+			registerParameters(statement);
 			try {
 				//Initialise le statement JDBC.
 				statement.init();
@@ -300,7 +300,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * Initialise les paramètres en entrée du statement
 	 * @param statement Statement
 	 */
-	private void initParameters(final SqlPreparedStatement statement) {
+	private void registerParameters(final SqlPreparedStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
 			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
 		}
