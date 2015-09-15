@@ -264,7 +264,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 *
 	 * @param cs CallableStatement
 	 * @throws SQLException Si erreur */
-	protected final void setOutParameter(final SqlCallableStatement cs) throws SQLException {
+	protected final void setOutParameters(final SqlCallableStatement cs) throws SQLException {
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
 		//-----
 		for (final TaskEngineSQLParam param : params) {
