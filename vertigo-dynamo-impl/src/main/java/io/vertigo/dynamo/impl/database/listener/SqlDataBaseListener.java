@@ -34,5 +34,5 @@ public interface SqlDataBaseListener {
 	 * Enregistre la fin d'une exécution de PreparedStatement avec le temps d'exécution en ms et son statut (OK/KO).
 	 * @param statementStats Informations sur l'éxécution
 	 */
-	void onFinish(final String statement, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow);
+	void onFinish(final String statement, final boolean success, final long elapsedTime, final Integer nbModifiedRow, final Integer nbSelectedRow);
 }

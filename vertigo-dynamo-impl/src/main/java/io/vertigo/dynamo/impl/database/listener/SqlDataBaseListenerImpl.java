@@ -68,7 +68,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onFinish(final String statement, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow) {
+	public void onFinish(final String statement, final boolean success, final long elapsedTime, final Integer nbModifiedRow, final Integer nbSelectedRow) {
 		//	public void onFinish(final SqlStatementStats statementStats) {
 		if (LOGGER.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()

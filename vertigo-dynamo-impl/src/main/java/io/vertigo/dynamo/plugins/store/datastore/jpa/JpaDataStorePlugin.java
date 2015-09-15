@@ -107,14 +107,14 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		boolean executed = false;
-		long nbResult = 0;
+		int nbResult = 0;
 		dataBaseListener.onStart(serviceName);
 		final long start = System.currentTimeMillis();
 		try {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = em.find(objectClass, uri.getId());
 			executed = true;
-			nbResult = result != null ? 1L : 0L;
+			nbResult = result != null ? 1 : 0;
 			return result;
 			//Objet null géré par le dataStore
 		} finally {
@@ -165,7 +165,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
 		boolean executed = false;
-		long nbResult = 0;
+		int nbResult = 0;
 		dataBaseListener.onStart(serviceName);
 		final long start = System.currentTimeMillis();
 		try {
@@ -280,7 +280,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
 		final String serviceName = "Jpa:find " + taskName;
 		boolean executed = false;
-		long nbResult = 0;
+		int nbResult = 0;
 		dataBaseListener.onStart(serviceName);
 		final long start = System.currentTimeMillis();
 		try {
@@ -354,7 +354,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			em.clear();
 			executed = true;
 		} finally {
-			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1L : 0L, null);
+			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1 : 0, null);
 		}
 	}
 
@@ -381,7 +381,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			em.clear();
 			executed = true;
 		} finally {
-			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1L : 0L, null);
+			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1 : 0, null);
 		}
 	}
 
@@ -392,13 +392,13 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 		final long start = System.currentTimeMillis();
 		boolean executed = false;
-		long nbResult = 0;
+		int nbResult = 0;
 		dataBaseListener.onStart(serviceName);
 		try {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final DtObject result = em.find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			executed = true;
-			nbResult = result != null ? 1L : 0L;
+			nbResult = result != null ? 1 : 0;
 			//Objet null géré par le dataStore
 		} finally {
 			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, null, nbResult);

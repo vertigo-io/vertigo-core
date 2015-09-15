@@ -81,9 +81,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** PreparedStatement JDBC. */
 	private PreparedStatement statement;
 
-	/** StatementStats du traitement. */
-	private final SqlStatementStatsImpl stats;
-
 	/** Requête SQL. */
 	private final String sql;
 
@@ -122,7 +119,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state = State.CREATED;
 		this.dataBaseListener = dataBaseListener;
 		this.statementHandler = statementHandler;
-		stats = new SqlStatementStatsImpl(this);
 	}
 
 	/**
@@ -245,18 +241,19 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		boolean ok = false;
 		beginExecution();
+		Integer nbSelectedRow = null;
 		try {
 			// ResultSet JDBC
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				//Le Handler a la responsabilité de créer les données.
 				final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-				stats.setNbSelectedRow(result.getSQLRowCount());
+				nbSelectedRow = result.getSQLRowCount();
 				ok = true;
 				return result;
 			}
 		} finally {
-			endExecution(ok);
+			endExecution(ok, null, nbSelectedRow);
 		}
 	}
 
@@ -264,15 +261,16 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public final int executeUpdate() throws SQLException {
 		boolean ok = false;
+		Integer nbModifiedRow = null;
 		beginExecution();
 		try {
 			//execution de la Requête
 			int res = statement.executeUpdate();
 			ok = true;
-			stats.setNbModifiedRow(res);
+			nbModifiedRow = res;
 			return res;
 		} finally {
-			endExecution(ok);
+			endExecution(ok, nbModifiedRow, null);
 		}
 	}
 
@@ -286,11 +284,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public int executeBatch() throws SQLException {
 		boolean ok = false;
+		Integer nbModifiedRow = null;
 		beginExecution();
 		try {
 			final int[] res = statement.executeBatch();
 			ok = true;
-			stats.setNbModifiedRow(res.length);
+			nbModifiedRow = res.length;
 
 			//Calcul du nombre total de lignes affectées par le batch.
 			int count = 0;
@@ -300,13 +299,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 			return count;
 		} finally {
-			endExecution(ok);
-			dataBaseListener.onFinish(
-					stats.getPreparedStatement().toString(),
-					stats.isSuccess(),
-					stats.getElapsedTime(),
-					stats.getNbModifiedRow(),
-					stats.getNbSelectedRow());
+			endExecution(ok, nbModifiedRow, null);
 		}
 	}
 
@@ -324,15 +317,20 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param ok True si l'exécution s'est effectuée sans erreur
 	 */
 
-	private void endExecution(final boolean ok) {
-		if (ok) {
+	private void endExecution(final boolean success, final Integer nbModifiedRow, final Integer nbSelectedRow) {
+		if (success) {
 			//On passe à l'état exécuté
 			state = State.EXECUTED;
 		} else {
 			state = State.ABORTED;
 		}
-		stats.setSuccess(ok);
-		stats.setElapsedTime(System.currentTimeMillis() - begin);
+		long elapsedTime = System.currentTimeMillis() - begin;
+		dataBaseListener.onFinish(
+				this.toString(),
+				success,
+				elapsedTime,
+				nbModifiedRow,
+				nbSelectedRow);
 	}
 
 	//=========================================================================
