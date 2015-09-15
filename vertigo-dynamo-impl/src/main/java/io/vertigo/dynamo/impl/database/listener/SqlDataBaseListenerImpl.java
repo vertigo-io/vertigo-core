@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.database.listener;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementStats;
 import io.vertigo.lang.Assertion;
 
@@ -59,18 +58,18 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onPreparedStatementStart(final SqlPreparedStatement preparedStatement) {
+	public void onStart(final String statement) {
 		if (LOGGER.isDebugEnabled()) {
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
-			LOGGER.debug("Execution du prepareStatement : " + preparedStatement.toString());
+			LOGGER.debug("Execution du prepareStatement : " + statement);
 		}
-		analyticsManager.getAgent().addMetaData(MD_DB_SQL, preparedStatement.toString());
+		analyticsManager.getAgent().addMetaData(MD_DB_SQL, statement);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onPreparedStatementFinish(final SqlStatementStats statementStats) {
+	public void onFinish(final SqlStatementStats statementStats) {
 		if (LOGGER.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Execution du prepareStatement : ")

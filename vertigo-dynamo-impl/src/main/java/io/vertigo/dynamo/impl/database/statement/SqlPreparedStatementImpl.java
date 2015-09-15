@@ -309,7 +309,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	private void beginExecution() {
 		Assertion.checkArgument(state == State.DEFINED, "L'exécution ne peut se faire que sur l'état STATE_DEFINED ; une fois les types enregistrés, l'enregistrement clôturé par la méthode init() et les valeurs settées");
-		dataBaseListener.onPreparedStatementStart(this);
+		dataBaseListener.onStart(this.toString());
 		begin = System.currentTimeMillis();
 	}
 
@@ -327,7 +327,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 		stats.setSuccess(ok);
 		stats.setElapsedTime(System.currentTimeMillis() - begin);
-		dataBaseListener.onPreparedStatementFinish(stats);
+		dataBaseListener.onFinish(stats);
 	}
 
 	//=========================================================================
