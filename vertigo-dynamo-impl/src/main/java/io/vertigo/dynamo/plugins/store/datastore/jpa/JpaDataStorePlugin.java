@@ -33,6 +33,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
+import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListenerImpl;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.criteria.Criteria;
@@ -67,7 +69,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
-	private final JpaListenerImpl dataBaseListener;
+	private final SqlDataBaseListener dataBaseListener;
 
 	/**
 	 * Constructeur.
@@ -80,7 +82,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
-		dataBaseListener = new JpaListenerImpl(analyticsManager);
+		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
 	}
 
 	//==========================================================================

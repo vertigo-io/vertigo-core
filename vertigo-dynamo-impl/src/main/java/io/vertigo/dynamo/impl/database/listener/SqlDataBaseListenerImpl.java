@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.database.listener;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.dynamo.impl.database.statement.SqlStatementStats;
 import io.vertigo.lang.Assertion;
 
 import org.apache.log4j.Logger;
@@ -69,27 +68,26 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onFinish(final SqlStatementStats statementStats) {
+	public void onFinish(final String statement, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow) {
+		//	public void onFinish(final SqlStatementStats statementStats) {
 		if (LOGGER.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Execution du prepareStatement : ")
-					.append(statementStats.getPreparedStatement().toString());
+					.append(statement);
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
-			if (statementStats.isSuccess()) {
+			if (success) {
 				sb.append(" reussie en  ( ");
 			} else {
 				sb.append(" interrompue apres ( ");
 			}
-			sb.append(statementStats.getElapsedTime());
+			sb.append(elapsedTime);
 			sb.append(MS);
-			if (statementStats.getNbModifiedRow() != null) {
-				final long nbModifiedRow = statementStats.getNbModifiedRow();
+			if (nbModifiedRow != null) {
 				sb.append(" ").append(nbModifiedRow);
 				sb.append(nbModifiedRow > 1 ? " lignes modifiées" : " ligne modifiée");
 			}
-			if (statementStats.getNbSelectedRow() != null) {
-				final long nbSelectedRow = statementStats.getNbSelectedRow();
+			if (nbSelectedRow != null) {
 				sb.append(" ").append(nbSelectedRow);
 				sb.append(nbSelectedRow > 1 ? " lignes récupérées" : " ligne récupérée");
 			}
@@ -98,8 +96,8 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 		//On choisit d'incrémenter l'indicateur.
 		//Se faisant on perd le moyen de faire la moyenne par requete,
 		//Si le besoin apparaissait il faudrait creer un sous-process autour des appels
-		analyticsManager.getAgent().incMeasure(ME_DB_TIME, statementStats.getElapsedTime());
-		analyticsManager.getAgent().incMeasure(ME_DB_COMMAND_COUNT, statementStats.getNbModifiedRow() != null ? 1 : 0);
-		analyticsManager.getAgent().incMeasure(ME_DB_QUERY_COUNT, statementStats.getNbSelectedRow() != null ? 1 : 0);
+		analyticsManager.getAgent().incMeasure(ME_DB_TIME, elapsedTime);
+		analyticsManager.getAgent().incMeasure(ME_DB_COMMAND_COUNT, nbModifiedRow != null ? 1 : 0);
+		analyticsManager.getAgent().incMeasure(ME_DB_QUERY_COUNT, nbSelectedRow != null ? 1 : 0);
 	}
 }

@@ -301,6 +301,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			return count;
 		} finally {
 			endExecution(ok);
+			dataBaseListener.onFinish(
+					stats.getPreparedStatement().toString(),
+					stats.isSuccess(),
+					stats.getElapsedTime(),
+					stats.getNbModifiedRow(),
+					stats.getNbSelectedRow());
 		}
 	}
 
@@ -327,7 +333,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 		stats.setSuccess(ok);
 		stats.setElapsedTime(System.currentTimeMillis() - begin);
-		dataBaseListener.onFinish(stats);
 	}
 
 	//=========================================================================

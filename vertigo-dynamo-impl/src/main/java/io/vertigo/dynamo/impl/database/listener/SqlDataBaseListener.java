@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.listener;
 
-import io.vertigo.dynamo.impl.database.statement.SqlStatementStats;
-
 /**
 * Interface de réception des  événements produits par l'exécution des taches SQL.
 *
@@ -36,5 +34,5 @@ public interface SqlDataBaseListener {
 	 * Enregistre la fin d'une exécution de PreparedStatement avec le temps d'exécution en ms et son statut (OK/KO).
 	 * @param statementStats Informations sur l'éxécution
 	 */
-	void onFinish(SqlStatementStats statementStats);
+	void onFinish(final String statement, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow);
 }
