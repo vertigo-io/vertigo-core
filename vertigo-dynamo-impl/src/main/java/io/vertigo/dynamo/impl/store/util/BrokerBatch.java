@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.dynamo.store.datastore;
+package io.vertigo.dynamo.impl.store.util;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
