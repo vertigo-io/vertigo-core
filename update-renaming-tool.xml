@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!-- Ant build file (http://ant.apache.org/) for Ant 1.6.2 or above.        -->
+<!-- ====================================================================== -->
+<project name="Vertigo Update Renaming Tool" default="">
+	<!-- =================================================================== -->
+	<!-- Proprietes                                                          -->
+	<!-- =================================================================== -->
+
+	<property name="src.encoding" value="utf8"/>
+	<property name="src.path" value="."/>
+	
+	<!-- ====================================================================== -->
+	<!-- Generation des classes de tests                                        -->
+	<!-- ====================================================================== -->
+	<target name="0.8.1 to 0.8.2" description="Usefull renames from 0.8.1 to 0.8.2">
+		<echo message="Renamed in *.xml : io.vertigo.vega.rest.engine.GoogleJsonEngine to io.vertigo.vega.engines.webservice.json.GoogleJsonEngine" />
+		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
+			token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." />
+				
+		<echo message="Renamed in *.java : import io.vertigo.vega.rest.* to io.vertigo.vega.webservice.*" />
+		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
+		    token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." />
+						
+		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.rest.* to io.vertigo.vega.plugins.webservice.*" />
+		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
+		    token="io.vertigo.vega.plugins.rest." value="io.vertigo.vega.plugins.webservice." />
+		
+		<echo message="Renamed in *.xml : io.vertigo.vega.impl.rest.* to io.vertigo.vega.impl.webservice.*" />
+		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
+			token="io.vertigo.vega.impl.rest." value="io.vertigo.vega.impl.webservice." />
+		
+		<echo message="Renamed in *.xml : XxxxRestHandlerPlugin to XxxxWebServiceHandlerPlugin" />
+		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
+			token="RestHandlerPlugin" value="WebServiceHandlerPlugin" />
+		
+		<echo message="Renamed in *.java : import io.vertigo.vega.webservice.RestfulService to import io.vertigo.vega.webservice.WebServices" />
+		<replace file="${src.path}/**/*.java" encoding="${src.encoding}" 
+			token="import io.vertigo.vega.webservice.RestfulService" value="import io.vertigo.vega.webservice.WebServices" />
+		
+		<echo message="Renamed in *.java : implements RestfulService to implements WebServices" />
+		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
+			token="implements RestfulService" value="implements WebServices" />
+		
+		<echo message="Renamed in web.xml io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener to io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
+		<replace file="${src.path}/**/web.xml" encoding="${src.encoding}"
+			token="io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener" value="io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
+		
+		<echo message="Replaced in web.xml spark.servlet.SparkFilter and application by a new VegaSparkFilter" />
+		<replaceregexp file="${src.path}/**/web.xml" encoding="${src.encoding}" flags="gis" byline="false"
+			value="io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter" >
+			<regexp><![CDATA[<filter-name>SparkFilter</filter-name>
+([ \t]+?)<filter-class>spark.servlet.SparkFilter</filter-class>
+([ \t]+?)<init-param>
+([ \t]+?)<param-name>applicationClass</param-name>
+([ \t]+?)<param-value>io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication</param-value>
+([ \t]+?)</init-param>]]></regexp>
+			<substitution><![CDATA[<filter>
+([ \t]+?)<filter-name>SparkFilter</filter-name>
+([ \t]+?)<filter-class>io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter</filter-class>    
+([ \t]+?)</filter>]]></substitution>
+		</replaceregexp>
+		
+	</target>
+	
+</project>
