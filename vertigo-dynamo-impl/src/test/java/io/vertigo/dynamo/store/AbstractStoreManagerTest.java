@@ -34,6 +34,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.store.util.DAOBroker;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -79,13 +80,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	private TaskManager taskManager;
 
 	private DtDefinition dtDefinitionFamille;
-
+	private DAOBroker<Famille, Integer> familleDAO;
 	private long initialDbCarSize = 0;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
-
+		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<String> requests = new ListBuilder<String>()
@@ -98,7 +99,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 					.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
 					.build();
 
-			for (String request : requests) {
+			for (final String request : requests) {
 				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request)
@@ -147,7 +148,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final Task task = new TaskBuilder(taskDefinition).build();
-			long count = taskManager
+			final long count = taskManager
 					.execute(task)
 					.getResult();
 			//-----
@@ -226,7 +227,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final DtList<Car> nativeLoadCarList() {
 		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
 
-		TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withOutAttribute("dtc", doCarList, true)
@@ -366,7 +367,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			for (final Car car : cars) {
 				carUriList.add(new URI(dtDefinitionCar, car.getId()));
 			}
-			storeManager.getBrokerNN().updateNN(famille.getVoituresLocationDtListURI(), carUriList);
+			familleDAO.updateNN(famille.getVoituresLocationDtListURI(), carUriList);
 
 			//On garde le résultat de l'association NN
 			final DtList<Car> firstResult = famille.getVoituresLocationList();
@@ -374,7 +375,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
-			storeManager.getBrokerNN().updateNN(famille.getVoituresLocationDtListURI(), carUriList);
+			familleDAO.updateNN(famille.getVoituresLocationDtListURI(), carUriList);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = famille.getVoituresLocationList();

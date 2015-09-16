@@ -80,7 +80,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		Assertion.checkNotNull(taskManager);
 		//-----
 		dataStore = storeManager.getDataStore();
-		brokerNN = storeManager.getBrokerNN();
+		brokerNN = new BrokerNNImpl(taskManager);
 		this.dtDefinition = dtDefinition;
 		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);
 		this.taskManager = taskManager;

@@ -29,9 +29,7 @@ import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
-import io.vertigo.dynamo.impl.store.util.BrokerNNImpl;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
@@ -60,7 +58,6 @@ public final class StoreManagerImpl implements StoreManager {
 	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
 	private final FileStore fileStore;
-	private final BrokerNN brokerNN;
 	private final KVStore kvStore;
 
 	private final Map<String, KVDataStorePlugin> kvDataStorePluginBinding;
@@ -88,7 +85,6 @@ public final class StoreManagerImpl implements StoreManager {
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
 		dataStoreConfig = new DataStoreConfigImpl(cacheManager, this, eventManager);
-		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
 		dataStoreConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
@@ -143,11 +139,6 @@ public final class StoreManagerImpl implements StoreManager {
 	@Override
 	public FileStore getFileStore() {
 		return fileStore;
-	}
-
-	@Override
-	public BrokerNN getBrokerNN() {
-		return brokerNN;
 	}
 
 	public KVDataStorePlugin getKVDataStorePlugin(final String dataStoreName) {
