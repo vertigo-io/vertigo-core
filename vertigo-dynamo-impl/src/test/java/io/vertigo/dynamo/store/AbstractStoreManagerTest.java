@@ -106,7 +106,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				final Task task = new TaskBuilder(taskDefinition).build();
 				taskManager.execute(task);
 			}
-			transaction.commit();
 		}
 
 		final CarDataBase carDataBase = new CarDataBase();

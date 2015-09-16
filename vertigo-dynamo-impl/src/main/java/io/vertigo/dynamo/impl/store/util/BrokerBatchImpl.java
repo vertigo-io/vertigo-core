@@ -158,8 +158,8 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		final DtList<D> ret = new DtList<>(dtDefinition);
 		for (final DtList<D> paq : set) {
 			/* Création de la tache. */
-			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
-			taskBuilder.addValue(inDtcName, paq);
+			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
+					.addValue(inDtcName, paq);
 			// Exécution de la tache
 			DtList<D> result = taskManager
 					.execute(taskBuilder.build())

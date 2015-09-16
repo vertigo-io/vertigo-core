@@ -20,9 +20,6 @@ package io.vertigo.dynamo.task.x;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
@@ -34,9 +31,8 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
+import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-
-import java.sql.SQLException;
 
 import javax.inject.Inject;
 
@@ -58,18 +54,25 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject
 	private StoreManager storeManager;
 	@Inject
-	private SqlDataBaseManager dataBaseManager;
-	@Inject
 	private VTransactionManager transactionManager;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table SUPER_HERO
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-		execCallableStatement(connection, "create table SUPER_HERO(id BIGINT , name varchar(255));");
-		execCallableStatement(connection, "create sequence SEQ_SUPER_HERO start with 10001 increment by 1");
-
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			execStatement("create table SUPER_HERO(id BIGINT , name varchar(255));");
+			execStatement("create sequence SEQ_SUPER_HERO start with 10001 increment by 1");
+		}
 		addNSuperHero(10);
+	}
+
+	private void execStatement(String request) {
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
+				.withEngine(TaskEngineProc.class)
+				.withRequest(request)
+				.build();
+		final Task task = new TaskBuilder(taskDefinition).build();
+		taskManager.execute(task);
 	}
 
 	private void addNSuperHero(final int size) {
@@ -87,14 +90,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doTearDown() throws Exception {
 		//A chaque fin de test on arrète la base.
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-		execCallableStatement(connection, "shutdown;");
-	}
-
-	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.init();
-			callableStatement.executeUpdate();
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			execStatement("shutdown;");
 		}
 	}
 
