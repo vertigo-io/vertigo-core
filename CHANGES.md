@@ -32,6 +32,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] changed FileStore's api to obtain the same api than dataStore
 * [Dynamo] Kvdatastore Berkeley can manage Set as HashSet
 * [Dynamo] Splitted SearchLoader SQL logic and chunk logic
+* __[Dynamo] Renamed DefaultSearchLoader to AbstractSqlSearchLoader__
 * __[Dynamo] Renamed Broker to DataStore__
 * [Dynamo] Added DtObjectUtil.createUri by class and id
 * [Dynamo] Fixed search reindex count
