@@ -22,7 +22,15 @@
 		<echo message="Renamed in *.java : import io.vertigo.vega.rest.* to io.vertigo.vega.webservice.*" />
 		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
 		    token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." />
-						
+		
+		<echo message="Renamed in *.java : &quot;vertigo.rest.Session&quot; to &quot;vertigo.webservice.Session&quot;" />
+		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
+		    token="&quot;vertigo.rest.Session&quot;" value="&quot;vertigo.webservice.Session&quot;" />
+		
+		<echo message="Renamed in *.java : extends DefaultSearchLoader to extends AbstractSqlSearchLoader" />
+		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
+		    token="extends DefaultSearchLoader" value="extends AbstractSqlSearchLoader" />
+		
 		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.rest.* to io.vertigo.vega.plugins.webservice.*" />
 		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
 		    token="io.vertigo.vega.plugins.rest." value="io.vertigo.vega.plugins.webservice." />
