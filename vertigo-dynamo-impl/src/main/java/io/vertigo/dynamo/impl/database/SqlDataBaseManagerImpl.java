@@ -22,6 +22,7 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	private final SqlDataBaseListener dataBaseListener;
 	private final SqlStatementHandler statementHandler;
-	private final SqlConnectionProviderPlugin connectionProviderPlugin;
+	private final SqlConnectionProvider connectionProviderPlugin;
 
 	/**
 	 * Constructeur.
@@ -63,7 +64,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnectionProviderPlugin getConnectionProvider() {
+	public SqlConnectionProvider getConnectionProvider() {
 		return connectionProviderPlugin;
 	}
 

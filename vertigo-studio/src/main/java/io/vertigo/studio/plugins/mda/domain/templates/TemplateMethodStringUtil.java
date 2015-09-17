@@ -42,6 +42,5 @@ public class TemplateMethodStringUtil implements TemplateMethodModel {
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final String str = (String) params.get(0);
 		return new SimpleScalar(StringUtil.constToLowerCamelCase(str));
-
 	}
 }

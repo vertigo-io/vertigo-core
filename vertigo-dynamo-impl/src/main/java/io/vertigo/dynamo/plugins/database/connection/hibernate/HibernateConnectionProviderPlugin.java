@@ -43,6 +43,7 @@ import org.hibernate.jdbc.ReturningWork;
  * @author pchretien, npiedeloup
  */
 public final class HibernateConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
@@ -53,6 +54,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	public HibernateConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
 		super(new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
+		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
 	}
@@ -72,8 +74,6 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 			}
 		});
 	}
-
-	private final VTransactionManager transactionManager;
 
 	/** {@inheritDoc} */
 	@Override
