@@ -43,6 +43,7 @@ __In Bold__ : Potential compatibility problems
 * [Persona] Added custom attributes on UserSession to register data from addons
 * [Tempo] Added more tests
 * [Tempo] Added log for error
+* __[Vega] Replaced session attribute key : vertigo.rest.Session to vertigo.webservice.Session__ 
 * __[Vega] Replaced SparkApplication by simpler VegaSparkFilter__ 
 * [Vega] Fixed swagger for some path
 * __[Vega] Renamed ApplicationServletContextListener to AppServletContextListener__, and removed Abstract parent
