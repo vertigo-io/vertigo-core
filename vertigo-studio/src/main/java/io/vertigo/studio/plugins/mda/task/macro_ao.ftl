@@ -29,7 +29,7 @@
 				.build();
     <#if taskDefinition.out>
 		<#if !taskDefinition.outAttribute.notNull>
-		return Option.option(getTaskManager()
+		return Option.option((${taskDefinition.outAttribute.dataType})getTaskManager()
 				.execute(task)
 				.getResult());
 		<#else>
