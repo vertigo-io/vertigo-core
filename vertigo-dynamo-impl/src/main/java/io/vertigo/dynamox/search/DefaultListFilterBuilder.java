@@ -77,7 +77,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 *   5: separator value
 	 */
 	//private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
-	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?(?:\\s+(?:to|TO|To)\\s+#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
+	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#(?:\\!\\((\\S+)\\))?(?:\\s+(?:to|TO|To)\\s+#(\\S+)#)?(?:\\!\\((\\S+)\\))?)?([^\\s#]*)(\\s|$)+";
 	private final static Pattern QUERY_PATTERN = Pattern.compile(QUERY_PATTERN_STRING);
 
 	private final static String FULL_QUERY_PATTERN_STRING = "^(?:" + QUERY_PATTERN_STRING + ")*";
