@@ -218,15 +218,16 @@ public class DefaultListFilterBuilderTest {
 				{ "ALL:#int1#", testBean, "ALL:5" }, //4
 				{ "ALL:#int2#", testBean, "ALL:10" }, //5
 				{ "ALL:[#int1# to #int2#] ", testBean, "ALL:[5 to 10]" }, //6
-				{ "ALL:[#date1# to #date2#] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //7
-				{ "ALL:[#int1# to #null# ] ", testBean, "ALL:[5 to  ]" }, //8
-				{ "ALL:[#int1# to #null#!(*)] ", testBean, "ALL:[5 to *]" }, //9
-				{ "ALL:[#null#!(*) to #int2#] ", testBean, "ALL:[* to 10]" }, //10
-				{ "ALL:[#null# to #null#] ", testBean, "ALL:[  to  ]" }, //11
-				{ "ALL:[#date1# to #null#!(*)] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //12
+				{ "ALL:[#int1# TO #int2#] ", testBean, "ALL:[5 to 10]" }, //7
+				{ "ALL:[#date1# to #date2#] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //8
+				{ "ALL:[#int1# to #null#] ", testBean, "ALL:[5 to *]" }, //9
+				{ "ALL:[#int1# to #null#!(*)] ", testBean, "ALL:[5 to *]" }, //10
+				{ "ALL:[#null#!(*) to #int2#] ", testBean, "ALL:[* to 10]" }, //11
+				{ "ALL:[#null# to #null#] ", testBean, "" }, //12
+				{ "ALL:[ #null# to #null# ] ", testBean, "ALL:[  ]" }, //13
+				{ "ALL:[#date1# to #null#!(*)] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //14
 
 		};
-		testObjectFixedQuery(testQueries[11]);
 		testObjectFixedQuery(testQueries);
 	}
 

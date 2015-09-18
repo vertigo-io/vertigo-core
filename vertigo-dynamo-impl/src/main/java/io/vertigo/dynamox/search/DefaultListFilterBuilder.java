@@ -76,7 +76,8 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 *   4: post-expression value
 	 *   5: separator value
 	 */
-	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
+	//private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
+	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?(?:\\!\\((\\S+)\\))?(?:\\s+(?:to|TO|To)\\s+#(\\S+)#)?(?:\\!\\((\\S+)\\))?([^\\s#]*)(\\s|$)+";
 	private final static Pattern QUERY_PATTERN = Pattern.compile(QUERY_PATTERN_STRING);
 
 	private final static String FULL_QUERY_PATTERN_STRING = "^(?:" + QUERY_PATTERN_STRING + ")*";
@@ -190,13 +191,29 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String preExpression = queryMatcher.group(2);
 			final String fieldExpression = queryMatcher.group(3);
 			final String defaultValue = queryMatcher.group(4);
-			final String postExpression = queryMatcher.group(5);
-			final String separator = queryMatcher.group(6);
+			final String rangeEndFieldExpression = queryMatcher.group(5);
+			final String rangeDefaultValue = queryMatcher.group(6);
+			final String postExpression = queryMatcher.group(7);
+			final String separator = queryMatcher.group(8);
 			//On traite l'expression avant de concaténer, car si le critère est null on retire tout
-			appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, postExpression, defaultValue);
+			if (rangeEndFieldExpression != null) {
+				appendRangeExpression(query, indexFieldName, preExpression, fieldExpression, postExpression, defaultValue, rangeEndFieldExpression, rangeDefaultValue);
+			} else {
+				appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, postExpression, defaultValue);
+			}
 			query.append(separator);
 		}
 		return query.toString();
+	}
+
+	private void appendRangeExpression(final StringBuilder query, final String indexFieldName, final String preExpression, final String fieldExpression, final String postExpression, final String defaultValue, final String rangeEndFieldExpression, final String rangeDefaultValue) {
+		if (defaultValue == null && (fieldExpression == null || getFieldValue(fieldExpression) == null)
+				&& rangeDefaultValue == null && (rangeEndFieldExpression == null || getFieldValue(rangeEndFieldExpression) == null)) {
+			//if nothing null => no criteria
+			return;
+		}
+		appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, null, defaultValue != null ? defaultValue : "*");
+		appendFieldExpression(query, " to ", null, rangeEndFieldExpression, postExpression, rangeDefaultValue != null ? rangeDefaultValue : "*");
 	}
 
 	private void appendFieldExpression(final StringBuilder query, final String indexFieldName, final String preExpression, final String fieldExpression, final String postExpression, final String defaultValue) {
@@ -230,6 +247,17 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendIfNotNull(query, preExpression);
 			appendIfNotNull(query, postExpression);
 		}
+	}
+
+	private Object getFieldValue(final String fieldExpression) {
+		final Matcher expressionMatcher = FIELD_EXPRESSION_PATTERN.matcher(fieldExpression);
+		Assertion.checkArgument(expressionMatcher.matches(), "BuildQuery syntax error, field ({0}) in query ({1}) should match a criteria fieldName", fieldExpression, myBuildQuery);
+		//-----
+		final String fieldName = expressionMatcher.group(2);
+		if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
+			return myCriteria.toString();
+		}
+		return BeanUtil.getValue(myCriteria, fieldName);
 	}
 
 	private static void appendSimpleCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value) {
