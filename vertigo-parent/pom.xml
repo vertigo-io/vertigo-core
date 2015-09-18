@@ -117,7 +117,7 @@ limitations under the License. -->
 			        <encoding>${project.build.sourceEncoding}</encoding>
 			        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 			        <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-			        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+			        <argLine>-Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine>
 			    </configuration>
 			</plugin>
 			<plugin>
