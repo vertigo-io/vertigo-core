@@ -71,6 +71,9 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	/** {@inheritDoc} */
 	@Override
 	public SqlCallableStatement createCallableStatement(final SqlConnection connection, final String procName) {
+		//On vérifie la norme des CallableStatement (cf : http://java.sun.com/j2se/1.4.2/docs/api/java/sql/CallableStatement.html)
+		//S'il on utilise call, il faut les {..}, sinon les erreurs SQL ne sont pas tout le temps transformées en SQLException (au moins pour oracle)
+		Assertion.checkArgument(!procName.contains("call ") || procName.charAt(0) == '{' && procName.charAt(procName.length() - 1) == '}', "Les appels de procédures avec call, doivent être encapsuler avec des {...}, sans cela il y a une anomalie de remonté d'erreur SQL");
 		return new SqlCallableStatementImpl(statementHandler, dataBaseListener, connection, procName);
 	}
 

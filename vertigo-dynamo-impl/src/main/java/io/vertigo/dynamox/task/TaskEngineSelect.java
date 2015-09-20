@@ -60,12 +60,6 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 		super(scriptManager, transactionManager, sqlDataBaseManager);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void checkSqlQuery(final String sql) {
-		//Aucune vérification à priori.
-	}
-
 	/*
 	 * Récupération de l'attribut OUT. Il doit être unique. 
 	 */

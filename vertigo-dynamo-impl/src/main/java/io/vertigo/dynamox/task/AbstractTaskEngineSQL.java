@@ -151,19 +151,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected abstract int doExecute(final SqlConnection connection, final S statement) throws SQLException;
 
-	/**
-	 * Vérification de la syntaxe sql.
-	 * @param sql Syntaxe sql de la requête
-	 */
-	protected abstract void checkSqlQuery(String sql);
-
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 		final String sql = prepareParams(getSqlQuery().trim());
-		checkSqlQuery(sql);
-
 		try (final S statement = createStatement(sql, connection)) {
 			//Inialise les paramètres.
 			registerParameters(statement);

@@ -52,12 +52,6 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkSqlQuery(final String sql) {
-		//Aucune vérification à priori.
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
