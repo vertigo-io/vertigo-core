@@ -326,11 +326,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final List<Facet> facets = facetedQueryResult.getFacets();
 			final JsonObject jsonFacet = new JsonObject();
 			for (final Facet facet : facets) {
-				final Map<String, Long> maps = new HashMap<>();
+				final JsonObject jsonFacetValues = new JsonObject();
 				for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-					maps.put(entry.getKey().getLabel().getDisplay(), entry.getValue());
+					jsonFacetValues.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
 				}
-				final JsonObject jsonFacetValues = (JsonObject) context.serialize(maps);
 				final String facetName = facet.getDefinition().getName();
 				jsonFacet.add(facetName, jsonFacetValues);
 			}
