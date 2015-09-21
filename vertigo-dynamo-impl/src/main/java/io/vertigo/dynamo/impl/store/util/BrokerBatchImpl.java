@@ -68,25 +68,22 @@ import java.util.Set;
  * @param <P> Type de la clef primaire.
  * @author jmforhan
  */
-public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> {
+final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> {
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private static final int GET_LIST_PAQUET_SIZE = 1000;
 	private final TaskManager taskManager;
-	private final DtDefinition dtDefinition;
 
 	/**
 	 * Construit une instance de BrokerBatchImpl.
 	 *
 	 * @param dtDefinition Définition associé à l'objet géré
 	 */
-	public BrokerBatchImpl(final DtDefinition dtDefinition, final TaskManager taskManager) {
-		Assertion.checkNotNull(dtDefinition);
+	BrokerBatchImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		this.dtDefinition = dtDefinition;
 	}
 
 	private static String getDtcName(final DtDefinition dtDef) {
@@ -95,8 +92,10 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> getList(final Collection<P> idList) {
+	public DtList<D> getList(final DtDefinition dtDefinition, final Collection<P> idList) {
+		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(idList);
+		//-----
 		final DtList<D> dtc = new DtList<>(dtDefinition);
 		// On regarde s'il y a quelquechose à faire
 		if (idList.isEmpty()) {
@@ -111,10 +110,10 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 			pkField.getDataAccessor().setValue(dto, id);
 			dtc.add(dto);
 		}
-		return getList(pkField.getName(), dtc);
+		return getList(dtDefinition, pkField.getName(), dtc);
 	}
 
-	private DtList<D> getList(final String fieldName, final DtList<D> dtc) {
+	private DtList<D> getList(final DtDefinition dtDefinition, final String fieldName, final DtList<D> dtc) {
 		// On splitte la collection par paquet
 		final Set<DtList<D>> set = new HashSet<>();
 		DtList<D> tmp = null;
@@ -148,12 +147,14 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		// Exécution de la tache
 		Domain dtcDomain = Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class);
 		final String taskName = "TK_LOAD_BY_LST_" + fieldName + "_" + dtDef.getLocalName();
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request)
 				.addInAttribute(inDtcName, dtcDomain, true)
-				.withOutAttribute("out", dtcDomain, true);
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.build();
+				.withOutAttribute("out", dtcDomain, true)
+				.build();
+
 		// On exécute par paquet
 		final DtList<D> ret = new DtList<>(dtDefinition);
 		for (final DtList<D> paq : set) {
@@ -171,10 +172,13 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<P, D> getMap(final Collection<P> idList) {
+	public Map<P, D> getMap(final DtDefinition dtDefinition, final Collection<P> idList) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(idList);
+		//-----
 		final DtField pkField = dtDefinition.getIdField().get();
 		final Map<P, D> map = new HashMap<>();
-		for (final D dto : getList(idList)) {
+		for (final D dto : getList(dtDefinition, idList)) {
 			map.put((P) pkField.getDataAccessor().getValue(dto), dto);
 		}
 		return map;
@@ -182,7 +186,10 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> DtList<D> getListByField(final String fieldName, final Collection<O> value) {
+	public <O> DtList<D> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(fieldName);
+		//-----
 		Assertion.checkNotNull(value);
 		final DtList<D> dtc = new DtList<>(dtDefinition);
 		// On regarde s'il y a quelquechose à faire
@@ -198,15 +205,18 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 			field.getDataAccessor().setValue(dto, sel);
 			dtc.add(dto);
 		}
-		return getList(field.getName(), dtc);
+		return getList(dtDefinition, field.getName(), dtc);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> Map<O, DtList<D>> getMapByField(final String fieldName, final Collection<O> value) {
+	public <O> Map<O, DtList<D>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(fieldName);
+		//-----
 		final DtField field = dtDefinition.getField(fieldName);
 		final Map<O, DtList<D>> map = new HashMap<>();
-		for (final D dto : getListByField(fieldName, value)) {
+		for (final D dto : getListByField(dtDefinition, fieldName, value)) {
 			final O key = (O) field.getDataAccessor().getValue(dto);
 			if (!map.containsKey(key)) {
 				final DtList<D> dtc = new DtList<>(dtDefinition);

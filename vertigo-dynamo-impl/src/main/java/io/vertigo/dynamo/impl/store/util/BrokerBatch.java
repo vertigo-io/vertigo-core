@@ -21,6 +21,7 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 
@@ -44,7 +45,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param idList liste des identifiants
 	 * @return Liste des objets correspondants.
 	 */
-	DtList<D> getList(Collection<P> idList);
+	DtList<D> getList(final DtDefinition dtDefinition, Collection<P> idList);
 
 	/**
 	 * Récupère la liste des objets correspondant à des ids et retourne sous forme de map entre la clé primaire et l'objet
@@ -54,7 +55,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param idList liste des identifiants
 	 * @return map entre index et l'objet associé.
 	 */
-	Map<P, D> getMap(Collection<P> idList);
+	Map<P, D> getMap(final DtDefinition dtDefinition, Collection<P> idList);
 
 	/**
 	 * Récupère la liste des objets associé à une collection de clé étrangère.
@@ -64,7 +65,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param <O> type de la valeur de sélection
 	 * @return Liste des objets correspondants.
 	 */
-	<O extends Object> DtList<D> getListByField(final String fieldName, final Collection<O> value);
+	<O extends Object> DtList<D> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
 
 	/**
 	 * Récupère la liste des objets associé à une collection de clé étrangère et la retourne sous forme de Map dont la clé est
@@ -75,5 +76,5 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param <O> type de la valeur de sélection
 	 * @return map entre valeur de sélection et objet associé.
 	 */
-	<O extends Object> Map<O, DtList<D>> getMapByField(final String fieldName, final Collection<O> value);
+	<O extends Object> Map<O, DtList<D>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
 }

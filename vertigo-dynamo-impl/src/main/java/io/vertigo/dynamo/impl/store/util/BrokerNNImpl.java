@@ -42,7 +42,7 @@ import java.util.Set;
  * Gestion des tables de relations NN.
  * @author dchallas
  */
-public final class BrokerNNImpl implements BrokerNN {
+final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;
 	private final TaskManager taskManager;
 
@@ -72,7 +72,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	 * Constructeur.
 	 * @param taskManager Manager des Tasks
 	 */
-	public BrokerNNImpl(final TaskManager taskManager) {
+	BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
