@@ -48,7 +48,7 @@ public final class TemplateTaskDefinition {
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
 			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
 			ins.add(templateTaskAttribute);
-			hasOption = hasOption || !attribute.isNotNull();
+			hasOption = hasOption || !attribute.isRequired();
 		}
 
 		if (taskDefinition.getOutAttributeOption().isDefined()) {
@@ -56,7 +56,7 @@ public final class TemplateTaskDefinition {
 			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
 			//On est dans le cas des paramètres OUT
 			out = templateTaskAttribute;
-			hasOption = hasOption || !attribute.isNotNull();
+			hasOption = hasOption || !attribute.isRequired();
 		} else {
 			out = null;
 		}

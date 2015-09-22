@@ -50,23 +50,23 @@ public final class TaskAttribute {
 	private final Domain domain;
 
 	/** Attribut obligatoire (not_nul) ou non. */
-	private final boolean notNull;
+	private final boolean required;
 
 	/**
 	 * Constructeur
 	 *
 	 * @param attributeName Nom de l'attribut
 	 * @param domain Domaine de l'attribut
-	 * @param notNull Null ?
+	 * @param required Null ?
 	 * @param in in=SET ; !in= GET
 	 */
-	TaskAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
+	TaskAttribute(final String attributeName, final Domain domain, final boolean required, final boolean in) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----
 		name = attributeName;
 		this.domain = domain;
-		this.notNull = notNull;
+		this.required = required;
 		this.in = in;
 	}
 
@@ -83,8 +83,8 @@ public final class TaskAttribute {
 	 *
 	 * @return Si la propriété est non null
 	 */
-	public boolean isNotNull() {
-		return notNull;
+	public boolean isRequired() {
+		return required;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public final class TaskAttribute {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{ name : " + name + ", domain :" + domain + ", in :" + in + ", notnull :" + notNull + "]";
+		return "{ name : " + name + ", domain :" + domain + ", in :" + in + ", required :" + required + "]";
 	}
 
 	/**
@@ -119,7 +119,7 @@ public final class TaskAttribute {
 	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
-		if (isNotNull()) {
+		if (isRequired()) {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {

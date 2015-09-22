@@ -91,7 +91,7 @@ public final class DtDefinitionReport implements DataReport {
 					.append("</li><li>")
 					.append("persistant:").append(dtField.isPersistent())
 					.append("</li><li>")
-					.append("notNull:").append(dtField.isNotNull())
+					.append("required:").append(dtField.isRequired())
 					.append("</li><li>")
 					.append("label:").append(dtField.getLabel())
 					.append("</li>")

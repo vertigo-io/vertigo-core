@@ -35,7 +35,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
-		if (value == null && dtField.isNotNull()) {
+		if (value == null && dtField.isRequired()) {
 			dtObjectErrors.addError(getCamelCaseFieldName(dtField), new MessageText("Le champ doit être renseigné", null));
 		} else {
 			try {

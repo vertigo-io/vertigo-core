@@ -80,7 +80,7 @@ class AnnotationWriter {
 			buffer.append("type = \"" + dtField.getType() + "\", ");
 		}
 		// La propriété Not null est obligatoirement renseignée
-		if (dtField.isNotNull()) {
+		if (dtField.isRequired()) {
 			// false est la valeur par défaut de notNull dans l'annotation Field
 			buffer.append("notNull = true, ");
 		}
