@@ -35,6 +35,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	/**
 	 * Ajoute un champ booléen.
 	 * @param fieldName Nom du champ
+	 * @return Builder
 	 */
 	public PublisherNodeDefinitionBuilder addBooleanField(final String fieldName) {
 		return addField(fieldName, PublisherFieldType.Boolean, null);
@@ -43,6 +44,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	/**
 	 * Ajoute un champ String.
 	 * @param fieldName Nom du champ
+	 * @return Builder
 	 */
 	public PublisherNodeDefinitionBuilder addStringField(final String fieldName) {
 		return addField(fieldName, PublisherFieldType.String, null);
@@ -51,6 +53,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	/**
 	 * Ajoute un champ Image.
 	 * @param fieldName Nom du champ
+	 * @return Builder
 	 */
 	public PublisherNodeDefinitionBuilder addImageField(final String fieldName) {
 		return addField(fieldName, PublisherFieldType.Image, null);
@@ -60,6 +63,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	 * Ajoute un champ Data (autre noeud).
 	 * @param fieldName Nom du champ
 	 * @param nodeDefinition Définition du noeud
+	 * @return Builder
 	 */
 	public PublisherNodeDefinitionBuilder addNodeField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
 		return addField(fieldName, PublisherFieldType.Node, nodeDefinition);
@@ -69,6 +73,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	 * Ajoute un champ List (liste composée de noeud).
 	 * @param fieldName Nom du champ
 	 * @param nodeDefinition Définition des éléments de la liste
+	 * @return Builder
 	 */
 	public PublisherNodeDefinitionBuilder addListField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
 		return addField(fieldName, PublisherFieldType.List, nodeDefinition);
@@ -80,7 +85,6 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	}
 
 	/**
-	 *
 	 * @return PublisherDataNodeDefinition
 	 */
 	@Override
