@@ -80,6 +80,11 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#(?:\\!\\((\\S+)\\))?(?:\\s+(?:to|TO|To)\\s+#(\\S+)#)?(?:\\!\\((\\S+)\\))?)?([^\\s#]*)(\\s|$)+";
 	private final static Pattern QUERY_PATTERN = Pattern.compile(QUERY_PATTERN_STRING);
 
+	private final static String MULTIFIELD1_PATTERN_STRING = "(\\W*)\\[([^\\]]+)\\]";
+	private final static Pattern MULTIFIELD1_PATTERN = Pattern.compile(MULTIFIELD1_PATTERN_STRING);
+	private final static String MULTIFIELD2_PATTERN_STRING = "(\\W*)(\\w+)(\\W*[0-9]*)(,|$)";
+	private final static Pattern MULTIFIELD2_PATTERN = Pattern.compile(MULTIFIELD2_PATTERN_STRING);
+
 	private final static String FULL_QUERY_PATTERN_STRING = "^(?:" + QUERY_PATTERN_STRING + ")*";
 	private final static Pattern FULL_QUERY_PATTERN = Pattern.compile(FULL_QUERY_PATTERN_STRING);
 
@@ -221,9 +226,9 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final Matcher expressionMatcher = FIELD_EXPRESSION_PATTERN.matcher(fieldExpression);
 			Assertion.checkArgument(expressionMatcher.matches(), "BuildQuery syntax error, field ({0}) in query ({1}) should match a criteria fieldName", fieldExpression, myBuildQuery);
 			//-----
-			final String preModifier = expressionMatcher.group(1);
+			final String preFieldModifier = expressionMatcher.group(1);
 			final String fieldName = expressionMatcher.group(2);
-			final String postModifier = expressionMatcher.group(3);
+			final String postFieldModifier = expressionMatcher.group(3);
 
 			final Object value;
 			if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
@@ -232,11 +237,11 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 				value = BeanUtil.getValue(myCriteria, fieldName);
 			}
 			if (value instanceof String) { //so not null too
-				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, (String) value, defaultValue);
+				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preFieldModifier, postFieldModifier, (String) value, defaultValue);
 			} else if (value instanceof Date) { //so not null too
-				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, formatDate((Date) value));
+				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preFieldModifier, postFieldModifier, formatDate((Date) value));
 			} else if (value != null) {
-				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value.toString());
+				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preFieldModifier, postFieldModifier, value.toString());
 			} else if (defaultValue != null) { //if value null => defaultValue
 				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, null, null, defaultValue);
 			}
@@ -269,13 +274,18 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		appendIfNotNull(query, postExpression);
 	}
 
-	private static void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value, final String defaultValue) {
+	private static void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression,
+			final String preFieldModifier, final String postFieldModifier, final String value, final String defaultValue) {
 
 		final String stringValue = cleanUserQuery(value, defaultValue != null ? defaultValue : "*");
 		/*if ("*".equals(stringValue)) {
 			appendSimpleCriteria(query, indexFieldName != null ? indexFieldName : "*", preExpression, postExpression, "", "", stringValue);
 			return;
 		}*/
+
+		final boolean multipleFieldName = indexFieldName != null && indexFieldName.contains("[");
+		String preMultiFields = "";
+
 		//split space chars to add preModifier and postModifier
 		final Matcher criteriaValueMatcher = CRITERIA_VALUE_PATTERN.matcher(stringValue);
 		final StringBuilder expressionValue = new StringBuilder();
@@ -312,34 +322,34 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String criteriaValue = criteriaValueMatcher.group(foundGroup + 2);
 			final String overridedPostModifier = criteriaValueMatcher.group(foundGroup + 3);
 			if (criteriaValue != null && !criteriaValue.trim().isEmpty()) {
-				if (overridedFieldName != null) {
-					//si le field est surchargé on flush l'expression précédente
+				if (multipleFieldName && overridedFieldName == null) {
+					final StringBuilder wordExpressionValue = new StringBuilder();
+					final Matcher multifieldMatcher = MULTIFIELD1_PATTERN.matcher(indexFieldName);
+					final boolean found = multifieldMatcher.find();
+					Assertion.checkState(found, "Multifield syntaxe invalid in {0}", indexFieldName);
+					String multifieldPreMissingPart = preMissingPart;
+					final String multifieldPostMissingPart = postMissingPart;
+					preMultiFields = multifieldMatcher.group(1);
+					final String fields = multifieldMatcher.group(2);
+					final Matcher multifield2Matcher = MULTIFIELD2_PATTERN.matcher(fields);
+					while (multifield2Matcher.find()) {
+						//final String preMonofield = multifield2Matcher.group(1); // illegal
+						final String monofield = multifield2Matcher.group(2);
+						final String postMonofield = multifield2Matcher.group(3);
 
-					appendMissingPart(expressionValue, query, postMissingPart);
-					flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
-					appendMissingPart(expressionValue, query, preMissingPart);
-					//et on ajout la requete sur l'autre champs
-					appendIfNotNull(query, overridedFieldName);
-					query.append('(');
-					appendIfNotNull(query, overridedPreModifier); //si le field est surchargé on ne prend pas les pre/postModifier du pattern
-					appendIfNotNull(query, criteriaValue);
-					appendIfNotNull(query, overridedPostModifier);
-					query.append(')');
-
-				} else if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
-					appendMissingPart(expressionValue, expressionValue, preMissingPart);
-					appendMissingPart(expressionValue, expressionValue, postMissingPart);
-					appendIfNotNull(expressionValue, criteriaValue);
-				} else if (foundGroup == 13 && !"*:".equals(postMissingPart)) { //case of *:* and *, maybe better tested..
-					appendMissingPart(expressionValue, query, preMissingPart);
-					appendMissingPart(expressionValue, expressionValue, postMissingPart);
-					appendIfNotNull(expressionValue, criteriaValue);
+						appendCriteriaValue(expressionValue, wordExpressionValue, null, criteriaValue,
+								null, null, monofield + ":(", postFieldModifier + ")" + postMonofield,
+								overridedFieldName, overridedPreModifier, overridedPostModifier,
+								multifieldPreMissingPart, multifieldPostMissingPart, foundGroup);
+						multifieldPreMissingPart = " ";
+					}
+					//on flush le mot
+					flushExpressionValueToQuery(expressionValue, null, preFieldModifier, null, wordExpressionValue);
 				} else {
-					appendMissingPart(expressionValue, query, preMissingPart);
-					appendMissingPart(expressionValue, expressionValue, postMissingPart);
-					appendIfNotNull(expressionValue, overridedPreModifier.isEmpty() ? preModifier : overridedPreModifier);
-					appendIfNotNull(expressionValue, criteriaValue);
-					appendIfNotNull(expressionValue, overridedPostModifier.isEmpty() ? postModifier : overridedPostModifier);
+					appendCriteriaValue(query, expressionValue, multipleFieldName ? null : indexFieldName, criteriaValue,
+							multipleFieldName ? preMultiFields : preExpression, postExpression, preFieldModifier, postFieldModifier,
+							overridedFieldName, overridedPreModifier, overridedPostModifier,
+							preMissingPart, postMissingPart, foundGroup);
 				}
 			} //else no query
 		}
@@ -356,7 +366,35 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 		appendMissingPart(expressionValue, query, preMissingPart);
 		appendMissingPart(expressionValue, query, postMissingPart);
-		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
+		flushExpressionValueToQuery(query, multipleFieldName ? null : indexFieldName, multipleFieldName ? preMultiFields : preExpression, postExpression, expressionValue);
+	}
+
+	private static void appendCriteriaValue(final StringBuilder query, final StringBuilder expressionValue, final String indexFieldName, final String criteriaValue,
+			final String preExpression, final String postExpression, final String preModifier, final String postModifier,
+			final String overridedFieldName, final String overridedPreModifier, final String overridedPostModifier,
+			final String preMissingPart, final String postMissingPart, final int foundGroup) {
+		if (overridedFieldName != null) {
+			//si le field est surchargé on flush l'expression précédente
+			appendMissingPart(expressionValue, query, postMissingPart);
+			flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
+			appendMissingPart(expressionValue, query, preMissingPart);
+			//et on ajout la requete sur l'autre champs
+			flushExpressionValueToQuery(query, overridedFieldName, overridedPreModifier, overridedPostModifier, new StringBuilder(criteriaValue));
+		} else if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
+			appendMissingPart(expressionValue, expressionValue, preMissingPart);
+			appendMissingPart(expressionValue, expressionValue, postMissingPart);
+			appendIfNotNull(expressionValue, criteriaValue);
+		} else if (foundGroup == 13 && !"*:".equals(postMissingPart)) { //case of *:* and *, maybe better tested..
+			appendMissingPart(expressionValue, query, preMissingPart);
+			appendMissingPart(expressionValue, expressionValue, postMissingPart);
+			appendIfNotNull(expressionValue, criteriaValue);
+		} else {
+			appendMissingPart(expressionValue, query, preMissingPart);
+			appendMissingPart(expressionValue, expressionValue, postMissingPart);
+			appendIfNotNull(expressionValue, overridedPreModifier.isEmpty() ? preModifier : overridedPreModifier);
+			appendIfNotNull(expressionValue, criteriaValue);
+			appendIfNotNull(expressionValue, overridedPostModifier.isEmpty() ? postModifier : overridedPostModifier);
+		}
 	}
 
 	private static String cleanUserQuery(final String value, final String defaultValue) {
@@ -368,7 +406,10 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
 		if (expressionValue.length() > 0) {
-			final boolean useParenthesis = (indexFieldName != null && !indexFieldName.isEmpty());
+			final boolean useParenthesis = expressionValue.length() > 1 && (
+					(indexFieldName != null && !indexFieldName.isEmpty())
+							|| (preExpression != null && !preExpression.isEmpty())
+							|| (postExpression != null && !postExpression.isEmpty()));
 			appendIfNotNull(query, indexFieldName);
 			appendIfNotNull(query, preExpression);
 			if (useParenthesis) {

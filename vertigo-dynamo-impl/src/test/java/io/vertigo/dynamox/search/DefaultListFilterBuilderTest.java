@@ -93,7 +93,7 @@ public class DefaultListFilterBuilderTest {
 	public void testNullableStringQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "", "ALL:(*)" }, //0
+				{ "ALL:#query#", "", "ALL:*" }, //0
 				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 to *]" }, //1
 		};
 		testStringFixedQuery(testQueries);
@@ -155,11 +155,11 @@ public class DefaultListFilterBuilderTest {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#+query*# +security:fixedValue", "Test", "ALL:(+Test*) +security:fixedValue" }, //0
-				{ "ALL:#+query*# +security:fixedValue", "*", "ALL:(*) +security:fixedValue" }, //1
-				{ "ALL:#+query*# +security:fixedValue", "*:*", "*:(*) +security:fixedValue" }, //2
-				{ "ALL:#+query*# +security:fixedValue", " ", "ALL:(*) +security:fixedValue" }, //3
-				{ "ALL:#+query*# +security:fixedValue", "", "ALL:(*) +security:fixedValue" }, //4
-				{ "ALL:#+query*# +security:fixedValue", "YEAR:*", "YEAR:(*) +security:fixedValue" }, //5
+				{ "ALL:#+query*# +security:fixedValue", "*", "ALL:* +security:fixedValue" }, //1
+				{ "ALL:#+query*# +security:fixedValue", "*:*", "*:* +security:fixedValue" }, //2
+				{ "ALL:#+query*# +security:fixedValue", " ", "ALL:* +security:fixedValue" }, //3
+				{ "ALL:#+query*# +security:fixedValue", "", "ALL:* +security:fixedValue" }, //4
+				{ "ALL:#+query*# +security:fixedValue", "YEAR:*", "YEAR:* +security:fixedValue" }, //5
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -241,7 +241,7 @@ public class DefaultListFilterBuilderTest {
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //0
-				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanEmpty, "+PRO_ID:(*) +ALL:(Test test2)" }, //1
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanEmpty, "+PRO_ID:* +ALL:(Test test2)" }, //1
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanOne, "+PRO_ID:(12) +ALL:(Test test2)" }, //2
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(12 13) +ALL:(Test test2)" }, //3
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(+12 +13) +ALL:(Test test2)" }, //4
@@ -251,6 +251,23 @@ public class DefaultListFilterBuilderTest {
 
 		};
 		testObjectFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testMultiFieldQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "+FIELD_1:#query*#", "Test test2", "+FIELD_1:(Test* test2*)" }, //0
+				{ "[FIELD_1,FIELD_2]:#query*#", "Test test2", "FIELD_1:(Test*) FIELD_2:(Test*) FIELD_1:(test2*) FIELD_2:(test2*)" }, //1
+				{ "+[FIELD_1,FIELD_2]:#query*#", "Test test2", "+(FIELD_1:(Test*) FIELD_2:(Test*) FIELD_1:(test2*) FIELD_2:(test2*))" }, //2
+				{ "+([FIELD_1,FIELD_2]:#query*#)", "Test test2", "+((FIELD_1:(Test*) FIELD_2:(Test*) FIELD_1:(test2*) FIELD_2:(test2*)))" }, //3
+				{ "[FIELD_1,FIELD_2]:#+query*#", "Test test2", "+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*))" }, //4
+				//error { "[+FIELD_1,FIELD2]:#query*#", "Test test2", "+((FIELD_1:(Test*) FIELD_2:(Test*)) (FIELD_1:(test2*) FIELD_2:(test2*)))" }, //4
+				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test test2", "+(FIELD_1:(Test*) FIELD_2:(Test*)^2) +(FIELD_1:(test2*) FIELD_2:(test2*)^2)" }, //5
+				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test ALL:test2", "+(FIELD_1:(Test*) FIELD_2:(Test*)^2) ALL:(test2)" }, //6
+		};
+		testStringFixedQuery(testQueries[6]);
+		testStringFixedQuery(testQueries);
 	}
 
 	private void testStringFixedQuery(final String[]... testData) {
