@@ -96,7 +96,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static final boolean required(final String fieldPath) {
 		if (fieldPath.indexOf('.') > 0) { //Le champs est n'est pas porté par un Object
-			return getDtField(fieldPath).isNotNull();
+			return getDtField(fieldPath).isRequired();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
 	}
