@@ -48,6 +48,7 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 					break;
 				case POST:
 					Spark.post(sparkJavaRoute);
+					Spark.options(sparkJavaRoute);
 					break;
 				case PUT:
 					Spark.put(sparkJavaRoute);

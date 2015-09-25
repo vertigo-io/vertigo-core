@@ -23,6 +23,7 @@ import javax.servlet.MultipartConfigElement;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
+import spark.utils.SparkUtils;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
@@ -37,6 +38,7 @@ public final class JettyMultipartConfig extends Filter {
 	 * @param tempPath path for uploaded tempfiles
 	 */
 	public JettyMultipartConfig(final String tempPath) {
+		super(SparkUtils.ALL_PATHS, "*/*");
 		multipartConfigElement = new MultipartConfigElement(tempPath, 30 * 1024 * 1024L, 5 * 30 * 1024 * 1024L, 50 * 1024);
 	}
 
