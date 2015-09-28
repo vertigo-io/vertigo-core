@@ -31,7 +31,7 @@ public final class SuperHero implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "superHero ID")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "superHero ID")
 	private Long id;
 
 	@Field(domain = "DO_STRING", label = "name")

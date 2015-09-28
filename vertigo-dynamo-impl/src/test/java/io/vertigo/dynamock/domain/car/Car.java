@@ -54,7 +54,7 @@ public final class Car implements KeyConcept {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_CAR")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "identifiant de la voiture")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
@@ -76,7 +76,7 @@ public final class Car implements KeyConcept {
 	 * @return String make <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MAKE")
-	@Field(domain = "DO_KEYWORD", notNull = true, label = "Constructeur")
+	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
 	public final String getMake() {
 		return make;
 	}
@@ -97,7 +97,7 @@ public final class Car implements KeyConcept {
 	 * @return String model <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MODEL")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Modéle")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
@@ -118,7 +118,7 @@ public final class Car implements KeyConcept {
 	 * @return String description <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "DESCRIPTION")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Descriptif")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Descriptif")
 	public final String getDescription() {
 		return description;
 	}
@@ -139,7 +139,7 @@ public final class Car implements KeyConcept {
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "YEAR")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "Année")
+	@Field(domain = "DO_INTEGER", required = true, label = "Année")
 	public final Integer getYear() {
 		return year;
 	}
@@ -160,7 +160,7 @@ public final class Car implements KeyConcept {
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "KILO")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "Kilométrage")
+	@Field(domain = "DO_INTEGER", required = true, label = "Kilométrage")
 	public final Integer getKilo() {
 		return kilo;
 	}
@@ -181,7 +181,7 @@ public final class Car implements KeyConcept {
 	 * @return Integer price <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "PRICE")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "Prix")
+	@Field(domain = "DO_INTEGER", required = true, label = "Prix")
 	public final Integer getPrice() {
 		return price;
 	}
@@ -202,7 +202,7 @@ public final class Car implements KeyConcept {
 	 * @return java.math.BigDecimal consommation <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "CONSOMMATION")
-	@Field(domain = "DO_CONSO", notNull = true, label = "Consomation")
+	@Field(domain = "DO_CONSO", required = true, label = "Consomation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -222,7 +222,7 @@ public final class Car implements KeyConcept {
 	 * @return String motorType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MOTOR_TYPE")
-	@Field(domain = "DO_KEYWORD", notNull = true, label = "Type de moteur")
+	@Field(domain = "DO_KEYWORD", required = true, label = "Type de moteur")
 	public final String getMotorType() {
 		return motorType;
 	}
@@ -243,7 +243,7 @@ public final class Car implements KeyConcept {
 	 * @return Long famId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "FAM_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", notNull = true, label = "Famille")
+	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Famille")
 	public final Long getFamId() {
 		return famId;
 	}

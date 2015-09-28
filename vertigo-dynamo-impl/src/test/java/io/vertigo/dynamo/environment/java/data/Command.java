@@ -50,7 +50,7 @@ public final class Command implements KeyConcept {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CMD_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
 	public Long getCmdId() {
 		return cmdId;
 	}
