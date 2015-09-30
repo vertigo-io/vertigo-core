@@ -19,10 +19,13 @@
 package io.vertigo.dynamox.search.dsl.rules;
 
 import io.vertigo.commons.parser.AbstractRule;
+import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.definition.DslTermQueryDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslTermDefinition;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -39,10 +42,23 @@ public final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition,
 
 	@Override
 	protected Rule<List<?>> createMainRule() {
+		final Rule<List<?>> defaultValueRule = new SequenceRule(
+				new TermRule("!("),
+				new WordRule(false, ")", WordRule.Mode.REJECT),//1
+				new TermRule(")"));
+
+		final Rule<List<?>> termRule = new SequenceRule(
+				DslSyntaxRules.TERM_MARK,
+				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				DslSyntaxRules.WORD, //2
+				DslSyntaxRules.POST_MODIFIER_VALUE, //3
+				DslSyntaxRules.TERM_MARK,
+				new OptionRule<>(defaultValueRule)); //5
+
 		return new SequenceRule(
 				DslSyntaxRules.SPACES,//0
 				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
-				new DslTermRule(), //2
+				termRule, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE); //3);
 	}
 
@@ -50,10 +66,22 @@ public final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition,
 	protected DslTermQueryDefinition handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String preQuery = (String) parsing.get(1);
-		final DslTermDefinition term = (DslTermDefinition) parsing.get(2);
+
+		final List<?> term = (List<?>) parsing.get(2);
+		final String preTerm = (String) term.get(1);
+		final String termField = (String) term.get(2);
+		final String postTerm = (String) term.get(3);
+		final Option<List<?>> defaultRule = (Option<List<?>>) term.get(5);
+		final Option<String> defaultValue;
+		if (defaultRule.isDefined()) {
+			defaultValue = Option.option((String) defaultRule.get().get(1));
+		} else {
+			defaultValue = Option.none();
+		}
+
 		final String postQuery = (String) parsing.get(3);
 		//final String postSpaces = (String) parsing.get(4);
-		return new DslTermQueryDefinition(DslUtil.concat(preSpaces, preQuery), term, postQuery);
+		return new DslTermQueryDefinition(DslUtil.concat(preSpaces, preQuery), preTerm, termField, postTerm, defaultValue, postQuery);
 	}
 
 }
