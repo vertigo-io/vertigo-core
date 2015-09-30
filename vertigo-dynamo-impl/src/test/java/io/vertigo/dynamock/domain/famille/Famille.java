@@ -57,7 +57,7 @@ public final class Famille implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_FAMILLE")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "FAM_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "identifiant de la famille")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "identifiant de la famille")
 	public final Long getFamId() {
 		return famId;
 	}

@@ -54,8 +54,8 @@ public final class Export {
 	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportSheet> sheets) {
 		Assertion.checkNotNull(format);
 		Assertion.checkArgNotEmpty(fileName, "a fileName is required");
-		//Assertion.notNull(title);
-		//Assertion.notNull(author);
+		//Assertion.checkNotNull(title);
+		//Assertion.checkNotNull(author);
 		Assertion.checkNotNull(orientation);
 		Assertion.checkNotNull(sheets);
 		//-----

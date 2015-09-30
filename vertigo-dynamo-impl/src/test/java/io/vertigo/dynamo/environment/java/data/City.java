@@ -48,7 +48,7 @@ public final class City implements DtMasterData {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_CITY")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CIT_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
 	public Long getCitId() {
 		return citId;
 	}
@@ -68,7 +68,7 @@ public final class City implements DtMasterData {
 	 * @return String label <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LABEL")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Label")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -88,7 +88,7 @@ public final class City implements DtMasterData {
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "POSTAL_CODE")
-	@Field(domain = "DO_KEYWORD", notNull = true, label = "Postal code")
+	@Field(domain = "DO_KEYWORD", required = true, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

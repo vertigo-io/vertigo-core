@@ -44,7 +44,7 @@ public @interface Field {
 	/**
 	 * Si le champ est non null.
 	 */
-	boolean notNull() default false;
+	boolean required() default false;
 
 	/**
 	 * Libellé du champ.

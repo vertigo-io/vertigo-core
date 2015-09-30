@@ -52,7 +52,7 @@ public final class VxFileInfo implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_VX_FILE_INFO")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "FIL_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "Identifiant")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "Identifiant")
 	public Long getFilId() {
 		return filId;
 	}
@@ -72,7 +72,7 @@ public final class VxFileInfo implements DtObject {
 	 * @return String fileName <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "FILE_NAME")
-	@Field(domain = "DO_STRING", notNull = true, label = "Nom")
+	@Field(domain = "DO_STRING", required = true, label = "Nom")
 	public String getFileName() {
 		return fileName;
 	}
@@ -92,7 +92,7 @@ public final class VxFileInfo implements DtObject {
 	 * @return String mimeType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MIME_TYPE")
-	@Field(domain = "DO_STRING", notNull = true, label = "Type mime")
+	@Field(domain = "DO_STRING", required = true, label = "Type mime")
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -112,7 +112,7 @@ public final class VxFileInfo implements DtObject {
 	 * @return Long length <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LENGTH")
-	@Field(domain = "DO_LONG", notNull = true, label = "Taille")
+	@Field(domain = "DO_LONG", required = true, label = "Taille")
 	public Long getLength() {
 		return length;
 	}
@@ -132,7 +132,7 @@ public final class VxFileInfo implements DtObject {
 	 * @return java.util.Date lastModified <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LAST_MODIFIED")
-	@Field(domain = "DO_DATE", notNull = true, label = "Date de derniÃ¨re modification")
+	@Field(domain = "DO_DATE", required = true, label = "Date de derniÃ¨re modification")
 	public java.util.Date getLastModified() {
 		return lastModified;
 	}

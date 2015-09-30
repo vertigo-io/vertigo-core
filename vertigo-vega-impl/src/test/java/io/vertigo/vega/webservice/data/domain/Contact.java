@@ -31,12 +31,12 @@ import java.util.List;
 public final class Contact implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DO_ID", type = "PRIMARY_KEY", notNull = true, label = "Contact Id")
+	@Field(domain = "DO_ID", type = "PRIMARY_KEY", required = true, label = "Contact Id")
 	private Long conId;
 	@Field(domain = "DO_CODE", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", notNull = true, label = "Name")
+	@Field(domain = "DO_TEXTE_50", required = true, label = "Name")
 	private String name;
 	@Field(domain = "DO_TEXTE_50", label = "Firstname")
 	private String firstName;
