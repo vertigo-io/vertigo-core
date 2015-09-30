@@ -16,22 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search;
-
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
+package io.vertigo.dynamox.search.dsl.rules;
 
 /**
- * @author  npiedeloup
+ * Util for DSL.
+ * @author npiedeloup
  */
-public class DefaultListFilterBuilderTest extends AbstractListFilterBuilderTest {
+final class DslUtil {
 
-	@Override
-	<O> ListFilterBuilder<O> createListFilterBuilder(final Class<O> criteriaType) {
-		return (ListFilterBuilder<O>) new DefaultListFilterBuilder<>();
+	private DslUtil() {
+		//nothing
 	}
 
-	@Override
-	int getPreferedResult() {
-		return 2;
+	/**
+	 * Concat nullable elements.
+	 * @param elements Nullable elements
+	 * @return Concat string
+	 */
+	static String concat(final String... elements) {
+		boolean allNull = true;
+		final StringBuilder sb = new StringBuilder();
+		for (final String element : elements) {
+			if (element != null) {
+				allNull = false;
+				sb.append(element);
+			}
+		}
+		return allNull ? null : sb.toString();
 	}
 }
