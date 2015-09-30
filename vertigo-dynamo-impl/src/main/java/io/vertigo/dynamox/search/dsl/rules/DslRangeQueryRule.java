@@ -54,7 +54,7 @@ public final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinitio
 				DslSyntaxRules.ARRAY_START,
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
-				new WordRule(false, "TOto", WordRule.Mode.ACCEPT, "TO"),
+				new WordRule(false, "TOto", WordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
 				queriesRule,//6
 				DslSyntaxRules.SPACES,

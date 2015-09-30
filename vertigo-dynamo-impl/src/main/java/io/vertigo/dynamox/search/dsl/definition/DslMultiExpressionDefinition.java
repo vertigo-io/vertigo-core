@@ -1,49 +1,65 @@
 package io.vertigo.dynamox.search.dsl.definition;
 
+import io.vertigo.lang.Assertion;
+
 import java.util.List;
 
+/**
+ * Multi expressions definition.
+ * (preBody)\(?(expression|multiExpression)+\)?(postBody)
+ * @author npiedeloup
+ */
 public final class DslMultiExpressionDefinition {
 
-	//(preMultiExpression)
-	//(expression|multiExpression)+
-	//(postMultiExpression)
-
-	private final String preMultiExpression; //Spaces like
+	private final String preBody; //Spaces like
 	private final boolean block;
 	private final List<DslExpressionDefinition> expressions;
 	private final List<DslMultiExpressionDefinition> multiExpressions;
-	private final String postMultiExpression; //Spaces like
+	private final String postBody; //Spaces like
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(preMultiExpression).append(block ? "(" : "");
+		sb.append(preBody).append(block ? "(" : "");
 		for (final DslExpressionDefinition expression : expressions) {
 			sb.append(expression);
 		}
 		for (final DslMultiExpressionDefinition multiExpression : multiExpressions) {
 			sb.append(multiExpression);
 		}
-		sb.append(block ? ")" : "").append(postMultiExpression);
+		sb.append(block ? ")" : "").append(postBody);
 		return sb.toString();
 	}
 
-	public DslMultiExpressionDefinition(final String preMultiExpression,
+	/**
+	 * @param preBody String before body
+	 * @param block Is mode block
+	 * @param expressions List of simple expression
+	 * @param multiExpressions List of multi-expression
+	 * @param postBody String after body
+	 */
+	public DslMultiExpressionDefinition(final String preBody,
 			final boolean block, final List<DslExpressionDefinition> expressions,
 			final List<DslMultiExpressionDefinition> multiExpressions,
-			final String postMultiExpression) {
-		this.preMultiExpression = preMultiExpression;
+			final String postBody) {
+		Assertion.checkNotNull(preBody);
+		Assertion.checkNotNull(expressions);
+		Assertion.checkNotNull(multiExpressions);
+		Assertion.checkNotNull(postBody);
+		//-----
+		this.preBody = preBody;
 		this.block = block;
 		this.expressions = expressions;
 		this.multiExpressions = multiExpressions;
-		this.postMultiExpression = postMultiExpression;
+		this.postBody = postBody;
 	}
 
 	/**
-	 * @return preMultiExpression
+	 * @return preBody
 	 */
-	public final String getPreMultiExpression() {
-		return preMultiExpression;
+	public final String getPreBody() {
+		return preBody;
 	}
 
 	/**
@@ -68,10 +84,10 @@ public final class DslMultiExpressionDefinition {
 	}
 
 	/**
-	 * @return postMultiExpression
+	 * @return postBody
 	 */
-	public final String getPostMultiExpression() {
-		return postMultiExpression;
+	public final String getPostBody() {
+		return postBody;
 	}
 
 }

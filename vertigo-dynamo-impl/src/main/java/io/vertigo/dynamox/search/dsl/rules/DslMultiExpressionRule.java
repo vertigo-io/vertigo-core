@@ -83,9 +83,9 @@ public final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressio
 				postMultiExpression = (String) blockExpression.get(4);
 				break;
 			case 1:
-				preMultiExpression = null;
+				preMultiExpression = "";
 				many = (List<Choice>) parsing.getResult();
-				postMultiExpression = null;
+				postMultiExpression = "";
 				break;
 			default:
 				throw new IllegalArgumentException("case " + parsing.getValue() + " not implemented");

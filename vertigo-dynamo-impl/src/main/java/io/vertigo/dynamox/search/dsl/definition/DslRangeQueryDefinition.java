@@ -1,36 +1,53 @@
 package io.vertigo.dynamox.search.dsl.definition;
 
+import io.vertigo.lang.Assertion;
 
+/**
+ * Range query definition.
+ * (preBody)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postBody)
+ * @author npiedeloup
+ */
 public final class DslRangeQueryDefinition implements DslQueryDefinition {
-	//(preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
-	private final String preRangeQuery;
+	private final String preBody;
 	private final DslQueryDefinition startQueryDefinitions;
 	private final DslQueryDefinition endQueryDefinitions;
-	private final String postRangeQuery;
+	private final String postBody;
 
+	/**
+	 * @param preBody String before body
+	 * @param startQueryDefinitions Start query
+	 * @param endQueryDefinitions End query
+	 * @param postBody String after body
+	 */
+	public DslRangeQueryDefinition(final String preBody, final DslQueryDefinition startQueryDefinitions, final DslQueryDefinition endQueryDefinitions, final String postBody) {
+		Assertion.checkNotNull(preBody);
+		Assertion.checkNotNull(startQueryDefinitions);
+		Assertion.checkNotNull(endQueryDefinitions);
+		Assertion.checkNotNull(postBody);
+		//-----
+		this.preBody = preBody;
+		this.startQueryDefinitions = startQueryDefinitions;
+		this.endQueryDefinitions = endQueryDefinitions;
+		this.postBody = postBody;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(preRangeQuery).append("[");
+		sb.append(preBody).append("[");
 		sb.append(startQueryDefinitions);
 		sb.append(" to ");
 		sb.append(endQueryDefinitions);
-		sb.append("]").append(postRangeQuery);
+		sb.append("]").append(postBody);
 		return sb.toString();
 	}
 
-	public DslRangeQueryDefinition(final String preRangeQuery, final DslQueryDefinition startQueryDefinitions, final DslQueryDefinition endQueryDefinitions, final String postRangeQuery) {
-		this.preRangeQuery = preRangeQuery;
-		this.startQueryDefinitions = startQueryDefinitions;
-		this.endQueryDefinitions = endQueryDefinitions;
-		this.postRangeQuery = postRangeQuery;
-	}
-
 	/**
-	 * @return preRangeQuery
+	 * @return preBody
 	 */
-	public final String getPreRangeQuery() {
-		return preRangeQuery;
+	public final String getPreBody() {
+		return preBody;
 	}
 
 	/**
@@ -48,10 +65,10 @@ public final class DslRangeQueryDefinition implements DslQueryDefinition {
 	}
 
 	/**
-	 * @return postRangeQuery
+	 * @return postBody
 	 */
-	public final String getPostRangeQuery() {
-		return postRangeQuery;
+	public final String getPostBody() {
+		return postBody;
 	}
 
 }

@@ -1,27 +1,43 @@
 package io.vertigo.dynamox.search.dsl.definition;
 
-public final class DslFieldDefinition {
-	//(preField)(fieldName)(postField)
-	private final String preField;
-	private final String fieldName;
-	private final String postField;
+import io.vertigo.lang.Assertion;
 
-	@Override
-	public String toString() {
-		return preField + fieldName + postField;
+/**
+ * Single field definition.
+ * (preBody)(fieldName)(postBody)
+ * @author npiedeloup
+ */
+public final class DslFieldDefinition {
+	private final String preBody;
+	private final String fieldName;
+	private final String postBody;
+
+	/**
+	 * @param preBody String before body
+	 * @param fieldName Index's fieldName
+	 * @param postBody String after body
+	 */
+	public DslFieldDefinition(final String preBody, final String fieldName, final String postBody) {
+		Assertion.checkNotNull(preBody);
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(postBody);
+		//-----
+		this.preBody = preBody;
+		this.fieldName = fieldName;
+		this.postBody = postBody;
 	}
 
-	public DslFieldDefinition(final String preField, final String fieldName, final String postField) {
-		this.preField = preField;
-		this.fieldName = fieldName;
-		this.postField = postField;
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return preBody + fieldName + postBody;
 	}
 
 	/**
-	 * @return preField
+	 * @return preBody
 	 */
-	public final String getPreField() {
-		return preField;
+	public final String getPreBody() {
+		return preBody;
 	}
 
 	/**
@@ -32,10 +48,10 @@ public final class DslFieldDefinition {
 	}
 
 	/**
-	 * @return postField
+	 * @return postBody
 	 */
-	public final String getPostField() {
-		return postField;
+	public final String getPostBody() {
+		return postBody;
 	}
 
 }

@@ -206,7 +206,7 @@ public abstract class AbstractListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
 				{ "ALL:#query# +security:\"fixedValue\"", "Test OR 1=1", "ALL:(Test OR 1=1) +security:\"fixedValue\"" },
-				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" },
+				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" }, //don't affect security
 				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*) OR) +security:fixedValue" },
 		};
 		testStringFixedQuery(testQueries[3]);

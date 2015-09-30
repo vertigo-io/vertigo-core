@@ -24,7 +24,7 @@ import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiQueryDefinition;
+import io.vertigo.dynamox.search.dsl.definition.DslBlockQueryDefinition;
 import io.vertigo.dynamox.search.dsl.definition.DslQueryDefinition;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
  * (preMultiQuery)\((queries|rangeQuery|fixedQuery|multiQuery|)+\)(postMultiQuery)
  * @author npiedeloup
  */
-public final class DslMultiQueryRule extends AbstractRule<DslMultiQueryDefinition, List<?>> {
+public final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinition, List<?>> {
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
@@ -71,7 +71,7 @@ public final class DslMultiQueryRule extends AbstractRule<DslMultiQueryDefinitio
 	}
 
 	@Override
-	protected DslMultiQueryDefinition handle(final List<?> parsing) {
+	protected DslBlockQueryDefinition handle(final List<?> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final List<DslQueryDefinition> queryDefinitions = new ArrayList<>();
 		final String postQuery = (String) parsing.get(4);
@@ -79,6 +79,6 @@ public final class DslMultiQueryRule extends AbstractRule<DslMultiQueryDefinitio
 		for (final Choice item : manyQueries) {
 			queryDefinitions.add((DslQueryDefinition) item.getResult());
 		}
-		return new DslMultiQueryDefinition(preQuery, queryDefinitions, postQuery);
+		return new DslBlockQueryDefinition(preQuery, queryDefinitions, postQuery);
 	}
 }

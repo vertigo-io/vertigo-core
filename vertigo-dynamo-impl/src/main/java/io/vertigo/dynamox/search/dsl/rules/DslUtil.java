@@ -29,6 +29,15 @@ final class DslUtil {
 	}
 
 	/**
+	 * Convert String null to Empty string.
+	 * @param input Nullable input
+	 * @return input or ""
+	 */
+	static String nullToEmpty(final String input) {
+		return input == null ? "" : input;
+	}
+
+	/**
 	 * Concat nullable elements.
 	 * @param elements Nullable elements
 	 * @return Concat string

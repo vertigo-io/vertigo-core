@@ -5,27 +5,27 @@ import io.vertigo.lang.Assertion;
 import java.util.List;
 
 /**
- * Multi fields definition.
- * (preBody)\[(fields)+,\](postBody)
+ * Block queries definition.
+ * (preBody)\((query|rangeQuery|multiQuery|fixedQuery)+\)(postBody)
  * @author npiedeloup
  */
-public final class DslMultiFieldDefinition {
+public final class DslBlockQueryDefinition implements DslQueryDefinition {
 	private final String preBody;
-	private final List<DslFieldDefinition> fields;
+	private final List<DslQueryDefinition> queries;
 	private final String postBody;
 
 	/**
 	 * @param preBody String before body
-	 * @param fields List of Index's fields
+	 * @param queries List of queries
 	 * @param postBody String after body
 	 */
-	public DslMultiFieldDefinition(final String preBody, final List<DslFieldDefinition> fields, final String postBody) {
+	public DslBlockQueryDefinition(final String preBody, final List<DslQueryDefinition> queries, final String postBody) {
 		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(fields);
+		Assertion.checkNotNull(queries);
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;
-		this.fields = fields;
+		this.queries = queries;
 		this.postBody = postBody;
 	}
 
@@ -33,13 +33,11 @@ public final class DslMultiFieldDefinition {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody).append("[");
-		String sep = "";
-		for (final DslFieldDefinition field : fields) {
-			sb.append(sep).append(field);
-			sep = ",";
+		sb.append(preBody).append("(");
+		for (final DslQueryDefinition query : queries) {
+			sb.append(query);
 		}
-		sb.append("]").append(postBody);
+		sb.append(")").append(postBody);
 		return sb.toString();
 	}
 
@@ -51,10 +49,10 @@ public final class DslMultiFieldDefinition {
 	}
 
 	/**
-	 * @return fields
+	 * @return queries
 	 */
-	public final List<DslFieldDefinition> getFields() {
-		return fields;
+	public final List<DslQueryDefinition> getQueries() {
+		return queries;
 	}
 
 	/**

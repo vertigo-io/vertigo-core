@@ -1,27 +1,43 @@
 package io.vertigo.dynamox.search.dsl.definition;
 
-public final class DslTermQueryDefinition implements DslQueryDefinition {
-	//(preQuery)(term)(postQuery)
-	private final String preQuery;
-	private final DslTermDefinition term;
-	private final String postQuery;
+import io.vertigo.lang.Assertion;
 
-	@Override
-	public String toString() {
-		return preQuery + term + postQuery;
+/**
+ * Term query definition.
+ * (preBody)(term)(postBody)
+ * @author npiedeloup
+ */
+public final class DslTermQueryDefinition implements DslQueryDefinition {
+	private final String preBody;
+	private final DslTermDefinition term;
+	private final String postBody;
+
+	/**
+	 * @param preBody String before body
+	 * @param term Term definition
+	 * @param postBody String after body
+	 */
+	public DslTermQueryDefinition(final String preBody, final DslTermDefinition term, final String postBody) {
+		Assertion.checkNotNull(preBody);
+		Assertion.checkNotNull(term);
+		Assertion.checkNotNull(postBody);
+		//-----
+		this.preBody = preBody;
+		this.term = term;
+		this.postBody = postBody;
 	}
 
-	public DslTermQueryDefinition(final String preQuery, final DslTermDefinition term, final String postQuery) {
-		this.preQuery = preQuery;
-		this.term = term;
-		this.postQuery = postQuery;
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return preBody + term + postBody;
 	}
 
 	/**
-	 * @return preQuery
+	 * @return preBody
 	 */
-	public final String getPreQuery() {
-		return preQuery;
+	public final String getPreBody() {
+		return preBody;
 	}
 
 	/**
@@ -32,9 +48,9 @@ public final class DslTermQueryDefinition implements DslQueryDefinition {
 	}
 
 	/**
-	 * @return postQuery
+	 * @return postBody
 	 */
-	public final String getPostQuery() {
-		return postQuery;
+	public final String getPostBody() {
+		return postBody;
 	}
 }
