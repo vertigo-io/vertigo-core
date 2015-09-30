@@ -40,7 +40,11 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 		Assertion.checkNotNull(handlerChain);
 		Assertion.checkNotNull(webServiceDefinitions);
 		//-----
+		final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
+			if (webServiceDefinition.isCorsProtected()) {
+				Spark.options(sparkJavaOptionsRoute);
+			}
 			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
 				case GET:
@@ -48,7 +52,6 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 					break;
 				case POST:
 					Spark.post(sparkJavaRoute);
-					Spark.options(sparkJavaRoute);
 					break;
 				case PUT:
 					Spark.put(sparkJavaRoute);

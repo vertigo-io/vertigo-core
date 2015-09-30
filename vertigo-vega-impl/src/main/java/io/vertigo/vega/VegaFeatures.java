@@ -30,7 +30,6 @@ import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlug
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.webservice.handler.OptionsWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.PaginatorAndSortWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RateLimitingWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
@@ -92,7 +91,6 @@ public final class VegaFeatures extends Features {
 				//-- Handlers plugins
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
-				.addPlugin(OptionsWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
 				.addPlugin(SessionWebServiceHandlerPlugin.class)

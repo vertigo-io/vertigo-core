@@ -40,6 +40,9 @@ import java.util.regex.Pattern;
 @DefinitionPrefix("WS_")
 public final class WebServiceDefinition implements Definition {
 
+	/**
+	 * HTTP Verb supported.
+	 */
 	public enum Verb {
 		GET, POST, PUT, PATCH, DELETE,
 	}
@@ -65,10 +68,14 @@ public final class WebServiceDefinition implements Definition {
 
 	private final List<WebServiceParam> webServiceParams;
 	private final String doc;
+	private final boolean corsProtected;
 
+	/**
+	 * Constructor.
+	 */
 	WebServiceDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields,
 			final List<WebServiceParam> webServiceParams
-			, final String doc) {
+			, final String doc, final boolean corsProtected) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -105,6 +112,7 @@ public final class WebServiceDefinition implements Definition {
 		this.webServiceParams = Collections.unmodifiableList(new ArrayList<>(webServiceParams));
 
 		this.doc = doc;
+		this.corsProtected = corsProtected;
 	}
 
 	private static void checkPathParams(final String myPath, final List<WebServiceParam> myWebServiceParams, final String methodName) {
@@ -129,73 +137,131 @@ public final class WebServiceDefinition implements Definition {
 		Assertion.checkArgument(notDeclared.isEmpty(), "Some pathParam of {1} are not declared in path {0}", notDeclared, methodName);
 	}
 
+	/**
+	 * @return name
+	 */
 	@Override
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
-	public String getPath() {
+	/**
+	 * @return path
+	 */
+	public final String getPath() {
 		return path;
 	}
 
-	public Verb getVerb() {
+	/**
+	 * @return verb
+	 */
+	public final Verb getVerb() {
 		return verb;
 	}
 
-	public String getAcceptType() {
+	/**
+	 * @return acceptType
+	 */
+	public final String getAcceptType() {
 		return acceptType;
 	}
 
-	public Method getMethod() {
+	/**
+	 * @return method
+	 */
+	public final Method getMethod() {
 		return method;
 	}
 
-	public List<WebServiceParam> getWebServiceParams() {
-		return webServiceParams;
-	}
-
-	public boolean isNeedSession() {
+	/**
+	 * @return needSession
+	 */
+	public final boolean isNeedSession() {
 		return needSession;
 	}
 
-	public boolean isSessionInvalidate() {
+	/**
+	 * @return sessionInvalidate
+	 */
+	public final boolean isSessionInvalidate() {
 		return sessionInvalidate;
 	}
 
-	public boolean isNeedAuthentification() {
+	/**
+	 * @return needAuthentification
+	 */
+	public final boolean isNeedAuthentification() {
 		return needAuthentification;
 	}
 
-	public boolean isAccessTokenPublish() {
+	/**
+	 * @return accessTokenPublish
+	 */
+	public final boolean isAccessTokenPublish() {
 		return accessTokenPublish;
 	}
 
-	public boolean isAccessTokenMandatory() {
+	/**
+	 * @return accessTokenMandatory
+	 */
+	public final boolean isAccessTokenMandatory() {
 		return accessTokenMandatory;
 	}
 
-	public boolean isAccessTokenConsume() {
+	/**
+	 * @return accessTokenConsume
+	 */
+	public final boolean isAccessTokenConsume() {
 		return accessTokenConsume;
 	}
 
-	public boolean isServerSideSave() {
+	/**
+	 * @return serverSideSave
+	 */
+	public final boolean isServerSideSave() {
 		return serverSideSave;
 	}
 
-	public boolean isAutoSortAndPagination() {
+	/**
+	 * @return autoSortAndPagination
+	 */
+	public final boolean isAutoSortAndPagination() {
 		return autoSortAndPagination;
 	}
 
-	public Set<String> getIncludedFields() {
+	/**
+	 * @return includedFields
+	 */
+	public final Set<String> getIncludedFields() {
 		return includedFields;
 	}
 
-	public Set<String> getExcludedFields() {
+	/**
+	 * @return excludedFields
+	 */
+	public final Set<String> getExcludedFields() {
 		return excludedFields;
 	}
 
-	public String getDoc() {
+	/**
+	 * @return webServiceParams
+	 */
+	public final List<WebServiceParam> getWebServiceParams() {
+		return webServiceParams;
+	}
+
+	/**
+	 * @return doc
+	 */
+	public final String getDoc() {
 		return doc;
+	}
+
+	/**
+	 * @return corsProtected
+	 */
+	public final boolean isCorsProtected() {
+		return corsProtected;
 	}
 
 }

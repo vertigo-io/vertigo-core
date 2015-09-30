@@ -53,6 +53,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	private boolean myServerSideSave;
 	private boolean myAutoSortAndPagination;
 	private String myDoc = "";
+	private boolean myCorsProtected = true; //true by default
 	private final List<WebServiceParam> myWebServiceParams = new ArrayList<>();
 
 	/**
@@ -89,7 +90,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				myIncludedFields,
 				myExcludedFields,
 				myWebServiceParams,
-				myDoc);
+				myDoc,
+				myCorsProtected);
 	}
 
 	private static String normalizePath(final String servicePath) {
@@ -243,6 +245,15 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	/**
+	 * @param corsProtected corsProtected
+	 * @return this builder
+	 */
+	public WebServiceDefinitionBuilder withCorsProtected(final boolean corsProtected) {
+		myCorsProtected = corsProtected;
+		return this;
+	}
+
+	/**
 	 * @param webServiceParam webServiceParam
 	 * @return this builder
 	 */
@@ -252,8 +263,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private String computeAcceptedType() {
-		//AcceptedType is from client view : it's return type
-		return "application/json";
+		//AcceptedType is from client view : it's return type, not input type
+		return "*/*";
 	}
 
 }
