@@ -18,7 +18,6 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
@@ -253,17 +252,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private String computeAcceptedType() {
-		for (final WebServiceParam webServiceParam : myWebServiceParams) {
-			if (VFile.class.isAssignableFrom(webServiceParam.getType())) {
-				return "multipart/form-data";
-			} else if (webServiceParam.getParamType() == WebServiceParamType.Query) {
-				if (myVerb != Verb.GET) {//if GET => nothing
-					return "application/x-www-form-urlencoded";
-				}
-			} else if (webServiceParam.getParamType() == WebServiceParamType.Body || webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
-				return "application/json";
-			}
-		}
+		//AcceptedType is from client view : it's return type
 		return "application/json";
 	}
 
