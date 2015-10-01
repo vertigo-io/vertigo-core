@@ -20,7 +20,6 @@ package io.vertigo.dynamo.store.kvstore;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.kvstore.KVStore;
 import io.vertigo.dynamo.store.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -37,7 +36,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class KVStoreManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	private static final String DEFAULT_DATA_STORE_NAME = "default";
 	@Inject
 	private StoreManager storeManager;
