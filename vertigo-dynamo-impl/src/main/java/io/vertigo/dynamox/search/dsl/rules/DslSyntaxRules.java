@@ -44,31 +44,31 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	protected static final Rule<?> SPACES = new WordRule(true, WHITE_SPACE, WordRule.Mode.ACCEPT, "_");
+	static final Rule<?> SPACES = new WordRule(true, WHITE_SPACE, WordRule.Mode.ACCEPT, "_");
 
-	protected static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
-	protected static final Rule<String> ARRAY_END = new TermRule("]");
-	protected static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
+	static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
+	static final Rule<String> ARRAY_END = new TermRule("]");
+	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
 
-	protected static final Rule<String> BLOCK_START = new TermRule("(");
-	protected static final Rule<String> BLOCK_END = new TermRule(")");
+	static final Rule<String> BLOCK_START = new TermRule("(");
+	static final Rule<String> BLOCK_END = new TermRule(")");
 
-	protected static final Rule<String> TERM_MARK = new TermRule("#");
-	protected static final Rule<String> FIELD_END = new TermRule(":");
+	static final Rule<String> TERM_MARK = new TermRule("#");
+	static final Rule<String> FIELD_END = new TermRule(":");
 
-	protected static final Rule<String> OPTION_START = new TermRule("!(");
-	protected static final Rule<String> OPTION_END = new TermRule(")");
-	protected static final Rule<String> OPTION_VALUE = new WordRule(false, ")", WordRule.Mode.REJECT);
+	static final Rule<String> OPTION_START = new TermRule("!(");
+	static final Rule<String> OPTION_END = new TermRule(")");
+	static final Rule<String> OPTION_VALUE = new WordRule(false, ")", WordRule.Mode.REJECT);
 
-	protected static final Rule<String> PRE_MODIFIER_VALUE = new WordRule(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
-	protected static final Rule<String> POST_MODIFIER_VALUE = new WordRule(true, POST_MODIFIER, WordRule.Mode.ACCEPT, "POSTM");
+	static final Rule<String> PRE_MODIFIER_VALUE = new WordRule(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
+	static final Rule<String> POST_MODIFIER_VALUE = new WordRule(true, POST_MODIFIER, WordRule.Mode.ACCEPT, "POSTM");
 
 	//Il faut gérer le caractère d'évitement.
-	protected static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DEL");
+	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DEL");
 
-	protected static final Rule<String> FIXED_WORD = new WordRule(false, WHITE_SPACE + "]),", WordRule.Mode.REJECT, "!_");
+	static final Rule<String> FIXED_WORD = new WordRule(false, WHITE_SPACE + "]),", WordRule.Mode.REJECT, "!_");
 
-	protected static final Rule<?> DEPTH_OVERFLOW = new Rule<Void>() {
+	static final Rule<?> DEPTH_OVERFLOW = new Rule<Void>() {
 
 		@Override
 		public String getExpression() {
