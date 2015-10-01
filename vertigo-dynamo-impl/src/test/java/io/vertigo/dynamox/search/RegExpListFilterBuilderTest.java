@@ -23,11 +23,11 @@ import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 /**
  * @author  npiedeloup
  */
-public class DefaultListFilterBuilderTest extends AbstractListFilterBuilderTest {
+public class RegExpListFilterBuilderTest extends AbstractListFilterBuilderTest {
 
 	@Override
 	<O> ListFilterBuilder<O> createListFilterBuilder(final Class<O> criteriaType) {
-		return (ListFilterBuilder<O>) new DefaultListFilterBuilder<>();
+		return (ListFilterBuilder<O>) new RegExpListFilterBuilder<>();
 	}
 
 	@Override
