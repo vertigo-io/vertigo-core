@@ -37,9 +37,9 @@ public abstract class AbstractListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
 				{ "ALL:#query#", "Test", "ALL:(Test)", "ALL:Test" }, //0
 				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
-				{ "ALL:#query*#", "Test", "ALL:(Test*)", "ALL:Test*" }, //2
+				{ "ALL:#query*#", "Test", "ALL:(Test*)" }, //2
 				{ "ALL:#query*#", "Test test2", "ALL:(Test* test2*)" }, //3
-				{ "ALL:#+query#", "Test", "ALL:(+Test)", "ALL:+Test" }, //4
+				{ "ALL:#+query#", "Test", "ALL:(+Test)" }, //4
 				{ "ALL:#+query#", "Test test2", "ALL:(+Test +test2)" }, //5
 				{ "+ALL:#query#", "Test", "+ALL:(Test)", "+ALL:Test" }, //6
 				{ "+ALL:#query#", "Test test2", "+ALL:(Test test2)" }, //7
@@ -58,8 +58,8 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:+#query#", "Test", "ALL:+(Test)", "ALL:(+Test)" }, //4
 				{ "ALL:+#query#", "Test test2", "ALL:+(Test test2)", "ALL:(+(Test test2))" }, //5
 				{ "-ALL:+#query#*", "Test", "-ALL:+(Test)*", "-ALL:(+Test*)" }, //6
-				{ "-ALL:+#query#*", "Test test2", "-ALL:(+(Test test2)*)" }, //7
-				{ "-ALL:+#query#*", "Test AND (test2 OR test3)", "-ALL:(+(Test AND (test2 OR test3))*)" }, //8
+				{ "-ALL:+#query#*", "Test test2", "-ALL:+(Test test2)*", "-ALL:(+(Test test2)*)" }, //7
+				{ "-ALL:+#query#*", "Test AND (test2 OR test3)", "-ALL:+(Test AND (test2 OR test3))*", "-ALL:(+(Test AND (test2 OR test3))*)" }, //8
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -97,7 +97,6 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#query#", "", "ALL:*" }, //0
 				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 to *]" }, //1
 		};
-		testStringFixedQuery(testQueries[1]);
 		testStringFixedQuery(testQueries);
 	}
 
@@ -110,7 +109,7 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#query#", "OTHER:Test test2", "OTHER:(Test) ALL:(test2)", "OTHER:Test ALL:test2" }, //2
 				{ "ALL:#query#", "Test OTHER:test2", "ALL:(Test) OTHER:(test2)", "ALL:Test OTHER:test2" }, //3
 				{ "ALL:#query#", "OTHER:Test test2 test3", "OTHER:(Test) ALL:(test2 test3)", "OTHER:Test ALL:(test2 test3)" }, //4
-				{ "ALL:#query#", "Test OTHER:test2 test3", "ALL:(Test) OTHER:(test2), ALL:(test3)", "ALL:Test OTHER:test2 ALL:test3" }, //5
+				{ "ALL:#query#", "Test OTHER:test2 test3", "ALL:(Test) OTHER:(test2) ALL:(test3)", "ALL:Test OTHER:test2 ALL:test3" }, //5
 				{ "ALL:#query#", "Test test2 OTHER:test3", "ALL:(Test test2) OTHER:(test3)", "ALL:(Test test2) OTHER:test3" }, //6
 				{ "ALL:#+query*#", "Test test2 OTHER:test3", "ALL:(+Test* +test2*) OTHER:(test3)", "ALL:(+Test* +test2*) OTHER:test3" }, //7
 				{ "+ALL:#query#", "Test test2 OTHER:test3", "+ALL:(Test test2) OTHER:(test3)", "+ALL:(Test test2) OTHER:test3" }, //8
@@ -120,7 +119,6 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query*#", "Test test2~", "ALL:(+Test* +test2~)" }, //12
 				{ "ALL:#query#", "Test -OTHER:(test2 test3) Test4", "ALL:(Test) -OTHER:(test2 test3) ALL:(Test4)", "ALL:Test -OTHER:(test2 test3) ALL:Test4" }, //13
 		};
-		testStringFixedQuery(testQueries[6]);
 		testStringFixedQuery(testQueries);
 	}
 
@@ -139,7 +137,6 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query*#", "-Test", "ALL:(-Test*)" }, //8
 				{ "ALL:#+query*#", "-Test test2", "ALL:(-Test* +test2*)" }, //9
 		};
-		testStringFixedQuery(testQueries[2]);
 		testStringFixedQuery(testQueries);
 	}
 
@@ -192,11 +189,10 @@ public abstract class AbstractListFilterBuilderTest {
 				//{ "ALL:#+query*#", "/Test/", "ALL:(/Test/)" },
 				{ "ALL:#+query*#", ",Test,", "ALL:(,+Test*,)" },
 				{ "ALL:#+query*#", ";Test;", "ALL:(;+Test*;)" },
-				{ "ALL:#+query*#", "(Test)", "ALL:(+Test*)" },
-				{ "ALL:#+query*#", "[Test]", "ALL:[Test]" },
+				{ "ALL:#+query*#", "(Test)", "ALL:((+Test*))", "ALL:(+Test*)" },
+				{ "ALL:#+query*#", "[Test]", "ALL:([Test])", "ALL:[Test]" },
 
 		};
-		testStringFixedQuery(testQueries[13]);
 		testStringFixedQuery(testQueries);
 	}
 
@@ -207,9 +203,8 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
 				{ "ALL:#query# +security:\"fixedValue\"", "Test OR 1=1", "ALL:(Test OR 1=1) +security:\"fixedValue\"" },
 				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" }, //don't affect security
-				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*) OR) +security:fixedValue" },
+				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*) OR ) +security:fixedValue", "ALL:(*) OR) +security:fixedValue" },
 		};
-		testStringFixedQuery(testQueries[3]);
 		testStringFixedQuery(testQueries);
 	}
 
@@ -222,23 +217,22 @@ public abstract class AbstractListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#str1#", testBean, "ALL:(Test)", "ALL:Test" }, //0
 				{ "ALL:#str2#", testBean, "ALL:(Test test2)" }, //1
-				{ "ALL:#date1#", testBean, "ALL:\"2015-07-23T12:30:00.000Z\"", "ALL:(\"2015-07-23T12:30:00.000Z\")" }, //2
-				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23T16:45:00.000Z\"", "ALL:(\"2015-07-23T16:45:00.000Z\")" }, //3
+				{ "ALL:#date1#", testBean, "ALL:\"2015-07-23T12:30:00.000Z\"" }, //2
+				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23T16:45:00.000Z\"" }, //3
 				{ "ALL:#int1#", testBean, "ALL:5" }, //4
 				{ "ALL:#int2#", testBean, "ALL:10" }, //5
-				{ "ALL:[#int1# to #int2#] ", testBean, "ALL:[5 to 10]" }, //6
-				{ "ALL:[#int1# TO #int2#] ", testBean, "ALL:[5 to 10]" }, //7
-				{ "ALL:[#date1# to #date2#] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //8
-				{ "ALL:[#int1# to #null#] ", testBean, "ALL:[5 to *]" }, //9
-				{ "ALL:[#int1# to #null#!(*)] ", testBean, "ALL:[5 to *]" }, //10
-				{ "ALL:[#null#!(*) to #int2#] ", testBean, "ALL:[* to 10]" }, //11
-				{ "ALL:[#null# to #null#] ", testBean, "" }, //12
-				{ "ALL:[ #null# to #null# ] ", testBean, "" }, //13
-				{ "ALL:[#date1# to #null#!(*)] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //14
-				{ "ALL:[#null#!(*) to #null#!(*)] ", testBean, "" }, //12
+				{ "ALL:[#int1# to #int2#]", testBean, "ALL:[5 to 10]" }, //6
+				{ "ALL:[#int1# TO #int2#]", testBean, "ALL:[5 to 10]" }, //7
+				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //8
+				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 to *]" }, //9
+				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 to *]" }, //10
+				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* to 10]" }, //11
+				{ "ALL:[#null# to #null#]", testBean, "" }, //12
+				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //13
+				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //14
+				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* to *]", "" }, //15
 
 		};
-		testObjectFixedQuery(testQueries[12]);
 		testObjectFixedQuery(testQueries);
 	}
 
@@ -251,7 +245,7 @@ public abstract class AbstractListFilterBuilderTest {
 		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //0
+				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)", "+ALL:(Test test2)" }, //0
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanEmpty, "+PRO_ID:* +ALL:(Test test2)" }, //1
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanOne, "+PRO_ID:(12) +ALL:(Test test2)", "+PRO_ID:12 +ALL:(Test test2)" }, //2
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(12 13) +ALL:(Test test2)" }, //3
@@ -261,7 +255,6 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //7
 
 		};
-		testObjectFixedQuery(testQueries[7]);
 		testObjectFixedQuery(testQueries);
 	}
 
@@ -303,16 +296,8 @@ public abstract class AbstractListFilterBuilderTest {
 					.withBuildQuery(testParam[0])
 					.withCriteria(testParam[1]);
 			final String result = listFilterBuilder.build().getFilterValue();
-			boolean found = false;
-			for (int j = 2; j < testParam.length; j++) {
-				if (testParam[j].equalsIgnoreCase(result)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				Assert.assertEquals("Built query #" + i + " incorrect", testParam[Math.min(getPreferedResult(), testParam.length - 1)], result);
-			}
+			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
+			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
 			i++;
 		}
 	}
@@ -324,16 +309,8 @@ public abstract class AbstractListFilterBuilderTest {
 					.withBuildQuery((String) testParam[0])
 					.withCriteria(testParam[1]);
 			final String result = listFilterBuilder.build().getFilterValue();
-			boolean found = false;
-			for (int j = 2; j < testParam.length; j++) {
-				if (((String) testParam[j]).trim().equalsIgnoreCase(result.trim())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				Assert.assertEquals("Built query #" + i + " incorrect", testParam[Math.min(getPreferedResult(), testParam.length - 1)], result);
-			}
+			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
+			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
 			i++;
 		}
 	}

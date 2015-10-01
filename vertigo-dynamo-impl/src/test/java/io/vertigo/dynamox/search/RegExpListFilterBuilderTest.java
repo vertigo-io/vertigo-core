@@ -16,29 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore.data;
+package io.vertigo.dynamox.search;
 
-import java.io.Serializable;
+import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 
-public final class Flower implements Serializable {
-	private static final long serialVersionUID = 732495669497615898L;
-	private String name;
-	private Double price;
+/**
+ * @author  npiedeloup
+ */
+public class RegExpListFilterBuilderTest extends AbstractListFilterBuilderTest {
 
-	public Double getPrice() {
-		return price;
+	@Override
+	<O> ListFilterBuilder<O> createListFilterBuilder(final Class<O> criteriaType) {
+		return (ListFilterBuilder<O>) new RegExpListFilterBuilder<>();
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	int getPreferedResult() {
+		return 2;
 	}
-
-	public void setPrice(final Double price) {
-		this.price = price;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }

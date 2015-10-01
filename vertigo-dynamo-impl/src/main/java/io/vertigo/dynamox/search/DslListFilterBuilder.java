@@ -142,7 +142,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		for (final DslMultiExpressionDefinition multiExpressionDefinition : myBuildQuery) {
 			appendMultiExpression(query, multiExpressionDefinition);
 		}
-		//appendExpression(query, myBuildQuery);
 		return query.toString();
 	}
 
@@ -251,7 +250,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		appendTermQueryWithValue(value, query, dslQueryDefinition, expressionDefinition, outExpressionQuery);
 	}
 
-	private <O> O cleanUserCriteria(final O value) {
+	private static <O> O cleanUserCriteria(final O value) {
 		if (value instanceof String && ((String) value).trim().isEmpty()) { //so not null too
 			return (O) "*";
 		}
@@ -307,11 +306,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		}
 	}
 
-	private void appendFixedQuery(final StringBuilder query, final DslFixedQueryDefinition dslQueryDefinition) {
+	private static void appendFixedQuery(final StringBuilder query, final DslFixedQueryDefinition dslQueryDefinition) {
 		query.append(dslQueryDefinition.getFixedQuery());
 	}
 
-	private boolean appendSimpleCriteria(final StringBuilder query, final DslTermQueryDefinition dslTermDefinition, final String value) {
+	private static boolean appendSimpleCriteria(final StringBuilder query, final DslTermQueryDefinition dslTermDefinition, final String value) {
 		query.append(dslTermDefinition.getPreTerm());
 		query.append(value);
 		query.append(dslTermDefinition.getPostTerm());
@@ -348,7 +347,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 							dslFieldDefinition.getFieldName(),
 							"");
 					final DslExpressionDefinition monoFieldExpressionDefinition = new DslExpressionDefinition(
-							monoFieldExpressionDefinitions.size() == 0 ? "" : " ",
+							monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
 							Option.some(monoFieldDefinition), Option.<DslMultiFieldDefinition> none(),
 							new DslFixedQueryDefinition(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 							firstNotEmpty(dslFieldDefinition.getPostBody(), dslMultiFieldDefinition.getPostBody()));

@@ -58,8 +58,10 @@ import java.util.regex.Pattern;
  *
  * @author npiedeloup
  * @param <C> Criteria type
+ * @deprecated Use DslListFilterBuilder instead. This one gets invalid result if misused.
  */
-public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
+@Deprecated
+public final class RegExpListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static final String USER_QUERY_KEYWORD = "query";
 	/** Default query : #query# .*/

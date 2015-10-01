@@ -84,7 +84,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	 * Extraction puis rechargement d'un DOCX.
 	 * Permet de tester l'accès aux fichiers dans le docx.
 	 * @throws URISyntaxException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Test
 	public void testExtractionReecritureDOCX() throws URISyntaxException, IOException {
@@ -141,6 +141,20 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		final NodeList nodeList = (NodeList) DOCXUtil.loadXPath().evaluate("//w:r[w:instrText]", xmlDoc, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Assert.assertEquals(results[i], nodeList.item(i).getLastChild().getTextContent());
+		}
+	}
+
+	/**
+	 * Test du namespace des documents.
+	 */
+	@Test
+	public void testNamespaceContext() {
+		final DOCXNamespaceContext namespace = new DOCXNamespaceContext();
+		final String[] prefixToText = { "wpc", "mc", "o", "r", "m", "v", "wp14", "wp", "w10", "w", "w14", "wpg", "wpi", "wne", "wps" };
+
+		for (final String prefix : prefixToText) {
+			Assert.assertNotNull("Unknowned prefix:" + prefix, namespace.getNamespaceURI(prefix));
+			Assert.assertEquals("Invalid URI for prefix:" + prefix, prefix, namespace.getPrefix(namespace.getNamespaceURI(prefix)));
 		}
 	}
 

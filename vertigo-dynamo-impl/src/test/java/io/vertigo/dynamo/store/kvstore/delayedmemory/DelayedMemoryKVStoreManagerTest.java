@@ -16,22 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search;
+package io.vertigo.dynamo.store.kvstore.delayedmemory;
 
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
+import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
 
 /**
- * @author  npiedeloup
+ * @author pchretien
  */
-public class DefaultListFilterBuilderTest extends AbstractListFilterBuilderTest {
-
-	@Override
-	<O> ListFilterBuilder<O> createListFilterBuilder(final Class<O> criteriaType) {
-		return (ListFilterBuilder<O>) new DefaultListFilterBuilder<>();
-	}
-
-	@Override
-	int getPreferedResult() {
-		return 2;
-	}
+public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManagerTest {
+	// nothing
 }

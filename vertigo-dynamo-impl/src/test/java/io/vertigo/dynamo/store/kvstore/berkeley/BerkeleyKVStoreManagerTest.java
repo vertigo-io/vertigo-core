@@ -16,29 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore.data;
+package io.vertigo.dynamo.store.kvstore.berkeley;
 
-import java.io.Serializable;
+import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
 
-public final class Flower implements Serializable {
-	private static final long serialVersionUID = 732495669497615898L;
-	private String name;
-	private Double price;
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setPrice(final Double price) {
-		this.price = price;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
+/**
+ * @author pchretien
+ */
+public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
+	//nothing
 }

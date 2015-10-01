@@ -39,22 +39,22 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de suppression des blancs. */
-	protected static final Rule<?> SPACES = new WhiteSpaceRule(WHITE_SPACE);
+	static final Rule<?> SPACES = new WhiteSpaceRule(WHITE_SPACE);
 
 	protected static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
-	protected static final Rule<String> ARRAY_END = new TermRule("]");
-	protected static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
+	static final Rule<String> ARRAY_END = new TermRule("]");
+	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
 
-	protected static final Rule<String> OBJECT_START = new TermRule("{"); //like json { name:"john doe", city:"kjkjk"}
-	protected static final Rule<String> OBJECT_END = new TermRule("}");
-	protected static final Rule<String> OBJECT_SEPARATOR = new TermRule(",");
+	static final Rule<String> OBJECT_START = new TermRule("{"); //like json { name:"john doe", city:"kjkjk"}
+	static final Rule<String> OBJECT_END = new TermRule("}");
+	static final Rule<String> OBJECT_SEPARATOR = new TermRule(",");
 
-	protected static final Rule<String> PAIR_SEPARATOR = new TermRule(":"); //name:"bill"
-	protected static final Rule<String> QUOTATION_MARK = new TermRule("\"");
+	static final Rule<String> PAIR_SEPARATOR = new TermRule(":"); //name:"bill"
+	static final Rule<String> QUOTATION_MARK = new TermRule("\"");
 
-	protected static final Rule<String> PROPERTY_VALUE = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE); //En fait il faut autoriser tous les caractères sauf les guillemets".
+	static final Rule<String> PROPERTY_VALUE = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE); //En fait il faut autoriser tous les caractères sauf les guillemets".
 	//Il faut gérer le caractère d'évitement.
-	protected static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DELIMITERS");
+	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DELIMITERS");
 
 	private DslSyntaxRules() {
 		//Classe sans état

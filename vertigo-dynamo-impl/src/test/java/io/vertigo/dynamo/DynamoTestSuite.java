@@ -51,11 +51,14 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.store.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.KVStoreManagerTest;
+import io.vertigo.dynamo.store.kvstore.berkeley.BerkeleyKVStoreManagerTest;
+import io.vertigo.dynamo.store.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
+import io.vertigo.dynamo.store.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
-import io.vertigo.dynamox.search.DefaultListFilterBuilderTest;
+import io.vertigo.dynamox.search.DslListFilterBuilderTest;
+import io.vertigo.dynamox.search.RegExpListFilterBuilderTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -86,7 +89,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--file
 		FileManagerTest.class,
 		//--kvdatastore
-		KVStoreManagerTest.class,
+		DelayedMemoryKVStoreManagerTest.class,
+		BerkeleyKVStoreManagerTest.class,
+		DelayedBerkeleyKVStoreManagerTest.class,
 		//--persistence
 		StoreManagerTest.class, JpaStoreManagerTest.class,
 		//--task
@@ -102,9 +107,10 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerDynaFieldsTest.class,
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
+		DslListFilterBuilderTest.class,
 		//---
 		ExportManagerTest.class,
-		DefaultListFilterBuilderTest.class,
+		RegExpListFilterBuilderTest.class,
 })
 public final class DynamoTestSuite {
 	//
