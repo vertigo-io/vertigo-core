@@ -40,7 +40,7 @@ import org.junit.Test;
  *
  * @author dchallas
  */
-public class CollectionsManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4 {
 	private static final String Ba = "Ba";
 	private static final String aaa = "aaa";
 	private static final String bb = "bb";

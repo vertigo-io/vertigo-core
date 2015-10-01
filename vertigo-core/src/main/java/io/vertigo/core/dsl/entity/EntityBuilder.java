@@ -58,10 +58,10 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * Ajout d'un attribut.
 	 * @param fieldName Nom
 	 * @param type Entité référencée
-	 * @param notNull Si l'attribut est obligatoire
+	 * @param required Si l'attribut est obligatoire
 	 */
-	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean notNull) {
-		return addField(fieldName, type, false, notNull);
+	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean required) {
+		return addField(fieldName, type, false, required);
 	}
 
 	/**
@@ -72,6 +72,11 @@ public final class EntityBuilder implements Builder<Entity> {
 	 */
 	public EntityBuilder addFields(final String fieldName, final Entity entity, final boolean required) {
 		//Only Entities may be multiple
+		return addField(fieldName, entity, true, required);
+	}
+
+	public EntityBuilder addFields(final String fieldName, final EntityLink entity, final boolean required) {
+		//Only Entities or  Link may be multiple
 		return addField(fieldName, entity, true, required);
 	}
 

@@ -121,21 +121,21 @@ public final class DomainGrammar {
 				.addField(UNIT, String, false)
 				.addField(INDEX_TYPE, String, false)
 				.addField(STORE_TYPE, String, false)
-				.addField("formatter", FORMATTER_ENTITY, true)
-				.addField("dataType", KernelGrammar.getDataTypeEntity(), true)
-				.addFields("constraint", CONSTRAINT_ENTITY, false)
+				.addField("formatter", FORMATTER_ENTITY.getLink(), true)
+				.addField("dataType", KernelGrammar.getDataTypeEntity().getLink(), true)
+				.addFields("constraint", CONSTRAINT_ENTITY.getLink(), false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
 				.addField(LABEL, String, true)
 				.addField(NOT_NULL, Boolean, true)
-				.addField("domain", DOMAIN_ENTITY, true)
+				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(PERSISTENT, Boolean, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
 				.addField(LABEL, String, true)
-				.addField("domain", DOMAIN_ENTITY, true)
+				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(EXPRESSION, String, true)
 				.build();
 
@@ -161,8 +161,8 @@ public final class DomainGrammar {
 				.addField(NAVIGABILITY_B, Boolean, true)
 				.addField(ROLE_B, String, true)
 				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
@@ -173,8 +173,8 @@ public final class DomainGrammar {
 				.addField(NAVIGABILITY_B, Boolean, true)
 				.addField(ROLE_B, String, true)
 				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
+				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
 		GRAMMAR = new EntityGrammar(

@@ -96,13 +96,6 @@ public final class DefinitionLoader {
 		dynamicModelRepository.solve(Home.getDefinitionSpace());
 	}
 
-	//	/**
-	//	 * @return Types that can be parsed.
-	//	 */
-	//	public Set<String> getTypes() {
-	//		return Collections.unmodifiableSet(loaderPlugins.keySet());
-	//	}
-
 	public void injectDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----

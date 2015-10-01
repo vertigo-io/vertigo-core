@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo;
 
-import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.facet.FacetManagerTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
@@ -80,7 +79,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		SplittedModulesEnvironmentManagerTest.class,
 		//--
 		//--collections
-		CollectionsManagerTest.class,
+		io.vertigo.dynamo.collections.javaconfig.CollectionsManagerTest.class,
+		io.vertigo.dynamo.collections.xmlconfig.CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--database
 		DataBaseManagerTest.class,
