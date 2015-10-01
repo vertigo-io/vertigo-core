@@ -88,10 +88,10 @@ public final class Entity implements EntityType {
 	}
 
 	public EntityPropertyType getPrimitiveType(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fields.containsKey(fieldName), "property {0} not found on {1}", fieldName, this);
+		final EntityType type = getAttribute(fieldName).getType();
+		Assertion.checkArgument(type.isPrimitive(), "property {0} not found on {1}", fieldName, this);
 		//-----
-		return (EntityPropertyType) fields.get(fieldName).getType();
+		return (EntityPropertyType) type;
 	}
 
 	/**
@@ -99,10 +99,17 @@ public final class Entity implements EntityType {
 	 * @return Si la propriété mentionnée est nulle
 	 */
 	public boolean isRequired(final String fieldName) {
+		return getAttribute(fieldName).isRequired();
+	}
+
+	/**
+	 * @return Set des attributs de l'entité
+	 */
+	public EntityField getAttribute(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fields.containsKey(fieldName), "la propriete {0} n'est pas declaree pour {1}", fieldName, this);
 		//-----
-		return fields.get(fieldName).isRequired();
+		return fields.get(fieldName);
 	}
 
 	/**
@@ -121,5 +128,9 @@ public final class Entity implements EntityType {
 	@Override
 	public boolean isPrimitive() {
 		return false;
+	}
+
+	public EntityLink getLink() {
+		return new EntityLink(this);
 	}
 }

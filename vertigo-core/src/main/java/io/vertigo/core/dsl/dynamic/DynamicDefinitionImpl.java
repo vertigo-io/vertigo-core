@@ -19,6 +19,7 @@
 package io.vertigo.core.dsl.dynamic;
 
 import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityLink;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -204,6 +205,8 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private final void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
+		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof Entity,
+				"expected a pure entity on {0}", fieldName);
 		//-----
 		obtainList(definitionsByFieldName, fieldName).addAll(definitions);
 	}
@@ -213,6 +216,8 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	public final DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionNames);
+		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof EntityLink,
+				"expected a link on {0}", fieldName);
 		//-----
 		obtainList(definitionNamesByFieldName, fieldName).addAll(definitionNames);
 		return this;
