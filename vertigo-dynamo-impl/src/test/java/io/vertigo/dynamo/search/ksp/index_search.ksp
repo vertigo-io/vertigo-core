@@ -31,7 +31,7 @@ create FacetedQueryDefinition QRY_CAR_FACET {
     keyConcept : DT_CAR
     facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR, FCT_YEAR_CAR]
     domainCriteria : DO_STRING
-    listFilterBuilderClass : "io.vertigo.dynamox.search.DefaultListFilterBuilder"  
+    listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    
 }
 
