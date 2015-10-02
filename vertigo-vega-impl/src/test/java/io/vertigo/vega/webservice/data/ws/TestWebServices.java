@@ -488,6 +488,12 @@ public final class TestWebServices implements WebServices {
 		return inputFile;
 	}
 
+	@AnonymousAccessAllowed
+	@POST("/uploadFileFocus")
+	public Integer testUploadFile(final @QueryParam("upfile") VFile inputFile) {
+		return 1337;
+	}
+
 	@GET("/downloadFile")
 	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
