@@ -35,11 +35,11 @@ import java.util.List;
  * (preMultiExpression)\((expression|multiExpression)+\)(postMultiExpression)
  * @author npiedeloup
  */
-public final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefinition, Choice> {
+final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefinition, Choice> {
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
-	public DslMultiExpressionRule() {
+	DslMultiExpressionRule() {
 		this(0);
 		//At the beginning the level is always 0
 	}

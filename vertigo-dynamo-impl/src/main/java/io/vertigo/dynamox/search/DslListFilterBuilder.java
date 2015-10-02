@@ -18,10 +18,7 @@
  */
 package io.vertigo.dynamox.search;
 
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.commons.parser.Rule;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamox.search.dsl.definition.DslBlockQueryDefinition;
@@ -34,8 +31,7 @@ import io.vertigo.dynamox.search.dsl.definition.DslQueryDefinition;
 import io.vertigo.dynamox.search.dsl.definition.DslRangeQueryDefinition;
 import io.vertigo.dynamox.search.dsl.definition.DslTermQueryDefinition;
 import io.vertigo.dynamox.search.dsl.definition.DslUserCriteria;
-import io.vertigo.dynamox.search.dsl.rules.DslMultiExpressionRule;
-import io.vertigo.dynamox.search.dsl.rules.DslUserCriteriaRule;
+import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.BeanUtil;
@@ -100,11 +96,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		Assertion.checkState(myBuildQuery == null, "query was already set : {0}", myBuildQuery);
 		//-----
 		try {
-			final Rule<DslMultiExpressionDefinition> expressionsRule = new DslMultiExpressionRule();
-			final ManyRule<DslMultiExpressionDefinition> many = new ManyRule<>(expressionsRule, false, true); //repeat true => on veut tout la chaine
-			final Parser<List<DslMultiExpressionDefinition>> parser = many.createParser();
-			parser.parse(buildQuery, 0);
-			myBuildQuery = parser.get();
+			myBuildQuery = DslParserUtil.parseMultiExpression(buildQuery);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
 			throw new RuntimeException(message, e);
@@ -317,7 +309,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private boolean appendUserStringCriteria(final StringBuilder query, final DslTermQueryDefinition dslTermDefinition, final DslExpressionDefinition expressionDefinition, final String userString, final StringBuilder outExpressionQuery) {
-		final List<DslUserCriteria> userCriteriaList = new DslUserCriteriaRule().parse(userString);
+		final List<DslUserCriteria> userCriteriaList = DslParserUtil.parseUserCriteria(userString);
 
 		int criteriaOnDefinitionField = 0; //On compte les fields sur le field de la definition. Si >1 on mettra des ( )
 		for (final DslUserCriteria userCriteria : userCriteriaList) {

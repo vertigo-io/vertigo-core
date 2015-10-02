@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * A user query is many DslUserCriteria.
  * @author npiedeloup
  */
-public final class DslUserCriteriaRule {
+final class DslUserCriteriaRule {
 
 	/**
 	 * Regexp to parse USER query string.
@@ -68,7 +68,7 @@ public final class DslUserCriteriaRule {
 	 * @param userString User string
 	 * @return Parsed list of DslUserCriteria
 	 */
-	public List<DslUserCriteria> parse(final String userString) {
+	static List<DslUserCriteria> parse(final String userString) {
 		final List<DslUserCriteria> userCriteria = new ArrayList<>();
 		//split space chars to add preModifier and postModifier
 		final Matcher criteriaValueMatcher = CRITERIA_VALUE_PATTERN.matcher(userString);
