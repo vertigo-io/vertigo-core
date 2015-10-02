@@ -43,18 +43,18 @@ public final class DslExpressionDefinition {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody);
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody);
 		if (field.isDefined()) {
-			sb.append(field.get());
-			sb.append(":");
+			sb.append(field.get())
+					.append(":");
 		}
 		if (multiField.isDefined()) {
-			sb.append(multiField.get());
-			sb.append(":");
+			sb.append(multiField.get())
+					.append(":");
 		}
-		sb.append(query);
-		sb.append(postBody);
+		sb.append(query)
+				.append(postBody);
 		return sb.toString();
 	}
 

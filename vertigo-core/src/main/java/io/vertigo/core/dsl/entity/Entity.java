@@ -133,4 +133,9 @@ public final class Entity implements EntityType {
 	public EntityLink getLink() {
 		return new EntityLink(this);
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

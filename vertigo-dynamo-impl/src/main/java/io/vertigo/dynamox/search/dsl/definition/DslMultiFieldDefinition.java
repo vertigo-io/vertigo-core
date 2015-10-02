@@ -32,8 +32,8 @@ public final class DslMultiFieldDefinition {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody).append("[");
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody).append("[");
 		String sep = "";
 		for (final DslFieldDefinition field : fields) {
 			sb.append(sep).append(field);
