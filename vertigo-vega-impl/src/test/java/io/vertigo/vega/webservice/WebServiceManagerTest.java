@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1394,6 +1395,25 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
 				.when()
 				.post("/test/uploadFile");
+	}
+
+	@Test
+	public void testDownloadFileContentType() throws UnsupportedEncodingException {
+		final String[] expectedSimpleNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ%20óñµ°«_.png", "image4?__~.png" };
+		final String[] expectedEncodedNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ óñµ°«_.png", "image4€__~.png" };
+
+		for (int id = 0; id < expectedSimpleNames.length; id++) {
+			final String expectedSimpleName = expectedSimpleNames[id];
+			final String expectedEncodedName = URLEncoder.encode(expectedEncodedNames[id], "utf8").replace("+", "%20");
+
+			loggedAndExpect(given().queryParam("id", id))
+					.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+					.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=" + expectedSimpleName + ";filename*=UTF-8''" + expectedEncodedName))
+					.header("Content-Length", Matchers.equalTo("27039"))
+					.statusCode(HttpStatus.SC_OK)
+					.when()
+					.get("/test/downloadFileContentType");
+		}
 	}
 
 	@Test
