@@ -60,8 +60,8 @@ public final class PersonGrammar {
 				.addField(AGE, Integer, false)
 				.addField(HEIGHT, Double, false)
 				.addField(MALE, Boolean, true)
-				.addField(MAIN_ADDRESS, ADDRESS_ENTITY, true)
-				.addField("secondaryAddress", ADDRESS_ENTITY, false)
+				.addField(MAIN_ADDRESS, ADDRESS_ENTITY.getLink(), true)
+				.addField("secondaryAddress", ADDRESS_ENTITY.getLink(), false)
 				.build();
 
 		GRAMMAR = new EntityGrammar(
