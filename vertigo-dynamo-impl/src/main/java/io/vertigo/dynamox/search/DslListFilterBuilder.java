@@ -310,9 +310,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private static boolean appendSimpleCriteria(final StringBuilder query, final DslTermQueryDefinition dslTermDefinition, final String value) {
-		query.append(dslTermDefinition.getPreTerm());
-		query.append(value);
-		query.append(dslTermDefinition.getPostTerm());
+		query.append(dslTermDefinition.getPreTerm())
+				.append(value)
+				.append(dslTermDefinition.getPostTerm());
 		return false; //never use block
 	}
 

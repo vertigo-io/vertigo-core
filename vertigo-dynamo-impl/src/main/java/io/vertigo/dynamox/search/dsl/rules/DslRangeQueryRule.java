@@ -34,7 +34,7 @@ import java.util.List;
  * (preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
  * @author npiedeloup
  */
-public final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List<?>> {
+final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List<?>> {
 
 	@Override
 	public String getExpression() {

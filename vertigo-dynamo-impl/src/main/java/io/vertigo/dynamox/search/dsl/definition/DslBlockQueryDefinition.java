@@ -32,8 +32,8 @@ public final class DslBlockQueryDefinition implements DslQueryDefinition {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody).append("(");
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody).append("(");
 		for (final DslQueryDefinition query : queries) {
 			sb.append(query);
 		}

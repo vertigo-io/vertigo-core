@@ -34,13 +34,13 @@ public final class DslRangeQueryDefinition implements DslQueryDefinition {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody).append("[");
-		sb.append(startQueryDefinitions);
-		sb.append(" to ");
-		sb.append(endQueryDefinitions);
-		sb.append("]").append(postBody);
-		return sb.toString();
+		return new StringBuilder()
+				.append(preBody).append("[")
+				.append(startQueryDefinitions)
+				.append(" to ")
+				.append(endQueryDefinitions)
+				.append("]").append(postBody)
+				.toString();
 	}
 
 	/**
