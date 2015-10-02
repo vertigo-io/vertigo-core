@@ -93,7 +93,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private JpaResource obtainJpaResource() {
-		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider().getDataBase();
+		final SqlDataBase dataBase = dataBaseManager.getMainConnectionProvider().getDataBase();
 		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
 		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
 	}

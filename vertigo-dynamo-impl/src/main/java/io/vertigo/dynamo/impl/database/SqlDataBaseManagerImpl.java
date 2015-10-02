@@ -33,6 +33,10 @@ import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
 import io.vertigo.dynamo.impl.database.statementhandler.SqlStatementHandlerImpl;
 import io.vertigo.lang.Assertion;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
@@ -41,31 +45,48 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
+	/** Main connectionProvider's name. */
+	public static final String MAIN_CONNECTION_PROVIDER_NAME = "main";
 	private final SqlDataBaseListener dataBaseListener;
 	private final SqlStatementHandler statementHandler;
-	private final SqlConnectionProvider connectionProviderPlugin;
+	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
 	/**
 	 * Constructeur.
 	 * @param localeManager Manager des messages localisés
 	 * @param analyticsManager Manager de la performance applicative
+	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
 	 */
 	@Inject
-	public SqlDataBaseManagerImpl(final LocaleManager localeManager, final AnalyticsManager analyticsManager, final SqlConnectionProviderPlugin connectionProviderPlugin) {
+	public SqlDataBaseManagerImpl(final LocaleManager localeManager, final AnalyticsManager analyticsManager, final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
-		Assertion.checkNotNull(connectionProviderPlugin);
+		Assertion.checkNotNull(sqlConnectionProviderPlugins);
 		//-----
 		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
 		statementHandler = new SqlStatementHandlerImpl();
-		this.connectionProviderPlugin = connectionProviderPlugin;
+		connectionProviderPluginMap = new HashMap<>(sqlConnectionProviderPlugins.size());
+		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
+			final String name = sqlConnectionProviderPlugin.getName();
+			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
+			Assertion.checkState(previous == null, "ConnectionProvider {0}, was already registered", name);
+		}
+		Assertion.checkNotNull(connectionProviderPluginMap.containsKey(MAIN_CONNECTION_PROVIDER_NAME), "No main ConnectionProvider was set. Configure one and only one connectionProviderPlugin with name 'main'.");
 		localeManager.add("io.vertigo.dynamo.impl.database.DataBase", io.vertigo.dynamo.impl.database.Resources.values());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnectionProvider getConnectionProvider() {
-		return connectionProviderPlugin;
+	public SqlConnectionProvider getMainConnectionProvider() {
+		return connectionProviderPluginMap.get(MAIN_CONNECTION_PROVIDER_NAME);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public SqlConnectionProvider getConnectionProvider(final String name) {
+		final SqlConnectionProvider sqlConnectionProvider = connectionProviderPluginMap.get(name);
+		Assertion.checkNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
+		return sqlConnectionProvider;
 	}
 
 	/** {@inheritDoc} */

@@ -27,5 +27,9 @@ import io.vertigo.lang.Plugin;
 * @author pchretien
 */
 public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plugin {
-	//
+
+	/**
+	 * @return ConnectionProvider's name
+	 */
+	String getName();
 }

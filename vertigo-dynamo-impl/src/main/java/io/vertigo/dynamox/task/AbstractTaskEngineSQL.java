@@ -440,7 +440,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		return getDataBaseManager().getConnectionProvider();
+		return getDataBaseManager().getMainConnectionProvider();
 	}
 
 	/**

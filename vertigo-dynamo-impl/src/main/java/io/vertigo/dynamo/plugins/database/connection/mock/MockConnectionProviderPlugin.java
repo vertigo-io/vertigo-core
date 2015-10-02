@@ -20,8 +20,10 @@ package io.vertigo.dynamo.plugins.database.connection.mock;
 
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 import java.sql.DriverManager;
@@ -43,13 +45,14 @@ public final class MockConnectionProviderPlugin extends AbstractSqlConnectionPro
 
 	/**
 	 * Constructeur (deprecated).
+	 * @param name ConnectionProvider's name
 	 * @param dataBaseClass Type de base de données
 	 * @param jdbcDriver Classe du driver jdbc
 	 * @param jdbcUrl URL de configuration jdbc
 	 */
 	@Inject
-	public MockConnectionProviderPlugin(@Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
-		super(ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
+	public MockConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
+		super(name.getOrElse(SqlDataBaseManagerImpl.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);

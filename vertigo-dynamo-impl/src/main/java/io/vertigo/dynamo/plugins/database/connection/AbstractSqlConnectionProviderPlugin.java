@@ -41,6 +41,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 
 	private static final Logger LOG = Logger.getLogger(AbstractSqlConnectionProviderPlugin.class);
 
+	private final String name;
 	/**
 	* Base de données utilisée
 	*/
@@ -48,14 +49,23 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 
 	/**
 	 * Constructeur.
+	 * @param name ConnectionProvider's name
 	 * @param dataBase Type de base de données
 	 */
-	protected AbstractSqlConnectionProviderPlugin(final SqlDataBase dataBase) {
+	protected AbstractSqlConnectionProviderPlugin(final String name, final SqlDataBase dataBase) {
+		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataBase);
 		Assertion.checkNotNull(dataBase.getSqlMapping());
 		Assertion.checkNotNull(dataBase.getSqlExceptionHandler());
 		//-----
+		this.name = name;
 		this.dataBase = dataBase;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final String getName() {
+		return name;
 	}
 
 	//=========================================================================
