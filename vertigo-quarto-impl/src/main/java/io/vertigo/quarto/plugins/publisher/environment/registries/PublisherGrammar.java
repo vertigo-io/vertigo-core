@@ -65,7 +65,7 @@ final class PublisherGrammar {
 		publisherFieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 
 		publisherDataFieldDefinition = new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
-				.addField("type", builder.build(), true)
+				.addField("type", builder.build().getLink(), true)
 				.build();
 
 		publisherNodeDefinition = builder//
@@ -78,7 +78,7 @@ final class PublisherGrammar {
 
 		//--
 		publisherDefinition = new EntityBuilder(PUB_DEFINITION_META_DEFINITION)
-				.addField("root", publisherNodeDefinition, true)
+				.addField("root", publisherNodeDefinition.getLink(), true)
 				.build();
 		//-----
 		GRAMMAR = new EntityGrammar(publisherDefinition,
