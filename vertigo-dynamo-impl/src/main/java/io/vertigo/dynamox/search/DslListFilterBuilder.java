@@ -173,11 +173,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			}
 			final boolean useBlock = mayUseBlock(trimedExpression[1]);
 
-			query.append(useBlock ? "(" : "");
-			query.append(trimedExpression[1]);
-			query.append(useBlock ? ")" : "");
-
-			query.append(expressionDefinition.getPostBody());
+			query.append(useBlock ? "(" : "")
+					.append(trimedExpression[1])
+					.append(useBlock ? ")" : "")
+					.append(expressionDefinition.getPostBody());
 			expressionQuery.setLength(0);
 		}
 	}
@@ -192,12 +191,12 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
 			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
-			query.append(trimedQuery[0]);
-			query.append(preExpression);
-			query.append(useBlock ? "(" : "");
-			query.append(trimedQuery[1]);
-			query.append(useBlock ? ")" : "");
-			query.append(postExpression);
+			query.append(trimedQuery[0])
+					.append(preExpression)
+					.append(useBlock ? "(" : "")
+					.append(trimedQuery[1])
+					.append(useBlock ? ")" : "")
+					.append(postExpression);
 		}
 	}
 
@@ -213,10 +212,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private static void appendField(final StringBuilder query, final DslFieldDefinition dslFieldDefinition) {
-		query.append(dslFieldDefinition.getPreBody());
-		query.append(dslFieldDefinition.getFieldName());
-		query.append(dslFieldDefinition.getPostBody());
-		query.append(":");
+		query.append(dslFieldDefinition.getPreBody())
+				.append(dslFieldDefinition.getFieldName())
+				.append(dslFieldDefinition.getPostBody())
+				.append(":");
 	}
 
 	private void appendMultiQuery(final StringBuilder query, final DslBlockQueryDefinition dslMultiQueryDefinition, final DslExpressionDefinition expressionDefinition, final StringBuilder parentQuery) {
@@ -296,13 +295,13 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		final String endRangeStr = endRangeQuery.length() > 0 ? endRangeQuery.toString() : "*";
 
 		if (!"*".equals(startRangeStr) || !"*".equals(endRangeStr)) {
-			query.append(dslQueryDefinition.getPreBody());
-			query.append('[');
-			query.append(startRangeStr);
-			query.append(" to ");
-			query.append(endRangeStr);
-			query.append(']');
-			query.append(dslQueryDefinition.getPostBody());
+			query.append(dslQueryDefinition.getPreBody())
+					.append('[')
+					.append(startRangeStr)
+					.append(" to ")
+					.append(endRangeStr)
+					.append(']')
+					.append(dslQueryDefinition.getPostBody());
 		}
 	}
 
@@ -367,9 +366,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
 					query.append(criteriaValue);
 				} else {
-					query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier());
-					query.append(criteriaValue);
-					query.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
+					query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
+							.append(criteriaValue)
+							.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
 				}
 				query.append(userCriteria.getPostMissingPart());
 			}

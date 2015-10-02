@@ -30,7 +30,7 @@ import java.util.List;
  * (preField)(fieldName)(postField):
  * @author npiedeloup
  */
-public final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
+final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
 
 	@Override
 	protected Rule<List<?>> createMainRule() {

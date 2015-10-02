@@ -33,7 +33,7 @@ import java.util.List;
  * //(preMultiField)[(fields)+,](postMultiField)
  * @author npiedeloup
  */
-public final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List<?>> {
+final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List<?>> {
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		final Rule<List<List<?>>> otherFieldsRule = new ManyRule<>(

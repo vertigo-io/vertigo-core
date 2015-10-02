@@ -34,7 +34,7 @@ import java.util.List;
  * (preQuery)(term)(postQuery)
  * @author npiedeloup
  */
-public final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?>> {
+final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?>> {
 	@Override
 	public String getExpression() {
 		return "query";

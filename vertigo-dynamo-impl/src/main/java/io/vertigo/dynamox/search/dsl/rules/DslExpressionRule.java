@@ -36,7 +36,7 @@ import java.util.List;
  * (preExpression)(field|multiField):(query)(postExpression)
  * @author npiedeloup
  */
-public final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List<?>> {
+final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List<?>> {
 
 	@Override
 	public String getExpression() {

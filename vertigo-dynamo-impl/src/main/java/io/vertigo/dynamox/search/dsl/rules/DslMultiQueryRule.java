@@ -39,7 +39,7 @@ public final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinitio
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
-	public DslMultiQueryRule(final int level) {
+	DslMultiQueryRule(final int level) {
 		this.level = level;
 	}
 
