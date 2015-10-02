@@ -30,7 +30,7 @@ import java.util.List;
  * (fixedQuery)
  * @author npiedeloup
  */
-public final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List<?>> {
+final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List<?>> {
 	@Override
 	public String getExpression() {
 		return "fixedQuery";

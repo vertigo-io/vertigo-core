@@ -35,7 +35,7 @@ import java.util.List;
  * (preMultiQuery)\((queries|rangeQuery|fixedQuery|multiQuery|)+\)(postMultiQuery)
  * @author npiedeloup
  */
-public final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinition, List<?>> {
+final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinition, List<?>> {
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
