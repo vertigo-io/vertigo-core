@@ -100,7 +100,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		Assertion.checkState(myBuildQuery == null, "query was already set : {0}", myBuildQuery);
 		//-----
 		try {
-			final Rule<DslMultiExpressionDefinition> expressionsRule = new DslMultiExpressionRule(0);
+			final Rule<DslMultiExpressionDefinition> expressionsRule = new DslMultiExpressionRule();
 			final ManyRule<DslMultiExpressionDefinition> many = new ManyRule<>(expressionsRule, false, true); //repeat true => on veut tout la chaine
 			final Parser<List<DslMultiExpressionDefinition>> parser = many.createParser();
 			parser.parse(buildQuery, 0);

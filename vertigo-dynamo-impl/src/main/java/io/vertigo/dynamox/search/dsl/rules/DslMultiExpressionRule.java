@@ -39,7 +39,12 @@ public final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressio
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
-	public DslMultiExpressionRule(final int level) {
+	public DslMultiExpressionRule() {
+		this(0);
+		//At the beginning the level is always 0
+	}
+
+	private DslMultiExpressionRule(final int level) {
 		this.level = level;
 	}
 
