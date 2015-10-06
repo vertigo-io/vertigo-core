@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.store.kvstore.berkeley;
 
-import static io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest.DEFAULT_DATA_STORE_NAME;
 import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.store.kvstore.KVStore;
 import io.vertigo.dynamo.store.kvstore.data.Flower;
