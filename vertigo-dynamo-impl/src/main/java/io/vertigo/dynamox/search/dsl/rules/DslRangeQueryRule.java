@@ -36,11 +36,13 @@ import java.util.List;
  */
 final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List<?>> {
 
+	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
 		return "rangeQuery";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 
@@ -51,20 +53,22 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List
 
 		return new SequenceRule(
 				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
-				DslSyntaxRules.ARRAY_START,
+				new WordRule(false, "[{", WordRule.Mode.ACCEPT), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
 				new WordRule(false, "TOto", WordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
 				queriesRule,//6
 				DslSyntaxRules.SPACES,
-				DslSyntaxRules.ARRAY_END,
+				new WordRule(false, "]}", WordRule.Mode.ACCEPT), //8
 				DslSyntaxRules.POST_MODIFIER_VALUE); //9
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslRangeQueryDefinition handle(final List<?> parsing) {
 		final String preQuery = (String) parsing.get(0);
+		final String startRange = (String) parsing.get(1);
 
 		final Choice startTermQuery = (Choice) parsing.get(2);
 		final DslQueryDefinition startQueryDefinitions = (DslQueryDefinition) startTermQuery.getResult();
@@ -72,8 +76,8 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List
 		final Choice endTermQuery = (Choice) parsing.get(6);
 		final DslQueryDefinition endQueryDefinitions = (DslQueryDefinition) endTermQuery.getResult();
 
+		final String endRange = (String) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
-
-		return new DslRangeQueryDefinition(preQuery, startQueryDefinitions, endQueryDefinitions, postQuery);
+		return new DslRangeQueryDefinition(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
 	}
 }

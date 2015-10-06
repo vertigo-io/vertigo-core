@@ -31,11 +31,13 @@ import java.util.List;
  * @author npiedeloup
  */
 final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List<?>> {
+	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
 		return "fixedQuery";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		return new SequenceRule(
@@ -43,6 +45,7 @@ final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List
 				DslSyntaxRules.FIXED_WORD);//1
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslFixedQueryDefinition handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);

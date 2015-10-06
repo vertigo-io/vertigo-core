@@ -38,11 +38,13 @@ import java.util.List;
  */
 final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List<?>> {
 
+	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
 		return "expression";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 
@@ -58,7 +60,7 @@ final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List
 		final Rule<Choice> queriesRule = new FirstOfRule(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
-				new DslMultiQueryRule(0), //2
+				new DslMultiQueryRule(), //2
 				new DslFixedQueryRule() //3
 		);
 		return new SequenceRule(
@@ -69,6 +71,7 @@ final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List
 				DslSyntaxRules.SPACES); //4
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslExpressionDefinition handle(final List<?> parsing) {
 		String preExpression = (String) parsing.get(0);

@@ -175,7 +175,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static boolean mayUseBlock(final String trimedExpression) {
 		//on place des parenthèses s'il n'y a pas encore de block, ou des caractères interdits
-		return !trimedExpression.matches("((\\(.*\\))|(\\[.*\\])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
+		return !trimedExpression.matches("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
 				&& trimedExpression.matches(".*[" + QUERY_RESERVERD_PATTERN + "].*"); //contains any reserved char +-!*?~^=>< or any spaces
 
 	}
@@ -288,11 +288,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 		if (!"*".equals(startRangeStr) || !"*".equals(endRangeStr)) {
 			query.append(dslQueryDefinition.getPreBody())
-					.append('[')
+					.append(dslQueryDefinition.getStartRange())
 					.append(startRangeStr)
 					.append(" to ")
 					.append(endRangeStr)
-					.append(']')
+					.append(dslQueryDefinition.getEndRange())
 					.append(dslQueryDefinition.getPostBody());
 		}
 	}

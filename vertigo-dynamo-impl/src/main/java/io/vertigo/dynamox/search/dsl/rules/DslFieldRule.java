@@ -32,6 +32,7 @@ import java.util.List;
  */
 final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		return new SequenceRule(
@@ -40,6 +41,7 @@ final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslFieldDefinition handle(final List<?> parsing) {
 		final String preField = (String) parsing.get(0);

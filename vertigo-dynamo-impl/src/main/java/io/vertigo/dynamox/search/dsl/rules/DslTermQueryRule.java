@@ -35,11 +35,13 @@ import java.util.List;
  * @author npiedeloup
  */
 final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?>> {
+	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
 		return "query";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		final Rule<List<?>> defaultValueRule = new SequenceRule(
@@ -62,6 +64,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?
 				DslSyntaxRules.POST_MODIFIER_VALUE); //3);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslTermQueryDefinition handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);

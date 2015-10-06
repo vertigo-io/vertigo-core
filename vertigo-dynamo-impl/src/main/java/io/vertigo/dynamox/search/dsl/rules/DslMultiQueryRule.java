@@ -39,15 +39,24 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinition, List
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
-	DslMultiQueryRule(final int level) {
+	/**
+	 * Constructor.
+	 */
+	DslMultiQueryRule() {
+		level = 0;
+	}
+
+	private DslMultiQueryRule(final int level) {
 		this.level = level;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
 		return "multiQuery";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		if (level > MAX_DEPTH) {
@@ -70,6 +79,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQueryDefinition, List
 				DslSyntaxRules.POST_MODIFIER_VALUE); //4
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslBlockQueryDefinition handle(final List<?> parsing) {
 		final String preQuery = (String) parsing.get(0);

@@ -39,6 +39,9 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
+	/**
+	 * Constructor.
+	 */
 	DslMultiExpressionRule() {
 		this(0);
 		//At the beginning the level is always 0
@@ -48,6 +51,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		this.level = level;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<Choice> createMainRule() {
 		if (level > MAX_DEPTH) {
@@ -71,6 +75,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		return blockRule;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslMultiExpressionDefinition handle(final Choice parsing) {
 		final String preMultiExpression;

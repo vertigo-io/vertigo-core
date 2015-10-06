@@ -231,7 +231,9 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //13
 				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //14
 				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* to *]", "" }, //15
-
+				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 to 10]" }, //16
+				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 to 10}" }, //17
+				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 to 10}" }, //18
 		};
 		testObjectFixedQuery(testQueries);
 	}

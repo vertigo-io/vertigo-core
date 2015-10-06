@@ -34,6 +34,7 @@ import java.util.List;
  * @author npiedeloup
  */
 final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List<?>> {
+	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		final Rule<List<List<?>>> otherFieldsRule = new ManyRule<>(
@@ -52,6 +53,7 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List
 				DslSyntaxRules.ARRAY_END);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected DslMultiFieldDefinition handle(final List<?> parsing) {
 		final String preMultiField = "";//(String) parsing.get(0);
