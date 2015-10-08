@@ -1,10 +1,33 @@
 Version history
 ===============
 
-Running 0.8.3-SNAPSHOT
+Running 0.8.4-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 0.8.3 - 2015/10/08
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-082-to-083)
+__In Bold__ : Potential compatibility problems 
+* [All] Code cleaning and refactoring
+* __[All] Updated dependencies libs : gson 2.4, jedis 2.7.3, elasticsearch 1.5.2, poi 3.13__
+* [Core] Fix #28 log warn for missing ressource in mono-langage app
+* __[Dynamo] Renamed GroupCriteria mode intersec to intersect__
+* __[Dynamo] BrokerNN is an helper, accessible from DAOBroker only, no more from StoreManager__
+* __[Dynamo] Refactored brokerBatch api.__ (will be deprecated soon)
+* __[Dynamo] Added DslListFilterBuilder (preconised) and renamed DefaultListFilterBuilder to RegExpListFilterBuilder (deprecated).__
+* __[Dynamo] DslListFilterBuilder support MultiField, Range criteria. Better handle of query syntax.__
+* [Dynamo] Renamed attribute notNull to required in DtField and TaskAttribute. (Ksp not impacted yet, only java object)
+* [Dynamo] Some refactoring around JPA
+* [Dynamo] Added transactional aspect in features
+* [Dynamo] Fix #29 reindexAllTask missing some documents ~1/500
+* [Vega] Fixed Facets order in json
+* [Vega] Refactored Cors for FileUpload (handle Options requests)
+* [Vega] Fixed FileUpload from Focus (dropzone)
+* [Vega] Refactored JsonConverterHandler to JsonSerializer
+* [Struts2] Fix #22
+* [Studio] Fix #23. Cast TaskResult when Option.
 
 
 Release 0.8.2 - 2015/09/10
