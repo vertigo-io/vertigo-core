@@ -32,6 +32,7 @@ import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
+import io.vertigo.dynamo.impl.transaction.VTransactionAspect;
 import io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
@@ -51,7 +52,8 @@ public final class DynamoFeatures extends Features {
 				.addComponent(ExportManager.class, ExportManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
-				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class);
+				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(VTransactionAspect.class);
 	}
 
 	public DynamoFeatures withStore() {

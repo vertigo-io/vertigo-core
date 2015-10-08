@@ -20,20 +20,20 @@ package io.vertigo.vega.plugins.webservice.handler;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
-import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;
+import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonSerializer;
 import io.vertigo.vega.plugins.webservice.handler.converter.DtListDeltaJsonConverter;
 import io.vertigo.vega.plugins.webservice.handler.converter.DtListJsonConverter;
 import io.vertigo.vega.plugins.webservice.handler.converter.DtObjectJsonConverter;
 import io.vertigo.vega.plugins.webservice.handler.converter.ImplicitJsonConverter;
 import io.vertigo.vega.plugins.webservice.handler.converter.JsonConverter;
+import io.vertigo.vega.plugins.webservice.handler.converter.JsonSerializer;
 import io.vertigo.vega.plugins.webservice.handler.converter.PrimitiveJsonConverter;
+import io.vertigo.vega.plugins.webservice.handler.converter.StringJsonSerializer;
 import io.vertigo.vega.plugins.webservice.handler.converter.VFileJsonConverter;
 import io.vertigo.vega.plugins.webservice.handler.reader.BodyJsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.HeaderJsonReader;
@@ -47,17 +47,12 @@ import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.ExtendedObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -83,10 +78,13 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			BodyJsonReader.class, InnerBodyJsonReader.class, HeaderJsonReader.class,
 			PathJsonReader.class, QueryJsonReader.class, RequestJsonReader.class };
 
-	private final JsonEngine jsonWriterEngine;
+	private static final Class<? extends JsonSerializer>[] JSON_SERIALIZER_CLASSES = new Class[] {
+			VFileJsonConverter.class, ImplicitJsonConverter.class, StringJsonSerializer.class,
+			DefaultJsonSerializer.class };
 
 	private final Map<Class, List<JsonConverter>> jsonConverters = new HashMap<>();
 	private final EnumMap<WebServiceParamType, List<JsonReader<?>>> jsonReaders = new EnumMap<>(WebServiceParamType.class);
+	private final List<JsonSerializer> jsonWriters = new ArrayList<>();
 
 	/**
 	 * encodeType.
@@ -182,16 +180,12 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 	}
 
 	/**
-	 * @param tokenManager tokenManager (optional)
-	 * @param jsonWriterEngine jsonWriterEngine
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonWriterEngine);
+	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
-		this.jsonWriterEngine = jsonWriterEngine;
 
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
 			final JsonConverter jsonConverter = Injector.newInstance(jsonConverterClass, Home.getComponentSpace());
@@ -216,6 +210,11 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 				jsonReaderByRestParamType.add(jsonReader);
 			}
 		}
+		for (final Class<? extends JsonSerializer> jsonSerializerClass : JSON_SERIALIZER_CLASSES) {
+			final JsonSerializer jsonSerializer = Injector.newInstance(jsonSerializerClass, Home.getComponentSpace());
+			jsonWriters.add(jsonSerializer);
+		}
+
 	}
 
 	/** {@inheritDoc} */
@@ -232,7 +231,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			readParameterValue(request, routeContext, webServiceParam);
 		}
 		final Object result = chain.handle(request, response, routeContext);
-		return convertResultToJson(result, request, response, routeContext);
+		return convertResultToJson(result, response, routeContext);
 	}
 
 	private void readParameterValue(final Request request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) throws VSecurityException {
@@ -273,144 +272,27 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 	}
 
-	private String convertResultToJson(final Object result, final Request request, final Response response, final WebServiceCallContext routeContext) {
+	private String convertResultToJson(final Object result, final Response response, final WebServiceCallContext routeContext) {
+		//optimize most common case
 		if (result == null) {
 			//if status was not set, or set to OK we set it to NO_CONTENT
 			if (response.raw().getStatus() == HttpServletResponse.SC_OK || response.raw().getStatus() == 0) {
 				response.status(HttpServletResponse.SC_NO_CONTENT);
 			}
 			return ""; //jetty understand null as 404 not found
-		} else if (VFileUtil.isVFileResult(result)) {
-			VFileUtil.sendVFile(result, request, response);
-			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
-		} else if (result instanceof HttpServletResponse) {
-			Assertion.checkState(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");
-			//-----
-			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
-		} else if (result instanceof String) {
-			final String resultString = (String) result;
-			final int length = resultString.length();
-			Assertion.checkArgument(!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'), "Can't return pre-build json : {0}", resultString);
-			response.type("text/plain;charset=UTF-8");
-			return (String) result;
-		} else {
-			final EncodedType encodedType = findEncodedType(result);
-			final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
-			if (encodedType.getEncoderType() != EncoderType.JSON) {
-				contentType.append(";").append(encodedType.obtainContentType());
-			}
-			response.type(contentType.toString());
-			return writeValue(result, response, routeContext.getWebServiceDefinition());
 		}
-	}
 
-	private static EncodedType findEncodedType(final Object value) {
-		final EncodedType encodedType;
-		if (value instanceof DtList) {
-			final DtList<?> dtList = (DtList<?>) value;
-			encodedType = new EncodedType(EncoderType.JSON_LIST, hasComplexTypeMeta(dtList), dtList.getDefinition().getClassSimpleName());
-		} else if (value instanceof List) {
-			final String entityName = ((List) value).isEmpty() ? Object.class.getSimpleName() : ((List) value).get(0).getClass().getSimpleName();
-			encodedType = new EncodedType(EncoderType.JSON_LIST, false, entityName);
-		} else if (value instanceof DtObject) {
-			encodedType = new EncodedType(EncoderType.JSON_ENTITY, false, value.getClass().getSimpleName());
-		} else if (value instanceof UiContext) {
-			encodedType = new EncodedType(EncoderType.JSON_UI_CONTEXT, false, value.getClass().getSimpleName());
-		} else if (value instanceof ExtendedObject<?>) {
-			//ce type n'est qu'un conteneur de l'objet sous jacent, lorsqu'il ne contient que le tokenId il ne modifie par le type mime
-			final EncodedType innerEncodedType = findEncodedType(((ExtendedObject) value).getInnerObject());
-			//si le type interne n'as pas de meta, et que le ExtendedObject contient d'autres metas que le seul serverSideToken, on change le type mime
-			if (!innerEncodedType.hasMeta()
-					&& !(((ExtendedObject) value).isEmpty()
-					|| (((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)))) {
-				encodedType = new EncodedType(innerEncodedType.getEncoderType(), true, innerEncodedType.getEntityName());
-			} else {
-				encodedType = innerEncodedType;
-			}
-		} else {
-			encodedType = new EncodedType(EncoderType.JSON, false, value.getClass().getSimpleName());
-		}
-		return encodedType;
-
-	}
-
-	private static boolean hasComplexTypeMeta(final DtList<?> dtList) {
-		for (final String entry : dtList.getMetaDataNames()) {
-			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-			if (value.isDefined()) {
-				final Class<?> metaClass = value.get().getClass();
-				if (!(metaClass.isPrimitive()
-						|| String.class.isAssignableFrom(metaClass)
-						|| Integer.class.isAssignableFrom(metaClass)
-						|| Long.class.isAssignableFrom(metaClass)
-						|| Float.class.isAssignableFrom(metaClass)
-						|| Double.class.isAssignableFrom(metaClass)
-						|| Date.class.isAssignableFrom(metaClass))) {
-					return true;
-				}
+		JsonSerializer jsonWriterToApply = null;
+		for (final JsonSerializer jsonWriter : jsonWriters) {
+			if (jsonWriter.canHandle(result.getClass())) {
+				jsonWriterToApply = jsonWriter;
+				break;
 			}
 		}
-		return false;
-	}
-
-	private String writeValue(final Object value, final Response response, final WebServiceDefinition webServiceDefinition) {
-		Assertion.checkNotNull(value);
 		//-----
-		if (value instanceof DtList && hasComplexTypeMeta((DtList) value)) {
-			return toJson(value, getListMetas((DtList) value), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof List) {
-			writeListMetaToHeader((List) value, response);
-			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof DtObject) {
-			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof UiContext) {
-			//TODO build json in jsonWriterEngine
-			final StringBuilder sb = new StringBuilder().append("{");
-			String sep = "";
-			for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
-				sb.append(sep);
-				final String encodedValue = writeValue(entry.getValue(), response, webServiceDefinition);
-				sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
-				sep = ", ";
-			}
-			sb.append("}");
-			return sb.toString();
-		} else if (value instanceof ExtendedObject<?>) {
-			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
-			return toJson(extendedObject.getInnerObject(), extendedObject, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else {
-			return jsonWriterEngine.toJson(value);
-		}
-	}
-
-	private void writeListMetaToHeader(final List<?> list, final Response response) {
-		if (list instanceof DtList) {
-			final DtList<?> dtList = (DtList<?>) list;
-			for (final String entry : dtList.getMetaDataNames()) {
-				final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-				if (value.isDefined()) {
-					if (value.get() instanceof String) {
-						response.header(entry, (String) value.get()); //TODO escape somethings ?
-					} else {
-						response.header(entry, jsonWriterEngine.toJson(value.get()));
-					}
-				}
-			}
-		} //else nothing, there is no meta on standard list
-	}
-
-	private static Map<String, Serializable> getListMetas(final DtList<?> dtList) {
-		final Map<String, Serializable> metaDatas = new HashMap<>();
-		for (final String entry : dtList.getMetaDataNames()) {
-			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-			if (value.isDefined()) {
-				metaDatas.put(entry, value.get());
-			}
-		}
-		return metaDatas;
-	}
-
-	private String toJson(final Object value, final Map<String, Serializable> metaData, final Set<String> includedFields, final Set<String> excludedFields) {
-		return jsonWriterEngine.toJsonWithMeta(value, metaData, includedFields, excludedFields);
+		Assertion.checkNotNull(jsonWriterToApply, "Can't send result of service {0} {1} no compatible JsonConverter found for {2}", routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), result.getClass().getName());
+		final String json = jsonWriterToApply.toJson(result, response, routeContext.getWebServiceDefinition());
+		Assertion.checkNotNull(json, "Can't convert result to json");
+		return json;
 	}
 }

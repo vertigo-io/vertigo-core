@@ -47,7 +47,7 @@ public final class CommandType implements DtMasterData {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_TYPE")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CTY_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
 	public Long getCtyId() {
 		return ctyId;
 	}
@@ -67,7 +67,7 @@ public final class CommandType implements DtMasterData {
 	 * @return String label <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LABEL")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Label")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}

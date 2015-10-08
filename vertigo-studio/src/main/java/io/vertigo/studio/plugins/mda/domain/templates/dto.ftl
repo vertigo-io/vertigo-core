@@ -33,7 +33,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'. 
-	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first} <#if dtField.notNull><b>Obligatoire</b></#if>
+	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first} <#if dtField.required><b>Obligatoire</b></#if>
 	 */
 	<#list annotations(dtField.dtField, dtField.dtDefinition) as annotation>
 	${annotation}
@@ -45,7 +45,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Définit la valeur de la propriété '${dtField.display}'.
-	 * @param ${dtField.nameLowerCase?uncap_first} ${dtField.javaType} <#if dtField.notNull><b>Obligatoire</b></#if>
+	 * @param ${dtField.nameLowerCase?uncap_first} ${dtField.javaType} <#if dtField.required><b>Obligatoire</b></#if>
 	 */
 	public void set${dtField.nameLowerCase}(final ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}) {
 		this.${dtField.nameLowerCase?uncap_first} = ${dtField.nameLowerCase?uncap_first};
@@ -56,7 +56,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété calculée '${dtField.display}'. 
-	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first} <#if dtField.notNull><b>Obligatoire</b></#if>
+	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first} <#if dtField.required><b>Obligatoire</b></#if>
 	 */
 	<#list annotations(dtField.dtField, dtField.dtDefinition) as annotation>
 	${annotation}

@@ -45,7 +45,7 @@ create table ${dtDefinition.dtDefinition.localName}
 (
 	<#list dtDefinition.dtFields as field>
 	<#if field.dtField.persistent>
-    ${field.name?right_pad(12)}${"\t"} ${sql(field.dtField.domain)?right_pad(12)}${"\t"}<#if field.notNull>not null</#if>,
+    ${field.name?right_pad(12)}${"\t"} ${sql(field.dtField.domain)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
     </#if><#-- field.persistent -->
     </#list><#-- fieldCollection -->
     <#list dtDefinition.dtFields as field>

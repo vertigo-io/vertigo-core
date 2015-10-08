@@ -36,15 +36,17 @@ import spark.Response;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
+ * @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny
  * @author npiedeloup
  */
 public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
-	private static final String DEFAULT_ORIGIN_CORS_FILTER = "*";
-	private static final String DEFAULT_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT"; // may use *
-	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type, listServerToken, x-total-count, x-access-token"; // may use *
+	private static final String DEFAULT_ALLOW_ORIGIN_CORS_FILTER = "*";
+	private static final String DEFAULT_ALLOW_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT, OPTIONS"; // may use *
+	private static final String DEFAULT_ALLOW_HEADERS_CORS_FILTER = "Cache-Control, X-Requested-With"; // may use *
+	private static final String DEFAULT_EXPOSED_HEADERS_CORS_FILTER = "Content-Type, listServerToken, content-length, x-total-count, x-access-token"; // may use *
 
 	private final String originCORSFilter;
 	private final String methodCORSFilter;
@@ -57,8 +59,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
-		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGIN_CORS_FILTER);
-		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_METHODS_CORS_FILTER);
+		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
+		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
 		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
 	}
@@ -66,12 +68,28 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final WebServiceDefinition webServiceDefinition) {
-		return true;
+		return webServiceDefinition.isCorsProtected();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+		putCorsResponseHeaders(request, response);
+		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
+			response.status(200);
+			return "";
+		}
+		return chain.handle(request, response, routeContext);
+	}
+
+	/**
+	 * @param request Request
+	 * @param response Response
+	 * @throws VSecurityException If Cors error
+	 */
+	public void putCorsResponseHeaders(final Request request, final Response response) throws VSecurityException {
+		/** @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny */
+		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
 		if (origin != null) {
 			final String method = request.raw().getMethod();
@@ -82,14 +100,16 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Request-Method", methodCORSFilter);
-		response.header("Access-Control-Expose-Headers", DEFAULT_HEADERS_CORS_FILTER);
-		return chain.handle(request, response, routeContext);
+		response.header("Access-Control-Allow-Method", methodCORSFilter);
+		response.header("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
+		response.header("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}
 
 	private static boolean isAllowed(final String currentValue, final Set<String> allowedValues) {
 		if (allowedValues.contains("*")) {
 			return true;
+		} else if (currentValue.trim().isEmpty()) {
+			return false;
 		}
 		return allowedValues.contains(currentValue);
 	}

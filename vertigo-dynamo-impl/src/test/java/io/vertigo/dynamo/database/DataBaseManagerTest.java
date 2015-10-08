@@ -21,6 +21,7 @@ package io.vertigo.dynamo.database;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.Movie;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
@@ -48,26 +49,27 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String TITLE_MOVIE_1 = "citizen kane";
 	private static final String TITLE_MOVIE_2 = "vertigo";
 	private static final String TITLE_MOVIE_3 = "gone girl";
+	private static final String TITLE_MOVIE_4 = "Jurassic Park";
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		//A chaque fin de test on arrête la base.
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 		execCallableStatement(connection, "shutdown;");
 	}
 
 	@Test
 	public void testConnection() throws Exception {
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 		Assert.assertNotNull(connection);
 		connection.commit();
 	}
@@ -94,7 +96,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	public void createDatas() throws Exception {
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 		try {
 			execCallableStatement(connection, "insert into movie values (1, 'citizen kane')");
 			//-----
@@ -159,7 +161,11 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private SqlQueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
-		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		return executeQuery(domain, sql, dataBaseManager.getMainConnectionProvider());
+	}
+
+	private SqlQueryResult executeQuery(final Domain domain, final String sql, final SqlConnectionProvider sqlConnectionProvider) throws SQLException, Exception {
+		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
 			preparedStatement.init();
 			return preparedStatement.executeQuery(domain);
@@ -190,6 +196,57 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
+	}
+
+	//On teste un preparestatement mappé sur un type statique (Class famille)
+	@Test
+	public void testTwoDataSource() throws Exception {
+		//On crée les données dans main
+		createDatas();
+
+		setupSecondary();
+		try {
+			//on crée des données dans 'secondary'
+			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+			try {
+				execCallableStatement(connection, "insert into movie values (1, 'Star wars')");
+				execCallableStatement(connection, "insert into movie values (2, 'Will Hunting')");
+				execCallableStatement(connection, "insert into movie values (3, 'Usual Suspects')");
+				//-----
+				//On passe par une requête bindée
+				insert(connection, 4, TITLE_MOVIE_4);
+			} finally {
+				connection.commit();
+			}
+			//----
+			final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
+			final Domain movieDomain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTO", Domain.class);
+
+			final SqlQueryResult result2 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
+			Assert.assertEquals(1, result2.getSQLRowCount());
+			Assert.assertEquals(4, result2.getValue());
+			final SqlQueryResult resultMovie1 = executeQuery(movieDomain, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"));
+			Assert.assertEquals(1, resultMovie1.getSQLRowCount());
+			Assert.assertEquals("Star wars", ((Movie) resultMovie1.getValue()).getTitle());
+
+			final SqlQueryResult result1 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getMainConnectionProvider());
+			Assert.assertEquals(1, result1.getSQLRowCount());
+			Assert.assertEquals(3, result1.getValue());
+		} finally {
+			shutdownSecondaryDown();
+		}
+	}
+
+	protected void setupSecondary() throws Exception {
+		//A chaque test on recrée la table famille
+		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+	}
+
+	protected void shutdownSecondaryDown() throws Exception {
+		//A chaque fin de test on arrête la base.
+		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+		execCallableStatement(connection, "shutdown;");
 	}
 
 	//On teste un preparestatement mappé sur un type dynamique DTList.

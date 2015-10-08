@@ -34,7 +34,7 @@ public final class Continent implements DtObject {
 	private Long id;
 	private String name;
 
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the Continent")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}

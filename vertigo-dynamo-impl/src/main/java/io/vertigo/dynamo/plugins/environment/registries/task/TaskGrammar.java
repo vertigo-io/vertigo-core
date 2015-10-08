@@ -47,7 +47,7 @@ final class TaskGrammar {
 		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
 				.addField(NOT_NULL, Boolean, true)
 				.addField(IN_OUT, String, true)
-				.addField("domain", DomainGrammar.DOMAIN_ENTITY, true)
+				.addField("domain", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
 				.build();
 
 		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")

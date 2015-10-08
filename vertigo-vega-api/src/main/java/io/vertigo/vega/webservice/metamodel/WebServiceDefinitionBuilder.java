@@ -18,7 +18,6 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
@@ -54,6 +53,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	private boolean myServerSideSave;
 	private boolean myAutoSortAndPagination;
 	private String myDoc = "";
+	private boolean myCorsProtected = true; //true by default
 	private final List<WebServiceParam> myWebServiceParams = new ArrayList<>();
 
 	/**
@@ -90,7 +90,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				myIncludedFields,
 				myExcludedFields,
 				myWebServiceParams,
-				myDoc);
+				myDoc,
+				myCorsProtected);
 	}
 
 	private static String normalizePath(final String servicePath) {
@@ -244,6 +245,15 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	/**
+	 * @param corsProtected corsProtected
+	 * @return this builder
+	 */
+	public WebServiceDefinitionBuilder withCorsProtected(final boolean corsProtected) {
+		myCorsProtected = corsProtected;
+		return this;
+	}
+
+	/**
 	 * @param webServiceParam webServiceParam
 	 * @return this builder
 	 */
@@ -253,18 +263,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private String computeAcceptedType() {
-		for (final WebServiceParam webServiceParam : myWebServiceParams) {
-			if (VFile.class.isAssignableFrom(webServiceParam.getType())) {
-				return "multipart/form-data";
-			} else if (webServiceParam.getParamType() == WebServiceParamType.Query) {
-				if (myVerb != Verb.GET) {//if GET => nothing
-					return "application/x-www-form-urlencoded";
-				}
-			} else if (webServiceParam.getParamType() == WebServiceParamType.Body || webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
-				return "application/json";
-			}
-		}
-		return "application/json";
+		//AcceptedType is from client view : it's return type, not input type
+		return "*/*";
 	}
 
 }

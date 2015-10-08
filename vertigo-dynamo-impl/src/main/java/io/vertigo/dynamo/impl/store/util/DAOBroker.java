@@ -29,16 +29,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
-import io.vertigo.dynamo.store.datastore.BrokerBatch;
-import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Classe utilitaire pour accéder au Broker.
@@ -47,7 +43,7 @@ import java.util.Map;
  * @param <D> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  */
-public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D, P> {
+public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
@@ -80,14 +76,18 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		Assertion.checkNotNull(taskManager);
 		//-----
 		dataStore = storeManager.getDataStore();
-		brokerNN = storeManager.getBrokerNN();
+		brokerNN = new BrokerNNImpl(taskManager);
 		this.dtDefinition = dtDefinition;
-		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);
+		brokerBatch = new BrokerBatchImpl<>(taskManager);
 		this.taskManager = taskManager;
 	}
 
 	protected final TaskManager getTaskManager() {
 		return taskManager;
+	}
+
+	public BrokerBatch<D, P> getBatch() {
+		return brokerBatch;
 	}
 
 	/**
@@ -251,29 +251,5 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtList<D> getList(final Collection<P> idList) {
-		return brokerBatch.getList(idList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Map<P, D> getMap(final Collection<P> idList) {
-		return brokerBatch.getMap(idList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <O> DtList<D> getListByField(final String fieldName, final Collection<O> value) {
-		return brokerBatch.getListByField(fieldName, value);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <O> Map<O, DtList<D>> getMapByField(final String fieldName, final Collection<O> value) {
-		return brokerBatch.getMapByField(fieldName, value);
 	}
 }

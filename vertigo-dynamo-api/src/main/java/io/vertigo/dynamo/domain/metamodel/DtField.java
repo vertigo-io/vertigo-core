@@ -80,7 +80,7 @@ public final class DtField implements DtFieldName {
 	private final FieldType type;
 
 	/** Si le champ obligatoire. */
-	private final boolean notNull;
+	private final boolean required;
 
 	/** Domain.*/
 	private final DefinitionReference<Domain> domainRef;
@@ -112,7 +112,7 @@ public final class DtField implements DtFieldName {
 	 * @param type Type du champ
 	 * @param domain Domaine du champ
 	 * @param label Label
-	 * @param notNull Si champ not null
+	 * @param required Si champ not null
 	 * @param persistent Si champ persistent
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
@@ -121,7 +121,7 @@ public final class DtField implements DtFieldName {
 	 * @param display If this field is use for display
 	 */
 	DtField(final String id, final String fieldName, final FieldType type,
-			final Domain domain, final MessageText label, final boolean notNull,
+			final Domain domain, final MessageText label, final boolean required,
 			final boolean persistent, final String fkDtDefinitionName,
 			final ComputedExpression computedExpression, final boolean dynamic,
 			final boolean sort, final boolean display) {
@@ -133,7 +133,7 @@ public final class DtField implements DtFieldName {
 		this.id = id;
 		domainRef = new DefinitionReference<>(domain);
 		this.type = type;
-		this.notNull = notNull;
+		this.required = required;
 		//-----
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fieldName.length() <= 30, "Le Nom du champ {0} doit être inférieur à 30", fieldName);
@@ -194,8 +194,8 @@ public final class DtField implements DtFieldName {
 	 *
 	 * @return Si la propriété est non null
 	 */
-	public boolean isNotNull() {
-		return notNull;
+	public boolean isRequired() {
+		return required;
 	}
 
 	/**

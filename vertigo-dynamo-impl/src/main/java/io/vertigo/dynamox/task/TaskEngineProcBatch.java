@@ -39,8 +39,7 @@ import javax.inject.Inject;
 /**
  * @author jmforhan
  */
-public class TaskEngineProcBatch extends TaskEngineProc {
-
+public class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatement> {
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
@@ -48,6 +47,12 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	@Inject
 	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, sqlDataBaseManager);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
+		return getDataBaseManager().createCallableStatement(connection, procName);
 	}
 
 	/** {@inheritDoc} */

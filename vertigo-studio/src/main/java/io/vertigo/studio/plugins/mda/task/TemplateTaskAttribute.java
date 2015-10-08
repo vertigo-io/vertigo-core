@@ -71,8 +71,8 @@ public final class TemplateTaskAttribute {
 	/**
 	 * @return Si l'attribut est obligatoire.
 	 */
-	public boolean isNotNull() {
-		return taskAttribute.isNotNull();
+	public boolean isRequired() {
+		return taskAttribute.isRequired();
 	}
 
 	/**

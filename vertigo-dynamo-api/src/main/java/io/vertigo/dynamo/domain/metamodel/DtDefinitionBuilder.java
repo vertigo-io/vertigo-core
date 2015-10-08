@@ -117,15 +117,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fkDtDefinitionName Definition référencée
 	 * @param label Libellé du champ
 	 * @param domain Domain fonctionnel
-	 * @param notNull Si la FK est obligatoire
+	 * @param required Si la FK est obligatoire
 	 * @param sort si champ de tri
 	 * @param display si champ de display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean notNull, final String fkDtDefinitionName, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
-		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, notNull, persistent, fkDtDefinitionName, null, false, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, required, persistent, fkDtDefinitionName, null, false, sort, display);
 		//On suppose que le build est déjà effectué.
 		dtDefinition.registerDtField(dtField);
 		return this;
@@ -153,15 +153,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param domain Domaine associé au champ
 	 * @param label Libellé du champ
-	 * @param notNull Si le champ est obligatoire
+	 * @param required Si le champ est obligatoire
 	 * @param persistent Si le champ est persisté
 	 * @param sort If this field is use for sorting
 	 * @param display If this field is use for display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean notNull, final boolean persistent, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean required, final boolean persistent, final boolean sort, final boolean display) {
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, notNull, persistent, null, null, myDynamic, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
 		return this;
 	}
@@ -176,17 +176,17 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return Builder
 	 */
 	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
-		//le champ ID est tjrs notNull
-		final boolean notNull = true;
+		//le champ ID est tjrs required
+		final boolean required = true;
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = myPersistent;
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(fieldName, DtField.FieldType.PRIMARY_KEY, domain, label, notNull, persistent, null, null, myDynamic, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.PRIMARY_KEY, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
 		return this;
 	}
 
-	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean notNull, final boolean persistent, final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean dynamic, final boolean sort, final boolean display) {
+	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean required, final boolean persistent, final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean dynamic, final boolean sort, final boolean display) {
 
 		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
 		//-----
@@ -199,7 +199,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final MessageText label = new MessageText(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
-		return new DtField(id, fieldName, type, domain, label, notNull, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
+		return new DtField(id, fieldName, type, domain, label, required, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
 	/** {@inheritDoc} */

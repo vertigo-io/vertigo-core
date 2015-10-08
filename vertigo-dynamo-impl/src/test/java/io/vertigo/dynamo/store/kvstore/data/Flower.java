@@ -18,7 +18,10 @@
  */
 package io.vertigo.dynamo.store.kvstore.data;
 
-public final class Flower {
+import java.io.Serializable;
+
+public final class Flower implements Serializable {
+	private static final long serialVersionUID = 732495669497615898L;
 	private String name;
 	private Double price;
 

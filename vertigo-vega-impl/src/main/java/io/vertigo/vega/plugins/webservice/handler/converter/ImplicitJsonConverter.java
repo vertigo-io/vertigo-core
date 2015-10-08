@@ -20,6 +20,7 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -30,8 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import spark.Request;
+import spark.Response;
 
-public final class ImplicitJsonConverter implements JsonConverter {
+public final class ImplicitJsonConverter implements JsonConverter, JsonSerializer {
 
 	/** {@inheritDoc} */
 	@Override
@@ -67,6 +69,16 @@ public final class ImplicitJsonConverter implements JsonConverter {
 			default:
 				throw new IllegalArgumentException("ImplicitParam : " + webServiceParam.getName());
 		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
+		Assertion.checkArgument(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName());
+		//-----
+		Assertion.checkState(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");
+		//-----
+		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}
 
 }

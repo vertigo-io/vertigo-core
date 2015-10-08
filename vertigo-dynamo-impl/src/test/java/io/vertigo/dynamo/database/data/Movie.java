@@ -34,7 +34,7 @@ public final class Movie implements KeyConcept {
 	private Long id;
 	private String title;
 
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the movie")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id of the movie")
 	public final Long getId() {
 		return id;
 	}

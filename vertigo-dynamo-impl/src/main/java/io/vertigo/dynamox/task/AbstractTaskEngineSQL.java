@@ -151,22 +151,14 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected abstract int doExecute(final SqlConnection connection, final S statement) throws SQLException;
 
-	/**
-	 * Vérification de la syntaxe sql.
-	 * @param sql Syntaxe sql de la requête
-	 */
-	protected abstract void checkSqlQuery(String sql);
-
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 		final String sql = prepareParams(getSqlQuery().trim());
-		checkSqlQuery(sql);
-
 		try (final S statement = createStatement(sql, connection)) {
 			//Inialise les paramètres.
-			initParameters(statement);
+			registerParameters(statement);
 			try {
 				//Initialise le statement JDBC.
 				statement.init();
@@ -264,7 +256,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 *
 	 * @param cs CallableStatement
 	 * @throws SQLException Si erreur */
-	protected final void setOutParameter(final SqlCallableStatement cs) throws SQLException {
+	protected final void setOutParameters(final SqlCallableStatement cs) throws SQLException {
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
 		//-----
 		for (final TaskEngineSQLParam param : params) {
@@ -300,7 +292,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * Initialise les paramètres en entrée du statement
 	 * @param statement Statement
 	 */
-	private void initParameters(final SqlPreparedStatement statement) {
+	private void registerParameters(final SqlPreparedStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
 			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
 		}
@@ -448,7 +440,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		return getDataBaseManager().getConnectionProvider();
+		return getDataBaseManager().getMainConnectionProvider();
 	}
 
 	/**

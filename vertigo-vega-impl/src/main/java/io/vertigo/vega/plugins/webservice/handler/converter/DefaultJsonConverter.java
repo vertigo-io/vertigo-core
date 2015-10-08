@@ -31,6 +31,10 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
+/**
+ * Default JsonConverter.
+ * @author npiedeloup
+ */
 public final class DefaultJsonConverter implements JsonConverter {
 
 	private final JsonEngine jsonReaderEngine;

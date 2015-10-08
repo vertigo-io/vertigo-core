@@ -33,10 +33,10 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -86,7 +86,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	public SwaggerApiBuilder withContextPath(final String contextPath) {
 		//Le contrat de l'api de servlet fait que le contextPath peut-être null ou vide
 		//-----
-		builderContextPath = (contextPath == null || contextPath.isEmpty()) ? "/" : contextPath;
+		builderContextPath = contextPath == null || contextPath.isEmpty() ? "/" : contextPath;
 		return this;
 	}
 
@@ -287,7 +287,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType);
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
-			if (dtField.isNotNull()) {
+			if (dtField.isRequired()) {
 				required.add(fieldName);
 			}
 			//could add enum on field to specify all values authorized
@@ -416,7 +416,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
-		final String prefix = (!webServiceParam.getName().isEmpty()) ? (webServiceParam.getName() + ".") : "";
+		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
 		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());

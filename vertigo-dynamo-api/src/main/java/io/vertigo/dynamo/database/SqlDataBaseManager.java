@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.database;
 
-import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.lang.Component;
@@ -33,7 +33,13 @@ public interface SqlDataBaseManager extends Component {
 	/**
 	 * @return ConnectionProvider
 	 */
-	SqlConnectionProvider getConnectionProvider();
+	SqlConnectionProvider getMainConnectionProvider();
+
+	/**
+	 * @param name ConnectionProvider name
+	 * @return SecondaryConnectionProvider
+	 */
+	SqlConnectionProvider getConnectionProvider(String name);
 
 	/**
 	 * @param connection Connexion

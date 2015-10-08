@@ -23,7 +23,6 @@ import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
 
@@ -64,18 +63,10 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 
 	/** {@inheritDoc} */
 	@Override
-	protected final void checkSqlQuery(final String sql) {
-		//On vérifie la norme des CallableStatement (cf : http://java.sun.com/j2se/1.4.2/docs/api/java/sql/CallableStatement.html)
-		//S'il on utilise call, il faut les {..}, sinon les erreurs SQL ne sont pas tout le temps transformées en SQLException (au moins pour oracle)
-		Assertion.checkArgument(!sql.contains("call ") || sql.charAt(0) == '{' && sql.charAt(sql.length() - 1) == '}', "Les appels de procédures avec call, doivent être encapsuler avec des {...}, sans cela il y a une anomalie de remonté d'erreur SQL");
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
 		setInParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
-		setOutParameter(statement);
+		setOutParameters(statement);
 		return sqlRowcount;
 	}
 

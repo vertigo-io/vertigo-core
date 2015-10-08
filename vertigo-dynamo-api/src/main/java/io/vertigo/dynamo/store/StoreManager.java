@@ -20,9 +20,8 @@ package io.vertigo.dynamo.store;
 
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.datastore.DataStoreConfig;
-import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
+import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.dynamo.store.kvstore.KVStore;
@@ -45,7 +44,7 @@ public interface StoreManager extends Component {
 	}
 
 	/**
-	 * @return FileStore 
+	 * @return FileStore
 	 */
 	FileStore getFileStore();
 
@@ -58,10 +57,6 @@ public interface StoreManager extends Component {
 	 * @return Key Value Store
 	 */
 	KVStore getKVStore();
-
-	//-----
-
-	BrokerNN getBrokerNN();
 
 	/**
 	 * @return Configuration du composant de persistance

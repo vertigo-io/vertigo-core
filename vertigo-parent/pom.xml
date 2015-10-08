@@ -20,7 +20,7 @@ limitations under the License. -->
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.8.3-SNAPSHOT</version>
+	<version>0.8.4-SNAPSHOT</version>
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -117,7 +117,7 @@ limitations under the License. -->
 			        <encoding>${project.build.sourceEncoding}</encoding>
 			        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 			        <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-			        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+			        <argLine>-Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine>
 			    </configuration>
 			</plugin>
 			<plugin>

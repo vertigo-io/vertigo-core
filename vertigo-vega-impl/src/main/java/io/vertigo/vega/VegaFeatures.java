@@ -90,8 +90,8 @@ public final class VegaFeatures extends Features {
 
 				//-- Handlers plugins
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
-				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
+				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
 				.addPlugin(SessionWebServiceHandlerPlugin.class)
 				.addPlugin(SecurityWebServiceHandlerPlugin.class)

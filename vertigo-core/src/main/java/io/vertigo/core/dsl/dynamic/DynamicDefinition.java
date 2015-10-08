@@ -60,8 +60,6 @@ public interface DynamicDefinition {
 	 */
 	Set<String> getPropertyNames();
 
-	//	EntityProperty getProperty(final String propertyName);
-
 	/**
 	 * Permet de récupérer la liste des définitions d'un champ.
 	 *

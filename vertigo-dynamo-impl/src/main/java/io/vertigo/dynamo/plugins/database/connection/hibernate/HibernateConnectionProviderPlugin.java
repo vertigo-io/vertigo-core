@@ -20,10 +20,12 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 import java.sql.Connection;
@@ -43,16 +45,19 @@ import org.hibernate.jdbc.ReturningWork;
  * @author pchretien, npiedeloup
  */
 public final class HibernateConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
+	 * @param name ConnectionProvider's name
 	 * @param dataBaseName Nom du type de base de données
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
 	 */
 	@Inject
-	public HibernateConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
-		super(new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+	public HibernateConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
+		super(name.getOrElse(SqlDataBaseManagerImpl.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
+		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
 	}
@@ -72,8 +77,6 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 			}
 		});
 	}
-
-	private final VTransactionManager transactionManager;
 
 	/** {@inheritDoc} */
 	@Override

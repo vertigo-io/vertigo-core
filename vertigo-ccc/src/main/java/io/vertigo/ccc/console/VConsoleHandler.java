@@ -39,8 +39,8 @@ import com.google.gson.JsonParser;
  * @author pchretien
  */
 public final class VConsoleHandler implements Activeable {
-	private static String DEFAULT_HOST = "localhost";
-	private static int DEFAULT_PORT = 4444;
+	private static final String DEFAULT_HOST = "localhost";
+	private static final int DEFAULT_PORT = 4444;
 	private final Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
 
 	@Override

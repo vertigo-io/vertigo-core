@@ -112,7 +112,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
-	final DtDefinition getDtDefinition() {
+	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 

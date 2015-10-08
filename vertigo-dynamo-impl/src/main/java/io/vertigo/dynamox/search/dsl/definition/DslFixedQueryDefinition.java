@@ -16,38 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.statement;
+package io.vertigo.dynamox.search.dsl.definition;
 
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.lang.Assertion;
 
 /**
-* Interface de statistiques pour le suivi des traitements SQL.
-*
-* @author npiedeloup
-*/
-public interface SqlStatementStats {
-	/**
-	 * @return preparedStatement Statement
-	 */
-	SqlPreparedStatement getPreparedStatement();
+ * Fixed content.
+ * (fixedQuery)
+ * @author npiedeloup
+ */
+public final class DslFixedQueryDefinition implements DslQueryDefinition {
+	private final String fixedQuery;
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return fixedQuery;
+	}
 
 	/**
-	 * @return elapsedTime Temps d'exécution en ms
+	 * @param fixedQuery Fixed content
 	 */
-	long getElapsedTime();
+	public DslFixedQueryDefinition(final String fixedQuery) {
+		Assertion.checkNotNull(fixedQuery);
+		//-----
+		this.fixedQuery = fixedQuery;
+	}
 
 	/**
-	 * @return Nombre de lignes affectées (update, insert, delete), null si sans objet
+	 * @return fixedQuery
 	 */
-	Long getNbModifiedRow();
+	public final String getFixedQuery() {
+		return fixedQuery;
+	}
 
-	/**
-	 * @return Nombre de lignes récupérées (select), null si sans objet
-	 */
-	Long getNbSelectedRow();
-
-	/**
-	 * @return success Si l'exécution a réussi
-	 */
-	boolean isSuccess();
 }

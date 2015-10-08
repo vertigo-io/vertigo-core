@@ -47,6 +47,7 @@ public final class WebServiceCallContext {
 	/**
 	 * Constructor.
 	 * @param request Request
+	 * @param response Response
 	 * @param webServiceDefinition WebServiceDefinition
 	 */
 	public WebServiceCallContext(final Request request, final Response response, final WebServiceDefinition webServiceDefinition) {

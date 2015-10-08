@@ -21,13 +21,15 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 
 import java.util.Arrays;
 
 import spark.Request;
+import spark.Response;
 
-public final class VFileJsonConverter implements JsonConverter {
+public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 
 	/** {@inheritDoc} */
 	@Override
@@ -48,6 +50,13 @@ public final class VFileJsonConverter implements JsonConverter {
 	@Override
 	public Class[] getSupportedInputs() {
 		return new Class[] { Request.class };
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
+		VFileUtil.sendVFile(result, response);
+		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}
 
 }

@@ -249,7 +249,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
 				.addDefinition("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
-				.addPropertyValue(NOT_NULL, field.notNull())
+				.addPropertyValue(NOT_NULL, field.required())
 				.addPropertyValue(PERSISTENT, field.persistent())
 				.build();
 

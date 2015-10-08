@@ -654,12 +654,15 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			}
 			carsByMake.add(car);
 		}
+		int previousCount = Integer.MAX_VALUE;
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
 			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
 			final int searchFacetCount = entry.getValue().size();
 			final List<Car> carsByMake = databaseCluster.get(searchFacetLabel);
 			Assert.assertEquals(carsByMake.size(), searchFacetCount);
+			Assert.assertTrue("Group order invalid", previousCount >= searchFacetCount);
+			previousCount = searchFacetCount;
 			for (final Car car : entry.getValue()) {
 				Assert.assertEquals(searchFacetLabel, car.getMake().toLowerCase());
 			}

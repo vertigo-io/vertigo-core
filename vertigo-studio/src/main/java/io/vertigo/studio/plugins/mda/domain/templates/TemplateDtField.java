@@ -103,10 +103,10 @@ public final class TemplateDtField {
 	}
 
 	/**
-	 * @return Si la propriété est non null
+	 * @return Si la propriété est requise
 	 */
-	public boolean isNotNull() {
-		return dtField.isNotNull();
+	public boolean isRequired() {
+		return dtField.isRequired();
 	}
 
 	/**

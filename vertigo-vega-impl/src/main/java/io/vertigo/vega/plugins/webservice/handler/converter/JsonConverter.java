@@ -46,6 +46,6 @@ public interface JsonConverter {
 	/**
 	 * @return Input types
 	 */
-	Class[] getSupportedInputs();
+	Class<?>[] getSupportedInputs();
 
 }

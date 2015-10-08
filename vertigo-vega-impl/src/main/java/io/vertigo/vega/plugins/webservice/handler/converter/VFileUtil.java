@@ -43,6 +43,7 @@ import spark.Response;
  * @author npiedeloup
  */
 final class VFileUtil {
+
 	private static final Logger LOG = Logger.getLogger(VFileUtil.class);
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
@@ -96,10 +97,9 @@ final class VFileUtil {
 
 	/**
 	 * @param result WebService result
-	 * @param request Request
 	 * @param response Response
 	 */
-	static void sendVFile(final Object result, final Request request, final Response response) {
+	static void sendVFile(final Object result, final Response response) {
 		sendVFile((VFile) result, true, response);
 	}
 
@@ -222,12 +222,7 @@ final class VFileUtil {
 			mimeType = "application/octet-stream";
 		}
 		final FileManager fileManager = Home.getComponentSpace().resolve(FileManager.class);
-		return fileManager.createFile(fileName, mimeType, new Date(), file.getSize(), new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() throws IOException {
-				return file.getInputStream();
-			}
-		});
+		return fileManager.createFile(fileName, mimeType, new Date(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {
@@ -241,6 +236,20 @@ final class VFileUtil {
 			}
 		}
 		return null;
+	}
+
+	private static final class FileInputStreamBuilder implements InputStreamBuilder {
+		private final Part file;
+
+		FileInputStreamBuilder(final Part file) {
+			this.file = file;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public InputStream createInputStream() throws IOException {
+			return file.getInputStream();
+		}
 	}
 
 }

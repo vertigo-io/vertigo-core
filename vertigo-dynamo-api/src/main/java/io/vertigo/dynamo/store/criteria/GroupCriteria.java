@@ -44,7 +44,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 		/**
 		 * Intersection.
 		 */
-		INTERSEC,
+		INTERSECT,
 		/**
 		 * Exclusion : on aura le premier groupe moins les autres.
 		 */

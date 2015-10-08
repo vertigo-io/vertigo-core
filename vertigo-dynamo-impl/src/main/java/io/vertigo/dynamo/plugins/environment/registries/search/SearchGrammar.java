@@ -80,8 +80,8 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
-				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
+				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 
@@ -91,18 +91,18 @@ final class SearchGrammar {
 				.build();
 
 		FACET_DEFINITION_ENTITY = new EntityBuilder("FacetDefinition")
-				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField(FIELD_NAME, String, true)
 				.addField(KspProperty.LABEL, String, true)
 				.addFields("range", FACET_RANGE_ENTITY, false)// facultative
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
-				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
+				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
+				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
 				.addField(LIST_FILTER_BUILDER_CLASS, String, true)
 				.addField(LIST_FILTER_BUILDER_QUERY, String, true)
-				.addFields("facets", FACET_DEFINITION_ENTITY, true)
+				.addFields("facets", FACET_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
 		GRAMMAR = new EntityGrammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);

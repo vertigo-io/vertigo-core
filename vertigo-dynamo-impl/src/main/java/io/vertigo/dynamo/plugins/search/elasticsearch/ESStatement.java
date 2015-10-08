@@ -461,19 +461,21 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		final List<Facet> facets = new ArrayList<>();
 		if (searchQuery.getFacetedQuery().isDefined() && queryResponse.getAggregations() != null) {
 			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
-			for (final Aggregation aggregation : queryResponse.getAggregations().asList()) {
-				final FacetDefinition facetDefinition = queryDefinition.getFacetDefinition(aggregation.getName());
-				final Facet currentFacet;
-				if (facetDefinition.isRangeFacet()) {
-					//Cas des facettes par 'range'
-					final Range rangeBuckets = (Range) aggregation;
-					currentFacet = createFacetRange(facetDefinition, rangeBuckets);
-				} else {
-					//Cas des facettes par 'term'
-					final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) aggregation;
-					currentFacet = createTermFacet(facetDefinition, multiBuckets);
+			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
+				final Aggregation aggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+				if (aggregation != null) {
+					final Facet currentFacet;
+					if (facetDefinition.isRangeFacet()) {
+						//Cas des facettes par 'range'
+						final Range rangeBuckets = (Range) aggregation;
+						currentFacet = createFacetRange(facetDefinition, rangeBuckets);
+					} else {
+						//Cas des facettes par 'term'
+						final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) aggregation;
+						currentFacet = createTermFacet(facetDefinition, multiBuckets);
+					}
+					facets.add(currentFacet);
 				}
-				facets.add(currentFacet);
 			}
 		}
 		return facets;

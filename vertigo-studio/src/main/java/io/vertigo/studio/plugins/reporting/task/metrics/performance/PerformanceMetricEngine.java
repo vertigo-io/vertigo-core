@@ -97,6 +97,6 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 
 	private static boolean hasNotNullOutParams(final TaskDefinition taskDefinition) {
 		return taskDefinition.getOutAttributeOption().isDefined()
-				&& taskDefinition.getOutAttributeOption().get().isNotNull();
+				&& taskDefinition.getOutAttributeOption().get().isRequired();
 	}
 }

@@ -26,7 +26,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -43,7 +42,7 @@ import java.util.Set;
  * Gestion des tables de relations NN.
  * @author dchallas
  */
-public final class BrokerNNImpl implements BrokerNN {
+final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;
 	private final TaskManager taskManager;
 
@@ -73,7 +72,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	 * Constructeur.
 	 * @param taskManager Manager des Tasks
 	 */
-	public BrokerNNImpl(final TaskManager taskManager) {
+	BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;

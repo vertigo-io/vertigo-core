@@ -41,7 +41,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 	 * @param indexPlugin Index plugin
 	 */
 	IndexDtListFunctionBuilderImpl(final IndexPlugin indexPlugin) {
-		Assertion.checkNotNull(indexPlugin, "An IndexPlugin is required to use this method");
+		Assertion.checkNotNull(indexPlugin);
 		//-----
 		indexFilterFunction = new IndexFilterFunction<>(indexPlugin);
 	}

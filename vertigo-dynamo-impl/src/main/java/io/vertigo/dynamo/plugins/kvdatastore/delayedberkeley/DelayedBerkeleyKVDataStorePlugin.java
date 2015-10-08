@@ -87,8 +87,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
-		final boolean createDirs = myCacheEnvPath.mkdirs();
-		Assertion.checkState(createDirs, "Can't create dirs for cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
+		if (!myCacheEnvPath.exists()) {
+			final boolean createDirs = myCacheEnvPath.mkdirs();
+			Assertion.checkState(createDirs, "Can't create dirs for cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
+		}
 		Assertion.checkState(myCacheEnvPath.canWrite(), "Can't access cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
 
 		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
@@ -171,10 +173,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		final List<C> list = new ArrayList<>();
 		try (final Cursor cursor = cacheDatas.openCursor(null, null)) {
 			int find = 0;
-			while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+			while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 				final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
-					cursor.delete(); //if corrupt (null) or too old, we delete it
+					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it
 				} else {
 					final Serializable value = cacheValue.getValue();
 					if (clazz.isInstance(value)) { //we only count asked class objects
@@ -184,7 +186,6 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 						}
 					}
 				}
-
 			}
 			return list;
 		} catch (final DatabaseException e) {
@@ -319,7 +320,8 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 *
 	 * @author npiedeloup
 	 */
-	static final class RemoveTooOldElementsDaemon implements Daemon {
+	//must be public to be used by DaemonManager
+	public static final class RemoveTooOldElementsDaemon implements Daemon {
 		private final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin;
 
 		/**

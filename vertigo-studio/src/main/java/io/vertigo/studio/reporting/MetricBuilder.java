@@ -41,6 +41,7 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	/**
 	 * Status de la métrique.
+	 * @return Builder
 	 */
 	public MetricBuilder withStatus(final Status status) {
 		Assertion.checkNotNull(status);
@@ -51,6 +52,7 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	/**
 	 * Titre de la métrique. (notNull)
+	 * @return Builder
 	 */
 	public MetricBuilder withTitle(final String title) {
 		Assertion.checkArgNotEmpty(title);
@@ -61,6 +63,7 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	/**
 	 * Unité de la métrique. (notNull)
+	 * @return Builder
 	 */
 	public MetricBuilder withUnit(final String unit) {
 		Assertion.checkArgNotEmpty(unit);
@@ -71,6 +74,7 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	/**
 	 * Valeur de la métrique. (Integer, Long, String, etc..)
+	 * @return Builder
 	 */
 	public MetricBuilder withValue(final Object value) {
 		myValue = value;
@@ -78,7 +82,8 @@ public final class MetricBuilder implements Builder<Metric> {
 	}
 
 	/**
-	 * @return Complément d'information sur la valeur. (nullable)
+	 * Complément d'information sur la valeur. (nullable)
+	 * @return Builder
 	 */
 	public MetricBuilder withValueInformation(final String valueInformation) {
 		myValueInformation = valueInformation;

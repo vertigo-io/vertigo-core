@@ -49,7 +49,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * Map des autres ressources de la transaction.
 	 */
-	private Map<VTransactionResourceId<?>, VTransactionResource> resources;
+	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new HashMap<>();
 
 	/**
 	 * Transaction parente dans le cadre d'une transaction imbriquée.
@@ -117,9 +117,6 @@ public final class VTransactionImpl implements VTransactionWritable {
 		checkStateStarted();
 		Assertion.checkNotNull(transactionResourceId);
 		//-----
-		if (resources == null) {
-			return null;
-		}
 		return (R) resources.get(transactionResourceId);
 	}
 
@@ -166,9 +163,6 @@ public final class VTransactionImpl implements VTransactionWritable {
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);
 		//-----
-		if (resources == null) {
-			resources = new HashMap<>();
-		}
 		final Object o = resources.put(id, resource);
 		Assertion.checkState(o == null, "Ressource déjà enregistrée");
 	}
@@ -253,7 +247,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 		transactionClosed = true;
 
 		Throwable firstThrowable = null;
-		if (resources != null) {
+		if (!resources.isEmpty()) {
 			//Il existe des ressources
 			firstThrowable = doEndResources(rollback);
 		}

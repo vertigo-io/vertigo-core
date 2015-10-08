@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -41,6 +42,7 @@ import java.util.Map;
 public final class UiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
+	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	// Index
 	private final Map<UiObject<D>, D> dtoByUiObject = new HashMap<>();
@@ -65,6 +67,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		//-----
 		this.dtList = dtList;
 		final DtDefinition dtDefinition = dtList.getDefinition();
+		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+
 		this.removedDtObjects = new DtList<>(dtDefinition);
 		this.addedDtObjects = new DtList<>(dtDefinition);
 		this.modifiedDtObjects = new DtList<>(dtDefinition);
@@ -82,6 +86,14 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 			bufferUiObjects.add(uiObjects);
 			dtoByUiObject.put(uiObjects, dto);
 		}
+	}
+
+	/**
+	 * @return DtDefinition de l'objet métier
+	 */
+	@Override
+	public final DtDefinition getDtDefinition() {
+		return dtDefinitionRef.get();
 	}
 
 	/**

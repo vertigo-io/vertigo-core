@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 
@@ -29,6 +30,11 @@ import java.util.List;
  * @param <D> Type d'objet
  */
 public interface UiList<D extends DtObject> extends List<UiObject<D>> {
+
+	/**
+	 * @return DtDefinition de l'objet métier
+	 */
+	DtDefinition getDtDefinition();
 
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.

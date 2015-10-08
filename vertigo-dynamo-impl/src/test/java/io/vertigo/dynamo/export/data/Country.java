@@ -35,7 +35,7 @@ public final class Country implements DtObject {
 	private Long conId;
 	private String name;
 
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the country")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -45,7 +45,7 @@ public final class Country implements DtObject {
 		return this;
 	}
 
-	@Field(domain = "DO_IDENTIFIANT", notNull = true, label = "id of the continent")
+	@Field(domain = "DO_IDENTIFIANT", required = true, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}

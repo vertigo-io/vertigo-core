@@ -49,7 +49,7 @@ public final class Attachment implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_ATTACHMENT")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "ATT_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
 	public Long getAttId() {
 		return attId;
 	}
@@ -69,7 +69,7 @@ public final class Attachment implements DtObject {
 	 * @return String url <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "URL")
-	@Field(domain = "DO_KEYWORD", notNull = true, label = "Url")
+	@Field(domain = "DO_KEYWORD", required = true, label = "Url")
 	public String getUrl() {
 		return url;
 	}

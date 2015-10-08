@@ -76,7 +76,7 @@ public class UiObjectValidator<O extends DtObject> {
 		if (!input.hasFormatError(dtField)) {
 			final Object value = input.getTypedValue(dtField);
 			//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
-			if (value == null && dtField.isNotNull()) {
+			if (value == null && dtField.isRequired()) {
 				uiObjectErrors.addError(dtField, new MessageText(Resources.CHAMP_OBLIGATOIRE));
 			}
 			try {
@@ -113,7 +113,7 @@ public class UiObjectValidator<O extends DtObject> {
 	/**
 	 * Vérifie l'égalité des champs.
 	 * @param input Object a tester
-	 * @param fieldName1 Champs 1 
+	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
 	 * @param uiObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
@@ -127,10 +127,10 @@ public class UiObjectValidator<O extends DtObject> {
 	}
 
 	/**
-	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1. 
+	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1.
 	 * @param input Object a tester
-	 * @param fieldName1 Champs 1 
-	 * @param fieldName2 Champs 2 
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
 	 * @param uiObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
@@ -143,10 +143,10 @@ public class UiObjectValidator<O extends DtObject> {
 	}
 
 	/**
-	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1. 
+	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1.
 	 * @param input Object a tester
-	 * @param fieldName1 Champs 1 
-	 * @param fieldName2 Champs 2 
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
 	 * @param uiObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
@@ -159,9 +159,9 @@ public class UiObjectValidator<O extends DtObject> {
 	}
 
 	/**
-	 * Vérifie que le champ est renseigner. 
+	 * Vérifie que le champ est renseigner.
 	 * @param input Object a tester
-	 * @param fieldName Champs 
+	 * @param fieldName Champs
 	 * @param uiObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */

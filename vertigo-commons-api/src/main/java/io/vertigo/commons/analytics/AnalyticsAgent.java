@@ -26,9 +26,9 @@ public interface AnalyticsAgent {
 	/**
 	 * Démarrage d'un processus.
 	 * @param processType Type du processus
-	 * @param processName Nom du processus
+	 * @param category Categorie du processus
 	 */
-	void startProcess(final String processType, final String processName);
+	void startProcess(final String processType, final String category);
 
 	/**
 	 * Incrémente une mesure (set si pas présente).
@@ -39,7 +39,7 @@ public interface AnalyticsAgent {
 
 	/**
 	* Affecte une valeur fixe à la mesure.
-	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas). 
+	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas).
 	* @param measureType Type de mesure
 	* @param value valeur de la mesure
 	*/
@@ -47,7 +47,7 @@ public interface AnalyticsAgent {
 
 	/**
 	 * Affecte une valeur fixe à une meta-donnée.
-	 *  
+	 *
 	 * @param metaDataName Nom de la meta-donnée
 	 * @param value Valeur de la meta-donnée
 	 */

@@ -236,7 +236,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 			//  - on loggue le fait que la ressource n'a pas été trouvée
 			//  - on stocke la clé pour éviter de reloguer
 			//et on continue les traitements
-			logResourceNotFound(key);
+			logResourceNotFound(key, locales.size() > 1);
 			notFoundKeys.add(key);
 		}
 	}
@@ -244,9 +244,14 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	/**
 	 * Evènement remonté lorsqu'une ressource externalisée n'est pas trouvée.
 	 * @param resource  Nom de la ressource externalisée non trouvée
+	 * @param isMultiLocales Si appli multilingue
 	 */
-	private static void logResourceNotFound(final String resource) {
-		LOG.warn("Resource " + resource + " non trouvée");
+	private static void logResourceNotFound(final String resource, final boolean isMultiLocales) {
+		if (isMultiLocales) {
+			LOG.warn("Resource " + resource + " non trouvée");
+		} else {
+			LOG.info("Resource " + resource + " non trouvée");
+		}
 	}
 
 	private Map<Locale, Map<String, String>> getDictionaries() {

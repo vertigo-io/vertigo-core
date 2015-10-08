@@ -35,8 +35,8 @@ public final class ParserTest {
 	private static final Rule PROPERTY = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE);
 	private static final Rule AB = new TermRule("ab");
 	//---
-	private static final Rule MANY_AB = new ManyRule(AB, true, false);//=(AB, true)
-	private static final Rule MANY_AB2 = new ManyRule(AB, true, true);
+	private static final Rule MANY_AB = new ManyRule(AB, true, false);//=(AB, true) no global (can match abc)
+	private static final Rule MANY_AB2 = new ManyRule(AB, true, true); //global (can't match abc)
 	private static final Rule MANY_AB_MORE = new ManyRule(AB, false);
 
 	private static final Rule HELLO_WORLD = new SequenceRule(
@@ -162,7 +162,7 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail2() throws NotFoundException {
-		//On crée une liste vide de choix 
+		//On crée une liste vide de choix
 		final Parser<Choice> parser = new FirstOfRule().createParser();
 		//---
 		parser.parse("world", 0);
@@ -229,7 +229,7 @@ public final class ParserTest {
 		//-
 		//		end = parser.parse("a", 0);
 		//		results = parser.get();
-		//		Assert.assertEquals(0, results.size()); //ce cas ne match pas (ab)+ 
+		//		Assert.assertEquals(0, results.size()); //ce cas ne match pas (ab)+
 		//-
 		parser.parse("ab", 0);
 		results = parser.get();
@@ -249,7 +249,7 @@ public final class ParserTest {
 	}
 
 	@Test(expected = NotFoundException.class)
-	public void testManyFail() throws NotFoundException {
+	public void testManyGlobalFail() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB2.createParser();
 		//---
 		/*int end =*/parser.parse("a", 0);
@@ -257,11 +257,21 @@ public final class ParserTest {
 	}
 
 	@Test(expected = NotFoundException.class)
-	public void testManyFail2() throws NotFoundException {
+	public void testManyGlobalFail2() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB2.createParser();
 		//---
 		/*int end =*/parser.parse("abc", 0);
 		Assert.fail();
+	}
+
+	@Test
+	public void testManyFail2() throws NotFoundException {
+		final Parser<List<?>> parser = MANY_AB.createParser();
+		//---
+		/*int end =*/parser.parse("abc", 0);
+		final List results = parser.get();
+		Assert.assertEquals(1, results.size());
+		Assert.assertEquals("ab", results.get(0));
 	}
 
 	@Test

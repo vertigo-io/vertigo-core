@@ -81,9 +81,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** PreparedStatement JDBC. */
 	private PreparedStatement statement;
 
-	/** StatementStats du traitement. */
-	private final SqlStatementStatsImpl stats;
-
 	/** Requête SQL. */
 	private final String sql;
 
@@ -122,7 +119,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state = State.CREATED;
 		this.dataBaseListener = dataBaseListener;
 		this.statementHandler = statementHandler;
-		stats = new SqlStatementStatsImpl(this);
 	}
 
 	/**
@@ -155,14 +151,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc}  */
 	@Override
 	public final void close() {
-		if (statement == null) {
-			return;
-		}
-		//Dans tout les cas on clôture le PS.
-		try {
-			statement.close();
-		} catch (final SQLException e) {
-			throw new RuntimeException(e);
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (final SQLException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -247,19 +241,19 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		boolean ok = false;
 		beginExecution();
+		Integer nbSelectedRow = null;
 		try {
 			// ResultSet JDBC
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
-			final SqlQueryResult result;
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				//Le Handler a la responsabilité de créer les données.
-				result = statementHandler.retrieveData(domain, mapping, resultSet);
-				stats.setNbSelectedRow(result.getSQLRowCount());
+				final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
+				nbSelectedRow = result.getSQLRowCount();
 				ok = true;
 				return result;
 			}
 		} finally {
-			endExecution(ok);
+			endExecution(ok, null, nbSelectedRow);
 		}
 	}
 
@@ -267,17 +261,17 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public final int executeUpdate() throws SQLException {
 		boolean ok = false;
-		int res;
+		Integer nbModifiedRow = null;
 		beginExecution();
 		try {
 			//execution de la Requête
-			res = statement.executeUpdate();
+			int res = statement.executeUpdate();
 			ok = true;
-			stats.setNbModifiedRow(res);
+			nbModifiedRow = res;
+			return res;
 		} finally {
-			endExecution(ok);
+			endExecution(ok, nbModifiedRow, null);
 		}
-		return res;
 	}
 
 	/** {@inheritDoc} */
@@ -290,12 +284,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public int executeBatch() throws SQLException {
 		boolean ok = false;
-		final int[] res;
+		Integer nbModifiedRow = null;
 		beginExecution();
 		try {
-			res = statement.executeBatch();
+			final int[] res = statement.executeBatch();
 			ok = true;
-			stats.setNbModifiedRow(res.length);
+			nbModifiedRow = res.length;
 
 			//Calcul du nombre total de lignes affectées par le batch.
 			int count = 0;
@@ -305,7 +299,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 			return count;
 		} finally {
-			endExecution(ok);
+			endExecution(ok, nbModifiedRow, null);
 		}
 	}
 
@@ -314,7 +308,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	private void beginExecution() {
 		Assertion.checkArgument(state == State.DEFINED, "L'exécution ne peut se faire que sur l'état STATE_DEFINED ; une fois les types enregistrés, l'enregistrement clôturé par la méthode init() et les valeurs settées");
-		dataBaseListener.onPreparedStatementStart(this);
+		dataBaseListener.onStart(this.toString());
 		begin = System.currentTimeMillis();
 	}
 
@@ -323,16 +317,20 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param ok True si l'exécution s'est effectuée sans erreur
 	 */
 
-	private void endExecution(final boolean ok) {
-		if (ok) {
+	private void endExecution(final boolean success, final Integer nbModifiedRow, final Integer nbSelectedRow) {
+		if (success) {
 			//On passe à l'état exécuté
 			state = State.EXECUTED;
 		} else {
 			state = State.ABORTED;
 		}
-		stats.setSuccess(ok);
-		stats.setElapsedTime(System.currentTimeMillis() - begin);
-		dataBaseListener.onPreparedStatementFinish(stats);
+		long elapsedTime = System.currentTimeMillis() - begin;
+		dataBaseListener.onFinish(
+				this.toString(),
+				success,
+				elapsedTime,
+				nbModifiedRow,
+				nbSelectedRow);
 	}
 
 	//=========================================================================

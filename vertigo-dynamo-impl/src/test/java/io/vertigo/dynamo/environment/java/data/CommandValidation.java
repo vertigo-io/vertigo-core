@@ -49,7 +49,7 @@ public final class CommandValidation implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_VALIDATION")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CVA_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
 	public Long getCvaId() {
 		return cvaId;
 	}
@@ -69,7 +69,7 @@ public final class CommandValidation implements DtObject {
 	 * @return String signerName <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "SIGNER_NAME")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Signer name")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Signer name")
 	public String getSignerName() {
 		return signerName;
 	}

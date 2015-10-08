@@ -75,7 +75,7 @@ public final class SearchManagerTest extends AbstractTestCaseJU4 {
 
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+			final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
 			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
 
@@ -112,7 +112,7 @@ public final class SearchManagerTest extends AbstractTestCaseJU4 {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				//A chaque fin de test on arréte la base.
-				final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+				final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
 				execCallableStatement(connection, "shutdown;");
 				transaction.commit();
 			}
