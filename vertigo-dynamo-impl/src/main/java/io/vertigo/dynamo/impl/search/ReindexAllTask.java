@@ -151,7 +151,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
 		final String indexIdFieldName = searchIndexDefinition.getIndexDtDefinition().getIdField().get().getName();
 		final String filterValue = new StringBuilder()
-				.append(indexIdFieldName).append(":[")
+				.append(indexIdFieldName).append(":{") //{ for exclude min
 				.append(firstUri).append(" TO ").append(lastUri)
 				.append("]")
 				.toString();
