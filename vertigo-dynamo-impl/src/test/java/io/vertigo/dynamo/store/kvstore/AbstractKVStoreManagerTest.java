@@ -68,30 +68,30 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 		final KVStore kvStore = storeManager.getKVStore();
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Option<Flower> flower = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			Assert.assertTrue("There is already a flower id 1", flower.isEmpty());
+			final Option<Flower> flower = kvStore.find(DEFAULT_DATA_STORE_NAME, "10", Flower.class);
+			Assert.assertTrue("There is already a flower id 10", flower.isEmpty());
 
-			kvStore.put(DEFAULT_DATA_STORE_NAME, "1", buildFlower("daisy", 60));
-			kvStore.put(DEFAULT_DATA_STORE_NAME, "2", buildFlower("tulip", 100));
+			kvStore.put(DEFAULT_DATA_STORE_NAME, "10", buildFlower("daisy", 60));
+			kvStore.put(DEFAULT_DATA_STORE_NAME, "11", buildFlower("tulip", 100));
 
-			final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
-			Assert.assertTrue("Flower id 1 not found", flower1.isDefined());
-			Assert.assertTrue("Flower id 2 not found", flower2.isDefined());
+			final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "10", Flower.class);
+			final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "11", Flower.class);
+			Assert.assertTrue("Flower id 10 not found", flower1.isDefined());
+			Assert.assertTrue("Flower id 11 not found", flower2.isDefined());
 
 			transaction.commit();
 		}
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Option<Flower> flower = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			Assert.assertTrue("Flower id 1 not found", flower.isDefined());
+			final Option<Flower> flower = kvStore.find(DEFAULT_DATA_STORE_NAME, "10", Flower.class);
+			Assert.assertTrue("Flower id 10 not found", flower.isDefined());
 
-			kvStore.remove(DEFAULT_DATA_STORE_NAME, "1");
+			kvStore.remove(DEFAULT_DATA_STORE_NAME, "10");
 
-			final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
-			Assert.assertTrue("Remove flower id 1 failed", flower1.isEmpty());
-			Assert.assertTrue("Flower id 2 not found", flower2.isDefined());
+			final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "10", Flower.class);
+			final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "11", Flower.class);
+			Assert.assertTrue("Remove flower id 10 failed", flower1.isEmpty());
+			Assert.assertTrue("Flower id 11 not found", flower2.isDefined());
 		}
 	}
 
