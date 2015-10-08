@@ -183,7 +183,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
 			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
-			query.append(trimedQuery[0])
+			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
 					.append(useBlock ? "(" : "")
 					.append(trimedQuery[1])
