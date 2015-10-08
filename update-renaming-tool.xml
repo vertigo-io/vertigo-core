@@ -14,50 +14,79 @@
 	<!-- ====================================================================== -->
 	<!-- Generation des classes de tests                                        -->
 	<!-- ====================================================================== -->
+	<target name="0.8.2 to 0.8.3" description="Usefull renames from 0.8.2 to 0.8.3">
+		<echo message="Renamed in *.ksp : io.vertigo.dynamox.search.DslListFilterBuilderDefaultListFilterBuilder to io.vertigo.dynamox.search.DslListFilterBuilderDslListFilterBuilder" />
+				<replace dir="${src.path}" encoding="${src.encoding}"
+					token="io.vertigo.dynamox.search.DefaultListFilterBuilder" value="io.vertigo.dynamox.search.DslListFilterBuilder">
+					<include name="**/*.ksp"/>
+				</replace>
+	</target>
+	
 	<target name="0.8.1 to 0.8.2" description="Usefull renames from 0.8.1 to 0.8.2">
 		<echo message="Renamed in *.xml : io.vertigo.vega.rest.engine.GoogleJsonEngine to io.vertigo.vega.engines.webservice.json.GoogleJsonEngine" />
-		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
-			token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." >
+			<include name="**/*.xml"/>
+		</replace>
 				
 		<echo message="Renamed in *.java : import io.vertigo.vega.rest.* to io.vertigo.vega.webservice.*" />
-		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
-		    token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." >
+			<include name="**/*.java"/>
+		</replace>
 		
 		<echo message="Renamed in *.java : &quot;vertigo.rest.Session&quot; to &quot;vertigo.webservice.Session&quot;" />
-		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
-		    token="&quot;vertigo.rest.Session&quot;" value="&quot;vertigo.webservice.Session&quot;" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="&quot;vertigo.rest.Session&quot;" value="&quot;vertigo.webservice.Session&quot;" >
+			<include name="**/*.java"/>
+		</replace>
 		
 		<echo message="Renamed in *.java : extends DefaultSearchLoader to extends AbstractSqlSearchLoader" />
-		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
-		    token="extends DefaultSearchLoader" value="extends AbstractSqlSearchLoader" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="extends DefaultSearchLoader" value="extends AbstractSqlSearchLoader" >
+			<include name="**/*.java"/>
+		</replace>
 		
 		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.rest.* to io.vertigo.vega.plugins.webservice.*" />
-		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
-		    token="io.vertigo.vega.plugins.rest." value="io.vertigo.vega.plugins.webservice." />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="io.vertigo.vega.plugins.rest." value="io.vertigo.vega.plugins.webservice." >
+			<include name="**/*.xml"/>
+		</replace>
 		
 		<echo message="Renamed in *.xml : io.vertigo.vega.impl.rest.* to io.vertigo.vega.impl.webservice.*" />
-		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
-			token="io.vertigo.vega.impl.rest." value="io.vertigo.vega.impl.webservice." />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.vega.impl.rest." value="io.vertigo.vega.impl.webservice." >
+			<include name="**/*.xml"/>
+		</replace>
 		
 		<echo message="Renamed in *.xml : XxxxRestHandlerPlugin to XxxxWebServiceHandlerPlugin" />
-		<replace file="${src.path}/**/*.xml" encoding="${src.encoding}"
-			token="RestHandlerPlugin" value="WebServiceHandlerPlugin" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="RestHandlerPlugin" value="WebServiceHandlerPlugin" >
+			<include name="**/*.xml"/>
+		</replace>
 		
 		<echo message="Renamed in *.java : import io.vertigo.vega.webservice.RestfulService to import io.vertigo.vega.webservice.WebServices" />
-		<replace file="${src.path}/**/*.java" encoding="${src.encoding}" 
-			token="import io.vertigo.vega.webservice.RestfulService" value="import io.vertigo.vega.webservice.WebServices" />
+		<replace dir="${src.path}" encoding="${src.encoding}" 
+			token="import io.vertigo.vega.webservice.RestfulService" value="import io.vertigo.vega.webservice.WebServices" >
+			<include name="**/*.java"/>
+		</replace>
 		
 		<echo message="Renamed in *.java : implements RestfulService to implements WebServices" />
-		<replace file="${src.path}/**/*.java" encoding="${src.encoding}"
-			token="implements RestfulService" value="implements WebServices" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="implements RestfulService" value="implements WebServices" >
+			<include name="**/*.java"/>
+		</replace>
 		
 		<echo message="Renamed in web.xml io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener to io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
-		<replace file="${src.path}/**/web.xml" encoding="${src.encoding}"
-			token="io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener" value="io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener" value="io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" >
+			<include name="**/web.xml"/>
+		</replace>
 		
 		<echo message="Replaced in web.xml spark.servlet.SparkFilter and application by a new VegaSparkFilter" />
-		<replaceregexp file="${src.path}/**/web.xml" encoding="${src.encoding}" flags="gis" byline="false"
+		<replaceregexp dir="${src.path}" encoding="${src.encoding}" flags="gis" byline="false"
 			value="io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter" >
+			<include name="**/web.xml"/>
 			<regexp><![CDATA[<filter-name>SparkFilter</filter-name>
 ([ \t]+?)<filter-class>spark.servlet.SparkFilter</filter-class>
 ([ \t]+?)<init-param>
