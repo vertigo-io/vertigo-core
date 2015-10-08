@@ -18,15 +18,14 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.exception.VSecurityException;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import spark.Response;
 
 /**
- * Converter source object into value object and put it into RouteContext.
+ * Converter result object into json.
  * @author npiedeloup
  */
-public interface JsonConverter {
+public interface JsonSerializer {
 
 	/**
 	 * @param paramClass Class to test
@@ -35,17 +34,12 @@ public interface JsonConverter {
 	boolean canHandle(Class<?> paramClass);
 
 	/**
-	 * Converter source object into value object and put it into RouteContext.
-	 * @param source Source
-	 * @param webServiceParam Param
-	 * @param routeContext RouteContext
-	 * @throws VSecurityException Security exception
+	 * Convert result to json.
+	 * @param result Result
+	 * @param response Response
+	 * @param webServiceDefinition WebService definition
+	 * @return Json (or empty string)
 	 */
-	void populateWebServiceCallContext(Object source, WebServiceParam webServiceParam, WebServiceCallContext routeContext) throws VSecurityException;
-
-	/**
-	 * @return Input types
-	 */
-	Class<?>[] getSupportedInputs();
+	String toJson(Object result, Response response, WebServiceDefinition webServiceDefinition);
 
 }

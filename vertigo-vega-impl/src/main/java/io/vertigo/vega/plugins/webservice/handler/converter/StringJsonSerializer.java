@@ -18,45 +18,26 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-
-import java.util.Arrays;
-
-import spark.Request;
 import spark.Response;
 
-public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
+public final class StringJsonSerializer implements JsonSerializer {
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean canHandle(final Class<?> paramClass) {
-		return VFile.class.isAssignableFrom(paramClass);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
-		//-----
-		final VFile value = VFileUtil.readVFileParam((Request) input, webServiceParam);
-		routeContext.setParamValue(webServiceParam, value);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Class[] getSupportedInputs() {
-		return new Class[] { Request.class };
+		return String.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
-		VFileUtil.sendVFile(result, response);
-		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
+		final String resultString = (String) result;
+		final int length = resultString.length();
+		Assertion.checkArgument(!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'), "Can't return pre-build json : {0}", resultString);
+		response.type("text/plain;charset=UTF-8");
+		return (String) result;
 	}
 
 }
