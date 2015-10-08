@@ -82,7 +82,7 @@ class AnnotationWriter {
 		// La propriété Not null est obligatoirement renseignée
 		if (dtField.isRequired()) {
 			// false est la valeur par défaut de notNull dans l'annotation Field
-			buffer.append("notNull = true, ");
+			buffer.append("required = true, ");
 		}
 		if (!dtField.isPersistent()) {
 			// On ne précise la persistance que si elle n'est pas gérée
