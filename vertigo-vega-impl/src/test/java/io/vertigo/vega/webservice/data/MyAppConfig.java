@@ -41,9 +41,11 @@ import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactCriteria;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
+import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
@@ -60,7 +62,8 @@ public final class MyAppConfig {
 		@Override
 		public Iterator<Class<?>> iterator() {
 			return Arrays.asList(new Class<?>[] {
-					Contact.class, ContactCriteria.class
+					Contact.class, ContactCriteria.class,
+					Address.class, ContactView.class
 			}).iterator();
 		}
 	}

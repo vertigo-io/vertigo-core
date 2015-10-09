@@ -456,6 +456,41 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testGetContactView() {
+		loggedAndExpect()
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("addresses.size()", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/contacts/contactView/1");
+	}
+
+	@Test
+	public void testPutContactView() throws ParseException {
+		final Map<String, Object> newContactView = createDefaultContact(100L);
+		final List<Map<String, Object>> addresses = new ArrayList<>();
+		newContactView.remove("address");
+		newContactView.put("addresses", addresses);
+		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
+		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
+		addresses.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"));
+
+		loggedAndExpect(given().body(newContactView))
+				.body("conId", Matchers.equalTo(100))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.body("addresses.size()", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/contacts/contactView");
+	}
+
+	@Test
 	public void testPutContactByPath() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
