@@ -58,7 +58,6 @@ import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
-import io.vertigo.dynamox.search.RegExpListFilterBuilderTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -110,7 +109,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		DslListFilterBuilderTest.class,
 		//---
 		ExportManagerTest.class,
-		RegExpListFilterBuilderTest.class,
 })
 public final class DynamoTestSuite {
 	//

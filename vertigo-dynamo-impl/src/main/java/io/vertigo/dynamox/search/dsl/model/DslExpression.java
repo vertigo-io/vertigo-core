@@ -16,34 +16,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
+import io.vertigo.lang.Option;
 
 /**
- * Multi fields definition.
- * (preBody)\[(fields)+,\](postBody)
+ * Single Expression Definition.
+ * (preBody)(field|multiField):(query)(postBody)
  * @author npiedeloup
  */
-public final class DslMultiFieldDefinition {
-	private final String preBody;
-	private final List<DslFieldDefinition> fields;
-	private final String postBody;
+public final class DslExpression {
+	private final String preBody; //Spaces like
+	private final Option<DslField> field;
+	private final Option<DslMultiField> multiField;
+
+	private final DslQuery query;
+	private final String postBody; //Spaces like
 
 	/**
 	 * @param preBody String before body
-	 * @param fields List of Index's fields
+	 * @param field Optional fieldDefinition
+	 * @param multiField Optional multiFieldDefinition
+	 * @param query QueryDefinition
 	 * @param postBody String after body
 	 */
-	public DslMultiFieldDefinition(final String preBody, final List<DslFieldDefinition> fields, final String postBody) {
+	public DslExpression(final String preBody,
+			final Option<DslField> field, final Option<DslMultiField> multiField,
+			final DslQuery query,
+			final String postBody) {
 		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(fields);
+		Assertion.checkNotNull(field);
+		Assertion.checkNotNull(multiField);
+		Assertion.checkNotNull(query);
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;
-		this.fields = fields;
+		this.field = field;
+		this.multiField = multiField;
+		this.query = query;
 		this.postBody = postBody;
 	}
 
@@ -51,13 +62,17 @@ public final class DslMultiFieldDefinition {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append("[");
-		String sep = "";
-		for (final DslFieldDefinition field : fields) {
-			sb.append(sep).append(field);
-			sep = ",";
+				.append(preBody);
+		if (field.isDefined()) {
+			sb.append(field.get())
+					.append(":");
 		}
-		sb.append("]").append(postBody);
+		if (multiField.isDefined()) {
+			sb.append(multiField.get())
+					.append(":");
+		}
+		sb.append(query)
+				.append(postBody);
 		return sb.toString();
 	}
 
@@ -69,10 +84,25 @@ public final class DslMultiFieldDefinition {
 	}
 
 	/**
-	 * @return fields
+	 * @return optional Field
 	 */
-	public final List<DslFieldDefinition> getFields() {
-		return fields;
+	public final Option<DslField> getField() {
+		return field;
+	}
+
+	/**
+	 * @return optional MultiField
+	 */
+
+	public final Option<DslMultiField> getMultiField() {
+		return multiField;
+	}
+
+	/**
+	 * @return query
+	 */
+	public final DslQuery getQuery() {
+		return query;
 	}
 
 	/**
@@ -81,4 +111,5 @@ public final class DslMultiFieldDefinition {
 	public final String getPostBody() {
 		return postBody;
 	}
+
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 

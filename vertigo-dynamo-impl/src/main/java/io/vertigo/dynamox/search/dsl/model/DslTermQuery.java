@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -26,7 +26,7 @@ import io.vertigo.lang.Option;
  * (preBody)#(preBody)(termField)(postBody)#!\((defaultValue)\)(postBody)
  * @author npiedeloup
  */
-public final class DslTermQueryDefinition implements DslQueryDefinition {
+public final class DslTermQuery implements DslQuery {
 	private final String preBody;
 	private final String preTerm;
 	private final String termField;
@@ -42,7 +42,7 @@ public final class DslTermQueryDefinition implements DslQueryDefinition {
 	 * @param defaultValue Optional default value (used if null or empty criteria)
 	 * @param postTerm String after body
 	 */
-	public DslTermQueryDefinition(final String preBody, final String preTerm, final String termField, final String postTerm, final Option<String> defaultValue, final String postBody) {
+	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final Option<String> defaultValue, final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(preTerm);
 		Assertion.checkNotNull(termField);

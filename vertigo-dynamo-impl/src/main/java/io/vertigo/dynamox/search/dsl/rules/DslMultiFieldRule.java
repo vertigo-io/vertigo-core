@@ -22,8 +22,8 @@ import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslFieldDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiFieldDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslField;
+import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  * //(preMultiField)[(fields)+,](postMultiField)
  * @author npiedeloup
  */
-final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List<?>> {
+final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
@@ -55,20 +55,20 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiFieldDefinition, List
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiFieldDefinition handle(final List<?> parsing) {
+	protected DslMultiField handle(final List<?> parsing) {
 		final String preMultiField = "";//(String) parsing.get(0);
-		final List<DslFieldDefinition> fields = new ArrayList<>();
+		final List<DslField> fields = new ArrayList<>();
 		//---
 		//On récupère le premier mot qui est obligatoire.
-		final DslFieldDefinition firstField = (DslFieldDefinition) parsing.get(2);
+		final DslField firstField = (DslField) parsing.get(2);
 		fields.add(firstField);
 		//On récupère le produit de la règle many
 		final List<List<?>> many = (List<List<?>>) parsing.get(3);
 		for (final List<?> row : many) {
-			fields.add((DslFieldDefinition) row.get(2));
+			fields.add((DslField) row.get(2));
 		}
 		//---
 		final String postMultiField = "";//(String) parsing.get(7);
-		return new DslMultiFieldDefinition(preMultiField, fields, postMultiField);
+		return new DslMultiField(preMultiField, fields, postMultiField);
 	}
 }

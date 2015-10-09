@@ -16,38 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
-
-import io.vertigo.lang.Assertion;
+package io.vertigo.dynamox.search.dsl.model;
 
 /**
- * Fixed content.
- * (fixedQuery)
+ * Query definition.
  * @author npiedeloup
  */
-public final class DslFixedQueryDefinition implements DslQueryDefinition {
-	private final String fixedQuery;
+public interface DslQuery {
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return fixedQuery;
-	}
-
-	/**
-	 * @param fixedQuery Fixed content
-	 */
-	public DslFixedQueryDefinition(final String fixedQuery) {
-		Assertion.checkNotNull(fixedQuery);
-		//-----
-		this.fixedQuery = fixedQuery;
-	}
-
-	/**
-	 * @return fixedQuery
-	 */
-	public final String getFixedQuery() {
-		return fixedQuery;
-	}
-
+	//nothing
 }

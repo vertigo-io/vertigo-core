@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
-import io.vertigo.dynamox.search.dsl.definition.DslUserCriteria;
+import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
 import java.util.ArrayList;
 import java.util.List;

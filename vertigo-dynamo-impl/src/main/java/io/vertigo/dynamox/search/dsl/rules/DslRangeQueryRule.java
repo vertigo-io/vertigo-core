@@ -24,8 +24,8 @@ import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.WordRule;
-import io.vertigo.dynamox.search.dsl.definition.DslQueryDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslRangeQueryDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslQuery;
+import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import java.util.List;
  * (preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
  * @author npiedeloup
  */
-final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List<?>> {
+final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -66,18 +66,18 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQueryDefinition, List
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslRangeQueryDefinition handle(final List<?> parsing) {
+	protected DslRangeQuery handle(final List<?> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final String startRange = (String) parsing.get(1);
 
 		final Choice startTermQuery = (Choice) parsing.get(2);
-		final DslQueryDefinition startQueryDefinitions = (DslQueryDefinition) startTermQuery.getResult();
+		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getResult();
 
 		final Choice endTermQuery = (Choice) parsing.get(6);
-		final DslQueryDefinition endQueryDefinitions = (DslQueryDefinition) endTermQuery.getResult();
+		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getResult();
 
 		final String endRange = (String) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
-		return new DslRangeQueryDefinition(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
+		return new DslRangeQuery(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
 	}
 }

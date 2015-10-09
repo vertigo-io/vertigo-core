@@ -16,39 +16,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 
+import java.util.List;
+
 /**
- * Single field definition.
- * (preBody)(fieldName)(postBody)
+ * Block queries definition.
+ * (preBody)\((query|rangeQuery|multiQuery|fixedQuery)+\)(postBody)
  * @author npiedeloup
  */
-public final class DslFieldDefinition {
+public final class DslBlockQuery implements DslQuery {
 	private final String preBody;
-	private final String fieldName;
+	private final List<DslQuery> queries;
 	private final String postBody;
 
 	/**
 	 * @param preBody String before body
-	 * @param fieldName Index's fieldName
+	 * @param queries List of queries
 	 * @param postBody String after body
 	 */
-	public DslFieldDefinition(final String preBody, final String fieldName, final String postBody) {
+	public DslBlockQuery(final String preBody, final List<DslQuery> queries, final String postBody) {
 		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(fieldName);
+		Assertion.checkNotNull(queries);
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;
-		this.fieldName = fieldName;
+		this.queries = queries;
 		this.postBody = postBody;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return preBody + fieldName + postBody;
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody).append("(");
+		for (final DslQuery query : queries) {
+			sb.append(query);
+		}
+		sb.append(")").append(postBody);
+		return sb.toString();
 	}
 
 	/**
@@ -59,10 +67,10 @@ public final class DslFieldDefinition {
 	}
 
 	/**
-	 * @return fieldName
+	 * @return queries
 	 */
-	public final String getFieldName() {
-		return fieldName;
+	public final List<DslQuery> getQueries() {
+		return queries;
 	}
 
 	/**
@@ -71,5 +79,4 @@ public final class DslFieldDefinition {
 	public final String getPostBody() {
 		return postBody;
 	}
-
 }

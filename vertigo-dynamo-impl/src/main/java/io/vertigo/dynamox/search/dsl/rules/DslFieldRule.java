@@ -21,7 +21,7 @@ package io.vertigo.dynamox.search.dsl.rules;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslFieldDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslField;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * (preField)(fieldName)(postField):
  * @author npiedeloup
  */
-final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
+final class DslFieldRule extends AbstractRule<DslField, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -43,11 +43,11 @@ final class DslFieldRule extends AbstractRule<DslFieldDefinition, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslFieldDefinition handle(final List<?> parsing) {
+	protected DslField handle(final List<?> parsing) {
 		final String preField = (String) parsing.get(0);
 		final String fieldName = (String) parsing.get(1);
 		final String postField = (String) parsing.get(2);
-		return new DslFieldDefinition(preField, fieldName, postField);
+		return new DslField(preField, fieldName, postField);
 	}
 
 }

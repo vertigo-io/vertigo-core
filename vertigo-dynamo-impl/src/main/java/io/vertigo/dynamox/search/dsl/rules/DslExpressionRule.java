@@ -23,10 +23,10 @@ import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslExpressionDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslFieldDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiFieldDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslQueryDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslExpression;
+import io.vertigo.dynamox.search.dsl.model.DslField;
+import io.vertigo.dynamox.search.dsl.model.DslMultiField;
+import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
  * (preExpression)(field|multiField):(query)(postExpression)
  * @author npiedeloup
  */
-final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List<?>> {
+final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -73,21 +73,21 @@ final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslExpressionDefinition handle(final List<?> parsing) {
+	protected DslExpression handle(final List<?> parsing) {
 		String preExpression = (String) parsing.get(0);
 		String postExpression = (String) parsing.get(4);
-		final Option<DslFieldDefinition> field;
-		final Option<DslMultiFieldDefinition> multiField;
+		final Option<DslField> field;
+		final Option<DslMultiField> multiField;
 		final Choice fields = (Choice) parsing.get(1);
 		switch (fields.getValue()) {
 			case 0:
-				field = Option.some((DslFieldDefinition) fields.getResult());
+				field = Option.some((DslField) fields.getResult());
 				multiField = Option.none();
 				break;
 			case 1:
 				final List<?> multiFieldParsing = (List<?>) fields.getResult();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
-				multiField = Option.some((DslMultiFieldDefinition) multiFieldParsing.get(1));
+				multiField = Option.some((DslMultiField) multiFieldParsing.get(1));
 				postExpression = DslUtil.concat((String) multiFieldParsing.get(2), postExpression);
 				field = Option.none();
 				break;
@@ -96,8 +96,8 @@ final class DslExpressionRule extends AbstractRule<DslExpressionDefinition, List
 		}
 
 		final Choice queries = (Choice) parsing.get(3);
-		final DslQueryDefinition query = (DslQueryDefinition) queries.getResult();
+		final DslQuery query = (DslQuery) queries.getResult();
 
-		return new DslExpressionDefinition(preExpression, field, multiField, query, postExpression);
+		return new DslExpression(preExpression, field, multiField, query, postExpression);
 	}
 }

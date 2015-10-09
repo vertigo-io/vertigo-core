@@ -24,8 +24,8 @@ import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslExpressionDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiExpressionDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslExpression;
+import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.List;
  * (preMultiExpression)\((expression|multiExpression)+\)(postMultiExpression)
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefinition, Choice> {
+final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choice> {
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
@@ -77,10 +77,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiExpressionDefinition handle(final Choice parsing) {
+	protected DslMultiExpression handle(final Choice parsing) {
 		final String preMultiExpression;
-		final List<DslExpressionDefinition> expressionDefinitions = new ArrayList<>();
-		final List<DslMultiExpressionDefinition> multiExpressionDefinitions = new ArrayList<>();
+		final List<DslExpression> expressionDefinitions = new ArrayList<>();
+		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 		final String postMultiExpression;
 		//---
 		final boolean block = parsing.getValue() == 0;
@@ -104,16 +104,16 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		for (final Choice item : many) {
 			switch (item.getValue()) {
 				case 0:
-					expressionDefinitions.add((DslExpressionDefinition) item.getResult());
+					expressionDefinitions.add((DslExpression) item.getResult());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((DslMultiExpressionDefinition) item.getResult());
+					multiExpressionDefinitions.add((DslMultiExpression) item.getResult());
 					break;
 				default:
 					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
 			}
 		}
 		//---
-		return new DslMultiExpressionDefinition(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
+		return new DslMultiExpression(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
 	}
 }

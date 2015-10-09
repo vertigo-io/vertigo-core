@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 
@@ -25,11 +25,11 @@ import io.vertigo.lang.Assertion;
  * (preBody)[\[\{](termQuery|fixedQuery) to (termQuery|fixedQuery)[\}\]](postBody)
  * @author npiedeloup
  */
-public final class DslRangeQueryDefinition implements DslQueryDefinition {
+public final class DslRangeQuery implements DslQuery {
 	private final String preBody;
 	private final String startRange;
-	private final DslQueryDefinition startQueryDefinitions;
-	private final DslQueryDefinition endQueryDefinitions;
+	private final DslQuery startQueryDefinitions;
+	private final DslQuery endQueryDefinitions;
 	private final String endRange;
 	private final String postBody;
 
@@ -39,8 +39,8 @@ public final class DslRangeQueryDefinition implements DslQueryDefinition {
 	 * @param endQueryDefinitions End query
 	 * @param postBody String after body
 	 */
-	public DslRangeQueryDefinition(final String preBody, final String startRange,
-			final DslQueryDefinition startQueryDefinitions, final DslQueryDefinition endQueryDefinitions,
+	public DslRangeQuery(final String preBody, final String startRange,
+			final DslQuery startQueryDefinitions, final DslQuery endQueryDefinitions,
 			final String endRange, final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkArgNotEmpty(startRange);
@@ -86,14 +86,14 @@ public final class DslRangeQueryDefinition implements DslQueryDefinition {
 	/**
 	 * @return startQueryDefinitions
 	 */
-	public final DslQueryDefinition getStartQueryDefinitions() {
+	public final DslQuery getStartQueryDefinitions() {
 		return startQueryDefinitions;
 	}
 
 	/**
 	 * @return endQueryDefinitions
 	 */
-	public final DslQueryDefinition getEndQueryDefinitions() {
+	public final DslQuery getEndQueryDefinitions() {
 		return endQueryDefinitions;
 	}
 

@@ -16,34 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
 
 /**
- * Block queries definition.
- * (preBody)\((query|rangeQuery|multiQuery|fixedQuery)+\)(postBody)
+ * Multi fields definition.
+ * (preBody)\[(fields)+,\](postBody)
  * @author npiedeloup
  */
-public final class DslBlockQueryDefinition implements DslQueryDefinition {
+public final class DslMultiField {
 	private final String preBody;
-	private final List<DslQueryDefinition> queries;
+	private final List<DslField> fields;
 	private final String postBody;
 
 	/**
 	 * @param preBody String before body
-	 * @param queries List of queries
+	 * @param fields List of Index's fields
 	 * @param postBody String after body
 	 */
-	public DslBlockQueryDefinition(final String preBody, final List<DslQueryDefinition> queries, final String postBody) {
+	public DslMultiField(final String preBody, final List<DslField> fields, final String postBody) {
 		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(queries);
+		Assertion.checkNotNull(fields);
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;
-		this.queries = queries;
+		this.fields = fields;
 		this.postBody = postBody;
 	}
 
@@ -51,11 +51,13 @@ public final class DslBlockQueryDefinition implements DslQueryDefinition {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append("(");
-		for (final DslQueryDefinition query : queries) {
-			sb.append(query);
+				.append(preBody).append("[");
+		String sep = "";
+		for (final DslField field : fields) {
+			sb.append(sep).append(field);
+			sep = ",";
 		}
-		sb.append(")").append(postBody);
+		sb.append("]").append(postBody);
 		return sb.toString();
 	}
 
@@ -67,10 +69,10 @@ public final class DslBlockQueryDefinition implements DslQueryDefinition {
 	}
 
 	/**
-	 * @return queries
+	 * @return fields
 	 */
-	public final List<DslQueryDefinition> getQueries() {
-		return queries;
+	public final List<DslField> getFields() {
+		return fields;
 	}
 
 	/**

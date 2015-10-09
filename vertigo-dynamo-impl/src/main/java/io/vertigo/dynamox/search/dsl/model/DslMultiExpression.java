@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.search.dsl.definition;
+package io.vertigo.dynamox.search.dsl.model;
 
 import io.vertigo.lang.Assertion;
 
@@ -27,12 +27,12 @@ import java.util.List;
  * (preBody)\(?(expression|multiExpression)+\)?(postBody)
  * @author npiedeloup
  */
-public final class DslMultiExpressionDefinition {
+public final class DslMultiExpression {
 
 	private final String preBody; //Spaces like
 	private final boolean block;
-	private final List<DslExpressionDefinition> expressions;
-	private final List<DslMultiExpressionDefinition> multiExpressions;
+	private final List<DslExpression> expressions;
+	private final List<DslMultiExpression> multiExpressions;
 	private final String postBody; //Spaces like
 
 	/** {@inheritDoc} */
@@ -40,10 +40,10 @@ public final class DslMultiExpressionDefinition {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(preBody).append(block ? "(" : "");
-		for (final DslExpressionDefinition expression : expressions) {
+		for (final DslExpression expression : expressions) {
 			sb.append(expression);
 		}
-		for (final DslMultiExpressionDefinition multiExpression : multiExpressions) {
+		for (final DslMultiExpression multiExpression : multiExpressions) {
 			sb.append(multiExpression);
 		}
 		sb.append(block ? ")" : "").append(postBody);
@@ -57,9 +57,9 @@ public final class DslMultiExpressionDefinition {
 	 * @param multiExpressions List of multi-expression
 	 * @param postBody String after body
 	 */
-	public DslMultiExpressionDefinition(final String preBody,
-			final boolean block, final List<DslExpressionDefinition> expressions,
-			final List<DslMultiExpressionDefinition> multiExpressions,
+	public DslMultiExpression(final String preBody,
+			final boolean block, final List<DslExpression> expressions,
+			final List<DslMultiExpression> multiExpressions,
 			final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(expressions);
@@ -90,14 +90,14 @@ public final class DslMultiExpressionDefinition {
 	/**
 	 * @return expressions
 	 */
-	public final List<DslExpressionDefinition> getExpressions() {
+	public final List<DslExpression> getExpressions() {
 		return expressions;
 	}
 
 	/**
 	 * @return multiExpressions
 	 */
-	public final List<DslMultiExpressionDefinition> getMultiExpressions() {
+	public final List<DslMultiExpression> getMultiExpressions() {
 		return multiExpressions;
 	}
 

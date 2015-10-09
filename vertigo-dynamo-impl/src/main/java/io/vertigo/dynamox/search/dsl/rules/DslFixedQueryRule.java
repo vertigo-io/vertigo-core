@@ -21,7 +21,7 @@ package io.vertigo.dynamox.search.dsl.rules;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslFixedQueryDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * (fixedQuery)
  * @author npiedeloup
  */
-final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List<?>> {
+final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
@@ -47,10 +47,10 @@ final class DslFixedQueryRule extends AbstractRule<DslFixedQueryDefinition, List
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslFixedQueryDefinition handle(final List<?> parsing) {
+	protected DslFixedQuery handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String fixedQuery = (String) parsing.get(1);
-		return new DslFixedQueryDefinition(DslUtil.concat(preSpaces, fixedQuery));
+		return new DslFixedQuery(DslUtil.concat(preSpaces, fixedQuery));
 	}
 
 }
