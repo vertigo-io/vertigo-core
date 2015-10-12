@@ -151,8 +151,8 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
 		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.getDefinition(), fdtId);
 
-		getStoreManager().getDataStore().delete(dtoDataUri);
 		getStoreManager().getDataStore().delete(dtoMetaDataUri);
+		getStoreManager().getDataStore().delete(dtoDataUri);
 	}
 
 	/**
