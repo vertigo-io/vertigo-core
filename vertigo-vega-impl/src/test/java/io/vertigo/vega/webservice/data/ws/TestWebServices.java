@@ -159,7 +159,7 @@ public final class TestWebServices implements WebServices {
 	@GET("/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) throws VSecurityException {
 		if (!"RtFM".equals(passPhrase)) {
-			throw new VSecurityException("Bad passPhrase, check the doc in /catalog");
+			throw new VSecurityException(new MessageText("Bad passPhrase, check the doc in /catalog", null));
 		}
 		return contactDao.getList();
 	}
@@ -320,7 +320,7 @@ public final class TestWebServices implements WebServices {
 		}
 		if (conId < 5) {
 			//401
-			throw new VSecurityException("You don't have enought rights");
+			throw new VSecurityException(new MessageText("You don't have enought rights", null));
 		}
 		//200
 		contactDao.remove(conId);

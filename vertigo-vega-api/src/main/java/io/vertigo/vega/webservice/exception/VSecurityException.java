@@ -18,19 +18,32 @@
  */
 package io.vertigo.vega.webservice.exception;
 
+import io.vertigo.lang.MessageText;
+
 /**
  * Security exception.
  * @author npiedeloup
  */
-public final class VSecurityException extends Exception {
-	private static final long serialVersionUID = -8681804137431091875L;
+public final class VSecurityException extends RuntimeException {
+	private static final long serialVersionUID = 3911465988816189879L;
+	private final MessageText messageText;
 
 	/**
 	 * Constructor.
-	 * @param message Error message
+	 * @param messageText Message de l'exception
 	 */
-	public VSecurityException(final String message) {
-		super(message);
+	public VSecurityException(final MessageText messageText) {
+		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
+		super(messageText.getDisplay());
+		// On rerentre sur l'API des Exception en passant le message.
+		this.messageText = messageText;
 	}
 
+	/**
+	 * Gestion des messages d'erreur externalisés.
+	 * @return messageText.
+	 */
+	public final MessageText getMessageText() {
+		return messageText;
+	}
 }

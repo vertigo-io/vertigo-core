@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -96,7 +97,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.status(HttpServletResponse.SC_FORBIDDEN);
 				response.raw().resetBuffer();
-				throw new VSecurityException("Invalid CORS Access (Origin:" + origin + ", Method:" + method + ")");
+				throw new VSecurityException(new MessageText("Invalid CORS Access (Origin:{0}, Method:{1})", null, origin, method));
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);

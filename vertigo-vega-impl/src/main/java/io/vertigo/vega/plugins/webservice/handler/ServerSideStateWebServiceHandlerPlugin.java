@@ -21,6 +21,7 @@ package io.vertigo.vega.plugins.webservice.handler;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
@@ -52,7 +53,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
-	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
+	private static final MessageText SERVER_SIDE_MANDATORY = new MessageText("ServerSideToken mandatory", null);
 	private final TokenManager tokenManager;
 
 	/**
