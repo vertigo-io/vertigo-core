@@ -9,6 +9,7 @@ more to come :)
 Release 0.8.3 - 2015/10/08
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-082-to-083)
+
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning and refactoring
 * __[All] Updated dependencies libs : gson 2.4, jedis 2.7.3, elasticsearch 1.5.2, poi 3.13__
