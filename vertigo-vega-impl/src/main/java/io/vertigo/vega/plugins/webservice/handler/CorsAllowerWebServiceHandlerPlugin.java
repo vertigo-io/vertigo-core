@@ -37,7 +37,7 @@ import spark.Response;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
- * @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny
+ * @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny"
  * @author npiedeloup
  */
 public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
@@ -89,7 +89,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @throws VSecurityException If Cors error
 	 */
 	public void putCorsResponseHeaders(final Request request, final Response response) throws VSecurityException {
-		/** @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny */
+		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
 		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
 		if (origin != null) {
