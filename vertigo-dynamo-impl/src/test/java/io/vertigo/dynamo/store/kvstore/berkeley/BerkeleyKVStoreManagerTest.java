@@ -35,6 +35,20 @@ import org.junit.Test;
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Test
+	public void testInsertMass() {
+		final KVStore kvStore = storeManager.getKVStore();
+
+		for (int j = 0; j < 10; j++) {
+			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				for (int i = 0; i < 10; i++) {
+					kvStore.put(DEFAULT_DATA_STORE_NAME, String.valueOf(j * 1000 + i), buildFlower("Test", 60));
+				}
+				transaction.commit();
+			}
+		}
+	}
+
+	@Test
 	public void testFindAll() {
 		final KVStore kvStore = storeManager.getKVStore();
 		final List<Flower> flowers = new ListBuilder<Flower>()

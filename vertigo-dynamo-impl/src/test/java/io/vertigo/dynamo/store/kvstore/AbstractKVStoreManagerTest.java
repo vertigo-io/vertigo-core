@@ -95,4 +95,31 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testRollback() {
+		final KVStore kvStore = storeManager.getKVStore();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final Flower tulip = buildFlower("tulip", 100);
+			kvStore.put(DEFAULT_DATA_STORE_NAME, "1", tulip);
+			transaction.commit();
+		}
+		final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+		Assert.assertTrue("Flower id 1 not found", flower1.isDefined());
+
+		final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
+		Assert.assertTrue("There is already a flower id 2", flower2.isEmpty());
+		try {
+			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final Flower tulip = buildFlower("rose", 100);
+				kvStore.put(DEFAULT_DATA_STORE_NAME, "2", tulip);
+				throw new RuntimeException("Error");
+			}
+		} catch (final RuntimeException e) {
+			//on doit passer par là
+		}
+
+		final Option<Flower> flower2bis = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
+		Assert.assertTrue("Rollback flower id 2 failed", flower2bis.isEmpty());
+
+	}
 }
