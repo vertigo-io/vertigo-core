@@ -1,8 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<boot>
-		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
+		<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 	</boot>
 </config>	
