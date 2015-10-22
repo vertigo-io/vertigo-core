@@ -19,16 +19,13 @@
 package io.vertigo.commons.config.multi;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.config.ServerConfig;
-import io.vertigo.commons.impl.config.ConfigManagerImpl;
 import io.vertigo.commons.plugins.config.properties.PropertiesConfigPlugin;
 import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.config.ConfigManager;
 
 import javax.inject.Inject;
 
@@ -46,10 +43,8 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginModule("vertigo")
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+			.beginBootModule()
 				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.beginComponent(ConfigManager.class, ConfigManagerImpl.class).endComponent()
 				.beginPlugin(XmlConfigPlugin.class)
 					.addParam("url", "io/vertigo/commons/config/multi/app-config.xml")
 				.endPlugin()

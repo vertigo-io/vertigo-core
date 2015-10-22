@@ -22,8 +22,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 
 import java.net.URL;
 
@@ -43,8 +42,7 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginModule("spaces")
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+			.beginBootModule()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 			.endModule()
 			.build();

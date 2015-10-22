@@ -19,7 +19,6 @@
 package io.vertigo.core;
 
 import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
@@ -66,12 +65,5 @@ public final class Home {
 	 */
 	public static ComponentSpace getComponentSpace() {
 		return getApp().getComponentSpace();
-	}
-
-	/**
-	 * @return ConfigSpace contains application's parameters
-	 */
-	public static ConfigSpace getConfigSpace() {
-		return getApp().getConfigSpace();
 	}
 }

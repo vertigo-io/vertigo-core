@@ -18,9 +18,8 @@
  */
 package io.vertigo.commons.plugins.config.xml;
 
-import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.impl.config.ConfigPlugin;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
@@ -105,7 +104,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 
 	private static void xsdValidate(final URL configURL) {
 		//--- validation XSD
-		final URL xsd = ConfigManager.class.getResource("vertigo-config_1_0.xsd");
+		final URL xsd = XmlConfigPlugin.class.getResource("vertigo-config_1_0.xsd");
 		XMLUtil.validateXmlByXsd(configURL, xsd);
 		//--- fin validation XSD
 	}

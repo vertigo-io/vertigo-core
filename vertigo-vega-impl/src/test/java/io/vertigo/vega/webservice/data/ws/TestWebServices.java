@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

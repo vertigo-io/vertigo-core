@@ -20,6 +20,7 @@ package io.vertigo.core.spaces.config;
 
 import io.vertigo.commons.impl.config.ConfigPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -28,13 +29,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 /**
  * Interface du gestionnaire de la configuration applicative.
@@ -83,25 +85,23 @@ import java.util.regex.Pattern;
  * getStringValue(maconf.unknown, mapropriete2) => titi
  * getStringValue(maconf.subConf1.unknown, mapropriete2) => tata
  *
- * @author prahmoune, npiedeloup, pchretien
+ * @author pchretien, npiedeloup, prahmoune 
  */
-public final class ConfigSpace {
+public final class ConfigManager implements Component {
 	/** Regexp path. */
-	public static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
-
+	private static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
 	/** Regexp propertyName. */
-	public static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
-
+	private static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
 	private final List<ConfigPlugin> configPlugins;
 	private static final char CONFIG_PATH_SEPARATOR = '.';
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
-	/**
-	 * Constructor.
-	 */
-	public ConfigSpace() {
-		configPlugins = Collections.emptyList(); //TODO finalize this ConfigSpace
+	@Inject
+	public ConfigManager(final List<ConfigPlugin> configPlugins) {
+		Assertion.checkNotNull(configPlugins);
+		//-----
+		this.configPlugins = configPlugins;
 	}
 
 	private static void checkPath(final String configPath) {
@@ -120,7 +120,7 @@ public final class ConfigSpace {
 	 * @param <C> Type de l'interface de la configuration
 	 * @param configPath Chemin décrivant la configuration
 	 * @param configClass Interface ou Class de la configuration
-	 * @return Instance of configBean
+	 * @return Instance of configClass
 	 */
 	public <C> C resolve(final String configPath, final Class<C> configClass) {
 		Assertion.checkNotNull(configPath);

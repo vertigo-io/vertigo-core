@@ -1,11 +1,9 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<boot>
+		<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
-		</component>
-		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
 		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />

@@ -20,7 +20,7 @@ package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.impl.environment.LoaderPlugin;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;

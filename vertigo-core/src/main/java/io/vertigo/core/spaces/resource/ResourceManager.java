@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.resource;
+package io.vertigo.core.spaces.resource;
 
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.net.URL;
@@ -28,28 +29,42 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Selecteur
- *  - de classes
- *  - de ressources
- *
+ * Selecteurs de ressources. 
+ * Les ressources sont identifiées par une URL. 
+ * Cette URL peut être 
+ *  - relative au classpath de l'application dans le cas d'une application JAVA 
+ *  - relative au context de l'application WEB 
+ * 
+ * La ressource peut aussi être résolue de façon ad-hoc par la création d'un plugin de résolution spécifique.
+ * 
+ * Les fichiers de configuration sont à considérer comme des ressources.  
+ * Ex: 
+ * 	classpath: 
+ * 		/myproject/components/components-config.dtd
+ * 	web:
+ *     /WEB-INF/components-config.xml
+ *  
  * L'implémentation permet de définir une liste de plusieurs plugins de résolutions de ressources.
- * Il est aussi possible d'enregistrer des @see ResourceResolver spécifique. (Par exemple pour stocker les ressources en BDD)
- * L'enregistrement doit se faire lors de la phase de démarrage.
+ * Il est aussi possible d'enregistrer des @see ResourceResolverPlugin spécifique. (Par exemple pour stocker les ressources en BDD)
  *
  * @author pchretien
  */
-public final class ResourceManagerImpl implements ResourceManager {
+public final class ResourceManager implements Component {
 	private final List<ResourceResolverPlugin> resourceResolverPlugins;
 
 	@Inject
-	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
+	public ResourceManager(final List<ResourceResolverPlugin> resourceResolverPlugins) {
 		Assertion.checkNotNull(resourceResolverPlugins);
 		//-----
 		this.resourceResolverPlugins = resourceResolverPlugins;
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
+	 * 
+	 * @param resource Url de la ressource(chaîne de caractères)
+	 * @return URL associée à la ressource (Not Null)
+	 */
 	public URL resolve(final String resource) {
 		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
 			final Option<URL> url = resourceResolver.resolve(resource);

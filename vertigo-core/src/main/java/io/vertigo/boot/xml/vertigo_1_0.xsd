@@ -29,7 +29,6 @@
 			</xs:sequence>
 		</xs:complexType>
   	</xs:element>
-  	
 		
 	<xs:complexType name="definitionsType">
     	<xs:sequence>
@@ -50,6 +49,7 @@
 	<xs:complexType name="bootType">
 		<!--Boot is a module without definitions, without aspects, with only pure components  -->
 		<xs:sequence>
+			<xs:element name="plugin" type="pluginType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>

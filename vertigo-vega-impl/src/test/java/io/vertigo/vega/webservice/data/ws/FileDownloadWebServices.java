@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.vega.webservice.WebServices;

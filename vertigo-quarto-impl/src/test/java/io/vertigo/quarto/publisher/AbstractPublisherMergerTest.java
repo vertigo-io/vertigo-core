@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;

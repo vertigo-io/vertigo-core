@@ -18,15 +18,15 @@
  */
 package io.vertigo.commons.impl.config;
 
-import io.vertigo.lang.Engine;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 
 /**
  * Interface d'un plugin de gestion de configuration applicative. 
  * Toutes les configuration sont gérées sous forme de String.
  * @author prahmoune
  */
-public interface ConfigPlugin extends Engine {
+public interface ConfigPlugin extends Plugin {
 	/** 
 	 * Retourne une propriété de configuration.
 	 * Retourne none si la propriété n'est pas gérée.

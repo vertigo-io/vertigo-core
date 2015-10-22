@@ -23,7 +23,6 @@ import io.vertigo.core.environment.EnvironmentManager;
 import io.vertigo.core.impl.environment.DefinitionLoader;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -58,7 +57,6 @@ public final class App implements AutoCloseable {
 	private final Boot boot;
 	private final DefinitionSpace definitionSpace;
 	private final ComponentSpace componentSpace;
-	private final ConfigSpace configSpace;
 
 	//à remplacer par event ??
 	private final List<AppListener> appListeners = new ArrayList<>();
@@ -80,12 +78,12 @@ public final class App implements AutoCloseable {
 			boot = new Boot(appConfig.getBootConfig());
 			final boolean silently = appConfig.getBootConfig().isSilence();
 			//-----
-			configSpace = new ConfigSpace();
 			definitionSpace = new DefinitionSpace();
 			componentSpace = new ComponentSpace(silently);
 
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = createComponentLoader(appConfig);
+			//contient donc à minima resourceManager et configManager.
 			componentLoader.injectBootComponents(componentSpace);
 
 			//-----1. Load all definitions
@@ -186,9 +184,5 @@ public final class App implements AutoCloseable {
 
 	ComponentSpace getComponentSpace() {
 		return componentSpace;
-	}
-
-	ConfigSpace getConfigSpace() {
-		return configSpace;
 	}
 }
