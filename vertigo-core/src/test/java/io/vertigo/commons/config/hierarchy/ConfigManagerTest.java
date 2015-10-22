@@ -40,9 +40,11 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
+		final String locales = "fr_FR";
+
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
+			.beginBootModule(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.beginPlugin(XmlConfigPlugin.class)
 					.addParam("url", "io/vertigo/commons/config/hierarchy/basic-app-config.xml")

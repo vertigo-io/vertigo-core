@@ -25,8 +25,6 @@ import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.environment.EnvironmentManager;
 import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
@@ -39,10 +37,7 @@ public final class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
+			.beginBootModule("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 					.addPlugin(AnnotationLoaderPlugin.class)

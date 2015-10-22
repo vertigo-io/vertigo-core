@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;

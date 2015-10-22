@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.locale;
+package io.vertigo.core.spaces.locale;
 
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.MessageText;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +42,29 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 /**
- * Standard implementation of the 'Locale Management' component .
- * Les ressources déclarées dans une enum sont chargées par un fichier properties avec un resourceBundle.
- *
- * @author  pchretien
+ * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.
+ * 
+ * Il est possible de gérer des ressources externalisées dans des dictionnaires.
+ * 
+ * Toute ressource est identifiée par une clé :  @see MessageKey
+ * Pour un composant donné, la liste des clés est implémentée idéalement sous la forme d'une enum.
+ * Un fichier de ressource, appelé dictionnaire est associée à la liste des clés.
+ * 
+ * Si le libellé n'est pas trouvé dans une langue, on renvoie un message "panic", en précisant la langue demandée 
+ * de plus on loggue un warning.
+ * 
+ * Exemple message panic :
+ * MessageText(null,messageKey.TOTO) en 'fr_FR' : <<fr:TOTO>>
+ * MessageText(null,messageKey.TOTO) en 'en' : <<en:TOTO>>
+ * 
+ * Un libellé peut être paramétré.
+ * 
+ * @see MessageText permet de créer des libellés connecté au dictionnaire.
+ * 
+ *  
+ * @author pchretien
  */
-public final class LocaleManagerImpl implements LocaleManager, Describable {
+public final class LocaleManager implements Component, Describable {
 	private static final Logger LOG = Logger.getLogger(LocaleManager.class);
 
 	/**
@@ -82,7 +99,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	 * @param locales Liste des locales gérées par l'application.
 	 */
 	@Inject
-	public LocaleManagerImpl(@Named("locales") final String locales) {
+	public LocaleManager(@Named("locales") final String locales) {
 		Assertion.checkArgNotEmpty(locales);
 		//-----
 		this.locales = createLocales(locales);
@@ -112,8 +129,10 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		return Collections.unmodifiableList(myLocales);
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Enregistre une stratégie de choix de langue.
+	 * @param localeProvider Définit la langue par défaut de façon contextuelle
+	 */
 	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
 		Assertion.checkArgument(localeProvider == null, "localeProvider already registered");
 		Assertion.checkNotNull(newLocaleProvider);
@@ -121,14 +140,25 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		localeProvider = newLocaleProvider;
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Ajout d'un dictionnaire de ressources.
+	 * Toutes les ressources identifiées par une clé doivent être présente dans le fichier properties.
+	 * Cette méthode est non synchronisée etdoit être appelée lors du démarrage de l'application.
+	 * @param baseName Nom et chemin du fichier properties
+	 * @param enums Enumération (enum) de contrôle des ressources géréees
+	 */
 	public void add(final String baseName, final MessageKey[] enums) {
 		add(baseName, enums, false);
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Surcharge d'un dictionnaire de ressources.
+	 * Cette méthode est non synchronisée et doit être appelée lors du démarrage de l'application.
+	 * Il est possible de ne surcharger qu'une propriété.
+	 * Il est possible de ne renseigner qu'un des dictionnaire (et donc de ne pas renseigner tous les bundles).
+	 * @param baseName Nom et chemin du fichier properties
+	 * @param enums Enumération (enum) de contrôle des ressources géréees
+	 */
 	public void override(final String baseName, final MessageKey[] enums) {
 		add(baseName, enums, true);
 	}
@@ -197,8 +227,14 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Retourne le libellé non formatté d'un message identifié par sa clé.
+	 * Retourne null si le message n'est pas trouvé
+	 *
+	 * @param messageKey clé du message .
+	 * @param locale Locale 
+	 * @return Message non formatté dans la langue de la locale.
+	  */
 	public String getMessage(final MessageKey messageKey, final Locale locale) {
 		Assertion.checkNotNull(messageKey);
 		Assertion.checkNotNull(locale);
@@ -213,8 +249,13 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		return msg;
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Retourne la locale courante.
+	 * C'est à dire correspondant à l'utilisateur courant si il y en a un,
+	 * sinon correspond à la locale de l'application.
+	 * @return Locale courante
+	 */
+
 	public Locale getCurrentLocale() {
 		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
 			final Locale currentLocale = localeProvider.getCurrentLocale();
@@ -273,5 +314,4 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		//---
 		return componentInfos;
 	}
-
 }

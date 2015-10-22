@@ -19,8 +19,8 @@
 package io.vertigo.persona.impl.security;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.core.spaces.locale.LocaleManager;
+import io.vertigo.core.spaces.locale.LocaleProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

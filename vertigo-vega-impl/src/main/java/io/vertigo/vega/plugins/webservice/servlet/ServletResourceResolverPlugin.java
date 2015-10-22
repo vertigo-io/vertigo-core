@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.servlet;
 
-import io.vertigo.core.impl.resource.ResourceResolverPlugin;
+import io.vertigo.core.spaces.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;

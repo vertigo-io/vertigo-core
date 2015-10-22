@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.resource;
 
-import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;

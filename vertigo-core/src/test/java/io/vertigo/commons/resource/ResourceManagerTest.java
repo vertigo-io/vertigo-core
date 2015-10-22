@@ -37,12 +37,13 @@ import org.junit.Test;
 public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ResourceManager resourceManager;
+	final String locales = "fr_FR";
 
 	@Override
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
+			.beginBootModule(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 			.endModule()
 			.build();

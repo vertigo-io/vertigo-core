@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.impl.mail;
 
-import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;

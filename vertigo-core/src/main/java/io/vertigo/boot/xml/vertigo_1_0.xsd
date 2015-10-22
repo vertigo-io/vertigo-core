@@ -52,6 +52,7 @@
 			<xs:element name="plugin" type="pluginType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
+		<xs:attribute name="locales" type="xs:string" use="required"/>
 	</xs:complexType>
 	
 	<xs:complexType name="moduleType">

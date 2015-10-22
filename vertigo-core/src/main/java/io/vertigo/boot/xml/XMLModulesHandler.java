@@ -97,9 +97,9 @@ final class XMLModulesHandler extends DefaultHandler {
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
 		switch (TagName.valueOf(qName)) {
 			case boot:
-				moduleConfigBuilder = appConfigBuilder.beginBootModule();
+				final String locales = attrs.getValue("locales");
+				moduleConfigBuilder = appConfigBuilder.beginBootModule(locales);
 				break;
-
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");

@@ -16,18 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.locale;
+package io.vertigo.core.spaces.resource;
 
-import java.util.Locale;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
+
+import java.net.URL;
 
 /**
- * Provide current language.
- *
- * @author  pchretien, npiedeloup
+ * Résout une ressource en fournissant son URL.
+ * @author prahmoune
  */
-public interface LocaleProvider {
+public interface ResourceResolverPlugin extends Plugin {
 	/**
-	 * @return Current locale (may be null)
+	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
+	 * @param resource Url de la ressource(chaîne de caractères)
+	 * @return URL associée à la ressource 
 	 */
-	Locale getCurrentLocale();
+	Option<URL> resolve(String resource);
 }

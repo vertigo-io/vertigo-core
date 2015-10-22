@@ -19,6 +19,7 @@
 package io.vertigo.core.config;
 
 import io.vertigo.core.spaces.config.ConfigManager;
+import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -38,10 +39,13 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
 
-	public ModuleConfigBuilder beginBootModule() {
+	public ModuleConfigBuilder beginBootModule(final String locales) {
 		return myBootConfigBuilder.beginBootModule().withNoAPI()
 				.addComponent(ResourceManager.class)
-				.addComponent(ConfigManager.class);
+				.addComponent(ConfigManager.class)
+				.beginComponent(LocaleManager.class)
+				.addParam("locales", locales)
+				.endComponent();
 	}
 
 	public BootConfigBuilder beginBoot() {
