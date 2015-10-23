@@ -18,16 +18,39 @@
  */
 package io.vertigo.core.environment;
 
-import io.vertigo.core.impl.environment.DefinitionLoader;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Manager de gestion de l'environnement applicatif.
  * - on start  : load les donnése
  * - on stop  : unload les donnése
  * 
- * @author pchretien
+ * Manager de chargement de l'environnement. Ce manager ce paramètre par l'ajout
+ * de plugins implémentant DynamicHandler. Chaque plugins permet d'enrichir la
+ * grammaire et de transposer les DynamicDefinition lues dans les NameSpaces des
+ * Managers idoines.
+ *
+ * @author pchretien, npiedeloup
  */
-public interface EnvironmentManager extends Component {
-	DefinitionLoader createDefinitionLoader();
+public final class EnvironmentManager implements Component {
+	private final List<LoaderPlugin> loaderPlugins;
+	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
+
+	@Inject
+	public EnvironmentManager(final List<LoaderPlugin> loaderPlugins, final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
+		Assertion.checkNotNull(loaderPlugins);
+		Assertion.checkNotNull(dynamicRegistryPlugins);
+		//-----
+		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
+		this.loaderPlugins = loaderPlugins;
+	}
+
+	public DefinitionLoader createDefinitionLoader() {
+		return new DefinitionLoader(dynamicRegistryPlugins, loaderPlugins);
+	}
 }

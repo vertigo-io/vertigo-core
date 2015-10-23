@@ -35,7 +35,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.impl.environment.LoaderPlugin;
+import io.vertigo.core.environment.LoaderPlugin;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

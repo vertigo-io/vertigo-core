@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.config;
 
-import io.vertigo.commons.impl.config.ConfigPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;

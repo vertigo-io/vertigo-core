@@ -50,7 +50,6 @@
 		<!--Boot is a module without definitions, without aspects, with only pure components  -->
 		<xs:sequence>
 			<xs:element name="plugin" type="pluginType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="locales" type="xs:string" use="required"/>
 	</xs:complexType>

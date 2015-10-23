@@ -22,7 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.impl.environment.KernelGrammar;
+import io.vertigo.core.environment.KernelGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;

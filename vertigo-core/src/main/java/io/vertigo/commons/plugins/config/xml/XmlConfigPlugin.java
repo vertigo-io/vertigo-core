@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.plugins.config.xml;
 
-import io.vertigo.commons.impl.config.ConfigPlugin;
+import io.vertigo.core.spaces.config.ConfigPlugin;
 import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

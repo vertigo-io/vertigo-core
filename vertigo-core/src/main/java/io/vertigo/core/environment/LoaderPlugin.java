@@ -16,15 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.environment;
+package io.vertigo.core.environment;
 
-import io.vertigo.core.dsl.dynamic.DynamicRegistry;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.lang.Plugin;
 
 /**
- * Plugin de DynamicRegistry.
+ * Plugin de chargement de l'environnement.
  * @author pchretien
  */
-public interface DynamicRegistryPlugin extends DynamicRegistry, Plugin {
-	//
+public interface LoaderPlugin extends Plugin {
+	/**
+	 * Type parsed by loader.
+	 * Examples : oom, kpr, eaxmi...
+	 * @return Type parsed by loader
+	 */
+	String getType();
+
+	/**
+	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
+	 * défini par une url (sur système de fichier ou classpath)
+	 * et selon la grammaire en argument.
+	 * @param resourcePath resourcePath
+	 * @param dynamicModelRepository DynamicModelRepository
+	 */
+	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
+
 }

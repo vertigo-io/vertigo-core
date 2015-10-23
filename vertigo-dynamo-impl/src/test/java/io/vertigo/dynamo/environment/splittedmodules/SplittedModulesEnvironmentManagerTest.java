@@ -24,8 +24,6 @@ import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
@@ -108,10 +106,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 			.endBoot()	
 			.beginBootModule("locales")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-					.addPlugin(KprLoaderPlugin.class)
-					.addPlugin(AnnotationLoaderPlugin.class)
-					.addPlugin(DomainDynamicRegistryPlugin.class)
+				.addPlugin(KprLoaderPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule();	
 		// @formatter:on
 	}
