@@ -18,13 +18,17 @@
  */
 package io.vertigo.core.spaces.component;
 
+import io.vertigo.core.spaces.config.ConfigManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
+import io.vertigo.lang.Option;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 /**
  * This container contains params initialized with String.
@@ -33,12 +37,15 @@ import java.util.Set;
  * @author pchretien
  */
 final class ComponentParamsContainer implements Container {
+	private final Option<ConfigManager> configManagerOption;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;
 
-	ComponentParamsContainer(final Map<String, String> params) {
+	ComponentParamsContainer(final Option<ConfigManager> configManagerOption, final Map<String, String> params) {
+		Assertion.checkNotNull(configManagerOption);
 		Assertion.checkNotNull(params);
 		//-----
+		this.configManagerOption = configManagerOption;
 		this.params = params;
 		unusedKeys = new HashSet<>(params.keySet());
 	}
@@ -58,7 +65,7 @@ final class ComponentParamsContainer implements Container {
 		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
-		final Object value = getParam(params, id, clazz);
+		final Object value = getParamValue(id, clazz);
 		final Class<O> type = box(clazz);
 		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
 		return type.cast(value);
@@ -76,11 +83,30 @@ final class ComponentParamsContainer implements Container {
 	 * @param paramType Type du paramètre attendu
 	 * @return Valeur sous forme texte du paramètre
 	 */
-	private static Object getParam(final Map<String, String> params, final String paramName, final Class<?> paramType) {
-		Assertion.checkNotNull(params);
+	private Object getParamValue(final String paramName, final Class<?> paramType) {
 		Assertion.checkNotNull(paramName);
+		Assertion.checkNotNull(paramType);
 		//-----
-		final String value = params.get(paramName);
+		String value = params.get(paramName);
+		final String confParamProtocol = "conf:";
+		if (value != null && value.startsWith(confParamProtocol)) {
+			Assertion.checkArgument(configManagerOption.isDefined(), "config is not allowed here");
+			//-----
+			// On doit rechercher la valeur dans la configuration
+			final int idx = value.lastIndexOf('.');
+			Assertion.checkState(idx != -1, "Le paramètre {0} n'est pas paramètre du ConfigManager", value);
+			final String path = value.substring(confParamProtocol.length(), idx);
+			final String prop = value.substring(idx + 1);
+			try {
+				value = configManagerOption.get().getStringValue(path, prop);
+			} catch (final Throwable t) {
+				// Problème lors de l'accès au paramètre. On loggue et on utilise la valeur null
+				Logger.getLogger(ComponentParamsContainer.class).warn(
+						"Pas d'entrée dans le config manager pour " + path + "." + prop);
+				value = null;
+			}
+			//-----
+		}
 		return cast(paramType, value);
 	}
 

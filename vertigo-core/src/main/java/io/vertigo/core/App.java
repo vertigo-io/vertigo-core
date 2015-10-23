@@ -19,13 +19,11 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.environment.DefinitionLoader;
-import io.vertigo.core.environment.EnvironmentManager;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
+import io.vertigo.core.spaces.config.ConfigManager;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,21 +75,20 @@ public final class App implements AutoCloseable {
 			//-----0. Boot (considered as a Module)
 			boot = new Boot(appConfig.getBootConfig());
 			final boolean silently = appConfig.getBootConfig().isSilence();
-			//-----
-			definitionSpace = new DefinitionSpace();
-			componentSpace = new ComponentSpace(silently);
 
+			//-----0. Boot
+			componentSpace = new ComponentSpace(silently);
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = createComponentLoader(appConfig);
+			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
 			//contient donc à minima resourceManager et configManager.
 			componentLoader.injectBootComponents(componentSpace);
 
 			//-----1. Load all definitions
-			final DefinitionLoader definitionLoader = createDefinitionLoader();
+			definitionSpace = componentSpace.resolve(DefinitionSpace.class);
+			definitionSpace.injectDefinitions(appConfig.getModuleConfigs());
 
-			definitionLoader.injectDefinitions(appConfig.getModuleConfigs());
 			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponents(componentSpace, appConfig.getModuleConfigs());
+			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ConfigManager.class), appConfig.getModuleConfigs());
 			//-----
 			appStart();
 			appPostStart();
@@ -101,19 +98,6 @@ public final class App implements AutoCloseable {
 			close();
 			throw new RuntimeException("an error occured when starting", e);
 		}
-	}
-
-	private DefinitionLoader createDefinitionLoader() {
-		final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
-		if (componentSpace.contains(EnvironmentManagerId)) {
-			final EnvironmentManager environmentManager = componentSpace.resolve(EnvironmentManager.class);
-			return environmentManager.createDefinitionLoader();
-		}
-		return new DefinitionLoader();
-	}
-
-	private static ComponentLoader createComponentLoader(final AppConfig appConfig) {
-		return new ComponentLoader(appConfig.getBootConfig());
 	}
 
 	/**
@@ -135,12 +119,10 @@ public final class App implements AutoCloseable {
 	private void appStart() {
 		boot.start();
 		componentSpace.start();
-		definitionSpace.start();
 		Thread.currentThread().setName("MAIN");
 	}
 
 	private void appStop() {
-		definitionSpace.stop();
 		componentSpace.stop();
 		boot.stop();
 	}

@@ -27,6 +27,7 @@ import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
 import io.vertigo.core.engines.AopEngine;
+import io.vertigo.core.spaces.config.ConfigManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
@@ -52,27 +53,27 @@ public final class ComponentLoader {
 		this.bootConfig = bootConfig;
 	}
 
-	public void injectAllComponents(final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponents(final ComponentSpace componentSpace, final ConfigManager configManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, moduleConfig);
+			injectComponent(componentSpace, Option.some(configManager), moduleConfig);
 		}
 	}
 
 	public void injectBootComponents(final ComponentSpace componentSpace) {
-		injectComponent(componentSpace, bootConfig.getBootModuleConfig());
+		injectComponent(componentSpace, Option.<ConfigManager> none(), bootConfig.getBootModuleConfig());
 
 	}
 
-	private void injectComponent(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private void injectComponent(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		doInjectComponents(bootConfig, componentSpace, moduleConfig);
+		doInjectComponents(bootConfig, configManagerOption, componentSpace, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private static void doInjectComponents(final BootConfig bootConfig, final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private static void doInjectComponents(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
@@ -107,7 +108,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un comoposant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(bootConfig, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
+				final Object component = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
 				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
 				final Option<ComponentInitializer> initializer = createComponentInitializer(componentSpace, componentConfig);
 				// 2.c. On enregistre le composant avec son initializer
@@ -115,7 +116,7 @@ public final class ComponentLoader {
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
-				final Plugin plugin = createPlugin(componentSpace, pluginConfig);
+				final Plugin plugin = createPlugin(componentSpace, configManagerOption, pluginConfig);
 				final Option<ComponentInitializer> initializer = Option.none();
 				componentSpace.registerComponent(pluginConfig.getId(), plugin, initializer);
 			}
@@ -161,9 +162,9 @@ public final class ComponentLoader {
 		return findAspects;
 	}
 
-	private static Object createComponentWithOptions(final BootConfig bootConfig, final ComponentProxyContainer componentContainer, final Collection<Aspect> aspects, final ComponentConfig componentConfig, final AopEngine aopEngine) {
+	private static Object createComponentWithOptions(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final Collection<Aspect> aspects, final ComponentConfig componentConfig, final AopEngine aopEngine) {
 		// 2. On crée le composant
-		final Object instance = createComponent(bootConfig, componentContainer, componentConfig);
+		final Object instance = createComponent(bootConfig, configManagerOption, componentContainer, componentConfig);
 
 		//3. AOP, on aopise le composant
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
@@ -181,12 +182,12 @@ public final class ComponentLoader {
 		return Option.none();
 	}
 
-	private static Object createComponent(final BootConfig bootConfig, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private static Object createComponent(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
 			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
 		//---
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(componentConfig.getParams());
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
@@ -194,8 +195,8 @@ public final class ComponentLoader {
 		return component;
 	}
 
-	private static Plugin createPlugin(final Container componentContainer, final PluginConfig pluginConfig) {
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(pluginConfig.getParams());
+	private static Plugin createPlugin(final Container componentContainer, final Option<ConfigManager> configManagerOption, final PluginConfig pluginConfig) {
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);

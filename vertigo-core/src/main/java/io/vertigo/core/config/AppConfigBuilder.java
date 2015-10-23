@@ -19,6 +19,7 @@
 package io.vertigo.core.config;
 
 import io.vertigo.core.spaces.config.ConfigManager;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
@@ -35,14 +36,22 @@ import java.util.List;
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
-	private final BootConfigBuilder myBootConfigBuilder = new BootConfigBuilder(this);
+	private final BootConfigBuilder myBootConfigBuilder;
+	private final ModuleConfigBuilder myBootModuleConfigBuilder;
+
+	public AppConfigBuilder() {
+		myBootConfigBuilder = new BootConfigBuilder(this);
+		myBootModuleConfigBuilder =
+				myBootConfigBuilder.beginBootModule().withNoAPI()
+						.addComponent(ResourceManager.class)
+						.addComponent(ConfigManager.class)
+						.addComponent(DefinitionSpace.class);
+	}
 
 	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
 
 	public ModuleConfigBuilder beginBootModule(final String locales) {
-		return myBootConfigBuilder.beginBootModule().withNoAPI()
-				.addComponent(ResourceManager.class)
-				.addComponent(ConfigManager.class)
+		return myBootModuleConfigBuilder
 				.beginComponent(LocaleManager.class)
 				.addParam("locales", locales)
 				.endComponent();
@@ -85,6 +94,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
+		beginBoot().withModule(myBootModuleConfigBuilder.build()).endBoot();
+
 		return new AppConfig(myBootConfigBuilder.build(), myModuleConfigs);
 	}
 }

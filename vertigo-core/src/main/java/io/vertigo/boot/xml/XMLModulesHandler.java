@@ -71,6 +71,8 @@ final class XMLModulesHandler extends DefaultHandler {
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
 			case boot:
+				moduleConfigBuilder = null;
+				break;
 			case module:
 				moduleConfigBuilder.endModule();
 				moduleConfigBuilder = null;

@@ -191,11 +191,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
 		if (boot) {
-			myAppConfigBuilder.beginBoot().withModule(build()).endBoot();
+			//	myAppConfigBuilder.beginBoot().withModule(build()).endBoot();
 		} else {
 			myAppConfigBuilder.withModules(Collections.singletonList(build()));
+			ended = true;
 		}
-		ended = true;
 		return myAppConfigBuilder;
 	}
 
