@@ -52,17 +52,17 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	/**
 	 * Constructeur
 	 * @param elasticSearchHome URL du serveur SOLR
-	 * @param cores Liste des indexes
+	 * @param index Nom de l'index
 	 * @param rowsPerQuery Nombre d'élément retourné par query
 	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
 	 * @param configFile Fichier de configuration des indexs
 	 */
 	@Inject
-	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores,
+	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("index") final String index,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Option<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
-		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
+		super(index.toLowerCase().trim(), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);

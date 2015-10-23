@@ -102,21 +102,25 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
 
 	private final String indexName;
+	private final String typeName;
 	private final Client esClient;
 	private final ESDocumentCodec esDocumentCodec;
 
 	/**
 	 * Constructeur.
-	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
+	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document
 	 * @param indexName Index name
+	 * @param typeName Type name in Index
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final String typeName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
+		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
 		//-----
 		this.indexName = indexName;
+		this.typeName = typeName;
 		this.esClient = esClient;
 		this.esDocumentCodec = esDocumentCodec;
 	}
@@ -130,7 +134,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
+					bulkRequest.add(esClient.prepareIndex()
+							.setIndex(indexName)
+							.setType(typeName)
+							.setId(index.getURI().toURN())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -153,7 +160,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
+			esClient.prepareIndex()
+					.setIndex(indexName)
+					.setType(typeName)
+					.setId(index.getURI().toURN())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -172,6 +182,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		final QueryBuilder queryBuilder = translateToQueryBuilder(query);
 		esClient.prepareDeleteByQuery(indexName)
+				.setTypes(typeName)
 				.setQuery(queryBuilder)
 				.execute()
 				.actionGet();
@@ -185,7 +196,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		esClient.prepareDelete(indexName, uri.getDefinition().getName(), uri.toURN())
+		esClient.prepareDelete()
+				.setIndex(indexName)
+				.setType(typeName)
+				.setId(uri.toURN())
 				.execute()
 				.actionGet();
 	}
@@ -210,14 +224,18 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @return Nombre de document indexés
 	 */
 	public long count() {
-		final CountResponse response = esClient.prepareCount(indexName)
+		final CountResponse response = esClient.prepareCount()
+				.setIndices(indexName)
+				.setTypes(typeName)
 				.execute()
 				.actionGet();
 		return response.getCount();
 	}
 
 	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
-		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
+		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch()
+				.setIndices(indexName)
+				.setTypes(typeName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
 				.setFrom(listState.getSkipRows())
