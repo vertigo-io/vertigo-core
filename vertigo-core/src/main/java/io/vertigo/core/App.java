@@ -19,8 +19,8 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.environment.DefinitionLoader;
 import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.DefinitionLoader;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
