@@ -20,6 +20,7 @@ package io.vertigo.core.dsl.dynamic;
 
 import io.vertigo.core.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public interface DynamicRegistry {
 	 * Enregistrement d'une définition.
 	 * @param definition Définition
 	 */
-	Option<Definition> createDefinition(DynamicDefinition definition);
+	Option<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
 
 	/**
 	 * Ajout d'une définition.

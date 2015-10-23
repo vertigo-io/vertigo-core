@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.search.withstore;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
@@ -55,6 +55,8 @@ import org.junit.Test;
  */
 public final class SearchManagerTest extends AbstractTestCaseJU4 {
 	@Inject
+	private DefinitionSpace definitionSpace;
+	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
 	private StoreManager storeManager;
@@ -71,7 +73,7 @@ public final class SearchManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doSetUp() throws Exception {
-		carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, SearchIndexDefinition.class);
+		carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

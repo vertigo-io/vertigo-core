@@ -16,14 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.environment;
+package io.vertigo.core.spaces.definiton;
 
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.dsl.entity.EntityGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -88,7 +87,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
 		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
 			return Option.none();
@@ -96,7 +95,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			return dynamicRegistry.createDefinition(xdefinition);
+			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getName(), e);

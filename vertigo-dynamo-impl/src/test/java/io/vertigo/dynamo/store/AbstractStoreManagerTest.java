@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.store;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -68,6 +68,8 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -159,7 +161,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
@@ -180,7 +182,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//-----
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
 				.withEngine(TaskEngineProc.class)
@@ -206,8 +208,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final Car nativeLoadCar(final long carId) {
-		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doId = definitionSpace.resolve("DO_IDENTIFIANT", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
 				.withEngine(TaskEngineSelect.class)
@@ -225,7 +227,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
+		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)

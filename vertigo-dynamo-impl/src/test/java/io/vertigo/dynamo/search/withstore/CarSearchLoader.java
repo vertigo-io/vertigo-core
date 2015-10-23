@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.search.withstore;
 
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -47,6 +47,7 @@ import javax.inject.Inject;
  */
 public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
 	private final SearchIndexDefinition indexDefinition;
+	private final DefinitionSpace definitionSpace;
 
 	/**
 	 * Constructor.
@@ -54,9 +55,10 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager) {
+	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final DefinitionSpace definitionSpace) {
 		super(taskManager);
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		this.definitionSpace = definitionSpace;
 	}
 
 	/** {@inheritDoc} */
@@ -82,8 +84,8 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.getResult();
 	}
 
-	private static TaskDefinition getTaskLoadCarList(final List<URI<Car>> uris) {
-		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
+	private TaskDefinition getTaskLoadCarList(final List<URI<Car>> uris) {
+		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 		String sep = "";
 		final StringBuilder sql = new StringBuilder("select * from CAR where ID in (");
 		for (final URI<Car> uri : uris) {

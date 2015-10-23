@@ -16,33 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.environment;
+package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.dsl.entity.EntityBuilder;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.lang.Plugin;
 
 /**
+ * Plugin de chargement de l'environnement.
  * @author pchretien
  */
-public final class KernelGrammar {
-	/** Mot-clé des MetaDefinitions de DataType. */
-	private static final String DATA_TYPE_META_DEFINITION = "DataType";
-
-	/**Type Primitif.*/
-	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
-
-	/** Kernel Grammar instance. */
-	public static final EntityGrammar GRAMMAR = new EntityGrammar(DATA_TYPE_ENTITY);
-
-	private KernelGrammar() {
-		//private
-	}
+public interface LoaderPlugin extends Plugin {
+	/**
+	 * Type parsed by loader.
+	 * Examples : oom, kpr, eaxmi...
+	 * @return Type parsed by loader
+	 */
+	String getType();
 
 	/**
-	 * @return Type primitif.
+	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
+	 * défini par une url (sur système de fichier ou classpath)
+	 * et selon la grammaire en argument.
+	 * @param resourcePath resourcePath
+	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public static Entity getDataTypeEntity() {
-		return DATA_TYPE_ENTITY;
-	}
+	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
+
 }

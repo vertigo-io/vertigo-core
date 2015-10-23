@@ -16,15 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.environment;
+package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.dsl.dynamic.DynamicRegistry;
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.dsl.entity.EntityBuilder;
+import io.vertigo.core.dsl.entity.EntityGrammar;
 
 /**
- * Plugin de DynamicRegistry.
  * @author pchretien
  */
-public interface DynamicRegistryPlugin extends DynamicRegistry, Plugin {
-	//
+public final class KernelGrammar {
+	/** Mot-clé des MetaDefinitions de DataType. */
+	private static final String DATA_TYPE_META_DEFINITION = "DataType";
+
+	/**Type Primitif.*/
+	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
+
+	/** Kernel Grammar instance. */
+	public static final EntityGrammar GRAMMAR = new EntityGrammar(DATA_TYPE_ENTITY);
+
+	private KernelGrammar() {
+		//private
+	}
+
+	/**
+	 * @return Type primitif.
+	 */
+	public static Entity getDataTypeEntity() {
+		return DATA_TYPE_ENTITY;
+	}
 }

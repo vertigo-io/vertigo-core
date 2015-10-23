@@ -21,6 +21,7 @@ package io.vertigo.quarto.plugins.publisher.environment.registries;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -51,7 +52,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
 
 		if (entity.equals(PublisherGrammar.publisherDefinition)) {

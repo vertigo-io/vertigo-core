@@ -20,16 +20,18 @@ package io.vertigo.dynamo.environment.splittedmodules;
 
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamock.domain.DtDefinitions;
+
+import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,6 +42,8 @@ import org.junit.Test;
  * @author npiedeloup
  */
 public final class SplittedModulesEnvironmentManagerTest {
+	@Inject
+	private DefinitionSpace definitionSpace;
 
 	//
 	//<module name="test-2"><!--  this moduleReference -->
@@ -53,7 +57,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.build();
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = definitionSpace.resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 		}
 	}
@@ -70,9 +74,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = definitionSpace.resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}
@@ -89,9 +93,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = definitionSpace.resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}
@@ -104,7 +108,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()	
-			.beginBootModule("locales")
+			.beginBootModule("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)

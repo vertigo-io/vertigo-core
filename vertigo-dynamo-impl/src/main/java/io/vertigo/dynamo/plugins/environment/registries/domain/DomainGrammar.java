@@ -50,7 +50,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
 import io.vertigo.core.dsl.entity.Entity;
 import io.vertigo.core.dsl.entity.EntityBuilder;
 import io.vertigo.core.dsl.entity.EntityGrammar;
-import io.vertigo.core.environment.KernelGrammar;
+import io.vertigo.core.spaces.definiton.KernelGrammar;
 
 /**
  * @author pchretien

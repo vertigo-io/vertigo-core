@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -30,6 +30,8 @@ import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,6 +41,9 @@ import org.junit.Test;
  * @author pchretien
  */
 public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
+
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test.xml" };
@@ -46,32 +51,32 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testConstraint() {
-		final ConstraintDefinition constraint = Home.getDefinitionSpace().resolve("CK_TELEPHONE", ConstraintDefinition.class);
+		final ConstraintDefinition constraint = definitionSpace.resolve("CK_TELEPHONE", ConstraintDefinition.class);
 		Assert.assertEquals(DtProperty.REGEX, constraint.getProperty());
 	}
 
 	@Test
 	public void testDefaultFormatter() {
-		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve("FMT_DEFAULT", FormatterDefinition.class);
+		final FormatterDefinition formatter = definitionSpace.resolve("FMT_DEFAULT", FormatterDefinition.class);
 		Assert.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testFormatter() {
-		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve("FMT_TAUX", FormatterDefinition.class);
+		final FormatterDefinition formatter = definitionSpace.resolve("FMT_TAUX", FormatterDefinition.class);
 		Assert.assertEquals(FormatterNumber.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testDomain() {
-		final io.vertigo.dynamo.domain.metamodel.Domain domain = Home.getDefinitionSpace().resolve("DO_EMAIL", Domain.class);
+		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DO_EMAIL", Domain.class);
 		Assert.assertEquals(DataType.String, domain.getDataType());
 		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatter().getFormatterClassName());
 	}
 
 	@Test
 	public void testDtDefinition() {
-		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+		final DtDefinition dtDefinition = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
 		Assert.assertEquals(Famille.class.getCanonicalName(), dtDefinition.getClassCanonicalName());
 		Assert.assertTrue(dtDefinition.isPersistent());
 		Assert.assertEquals(Famille.class.getPackage().getName(), dtDefinition.getPackageName());

@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.task;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -36,6 +36,9 @@ import org.junit.Test;
  * @author dchallas
  */
 public final class TaskManagerTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
+
 	@Inject
 	private TaskManager taskManager;
 
@@ -54,9 +57,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRegistry() {
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
-		Home.getDefinitionSpace().put(taskDefinition1);
+		definitionSpace.put(taskDefinition1);
 
-		final TaskDefinition taskDefinition2 = Home.getDefinitionSpace().resolve("TK_ADD", TaskDefinition.class);
+		final TaskDefinition taskDefinition2 = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
 		Assert.assertNotNull(taskDefinition2);
 	}
 
@@ -66,11 +69,11 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalArgumentException.class)
 	public void testDoubleRegistry() {
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
-		Home.getDefinitionSpace().put(taskDefinition1);
+		definitionSpace.put(taskDefinition1);
 
 		//On déclenche une assertion en réenregistrant la même tache
 		final TaskDefinition taskDefinition2 = buildTaskDefinition("TK_MULTI_3", "*");
-		Home.getDefinitionSpace().put(taskDefinition2);
+		definitionSpace.put(taskDefinition2);
 	}
 
 	/**
@@ -79,7 +82,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = NullPointerException.class)
 	public void testRegistryWithNull() {
 		//L'appel à la résolution doit remonter une assertion
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(null, TaskDefinition.class);
+		final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
 		nop(taskDefinition);
 	}
 
@@ -165,8 +168,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.getResult();
 	}
 
-	private static TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
-		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
+	private TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
+		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineMock.class)

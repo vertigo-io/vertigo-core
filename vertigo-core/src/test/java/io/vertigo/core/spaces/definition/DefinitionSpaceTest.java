@@ -26,6 +26,7 @@ import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 
 import java.io.ByteArrayInputStream;
@@ -34,10 +35,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -48,18 +53,18 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testEmpty() {
-		Assert.assertEquals("definitionSpace must be emmpty", 0L, Home.getDefinitionSpace().getAllTypes().size());
+		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 	}
 
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
-		Assert.assertEquals("definitionSpace must be emmpty", 0L, Home.getDefinitionSpace().getAllTypes().size());
+		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 		Home.getDefinitionSpace().put(new SampleDefinition());
 
-		Assert.assertEquals("definitionSpace must contain one element ", 1L, Home.getDefinitionSpace().getAllTypes().size());
-		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, Home.getDefinitionSpace().getAll(SampleDefinition.class).size());
+		Assert.assertEquals("definitionSpace must contain one element ", 1L, definitionSpace.getAllTypes().size());
+		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, definitionSpace.getAll(SampleDefinition.class).size());
 
-		final SampleDefinition sampleDefinition = Home.getDefinitionSpace().resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
+		final SampleDefinition sampleDefinition = definitionSpace.resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
 		Assert.assertNotNull(sampleDefinition);
 		Assert.assertEquals("localName must be THE_DEFINITION", "THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));
 		Assert.assertEquals("localName must be THE_DEFINITION", sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));

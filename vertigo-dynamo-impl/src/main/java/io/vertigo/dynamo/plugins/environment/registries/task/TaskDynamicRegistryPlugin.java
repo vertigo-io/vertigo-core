@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.environment.registries.task;
 import io.vertigo.core.Home;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
@@ -38,13 +39,13 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	/**
 	 * Constructeur.
 	 */
-	public TaskDynamicRegistryPlugin() {
+	public TaskDynamicRegistryPlugin(final DefinitionSpace definitionSpace) {
 		super(TaskGrammar.GRAMMAR);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final Definition definition = createTaskDefinition(xdefinition);

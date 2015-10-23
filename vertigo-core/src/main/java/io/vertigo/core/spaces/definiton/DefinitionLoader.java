@@ -16,20 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.environment;
+package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.Home;
 import io.vertigo.core.config.DefinitionProvider;
 import io.vertigo.core.config.DefinitionProviderConfig;
 import io.vertigo.core.config.DefinitionResourceConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,17 +43,9 @@ import java.util.Map;
  *
  * @author pchretien
  */
-public final class DefinitionLoader {
+final class DefinitionLoader {
 	private final Map<String, LoaderPlugin> loaderPlugins;
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
-
-	/**
-	 * Constructeur.
-	 */
-	public DefinitionLoader() {
-		loaderPlugins = Collections.emptyMap();
-		dynamicRegistryPlugins = Collections.emptyList();
-	}
 
 	/**
 	 * Constructeur.
@@ -76,7 +65,7 @@ public final class DefinitionLoader {
 	/**
 	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
 	 */
-	private void parse(final List<DefinitionResourceConfig> definitionResourceConfigs) {
+	private void parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
@@ -93,29 +82,29 @@ public final class DefinitionLoader {
 			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
-		dynamicModelRepository.solve(Home.getDefinitionSpace());
+		dynamicModelRepository.solve(definitionSpace);
 	}
 
-	public void injectDefinitions(final List<ModuleConfig> moduleConfigs) {
+	void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectDefinitions(moduleConfig);
+			injectDefinitions(definitionSpace, moduleConfig);
 		}
 	}
 
-	private void injectDefinitions(final ModuleConfig moduleConfig) {
+	private void injectDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		final List<DefinitionResourceConfig> definitionResourceConfigs = moduleConfig.getDefinitionResourceConfigs();
 		if (!definitionResourceConfigs.isEmpty()) {
-			this.parse(definitionResourceConfigs);
+			this.parse(definitionSpace, definitionResourceConfigs);
 		}
 		//-----
 		for (final DefinitionProviderConfig definitionProviderConfig : moduleConfig.getDefinitionProviderConfigs()) {
 			final DefinitionProvider definitionProvider = ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass());
 			for (final Definition definition : definitionProvider) {
-				Home.getDefinitionSpace().put(definition);
+				definitionSpace.put(definition);
 			}
 		}
 	}

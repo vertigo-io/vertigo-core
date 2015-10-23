@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.environment.registries.facet;
 
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Option;
 
@@ -36,7 +37,7 @@ public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlu
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		return Option.none();
 		//		if (getGrammar().fileInfoDefinition.equals(xdefinition.getEntity())) {
 		//			//Seuls les taches sont gérées.
