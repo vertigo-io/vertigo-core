@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.spaces.config.ConfigManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
@@ -100,7 +100,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 
 	private void prepareContext(final HttpServletRequest request) throws ExpiredContextException, VSecurityException {
 		final String ctxId = request.getParameter(KActionContext.CTX);
-		if ("POST".equals(request.getMethod()) || (ctxId != null && acceptCtxQueryParam())) {
+		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {
