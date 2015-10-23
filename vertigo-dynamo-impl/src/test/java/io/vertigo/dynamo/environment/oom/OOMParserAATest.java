@@ -19,9 +19,11 @@
 package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+
+import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +34,9 @@ import org.junit.Test;
  * @author pchretien
  */
 public final class OOMParserAATest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
+
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test-assocAA.xml" };
@@ -43,12 +48,12 @@ public final class OOMParserAATest extends AbstractTestCaseJU4 {
 	 * - Cardinalité notée 	1 ou n
 	 * - Navigabilité notée v
 	 */
-	private static AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationSimpleDefinition.class);
+	private AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
+		return definitionSpace.resolve(urn, AssociationSimpleDefinition.class);
 	}
 
-	private static AssociationNNDefinition getAssociationNNDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationNNDefinition.class);
+	private AssociationNNDefinition getAssociationNNDefinition(final String urn) {
+		return definitionSpace.resolve(urn, AssociationNNDefinition.class);
 	}
 
 	/**

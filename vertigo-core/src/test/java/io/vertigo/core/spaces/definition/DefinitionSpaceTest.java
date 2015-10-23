@@ -19,7 +19,6 @@
 package io.vertigo.core.spaces.definition;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -59,7 +58,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
-		Home.getDefinitionSpace().put(new SampleDefinition());
+		definitionSpace.put(new SampleDefinition());
 
 		Assert.assertEquals("definitionSpace must contain one element ", 1L, definitionSpace.getAllTypes().size());
 		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, definitionSpace.getAll(SampleDefinition.class).size());

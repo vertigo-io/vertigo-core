@@ -19,13 +19,15 @@
 package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
 import io.vertigo.quarto.publisher.model.PublisherData;
 import io.vertigo.quarto.x.publisher.PublisherDataUtil;
+
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -37,11 +39,14 @@ import org.junit.Test;
  * @author npiedeloup
  */
 public final class PublisherManagerTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
+
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
 
-	private static void registerDefinition(final PublisherDataDefinition publisherDataDefinition) {
-		Home.getDefinitionSpace().put(publisherDataDefinition);
+	private void registerDefinition(final PublisherDataDefinition publisherDataDefinition) {
+		definitionSpace.put(publisherDataDefinition);
 	}
 
 	/**
@@ -69,7 +74,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomMinuscules() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("pu_test", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition);
+		definitionSpace.put(publisherDataDefinition);
 	}
 
 	/**
@@ -79,7 +84,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomAvecPoint() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST.TOTO", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition);
+		definitionSpace.put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 
@@ -90,7 +95,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomAvecArobase() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST@TOTO", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition);
+		definitionSpace.put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 
@@ -101,7 +106,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNom1() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_AZERTYUIOPQSDFGHJKLMWXCVBN_AZERTYUIOPQSDFGHJKLMWXCVBN", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition);
+		definitionSpace.put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 
@@ -367,8 +372,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 		log.trace(PublisherDataUtil.generatePublisherNodeDefinitionAsKsp("DT_ENQUETE", "DT_ENQUETEUR"));
 	}
 
-	private static PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = Home.getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+	private PublisherData createPublisherData(final String definitionName) {
+		final PublisherDataDefinition publisherDataDefinition = definitionSpace.resolve(definitionName, PublisherDataDefinition.class);
 		Assert.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);

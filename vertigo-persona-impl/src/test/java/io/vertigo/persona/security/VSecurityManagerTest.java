@@ -19,7 +19,7 @@
 package io.vertigo.persona.security;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
 import io.vertigo.persona.security.metamodel.Permission;
@@ -39,6 +39,9 @@ import org.junit.Test;
  * @author pchretien
  */
 public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
+	@Inject
+	private DefinitionSpace definitionSpace;
+
 	@Inject
 	private VSecurityManager securityManager;
 
@@ -91,12 +94,12 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testRole() {
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
-		Home.getDefinitionSpace().put(admin);
-		Home.getDefinitionSpace().put(user);
+		definitionSpace.put(admin);
+		definitionSpace.put(user);
 
-		final Role r1 = Home.getDefinitionSpace().resolve(admin.getName(), Role.class);
+		final Role r1 = definitionSpace.resolve(admin.getName(), Role.class);
 		Assert.assertTrue(admin.equals(r1));
-		final Role r2 = Home.getDefinitionSpace().resolve("R_SECRETARY", Role.class);
+		final Role r2 = definitionSpace.resolve("R_SECRETARY", Role.class);
 		nop(r2);
 	}
 
@@ -106,10 +109,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		Home.getDefinitionSpace().put(admin);
-		Home.getDefinitionSpace().put(user);
-		Home.getDefinitionSpace().put(manager);
-		Home.getDefinitionSpace().put(secretary);
+		definitionSpace.put(admin);
+		definitionSpace.put(user);
+		definitionSpace.put(manager);
+		definitionSpace.put(secretary);
 
 		final UserSession userSession = securityManager.createUserSession()
 				.addRole(admin)
@@ -240,15 +243,15 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		Home.getDefinitionSpace().put(admin);
-		Home.getDefinitionSpace().put(user);
-		Home.getDefinitionSpace().put(manager);
-		Home.getDefinitionSpace().put(secretary);
+		definitionSpace.put(admin);
+		definitionSpace.put(user);
+		definitionSpace.put(manager);
+		definitionSpace.put(secretary);
 		testDescription(securityManager);
 	}
 
-	private static Role getRole(final String name) {
-		return Home.getDefinitionSpace().resolve(name, Role.class);
+	private Role getRole(final String name) {
+		return definitionSpace.resolve(name, Role.class);
 	}
 
 	private static Role createRole(final String name) {

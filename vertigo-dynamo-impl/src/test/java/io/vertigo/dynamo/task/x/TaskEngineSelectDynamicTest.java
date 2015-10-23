@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.task.x;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
@@ -49,6 +49,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	private static final String DO_DT_SUPER_HERO_DTO = "DO_DT_SUPER_HERO_DTO";
 	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
 	private static final String DTO_SUPER_HERO = "DTO_SUPER_HERO";
+	@Inject
+	private DefinitionSpace definitionSpace;
 	@Inject
 	private TaskManager taskManager;
 	@Inject
@@ -436,9 +438,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		return superHero;
 	}
 
-	private static TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
-		final Domain doInteger = Home.getDefinitionSpace().resolve(DO_INTEGER, Domain.class);
-		final Domain doSuperHeroes = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+	private TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
+		final Domain doInteger = definitionSpace.resolve(DO_INTEGER, Domain.class);
+		final Domain doSuperHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -451,9 +453,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	private static TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroes = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
-		final Domain doSupeHero = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
+	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
+		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSupeHero = definitionSpace.resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -464,8 +466,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	private static TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroes = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
+		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
