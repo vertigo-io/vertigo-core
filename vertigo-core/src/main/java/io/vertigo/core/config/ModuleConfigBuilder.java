@@ -37,6 +37,7 @@ import java.util.Set;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
+	//In the case of the boot module	
 	private final boolean boot;
 	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
@@ -191,7 +192,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
 		if (boot) {
-			//	myAppConfigBuilder.beginBoot().withModule(build()).endBoot();
+			// we don't close the module	
 		} else {
 			myAppConfigBuilder.withModules(Collections.singletonList(build()));
 			ended = true;

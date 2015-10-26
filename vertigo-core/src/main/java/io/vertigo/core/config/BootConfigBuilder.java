@@ -36,7 +36,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private boolean mySilence; //false by default
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
-	private ModuleConfig myBootModuleConfig = null;
+	private ModuleConfig myBootModuleConfig; //required 
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -122,9 +122,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	@Override
 	public BootConfig build() {
-		if (myBootModuleConfig == null) {
-			beginBootModule().endModule();
-		}
 		return new BootConfig(
 				myLogConfigOption,
 				myBootModuleConfig,
