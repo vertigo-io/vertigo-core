@@ -50,6 +50,7 @@ import com.sleepycat.je.Transaction;
 
 /**
  * Implémentation Berkeley du KVDataStorePlugin.
+ * Ce store N'EST PAS transactionnel !!
  * La purge est assurée par un Timer et passe toutes les Math.min(5 min, timeToLiveSeconds).
  *
  * @author pchretien, npiedeloup

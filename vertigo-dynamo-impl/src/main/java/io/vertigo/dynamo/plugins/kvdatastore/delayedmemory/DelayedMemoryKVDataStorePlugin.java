@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.
+ * This store ISN'T transactional !!
  * Purge is garantee Timer et passe toutes les minutes.
  *
  * @author pchretien, npiedeloup
