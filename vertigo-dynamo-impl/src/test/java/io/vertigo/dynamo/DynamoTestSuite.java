@@ -49,6 +49,7 @@ import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsTest;
 import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
+import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.kvstore.berkeley.BerkeleyKVStoreManagerTest;
@@ -106,6 +107,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerDynaFieldsTest.class,
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
+		SearchManagerStoreTest.class,
 		DslListFilterBuilderTest.class,
 		//---
 		ExportManagerTest.class,

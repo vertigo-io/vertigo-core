@@ -39,7 +39,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	/**
 	 * Constructeur.
 	 */
-	public TaskDynamicRegistryPlugin(final DefinitionSpace definitionSpace) {
+	public TaskDynamicRegistryPlugin() {
 		super(TaskGrammar.GRAMMAR);
 	}
 

@@ -53,7 +53,7 @@ import org.junit.Test;
  *
  * @author npiedeloup
  */
-public final class SearchManagerTest extends AbstractTestCaseJU4 {
+public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private DefinitionSpace definitionSpace;
 	@Inject

@@ -36,7 +36,7 @@
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
 				<param name="home" value="io/vertigo/dynamo/search/serverelastic" />
-				<param name="cores" value="IDX_CAR,IDX_DYNA_CAR" />
+				<param name="index" value="TU_TEST" />
 				<param name="rowsPerQuery" value="50" />
 			</plugin>
 		</component>
