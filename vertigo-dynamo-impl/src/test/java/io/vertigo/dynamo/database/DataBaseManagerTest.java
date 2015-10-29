@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.database;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
@@ -118,7 +117,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectList() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
@@ -152,7 +151,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectObject() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
@@ -204,7 +203,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testTwoDataSource() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données dans main
 		createDatas();
 

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.environment.java;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -40,7 +39,7 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, DtDefinition.class);
 	}
 

@@ -28,7 +28,6 @@ import static io.vertigo.core.environment.PersonGrammar.NAME;
 import static io.vertigo.core.environment.PersonGrammar.POSTAL_CODE;
 import static io.vertigo.core.environment.PersonGrammar.STREET;
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -51,7 +50,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void simpleTest() {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 
 		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
 				.addPropertyValue(STREET, "1, rue du louvre")

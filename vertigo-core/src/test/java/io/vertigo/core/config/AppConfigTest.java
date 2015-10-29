@@ -20,7 +20,6 @@ package io.vertigo.core.config;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 import java.util.Properties;
@@ -37,9 +36,9 @@ public final class AppConfigTest {
 				.build();
 
 		try (App app = new App(appConfig)) {
-			Assert.assertEquals(app, Home.getApp());
-			Assert.assertTrue(Home.getApp().getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = Home.getApp().getComponentSpace().resolve(BioManager.class);
+			Assert.assertEquals(app, app);
+			Assert.assertTrue(app.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());

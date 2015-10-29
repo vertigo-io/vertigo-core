@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
@@ -46,12 +45,12 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * - Navigabilité notée v
 	 */
 	private AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationSimpleDefinition.class);
 	}
 
 	private AssociationNNDefinition getAssociationNNDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationNNDefinition.class);
 	}
 

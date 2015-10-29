@@ -19,7 +19,6 @@
 package io.vertigo.core.aop;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.core.aop.data.MyException;
 import io.vertigo.core.aop.data.components.A;
 import io.vertigo.core.aop.data.components.B;
@@ -37,20 +36,20 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public final void testNo() {
-		final Computer computer = Home.getApp().getComponentSpace().resolve(Computer.class);
+		final Computer computer = getApp().getComponentSpace().resolve(Computer.class);
 		Assert.assertEquals(66, computer.no(66));
 	}
 
 	@Test
 	public final void testOneMoreOnMethod() {
-		final Computer comp = Home.getApp().getComponentSpace().resolve(Computer.class);
+		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(6, comp.sum(2, 3));
 	}
 
 	@Test
 	public final void testOneMoreOnClass() {
-		final F f = Home.getApp().getComponentSpace().resolve(F.class);
+		final F f = getApp().getComponentSpace().resolve(F.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(11, f.getValue(10));
 		Assert.assertEquals(12, f.getValue2(10));
@@ -60,7 +59,7 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public final void testOneMoreTenMore() {
-		final Computer comp = Home.getApp().getComponentSpace().resolve(Computer.class);
+		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(17, comp.multi(2, 3));
 	}
@@ -83,34 +82,34 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testNonProxiedWithAnnotation() {
-		a = Home.getApp().getComponentSpace().resolve("a", A.class);
+		a = getApp().getComponentSpace().resolve("a", A.class);
 		Assert.assertTrue(a.isInitialized());
 		Assert.assertFalse(a.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithInterface() {
-		b = Home.getApp().getComponentSpace().resolve(B.class);
+		b = getApp().getComponentSpace().resolve(B.class);
 		Assert.assertTrue(b.isInitialized());
 		Assert.assertFalse(b.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithObjectInterface() {
-		c = Home.getApp().getComponentSpace().resolve("c", C.class);
+		c = getApp().getComponentSpace().resolve("c", C.class);
 		Assert.assertTrue(c.isInitialized());
 		Assert.assertFalse(c.isFinalized());
 	}
 
 	@Test(expected = MyException.class)
 	public void testBeanMyException() throws MyException {
-		a = Home.getApp().getComponentSpace().resolve("a", A.class);
+		a = getApp().getComponentSpace().resolve("a", A.class);
 		a.throwMyException();
 	}
 
 	@Test(expected = MyException.class)
 	public void testProxyWithInterfaceMyException() throws MyException {
-		b = Home.getApp().getComponentSpace().resolve("b", B.class);
+		b = getApp().getComponentSpace().resolve("b", B.class);
 		b.throwMyException();
 	}
 }

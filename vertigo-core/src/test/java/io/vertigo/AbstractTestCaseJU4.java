@@ -20,7 +20,6 @@ package io.vertigo;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.component.ComponentInfo;
@@ -51,8 +50,12 @@ public abstract class AbstractTestCaseJU4 {
 	public final void setUp() throws Exception {
 		app = new App(buildAppConfig());
 		// On injecte les comosants sur la classe de test.
-		Injector.injectMembers(this, Home.getApp().getComponentSpace());
+		Injector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
+	}
+
+	protected final App getApp() {
+		return app;
 	}
 
 	/**
