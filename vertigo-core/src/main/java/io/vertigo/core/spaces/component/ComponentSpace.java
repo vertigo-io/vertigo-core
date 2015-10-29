@@ -23,17 +23,14 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -58,21 +55,19 @@ import java.util.Set;
  * @author pchretien
  */
 public final class ComponentSpace implements Container, Activeable {
-	//---Aspects
+	/**
+	 * Aspects
+	 */
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
-
-	//Map des composants dans l'ordre de démarrage
+	/**
+	 * Components (sorted by creation)
+	 */
 	private final Map<String, Object> components = new LinkedHashMap<>();
-	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		//le démarrage des composants est effectué au fur et à mesure de leur création.
-		//L'initialisation est en revanche globale.
-		for (final Entry<String, Object> component : components.entrySet()) {
-			initializeComponent(component.getKey(), component.getValue());
-		}
+		//
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +99,12 @@ public final class ComponentSpace implements Container, Activeable {
 		return resolve(normalizedId, componentClass);
 	}
 
-	private void registerComponent(final String componentId, final Object component) {
+	/**
+	 * Register a component with its id.
+	 * @param componentId id of the component  
+	 * @param component instance of the component  
+	 */
+	void registerComponent(final String componentId, final Object component) {
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
 		//-----
@@ -148,21 +148,6 @@ public final class ComponentSpace implements Container, Activeable {
 		return components.keySet();
 	}
 
-	/**
-	 * Enregistrement d'un composant.
-	 * @param component Gestionnaire
-	 */
-	void registerComponent(final String componentId, final Object component, final Option<ComponentInitializer> componentInitializer) {
-		Assertion.checkNotNull(componentId);
-		Assertion.checkNotNull(component);
-		Assertion.checkNotNull(componentInitializer);
-		//-----
-		registerComponent(componentId, component);
-		if (componentInitializer.isDefined()) {
-			initializers.put(componentId, componentInitializer.get());
-		}
-	}
-
 	private static void startComponent(final Object component) {
 		if (component instanceof Activeable) {
 			Activeable.class.cast(component).start();
@@ -175,17 +160,9 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	private <C> void initializeComponent(final String normalizedId, final C component) {
-		final ComponentInitializer<C> initializer = initializers.get(normalizedId);
-		if (initializer != null) {
-			initializer.init(component);
-		}
-	}
-
 	private void clear() {
 		//On nettoie les maps.
 		components.clear();
-		initializers.clear();
 		aspects.clear();
 	}
 

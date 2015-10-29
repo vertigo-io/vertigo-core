@@ -40,12 +40,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author pchretien
  */
 public final class ComponentLoader {
 	private final BootConfig bootConfig;
+	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
 
 	public ComponentLoader(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
@@ -69,11 +71,11 @@ public final class ComponentLoader {
 	private void injectComponent(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		doInjectComponents(bootConfig, configManagerOption, componentSpace, moduleConfig);
+		doInjectComponents(configManagerOption, componentSpace, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private static void doInjectComponents(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private void doInjectComponents(final Option<ConfigManager> configManagerOption, final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
@@ -104,22 +106,28 @@ public final class ComponentLoader {
 		final ComponentProxyContainer componentContainer = new ComponentProxyContainer(componentSpace);
 
 		for (final String id : ids) {
+			final String currentComponentId;
+			final Option<ComponentInitializer> currentComponentInitializer;
+			final Object currentComponent;
 			if (componentConfigById.containsKey(id)) {
 				//Si il s'agit d'un comoposant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
+				currentComponent = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
 				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
-				final Option<ComponentInitializer> initializer = createComponentInitializer(componentSpace, componentConfig);
-				// 2.c. On enregistre le composant avec son initializer
-				componentSpace.registerComponent(componentConfig.getId(), component, initializer);
+				currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
+				currentComponentId = componentConfig.getId();
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
 				final Plugin plugin = createPlugin(componentSpace, configManagerOption, pluginConfig);
-				final Option<ComponentInitializer> initializer = Option.none();
-				componentSpace.registerComponent(pluginConfig.getId(), plugin, initializer);
+				currentComponentInitializer = Option.none();
+				currentComponentId = pluginConfig.getId();
+				currentComponent = plugin;
 			}
+			// 2.c. On enregistre le composant puis son initializer
+			componentSpace.registerComponent(currentComponentId, currentComponent);
+			registerInitializer(currentComponentId, currentComponentInitializer);
 		}
 
 		//---
@@ -131,6 +139,15 @@ public final class ComponentLoader {
 
 		if (!pluginConfigById.isEmpty()) {
 			throw new RuntimeException(StringUtil.format("plugins '{0}' in module'{1}' are not used by injection", pluginConfigById.values(), moduleConfig));
+		}
+	}
+
+	private void registerInitializer(final String componentId, final Option<ComponentInitializer> componentInitializer) {
+		Assertion.checkNotNull(componentId);
+		Assertion.checkNotNull(componentInitializer);
+		//-----
+		if (componentInitializer.isDefined()) {
+			initializers.put(componentId, componentInitializer.get());
 		}
 	}
 
@@ -203,4 +220,15 @@ public final class ComponentLoader {
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
 		return plugin;
 	}
+
+	public void initializeAllComponents(final ComponentSpace componentSpace) {
+		//le démarrage des composants est effectué au fur et à mesure de leur création.
+		//L'initialisation est en revanche globale.
+		for (final Entry<String, ComponentInitializer> entry : initializers.entrySet()) {
+			final ComponentInitializer initializer = entry.getValue();
+			final String componentId = entry.getKey();
+			initializer.init(componentSpace.resolve(componentId, Object.class));
+		}
+	}
+
 }

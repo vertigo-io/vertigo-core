@@ -92,6 +92,7 @@ public final class App implements AutoCloseable {
 				appConfig.print(System.out);
 			}
 			appStart();
+			componentLoader.initializeAllComponents(componentSpace);
 			appPostStart();
 			//-----
 			state = State.active;
