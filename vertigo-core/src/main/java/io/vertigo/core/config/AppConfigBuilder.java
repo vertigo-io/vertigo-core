@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.spaces.config.ConfigManager;
-import io.vertigo.core.spaces.definiton.DefinitionLoader;
-import io.vertigo.core.spaces.locale.LocaleManager;
-import io.vertigo.core.spaces.resource.ResourceManager;
+import io.vertigo.core.definition.loader.DefinitionLoader;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.ClassUtil;

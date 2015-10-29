@@ -25,9 +25,9 @@ import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionBuilder;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;

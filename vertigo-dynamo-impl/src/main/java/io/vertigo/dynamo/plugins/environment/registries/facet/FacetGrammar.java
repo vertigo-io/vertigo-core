@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.facet;
 
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 
 /**
  * @author pchretien

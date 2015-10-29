@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
-import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.dsl.entity.EntityBuilder;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityBuilder;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**

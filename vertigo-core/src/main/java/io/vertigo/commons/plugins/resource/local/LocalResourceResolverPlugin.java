@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.plugins.resource.local;
 
-import io.vertigo.core.spaces.resource.ResourceResolverPlugin;
+import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.plugins.config.servlet;
 
-import io.vertigo.core.spaces.config.ConfigPlugin;
+import io.vertigo.core.param.ConfigPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

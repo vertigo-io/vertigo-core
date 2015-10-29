@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.publisher.environment.registries;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;

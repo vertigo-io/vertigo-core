@@ -32,8 +32,8 @@ import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 import org.junit.Assert;

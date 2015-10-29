@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Integer;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
@@ -47,10 +47,10 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
-import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.dsl.entity.EntityBuilder;
-import io.vertigo.core.dsl.entity.EntityGrammar;
-import io.vertigo.core.spaces.definiton.KernelGrammar;
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityBuilder;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.loader.KernelGrammar;
 
 /**
  * @author pchretien

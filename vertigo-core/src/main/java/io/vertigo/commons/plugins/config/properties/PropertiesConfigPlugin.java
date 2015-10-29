@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.plugins.config.properties;
 
-import io.vertigo.core.spaces.config.ConfigPlugin;
-import io.vertigo.core.spaces.resource.ResourceManager;
+import io.vertigo.core.param.ConfigPlugin;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

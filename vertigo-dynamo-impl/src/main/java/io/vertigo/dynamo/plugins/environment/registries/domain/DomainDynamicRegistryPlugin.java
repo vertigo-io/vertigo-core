@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
-import io.vertigo.core.spaces.definiton.KernelGrammar;
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.DataType;

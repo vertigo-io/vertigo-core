@@ -61,7 +61,7 @@ public final class DefinitionSpace implements Component, Activeable {
 	 * @param definition Objet à enregistrer
 	 */
 	public void put(final Definition definition) {
-		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
+		Assertion.checkNotNull(definition, "A definition can't be null.");
 		//-----
 		if (!definitions.containsKey(definition.getClass())) {
 			register(definition.getClass());

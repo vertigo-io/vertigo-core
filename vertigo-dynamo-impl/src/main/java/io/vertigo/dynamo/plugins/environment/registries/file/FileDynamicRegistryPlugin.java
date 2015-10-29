@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;

@@ -19,14 +19,12 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +53,6 @@ import java.util.Set;
  */
 public final class ComponentSpace implements Container, Activeable {
 	/**
-	 * Aspects
-	 */
-	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
-	/**
 	 * Components (sorted by creation)
 	 */
 	private final Map<String, Object> components = new LinkedHashMap<>();
@@ -77,17 +71,6 @@ public final class ComponentSpace implements Container, Activeable {
 
 	}
 
-	Collection<Aspect> getAspects() {
-		return aspects.values();
-	}
-
-	void registerAspect(final Aspect aspect) {
-		Assertion.checkNotNull(aspect);
-		Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
-		//-----
-		aspects.put(aspect.getClass(), aspect);
-	}
-
 	/**
 	 * @param componentClass Classe type du composant(Interface)
 	 * @param <T> Type du composant
@@ -103,7 +86,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 * @param componentId id of the component  
 	 * @param component instance of the component  
 	 */
-	void registerComponent(final String componentId, final Object component) {
+	public void registerComponent(final String componentId, final Object component) {
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
 		//-----
@@ -150,9 +133,7 @@ public final class ComponentSpace implements Container, Activeable {
 	}
 
 	private void clear() {
-		//On nettoie les maps.
 		components.clear();
-		aspects.clear();
 	}
 
 	private void stopComponents() {

@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.environment;
 
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Double;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.Integer;
-import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
-import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.dsl.entity.EntityBuilder;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Double;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityBuilder;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 
 /**
  * @author npiedeloup

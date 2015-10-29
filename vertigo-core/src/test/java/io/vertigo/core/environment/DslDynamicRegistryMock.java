@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.environment;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Option;

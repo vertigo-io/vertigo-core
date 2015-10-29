@@ -19,7 +19,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.spaces.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
