@@ -63,9 +63,6 @@ public final class ComponentSpace implements Container, Activeable {
 	//---Aspects
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	//On conserve l'ordre d'enregistrement. (plugins + pure components)
-	private final Map<String, Object> components = new LinkedHashMap<>();
-
 	//Map des composant démarrés dans l'ordre de démarrage
 	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
@@ -170,9 +167,6 @@ public final class ComponentSpace implements Container, Activeable {
 		Assertion.checkNotNull(componentId);
 		Assertion.checkNotNull(component);
 		Assertion.checkNotNull(componentInitializer);
-		//On vérifie que le manager est unique
-		final Object old = components.put(componentId, component);
-		Assertion.checkState(old == null, "component {0} deja enregistré", componentId);
 		//-----
 		registerComponent(componentId, component);
 		if (componentInitializer.isDefined()) {
@@ -201,9 +195,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private void clear() {
 		//On nettoie les maps.
-		components.clear();
 		startedComponents.clear();
-		//	pluginsByComponentId.clear();
 		initializers.clear();
 		aspects.clear();
 	}
@@ -240,7 +232,7 @@ public final class ComponentSpace implements Container, Activeable {
 		printComponent(out, "Module", "component");
 		out.println("# -------------------------+------------------------+----------------------------------------------#");
 		//-----
-		for (final Entry<String, Object> entry : components.entrySet()) {
+		for (final Entry<String, Object> entry : startedComponents.entrySet()) {
 			printComponent(out, entry.getKey(), entry.getValue());
 			out.println("# -------------------------+------------------------+----------------------------------------------#");
 		}
