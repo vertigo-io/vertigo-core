@@ -23,7 +23,6 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public final class ComponentSpace implements Container, Activeable {
 		//Démarrage du composant
 		startComponent(component);
 		final Object previous = components.put(componentId, component);
-		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", componentId);
+		Assertion.checkState(previous == null, "component '{0}' already registered", componentId);
 	}
 
 	/** {@inheritDoc} */
@@ -130,16 +129,6 @@ public final class ComponentSpace implements Container, Activeable {
 		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
-	}
-
-	/**
-	 * Enregistrement des plugins .
-	 */
-	void registerPlugin(final String pluginId, final Plugin plugin) {
-		Assertion.checkNotNull(pluginId);
-		Assertion.checkNotNull(plugin);
-		//-----
-		registerComponent(pluginId, plugin);
 	}
 
 	/** {@inheritDoc} */
