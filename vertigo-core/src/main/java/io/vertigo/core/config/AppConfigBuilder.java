@@ -19,7 +19,7 @@
 package io.vertigo.core.config;
 
 import io.vertigo.core.spaces.config.ConfigManager;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.spaces.definiton.DefinitionLoader;
 import io.vertigo.core.spaces.locale.LocaleManager;
 import io.vertigo.core.spaces.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
@@ -45,7 +45,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 				myBootConfigBuilder.beginBootModule().withNoAPI()
 						.addComponent(ResourceManager.class)
 						.addComponent(ConfigManager.class)
-						.addComponent(DefinitionSpace.class);
+						.addComponent(DefinitionLoader.class);
 	}
 
 	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  

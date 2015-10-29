@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
@@ -28,10 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Espace de définitions (non threadSafe).
@@ -42,31 +38,12 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class DefinitionSpace implements Component, Activeable {
-	private final List<LoaderPlugin> loaderPlugins;
-	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
-
 	/**
 	 * Liste des objets indexés par Class (le type) et nom.
 	 */
 	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
-
-	@Inject
-	public DefinitionSpace(final List<LoaderPlugin> loaderPlugins, final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
-		Assertion.checkNotNull(loaderPlugins);
-		Assertion.checkNotNull(dynamicRegistryPlugins);
-		//-----
-		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
-		this.loaderPlugins = loaderPlugins;
-	}
-
-	public void injectDefinitions(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
-		//-----
-		final DefinitionLoader definitionLoader = new DefinitionLoader(dynamicRegistryPlugins, loaderPlugins);
-		definitionLoader.injectDefinitions(this, moduleConfigs);
-	}
 
 	/**
 	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).

@@ -19,6 +19,7 @@
 package io.vertigo.core.spaces.definition;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -34,14 +35,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.inject.Inject;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
-	@Inject
-	private DefinitionSpace definitionSpace;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -52,11 +49,14 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testEmpty() {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 	}
 
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 		definitionSpace.put(new SampleDefinition());
 

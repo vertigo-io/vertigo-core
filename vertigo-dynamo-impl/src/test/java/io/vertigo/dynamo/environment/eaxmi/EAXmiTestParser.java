@@ -19,11 +19,10 @@
 package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-
-import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,8 +33,6 @@ import org.junit.Test;
  * @author pchretien
  */
 public class EAXmiTestParser extends AbstractTestCaseJU4 {
-	@Inject
-	private DefinitionSpace definitionSpace;
 
 	@Override
 	protected String[] getManagersXmlFileName() {
@@ -49,10 +46,12 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * - Navigabilité notée v
 	 */
 	private AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationSimpleDefinition.class);
 	}
 
 	private AssociationNNDefinition getAssociationNNDefinition(final String urn) {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationNNDefinition.class);
 	}
 

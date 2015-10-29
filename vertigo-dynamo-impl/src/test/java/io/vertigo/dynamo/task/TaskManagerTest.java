@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -37,9 +38,6 @@ import org.junit.Test;
  */
 public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private DefinitionSpace definitionSpace;
-
-	@Inject
 	private TaskManager taskManager;
 
 	/**
@@ -56,6 +54,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testRegistry() {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
 		definitionSpace.put(taskDefinition1);
 
@@ -68,6 +67,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testDoubleRegistry() {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
 		definitionSpace.put(taskDefinition1);
 
@@ -81,6 +81,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testRegistryWithNull() {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		//L'appel à la résolution doit remonter une assertion
 		final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
 		nop(taskDefinition);
@@ -169,6 +170,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)

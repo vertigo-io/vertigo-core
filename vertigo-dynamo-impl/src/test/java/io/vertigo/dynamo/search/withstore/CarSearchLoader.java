@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.search.withstore;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -55,10 +56,10 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final DefinitionSpace definitionSpace) {
+	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager) {
 		super(taskManager);
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
-		this.definitionSpace = definitionSpace;
+		definitionSpace = Home.getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -62,8 +63,6 @@ import org.junit.Test;
  * @author  npiedeloup
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
-	@Inject
-	private DefinitionSpace definitionSpace;
 	private final static List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
 
 	/** Logger. */
@@ -87,6 +86,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();

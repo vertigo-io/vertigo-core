@@ -22,6 +22,7 @@ import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigManager;
+import io.vertigo.core.spaces.definiton.DefinitionLoader;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
@@ -76,21 +77,24 @@ public final class App implements AutoCloseable {
 			boot = new Boot(appConfig.getBootConfig());
 			//-----0. Boot
 			componentSpace = new ComponentSpace();
+			definitionSpace = new DefinitionSpace();
+
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
 			//contient donc à minima resourceManager et configManager.
 			componentLoader.injectBootComponents(componentSpace);
 
 			//-----1. Load all definitions
-			definitionSpace = componentSpace.resolve(DefinitionSpace.class);
-			definitionSpace.injectDefinitions(appConfig.getModuleConfigs());
+			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);
+			definitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
 
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ConfigManager.class), appConfig.getModuleConfigs());
-			//-----
+			//-----3. Print 
 			if (!appConfig.getBootConfig().isSilence()) {
 				appConfig.print(System.out);
 			}
+			//-----3. Start
 			appStart();
 			componentLoader.initializeAllComponents(componentSpace);
 			appPostStart();
@@ -120,12 +124,14 @@ public final class App implements AutoCloseable {
 
 	private void appStart() {
 		boot.start();
+		definitionSpace.start();
 		componentSpace.start();
 		Thread.currentThread().setName("MAIN");
 	}
 
 	private void appStop() {
 		componentSpace.stop();
+		definitionSpace.stop();
 		boot.stop();
 	}
 

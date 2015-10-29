@@ -25,11 +25,14 @@ import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
 
@@ -43,14 +46,15 @@ import java.util.Map;
  *
  * @author pchretien
  */
-final class DefinitionLoader {
+public final class DefinitionLoader implements Component {
 	private final Map<String, LoaderPlugin> loaderPlugins;
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	/**
 	 * Constructeur.
 	 */
-	DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
+	@Inject
+	public DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//-----
@@ -85,7 +89,7 @@ final class DefinitionLoader {
 		dynamicModelRepository.solve(definitionSpace);
 	}
 
-	void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
+	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.store;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
@@ -68,8 +69,6 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
-	@Inject
-	private DefinitionSpace definitionSpace;
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -161,6 +160,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
@@ -182,6 +182,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//-----
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
@@ -208,6 +209,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final Car nativeLoadCar(final long carId) {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final Domain doId = definitionSpace.resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
@@ -227,6 +229,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")

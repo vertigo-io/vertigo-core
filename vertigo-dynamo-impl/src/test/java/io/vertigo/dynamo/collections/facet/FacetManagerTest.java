@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections.facet;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -48,8 +49,6 @@ import org.junit.Test;
 public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private CollectionsManager collectionsManager;
-	@Inject
-	private DefinitionSpace definitionSpace;
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private CarDataBase carDataBase;
 
@@ -59,6 +58,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
+		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
 		carFacetQueryDefinition = definitionSpace.resolve(CarFacetInitializer.QRY_CAR_FACET, FacetedQueryDefinition.class);
 	}
 

@@ -140,4 +140,5 @@ public abstract class AbstractTestCaseJU4 {
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
 				.beginBoot().silently().endBoot().build();
 	}
+
 }
