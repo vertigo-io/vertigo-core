@@ -64,18 +64,17 @@ public final class ComponentLoader {
 	}
 
 	public void injectBootComponents(final ComponentSpace componentSpace) {
-		injectComponent(componentSpace, Option.<ConfigManager> none(), bootConfig.getBootModuleConfig());
-
+		doInjectComponents(componentSpace, Option.<ConfigManager> none(), bootConfig.getBootModuleConfig());
 	}
 
 	private void injectComponent(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		doInjectComponents(configManagerOption, componentSpace, moduleConfig);
+		doInjectComponents(componentSpace, configManagerOption, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private void doInjectComponents(final Option<ConfigManager> configManagerOption, final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
@@ -106,28 +105,26 @@ public final class ComponentLoader {
 		final ComponentProxyContainer componentContainer = new ComponentProxyContainer(componentSpace);
 
 		for (final String id : ids) {
-			final String currentComponentId;
-			final Option<ComponentInitializer> currentComponentInitializer;
-			final Object currentComponent;
+			//final String currentComponentId;
+			//final Option<ComponentInitializer> currentComponentInitializer;
+			//final Object currentComponent;
 			if (componentConfigById.containsKey(id)) {
-				//Si il s'agit d'un comoposant
+				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				currentComponent = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
+				final Object component = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, componentSpace.getAspects(), componentConfig, aopEngine);
 				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
-				currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
-				currentComponentId = componentConfig.getId();
+				final Option<ComponentInitializer> currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
+				// 2.c. On enregistre le composant puis son initializer
+				componentSpace.registerComponent(componentConfig.getId(), component);
+				registerInitializer(componentConfig.getId(), currentComponentInitializer);
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
 				final Plugin plugin = createPlugin(componentSpace, configManagerOption, pluginConfig);
-				currentComponentInitializer = Option.none();
-				currentComponentId = pluginConfig.getId();
-				currentComponent = plugin;
+				// 2.c. On enregistre le plugin en tant que composant
+				componentSpace.registerComponent(pluginConfig.getId(), plugin);
 			}
-			// 2.c. On enregistre le composant puis son initializer
-			componentSpace.registerComponent(currentComponentId, currentComponent);
-			registerInitializer(currentComponentId, currentComponentInitializer);
 		}
 
 		//---
