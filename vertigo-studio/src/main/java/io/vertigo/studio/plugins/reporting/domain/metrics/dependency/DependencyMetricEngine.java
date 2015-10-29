@@ -48,7 +48,7 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 
 	private static int count(final DtDefinition dtDefinition) {
 		int count = 0;
-		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
+		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 				count += count(dtDefinition, taskAttribute);
 			}

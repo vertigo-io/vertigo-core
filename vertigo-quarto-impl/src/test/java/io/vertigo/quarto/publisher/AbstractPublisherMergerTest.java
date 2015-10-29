@@ -291,7 +291,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//	}
 
 	private static PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = Home.getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assert.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);

@@ -59,7 +59,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager) {
 		super(taskManager);
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
-		definitionSpace = Home.getDefinitionSpace();
+		definitionSpace = Home.getApp().getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */

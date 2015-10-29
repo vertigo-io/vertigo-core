@@ -55,7 +55,7 @@ public final class ZMethod implements Serializable {
 	}
 
 	Object run() {
-		final Object component = Home.getComponentSpace().resolve(getApiClass());
+		final Object component = Home.getApp().getComponentSpace().resolve(getApiClass());
 
 		final Class<?>[] parameterTypes = new Class[parameterTypeNames.length];
 		for (int i = 0; i < parameterTypeNames.length; i++) {
@@ -66,25 +66,10 @@ public final class ZMethod implements Serializable {
 		//		ClassUtil.findMethod(clazz, methodName, parameterTypes)
 		return ClassUtil.invoke(component, method, (Object[]) args);
 	}
-	/*	private void writeObject(final ObjectOutputStream oos) throws IOException {
-			oos.writeUTF(method.getName());
-			oos.write);
-
-			// default serialization 
-			oos.defaultWriteObject();
-			oos.defaultWriteObject(); // write the object
-			loc.add(location.x);
-			loc.add(location.y);
-			loc.add(location.z);
-			loc.add(location.uid);
-			oos.writeObject(loc);
-		}
-
-		private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
-			// default deserialization
-			ois.defaultReadObject();
-			final List loc = (List) ois.readObject(); // Replace with real deserialization
-			location = new Location(loc.get(0), loc.get(1), loc.get(2), loc.get(3));
-			// ... more code
-		}*/
+	/*
+	 * private void writeObject(final ObjectOutputStream oos) throws IOException { oos.writeUTF(method.getName()); oos.write); // default serialization oos.defaultWriteObject();
+	 * oos.defaultWriteObject(); // write the object loc.add(location.x); loc.add(location.y); loc.add(location.z); loc.add(location.uid); oos.writeObject(loc); } private void readObject(final
+	 * ObjectInputStream ois) throws ClassNotFoundException, IOException { // default deserialization ois.defaultReadObject(); final List loc = (List) ois.readObject(); // Replace with real
+	 * deserialization location = new Location(loc.get(0), loc.get(1), loc.get(2), loc.get(3)); // ... more code }
+	 */
 }

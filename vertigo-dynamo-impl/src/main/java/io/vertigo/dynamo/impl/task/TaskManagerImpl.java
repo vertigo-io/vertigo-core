@@ -44,7 +44,7 @@ public final class TaskManagerImpl implements TaskManager {
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getComponentSpace());
+			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
 			final TaskResult taskResult = taskEngine.process(task);
 			executed = true;
 			return taskResult;

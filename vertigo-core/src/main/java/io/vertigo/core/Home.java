@@ -18,19 +18,9 @@
  */
 package io.vertigo.core;
 
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
 /**
- * Home : Classe d'entrée sur toutes les modules.
- * Life Cycle
- * starting ==> active ==> stopping ==> closed
- *
- * When error during starting
- * starting ==> stopping ==> closed ()
- *
- * 'starting' and 'stopping' sont are ephemeral transitions.
  *
  * @author pchretien
  */
@@ -51,19 +41,5 @@ public final class Home {
 	public static App getApp() {
 		Assertion.checkNotNull(CURRENT_APP, "app has not been started");
 		return CURRENT_APP;
-	}
-
-	/**
-	 * @return DefinitionSpace contains application's Definitions
-	 */
-	public static DefinitionSpace getDefinitionSpace() {
-		return getApp().getDefinitionSpace();
-	}
-
-	/**
-	 * @return ComponentSpace contains application's Components
-	 */
-	public static ComponentSpace getComponentSpace() {
-		return getApp().getComponentSpace();
 	}
 }

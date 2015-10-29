@@ -97,21 +97,21 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions")
 	public DefinitionSpace getDefinitionsSpace() {
-		return Home.getDefinitionSpace();
+		return Home.getApp().getDefinitionSpace();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/types")
 	public Collection<Class<? extends Definition>> getDefinitionTypes() {
-		return Home.getDefinitionSpace().getAllTypes();
+		return Home.getApp().getDefinitionSpace().getAllTypes();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/types/{definitionType}")
 	public String getDefinitionType(@PathParam("definitionType") final String definitionType) {
-		for (final Class<? extends Definition> definitionClass : Home.getDefinitionSpace().getAllTypes()) {
+		for (final Class<? extends Definition> definitionClass : Home.getApp().getDefinitionSpace().getAllTypes()) {
 			if (definitionClass.getSimpleName().equals(definitionType)) {
-				return jsonEngine.toJson(Home.getDefinitionSpace().getAll(definitionClass));
+				return jsonEngine.toJson(Home.getApp().getDefinitionSpace().getAll(definitionClass));
 			}
 		}
 		throw new RuntimeException("NotFoundException");
@@ -120,6 +120,6 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
-		return Home.getDefinitionSpace().resolve(definitionName);
+		return Home.getApp().getDefinitionSpace().resolve(definitionName);
 	}
 }

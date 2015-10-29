@@ -110,7 +110,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Component, Activ
 			public DefinitionSpace exec(final VCommand command) {
 				Assertion.checkNotNull(command);
 				//-----
-				return Home.getDefinitionSpace();
+				return Home.getApp().getDefinitionSpace();
 			}
 		});
 
@@ -125,8 +125,8 @@ public final class TcpVCommandEngine implements VCommandEngine, Component, Activ
 
 	private void scanAllComponents() {
 		final MapBuilder<String, VCommandExecutor> mapBuilder = new MapBuilder<>();
-		for (final String componentId : Home.getComponentSpace().keySet()) {
-			CommandScannerUtil.scan(mapBuilder, componentId, Home.getComponentSpace().resolve(componentId, Object.class));
+		for (final String componentId : Home.getApp().getComponentSpace().keySet()) {
+			CommandScannerUtil.scan(mapBuilder, componentId, Home.getApp().getComponentSpace().resolve(componentId, Object.class));
 		}
 
 		for (final Entry<String, VCommandExecutor> entry : mapBuilder.build().entrySet()) {

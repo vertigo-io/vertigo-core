@@ -180,7 +180,7 @@ public final class PublisherDataUtil {
 	public static String generatePublisherNodeDefinitionAsKsp(final String... dtDefinitions) {
 		final StringBuilder sb = new StringBuilder();
 		for (final String dtDefinitionUrn : dtDefinitions) {
-			appendPublisherNodeDefinition(sb, Home.getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
+			appendPublisherNodeDefinition(sb, Home.getApp().getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
 			sb.append("\n");
 		}
 		return sb.toString();

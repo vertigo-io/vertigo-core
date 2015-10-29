@@ -38,7 +38,7 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	}
 
 	private static DtDefinition getDtDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(urn, DtDefinition.class);
 	}
 
 	/**

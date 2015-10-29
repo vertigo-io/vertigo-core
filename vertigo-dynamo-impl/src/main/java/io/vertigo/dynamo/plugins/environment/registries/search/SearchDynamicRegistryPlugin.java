@@ -113,17 +113,17 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	private static FacetedQueryDefinition createFacetedQueryDefinition(final DynamicDefinition xdefinition) {
 		final String definitionName = xdefinition.getName();
-		final DtDefinition keyConceptDtDefinition = Home.getDefinitionSpace().resolve(xdefinition.getDefinitionName("keyConcept"), DtDefinition.class);
+		final DtDefinition keyConceptDtDefinition = Home.getApp().getDefinitionSpace().resolve(xdefinition.getDefinitionName("keyConcept"), DtDefinition.class);
 		final List<String> dynamicFacetDefinitionNames = xdefinition.getDefinitionNames("facets");
 		final List<FacetDefinition> facetDefinitions = new ArrayList<>();
 		for (final String dynamicDefinitionName : dynamicFacetDefinitionNames) {
-			final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(dynamicDefinitionName, FacetDefinition.class);
+			final FacetDefinition facetDefinition = Home.getApp().getDefinitionSpace().resolve(dynamicDefinitionName, FacetDefinition.class);
 			facetDefinitions.add(facetDefinition);
 		}
 		final String listFilterBuilderQuery = getPropertyValueAsString(xdefinition, SearchGrammar.LIST_FILTER_BUILDER_QUERY);
 		final Class<? extends ListFilterBuilder> listFilterBuilderClass = getListFilterBuilderClass(xdefinition);
 		final String criteriaDomainName = xdefinition.getDefinitionName("domainCriteria");
-		final Domain criteriaDomain = Home.getDefinitionSpace().resolve(criteriaDomainName, Domain.class);
+		final Domain criteriaDomain = Home.getApp().getDefinitionSpace().resolve(criteriaDomainName, Domain.class);
 
 		final FacetedQueryDefinition facetedQueryDefinition = new FacetedQueryDefinition(definitionName, keyConceptDtDefinition, facetDefinitions, criteriaDomain, listFilterBuilderClass, listFilterBuilderQuery);
 		//indexDefinition.makeUnmodifiable();

@@ -91,7 +91,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	@Override
 	public void start() {
-		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends KeyConcept>>());
 		}
 	}
@@ -187,7 +187,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	}
 
 	private static SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
-		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			if (indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition)) {
 				return indexDefinition;
 			}

@@ -66,6 +66,6 @@ public final class JobManagerImpl implements JobManager {
 	}
 
 	private static Runnable createJob(final JobDefinition jobDefinition) {
-		return Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
+		return Injector.newInstance(jobDefinition.getJobClass(), Home.getApp().getComponentSpace());
 	}
 }

@@ -63,7 +63,7 @@ public final class FileInfoURI implements Serializable {
 		Assertion.checkNotNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
-		this.definitionRef = new DefinitionReference<>(fileInfoDefinition);
+		definitionRef = new DefinitionReference<>(fileInfoDefinition);
 
 		//Calcul de l'urn
 		urn = toURN(this);
@@ -137,7 +137,7 @@ public final class FileInfoURI implements Serializable {
 		final Object key = stringToKey(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final FileInfoDefinition definition = Home.getDefinitionSpace().resolve(dname, FileInfoDefinition.class);
+		final FileInfoDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, FileInfoDefinition.class);
 		return new FileInfoURI(definition, key);
 	}
 

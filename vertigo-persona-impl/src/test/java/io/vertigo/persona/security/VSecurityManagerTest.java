@@ -91,7 +91,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = NullPointerException.class)
 	public void testRole() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
 		definitionSpace.put(admin);
@@ -105,7 +105,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAccess() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
@@ -240,7 +240,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testDescription() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
@@ -253,7 +253,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private Role getRole(final String name) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		return definitionSpace.resolve(name, Role.class);
 	}
 

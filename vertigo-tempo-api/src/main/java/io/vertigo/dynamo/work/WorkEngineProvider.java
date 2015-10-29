@@ -70,7 +70,7 @@ public final class WorkEngineProvider<WR, W> {
 			engineClazz = (Class<? extends WorkEngine<WR, W>>) ClassUtil.classForName(className);
 		}
 		//récupéartion de l'engine par sa classe.
-		return Injector.newInstance(engineClazz, Home.getComponentSpace());
+		return Injector.newInstance(engineClazz, Home.getApp().getComponentSpace());
 	}
 
 	public String getName() {

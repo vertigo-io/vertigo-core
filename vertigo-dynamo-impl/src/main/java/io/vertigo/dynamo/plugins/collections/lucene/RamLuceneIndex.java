@@ -229,7 +229,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	private static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 
 	private static String getStringValue(final DtObject dto, final DtField field) {

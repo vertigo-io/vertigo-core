@@ -86,7 +86,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();

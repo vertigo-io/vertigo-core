@@ -236,7 +236,7 @@ public final class DtField implements DtFieldName {
 	public DtDefinition getFkDtDefinition() {
 		Assertion.checkNotNull(fkDtDefinitionName);
 		//-----
-		return Home.getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}
 
 	/**

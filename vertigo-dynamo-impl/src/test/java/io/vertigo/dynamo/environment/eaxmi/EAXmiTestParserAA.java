@@ -46,12 +46,12 @@ public final class EAXmiTestParserAA extends AbstractTestCaseJU4 {
 	 * - Navigabilité notée v
 	 */
 	private AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationSimpleDefinition.class);
 	}
 
 	private AssociationNNDefinition getAssociationNNDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, AssociationNNDefinition.class);
 	}
 

@@ -40,7 +40,7 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, DtDefinition.class);
 	}
 

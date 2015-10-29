@@ -72,7 +72,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doSetUp() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille

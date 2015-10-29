@@ -62,7 +62,7 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static void generateFileInfos(final String targetSubDir, final FileConfig fileInfoConfig, final ResultBuilder resultBuilder) {
-		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
+		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getApp().getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
 			generateFileInfo(targetSubDir, fileInfoConfig, resultBuilder, fileInfoDefinition);
 		}

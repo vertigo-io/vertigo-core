@@ -27,7 +27,7 @@ public final class GenerateGoal implements Goal {
 	@Override
 	public void process() {
 		//Génération des fichiers données (code java, properties)
-		Home.getComponentSpace().resolve(MdaManager.class)
+		Home.getApp().getComponentSpace().resolve(MdaManager.class)
 				.generate()
 				/* Impression du Rapport d'exécution. */
 				.displayResultMessage(System.out);

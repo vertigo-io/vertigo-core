@@ -78,6 +78,6 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
 		//On récupère le nom de la définition
 		definitionName = (String) ois.readObject();
-		definition = (D) Home.getDefinitionSpace().resolve(definitionName);
+		definition = (D) Home.getApp().getDefinitionSpace().resolve(definitionName);
 	}
 }

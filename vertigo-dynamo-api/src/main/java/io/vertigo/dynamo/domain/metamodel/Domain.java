@@ -190,7 +190,7 @@ public final class Domain implements Definition {
 			}
 			throw new RuntimeException("Le domain " + getName() + " est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.");
 		}
-		return Home.getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}
 
 	/** {@inheritDoc} */

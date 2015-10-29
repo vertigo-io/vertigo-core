@@ -44,11 +44,11 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	 * - Navigabilité notée v
 	 */
 	private static AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationSimpleDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(urn, AssociationSimpleDefinition.class);
 	}
 
 	private static AssociationNNDefinition getAssociationNNDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationNNDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(urn, AssociationNNDefinition.class);
 	}
 
 	/**

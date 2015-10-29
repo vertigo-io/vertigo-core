@@ -62,7 +62,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Collection<Role> getRoles() {
-		return Home.getDefinitionSpace().getAll(Role.class);
+		return Home.getApp().getDefinitionSpace().getAll(Role.class);
 	}
 
 	private static void generateRole(final String targetSubDir, final FileConfig securityConfig, final ResultBuilder resultBuilder) {

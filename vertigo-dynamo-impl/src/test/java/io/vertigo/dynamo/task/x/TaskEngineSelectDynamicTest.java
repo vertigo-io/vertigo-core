@@ -438,7 +438,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doInteger = definitionSpace.resolve(DO_INTEGER, Domain.class);
 		final Domain doSuperHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
@@ -454,7 +454,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 		final Domain doSupeHero = definitionSpace.resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
 
@@ -468,7 +468,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
 		return new TaskDefinitionBuilder(taskDefinitionName)

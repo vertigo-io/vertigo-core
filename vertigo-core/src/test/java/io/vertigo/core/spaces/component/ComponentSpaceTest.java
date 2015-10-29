@@ -55,7 +55,7 @@ public final class ComponentSpaceTest {
 		// @formatter:on
 
 		try (App app = new App(appConfig)) {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
+			final BioManager bioManager = Home.getApp().getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());

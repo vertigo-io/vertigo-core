@@ -51,7 +51,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void simpleTest() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 
 		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
 				.addPropertyValue(STREET, "1, rue du louvre")

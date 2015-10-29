@@ -29,7 +29,7 @@ public final class ReportingGoal implements Goal {
 
 	@Override
 	public void process() {
-		final ReportingManager reportingManager = Home.getComponentSpace().resolve(ReportingManager.class);
+		final ReportingManager reportingManager = Home.getApp().getComponentSpace().resolve(ReportingManager.class);
 
 		reportingManager.analyze();
 	}

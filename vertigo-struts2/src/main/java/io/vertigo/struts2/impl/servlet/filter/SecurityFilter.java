@@ -20,8 +20,8 @@ package io.vertigo.struts2.impl.servlet.filter;
 
 import io.vertigo.core.Home;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.exception.SessionException;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public final class SecurityFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
-		securityManager = Home.getComponentSpace().resolve(VSecurityManager.class);
+		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
 		checkRequestAccess = Boolean.valueOf(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
 	}

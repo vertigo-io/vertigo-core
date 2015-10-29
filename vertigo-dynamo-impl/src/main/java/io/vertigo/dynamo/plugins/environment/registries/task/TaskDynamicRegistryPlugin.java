@@ -72,7 +72,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
 			final String domainName = xtaskAttribute.getDefinitionName("domain");
-			final Domain domain = Home.getDefinitionSpace().resolve(domainName, Domain.class);
+			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {

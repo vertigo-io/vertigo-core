@@ -57,7 +57,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 
 	// Getteur sur Home car dépendance cyclique entre CollectionsManager et StoreManager
 	private static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 
 	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {

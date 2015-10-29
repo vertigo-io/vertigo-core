@@ -118,7 +118,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectList() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
@@ -152,7 +152,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectObject() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
@@ -204,7 +204,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testTwoDataSource() throws Exception {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		//On crée les données dans main
 		createDatas();
 

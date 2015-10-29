@@ -71,7 +71,7 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 
 	private Report doAnalyze() {
 		final List<DataReport> domainAnalysisList = new ArrayList<>();
-		for (final DtDefinition dtDefinition : Home.getDefinitionSpace().getAll(DtDefinition.class)) {
+		for (final DtDefinition dtDefinition : Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)) {
 			final List<Metric> results = new ArrayList<>();
 			for (final MetricEngine<DtDefinition> metricEngine : metricEngines) {
 				final Metric result = metricEngine.execute(dtDefinition);

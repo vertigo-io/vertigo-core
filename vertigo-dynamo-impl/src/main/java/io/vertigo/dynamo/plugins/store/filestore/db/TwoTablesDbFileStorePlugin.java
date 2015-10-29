@@ -190,7 +190,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		final String fileDataDefinitionRoot = fileInfoDefinition.getRoot().split(";")[rootIndex];
 		// Pour ce fileStore, on utilise le root des fileDefinitions comme nom des tables de stockage.
 		// Il doit exister des DtObjet associés, avec la structure attendue.
-		return Home.getDefinitionSpace().resolve(fileDataDefinitionRoot, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(fileDataDefinitionRoot, DtDefinition.class);
 	}
 
 	private static DtObject createMetadataDtObject(final FileInfo fileInfo) {
@@ -276,6 +276,6 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 }

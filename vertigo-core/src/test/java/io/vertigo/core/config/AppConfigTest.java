@@ -38,8 +38,8 @@ public final class AppConfigTest {
 
 		try (App app = new App(appConfig)) {
 			Assert.assertEquals(app, Home.getApp());
-			Assert.assertTrue(Home.getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
+			Assert.assertTrue(Home.getApp().getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = Home.getApp().getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());

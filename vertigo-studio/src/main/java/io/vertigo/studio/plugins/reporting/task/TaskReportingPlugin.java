@@ -73,7 +73,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 
 	private Report doAnalyze() {
 		final List<DataReport> taskAnalyseResults = new ArrayList<>();
-		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
+		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			final List<Metric> results = new ArrayList<>();
 			for (final MetricEngine<TaskDefinition> metricEngine : metricEngines) {
 				final Metric result = metricEngine.execute(taskDefinition);

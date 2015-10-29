@@ -49,13 +49,13 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testEmpty() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 	}
 
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 		definitionSpace.put(new SampleDefinition());

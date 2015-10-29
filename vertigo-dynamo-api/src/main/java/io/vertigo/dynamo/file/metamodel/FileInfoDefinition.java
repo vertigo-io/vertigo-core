@@ -84,6 +84,6 @@ public final class FileInfoDefinition implements Definition {
 		Assertion.checkNotNull(fileInfoClass);
 		//-----
 		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + SEPARATOR + StringUtil.camelToConstCase(fileInfoClass.getSimpleName());
-		return Home.getDefinitionSpace().resolve(name, FileInfoDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(name, FileInfoDefinition.class);
 	}
 }

@@ -51,7 +51,7 @@ public abstract class AbstractTestCaseJU4 {
 	public final void setUp() throws Exception {
 		app = new App(buildAppConfig());
 		// On injecte les comosants sur la classe de test.
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		doSetUp();
 	}
 

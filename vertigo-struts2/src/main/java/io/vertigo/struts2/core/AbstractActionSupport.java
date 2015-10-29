@@ -87,7 +87,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		uiMessageStack = new UiMessageStack(this);
 	}
 

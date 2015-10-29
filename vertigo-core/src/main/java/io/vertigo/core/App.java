@@ -168,11 +168,11 @@ public final class App implements AutoCloseable {
 		return appConfig;
 	}
 
-	DefinitionSpace getDefinitionSpace() {
+	public DefinitionSpace getDefinitionSpace() {
 		return definitionSpace;
 	}
 
-	ComponentSpace getComponentSpace() {
+	public ComponentSpace getComponentSpace() {
 		return componentSpace;
 	}
 }

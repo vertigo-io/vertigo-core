@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.Home;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -109,7 +108,7 @@ public final class ComponentSpace implements Container, Activeable {
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
+		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
 	}

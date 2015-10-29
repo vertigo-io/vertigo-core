@@ -92,7 +92,7 @@ public final class DataStoreImpl implements DataStore {
 	}
 
 	private static VTransactionManager getTransactionManager() {
-		return Home.getComponentSpace().resolve(VTransactionManager.class);
+		return Home.getApp().getComponentSpace().resolve(VTransactionManager.class);
 	}
 
 	//--- Transactionnal Event

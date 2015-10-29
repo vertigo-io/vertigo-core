@@ -109,7 +109,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
 		final Constructor<? extends Daemon> constructor = findConstructor(daemonInfo.getDaemonClass(), daemonInfo.getConstructorArgs());
 		final Daemon daemon = ClassUtil.newInstance(constructor, daemonInfo.getConstructorArgs());
-		Injector.injectMembers(daemon, Home.getComponentSpace());
+		Injector.injectMembers(daemon, Home.getApp().getComponentSpace());
 		return daemon;
 	}
 

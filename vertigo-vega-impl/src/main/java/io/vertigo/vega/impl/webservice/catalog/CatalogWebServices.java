@@ -42,7 +42,7 @@ public final class CatalogWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getDefinitionSpace().getAll(WebServiceDefinition.class);
+		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class);
 		return publishCatalog(webServiceDefinitions);
 	}
 

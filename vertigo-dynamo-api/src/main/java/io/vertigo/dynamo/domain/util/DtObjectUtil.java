@@ -106,7 +106,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
-		final AssociationSimpleDefinition associationSimpleDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
+		final AssociationSimpleDefinition associationSimpleDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
 		final DtDefinition dtDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
@@ -133,7 +133,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
 		//-----
-		final AssociationSimpleDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
+		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		return new DtListURIForSimpleAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
@@ -149,7 +149,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
 		//-----
-		final AssociationNNDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
+		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
 		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
@@ -200,6 +200,6 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(dtObjectClass);
 		//-----
 		final String name = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(dtObjectClass.getSimpleName());
-		return Home.getDefinitionSpace().resolve(name, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
 	}
 }

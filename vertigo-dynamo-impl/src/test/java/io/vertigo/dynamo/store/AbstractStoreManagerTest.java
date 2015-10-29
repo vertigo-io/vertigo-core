@@ -160,7 +160,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
@@ -182,7 +182,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//-----
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
@@ -209,7 +209,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final Car nativeLoadCar(final long carId) {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doId = definitionSpace.resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
@@ -229,7 +229,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")

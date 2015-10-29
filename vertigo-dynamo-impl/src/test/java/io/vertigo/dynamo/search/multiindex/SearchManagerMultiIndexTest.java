@@ -68,7 +68,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testIndex() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
 		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 
@@ -94,7 +94,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testClean() {
-		final DefinitionSpace definitionSpace = Home.getDefinitionSpace();
+		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
 		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 		final ListFilter removeQuery = new ListFilter("*:*");

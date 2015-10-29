@@ -104,8 +104,8 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 			/** {@inheritDoc} */
 			@Override
 			public void onPostStart() {
-				final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getComponentSpace());
-				WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getDefinitionSpace(), webServiceDefinitions);
+				final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
+				WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
 			}
 		});
 	}

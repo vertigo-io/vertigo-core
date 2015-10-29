@@ -73,7 +73,7 @@ final class CommandScannerUtil {
 				mapBuilder.put(((COMMAND) annotation).value(), new VCommandExecutor() {
 					@Override
 					public Object exec(final VCommand command) {
-						final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
+						final Object component = Home.getApp().getComponentSpace().resolve(componentId, Object.class);
 						return ClassUtil.invoke(component, method);
 					}
 				});

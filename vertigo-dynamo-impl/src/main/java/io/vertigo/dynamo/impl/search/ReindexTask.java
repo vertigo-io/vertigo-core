@@ -72,7 +72,7 @@ final class ReindexTask implements Runnable {
 			}
 			dirtyElementsCount = reindexUris.size();
 			if (!reindexUris.isEmpty()) {
-				final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
 				// >>> Tx start

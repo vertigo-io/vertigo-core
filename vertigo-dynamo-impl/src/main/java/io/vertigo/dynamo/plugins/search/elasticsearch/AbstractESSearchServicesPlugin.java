@@ -126,7 +126,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			throw new RuntimeException("Error on index " + indexName, e);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
-		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
 			logMappings(indexDefinition);
 			types.add(indexDefinition.getName().toLowerCase());

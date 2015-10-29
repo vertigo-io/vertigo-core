@@ -160,7 +160,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		//Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		//Il doit exister un DtObjet associé, avec la structure attendue.
-		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
 		return new URI<>(dtDefinition, uri.getKey());
 	}
 
@@ -175,7 +175,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		//Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		//Il doit exister un DtObjet associé, avec la structure attendue.
-		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
 		return DtObjectUtil.createDtObject(dtDefinition);
 	}
 
@@ -244,6 +244,6 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 }

@@ -61,7 +61,7 @@ public final class SwaggerWebServices implements WebServices {
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
 		return new SwaggerApiBuilder()
 				.withContextPath(request.getContextPath())
-				.withWebServiceDefinitions(Home.getDefinitionSpace().getAll(WebServiceDefinition.class))
+				.withWebServiceDefinitions(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}
 

@@ -53,7 +53,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.build();
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 		}
 	}
@@ -70,9 +70,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = Home.getApp().getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}
@@ -89,9 +89,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = Home.getApp().getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}

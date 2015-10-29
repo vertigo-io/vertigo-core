@@ -101,7 +101,7 @@ public final class DomainUtil {
 	}
 
 	static Collection<DtDefinition> getDtDefinitions() {
-		return sortDefinitionCollection(Home.getDefinitionSpace().getAll(DtDefinition.class));
+		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(DtDefinition.class));
 	}
 
 	static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
@@ -109,11 +109,11 @@ public final class DomainUtil {
 	}
 
 	static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
-		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
 	}
 
 	static Collection<AssociationNNDefinition> getNNAssociations() {
-		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationNNDefinition.class));
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationNNDefinition.class));
 	}
 
 	/**

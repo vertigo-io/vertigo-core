@@ -216,6 +216,6 @@ public final class FormatterDate implements Formatter {
 	}
 
 	private static LocaleManager getLocaleManager() {
-		return Home.getComponentSpace().resolve(LocaleManager.class);
+		return Home.getApp().getComponentSpace().resolve(LocaleManager.class);
 	}
 }

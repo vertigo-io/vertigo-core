@@ -136,7 +136,7 @@ final class VFileUtil {
 			throws IOException {
 		final Long length = vFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
-				+ length.longValue() / 1024 + " Ko long, but maximum was " + (Integer.MAX_VALUE / 1024)
+				+ length.longValue() / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
 				+ " Ko.");
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
@@ -221,7 +221,7 @@ final class VFileUtil {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		final FileManager fileManager = Home.getComponentSpace().resolve(FileManager.class);
+		final FileManager fileManager = Home.getApp().getComponentSpace().resolve(FileManager.class);
 		return fileManager.createFile(fileName, mimeType, new Date(), file.getSize(), new FileInputStreamBuilder(file));
 	}
 

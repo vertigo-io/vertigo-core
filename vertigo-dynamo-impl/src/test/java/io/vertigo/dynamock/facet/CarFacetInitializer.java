@@ -58,7 +58,7 @@ public final class CarFacetInitializer {
 
 		//On ajoute les types de requêtes à facettes par index
 		final FacetedQueryDefinition carQueryDefinition = createCarQueryDefinitionWithFacets(carDefinition);
-		Home.getDefinitionSpace().put(carQueryDefinition);
+		Home.getApp().getDefinitionSpace().put(carQueryDefinition);
 	}
 
 	/*
@@ -75,13 +75,13 @@ public final class CarFacetInitializer {
 		final DtField descriptionDtField = carDefinition.getField("DESCRIPTION");
 		FacetDefinition facetDefinition;
 		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_DESCRIPTION_CAR, descriptionDtField, new MessageText("description", null));
-		Home.getDefinitionSpace().put(facetDefinition);
+		Home.getApp().getDefinitionSpace().put(facetDefinition);
 		facetDefinitions.add(facetDefinition);
 
 		//Facette par constructeur
 		final DtField makeDtField = carDefinition.getField("MAKE");
 		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_MAKE_CAR, makeDtField, new MessageText("Par constructeur", null));
-		Home.getDefinitionSpace().put(facetDefinition);
+		Home.getApp().getDefinitionSpace().put(facetDefinition);
 		facetDefinitions.add(facetDefinition);
 
 		//Facette par range de date
@@ -92,7 +92,7 @@ public final class CarFacetInitializer {
 				.addFacetValue("YEAR:[2005 TO *]", "après 2005")
 				.build();
 
-		Home.getDefinitionSpace().put(facetDefinition);
+		Home.getApp().getDefinitionSpace().put(facetDefinition);
 		facetDefinitions.add(facetDefinition);
 
 		final Domain criteriaDomain = descriptionDtField.getDomain();
