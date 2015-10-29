@@ -18,8 +18,10 @@
  */
 package io.vertigo.core.config;
 
+import io.vertigo.core.Logo;
 import io.vertigo.lang.Assertion;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,5 +52,60 @@ public final class AppConfig {
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
+	}
+
+	//=========================================================================
+	//======================Gestion des affichages=============================
+	//=========================================================================
+	public void print(final PrintStream out) {
+		Assertion.checkNotNull(out);
+		// ---Affichage du logo et des modules---
+		Logo.printCredits(out);
+		doPrint(out);
+	}
+
+	/**
+	 * Affiche dans la console le logo.
+	 * @param out Flux de sortie des informations
+	 */
+	private void doPrint(final PrintStream out) {
+		//	out.println("┌─────────────────────────┬────────────────────────┬──────────────────────────────────────────────┐");
+		out.println("├─────────────────────────┬────────────────────────┼──────────────────────────────────────────────┐");
+		printComponent(out, "modules", "components", null);
+		out.println("├─────────────────────────┼────────────────────────┼──────────────────────────────────────────────┤");
+		printModule(out, bootConfig.getBootModuleConfig());
+		for (final ModuleConfig moduleConfig : modules) {
+			out.println("├─────────────────────────┼────────────────────────┼──────────────────────────────────────────────┤");
+			printModule(out, moduleConfig);
+		}
+		out.println("└─────────────────────────┴────────────────────────┴──────────────────────────────────────────────┘");
+	}
+
+	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
+		String moduleName = moduleConfig.getName();
+		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
+			printComponent(out, moduleName, componentConfig.getImplClass().getSimpleName(), null);
+			moduleName = null;
+		}
+		//		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
+		//			printComponent(out, null, null, plugin.getClass().getSimpleName());
+		//		}
+		//			final ComponentDescription componentDescription = entry.getValue().getDescription();
+		//final String info;
+		//			if (componentDescription != null && componentDescription.getMainSummaryInfo() != null) {
+		//				info = componentDescription.getMainSummaryInfo().getInfo();
+		//			} else {
+		//info = null;
+		//}
+		//		printComponent(out, componentClass.getSimpleName(), component.getClass().getSimpleName(), buffer.toString());
+	}
+
+	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
+		out.println("│" + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " │");
+	}
+
+	private static String truncate(final String value, final int size) {
+		final String result = (value != null ? value : "") + "                                                                  ";
+		return result.substring(0, size);
 	}
 }

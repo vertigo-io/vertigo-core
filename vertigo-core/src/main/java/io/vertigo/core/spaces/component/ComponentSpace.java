@@ -19,7 +19,6 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.Logo;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -28,7 +27,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.StringUtil;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,26 +61,17 @@ public final class ComponentSpace implements Container, Activeable {
 	//---Aspects
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	//Map des composant démarrés dans l'ordre de démarrage
-	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
+	//Map des composants dans l'ordre de démarrage
+	private final Map<String, Object> components = new LinkedHashMap<>();
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
-
-	private final boolean silently;
-
-	public ComponentSpace(final boolean silently) {
-		this.silently = silently;
-	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		//le démarrage des composants est effectué au fur et à mesure de leur création.
 		//L'initialisation est en revanche globale.
-		for (final Entry<String, Object> component : startedComponents.entrySet()) {
+		for (final Entry<String, Object> component : components.entrySet()) {
 			initializeComponent(component.getKey(), component.getValue());
-		}
-		if (!silently) {
-			print();
 		}
 	}
 
@@ -121,7 +110,7 @@ public final class ComponentSpace implements Container, Activeable {
 		//-----
 		//Démarrage du composant
 		startComponent(component);
-		final Object previous = startedComponents.put(componentId, component);
+		final Object previous = components.put(componentId, component);
 		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", componentId);
 	}
 
@@ -131,7 +120,7 @@ public final class ComponentSpace implements Container, Activeable {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		return startedComponents.containsKey(normalizedId);
+		return components.containsKey(normalizedId);
 	}
 
 	/** {@inheritDoc} */
@@ -140,7 +129,7 @@ public final class ComponentSpace implements Container, Activeable {
 		final String normalizedId = StringUtil.first2LowerCase(id);
 		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
 		//-----
-		return componentClass.cast(startedComponents.get(normalizedId));
+		return componentClass.cast(components.get(normalizedId));
 	}
 
 	/**
@@ -156,7 +145,7 @@ public final class ComponentSpace implements Container, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		return startedComponents.keySet();
+		return components.keySet();
 	}
 
 	/**
@@ -195,7 +184,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private void clear() {
 		//On nettoie les maps.
-		startedComponents.clear();
+		components.clear();
 		initializers.clear();
 		aspects.clear();
 	}
@@ -204,7 +193,7 @@ public final class ComponentSpace implements Container, Activeable {
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Object> reverseComponents = new ArrayList<>(startedComponents.values());
+		final List<Object> reverseComponents = new ArrayList<>(components.values());
 		java.util.Collections.reverse(reverseComponents);
 
 		for (final Object component : reverseComponents) {
@@ -212,54 +201,4 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	//=========================================================================
-	//======================Gestion des affichages=============================
-	//=========================================================================
-	private void print() {
-		// ---Affichage du logo et des modules---
-		final PrintStream out = System.out;
-		Logo.printCredits(out);
-		out.println();
-		print(out);
-	}
-
-	/**
-	 * Affiche dans la console le logo.
-	 * @param out Flux de sortie des informations
-	 */
-	private void print(final PrintStream out) {
-		out.println("####################################################################################################");
-		printComponent(out, "Module", "component");
-		out.println("# -------------------------+------------------------+----------------------------------------------#");
-		//-----
-		for (final Entry<String, Object> entry : startedComponents.entrySet()) {
-			printComponent(out, entry.getKey(), entry.getValue());
-			out.println("# -------------------------+------------------------+----------------------------------------------#");
-		}
-		out.println("####################################################################################################");
-	}
-
-	private void printComponent(final PrintStream out, final String componentId, final Object component) {
-		printComponent(out, componentId, component.getClass().getSimpleName(), null);
-		//		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
-		//			printComponent(out, null, null, plugin.getClass().getSimpleName());
-		//		}
-		//			final ComponentDescription componentDescription = entry.getValue().getDescription();
-		//final String info;
-		//			if (componentDescription != null && componentDescription.getMainSummaryInfo() != null) {
-		//				info = componentDescription.getMainSummaryInfo().getInfo();
-		//			} else {
-		//info = null;
-		//}
-		//		printComponent(out, componentClass.getSimpleName(), component.getClass().getSimpleName(), buffer.toString());
-	}
-
-	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
-		out.println("# " + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " #");
-	}
-
-	private static String truncate(final String value, final int size) {
-		final String result = (value != null ? value : "") + "                                                                  ";
-		return result.substring(0, size);
-	}
 }

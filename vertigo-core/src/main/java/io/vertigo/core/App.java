@@ -74,10 +74,8 @@ public final class App implements AutoCloseable {
 		try {
 			//-----0. Boot (considered as a Module)
 			boot = new Boot(appConfig.getBootConfig());
-			final boolean silently = appConfig.getBootConfig().isSilence();
-
 			//-----0. Boot
-			componentSpace = new ComponentSpace(silently);
+			componentSpace = new ComponentSpace();
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
 			//contient donc à minima resourceManager et configManager.
@@ -90,6 +88,9 @@ public final class App implements AutoCloseable {
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ConfigManager.class), appConfig.getModuleConfigs());
 			//-----
+			if (!appConfig.getBootConfig().isSilence()) {
+				appConfig.print(System.out);
+			}
 			appStart();
 			appPostStart();
 			//-----
