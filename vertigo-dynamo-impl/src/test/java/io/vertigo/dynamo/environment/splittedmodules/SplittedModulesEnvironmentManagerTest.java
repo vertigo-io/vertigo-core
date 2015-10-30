@@ -20,7 +20,6 @@ package io.vertigo.dynamo.environment.splittedmodules;
 
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -53,7 +52,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.build();
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 		}
 	}
@@ -70,9 +69,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getApp().getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}
@@ -89,9 +88,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:on
 
 		try (final App app = new App(appConfig)) {
-			final Domain doString = Home.getApp().getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = Home.getApp().getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
+			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
 			Assert.assertNotNull(dtFamille);
 		}
 	}

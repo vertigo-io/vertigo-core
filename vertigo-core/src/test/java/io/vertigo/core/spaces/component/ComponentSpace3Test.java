@@ -19,7 +19,6 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -37,7 +36,7 @@ public final class ComponentSpace3Test {
 	public void testInjectPluginsAttribute() {
 		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(true);
 		try (App app = new App(appConfig)) {
-			final FunctionManager functionManager = Home.getApp().getComponentSpace().resolve(FunctionManager.class);
+			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(4, functionManager.compute("x+1", 3));
 			Assert.assertEquals(6, functionManager.compute("2x", 3));
 			Assert.assertEquals(15, functionManager.compute("4x+3", 3));
@@ -51,7 +50,7 @@ public final class ComponentSpace3Test {
 	public void testInjectPluginsAttributeOrder() {
 		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(false);
 		try (App app = new App(appConfig)) {
-			final FunctionManager functionManager = Home.getApp().getComponentSpace().resolve(FunctionManager.class);
+			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(26, functionManager.computeAll(3));
 		}
 	}
@@ -60,7 +59,7 @@ public final class ComponentSpace3Test {
 	public void testInjectPluginsConstructor() {
 		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(true);
 		try (App app = new App(appConfig)) {
-			final FunctionManager functionManager = Home.getApp().getComponentSpace().resolve(FunctionManager.class);
+			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(4, functionManager.compute("x+1", 3));
 			Assert.assertEquals(6, functionManager.compute("2x", 3));
 			Assert.assertEquals(15, functionManager.compute("4x+3", 3));
@@ -74,7 +73,7 @@ public final class ComponentSpace3Test {
 	public void testInjectPluginsConstructorOrder() {
 		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(false);
 		try (App app = new App(appConfig)) {
-			final FunctionManager functionManager = Home.getApp().getComponentSpace().resolve(FunctionManager.class);
+			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(26, functionManager.computeAll(3));
 		}
 	}
