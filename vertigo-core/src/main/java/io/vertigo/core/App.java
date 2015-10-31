@@ -80,9 +80,9 @@ public final class App implements AutoCloseable {
 			definitionSpace = new DefinitionSpace();
 
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
+			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopEngine(), appConfig.getBootConfig().getElasticaEngine());
 			//contient donc à minima resourceManager et configManager.
-			componentLoader.injectBootComponents(componentSpace);
+			componentLoader.injectBootComponents(componentSpace, appConfig.getBootConfig().getBootModuleConfig());
 
 			//-----1. Load all definitions
 			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);

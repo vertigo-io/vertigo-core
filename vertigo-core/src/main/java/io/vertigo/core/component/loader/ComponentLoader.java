@@ -22,11 +22,11 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.config.AspectConfig;
-import io.vertigo.core.config.BootConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
 import io.vertigo.core.engines.AopEngine;
+import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.core.param.ConfigManager;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
@@ -38,7 +38,6 @@ import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,17 +48,18 @@ import java.util.Map.Entry;
  * @author pchretien
  */
 public final class ComponentLoader {
-	private final BootConfig bootConfig;
+	private final AopEngine aopEngine;
+	private final Option<ElasticaEngine> elasticaEngineOption;
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
-	/**
-	 * Aspects
-	 */
+	/** Aspects.*/
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	public ComponentLoader(final BootConfig bootConfig) {
-		Assertion.checkNotNull(bootConfig);
+	public ComponentLoader(final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngineOption) {
+		Assertion.checkNotNull(aopEngine);
+		Assertion.checkNotNull(elasticaEngineOption);
 		//-----
-		this.bootConfig = bootConfig;
+		this.aopEngine = aopEngine;
+		this.elasticaEngineOption = elasticaEngineOption;
 	}
 
 	public void injectAllComponents(final ComponentSpace componentSpace, final ConfigManager configManager, final List<ModuleConfig> moduleConfigs) {
@@ -70,8 +70,8 @@ public final class ComponentLoader {
 		}
 	}
 
-	public void injectBootComponents(final ComponentSpace componentSpace) {
-		doInjectComponents(componentSpace, Option.<ConfigManager> none(), bootConfig.getBootModuleConfig());
+	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
+		doInjectComponents(componentSpace, Option.<ConfigManager> none(), bootModuleConfig);
 	}
 
 	private void injectComponent(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
@@ -82,8 +82,6 @@ public final class ComponentLoader {
 	}
 
 	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
-		final AopEngine aopEngine = bootConfig.getAopEngine();
-
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
@@ -119,7 +117,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(bootConfig, configManagerOption, componentContainer, getAspects(), componentConfig, aopEngine);
+				final Object component = createComponentWithOptions(configManagerOption, componentContainer, componentConfig);
 				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
 				final Option<ComponentInitializer> currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
 				// 2.c. On enregistre le composant puis son initializer
@@ -183,10 +181,6 @@ public final class ComponentLoader {
 		return findAspects;
 	}
 
-	private Collection<Aspect> getAspects() {
-		return aspects.values();
-	}
-
 	private void registerAspect(final Aspect aspect) {
 		Assertion.checkNotNull(aspect);
 		Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
@@ -194,12 +188,12 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private static Object createComponentWithOptions(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final Collection<Aspect> aspects, final ComponentConfig componentConfig, final AopEngine aopEngine) {
+	private Object createComponentWithOptions(final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 2. On crée le composant
-		final Object instance = createComponent(bootConfig, configManagerOption, componentContainer, componentConfig);
+		final Object instance = createComponent(configManagerOption, componentContainer, componentConfig);
 
 		//3. AOP, on aopise le composant
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
 		if (!joinPoints.isEmpty()) {
 			return aopEngine.create(instance, joinPoints);
 		}
@@ -214,9 +208,9 @@ public final class ComponentLoader {
 		return Option.none();
 	}
 
-	private static Object createComponent(final BootConfig bootConfig, final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Object createComponent(final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
-			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
+			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		}
 		//---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, componentConfig.getParams());
