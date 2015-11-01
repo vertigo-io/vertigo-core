@@ -18,17 +18,17 @@
  */
 package io.vertigo;
 
-import io.vertigo.commons.locale.LocaleManagerTest;
-import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
 import io.vertigo.core.config.AppConfigTest;
 import io.vertigo.core.definition.loader.EnvironmentManagerTest;
+import io.vertigo.core.locale.LocaleManagerTest;
 import io.vertigo.core.param.hierarchy.ConfigManagerTest;
 import io.vertigo.core.param.multi.MultiConfigManagerTest;
 import io.vertigo.core.param.properties.PropertiesConfigManagerTest;
 import io.vertigo.core.param.xml.XmlConfigManagerTest;
+import io.vertigo.core.resource.ResourceManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;

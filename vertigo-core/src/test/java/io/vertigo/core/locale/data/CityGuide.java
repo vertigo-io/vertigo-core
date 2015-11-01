@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.locale.data;
+package io.vertigo.core.locale.data;
 
 import io.vertigo.lang.MessageKey;
 

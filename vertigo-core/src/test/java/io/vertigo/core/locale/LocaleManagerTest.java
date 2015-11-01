@@ -16,14 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.locale;
+package io.vertigo.core.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.locale.data.CityGuide;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.core.locale.data.CityGuide;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 
@@ -55,13 +53,13 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	public void doSetUp() {
-		localeManager.add("io.vertigo.commons.locale.data.city-guide", CityGuide.values());
+		localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testDictionary() {
 		//On ne charge pas deux fois un dictionnaire
-		localeManager.add("io.vertigo.commons.locale.data.city-guide", CityGuide.values());
+		localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values());
 	}
 
 	@Test
@@ -73,7 +71,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testOverride() {
 		//On surcharge le dictionnaire city-guide avec un dictionnaire partiel
-		localeManager.override("io.vertigo.commons.locale.data.popular-guide", CityGuide.values());
+		localeManager.override("io.vertigo.core.locale.data.popular-guide", CityGuide.values());
 
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
 		Assert.assertEquals("salut", helloTxt.getDisplay());

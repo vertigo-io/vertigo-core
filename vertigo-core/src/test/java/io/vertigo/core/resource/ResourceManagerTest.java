@@ -16,13 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.resource;
+package io.vertigo.core.resource;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.resource.ResourceManager;
 
 import java.net.URL;
 
@@ -63,7 +62,7 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testResourceSelector() {
-		final String expected = "io/vertigo/commons/resource/hello.properties";
+		final String expected = "io/vertigo/core/resource/hello.properties";
 		final URL url = resourceManager.resolve(expected);
 		Assert.assertTrue(url.getPath().indexOf(expected) != -1);
 	}
