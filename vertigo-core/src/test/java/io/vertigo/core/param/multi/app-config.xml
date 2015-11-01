@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-config>
+
+	<config name="serverTest"> <!-- pour tests simples -->
+		<property name="name" value="monBeauServer" />
+		<property name="port" value="99" />
+		<property name="host" value="http://wwww" />
+		<property name="active" value="true" />
+	</config>
+	<config name="server"> <!-- incomplet pour test hierarchie -->
+		<property name="name" value="monBeauServer" />
+		<property name="port" value="99" />
+		<property name="active" value="false" />
+	</config>
+	<config name="server.fr.dev">
+		<property name="name" value="marecette" />
+		<property name="port" value="8080" />
+		<property name="active" value="true" />
+	</config>
+	<config name="server.fr.prod">
+		<property name="name" value="monsite" />
+		<property name="port" value="80" />
+		<property name="active" value="true" />
+	</config>
+</application-config> 

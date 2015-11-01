@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-config>
+	  	   
+  	<config name="test">
+  		<property name="prop1" value="prop1val"/>    	
+  	</config>
+  	<config name="test2">
+  		<property name="propNotFound" value="xxxx"/>    	    	
+  	</config>
+  	<config name="test3">
+  		<property name="intProp" value="12"/>    	    	
+  	</config>
+  	<config name="test4">
+  		<property name="intBadProp" value="xxx"/>    	    	
+  	</config>
+  	<config name="test5">
+  		<property name="boolProp" value="true"/>    	    	
+  	</config>
+  	<config name="test6">
+  		<property name="boolBadProp1" value="true "/>    	    	
+  	</config>
+  	<config name="test7">
+  		<property name="boolBadProp2" value="xxx"/>    	    	
+  	</config>
+  	
+  	<config name="server">
+  		<property name="name" value="monBeauServer"/>    	
+  		<property name="port" value="99"/>    	
+  		<property name="host" value="http://wwww"/>    	
+  		<property name="active" value="true"/>    	
+  	</config>
+</application-config> 
