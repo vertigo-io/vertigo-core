@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+	<module name="aspects" >
+		<!-- Aspects declaration -->
+		<aspect class="io.vertigo.core.component.aop.data.aspects.OneMoreAspect" />
+		<aspect class="io.vertigo.core.component.aop.data.aspects.TenMoreAspect" />
+	</module>
+
+	<module name="components" api="false" inheritance="java.lang.Object">
+		<!-- Components declaration -->
+		<component class="io.vertigo.core.component.aop.data.components.ComputerImpl" />
+		<component class="io.vertigo.core.component.aop.data.components.A" />
+		<component class="io.vertigo.core.component.aop.data.components.BImpl" />
+		<component class="io.vertigo.core.component.aop.data.components.C" />
+		<component class="io.vertigo.core.component.aop.data.components.F" />
+	</module>
+</config>
