@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.collections.model;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;

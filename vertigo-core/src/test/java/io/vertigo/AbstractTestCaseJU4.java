@@ -18,10 +18,10 @@
  */
 package io.vertigo;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.App;
+import io.vertigo.app.App;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;

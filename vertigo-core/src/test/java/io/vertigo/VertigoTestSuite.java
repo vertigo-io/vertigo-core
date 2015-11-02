@@ -18,10 +18,10 @@
  */
 package io.vertigo;
 
+import io.vertigo.app.config.AppConfigTest;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
-import io.vertigo.core.config.AppConfigTest;
 import io.vertigo.core.definition.loader.EnvironmentManagerTest;
 import io.vertigo.core.locale.LocaleManagerTest;
 import io.vertigo.core.param.hierarchy.ParamManagerTest;

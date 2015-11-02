@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import io.vertigo.app.AppListener;
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.core.AppListener;
-import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.engines.webservice.cmd;
 
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.Home;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;

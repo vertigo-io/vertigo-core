@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;

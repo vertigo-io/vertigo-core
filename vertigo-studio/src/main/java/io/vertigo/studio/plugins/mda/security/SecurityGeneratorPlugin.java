@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.security;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.studio.mda.ResultBuilder;

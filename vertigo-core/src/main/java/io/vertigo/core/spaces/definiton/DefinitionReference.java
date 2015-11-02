@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 
 import java.io.IOException;

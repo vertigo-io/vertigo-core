@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.core.App;
+import io.vertigo.app.App;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;

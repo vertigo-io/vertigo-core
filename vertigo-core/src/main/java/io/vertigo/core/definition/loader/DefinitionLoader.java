@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.definition.loader;
 
-import io.vertigo.core.config.DefinitionProvider;
-import io.vertigo.core.config.DefinitionProviderConfig;
-import io.vertigo.core.config.DefinitionResourceConfig;
-import io.vertigo.core.config.ModuleConfig;
+import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.DefinitionResourceConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.spaces.definiton.Definition;

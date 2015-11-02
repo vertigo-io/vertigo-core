@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;

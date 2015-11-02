@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.model;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;

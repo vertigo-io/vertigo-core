@@ -18,15 +18,15 @@
  */
 package io.vertigo.core.component.loader;
 
+import io.vertigo.app.config.AspectConfig;
+import io.vertigo.app.config.ComponentConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.PluginConfig;
 import io.vertigo.core.component.AopEngine;
 import io.vertigo.core.component.ElasticaEngine;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
-import io.vertigo.core.config.AspectConfig;
-import io.vertigo.core.config.ComponentConfig;
-import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.config.PluginConfig;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.engines.command;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.engines.command.samples.VDescribableCommandExecutor;

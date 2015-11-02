@@ -18,12 +18,12 @@
  */
 package io.vertigo.engines.command;
 
-import io.vertigo.core.AppListener;
-import io.vertigo.core.Home;
+import io.vertigo.app.AppListener;
+import io.vertigo.app.Home;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.command.VResponse;
-import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.engines.command.samples.VPingCommandExecutor;

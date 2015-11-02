@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.App;
-import io.vertigo.core.config.LogConfig;
+import io.vertigo.app.App;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;

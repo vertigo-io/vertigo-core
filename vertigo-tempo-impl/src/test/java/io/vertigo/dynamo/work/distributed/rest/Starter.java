@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.App;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.App;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
 
 import java.util.Properties;
@@ -52,7 +52,7 @@ public final class Starter implements Runnable {
 	@Override
 	public void run() {
 		try (App app = new App(appConfig)) {
-			System.out.println("Node started (timout in " + (timeToWait / 1000) + "s)");
+			System.out.println("Node started (timout in " + timeToWait / 1000 + "s)");
 			if (timeToWait > 0) {
 				Thread.sleep(timeToWait);
 			} else {

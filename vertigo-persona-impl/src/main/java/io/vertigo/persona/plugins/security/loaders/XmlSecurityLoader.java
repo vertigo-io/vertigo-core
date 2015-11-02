@@ -18,7 +18,7 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Permission;

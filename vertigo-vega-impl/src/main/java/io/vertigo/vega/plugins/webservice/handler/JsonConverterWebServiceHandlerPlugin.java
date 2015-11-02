@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;

@@ -19,8 +19,8 @@
 package io.vertigo.core.resource;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 import java.net.URL;

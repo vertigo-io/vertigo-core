@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.component.loader;
 
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.lang.Assertion;
 
 import java.lang.annotation.Annotation;

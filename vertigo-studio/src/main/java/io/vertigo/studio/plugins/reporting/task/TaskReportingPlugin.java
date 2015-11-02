@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.reporting.task;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.transaction.VTransactionManager;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.persona.impl.security;
 
-import io.vertigo.core.config.Features;
+import io.vertigo.app.config.Features;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 

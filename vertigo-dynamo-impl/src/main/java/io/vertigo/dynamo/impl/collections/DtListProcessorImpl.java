@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;

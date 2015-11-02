@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.tools.generate;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.tools.Goal;
 

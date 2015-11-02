@@ -19,9 +19,9 @@
 package io.vertigo.commons.codec;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 
 import javax.inject.Inject;
 

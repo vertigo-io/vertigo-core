@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;

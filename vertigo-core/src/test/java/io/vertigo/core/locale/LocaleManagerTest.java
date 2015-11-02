@@ -19,8 +19,8 @@
 package io.vertigo.core.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.locale.data.CityGuide;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;

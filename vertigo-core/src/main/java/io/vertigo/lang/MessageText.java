@@ -18,7 +18,7 @@
  */
 package io.vertigo.lang;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.util.StringUtil;
 

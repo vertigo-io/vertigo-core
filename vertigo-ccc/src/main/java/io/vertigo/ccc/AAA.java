@@ -18,7 +18,7 @@
  */
 package io.vertigo.ccc;
 
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.lang.Activeable;
 

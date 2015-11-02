@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import io.vertigo.core.AppListener;
-import io.vertigo.core.Home;
+import io.vertigo.app.AppListener;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;

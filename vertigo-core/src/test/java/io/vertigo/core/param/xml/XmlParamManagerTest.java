@@ -19,8 +19,8 @@
 package io.vertigo.core.param.xml;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ServerConfig;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
