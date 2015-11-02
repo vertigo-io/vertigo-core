@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.param.multi;
+package io.vertigo.core.param.properties;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.config.AppConfig;
@@ -24,7 +24,6 @@ import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ServerConfig;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
-import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 import javax.inject.Inject;
@@ -33,11 +32,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author prahmoune
+ * @author pchretien
  */
-public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
+public final class PropertiesParamManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private ParamManager configManager;
+	private ParamManager paramManager;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -47,19 +46,9 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 		return new AppConfigBuilder()
 			.beginBootModule(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config.xml")
-				.endPlugin()
 				.beginPlugin( PropertiesParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config.properties")
-					.addParam("configPath", "server.fr")
-				.endPlugin()
-				.beginPlugin( PropertiesParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config2.properties")
-					.addParam("configPath", "server.en")
-				.endPlugin()
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config2.xml")
+					.addParam("url", "io/vertigo/core/param/properties/app-config.properties")
+					.addParam("configPath", "server")
 				.endPlugin()
 			.endModule()
 			.build();
@@ -68,51 +57,39 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testFail0() {
-		configManager.getStringValue("completely", "wrong");
+		paramManager.getStringValue("completely", "wrong");
 	}
 
 	@Test
 	public void testString() {
-		final String value = configManager.getStringValue("server.fr", "mail");
+		final String value = paramManager.getStringValue("server", "mail");
 		Assert.assertEquals("john.doe@free.fr", value);
 	}
 
 	@Test
 	public void testInt() {
-		final int value = configManager.getIntValue("server.fr", "weight");
+		final int value = paramManager.getIntValue("server", "weight");
 		Assert.assertEquals(55, value);
 	}
 
 	@Test
 	public void testBoolean1() {
-		final boolean value = configManager.getBooleanValue("server.en", "active");
+		final boolean value = paramManager.getBooleanValue("server", "active");
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testBoolean2() {
-		final boolean value = configManager.getBooleanValue("server.en", "closed");
+		final boolean value = paramManager.getBooleanValue("server", "closed");
 		Assert.assertFalse(value);
 	}
 
 	@Test
-	public void testBoolean3() {
-		final boolean value = configManager.getBooleanValue("server.fr", "changed");
-		Assert.assertTrue(value);
-	}
-
-	@Test
-	public void testString2() {
-		final String value = configManager.getStringValue("server", "name");
-		Assert.assertEquals("monBeauServer", value);
-	}
-
-	@Test
 	public void testResolve() {
-		final ServerConfig serverConfig = configManager.resolve("server.en", ServerConfig.class);
-		Assert.assertEquals("myBeautifullServer", serverConfig.getName());
+		final ServerConfig serverConfig = paramManager.resolve("server", ServerConfig.class);
+		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
+		Assert.assertEquals("http://wwww", serverConfig.getHost());
 		Assert.assertTrue(serverConfig.isActive());
 	}
 }

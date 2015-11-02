@@ -24,10 +24,10 @@ import io.vertigo.core.component.di.reactor.ReactorTest;
 import io.vertigo.core.config.AppConfigTest;
 import io.vertigo.core.definition.loader.EnvironmentManagerTest;
 import io.vertigo.core.locale.LocaleManagerTest;
-import io.vertigo.core.param.hierarchy.ConfigManagerTest;
-import io.vertigo.core.param.multi.MultiConfigManagerTest;
-import io.vertigo.core.param.properties.PropertiesConfigManagerTest;
-import io.vertigo.core.param.xml.XmlConfigManagerTest;
+import io.vertigo.core.param.hierarchy.ParamManagerTest;
+import io.vertigo.core.param.multi.MultiParamManagerTest;
+import io.vertigo.core.param.properties.PropertiesParamManagerTest;
+import io.vertigo.core.param.xml.XmlParamManagerTest;
 import io.vertigo.core.resource.ResourceManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
@@ -79,10 +79,10 @@ import org.junit.runners.Suite.SuiteClasses;
 		MapBuilderTest.class,
 
 		//--config
-		ConfigManagerTest.class,
-		MultiConfigManagerTest.class,
-		PropertiesConfigManagerTest.class,
-		XmlConfigManagerTest.class,
+		ParamManagerTest.class,
+		MultiParamManagerTest.class,
+		PropertiesParamManagerTest.class,
+		XmlParamManagerTest.class,
 		//--resource
 		ResourceManagerTest.class,
 		EnvironmentManagerTest.class

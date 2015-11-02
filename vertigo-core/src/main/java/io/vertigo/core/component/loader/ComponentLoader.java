@@ -62,11 +62,11 @@ public final class ComponentLoader {
 		this.elasticaEngineOption = elasticaEngineOption;
 	}
 
-	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager configManager, final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, Option.some(configManager), moduleConfig);
+			injectComponent(componentSpace, Option.some(paramManager), moduleConfig);
 		}
 	}
 
@@ -74,14 +74,14 @@ public final class ComponentLoader {
 		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
 	}
 
-	private void injectComponent(final ComponentSpace componentSpace, final Option<ParamManager> configManagerOption, final ModuleConfig moduleConfig) {
+	private void injectComponent(final ComponentSpace componentSpace, final Option<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		doInjectComponents(componentSpace, configManagerOption, moduleConfig);
+		doInjectComponents(componentSpace, paramManagerOption, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ParamManager> configManagerOption, final ModuleConfig moduleConfig) {
+	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
@@ -117,7 +117,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(configManagerOption, componentContainer, componentConfig);
+				final Object component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
 				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
 				final Option<ComponentInitializer> currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
 				// 2.c. On enregistre le composant puis son initializer
@@ -126,7 +126,7 @@ public final class ComponentLoader {
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
-				final Plugin plugin = createPlugin(componentSpace, configManagerOption, pluginConfig);
+				final Plugin plugin = createPlugin(componentSpace, paramManagerOption, pluginConfig);
 				// 2.c. On enregistre le plugin en tant que composant
 				componentSpace.registerComponent(pluginConfig.getId(), plugin);
 			}
@@ -188,9 +188,9 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private Object createComponentWithOptions(final Option<ParamManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Object createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 2. On crée le composant
-		final Object instance = createComponent(configManagerOption, componentContainer, componentConfig);
+		final Object instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
 		//3. AOP, on aopise le composant
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
@@ -208,12 +208,12 @@ public final class ComponentLoader {
 		return Option.none();
 	}
 
-	private Object createComponent(final Option<ParamManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
 			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		}
 		//---
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, componentConfig.getParams());
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
@@ -221,8 +221,8 @@ public final class ComponentLoader {
 		return component;
 	}
 
-	private static Plugin createPlugin(final Container componentContainer, final Option<ParamManager> configManagerOption, final PluginConfig pluginConfig) {
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, pluginConfig.getParams());
+	private static Plugin createPlugin(final Container componentContainer, final Option<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);

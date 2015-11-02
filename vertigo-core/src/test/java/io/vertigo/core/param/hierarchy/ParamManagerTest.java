@@ -34,9 +34,9 @@ import org.junit.Test;
 /**
  * @author prahmoune
  */
-public final class ConfigManagerTest extends AbstractTestCaseJU4 {
+public final class ParamManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private ParamManager configManager;
+	private ParamManager paramManager;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -56,76 +56,76 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath() {
-		//On vérifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
-		final String value = configManager.getStringValue("Server", "name");
+		//On vérifie que le path doit respecter la regex @See paramManager.REGEX_PATH
+		final String value = paramManager.getStringValue("Server", "name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath2() {
-		//On vérifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
-		final String value = configManager.getStringValue("server.Fr", "name");
+		//On vérifie que le path doit respecter la regex @See paramManager.REGEX_PATH
+		final String value = paramManager.getStringValue("server.Fr", "name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty() {
-		//On vérifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
-		final String value = configManager.getStringValue("server", "Name");
+		//On vérifie que la propert doit respecter la regex @See paramManager.REGEX_PROPERTY
+		final String value = paramManager.getStringValue("server", "Name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty2() {
-		//On vérifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
-		final String value = configManager.getStringValue("server", "name.first");
+		//On vérifie que la propert doit respecter la regex @See paramManager.REGEX_PROPERTY
+		final String value = paramManager.getStringValue("server", "name.first");
 		nop(value);
 	}
 
 	@Test
 	public void test0() {
-		final String value = configManager.getStringValue("server", "name");
+		final String value = paramManager.getStringValue("server", "name");
 		Assert.assertEquals("monBeauServer", value);
 	}
 
 	@Test
 	public void test1() {
-		final String value = configManager.getStringValue("server.fr", "name");
+		final String value = paramManager.getStringValue("server.fr", "name");
 		Assert.assertEquals("monBeauServer", value);
 	}
 
 	@Test
 	public void test2() {
-		final String value = configManager.getStringValue("server.fr.dev", "name");
+		final String value = paramManager.getStringValue("server.fr.dev", "name");
 		Assert.assertEquals("marecette", value);
 	}
 
 	@Test(expected = Exception.class)
 	public void test3() {
-		configManager.getStringValue("server", "host");
+		paramManager.getStringValue("server", "host");
 	}
 
 	@Test
 	public void test4() {
-		final String value = configManager.getStringValue("server.fr", "host");
+		final String value = paramManager.getStringValue("server.fr", "host");
 		Assert.assertEquals("http://wwww/fr", value);
 	}
 
 	@Test
 	public void test5() {
-		final String value = configManager.getStringValue("server.fr.unknown", "host");
+		final String value = paramManager.getStringValue("server.fr.unknown", "host");
 		Assert.assertEquals("http://wwww/fr", value);
 	}
 
 	@Test(expected = Exception.class)
 	public void testVo() {
-		configManager.resolve("serverTest", ServerConfigVo.class);
+		paramManager.resolve("serverTest", ServerConfigVo.class);
 		//Le résolve ne doit pas être possible : les Values Object ne sont pas gérés.");
 	}
 
 	@Test
 	public void testBean0() {
-		final ServerConfigBean serverConfig = configManager.resolve("serverTest", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("serverTest", ServerConfigBean.class);
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww", serverConfig.getHost());
@@ -134,13 +134,13 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testBean1() {
-		configManager.resolve("server", ServerConfigBean.class);
+		paramManager.resolve("server", ServerConfigBean.class);
 		//"Le résolve ne doit pas être possible : il manque une propriété.");
 	}
 
 	@Test
 	public void testBean2() {
-		final ServerConfigBean serverConfig = configManager.resolve("server.fr", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("server.fr", ServerConfigBean.class);
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
@@ -149,7 +149,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testBean3() {
-		final ServerConfigBean serverConfig = configManager.resolve("server.en", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("server.en", ServerConfigBean.class);
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
@@ -158,7 +158,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testBean4() {
-		final ServerConfigBean serverConfig = configManager.resolve("server.fr.dev", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.dev", ServerConfigBean.class);
 		Assert.assertEquals("marecette", serverConfig.getName());
 		Assert.assertEquals(8080, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
@@ -167,7 +167,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testBean5() {
-		final ServerConfigBean serverConfig = configManager.resolve("server.fr.prod", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod", ServerConfigBean.class);
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
@@ -176,7 +176,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testBean6() {
-		final ServerConfigBean serverConfig = configManager.resolve("server.fr.prod.unknown", ServerConfigBean.class);
+		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfigBean.class);
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
@@ -185,7 +185,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testInterface() {
-		final ServerConfig serverConfig = configManager.resolve("server.fr.prod.unknown", ServerConfig.class);
+		final ServerConfig serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfig.class);
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());

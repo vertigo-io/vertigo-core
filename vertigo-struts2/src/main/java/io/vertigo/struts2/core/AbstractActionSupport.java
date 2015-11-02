@@ -79,7 +79,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	@Inject
 	private ContextCacheManager contextCacheManager;
 	@Inject
-	private ParamManager configManager;
+	private ParamManager paramManager;
 
 	private final UiMessageStack uiMessageStack;
 
@@ -151,7 +151,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext() {
-		context.put("appVersion", configManager.getStringValue("app", "version"));
+		context.put("appVersion", paramManager.getStringValue("app", "version"));
 		context.put(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
 	}

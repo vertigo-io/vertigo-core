@@ -34,9 +34,9 @@ import org.junit.Test;
 /**
  * @author prahmoune
  */
-public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
+public final class XmlParamManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private ParamManager configManager;
+	private ParamManager paramManager;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -55,52 +55,52 @@ public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void test0() {
-		configManager.getStringValue("completely", "wrong");
+		paramManager.getStringValue("completely", "wrong");
 	}
 
 	@Test
 	public void test1() {
-		final String value = configManager.getStringValue("test", "prop1");
+		final String value = paramManager.getStringValue("test", "prop1");
 		Assert.assertEquals("prop1val", value);
 	}
 
 	@Test(expected = Exception.class)
 	public void test2() {
-		configManager.getStringValue("test2", "wrong");
+		paramManager.getStringValue("test2", "wrong");
 	}
 
 	@Test
 	public void test3() {
-		final int value = configManager.getIntValue("test3", "intProp");
+		final int value = paramManager.getIntValue("test3", "intProp");
 		Assert.assertEquals(12, value);
 	}
 
 	@Test(expected = Exception.class)
 	public void test4() {
-		configManager.getIntValue("test4", "intBadProp");
+		paramManager.getIntValue("test4", "intBadProp");
 	}
 
 	@Test
 	public void test5() {
-		final boolean value = configManager.getBooleanValue("test5", "boolProp");
+		final boolean value = paramManager.getBooleanValue("test5", "boolProp");
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void test6() {
-		final boolean value = configManager.getBooleanValue("test6", "boolBadProp1");
+		final boolean value = paramManager.getBooleanValue("test6", "boolBadProp1");
 		Assert.assertTrue(value);
 	}
 
 	@Test(expected = Exception.class)
 	public void test7() {
-		final boolean b = configManager.getBooleanValue("test7", "boolBadProp2");
+		final boolean b = paramManager.getBooleanValue("test7", "boolBadProp2");
 		nop(b);
 	}
 
 	@Test
 	public void test8() {
-		final ServerConfig serverConfig = configManager.resolve("server", ServerConfig.class);
+		final ServerConfig serverConfig = paramManager.resolve("server", ServerConfig.class);
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww", serverConfig.getHost());

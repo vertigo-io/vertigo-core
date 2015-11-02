@@ -37,15 +37,15 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 final class ComponentParamsContainer implements Container {
-	private final Option<ParamManager> configManagerOption;
+	private final Option<ParamManager> paramManagerOption;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;
 
-	ComponentParamsContainer(final Option<ParamManager> configManagerOption, final Map<String, String> params) {
-		Assertion.checkNotNull(configManagerOption);
+	ComponentParamsContainer(final Option<ParamManager> paramManagerOption, final Map<String, String> params) {
+		Assertion.checkNotNull(paramManagerOption);
 		Assertion.checkNotNull(params);
 		//-----
-		this.configManagerOption = configManagerOption;
+		this.paramManagerOption = paramManagerOption;
 		this.params = params;
 		unusedKeys = new HashSet<>(params.keySet());
 	}
@@ -90,15 +90,15 @@ final class ComponentParamsContainer implements Container {
 		String value = params.get(paramName);
 		final String confParamProtocol = "conf:";
 		if (value != null && value.startsWith(confParamProtocol)) {
-			Assertion.checkArgument(configManagerOption.isDefined(), "config is not allowed here");
+			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
 			//-----
 			// On doit rechercher la valeur dans la configuration
 			final int idx = value.lastIndexOf('.');
-			Assertion.checkState(idx != -1, "Le paramètre {0} n'est pas paramètre du ConfigManager", value);
+			Assertion.checkState(idx != -1, "Le paramètre {0} n'est pas paramètre du paramManager", value);
 			final String path = value.substring(confParamProtocol.length(), idx);
 			final String prop = value.substring(idx + 1);
 			try {
-				value = configManagerOption.get().getStringValue(path, prop);
+				value = paramManagerOption.get().getStringValue(path, prop);
 			} catch (final Throwable t) {
 				// Problème lors de l'accès au paramètre. On loggue et on utilise la valeur null
 				Logger.getLogger(ComponentParamsContainer.class).warn(

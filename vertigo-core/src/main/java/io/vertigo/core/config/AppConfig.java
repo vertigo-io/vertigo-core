@@ -69,16 +69,16 @@ public final class AppConfig {
 	 * @param out Flux de sortie des informations
 	 */
 	private void doPrint(final PrintStream out) {
-		//	out.println("┌─────────────────────────┬────────────────────────┬──────────────────────────────────────────────┐");
-		out.println("├─────────────────────────┬────────────────────────┼──────────────────────────────────────────────┐");
+		//	out.println("+-------------------------+------------------------+----------------------------------------------+");
+		out.println("+-------------------------+------------------------+----------------------------------------------+");
 		printComponent(out, "modules", "components", null);
-		out.println("├─────────────────────────┼────────────────────────┼──────────────────────────────────────────────┤");
+		out.println("+-------------------------+------------------------+----------------------------------------------+");
 		printModule(out, bootConfig.getBootModuleConfig());
 		for (final ModuleConfig moduleConfig : modules) {
-			out.println("├─────────────────────────┼────────────────────────┼──────────────────────────────────────────────┤");
+			out.println("+-------------------------+------------------------+----------------------------------------------+");
 			printModule(out, moduleConfig);
 		}
-		out.println("└─────────────────────────┴────────────────────────┴──────────────────────────────────────────────┘");
+		out.println("+-------------------------+------------------------+----------------------------------------------+");
 	}
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
@@ -101,7 +101,7 @@ public final class AppConfig {
 	}
 
 	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
-		out.println("│" + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " │");
+		out.println("|" + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " |");
 	}
 
 	private static String truncate(final String value, final int size) {

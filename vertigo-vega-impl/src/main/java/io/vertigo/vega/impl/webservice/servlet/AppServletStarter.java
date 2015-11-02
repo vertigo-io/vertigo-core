@@ -100,7 +100,7 @@ final class AppServletStarter {
 	}
 
 	/**
-	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppParamPlugin du ConfigManager.
+	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppParamPlugin du ParamManager.
 	 * @return Properties
 	 */
 	private static Properties createWebAppProperties(final ServletContext servletContext) {

@@ -35,14 +35,14 @@ public final class Logo {
 	 */
 	public static void printCredits(final PrintStream out) {
 		out.println();
-		out.println("┌──────────────────────────────────────────────────┐");
-		out.println("│   _____________                                  │");
-		out.println("│  |     _     / |                                 │");
-		out.println("│  |#   / \\   / /|  Vertigo v0.8.4 - 2015          │");
-		out.println("│  |  __\\ /__/ / |                                 │");
-		out.println("│  | / _      /  |                                 │");
-		out.println("│  |/ / \\  ()/  *|                                 │");
-		out.println("│  | /  |   |    |  www.kleegroup.com              │");
-		out.println("│  |/___|____\\___|                                 │");
+		out.println("+--------------------------------------------------+");
+		out.println("|   _____________                                  |");
+		out.println("|  |     _     / |                                 |");
+		out.println("|  |#   / \\   / /|  Vertigo v0.8.4 - 2015          |");
+		out.println("|  |  __\\ /__/ / |                                 |");
+		out.println("|  | / _      /  |                                 |");
+		out.println("|  |/ / \\  ()/  *|                                 |");
+		out.println("|  | /  |   |    |  www.kleegroup.com              |");
+		out.println("|  |/___|____\\___|                                 |");
 	}
 }
