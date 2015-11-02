@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-config>
+  	<config name="math.test">
+  		<property name="start" value="100"/>    	
+  	</config>
+</application-config> 
