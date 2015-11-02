@@ -63,4 +63,17 @@ public final class LogicalDataStoreConfig {
 		Assertion.checkNotNull(dataStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
 		return dataStore;
 	}
+
+	/**
+	 * Fournit le nom de la connection adpatée pour ce Store.
+	 * @param storeName Nom du store
+	 * @return Connection utilisée pour ce nom
+	 */
+	public String getConnectionName(final String storeName) {
+		Assertion.checkArgNotEmpty(storeName);
+		//-----
+		final DataStorePlugin dataStore = dataStoresMap.get(storeName);
+		Assertion.checkNotNull(dataStore, "Aucun store ayant pour nom '{0}'", storeName);
+		return dataStore.getConnectionName();
+	}
 }

@@ -42,12 +42,13 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
 	 * Constructeur.
 	 * @param name Store name
+	 * @param connectionName Connection name
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 * @param taskManager TaskManager
 	 */
 	@Inject
-	public OracleDataStorePlugin(@Named("name") final Option<String> name, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(name, taskManager);
+	public OracleDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(name, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;

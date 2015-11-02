@@ -95,4 +95,10 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	public LogicalDataStoreConfig getLogicalStoreConfig() {
 		return logicalDataStoreConfig;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getConnectionName(final String storeName) {
+		return logicalDataStoreConfig.getConnectionName(storeName);
+	}
 }

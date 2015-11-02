@@ -23,6 +23,7 @@ import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 
@@ -56,12 +57,12 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Constructor.
 	 */
 	@Inject
-	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, sqlDataBaseManager);
+	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/*
-	 * Récupération de l'attribut OUT. Il doit être unique. 
+	 * Récupération de l'attribut OUT. Il doit être unique.
 	 */
 	private TaskAttribute getOutTaskAttribute() {
 		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
@@ -78,7 +79,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 
 		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());
-		this.setResult(result.getValue());
+		setResult(result.getValue());
 		return result.getSQLRowCount();
 	}
 

@@ -37,11 +37,16 @@ import java.util.Map;
  */
 @DefinitionPrefix("TK")
 public final class TaskDefinition implements Definition {
+	private static final String DEFAULT_STORE_NAME = "main";
+
 	/** Nom de la définition. */
 	private final String name;
 
 	/** Nom du package. */
 	private final String packageName;
+
+	/** Nom du store. */
+	private final String storeName;
 
 	/** Chaine de configuration du service. */
 	private final String request;
@@ -64,6 +69,7 @@ public final class TaskDefinition implements Definition {
 	TaskDefinition(
 			final String name,
 			final String packageName,
+			final Option<String> storeName,
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
@@ -76,6 +82,7 @@ public final class TaskDefinition implements Definition {
 		//-----
 		this.name = name;
 		this.packageName = packageName;
+		this.storeName = storeName.getOrElse(DEFAULT_STORE_NAME);
 		this.request = request;
 		this.inTaskAttributes = createMap(inTaskAttributes);
 		this.outTaskAttributeOption = outTaskAttributeOption;
@@ -118,6 +125,16 @@ public final class TaskDefinition implements Definition {
 	 */
 	public Class<? extends TaskEngine> getTaskEngineClass() {
 		return taskEngineClass;
+	}
+
+	/**
+	 * Return storeName use by this task.
+	 * Used by TaskEngine.
+	 *
+	 * @return storeName.
+	 */
+	public String getStoreName() {
+		return storeName;
 	}
 
 	/**

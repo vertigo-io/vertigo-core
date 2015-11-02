@@ -35,4 +35,9 @@ public interface DataStoreConfig {
 	 */
 	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList);
 
+	/**
+	 * @param storeName StoreName
+	 * @return connectionName use for this store
+	 */
+	String getConnectionName(String storeName);
 }

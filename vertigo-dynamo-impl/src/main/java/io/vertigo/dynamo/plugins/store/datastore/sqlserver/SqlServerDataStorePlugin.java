@@ -40,11 +40,12 @@ import javax.inject.Named;
 public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
 	 * Constructeur.
+	 * @param connectionName Connection name
 	 * @param taskManager Manager des Tasks
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(@Named("name") final Option<String> name, final TaskManager taskManager) {
-		super(name, taskManager);
+	public SqlServerDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
+		super(name, connectionName, taskManager);
 	}
 
 	/** {@inheritDoc} */
