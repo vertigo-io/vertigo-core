@@ -49,6 +49,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Map;
 
@@ -62,11 +63,13 @@ import java.util.Map;
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
+	private static final String DEFAULT_STORE_NAME = "main";
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
+	private final String name;
 	/**
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
@@ -92,10 +95,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Constructeur.
+	 * @param name Nom du store
+	 * @param taskManager TaskManager
 	 */
-	protected AbstractSqlDataStorePlugin(final TaskManager taskManager) {
+	protected AbstractSqlDataStorePlugin(final Option<String> name, final TaskManager taskManager) {
+		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(taskManager);
 		//-----
+		this.name = name.getOrElse(DEFAULT_STORE_NAME);
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer);
 	}
@@ -108,6 +115,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected static final String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getLocalName();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final String getName() {
+		return name;
 	}
 
 	protected final TaskManager getTaskManager() {

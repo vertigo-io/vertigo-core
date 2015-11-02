@@ -26,8 +26,10 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Implémentation d'un Store MS Sql Server.
@@ -41,8 +43,8 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param taskManager Manager des Tasks
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(final TaskManager taskManager) {
-		super(taskManager);
+	public SqlServerDataStorePlugin(@Named("name") final Option<String> name, final TaskManager taskManager) {
+		super(name, taskManager);
 	}
 
 	/** {@inheritDoc} */

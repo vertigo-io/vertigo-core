@@ -34,6 +34,12 @@ import io.vertigo.lang.Plugin;
  * @author  pchretien
  */
 public interface DataStorePlugin extends Plugin {
+
+	/**
+	 * @return Store's name
+	 */
+	String getName();
+
 	//==========================================================================
 	//=============================== READ =====================================
 	//==========================================================================
@@ -50,8 +56,9 @@ public interface DataStorePlugin extends Plugin {
 	 * Peut-être null.
 	 *
 	 * @param uri URI de l'objet à charger
-	 * @return D correspondant à l'URI fournie.
 	 * @param <D> Type de l'objet
+	 * @param dtDefinition Definition
+	 * @return D correspondant à l'URI fournie.
 	 */
 	<D extends DtObject> D load(DtDefinition dtDefinition, URI<D> uri);
 
@@ -60,6 +67,7 @@ public interface DataStorePlugin extends Plugin {
 	 * NOT NULL
 	 *
 	 * @param uri URI de la collection à charger
+	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
@@ -76,6 +84,7 @@ public interface DataStorePlugin extends Plugin {
 	* Create an object.
 	* No object with the same id must have been created previously.
 	*
+	* @param dtDefinition Definition
 	* @param dto Object to create
 	*/
 	void create(DtDefinition dtDefinition, DtObject dto);
@@ -83,6 +92,7 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	* Update an object.
 	* This object must have an id.
+	* @param dtDefinition Definition
 	* @param dto Object to update
 	*/
 	void update(DtDefinition dtDefinition, DtObject dto);
@@ -94,12 +104,14 @@ public interface DataStorePlugin extends Plugin {
 	*  - If  this object is already created : update
 	*  - If  this object is not found : create
 	*
+	* @param dtDefinition Definition
 	* @param dto Object to merge
 	*/
 	void merge(DtDefinition dtDefinition, DtObject dto);
 
 	/**
 	 * Suppression d'un objet.
+	 * @param dtDefinition Definition
 	 * @param uri URI de l'objet à supprimmer
 	 */
 	void delete(DtDefinition dtDefinition, URI uri);

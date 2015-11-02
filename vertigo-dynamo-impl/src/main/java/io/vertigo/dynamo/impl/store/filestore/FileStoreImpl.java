@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.impl.store.filestore;
 
 import io.vertigo.dynamo.domain.model.FileInfoURI;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.impl.store.filestore.logical.LogicalFileStore;
 import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.lang.Assertion;
 
@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class FileStoreImpl implements FileStore {
-	private final FileStorePlugin fileStore;
+	private final FileStoreConfig fileStoreConfig;
 
 	/**
 	 * Constructeur.
@@ -38,7 +38,11 @@ public final class FileStoreImpl implements FileStore {
 	public FileStoreImpl(final FileStoreConfig fileStoreConfig) {
 		Assertion.checkNotNull(fileStoreConfig);
 		//-----
-		fileStore = new LogicalFileStore(fileStoreConfig.getLogicalFileStoreConfiguration());
+		this.fileStoreConfig = fileStoreConfig;
+	}
+
+	private FileStorePlugin getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {
+		return fileStoreConfig.getPhysicalFileStore(fileInfoDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -46,7 +50,7 @@ public final class FileStoreImpl implements FileStore {
 	public void create(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//-----
-		fileStore.create(fileInfo);
+		getPhysicalStore(fileInfo.getDefinition()).create(fileInfo);
 	}
 
 	/** {@inheritDoc} */
@@ -54,7 +58,7 @@ public final class FileStoreImpl implements FileStore {
 	public void update(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//-----
-		fileStore.update(fileInfo);
+		getPhysicalStore(fileInfo.getDefinition()).update(fileInfo);
 	}
 
 	/** {@inheritDoc} */
@@ -62,7 +66,7 @@ public final class FileStoreImpl implements FileStore {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		fileStore.remove(uri);
+		getPhysicalStore(uri.getDefinition()).remove(uri);
 	}
 
 	/** {@inheritDoc} */
@@ -70,7 +74,7 @@ public final class FileStoreImpl implements FileStore {
 	public FileInfo get(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final FileInfo fileInfo = fileStore.load(uri);
+		final FileInfo fileInfo = getPhysicalStore(uri.getDefinition()).load(uri);
 		//-----
 		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;

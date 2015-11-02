@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -34,17 +34,22 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.DateUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -56,17 +61,12 @@ import javax.inject.Named;
  *
  * @author pchretien, npiedeloup, skerdudou
  */
-public final class FsFileStorePlugin implements FileStorePlugin {
-	private static final String DEFAULT_STORE_NAME = "main";
-	private static final String STORE_READ_ONLY = "Le store est en readOnly";
+public final class FsTempFileStorePlugin implements FileStorePlugin {
+	private static final String DEFAULT_STORE_NAME = "temp";
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
-
-	/**
-	 * Identifiant de ressource FileSystem par défaut.
-	 */
-	private static final VTransactionResourceId<FsTransactionResource> FS_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS");
+	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -94,31 +94,23 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
-	private final DtDefinition storeDtDefinition;
-	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
 	 * @param name Store name
-	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param fileManager Manager de gestion des fichiers
-	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
-	 * @param transactionManager Manager des transactions
+	 * @param path Root directory
 	 */
 	@Inject
-	public FsFileStorePlugin(@Named("name") final Option<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
+	public FsTempFileStorePlugin(@Named("name") final Option<String> name, @Named("path") final String path, final FileManager fileManager) {
 		Assertion.checkNotNull(name);
-		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);
-		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(fileManager);
 		//-----
 		this.name = name.getOrElse(DEFAULT_STORE_NAME);
 		readOnly = false;
-		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
 		documentRoot = translatePath(path);
-		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
 	}
 
 	private static String translatePath(final String path) {
@@ -137,24 +129,27 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo load(final FileInfoURI uri) {
-		// récupération de l'objet en base
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		// récupération des metadata.
+		try {
+			final String metadataUri = String.class.cast(uri.getKey()) + ".info";
+			final Path metadataPath = Paths.get(documentRoot, metadataUri);
+			final List<String> infos = Files.readAllLines(metadataPath, Charset.forName("utf8"));
+			// récupération des infos
+			final String fileName = infos.get(0);
+			final String mimeType = infos.get(1);
+			final Date lastModified = DateUtil.parse(infos.get(2), INFOS_DATE_PATTERN);
+			final Long length = Long.valueOf(infos.get(3));
 
-		// récupération du fichier
-		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
-		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
-		final Date lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Date.class);
-		final Long length = getValue(fileInfoDto, DtoFields.LENGTH, Long.class);
-		final String filePath = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + String.class.cast(uri.getKey())));
+			final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
-		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
-		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
-
-		// retourne le fileinfo avec le fichier et son URI
-		final FsFileInfo fsFileInfo = new FsFileInfo(uri.getDefinition(), vFile);
-		fsFileInfo.setURIStored(uri);
-		return fsFileInfo;
+			// retourne le fileinfo avec le fichier et son URI
+			final FsFileInfo fsFileInfo = new FsFileInfo(uri.getDefinition(), vFile);
+			fsFileInfo.setURIStored(uri);
+			return fsFileInfo;
+		} catch (final IOException e) {
+			throw new RuntimeException("Can't read fileInfo " + uri.toURN(), e);
+		}
 	}
 
 	private static class FsFileInfo extends AbstractFileInfo {
@@ -328,7 +323,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static StoreManager getStoreManager() {
-		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
+		return Home.getComponentSpace().resolve(StoreManager.class);
 	}
 
 	/** récupère la transaction courante. */

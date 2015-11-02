@@ -38,12 +38,8 @@ import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.dynamo.store.kvstore.KVStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -55,12 +51,12 @@ import javax.inject.Inject;
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
+	private final FileStoreConfig fileStoreConfig;
+
 	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
 	private final FileStore fileStore;
 	private final KVStore kvStore;
-
-	private final Map<String, KVDataStorePlugin> kvDataStorePluginBinding;
 
 	/**
 	 * Constructeur.
@@ -71,48 +67,29 @@ public final class StoreManagerImpl implements StoreManager {
 	public StoreManagerImpl(final TaskManager taskManager,
 			final CacheManager cacheManager,
 			final CollectionsManager collectionsManager,
-			final Option<FileStorePlugin> fileStorePlugin,
-			final DataStorePlugin defaultStorePlugin,
+			final List<FileStorePlugin> fileStorePlugins,
+			final List<DataStorePlugin> dataStorePlugins,
 			final List<KVDataStorePlugin> kvDataStorePlugins,
 			final EventManager eventManager) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
-		Assertion.checkNotNull(fileStorePlugin);
-		Assertion.checkNotNull(defaultStorePlugin);
+		Assertion.checkNotNull(dataStorePlugins);
+		Assertion.checkNotNull(fileStorePlugins);
 		Assertion.checkNotNull(kvDataStorePlugins);
 		Assertion.checkNotNull(eventManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
-		dataStoreConfig = new DataStoreConfigImpl(cacheManager, this, eventManager);
 		//---
-		//On enregistre le plugin principal du broker : DefaultPhysicalStore
-		dataStoreConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
+		//On enregistre le plugin principal du broker
+		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager, this, eventManager);
 		dataStore = new DataStoreImpl(dataStoreConfig);
 		//-----
 		kvStore = new KVStoreImpl(kvDataStorePlugins);
 		//-----
-		fileStore = createFileIStore(fileStorePlugin);
+		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
+		fileStore = new FileStoreImpl(fileStoreConfig);
 		//-----
-		final Map<String, KVDataStorePlugin> map = new HashMap<>();
-		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
-			map.put(kvDataStorePlugin.getDataStoreName(), kvDataStorePlugin);
-		}
-		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
-	}
-
-	private static FileStore createFileIStore(final Option<FileStorePlugin> fileStorePlugin) {
-		final FileStoreConfig fileStoreConfig = new FileStoreConfig();
-		//On enregistre le plugin de gestion des fichiers : facultatif
-		if (fileStorePlugin.isDefined()) {
-			fileStoreConfig.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
-		}
-		return new FileStoreImpl(fileStoreConfig);
-	}
-
-	@Override
-	public KVStore getKVStore() {
-		return kvStore;
 	}
 
 	/** {@inheritDoc} */
@@ -141,11 +118,9 @@ public final class StoreManagerImpl implements StoreManager {
 		return fileStore;
 	}
 
-	public KVDataStorePlugin getKVDataStorePlugin(final String dataStoreName) {
-		final KVDataStorePlugin kvDataStorePlugin = kvDataStorePluginBinding.get(dataStoreName);
-		//-----
-		Assertion.checkNotNull(kvDataStorePlugin, "No KVDataStorePlugin bind to this name : {0}. Registered dataStoreNames : ({1})", dataStoreName, kvDataStorePluginBinding.keySet());
-		//-----
-		return kvDataStorePlugin;
+	/** {@inheritDoc} */
+	@Override
+	public KVStore getKVStore() {
+		return kvStore;
 	}
 }

@@ -26,6 +26,7 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,8 +44,8 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject
-	public PostgreSqlDataStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(taskManager);
+	public PostgreSqlDataStorePlugin(@Named("name") final Option<String> name, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(name, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;

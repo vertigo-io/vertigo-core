@@ -28,6 +28,12 @@ import io.vertigo.lang.Plugin;
  * @author  npiedeloup
  */
 public interface FileStorePlugin extends Plugin {
+
+	/**
+	 * @return Store name
+	 */
+	String getName();
+
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
 	 * Peut-être null.
@@ -59,4 +65,5 @@ public interface FileStorePlugin extends Plugin {
 	 * @param uri URI du fichier à supprimmer
 	 */
 	void remove(FileInfoURI uri);
+
 }

@@ -28,6 +28,8 @@ import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
+import java.util.List;
+
 /**
  * Implémentation Standard du StoreProvider.
  *
@@ -42,12 +44,13 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 
 	/**
 	 * Constructeur.
-	 *
+	 * @param dataStorePlugins DataStorePlugins list
 	 * @param cacheManager Manager de gestion du cache
 	 * @param storeManager Manager de persistence
 	 * @param eventsManager Manager d'events
 	 */
-	public DataStoreConfigImpl(final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
+	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
+		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(eventsManager);
@@ -55,7 +58,7 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 		this.storeManager = storeManager;
 		this.eventsManager = eventsManager;
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
-		logicalDataStoreConfig = new LogicalDataStoreConfig();
+		logicalDataStoreConfig = new LogicalDataStoreConfig(dataStorePlugins);
 	}
 
 	/**
@@ -91,10 +94,5 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 
 	public LogicalDataStoreConfig getLogicalStoreConfig() {
 		return logicalDataStoreConfig;
-	}
-
-	@Override
-	public void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore) {
-		logicalDataStoreConfig.register(dtDefinition, specificStore);
 	}
 }

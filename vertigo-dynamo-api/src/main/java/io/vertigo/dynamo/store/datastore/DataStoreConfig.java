@@ -35,10 +35,4 @@ public interface DataStoreConfig {
 	 */
 	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList);
 
-	/**
-	 * Enregistre un Store spécifique pour une dtDefinition donnée.
-	 * @param dtDefinition Définition de DT
-	 * @param specificStore Store spécifique
-	 */
-	void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore);
 }
