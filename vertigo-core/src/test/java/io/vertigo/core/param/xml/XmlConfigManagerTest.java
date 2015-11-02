@@ -19,12 +19,12 @@
 package io.vertigo.core.param.xml;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.param.ConfigManager;
 import io.vertigo.core.param.ServerConfig;
+import io.vertigo.core.plugins.param.xml.XmlConfigPlugin;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 import javax.inject.Inject;
 

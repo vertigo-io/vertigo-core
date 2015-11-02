@@ -16,22 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.resource.local;
+package io.vertigo.core.plugins.resource.url;
 
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Résolution des URL liées à l'emplacement local.
+ * Résolution des URL par le standard java.net.URL.
  *
- * @author prahmoune
+ * @author npiedeloup
  */
-public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
+public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
 	@Override
@@ -39,9 +40,18 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 		Assertion.checkNotNull(resource);
 		//-----
 		try {
-			return Option.option(new File(resource).toURI().toURL());
+			final URL url = new URL(resource);
+			return checkUrlAvailable(url) ? Option.some(url) : Option.<URL> none();
 		} catch (final MalformedURLException e) {
 			return Option.none();
+		}
+	}
+
+	private static boolean checkUrlAvailable(final URL url) {
+		try (InputStream is = url.openStream()) {
+			return is.read() > 0;
+		} catch (final IOException e) {
+			return false;
 		}
 	}
 }

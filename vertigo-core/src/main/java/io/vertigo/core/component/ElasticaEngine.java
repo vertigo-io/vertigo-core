@@ -16,29 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.engines;
+package io.vertigo.core.component;
 
-import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Engine;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Create proxy-reference from component's instance.
- * Proxy reference implements aspects (AOP). 
- * 
+/** 
+ * Gestion des appels distribués.
+ * Ce module est utilisé 
+ *  - soit en mode client 
+ *  - soit en mode server
+ *  
  * @author pchretien
  */
-public interface AopEngine extends Engine {
-
+public interface ElasticaEngine extends Engine {
 	/**
-	 * Create a proxy-reference.
+	 * Création d'un proxy client. 
+	 * Le proxy permet de distribuer des services ; ces services sont déclarés dans une interface et déployés sur un serveur.  
 	 * 
-	 * @param instance Component's instance
-	 * @param joinPoints List of joinPoints 
-	 * @return  Proxy-Reference
+	 * @param <F> Type de l'interface à distribuer
+	 * @return Interface cliente du service
 	 */
-	Object create(final Object instance, Map<Method, List<Aspect>> joinPoints);
+	<F> F createProxy(final Class<F> facadeClass);
+
 }

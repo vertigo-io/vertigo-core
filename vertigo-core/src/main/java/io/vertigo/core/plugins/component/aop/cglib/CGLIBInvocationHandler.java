@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.engines.aop.cglib;
+package io.vertigo.core.plugins.component.aop.cglib;
 
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;

@@ -2,7 +2,7 @@
 <config>
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin" />
+			<plugin class="io.vertigo.core.plugins.analytics.dummy.DummyAgentPlugin" />
 		</component>
 	</module>
 </config>

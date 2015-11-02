@@ -16,26 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.engines;
+package io.vertigo.core.plugins.resource.local;
 
-import io.vertigo.lang.Engine;
+import io.vertigo.core.resource.ResourceResolverPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
-/** 
- * Gestion des appels distribués.
- * Ce module est utilisé 
- *  - soit en mode client 
- *  - soit en mode server
- *  
- * @author pchretien
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+/**
+ * Résolution des URL liées à l'emplacement local.
+ *
+ * @author prahmoune
  */
-public interface ElasticaEngine extends Engine {
-	/**
-	 * Création d'un proxy client. 
-	 * Le proxy permet de distribuer des services ; ces services sont déclarés dans une interface et déployés sur un serveur.  
-	 * 
-	 * @param <F> Type de l'interface à distribuer
-	 * @return Interface cliente du service
-	 */
-	<F> F createProxy(final Class<F> facadeClass);
+public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
 
+	/** {@inheritDoc} */
+	@Override
+	public Option<URL> resolve(final String resource) {
+		Assertion.checkNotNull(resource);
+		//-----
+		try {
+			return Option.option(new File(resource).toURI().toURL());
+		} catch (final MalformedURLException e) {
+			return Option.none();
+		}
+	}
 }

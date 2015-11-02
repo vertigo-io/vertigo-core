@@ -20,9 +20,9 @@ package io.vertigo.vega.webservice.data;
 
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;

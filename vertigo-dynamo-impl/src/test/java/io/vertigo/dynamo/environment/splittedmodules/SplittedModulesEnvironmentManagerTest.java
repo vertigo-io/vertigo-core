@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.environment.splittedmodules;
 
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.engines.AopEngine;
-import io.vertigo.core.engines.ElasticaEngine;
+import io.vertigo.core.component.AopEngine;
+import io.vertigo.core.component.ElasticaEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Engine;
 import io.vertigo.lang.JsonExclude;
