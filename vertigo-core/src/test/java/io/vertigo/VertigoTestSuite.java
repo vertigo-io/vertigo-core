@@ -18,7 +18,7 @@
  */
 package io.vertigo;
 
-import io.vertigo.app.config.AppConfigTest;
+import io.vertigo.app.config.xml.AppConfigTest;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;

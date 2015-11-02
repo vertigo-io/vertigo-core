@@ -16,18 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config2;
+package io.vertigo.app.config.xml;
 
 import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
-import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.spaces.component.data.BioManager;
-import io.vertigo.core.spaces.component.data.BioManagerImpl;
-import io.vertigo.core.spaces.component.data.MathManager;
-import io.vertigo.core.spaces.component.data.MathManagerImpl;
-import io.vertigo.core.spaces.component.data.MathPlugin;
+
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,28 +31,10 @@ import org.junit.Test;
 public final class AppConfigTest {
 	@Test
 	public void HomeTest() {
-		final String locales = "fr_FR";
 
-		//@formatter:off
-		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBootModule(locales)
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/config2/basic-app-config.xml")
-				.endPlugin()
-			.endModule()
-
-			.beginModule("bio")
-			.addComponent(BioManager.class, BioManagerImpl.class)
-			.beginComponent(MathManager.class, MathManagerImpl.class)
-				.addParam("start", "conf:math.test.start")
-			.endComponent()
-			.beginPlugin(MathPlugin.class)
-				.addParam("factor", "20")
-			.endPlugin()
-			.endModule()
-			.build();
-		//@formatter:on
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), "bio.xml")
+				.build();
 
 		try (App app = new App(appConfig)) {
 			Assert.assertEquals(app, app);
