@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.plugins.param.xml;
 
-import io.vertigo.core.param.ConfigPlugin;
+import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  * Parser XML du paramétrage de la config.
  * @author  pchretien
  */
-public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader<HomeConfigBuilder>*/
+public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<HomeConfigBuilder>*/
 	private final Map<String, Map<String, String>> configs;
 
 	/**
@@ -53,7 +53,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	 * @param url Url du fichier XML de configuration
 	 */
 	@Inject
-	public XmlConfigPlugin(final ResourceManager resourceManager, @Named("url") final String url) {
+	public XmlParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		//-----
@@ -104,7 +104,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 
 	private static void xsdValidate(final URL configURL) {
 		//--- validation XSD
-		final URL xsd = XmlConfigPlugin.class.getResource("vertigo-config_1_0.xsd");
+		final URL xsd = XmlParamPlugin.class.getResource("vertigo-config_1_0.xsd");
 		XMLUtil.validateXmlByXsd(configURL, xsd);
 		//--- fin validation XSD
 	}

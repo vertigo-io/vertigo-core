@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.servlet;
+package io.vertigo.struts2.plugins.config.servlet;
 
-import io.vertigo.core.param.ConfigPlugin;
+import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -30,8 +30,8 @@ import javax.inject.Named;
 /**
  * Plugin d'accès à la configuration de la WebApp.
  * @author npiedeloup
- */
-public final class WebAppContextConfigPlugin implements ConfigPlugin {
+*/
+public final class WebAppContextParamPlugin implements ParamPlugin {
 	private static Properties properties;
 
 	/**
@@ -40,7 +40,7 @@ public final class WebAppContextConfigPlugin implements ConfigPlugin {
 	public static void setInitConfig(final Properties initConf) {
 		Assertion.checkNotNull(initConf);
 		//-----
-		WebAppContextConfigPlugin.properties = initConf;
+		WebAppContextParamPlugin.properties = initConf;
 	}
 
 	private final String managedConfigPath;
@@ -50,7 +50,7 @@ public final class WebAppContextConfigPlugin implements ConfigPlugin {
 	 * @param configPath Nom de la config initial
 	 */
 	@Inject
-	public WebAppContextConfigPlugin(@Named("configPath") final String configPath) {
+	public WebAppContextParamPlugin(@Named("configPath") final String configPath) {
 		Assertion.checkArgNotEmpty(configPath);
 		//-----
 		managedConfigPath = configPath;

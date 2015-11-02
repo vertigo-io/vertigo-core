@@ -20,7 +20,7 @@ package io.vertigo.struts2.core;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
@@ -79,7 +79,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	@Inject
 	private ContextCacheManager contextCacheManager;
 	@Inject
-	private ConfigManager configManager;
+	private ParamManager configManager;
 
 	private final UiMessageStack uiMessageStack;
 

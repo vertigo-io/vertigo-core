@@ -20,7 +20,7 @@ package io.vertigo.core.config;
 
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -44,7 +44,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		myBootModuleConfigBuilder =
 				myBootConfigBuilder.beginBootModule().withNoAPI()
 						.addComponent(ResourceManager.class)
-						.addComponent(ConfigManager.class)
+						.addComponent(ParamManager.class)
 						.addComponent(DefinitionLoader.class);
 	}
 

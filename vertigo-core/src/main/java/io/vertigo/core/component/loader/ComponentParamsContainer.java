@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.component.loader;
 
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
@@ -37,11 +37,11 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 final class ComponentParamsContainer implements Container {
-	private final Option<ConfigManager> configManagerOption;
+	private final Option<ParamManager> configManagerOption;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;
 
-	ComponentParamsContainer(final Option<ConfigManager> configManagerOption, final Map<String, String> params) {
+	ComponentParamsContainer(final Option<ParamManager> configManagerOption, final Map<String, String> params) {
 		Assertion.checkNotNull(configManagerOption);
 		Assertion.checkNotNull(params);
 		//-----

@@ -22,7 +22,7 @@ import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.App;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.lang.Assertion;
-import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
+import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
 import java.io.FileInputStream;
@@ -62,7 +62,7 @@ final class HomeServletStarter {
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
 			final Properties webAppConf = createWebAppProperties(servletContext);
-			WebAppContextConfigPlugin.setInitConfig(webAppConf);
+			WebAppContextParamPlugin.setInitConfig(webAppConf);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");

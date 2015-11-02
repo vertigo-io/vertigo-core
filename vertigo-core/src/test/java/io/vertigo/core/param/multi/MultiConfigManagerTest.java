@@ -21,10 +21,10 @@ package io.vertigo.core.param.multi;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ServerConfig;
-import io.vertigo.core.plugins.param.properties.PropertiesConfigPlugin;
-import io.vertigo.core.plugins.param.xml.XmlConfigPlugin;
+import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
+import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private ConfigManager configManager;
+	private ParamManager configManager;
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -47,18 +47,18 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 		return new AppConfigBuilder()
 			.beginBootModule(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.beginPlugin(XmlConfigPlugin.class)
+				.beginPlugin(XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config.xml")
 				.endPlugin()
-				.beginPlugin( PropertiesConfigPlugin.class)
+				.beginPlugin( PropertiesParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config.properties")
 					.addParam("configPath", "server.fr")
 				.endPlugin()
-				.beginPlugin( PropertiesConfigPlugin.class)
+				.beginPlugin( PropertiesParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config2.properties")
 					.addParam("configPath", "server.en")
 				.endPlugin()
-				.beginPlugin(XmlConfigPlugin.class)
+				.beginPlugin(XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config2.xml")
 				.endPlugin()
 			.endModule()

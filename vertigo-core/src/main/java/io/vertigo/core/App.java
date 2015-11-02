@@ -21,7 +21,7 @@ package io.vertigo.core;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.definition.loader.DefinitionLoader;
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -89,7 +89,7 @@ public final class App implements AutoCloseable {
 			definitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
 
 			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ConfigManager.class), appConfig.getModuleConfigs());
+			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
 			//-----3. Print 
 			if (!appConfig.getBootConfig().isSilence()) {
 				appConfig.print(System.out);

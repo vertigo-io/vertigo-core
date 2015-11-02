@@ -27,7 +27,7 @@ import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
-import io.vertigo.core.param.ConfigManager;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
@@ -62,7 +62,7 @@ public final class ComponentLoader {
 		this.elasticaEngineOption = elasticaEngineOption;
 	}
 
-	public void injectAllComponents(final ComponentSpace componentSpace, final ConfigManager configManager, final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager configManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
@@ -71,17 +71,17 @@ public final class ComponentLoader {
 	}
 
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
-		doInjectComponents(componentSpace, Option.<ConfigManager> none(), bootModuleConfig);
+		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
 	}
 
-	private void injectComponent(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
+	private void injectComponent(final ComponentSpace componentSpace, final Option<ParamManager> configManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		doInjectComponents(componentSpace, configManagerOption, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ConfigManager> configManagerOption, final ModuleConfig moduleConfig) {
+	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ParamManager> configManagerOption, final ModuleConfig moduleConfig) {
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
@@ -188,7 +188,7 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private Object createComponentWithOptions(final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Object createComponentWithOptions(final Option<ParamManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 2. On crée le composant
 		final Object instance = createComponent(configManagerOption, componentContainer, componentConfig);
 
@@ -208,7 +208,7 @@ public final class ComponentLoader {
 		return Option.none();
 	}
 
-	private Object createComponent(final Option<ConfigManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Object createComponent(final Option<ParamManager> configManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
 			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		}
@@ -221,7 +221,7 @@ public final class ComponentLoader {
 		return component;
 	}
 
-	private static Plugin createPlugin(final Container componentContainer, final Option<ConfigManager> configManagerOption, final PluginConfig pluginConfig) {
+	private static Plugin createPlugin(final Container componentContainer, final Option<ParamManager> configManagerOption, final PluginConfig pluginConfig) {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(configManagerOption, pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---

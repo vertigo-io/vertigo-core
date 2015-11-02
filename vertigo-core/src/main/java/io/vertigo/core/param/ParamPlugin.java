@@ -26,7 +26,7 @@ import io.vertigo.lang.Plugin;
  * Toutes les configuration sont gérées sous forme de String.
  * @author prahmoune
  */
-public interface ConfigPlugin extends Plugin {
+public interface ParamPlugin extends Plugin {
 	/** 
 	 * Retourne une propriété de configuration.
 	 * Retourne none si la propriété n'est pas gérée.

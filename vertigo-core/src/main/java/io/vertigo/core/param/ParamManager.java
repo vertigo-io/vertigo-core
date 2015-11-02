@@ -86,21 +86,21 @@ import javax.inject.Inject;
  *
  * @author pchretien, npiedeloup, prahmoune 
  */
-public final class ConfigManager implements Component {
+public final class ParamManager implements Component {
 	/** Regexp path. */
 	private static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
 	/** Regexp propertyName. */
 	private static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
-	private final List<ConfigPlugin> configPlugins;
+	private final List<ParamPlugin> paramPlugins;
 	private static final char CONFIG_PATH_SEPARATOR = '.';
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
 	@Inject
-	public ConfigManager(final List<ConfigPlugin> configPlugins) {
-		Assertion.checkNotNull(configPlugins);
+	public ParamManager(final List<ParamPlugin> paramPlugins) {
+		Assertion.checkNotNull(paramPlugins);
 		//-----
-		this.configPlugins = configPlugins;
+		this.paramPlugins = paramPlugins;
 	}
 
 	private static void checkPath(final String configPath) {
@@ -217,8 +217,8 @@ public final class ConfigManager implements Component {
 		//-----
 		String subConfig = configPath;
 		while (subConfig != null) {
-			for (final ConfigPlugin configPlugin : configPlugins) {
-				final Option<String> value = configPlugin.getValue(subConfig, property);
+			for (final ParamPlugin paramPlugin : paramPlugins) {
+				final Option<String> value = paramPlugin.getValue(subConfig, property);
 				if (value.isDefined()) {
 					return castValue(subConfig, property, propertyClass, value.get());
 				}

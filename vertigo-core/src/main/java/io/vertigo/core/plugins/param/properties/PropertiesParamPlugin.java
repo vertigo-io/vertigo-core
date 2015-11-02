@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.plugins.param.properties;
 
-import io.vertigo.core.param.ConfigPlugin;
+import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -36,7 +36,7 @@ import javax.inject.Named;
  *
  * @author skerdudou
  */
-public final class PropertiesConfigPlugin implements ConfigPlugin {
+public final class PropertiesParamPlugin implements ParamPlugin {
 	private final Properties properties;
 	private final String managedConfigPath;
 
@@ -48,7 +48,7 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 	 * @throws IOException erreur de lecture du fichier
 	 */
 	@Inject
-	public PropertiesConfigPlugin(final ResourceManager resourceManager, @Named("url") final String url, @Named("configPath") final String configPath) throws IOException {
+	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url, @Named("configPath") final String configPath) throws IOException {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		Assertion.checkArgNotEmpty(configPath);
