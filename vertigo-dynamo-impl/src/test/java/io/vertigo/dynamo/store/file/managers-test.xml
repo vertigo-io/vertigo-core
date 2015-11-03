@@ -21,6 +21,7 @@
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
 
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	</module>
 
 	<module name="vertigo-dynamo">
@@ -38,9 +39,11 @@
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.store.filestore.fs.FsFileStorePlugin">
+			<plugin class="io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin">
 				<param name="name" value="temp"/>
-			</plugin
+				<param name="path" value="java.io.tmpdir/temp"/>
+				<param name="purgeDelayMinutes" value="1440" /> <!-- 24h -->
+			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin">
 				<param name="storeDtName" value="DT_VX_FILE_INFO"/>
 			</plugin>

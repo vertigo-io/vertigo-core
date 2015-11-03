@@ -66,7 +66,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
-	private static final VTransactionResourceId<FsTransactionResource> FS_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS");
+	private final VTransactionResourceId<FsTransactionResource> fsResourceId;
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -119,6 +119,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		this.fileManager = fileManager;
 		documentRoot = translatePath(path);
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		fsResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS-" + name);
 	}
 
 	private static String translatePath(final String path) {
@@ -336,23 +337,14 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	/**
-	 * Retourne l'id de la ressource FileSystem.
-	 *
-	 * @return Id de la Ressource Connexion FileSystem dans la transaction
-	 */
-	private static VTransactionResourceId<FsTransactionResource> getVTransactionResourceId() {
-		return FS_RESOURCE_ID;
-	}
-
 	/** récupère la ressource FS de la transaction et la créé si nécessaire. */
 	private FsTransactionResource obtainFsTransactionRessource() {
-		FsTransactionResource resource = getCurrentTransaction().getResource(getVTransactionResourceId());
+		FsTransactionResource resource = getCurrentTransaction().getResource(fsResourceId);
 
 		if (resource == null) {
 			// Si aucune ressource de type FS existe sur la transaction, on la créé
 			resource = new FsTransactionResource();
-			getCurrentTransaction().addResource(getVTransactionResourceId(), resource);
+			getCurrentTransaction().addResource(fsResourceId, resource);
 		}
 		return resource;
 	}
