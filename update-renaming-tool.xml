@@ -146,9 +146,9 @@
 			<include name="**/*.java"/>
 		</replace>
 		
-		<echo message="Renamed in web.xml io.vertigo.vega.impl.webservice.servlet.ApplicationServletContextListener to io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
+		<echo message="Renamed in web.xml io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener to io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
-			token="io.vertigo.vega.impl.webservice.servlet.ApplicationServletContextListener" value="io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" >
+			token="io.vertigo.vega.impl.rest.servlet.ApplicationServletContextListener" value="io.vertigo.vega.impl.webservice.servlet.AppServletContextListener" >
 			<include name="**/web.xml"/>
 		</replace>
 		
