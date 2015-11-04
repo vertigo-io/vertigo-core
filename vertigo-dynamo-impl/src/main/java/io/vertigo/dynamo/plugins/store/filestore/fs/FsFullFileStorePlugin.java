@@ -90,11 +90,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@Inject
 	public FsFullFileStorePlugin(@Named("name") final Option<String> name, @Named("path") final String path,
 			final FileManager fileManager, final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final Option<DaemonManager> daemonManager) {
+			@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes) {
+		final Option<DaemonManager> daemonManager = Option.none();
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(transactionManager);
+		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager.isDefined(), "DeamonManager is mandatory when using a purgeDelay");
 		//-----
 		this.name = name.getOrElse(DEFAULT_STORE_NAME);
@@ -186,7 +188,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(format.format(vFile.getLastModified()))
+				.append(format.format(vFile.getLastModified())).append('\n')
 				.append(vFile.getLength()).append('\n')
 				.toString();
 
@@ -196,7 +198,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
-		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
+		final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + UUID.randomUUID();
 		return new FileInfoURI(fileInfoDefinition, pathToSave);
 	}

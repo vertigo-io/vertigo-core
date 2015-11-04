@@ -47,6 +47,7 @@ import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamock.fileinfo.FileInfoStd;
+import io.vertigo.dynamock.fileinfo.FileInfoTemp;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
@@ -345,6 +346,49 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			return read.substring(index, Math.min(read.length() - 1, index + searchString.length()));
 		}
 		return "N/A";
+	}
+
+	@Test
+	public void testOtherStoreFile() throws Exception {
+		final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
+		//1.Création du fichier depuis un fichier texte du FS
+		final FileInfo fileInfo = new FileInfoTemp(vFile);
+
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//2. Sauvegarde en Temp
+			storeManager.getFileStore().create(fileInfo);
+			transaction.commit(); //can't read file if not commited (TODO ?)
+		}
+
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+
+			//3.relecture du fichier
+			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
+
+			//4. comparaison du fichier créé et du fichier lu.
+
+			final String source;
+			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
+				FileUtil.copy(vFile.createInputStream(), sourceOS);
+				source = sourceOS.toString();
+			}
+
+			final String read;
+			try (final OutputStream readOS = new java.io.ByteArrayOutputStream()) {
+				FileUtil.copy(readFileInfo.getVFile().createInputStream(), readOS);
+				read = readOS.toString();
+			}
+			//on vérifie que le contenu des fichiers est identique.
+			//assertEquals("toto", "toto");
+			//assertEquals("toto", "ti");
+			Assert.assertEquals(source, read);
+			Assert.assertTrue("Test contenu du fichier", read.startsWith("Chant I"));
+			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"), read.indexOf("ses notes langoureuses,") > 0);
+			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"), read.indexOf("mal : \"Adolescent,") > 0);
+
+			//On désactive pour l'instant
+			//Ne marche pas sur la PIC pour cause de charset sur le àé			//Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
+		}
 	}
 
 	/**
