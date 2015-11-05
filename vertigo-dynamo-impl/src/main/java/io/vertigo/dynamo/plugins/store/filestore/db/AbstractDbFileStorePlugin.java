@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -194,6 +194,6 @@ abstract class AbstractDbFileStorePlugin {
 	 * @return StoreManager
 	 */
 	protected static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 }
