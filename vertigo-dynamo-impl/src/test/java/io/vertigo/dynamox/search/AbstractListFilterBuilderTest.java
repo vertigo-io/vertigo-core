@@ -86,9 +86,24 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 to 2005]" }, //15
 				{ "ALL:(#query# #query*# #Query~2#)", "Test test2", "ALL:((Test test2) Test* test2* (Test~2 test2~2))", "ALL:((Test test2) (Test* test2*) (Test~2 test2~2))" }, //16
 				{ "ALL:(#query#^4 #query*#^2 #Query~2#)", "Test test2", "ALL:((Test test2)^4 (Test* test2*)^2 (Test~2 test2~2))" }, //17
-				{ "+JOB_CODE:#query*#", "00000-1111", "+JOB_CODE:(00000-1111*)" }, //18
+				{ "+JOB_CODE:#+query*#", "00000-1111", "+JOB_CODE:(+00000-1111*)" }, //18
+				{ "+JOB_CODE:#+query*#", "130.IC", "+JOB_CODE:(+130.IC*)" }, //19
+				{ "+JOB_CODE:+#query*#", "130.IC rouge", "+JOB_CODE:(+(130.IC* rouge*))" }, //20
+				{ "PART_NUMBER:#+query*#", "130.IC rouge", "PART_NUMBER:(+130.IC* +rouge*)" }, //21
 		};
-		testStringFixedQuery(testQueries[18]);
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringBooleanQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "F1:#query# or F2:#query#", "Test", "F1:Test or F2:Test" }, //0
+				{ "F1:#query# and F2:#query#", "Test", "F1:Test and F2:Test" }, //1
+				{ "F1:#query# OR F2:#query#", "Test", "F1:Test OR F2:Test" }, //2
+				{ "F1:#query# AND F2:#query#", "Test", "F1:Test AND F2:Test" }, //3
+				{ "F1:#query# AND (F2:#query# OR F3:#query#)", "Test", "F1:Test AND (F2:Test OR F3:Test)" }, //4
+		};
 		testStringFixedQuery(testQueries);
 	}
 
@@ -193,6 +208,7 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query*#", ";Test;", "ALL:(;+Test*;)" },
 				{ "ALL:#+query*#", "(Test)", "ALL:((+Test*))", "ALL:(+Test*)" },
 				{ "ALL:#+query*#", "[Test]", "ALL:([Test])", "ALL:[Test]" },
+				{ "ALL:#+query*#", "l'avion n'est pas là", "ALL:(+l'avion* +n'est* +pas* +là*)" },
 
 		};
 		testStringFixedQuery(testQueries);
