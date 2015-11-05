@@ -290,7 +290,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			query.append(dslQuery.getPreBody())
 					.append(dslQuery.getStartRange())
 					.append(startRangeStr)
-					.append(" to ")
+					.append(" TO ") //toUpperCase car ES n'interprete pas correctement en lowercase
 					.append(endRangeStr)
 					.append(dslQuery.getEndRange())
 					.append(dslQuery.getPostBody());
@@ -356,7 +356,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				criteriaOnDefinitionField++;
 				query.append(userCriteria.getPreMissingPart());
 				if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
-					query.append(criteriaValue);
+					query.append(criteriaValue.toUpperCase()); //toUpperCase car ES n'interprete pas correctement en lowercase
 				} else {
 					query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
 							.append(criteriaValue)

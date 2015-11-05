@@ -65,6 +65,6 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 		final String preSpaces = (String) parsing.get(0);
 		final String operator = (String) ((Choice) parsing.get(1)).getResult();
 		final String postSpaces = (String) parsing.get(2);
-		return DslUtil.concat(preSpaces, operator, postSpaces);
+		return DslUtil.concat(preSpaces, operator.toUpperCase(), postSpaces); //toUpperCase car ES n'interprete pas correctement en lowercase
 	}
 }
