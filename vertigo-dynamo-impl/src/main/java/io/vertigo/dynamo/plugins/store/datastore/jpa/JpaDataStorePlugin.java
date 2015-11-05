@@ -44,6 +44,7 @@ import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
@@ -62,24 +64,37 @@ import javax.persistence.TypedQuery;
  * @author  pchretien, npiedeloup
  */
 public final class JpaDataStorePlugin implements DataStorePlugin {
+	private static final String DEFAULT_STORE_NAME = "main";
+	private static final String DEFAULT_CONNECTION_NAME = "main";
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
+	private final String name;
+	private final String connectionName;
 	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
 	private final SqlDataBaseListener dataBaseListener;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
+	 * @param name Store name
+	 * @param connectionName Connection name
+	 * @param transactionManager Transaction manager
+	 * @param dataBaseManager  Database manager
+	 * @param analyticsManager  Analytics manager
 	 */
 	@Inject
-	public JpaDataStorePlugin(final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
 		//super(workManager);
+		Assertion.checkNotNull(name);
+		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
+		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.connectionName = name.getOrElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
@@ -87,6 +102,18 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	//==========================================================================
 	//==========================================================================
+
+	/** {@inheritDoc} */
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getConnectionName() {
+		return connectionName;
+	}
 
 	private EntityManager obtainEntityManager() {
 		return obtainJpaResource().getEntityManager();

@@ -51,9 +51,9 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	private static FileInfoDefinition createFileDefinition(final DynamicDefinition xFileDefinition) {
 		final String fileDefinitionName = xFileDefinition.getName();
-		final String root = getPropertyValueAsString(xFileDefinition, KspProperty.ROOT);
+		final String storeName = getPropertyValueAsString(xFileDefinition, KspProperty.STORE_NAME);
 
-		return new FileInfoDefinition(fileDefinitionName, root);
+		return new FileInfoDefinition(fileDefinitionName, storeName);
 	}
 
 }

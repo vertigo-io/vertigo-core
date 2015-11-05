@@ -34,6 +34,7 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,12 +62,14 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 	/**
 	 * Constructeur.
+	 * @param name store name
+	 * @param connectionName Connection name
 	 * @param taskManager Manager des Tasks
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(taskManager);
+	public HsqlDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(name, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;

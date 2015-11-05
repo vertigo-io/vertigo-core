@@ -23,6 +23,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private boolean myPersistent;
 	private boolean myDynamic;
 	private final List<DtField> myFields = new ArrayList<>();
+	private String myStoreName;
 
 	/**
 	 * Constructeur.
@@ -202,12 +204,23 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return new DtField(id, fieldName, type, domain, label, required, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
+	/**
+	 * @param storeName Definition's storeName (nullable)
+	 * @return this builder
+	 */
+	public DtDefinitionBuilder withStoreName(final String storeName) {
+		//storeName peut être null
+		//-----
+		myStoreName = storeName;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, Option.option(myStoreName));
 		return dtDefinition;
 	}
 

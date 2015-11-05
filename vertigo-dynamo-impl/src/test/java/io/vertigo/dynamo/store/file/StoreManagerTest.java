@@ -16,25 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.store.filestore.db;
+package io.vertigo.dynamo.store.file;
 
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
+import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 
 /**
- * Implémentation par défaut d'un FileInfo issue d'une base de données. 
- * @author npiedeloup
+ * Test de l'implémentation standard.
+ *
+ * @author pchretien
  */
-final class DatabaseFileInfo extends AbstractFileInfo {
-	private static final long serialVersionUID = -1610176974946554828L;
-
-	/**
-	 * Constructeur.
-	 * @param fileInfoDefinition Définition du FileInfo
-	 * @param vFile Fichier sous jacent
-	 */
-	protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
-		super(fileInfoDefinition, vFile);
-	}
+public final class StoreManagerTest extends AbstractStoreManagerTest {
+	//rien
 }

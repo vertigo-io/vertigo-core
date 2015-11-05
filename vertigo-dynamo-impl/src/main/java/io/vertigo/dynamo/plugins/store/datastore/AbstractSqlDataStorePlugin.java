@@ -49,6 +49,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Map;
 
@@ -62,11 +63,16 @@ import java.util.Map;
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
+	private static final String DEFAULT_STORE_NAME = "main";
+	private static final String DEFAULT_CONNECTION_NAME = "main";
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
+	private final String name;
+
+	private final String connectionName;
 	/**
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
@@ -92,10 +98,17 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Constructeur.
+	 * @param name Nom du store
+	 * @param connectionName Connection's name
+	 * @param taskManager TaskManager
 	 */
-	protected AbstractSqlDataStorePlugin(final TaskManager taskManager) {
+	protected AbstractSqlDataStorePlugin(final Option<String> name, final Option<String> connectionName, final TaskManager taskManager) {
+		Assertion.checkNotNull(name);
+		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
 		//-----
+		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.connectionName = name.getOrElse(DEFAULT_CONNECTION_NAME);
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer);
 	}
@@ -108,6 +121,18 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected static final String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getLocalName();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final String getName() {
+		return name;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final String getConnectionName() {
+		return connectionName;
 	}
 
 	protected final TaskManager getTaskManager() {
@@ -129,6 +154,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		postAlterLoadRequest(request);
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(name)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
@@ -178,6 +204,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(name)
 				.withRequest(request.toString())
 				.addInAttribute(fkFieldName, fkField.getDomain(), true)
 				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
@@ -240,6 +267,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(name)
 				.withRequest(request.toString());
 		//IN, obligatoire
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
@@ -432,6 +460,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
+				.withStore(name)
 				.withRequest(request)
 				.addInAttribute("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class), true)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
@@ -476,6 +505,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
+				.withStore(name)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
@@ -511,6 +541,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(name)
 				.withRequest(request.toString())
 				.withOutAttribute("dto", countDomain, true)
 				.build();
@@ -540,6 +571,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(name)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)

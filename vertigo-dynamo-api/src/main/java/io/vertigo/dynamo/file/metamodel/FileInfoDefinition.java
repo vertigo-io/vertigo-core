@@ -42,33 +42,34 @@ public final class FileInfoDefinition implements Definition {
 	 */
 	private final String name;
 	/**
-	 * Racine des fichiers de ce type (utilisé par le store).
+	 * StoreName des fichiers de ce type.
 	 */
-	private final String root;
+	private final String storeName;
 
 	/**
 	 * Constructeur.
-	 * @param root Racine des fichiers de ce type
+	 * @param name Nom de la définition
+	 * @param storeName Nom du store de ces fichiers
 	 */
-	public FileInfoDefinition(final String name, final String root) {
+	public FileInfoDefinition(final String name, final String storeName) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(root);
+		Assertion.checkArgNotEmpty(storeName);
 		//-----
 		this.name = name;
-		this.root = root;
-	}
-
-	/**
-	 * @return Racine d'accès aux FI (utilisation depends du fileStorePlugin utilisé).
-	 */
-	public String getRoot() {
-		return root;
+		this.storeName = storeName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return Store d'accès aux FI.
+	 */
+	public String getStoreName() {
+		return storeName;
 	}
 
 	/** {@inheritDoc} */

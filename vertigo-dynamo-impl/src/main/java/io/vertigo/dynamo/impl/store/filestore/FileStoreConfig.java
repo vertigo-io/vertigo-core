@@ -19,7 +19,11 @@
 package io.vertigo.dynamo.impl.store.filestore;
 
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.impl.store.filestore.logical.LogicalFileStoreConfig;
+import io.vertigo.lang.Assertion;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implémentation Standard du StoreProvider.
@@ -27,25 +31,36 @@ import io.vertigo.dynamo.impl.store.filestore.logical.LogicalFileStoreConfig;
  * @author pchretien
  */
 public final class FileStoreConfig {
-	private final LogicalFileStoreConfig logicalFileStoreConfig;
+	private static final String MAIN_FILE_STORE_NAME = "main";
+
+	/** Map des stores utilisés spécifiquement */
+	private final Map<String, FileStorePlugin> fileStoresMap = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * @param fileStorePlugins FileStore plugins
 	 */
-	public FileStoreConfig() {
+	public FileStoreConfig(final List<FileStorePlugin> fileStorePlugins) {
+		Assertion.checkNotNull(fileStorePlugins);
 		//-----
-		logicalFileStoreConfig = new LogicalFileStoreConfig();
+		for (final FileStorePlugin fileStorePlugin : fileStorePlugins) {
+			final String name = fileStorePlugin.getName();
+			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
+			Assertion.checkState(previous == null, "FileStorePlugin {0}, was already registered", name);
+		}
+		Assertion.checkNotNull(fileStoresMap.get(MAIN_FILE_STORE_NAME), "No " + MAIN_FILE_STORE_NAME + " FileStorePlugin was set. Configure one and only one FileStorePlugin with name '" + MAIN_FILE_STORE_NAME + "'.");
 	}
 
 	/**
-	 * @param fileInfoDefinition Definition de fichier
-	 * @param newFileStore Store de fichier
+	 * Fournit un store adpaté au type de l'objet.
+	 * @param definition Définition
+	 * @return Store utilisé pour cette definition
 	 */
-	void registerFileStorePlugin(final FileInfoDefinition fileInfoDefinition, final FileStorePlugin newFileStore) {
-		getLogicalFileStoreConfiguration().register(fileInfoDefinition, newFileStore);
-	}
-
-	public LogicalFileStoreConfig getLogicalFileStoreConfiguration() {
-		return logicalFileStoreConfig;
+	public FileStorePlugin getPhysicalFileStore(final FileInfoDefinition definition) {
+		Assertion.checkNotNull(definition);
+		//-----
+		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
+		final FileStorePlugin fileStore = fileStoresMap.get(definition.getStoreName());
+		Assertion.checkNotNull(fileStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
+		return fileStore;
 	}
 }

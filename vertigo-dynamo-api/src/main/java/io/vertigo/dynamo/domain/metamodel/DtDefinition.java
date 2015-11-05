@@ -65,6 +65,8 @@ public final class DtDefinition implements Definition {
 	private Option<DtField> sortField = Option.none();
 	private Option<DtField> displayField = Option.none();
 
+	private final Option<String> storeName;
+
 	/**
 	 * Constructeur.
 	 */
@@ -74,10 +76,12 @@ public final class DtDefinition implements Definition {
 			final DtStereotype stereotype,
 			final boolean persistent,
 			final List<DtField> dtFields,
-			final boolean dynamic) {
+			final boolean dynamic,
+			final Option<String> storeName) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
+		Assertion.checkNotNull(storeName);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
@@ -95,6 +99,7 @@ public final class DtDefinition implements Definition {
 		}
 		idField = Option.option(id);
 		this.dynamic = dynamic;
+		this.storeName = storeName;
 		//-----
 		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
 	}
@@ -135,6 +140,9 @@ public final class DtDefinition implements Definition {
 		}
 	}
 
+	/**
+	 * @return Stereotype du Dt
+	 */
 	public DtStereotype getStereotype() {
 		return stereotype;
 	}
@@ -249,6 +257,13 @@ public final class DtDefinition implements Definition {
 	 */
 	public Option<DtField> getSortField() {
 		return sortField;
+	}
+
+	/**
+	 * @return StoreName
+	 */
+	public Option<String> getStoreName() {
+		return storeName;
 	}
 
 	/** {@inheritDoc} */
