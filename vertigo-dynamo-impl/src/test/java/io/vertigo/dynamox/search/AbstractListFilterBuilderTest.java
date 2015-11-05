@@ -86,7 +86,9 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 to 2005]" }, //15
 				{ "ALL:(#query# #query*# #Query~2#)", "Test test2", "ALL:((Test test2) Test* test2* (Test~2 test2~2))", "ALL:((Test test2) (Test* test2*) (Test~2 test2~2))" }, //16
 				{ "ALL:(#query#^4 #query*#^2 #Query~2#)", "Test test2", "ALL:((Test test2)^4 (Test* test2*)^2 (Test~2 test2~2))" }, //17
+				{ "+JOB_CODE:#query*#", "00000-1111", "+JOB_CODE:(00000-1111*)" }, //18
 		};
+		testStringFixedQuery(testQueries[18]);
 		testStringFixedQuery(testQueries);
 	}
 

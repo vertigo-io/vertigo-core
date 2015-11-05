@@ -16,28 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore;
+package io.vertigo.dynamock.fileinfo;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 
 /**
- * Configuration du composant de persistance.
- *
- * @author pchretien
+ * Attention cette classe est générée automatiquement !
+ * Objet représentant un fichier persistant FileInfoTemp
  */
-public interface DataStoreConfig {
+public final class FileInfoTemp extends AbstractFileInfo {
+	/** SerialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Enregistre si un DT peut être mis en cache et la façon de charger les données.
-	 * @param dtDefinition Définition de DT
-	 * @param timeToLiveInSeconds Durée de vie du cache
-	 * @param isReloadedByList Si ce type d'objet doit être chargé de façon ensembliste ou non
+	 * Constructeur par défaut.
+	 * @param vFile Données du fichier
 	 */
-	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList);
-
-	/**
-	 * @param storeName StoreName
-	 * @return connectionName use for this store
-	 */
-	String getConnectionName(String storeName);
+	public FileInfoTemp(final VFile vFile) {
+		super(FileInfoDefinition.findFileInfoDefinition(FileInfoTemp.class), vFile);
+	}
 }

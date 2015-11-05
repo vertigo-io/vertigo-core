@@ -39,6 +39,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	private Class<? extends TaskEngine> myTaskEngineClass;
 	private String myRequest;
 	private String myPackageName;
+	private String myStoreName;
 
 	/**
 	 * Constructor.
@@ -90,6 +91,13 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
+	public TaskDefinitionBuilder withStore(final String storeName) {
+		Assertion.checkArgNotEmpty(storeName);
+		//-----
+		myStoreName = storeName;
+		return this;
+	}
+
 	/**
 	 * Add an input attribute.
 	 *
@@ -125,9 +133,11 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
+				Option.option(myStoreName),
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
 				Option.option(myOutTaskAttribute));
 	}
+
 }
