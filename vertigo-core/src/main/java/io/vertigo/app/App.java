@@ -46,7 +46,7 @@ public final class App implements AutoCloseable {
 		closed
 	}
 
-	private static Logger LOGGER = Logger.getLogger(App.class);
+	private static final Logger LOGGER = Logger.getLogger(App.class);
 
 	//Start Date in milliseconds : used to have 'uptime'
 	private final long start;
