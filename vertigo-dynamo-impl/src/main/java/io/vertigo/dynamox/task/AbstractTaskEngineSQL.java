@@ -98,7 +98,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	private static final VTransactionResourceId<SqlConnection> SQL_MAIN_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-main");
+	public static final VTransactionResourceId<SqlConnection> SQL_MAIN_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-main");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.

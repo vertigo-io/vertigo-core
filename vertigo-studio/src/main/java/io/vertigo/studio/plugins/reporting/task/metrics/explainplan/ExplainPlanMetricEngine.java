@@ -177,7 +177,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 */
 	private static SqlConnection getCurrentConnection() {
 		final VTransaction transaction = Home.getApp().getComponentSpace().resolve(VTransactionManager.class).getCurrentTransaction();
-		return transaction.getResource(AbstractTaskEngineSQL.SQL_RESOURCE_ID);
+		return transaction.getResource(AbstractTaskEngineSQL.SQL_MAIN_RESOURCE_ID);
 	}
 
 }
