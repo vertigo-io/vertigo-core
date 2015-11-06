@@ -37,7 +37,7 @@ import javax.inject.Named;
  * @author skerdudou
  */
 public final class PropertiesParamPlugin implements ParamPlugin {
-	private final Properties properties;
+	private final Properties params;
 
 	/**
 	 * Constructeur.
@@ -52,7 +52,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 		Assertion.checkArgNotEmpty(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
-		properties = loadProperties(configURL);
+		params = loadProperties(configURL);
 	}
 
 	private static Properties loadProperties(final URL configURL) throws IOException {
@@ -65,9 +65,9 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String property) {
-		Assertion.checkArgNotEmpty(property);
+	public Option<String> getValue(final String paramName) {
+		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return properties.containsKey(property) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
+		return params.containsKey(paramName) ? Option.<String> option(params.getProperty(paramName)) : Option.<String> none();
 	}
 }

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
-	<property name="serverTest.name" value="monBeauServer" />
-	<property name="serverTest.port" value="99" />
-	<property name="serverTest.host" value="http://wwww" />
-	<property name="serverTest.active" value="true" />
+	<param name="serverTest.name" value="monBeauServer" />
+	<param name="serverTest.port" value="99" />
+	<param name="serverTest.host" value="http://wwww" />
+	<param name="serverTest.active" value="true" />
 
-	<property name="server.name" value="monBeauServer" />
-	<property name="server.port" value="99" />
-	<property name="server.active" value="false" />
+	<param name="server.name" value="monBeauServer" />
+	<param name="server.port" value="99" />
+	<param name="server.active" value="false" />
 
-	<property name="server.fr.dev.name" value="mondev" />
-	<property name="server.fr.dev.port" value="8080" />
-	<property name="server.fr.dev.active" value="true" />
+	<param name="server.fr.dev.name" value="mondev" />
+	<param name="server.fr.dev.port" value="8080" />
+	<param name="server.fr.dev.active" value="true" />
 
-	<property name="server.fr.prod.name" value="monsite" />
-	<property name="server.fr.prod.port" value="80" />
-	<property name="server.fr.prod.active" value="true" />
+	<param name="server.fr.prod.name" value="monsite" />
+	<param name="server.fr.prod.port" value="80" />
+	<param name="server.fr.prod.active" value="true" />
 
-	<property name="server.fr.recette.name" value="marecette" />
-	<property name="server.fr.recette.port" value="8080" />
-	<property name="server.fr.recette.active" value="true" />
+	<param name="server.fr.recette.name" value="marecette" />
+	<param name="server.fr.recette.port" value="8080" />
+	<param name="server.fr.recette.active" value="true" />
 
 </config>

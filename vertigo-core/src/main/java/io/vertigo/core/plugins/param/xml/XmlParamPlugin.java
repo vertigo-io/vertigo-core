@@ -63,10 +63,10 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String property) {
-		Assertion.checkArgNotEmpty(property);
+	public Option<String> getValue(final String paramName) {
+		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(property) ? Option.<String> option(params.get(property)) : Option.<String> none();
+		return params.containsKey(paramName) ? Option.<String> option(params.get(paramName)) : Option.<String> none();
 	}
 
 	/**

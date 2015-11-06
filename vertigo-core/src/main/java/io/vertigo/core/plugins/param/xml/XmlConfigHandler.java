@@ -30,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
-		config, property;
+		config, param;
 	}
 
 	private final Map<String, String> params;
@@ -46,10 +46,10 @@ final class XmlConfigHandler extends DefaultHandler {
 		switch (TagName.valueOf(qName)) {
 			case config:
 				break;
-			case property:
-				final String propertyName = attrs.getValue("name").trim();
-				final String propertyValue = attrs.getValue("value").trim();
-				params.put(propertyName, propertyValue);
+			case param:
+				final String paramName = attrs.getValue("name").trim();
+				final String paramValue = attrs.getValue("value").trim();
+				params.put(paramName, paramValue);
 				break;
 			default:
 		}

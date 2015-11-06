@@ -124,7 +124,6 @@ final class ComponentParamsContainer implements Container {
 		//-----
 		if (clazz.isPrimitive()) {
 			//Boolean n'est pas assignable à boolean
-			//boolean n'est pas assignable à Boolean
 			//Or dans notre cas value est un objet et clazz peut être un type primitif !
 			if (boolean.class.equals(clazz)) {
 				return Boolean.class;

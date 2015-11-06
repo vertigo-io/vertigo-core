@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-  	<property name="math.test.start" value="100"/>    	
-	<property name="math.test.toto" value="100"/>    	
+  	<param name="math.test.start" value="100"/>    	
+	<param name="math.test.toto" value="100"/>
 </config>

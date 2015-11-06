@@ -28,11 +28,10 @@ import io.vertigo.lang.Plugin;
  */
 public interface ParamPlugin extends Plugin {
 	/** 
-	 * Retourne une propriété de configuration.
-	 * Retourne none si la propriété n'est pas gérée.
-	 * @param config Nom de la configuration
-	 * @param propertyName Nom de la propriété de la configuration
-	 * @return Valeur de la propriété
+	 * Retourne un paramètre de configuration.
+	 * Retourne none si le paramètre n'est pas géré.
+	 * @param paramName Param's name
+	 * @return Value of the param
 	 */
-	Option<String> getValue(String propertyName);
+	Option<String> getValue(String paramName);
 }
