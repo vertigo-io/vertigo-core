@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
-	<param name="serverTest.name" value="monBeauServer" />
-	<param name="serverTest.port" value="99" />
-	<param name="serverTest.host" value="http://wwww" />
-	<param name="serverTest.active" value="true" />
-
-	<param name="server.name" value="monBeauServer" />
-	<param name="server.port" value="99" />
-	<param name="server.active" value="false" />
-
-	<param name="server.fr.dev.name" value="mondev" />
-	<param name="server.fr.dev.port" value="8080" />
-	<param name="server.fr.dev.active" value="true" />
-
-	<param name="server.fr.prod.name" value="monsite" />
-	<param name="server.fr.prod.port" value="80" />
-	<param name="server.fr.prod.active" value="true" />
-
-	<param name="server.fr.recette.name" value="marecette" />
-	<param name="server.fr.recette.port" value="8080" />
-	<param name="server.fr.recette.active" value="true" />
-
+	<param name="server.verbose" value="true" /> <!-- this value must be overridden to pass the tests ; the first value wins -->
 </config>

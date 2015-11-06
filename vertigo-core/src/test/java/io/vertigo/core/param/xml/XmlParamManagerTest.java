@@ -18,24 +18,16 @@
  */
 package io.vertigo.core.param.xml;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
- * @author prahmoune
+ * @author pchretien
  */
-public final class XmlParamManagerTest extends AbstractTestCaseJU4 {
-	@Inject
-	private ParamManager paramManager;
+public final class XmlParamManagerTest extends AbstractParamManagerTest {
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -52,57 +44,4 @@ public final class XmlParamManagerTest extends AbstractTestCaseJU4 {
 		// @formatter:on
 	}
 
-	@Test(expected = Exception.class)
-	public void test0() {
-		paramManager.getStringValue("completely.wrong");
-	}
-
-	@Test
-	public void test1() {
-		final String value = paramManager.getStringValue("test.prop1");
-		Assert.assertEquals("prop1val", value);
-	}
-
-	@Test(expected = Exception.class)
-	public void test2() {
-		paramManager.getStringValue("test2.wrong");
-	}
-
-	@Test
-	public void test3() {
-		final int value = paramManager.getIntValue("test3.intProp");
-		Assert.assertEquals(12, value);
-	}
-
-	@Test(expected = Exception.class)
-	public void test4() {
-		paramManager.getIntValue("test4.intBadProp");
-	}
-
-	@Test
-	public void test5() {
-		final boolean value = paramManager.getBooleanValue("test5.boolProp");
-		Assert.assertTrue(value);
-	}
-
-	@Test
-	public void test6() {
-		final boolean value = paramManager.getBooleanValue("test6.boolBadProp1");
-		Assert.assertTrue(value);
-	}
-
-	@Test(expected = Exception.class)
-	public void test7() {
-		final boolean b = paramManager.getBooleanValue("test7.boolBadProp2");
-		nop(b);
-	}
-	//
-	//	@Test
-	//	public void test8() {
-	//		final ServerConfig serverConfig = paramManager.resolve("server", ServerConfig.class);
-	//		Assert.assertEquals("monBeauServer", serverConfig.getName());
-	//		Assert.assertEquals(99, serverConfig.getPort());
-	//		Assert.assertEquals("http://wwww", serverConfig.getHost());
-	//		Assert.assertTrue(serverConfig.isActive());
-	//	}
 }

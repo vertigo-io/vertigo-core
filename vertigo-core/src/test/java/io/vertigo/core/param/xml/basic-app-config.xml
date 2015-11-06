@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	  	   
-	<param name="test.prop1" value="prop1val"/>    	
-	<param name="test2.propNotFound" value="xxxx"/>    	    	
-	<param name="test3.intProp" value="12"/>    	    	
-	<param name="test4.intBadProp" value="xxx"/>    	    	
-	<param name="test5.boolProp" value="true"/>    	    	
-	<param name="test6.boolBadProp1" value="true "/>    	    	
-	<param name="test7.boolBadProp2" value="xxx"/>    	    	
-  	
-	<param name="server.name" value="monBeauServer"/>    	
-	<param name="server.port" value="99"/>    	
-	<param name="server.host" value="http://wwww"/>    	
-	<param name="server.active" value="true"/>    	
+	<param name="server.host" value="wiki"/>    	
+	<param name="server.active" value="true"/>    	    	
+	<param name="server.verbose" value="false"/>    	    	
+	<param name="server.port" value="8080"/>    	    	
 </config>

@@ -18,25 +18,17 @@
  */
 package io.vertigo.core.param.multi;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * @author prahmoune
  */
-public final class MultiParamManagerTest extends AbstractTestCaseJU4 {
-	@Inject
-	private ParamManager paramManager;
+public final class MultiParamManagerTest extends AbstractParamManagerTest {
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -62,54 +54,4 @@ public final class MultiParamManagerTest extends AbstractTestCaseJU4 {
 			.build();
 		// @formatter:on
 	}
-
-	@Test(expected = Exception.class)
-	public void testFail0() {
-		paramManager.getStringValue("completely.wrong");
-	}
-
-	@Test
-	public void testString() {
-		final String value = paramManager.getStringValue("server.fr.mail");
-		Assert.assertEquals("john.doe@free.fr", value);
-	}
-
-	@Test
-	public void testInt() {
-		final int value = paramManager.getIntValue("server.fr.weight");
-		Assert.assertEquals(55, value);
-	}
-
-	@Test
-	public void testBoolean1() {
-		final boolean value = paramManager.getBooleanValue("server.en.active");
-		Assert.assertTrue(value);
-	}
-
-	@Test
-	public void testBoolean2() {
-		final boolean value = paramManager.getBooleanValue("server.en.closed");
-		Assert.assertFalse(value);
-	}
-
-	@Test
-	public void testBoolean3() {
-		final boolean value = paramManager.getBooleanValue("server.fr.changed");
-		Assert.assertTrue(value);
-	}
-
-	@Test
-	public void testString2() {
-		final String value = paramManager.getStringValue("server.name");
-		Assert.assertEquals("monBeauServer", value);
-	}
-	//
-	//	@Test
-	//	public void testResolve() {
-	//		final ServerConfig serverConfig = paramManager.resolve("server.en", ServerConfig.class);
-	//		Assert.assertEquals("myBeautifullServer", serverConfig.getName());
-	//		Assert.assertEquals(99, serverConfig.getPort());
-	//		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
-	//		Assert.assertTrue(serverConfig.isActive());
-	//	}
 }
