@@ -57,7 +57,7 @@ import javax.inject.Inject;
  */
 public final class ParamManager implements Component {
 	/** Regexp paramName. */
-	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
+	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+)*");
 	private final List<ParamPlugin> paramPlugins;
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
@@ -71,7 +71,15 @@ public final class ParamManager implements Component {
 
 	private static void checkParamName(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
-		Assertion.checkArgument(REGEX_PARAM_NAME.matcher(paramName).matches(), "param '{0}' must be camelCase and start with a lowercase", paramName);
+		Assertion.checkArgument(REGEX_PARAM_NAME.matcher(paramName).matches(), "param '{0}' must match pattern {1}", paramName, REGEX_PARAM_NAME);
+	}
+
+	public <C> C getValue(final String paramName, final Class<C> paramType) {
+		checkParamName(paramName);
+		Assertion.checkNotNull(paramType);
+		//-----
+		final String paramValue = doGetParamValueAsString(paramName);
+		return castValue(paramName, paramType, paramValue);
 	}
 
 	/**
@@ -80,7 +88,7 @@ public final class ParamManager implements Component {
 	 * @return Value of the param
 	 */
 	public String getStringValue(final String paramName) {
-		return doGetParamValue(paramName, String.class);
+		return getValue(paramName, String.class);
 	}
 
 	/**
@@ -89,7 +97,16 @@ public final class ParamManager implements Component {
 	 * @return Value of the param
 	 */
 	public int getIntValue(final String paramName) {
-		return doGetParamValue(paramName, int.class);
+		return getValue(paramName, int.class);
+	}
+
+	/**
+	 * Return a param as a long.
+	 * @param paramName param's name
+	 * @return Value of the param
+	 */
+	public long getLongValue(final String paramName) {
+		return getValue(paramName, long.class);
 	}
 
 	/**
@@ -98,21 +115,20 @@ public final class ParamManager implements Component {
 	 * @return Value of the param
 	 */
 	public boolean getBooleanValue(final String paramName) {
-		return doGetParamValue(paramName, boolean.class);
+		return getValue(paramName, boolean.class);
 	}
 
 	/**
 	 * @param paramName param's name
-	 * @param paramClass param's class
 	 * @return Value of the param
 	 */
-	private <C> C doGetParamValue(final String paramName, final Class<C> paramClass) {
+	private String doGetParamValueAsString(final String paramName) {
 		checkParamName(paramName);
 		//-----
 		for (final ParamPlugin paramPlugin : paramPlugins) {
 			final Option<String> value = paramPlugin.getValue(paramName);
 			if (value.isDefined()) {
-				return (C) castValue(paramName, paramClass, value.get());
+				return value.get();
 			}
 		}
 		throw new IllegalArgumentException("param '" + paramName + "' not found");
@@ -124,15 +140,20 @@ public final class ParamManager implements Component {
 	 * @param paramClass param's class
 	 * @return casted value
 	 */
-	private static Object castValue(final String paramName, final Class<?> paramClass, final String paramValue) {
-		if (boolean.class.equals(paramClass)) {
-			return toBoolean(paramName, paramValue);
-		} else if (int.class.equals(paramClass)) {
-			return toInteger(paramName, paramValue);
+	private static <C> C castValue(final String paramName, final Class<C> paramClass, final String paramValue) {
+		final Object value;
+		if (boolean.class.equals(paramClass) || Boolean.class.equals(paramClass)) {
+			value = toBoolean(paramName, paramValue);
+		} else if (long.class.equals(paramClass) || Long.class.equals(paramClass)) {
+			value = toLong(paramName, paramValue);
+		} else if (int.class.equals(paramClass) || Integer.class.equals(paramClass)) {
+			value = toInteger(paramName, paramValue);
 		} else if (String.class.equals(paramClass)) {
-			return paramValue;
+			value = paramValue;
+		} else {
+			throw new IllegalArgumentException("Param :" + paramName + " of type ' " + paramClass + " is not supported");
 		}
-		throw new IllegalArgumentException("Param :" + paramName + " of type ' " + paramClass + " is not supported");
+		return paramClass.cast(value);
 	}
 
 	private static boolean toBoolean(final String paramName, final String paramValue) {
@@ -147,6 +168,14 @@ public final class ParamManager implements Component {
 			return Integer.parseInt(paramValue);
 		} catch (final NumberFormatException e) {
 			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'int'");
+		}
+	}
+
+	private static long toLong(final String paramName, final String paramValue) {
+		try {
+			return Long.parseLong(paramValue);
+		} catch (final NumberFormatException e) {
+			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'long'");
 		}
 	}
 }

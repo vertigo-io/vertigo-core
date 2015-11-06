@@ -87,36 +87,22 @@ final class ComponentParamsContainer implements Container {
 		Assertion.checkNotNull(paramName);
 		Assertion.checkNotNull(paramType);
 		//-----
-		String value = params.get(paramName);
+		final String paramValue = params.get(paramName);
 		final String confParamProtocol = "conf:";
-		if (value != null && value.startsWith(confParamProtocol)) {
+		if (paramValue != null && paramValue.startsWith(confParamProtocol)) {
 			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
 			//-----
-			final String property = value.substring(confParamProtocol.length());
+			final String property = paramValue.substring(confParamProtocol.length());
 			try {
-				value = paramManagerOption.get().getStringValue(property);
+				return paramManagerOption.get().getValue(property, paramType);
 			} catch (final Throwable t) {
-				// Problème lors de l'accès au paramètre. On loggue et on utilise la valeur null
+				// Problème lors de l'accès au paramètre. On loggue et on retourne la valeur null
 				Logger.getLogger(ComponentParamsContainer.class).warn(
-						"Pas d'entrée dans le config manager pour " + property);
-				value = null;
+						"Pas d'entrée dans le ParamManager pour " + property);
+				return null;
 			}
-			//-----
 		}
-		return cast(paramType, value);
-	}
-
-	private static Object cast(final Class<?> paramType, final String value) {
-		if (String.class.equals(paramType)) {
-			return value;
-		} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
-			return Boolean.valueOf(value);
-		} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
-			return Integer.valueOf(value);
-		} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
-			return Long.valueOf(value);
-		}
-		return null;
+		return paramValue;
 	}
 
 	private static Class box(final Class<?> clazz) {
