@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore;
+package io.vertigo.dynamo.kvdatabase;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.kvstore.data.Flower;
+import io.vertigo.dynamo.kvdatabase.KVDataBaseManager;
+import io.vertigo.dynamo.kvdatabase.KVStore;
+import io.vertigo.dynamo.kvdatabase.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
@@ -36,7 +37,7 @@ import org.junit.Test;
 public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	protected static final String DEFAULT_DATA_STORE_NAME = "default";
 	@Inject
-	protected StoreManager storeManager;
+	protected KVDataBaseManager kvDataBaseManager;
 	@Inject
 	protected VTransactionManager transactionManager;
 
@@ -49,7 +50,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFind() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> foundFlower = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
 			Assert.assertTrue(foundFlower.isEmpty());
@@ -65,7 +66,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testRemove() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> flower = kvStore.find(DEFAULT_DATA_STORE_NAME, "10", Flower.class);

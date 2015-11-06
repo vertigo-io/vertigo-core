@@ -16,13 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore.delayedmemory;
+package io.vertigo.dynamo.kvdatabase.data;
 
-import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
+import java.io.Serializable;
 
-/**
- * @author pchretien
- */
-public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManagerTest {
-	// nothing
+public final class Flower implements Serializable {
+	private static final long serialVersionUID = 732495669497615898L;
+	private String name;
+	private Double price;
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setPrice(final Double price) {
+		this.price = price;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
 }

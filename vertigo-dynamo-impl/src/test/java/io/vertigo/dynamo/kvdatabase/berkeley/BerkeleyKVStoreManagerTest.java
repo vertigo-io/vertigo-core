@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore.berkeley;
+package io.vertigo.dynamo.kvdatabase.berkeley;
 
-import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.KVStore;
-import io.vertigo.dynamo.store.kvstore.data.Flower;
+import io.vertigo.dynamo.kvdatabase.AbstractKVStoreManagerTest;
+import io.vertigo.dynamo.kvdatabase.KVStore;
+import io.vertigo.dynamo.kvdatabase.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
@@ -37,7 +37,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test
 	public void testInsertMass() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 
 		for (int j = 0; j < 10; j++) {
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -51,7 +51,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test
 	public void testFindAll() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 		final List<Flower> flowers = new ListBuilder<Flower>()
 				.add(buildFlower("daisy", 60))
 				.add(buildFlower("tulip", 100))
@@ -79,7 +79,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test(expected = RuntimeException.class)
 	public void testRemoveFail() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			kvStore.remove(DEFAULT_DATA_STORE_NAME, "1");
 		}
@@ -87,7 +87,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test(expected = RuntimeException.class)
 	public void testRollback() {
-		final KVStore kvStore = storeManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Flower tulip = buildFlower("tulip", 100);
 			kvStore.put(DEFAULT_DATA_STORE_NAME, "1", tulip);

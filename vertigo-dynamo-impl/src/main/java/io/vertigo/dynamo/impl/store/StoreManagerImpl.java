@@ -28,14 +28,12 @@ import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
-import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.dynamo.store.kvstore.KVStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
@@ -56,7 +54,6 @@ public final class StoreManagerImpl implements StoreManager {
 	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
 	private final FileStore fileStore;
-	private final KVStore kvStore;
 
 	/**
 	 * Constructeur.
@@ -85,11 +82,8 @@ public final class StoreManagerImpl implements StoreManager {
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager, this, eventManager);
 		dataStore = new DataStoreImpl(dataStoreConfig);
 		//-----
-		kvStore = new KVStoreImpl(kvDataStorePlugins);
-		//-----
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);
-		//-----
 	}
 
 	/** {@inheritDoc} */
@@ -116,11 +110,5 @@ public final class StoreManagerImpl implements StoreManager {
 	@Override
 	public FileStore getFileStore() {
 		return fileStore;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public KVStore getKVStore() {
-		return kvStore;
 	}
 }

@@ -96,8 +96,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public int getIntValue(final String paramName) {
-		return getValue(paramName, int.class);
+	public Integer getIntValue(final String paramName) {
+		return getValue(paramName, Integer.class);
 	}
 
 	/**
@@ -105,8 +105,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public long getLongValue(final String paramName) {
-		return getValue(paramName, long.class);
+	public Long getLongValue(final String paramName) {
+		return getValue(paramName, Long.class);
 	}
 
 	/**
@@ -114,8 +114,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public boolean getBooleanValue(final String paramName) {
-		return getValue(paramName, boolean.class);
+	public Boolean getBooleanValue(final String paramName) {
+		return getValue(paramName, Boolean.class);
 	}
 
 	/**
@@ -156,14 +156,14 @@ public final class ParamManager implements Component {
 		return paramClass.cast(value);
 	}
 
-	private static boolean toBoolean(final String paramName, final String paramValue) {
+	private static Boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
 			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'boolean'");
 		}
 		return Boolean.parseBoolean(paramValue);
 	}
 
-	private static int toInteger(final String paramName, final String paramValue) {
+	private static Integer toInteger(final String paramName, final String paramValue) {
 		try {
 			return Integer.parseInt(paramValue);
 		} catch (final NumberFormatException e) {
@@ -171,7 +171,7 @@ public final class ParamManager implements Component {
 		}
 	}
 
-	private static long toLong(final String paramName, final String paramValue) {
+	private static Long toLong(final String paramName, final String paramValue) {
 		try {
 			return Long.parseLong(paramValue);
 		} catch (final NumberFormatException e) {

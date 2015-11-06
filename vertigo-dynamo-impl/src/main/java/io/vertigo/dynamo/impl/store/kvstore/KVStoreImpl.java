@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store.kvstore;
 
-import io.vertigo.dynamo.store.kvstore.KVStore;
+import io.vertigo.dynamo.kvdatabase.KVStore;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

@@ -16,13 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.kvstore.delayedberkeley;
+package io.vertigo.dynamo.kvdatabase;
 
-import io.vertigo.dynamo.store.kvstore.AbstractKVStoreManagerTest;
+import io.vertigo.lang.Component;
 
 /**
- * @author pchretien
- */
-public final class DelayedBerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
-	// nothing
+* Key Value DataBase.
+*
+* @author pchretien
+*/
+public interface KVDataBaseManager extends Component {
+	/**
+	 * @return Key Value Store
+	 */
+	KVStore getKVStore();
 }

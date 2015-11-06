@@ -102,7 +102,20 @@ final class ComponentParamsContainer implements Container {
 				return null;
 			}
 		}
-		return paramValue;
+		return cast(paramType, paramValue);
+	}
+
+	private static Object cast(final Class<?> paramType, final String value) {
+		if (String.class.equals(paramType)) {
+			return value;
+		} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
+			return Boolean.valueOf(value);
+		} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
+			return Integer.valueOf(value);
+		} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
+			return Long.valueOf(value);
+		}
+		return null;
 	}
 
 	private static Class box(final Class<?> clazz) {

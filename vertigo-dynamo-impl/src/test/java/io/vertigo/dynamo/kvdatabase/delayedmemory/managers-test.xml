@@ -8,17 +8,10 @@
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	</module>
 	<module name="vertigo-dynamo">
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
-		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
-		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
-		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="sequencePrefix" value="SEQ_" />
-			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley.DelayedBerkeleyKVDataStorePlugin">
+		<component api="KVDataBaseManager" class="io.vertigo.dynamo.impl.kvdatabase.KVDataBaseManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin">
 				<param name="dataStoreName" value="default" />
-				<param name="cachePath" value="d:/dynamo-tmp" />
 				<param name="timeToLiveSeconds" value="5" />
 			</plugin>
 		</component>
