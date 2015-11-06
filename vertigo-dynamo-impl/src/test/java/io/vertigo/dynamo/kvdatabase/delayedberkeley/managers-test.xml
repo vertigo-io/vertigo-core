@@ -10,7 +10,7 @@
 	<module name="vertigo-dynamo">
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="KVDataBaseManager" class="io.vertigo.dynamo.impl.kvdatabase.KVDataBaseManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley.DelayedBerkeleyKVDataStorePlugin">
+			<plugin class="io.vertigo.dynamo.plugins.kvdatabase.delayedberkeley.DelayedBerkeleyKVDataStorePlugin">
 				<param name="dataStoreName" value="default" />
 				<param name="cachePath" value="d:/dynamo-tmp" />
 				<param name="timeToLiveSeconds" value="5" />

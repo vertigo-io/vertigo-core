@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
+package io.vertigo.dynamo.plugins.kvdatabase.delayedmemory;
 
 import io.vertigo.lang.Assertion;
 

@@ -16,8 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley;
+package io.vertigo.dynamo.plugins.kvdatabase.delayedberkeley;
 
+import io.vertigo.commons.codec.Codec;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -29,35 +30,45 @@ import com.sleepycat.bind.tuple.TupleOutput;
 /**
  * @author npiedeloup
  */
-final class DelayedBerkeleyCacheValueBinding extends TupleBinding<DelayedBerkeleyCacheValue> {
-	private static final String PREFIX = "CacheValue:";
-	private final TupleBinding<Serializable> serializableBinding;
+final class DelayedBerkeleySerializableBinding extends TupleBinding<Serializable> {
+	private static final String PREFIX = "Serializable:";
+	private final Codec<Serializable, byte[]> codec;
 
 	/**
-	 * @param serializableBinding TupleBinding des values serializable
+	 * @param codec codec de serialization
 	 */
-	public DelayedBerkeleyCacheValueBinding(final TupleBinding<Serializable> serializableBinding) {
-		Assertion.checkNotNull(serializableBinding);
+	DelayedBerkeleySerializableBinding(final Codec<Serializable, byte[]> codec) {
+		Assertion.checkNotNull(codec);
 		//-----
-		this.serializableBinding = serializableBinding;
+		this.codec = codec;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DelayedBerkeleyCacheValue entryToObject(final TupleInput ti) {
+	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
 		Assertion.checkArgument(PREFIX.equals(prefix), "L'entrée n'est pas du bon type {0}", prefix);
-		final long createTime = ti.readLong();
-		final Serializable value = serializableBinding.entryToObject(ti);
-		return new DelayedBerkeleyCacheValue(value, createTime);
+		//-----
+		try {
+			final int size = ti.readInt();
+			final byte[] buffer = new byte[size];
+			ti.readFast(buffer);
+			return codec.decode(buffer);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void objectToEntry(final DelayedBerkeleyCacheValue value, final TupleOutput to) {
-		final DelayedBerkeleyCacheValue cacheValue = value;
+	public void objectToEntry(final Serializable value, final TupleOutput to) {
 		to.writeString(PREFIX);
-		to.writeLong(cacheValue.getCreateTime());
-		serializableBinding.objectToEntry(cacheValue.getValue(), to);
+		try {
+			final byte[] buffer = codec.encode(value);
+			to.writeInt(buffer.length);
+			to.writeFast(buffer);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
