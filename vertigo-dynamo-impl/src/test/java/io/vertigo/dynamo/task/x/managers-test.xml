@@ -35,7 +35,6 @@
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin" />
 		</component>
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
