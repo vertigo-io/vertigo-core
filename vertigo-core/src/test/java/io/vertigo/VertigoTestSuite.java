@@ -24,7 +24,6 @@ import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
 import io.vertigo.core.definition.loader.EnvironmentManagerTest;
 import io.vertigo.core.locale.LocaleManagerTest;
-import io.vertigo.core.param.hierarchy.ParamManagerTest;
 import io.vertigo.core.param.multi.MultiParamManagerTest;
 import io.vertigo.core.param.properties.PropertiesParamManagerTest;
 import io.vertigo.core.param.xml.XmlParamManagerTest;
@@ -54,39 +53,36 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		//LocaleManager
-		LocaleManagerTest.class,
-		//core
+		//Core
 		DefinitionSpaceTest.class,
 		ComponentSpaceTest.class,
 		ComponentSpace2Test.class,
 		ComponentSpace3Test.class,
 		InjectorTest.class,
 		ReactorTest.class,
-		//boot
+		//Boot
 		AppConfigTest.class,
 		AspectTest.class,
-		//lang
+		//Lang
 		AssertionTest.class,
 		OptionTest.class,
 		TuplesTest.class,
-		//util
+		//Util
 		BeanUtilTest.class,
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
 		DateUtilTest.class,
 		StringUtilTest.class,
 		MapBuilderTest.class,
-
-		//--config
-		ParamManagerTest.class,
+		//--Params
 		MultiParamManagerTest.class,
 		PropertiesParamManagerTest.class,
 		XmlParamManagerTest.class,
-		//--resource
+		//--Resources
 		ResourceManagerTest.class,
-		EnvironmentManagerTest.class
-
+		EnvironmentManagerTest.class,
+		//Locales
+		LocaleManagerTest.class
 })
 public final class VertigoTestSuite {
 	//
