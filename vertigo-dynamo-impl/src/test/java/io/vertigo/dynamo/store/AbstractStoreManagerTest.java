@@ -47,10 +47,10 @@ import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamock.fileinfo.FileInfoStd;
-import io.vertigo.dynamock.fileinfo.FileInfoTemp;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
 import java.io.OutputStream;
@@ -72,13 +72,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
-	private StoreManager storeManager;
+	protected StoreManager storeManager;
 	@Inject
-	private FileManager fileManager;
+	protected FileManager fileManager;
 	@Inject
-	private VTransactionManager transactionManager;
+	protected VTransactionManager transactionManager;
 	@Inject
-	private TaskManager taskManager;
+	protected TaskManager taskManager;
 
 	private DtDefinition dtDefinitionFamille;
 	private DAOBroker<Famille, Integer> familleDAO;
@@ -88,27 +88,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
-		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final List<String> requests = new ListBuilder<String>()
-					.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
-					.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
-					.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
-					.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
-					.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
-					.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
-					.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
-					.build();
+		initMainStore();
+	}
 
-			for (final String request : requests) {
-				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
-						.withEngine(TaskEngineProc.class)
-						.withRequest(request)
-						.build();
-				final Task task = new TaskBuilder(taskDefinition).build();
-				taskManager.execute(task);
-			}
-		}
+	protected void initMainStore() {
+		//A chaque test on recrée la table famille
+		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> none());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -122,15 +107,66 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> storeName) {
+		//A chaque test on recrée la table famille
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			for (final String request : requests) {
+				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+						.withEngine(TaskEngineProc.class)
+						.withRequest(request);
+				if (storeName.isDefined()) {
+					taskDefinitionBuilder.withStore(storeName.get());
+				}
+				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
+				taskManager.execute(task);
+			}
+		}
+	}
+
+	protected List<String> getCreateMainStoreRequests() {
+		final List<String> requests = getCreateFamilleRequests();
+		requests.addAll(getCreateCarRequests());
+		requests.addAll(getCreateFileInfoRequests());
+		return requests;
+	}
+
+	protected final List<String> getCreateFamilleRequests() {
+		return new ListBuilder<String>()
+				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
+				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
+				.build();
+	}
+
+	protected final List<String> getCreateCarRequests() {
+		return new ListBuilder<String>()
+				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
+				.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
+				.build();
+	}
+
+	protected final List<String> getCreateFileInfoRequests() {
+		return new ListBuilder<String>()
+				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
+				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+				.build();
+	}
+
 	@Override
 	protected void doTearDown() throws Exception {
+		shutDown("TK_SHUT_DOWN", Option.<String> none());
+	}
+
+	protected void shutDown(final String taskName, final Option<String> storeName) {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_SHUT_DOWN")
+				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
-						.withRequest("shutdown;")
-						.build();
-				final Task task = new TaskBuilder(taskDefinition).build();
+						.withRequest("shutdown;");
+				if (storeName.isDefined()) {
+					taskDefinitionBuilder.withStore(storeName.get());
+				}
+				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
 
 				//A chaque fin de test on arréte la base.
@@ -341,54 +377,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static String secureSubString(final String read, final int index, final String searchString) {
+	protected static String secureSubString(final String read, final int index, final String searchString) {
 		if (read != null && read.length() > index) {
 			return read.substring(index, Math.min(read.length() - 1, index + searchString.length()));
 		}
 		return "N/A";
-	}
-
-	@Test
-	public void testOtherStoreFile() throws Exception {
-		final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
-		//1.Création du fichier depuis un fichier texte du FS
-		final FileInfo fileInfo = new FileInfoTemp(vFile);
-
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//2. Sauvegarde en Temp
-			storeManager.getFileStore().create(fileInfo);
-			transaction.commit(); //can't read file if not commited (TODO ?)
-		}
-
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-
-			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
-
-			//4. comparaison du fichier créé et du fichier lu.
-
-			final String source;
-			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(vFile.createInputStream(), sourceOS);
-				source = sourceOS.toString();
-			}
-
-			final String read;
-			try (final OutputStream readOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(readFileInfo.getVFile().createInputStream(), readOS);
-				read = readOS.toString();
-			}
-			//on vérifie que le contenu des fichiers est identique.
-			//assertEquals("toto", "toto");
-			//assertEquals("toto", "ti");
-			Assert.assertEquals(source, read);
-			Assert.assertTrue("Test contenu du fichier", read.startsWith("Chant I"));
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"), read.indexOf("ses notes langoureuses,") > 0);
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"), read.indexOf("mal : \"Adolescent,") > 0);
-
-			//On désactive pour l'instant
-			//Ne marche pas sur la PIC pour cause de charset sur le àé			//Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
-		}
 	}
 
 	/**

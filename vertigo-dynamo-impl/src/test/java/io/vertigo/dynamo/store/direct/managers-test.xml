@@ -20,7 +20,6 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
-
 	</module>
 
 	<module name="vertigo-dynamo">

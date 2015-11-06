@@ -93,10 +93,12 @@ import java.util.Map;
  * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
+
+	private static final Object DEFAULT_STORE_NAME = "main";
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	public static final VTransactionResourceId<SqlConnection> SQL_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql");
+	private static final VTransactionResourceId<SqlConnection> SQL_MAIN_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-main");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
@@ -430,7 +432,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
-		return SQL_RESOURCE_ID;
+		final String storeName = getTaskDefinition().getStoreName();
+		if (DEFAULT_STORE_NAME.equals(storeName)) {
+			return SQL_MAIN_RESOURCE_ID;
+		}
+		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + storeName);
 	}
 
 	/**

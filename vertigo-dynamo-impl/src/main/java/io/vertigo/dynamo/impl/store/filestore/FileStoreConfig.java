@@ -47,7 +47,7 @@ public final class FileStoreConfig {
 			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
 			Assertion.checkState(previous == null, "FileStorePlugin {0}, was already registered", name);
 		}
-		Assertion.checkNotNull(fileStoresMap.get(MAIN_FILE_STORE_NAME), "No " + MAIN_FILE_STORE_NAME + " FileStorePlugin was set. Configure one and only one FileStorePlugin with name '" + MAIN_FILE_STORE_NAME + "'.");
+		Assertion.checkArgument(fileStoresMap.isEmpty() || fileStoresMap.get(MAIN_FILE_STORE_NAME) != null, "No {0} FileStorePlugin was set. Configure one and only one FileStorePlugin with name ''{0}''.", MAIN_FILE_STORE_NAME);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class FileStoreConfig {
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
 		final FileStorePlugin fileStore = fileStoresMap.get(definition.getStoreName());
-		Assertion.checkNotNull(fileStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
+		Assertion.checkNotNull(fileStore, "No FileStore found for this definition '{0}'", definition.getName());
 		return fileStore;
 	}
 }
