@@ -20,7 +20,6 @@ package io.vertigo.core.plugins.param.xml;
 
 import io.vertigo.lang.Assertion;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
@@ -31,64 +30,34 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
-		applicationConfig, config, property;
-
-		static TagName valueOf2(final String value) {
-			if ("application-config".equals(value)) {
-				return applicationConfig;
-			}
-			return valueOf(value);
-		}
+		config, property;
 	}
 
-	private final Map<String, Map<String, String>> configs;
-	private Map<String, String> currentConfig;
+	private final Map<String, String> params;
 
-	XmlConfigHandler(final Map<String, Map<String, String>> configs) {
-		Assertion.checkNotNull(configs);
+	XmlConfigHandler(final Map<String, String> params) {
+		Assertion.checkNotNull(params);
 		//-----
-		this.configs = configs;
-	}
-
-	@Override
-	public void endElement(final String namespaceURI, final String localName, final String qName) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf2(eName)) {
-			case applicationConfig:
-				break;
-			case config:
-				currentConfig = null;
-				break;
-			case property:
-				break;
-			default:
-		}
+		this.params = params;
 	}
 
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf2(eName)) {
-			case applicationConfig:
-				break;
+		switch (TagName.valueOf(qName)) {
 			case config:
-				currentConfig = new HashMap<>();
-				//
-				final String configName = attrs.getValue("name");
-				configs.put(configName, currentConfig);
 				break;
 			case property:
 				final String propertyName = attrs.getValue("name").trim();
 				final String propertyValue = attrs.getValue("value").trim();
-				currentConfig.put(propertyName, propertyValue);
+				params.put(propertyName, propertyValue);
 				break;
 			default:
 		}
 	}
+
+	@Override
+	public void endElement(final String namespaceURI, final String localName, final String qName) {
+		//
+	}
+
 }

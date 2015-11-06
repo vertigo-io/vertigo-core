@@ -22,46 +22,29 @@ import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
-import java.util.Properties;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import java.util.Map;
 
 /**
  * Plugin d'accès à la configuration de la WebApp.
  * @author npiedeloup
 */
 public final class WebAppContextParamPlugin implements ParamPlugin {
-	private static Properties properties;
+	private static Map<String, String> params;
 
 	/**
 	 * @param initConf Configuration initiale
 	 */
-	public static void setInitConfig(final Properties initConf) {
-		Assertion.checkNotNull(initConf);
+	public static void setParams(final Map<String, String> params) {
+		Assertion.checkNotNull(params);
 		//-----
-		WebAppContextParamPlugin.properties = initConf;
-	}
-
-	private final String managedConfigPath;
-
-	/**
-	 * Constructeur.
-	 * @param configPath Nom de la config initial
-	 */
-	@Inject
-	public WebAppContextParamPlugin(@Named("configPath") final String configPath) {
-		Assertion.checkArgNotEmpty(configPath);
-		//-----
-		managedConfigPath = configPath;
+		WebAppContextParamPlugin.params = params;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String configPath, final String property) {
-		Assertion.checkArgNotEmpty(configPath);
+	public Option<String> getValue(final String property) {
 		Assertion.checkArgNotEmpty(property);
 		//-----
-		return managedConfigPath.equals(configPath) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
+		return params.containsKey(property) ? Option.<String> option(params.get(property)) : Option.<String> none();
 	}
 }

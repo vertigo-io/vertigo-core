@@ -29,6 +29,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -61,8 +63,8 @@ final class HomeServletStarter {
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Properties webAppConf = createWebAppProperties(servletContext);
-			WebAppContextParamPlugin.setInitConfig(webAppConf);
+			final Map<String, String> webParams = createWebParams(servletContext);
+			WebAppContextParamPlugin.setParams(webParams);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
@@ -104,11 +106,11 @@ final class HomeServletStarter {
 	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppConfigPlugin du ParamManager.
 	 * @return Properties
 	 */
-	private static Properties createWebAppProperties(final ServletContext servletContext) {
+	private static Map<String, String> createWebParams(final ServletContext servletContext) {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
-		final Properties servletParams = new Properties();
+		final Map<String, String> servletParams = new HashMap<>();
 		String name;
 		/*
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent

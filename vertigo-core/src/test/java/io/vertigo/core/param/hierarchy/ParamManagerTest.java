@@ -22,7 +22,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.param.ServerConfig;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
@@ -57,138 +56,120 @@ public final class ParamManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath() {
 		//On vérifie que le path doit respecter la regex @See paramManager.REGEX_PATH
-		final String value = paramManager.getStringValue("Server", "name");
+		final String value = paramManager.getStringValue("Server.name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath2() {
 		//On vérifie que le path doit respecter la regex @See paramManager.REGEX_PATH
-		final String value = paramManager.getStringValue("server.Fr", "name");
+		final String value = paramManager.getStringValue("server.Fr.name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty() {
 		//On vérifie que la propert doit respecter la regex @See paramManager.REGEX_PROPERTY
-		final String value = paramManager.getStringValue("server", "Name");
+		final String value = paramManager.getStringValue("serve.Name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty2() {
 		//On vérifie que la propert doit respecter la regex @See paramManager.REGEX_PROPERTY
-		final String value = paramManager.getStringValue("server", "name.first");
+		final String value = paramManager.getStringValue("server.name.first");
 		nop(value);
 	}
 
 	@Test
 	public void test0() {
-		final String value = paramManager.getStringValue("server", "name");
-		Assert.assertEquals("monBeauServer", value);
-	}
-
-	@Test
-	public void test1() {
-		final String value = paramManager.getStringValue("server.fr", "name");
+		final String value = paramManager.getStringValue("server.name");
 		Assert.assertEquals("monBeauServer", value);
 	}
 
 	@Test
 	public void test2() {
-		final String value = paramManager.getStringValue("server.fr.dev", "name");
+		final String value = paramManager.getStringValue("server.fr.dev.name");
 		Assert.assertEquals("marecette", value);
 	}
 
 	@Test(expected = Exception.class)
 	public void test3() {
-		paramManager.getStringValue("server", "host");
+		paramManager.getStringValue("server.host");
 	}
 
 	@Test
 	public void test4() {
-		final String value = paramManager.getStringValue("server.fr", "host");
+		final String value = paramManager.getStringValue("server.fr.host");
 		Assert.assertEquals("http://wwww/fr", value);
 	}
 
-	@Test
-	public void test5() {
-		final String value = paramManager.getStringValue("server.fr.unknown", "host");
-		Assert.assertEquals("http://wwww/fr", value);
-	}
+	//
+	//	@Test(expected = Exception.class)
+	//	public void testVo() {
+	//		paramManager.resolve("serverTest", ServerConfigVo.class);
+	//		//Le résolve ne doit pas être possible : les Values Object ne sont pas gérés.");
+	//	}
 
-	@Test(expected = Exception.class)
-	public void testVo() {
-		paramManager.resolve("serverTest", ServerConfigVo.class);
-		//Le résolve ne doit pas être possible : les Values Object ne sont pas gérés.");
-	}
-
-	@Test
-	public void testBean0() {
-		final ServerConfigBean serverConfig = paramManager.resolve("serverTest", ServerConfigBean.class);
-		Assert.assertEquals("monBeauServer", serverConfig.getName());
-		Assert.assertEquals(99, serverConfig.getPort());
-		Assert.assertEquals("http://wwww", serverConfig.getHost());
-		Assert.assertTrue(serverConfig.isActive());
-	}
-
-	@Test(expected = Exception.class)
-	public void testBean1() {
-		paramManager.resolve("server", ServerConfigBean.class);
-		//"Le résolve ne doit pas être possible : il manque une propriété.");
-	}
-
-	@Test
-	public void testBean2() {
-		final ServerConfigBean serverConfig = paramManager.resolve("server.fr", ServerConfigBean.class);
-		Assert.assertEquals("monBeauServer", serverConfig.getName());
-		Assert.assertEquals(99, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertFalse(serverConfig.isActive());
-	}
-
-	@Test
-	public void testBean3() {
-		final ServerConfigBean serverConfig = paramManager.resolve("server.en", ServerConfigBean.class);
-		Assert.assertEquals("monBeauServer", serverConfig.getName());
-		Assert.assertEquals(99, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
-		Assert.assertFalse(serverConfig.isActive());
-	}
-
-	@Test
-	public void testBean4() {
-		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.dev", ServerConfigBean.class);
-		Assert.assertEquals("marecette", serverConfig.getName());
-		Assert.assertEquals(8080, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertTrue(serverConfig.isActive());
-	}
-
-	@Test
-	public void testBean5() {
-		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod", ServerConfigBean.class);
-		Assert.assertEquals("monsite", serverConfig.getName());
-		Assert.assertEquals(80, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertTrue(serverConfig.isActive());
-	}
-
-	@Test
-	public void testBean6() {
-		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfigBean.class);
-		Assert.assertEquals("monsite", serverConfig.getName());
-		Assert.assertEquals(80, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertTrue(serverConfig.isActive());
-	}
-
-	@Test
-	public void testInterface() {
-		final ServerConfig serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfig.class);
-		Assert.assertEquals("monsite", serverConfig.getName());
-		Assert.assertEquals(80, serverConfig.getPort());
-		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertTrue(serverConfig.isActive());
-	}
+	//	@Test
+	//	public void testBean0() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("serverTest", ServerConfigBean.class);
+	//		Assert.assertEquals("monBeauServer", serverConfig.getName());
+	//		Assert.assertEquals(99, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww", serverConfig.getHost());
+	//		Assert.assertTrue(serverConfig.isActive());
+	//
+	//	@Test
+	//	public void testBean2() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("server.fr", ServerConfigBean.class);
+	//		Assert.assertEquals("monBeauServer", serverConfig.getName());
+	//		Assert.assertEquals(99, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
+	//		Assert.assertFalse(serverConfig.isActive());
+	//	}
+	//
+	//	@Test
+	//	public void testBean3() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("server.en", ServerConfigBean.class);
+	//		Assert.assertEquals("monBeauServer", serverConfig.getName());
+	//		Assert.assertEquals(99, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
+	//		Assert.assertFalse(serverConfig.isActive());
+	//	}
+	//
+	//	@Test
+	//	public void testBean4() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.dev", ServerConfigBean.class);
+	//		Assert.assertEquals("marecette", serverConfig.getName());
+	//		Assert.assertEquals(8080, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
+	//		Assert.assertTrue(serverConfig.isActive());
+	//	}
+	//
+	//	@Test
+	//	public void testBean5() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod", ServerConfigBean.class);
+	//		Assert.assertEquals("monsite", serverConfig.getName());
+	//		Assert.assertEquals(80, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
+	//		Assert.assertTrue(serverConfig.isActive());
+	//	}
+	//
+	//	@Test
+	//	public void testBean6() {
+	//		final ServerConfigBean serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfigBean.class);
+	//		Assert.assertEquals("monsite", serverConfig.getName());
+	//		Assert.assertEquals(80, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
+	//		Assert.assertTrue(serverConfig.isActive());
+	//	}
+	//
+	//	@Test
+	//	public void testInterface() {
+	//		final ServerConfig serverConfig = paramManager.resolve("server.fr.prod.unknown", ServerConfig.class);
+	//		Assert.assertEquals("monsite", serverConfig.getName());
+	//		Assert.assertEquals(80, serverConfig.getPort());
+	//		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
+	//		Assert.assertTrue(serverConfig.isActive());
+	//	}
 }

@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * @author  pchretien
  */
 public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<HomeConfigBuilder>*/
-	private final Map<String, Map<String, String>> configs;
+	private final Map<String, String> params;
 
 	/**
 	 * Constructeur
@@ -58,23 +58,21 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 		Assertion.checkArgNotEmpty(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
-		configs = readXML(configURL);
+		params = readXML(configURL);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String configPath, final String propertyName) {
-		Assertion.checkArgNotEmpty(configPath);
-		Assertion.checkArgNotEmpty(propertyName);
+	public Option<String> getValue(final String property) {
+		Assertion.checkArgNotEmpty(property);
 		//-----
-		final Map<String, String> properties = configs.get(configPath);
-		return properties == null ? Option.<String> none() : Option.<String> option(properties.get(propertyName));
+		return params.containsKey(property) ? Option.<String> option(params.get(property)) : Option.<String> none();
 	}
 
 	/**
 	 * Charge une configuration, et complète celle existante.
 	 */
-	private static Map<String, Map<String, String>> readXML(final URL configURL) {
+	private static Map<String, String> readXML(final URL configURL) {
 		Assertion.checkNotNull(configURL);
 		//-----
 		try {
@@ -88,10 +86,10 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 		}
 	}
 
-	private static Map<String, Map<String, String>> doReadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
+	private static Map<String, String> doReadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
 		xsdValidate(configURL);
 		//---
-		final Map<String, Map<String, String>> tmpConfigs = new HashMap<>();
+		final Map<String, String> tmpConfigs = new HashMap<>();
 
 		final XmlConfigHandler handler = new XmlConfigHandler(tmpConfigs);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();

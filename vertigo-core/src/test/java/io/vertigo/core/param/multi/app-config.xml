@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application-config>
 
-	<config name="serverTest"> <!-- pour tests simples -->
-		<property name="name" value="monBeauServer" />
-		<property name="port" value="99" />
-		<property name="host" value="http://wwww" />
-		<property name="active" value="true" />
-	</config>
-	<config name="server"> <!-- incomplet pour test hierarchie -->
-		<property name="name" value="monBeauServer" />
-		<property name="port" value="99" />
-		<property name="active" value="false" />
-	</config>
-	<config name="server.fr.dev">
-		<property name="name" value="marecette" />
-		<property name="port" value="8080" />
-		<property name="active" value="true" />
-	</config>
-	<config name="server.fr.prod">
-		<property name="name" value="monsite" />
-		<property name="port" value="80" />
-		<property name="active" value="true" />
-	</config>
-</application-config> 
+<config>
+	<property name="serverTest.name" value="monBeauServer" />
+	<property name="serverTest.port" value="99" />
+	<property name="serverTest.host" value="http://wwww" />
+	<property name="serverTest.active" value="true" />
+
+	<property name="server.name" value="monBeauServer" />
+	<property name="server.port" value="99" />
+	<property name="server.active" value="false" />
+
+	<property name="server.fr.devname" value="marecette" />
+	<property name="server.fr.port" value="8080" />
+	<property name="server.fr.active" value="true" />
+
+	<property name="server.fr.prod.name" value="monsite" />
+	<property name="server.fr.prod.port" value="80" />
+	<property name="server.fr.prod.active" value="true" />
+</config>

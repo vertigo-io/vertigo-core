@@ -21,18 +21,9 @@ package io.vertigo.core.param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -87,12 +78,9 @@ import javax.inject.Inject;
  * @author pchretien, npiedeloup, prahmoune 
  */
 public final class ParamManager implements Component {
-	/** Regexp path. */
-	private static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
-	/** Regexp propertyName. */
-	private static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
+	/** Regexp property. */
+	private static final Pattern REGEX_PROPERTY = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
 	private final List<ParamPlugin> paramPlugins;
-	private static final char CONFIG_PATH_SEPARATOR = '.';
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
@@ -103,33 +91,28 @@ public final class ParamManager implements Component {
 		this.paramPlugins = paramPlugins;
 	}
 
-	private static void checkPath(final String configPath) {
-		Assertion.checkArgNotEmpty(configPath);
-		Assertion.checkArgument(REGEX_PATH.matcher(configPath).matches(), "path '{0}' doit être camelCase et commencer par une minuscule", configPath);
-	}
-
 	private static void checkProperty(final String property) {
 		Assertion.checkArgNotEmpty(property);
 		Assertion.checkArgument(REGEX_PROPERTY.matcher(property).matches(), "property '{0}' doit être camelCase et commencer par une minuscule", property);
 	}
 
-	/**
-	 * Retourne une implémentation à partir d'une interface ou d'un Bean.
-	 * Celà permet de structurer les développements.
-	 * @param <C> Type de l'interface de la configuration
-	 * @param configPath Chemin décrivant la configuration
-	 * @param configClass Interface ou Class de la configuration
-	 * @return Instance of configClass
-	 */
-	public <C> C resolve(final String configPath, final Class<C> configClass) {
-		Assertion.checkNotNull(configPath);
-		Assertion.checkNotNull(configClass);
-		//-----
-		if (configClass.isInterface()) {
-			return createProxy(configPath, configClass);
-		}
-		return createAndBindConfig(configPath, configClass);
-	}
+	//	/**
+	//	 * Retourne une implémentation à partir d'une interface ou d'un Bean.
+	//	 * Celà permet de structurer les développements.
+	//	 * @param <C> Type de l'interface de la configuration
+	//	 * @param configPath Chemin décrivant la configuration
+	//	 * @param configClass Interface ou Class de la configuration
+	//	 * @return Instance of configClass
+	//	 */
+	//	public <C> C resolve(final String configPath, final Class<C> configClass) {
+	//		Assertion.checkNotNull(configPath);
+	//		Assertion.checkNotNull(configClass);
+	//		//-----
+	//		if (configClass.isInterface()) {
+	//			return createProxy(configPath, configClass);
+	//		}
+	//		return createAndBindConfig(configPath, configClass);
+	//	}
 
 	/**
 	 * Retourne une propriété de configuration.
@@ -137,8 +120,8 @@ public final class ParamManager implements Component {
 	 * @param property Nom de la propriété de la configuration
 	 * @return Valeur de la propriété
 	 */
-	public String getStringValue(final String configPath, final String property) {
-		return (String) doGetPropertyValue(configPath, property, String.class);
+	public String getStringValue(final String property) {
+		return doGetPropertyValue(property, String.class);
 	}
 
 	/**
@@ -147,8 +130,8 @@ public final class ParamManager implements Component {
 	 * @param property Propriété de la configuration
 	 * @return Valeur de la propriété
 	 */
-	public int getIntValue(final String configPath, final String property) {
-		return (Integer) doGetPropertyValue(configPath, property, int.class);
+	public int getIntValue(final String property) {
+		return doGetPropertyValue(property, int.class);
 	}
 
 	/**
@@ -157,121 +140,99 @@ public final class ParamManager implements Component {
 	 * @param property Propriété de la configuration
 	 * @return Valeur de la propriété
 	 */
-	public boolean getBooleanValue(final String configPath, final String property) {
-		return (Boolean) doGetPropertyValue(configPath, property, boolean.class);
+	public boolean getBooleanValue(final String property) {
+		return doGetPropertyValue(property, boolean.class);
 	}
 
-	private <C> C createAndBindConfig(final String path, final Class<C> config) {
-		final C configObject = ClassUtil.newInstance(config);
+	//	private <C> C createAndBindConfig(final String path, final Class<C> config) {
+	//		final C configObject = ClassUtil.newInstance(config);
+	//
+	//		final Set<String> properties = new HashSet<>();
+	//		//1. On liste les propriétés gérées par la configuration
+	//		// Toutes les méthodes en get et is sont éligibles.
+	//		for (final Method method : config.getMethods()) {
+	//			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
+	//				properties.add(ClassUtil.getPropertyName(method));
+	//			}
+	//		}
+	//		//2. On affecte à ces propriétés les valeurs en
+	//		for (final Field field : config.getDeclaredFields()) {
+	//			final String property = field.getName();
+	//			if (properties.contains(property)) {
+	//				final Object value = doGetPropertyValue(path, property, field.getType());
+	//				ClassUtil.set(configObject, field, value);
+	//			}
+	//		}
+	//		return configObject;
+	//	}
 
-		final Set<String> properties = new HashSet<>();
-		//1. On liste les propriétés gérées par la configuration
-		// Toutes les méthodes en get et is sont éligibles.
-		for (final Method method : config.getMethods()) {
-			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
-				properties.add(ClassUtil.getPropertyName(method));
-			}
-		}
-		//2. On affecte à ces propriétés les valeurs en
-		for (final Field field : config.getDeclaredFields()) {
-			final String property = field.getName();
-			if (properties.contains(property)) {
-				final Object value = doGetPropertyValue(path, property, field.getType());
-				ClassUtil.set(configObject, field, value);
-			}
-		}
-		return configObject;
-	}
-
-	private <C> C createProxy(final String path, final Class<C> config) {
-		Assertion.checkNotNull(path);
-		Assertion.checkNotNull(config);
-		Assertion.checkArgument(config.isInterface(), "la configuration recherchée doit être une interface");
-		//-----
-		final Map<Method, String> configs = new HashMap<>();
-		for (final Method method : config.getMethods()) {
-			configs.put(method, ClassUtil.getPropertyName(method));
-		}
-
-		return config.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { config }, new InvocationHandler() {
-			@Override
-			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-				final String property = configs.get(method);
-				Assertion.checkNotNull(property, "Méthode {0} inconnue sur la classe {1}", method, config.getSimpleName());
-				return doGetPropertyValue(path, property, method.getReturnType());
-			}
-		}));
-	}
+	//	private <C> C createProxy(final String path, final Class<C> config) {
+	//		Assertion.checkNotNull(path);
+	//		Assertion.checkNotNull(config);
+	//		Assertion.checkArgument(config.isInterface(), "la configuration recherchée doit être une interface");
+	//		//-----
+	//		final Map<Method, String> configs = new HashMap<>();
+	//		for (final Method method : config.getMethods()) {
+	//			configs.put(method, ClassUtil.getPropertyName(method));
+	//		}
+	//
+	//		return config.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { config }, new InvocationHandler() {
+	//			@Override
+	//			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+	//				final String property = configs.get(method);
+	//				Assertion.checkNotNull(property, "Méthode {0} inconnue sur la classe {1}", method, config.getSimpleName());
+	//				return doGetPropertyValue(path, property, method.getReturnType());
+	//			}
+	//		}));
+	//	}
 
 	/**
 	 * Retourne la config a utiliser pour cette propriété.
-	 * Le séparateur par défaut est le .
-	 * @param configPath Chemin de la config de départ
 	 * @param property property's name
 	 * @param propertyClass property's class
 	 * @return Config à utiliser : une supérieur ou égale. Si property inconnue on retourne celle de départ
 	 */
-	Object doGetPropertyValue(final String configPath, final String property, final Class<?> propertyClass) {
-		checkPath(configPath);
+	private <C> C doGetPropertyValue(final String property, final Class<C> propertyClass) {
 		checkProperty(property);
 		//-----
-		String subConfig = configPath;
-		while (subConfig != null) {
-			for (final ParamPlugin paramPlugin : paramPlugins) {
-				final Option<String> value = paramPlugin.getValue(subConfig, property);
-				if (value.isDefined()) {
-					return castValue(subConfig, property, propertyClass, value.get());
-				}
+		for (final ParamPlugin paramPlugin : paramPlugins) {
+			final Option<String> value = paramPlugin.getValue(property);
+			if (value.isDefined()) {
+				return (C) castValue(property, propertyClass, value.get());
 			}
-			subConfig = goUp(subConfig);
 		}
-		throw new IllegalArgumentException("propriété '" + property + "' non trouvée dans la configuration '" + configPath + "'.");
-	}
-
-	/**
-	 * Remonte un niveau dans la hiérachie implicite des configs.
-	 * Le séparateur par défaut est le .
-	 * @param subConfig config de départ
-	 * @return Config du niveau supérieur, null si pas de niveau supérieur
-	 */
-	private static String goUp(final String subConfig) {
-		final int pathSeparatorIndex = subConfig.lastIndexOf(CONFIG_PATH_SEPARATOR);
-		if (pathSeparatorIndex == -1) {
-			return null;
-		}
-		return subConfig.substring(0, pathSeparatorIndex);
+		throw new IllegalArgumentException("propriété '" + property + "' non trouvée");
 	}
 
 	/**
 	 * Cast la valeur fournie sous forme de String dans le type cible : propertyClass.
-	 * @param config Chemin décrivant la configuration
 	 * @param property Nom de la propriété de la configuration
 	 * @param propertyClass Class attendue pour la propriété
 	 * @return Valeur typée de la propriété
 	 */
-	private static Object castValue(final String config, final String property, final Class<?> propertyClass, final String value) {
+	private static Object castValue(final String property, final Class<?> propertyClass, final String value) {
 		if (boolean.class.equals(propertyClass)) {
-			return toBoolean(config, property, value);
+			return toBoolean(property, value);
 		} else if (int.class.equals(propertyClass)) {
-			return toInteger(config, property, value);
+			return toInteger(property, value);
 		} else if (String.class.equals(propertyClass)) {
 			return value;
 		}
-		throw new IllegalArgumentException("Type de La propriété '" + config + ":" + property + " de type ' " + propertyClass + " non gérée");
+		throw new IllegalArgumentException("Type de La propriété :" + property + " de type ' " + propertyClass + " non gérée");
 	}
 
-	private static boolean toBoolean(final String config, final String property, final String value) {
+	private static boolean toBoolean(final String property, final String value) {
 		if (!(TRUE.equalsIgnoreCase(value) || FALSE.equalsIgnoreCase(value))) {
-			throw new RuntimeException(StringUtil.format("La propriété '{0}:{1}' n'est pas convertible en 'boolean' : {2}", config, property, value));
+			throw new RuntimeException(StringUtil.format("La propriété '{0}' n'est pas convertible en 'boolean' : {1}", property, value));
 		}
 		return Boolean.parseBoolean(value);
 	}
 
-	private static int toInteger(final String config, final String property, final String value) {
+	private static int toInteger(final String property, final String value) {
 		try {
 			return Integer.parseInt(value);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException(StringUtil.format("La propriété '{0}:{1}'  n'est pas convertible en 'int' : {2}", config, property, value), e);
+			throw new RuntimeException(StringUtil.format("La propriété '{0}'  n'est pas convertible en 'int' : {1}", property, value), e);
 		}
 	}
 }

@@ -92,17 +92,13 @@ final class ComponentParamsContainer implements Container {
 		if (value != null && value.startsWith(confParamProtocol)) {
 			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
 			//-----
-			// On doit rechercher la valeur dans la configuration
-			final int idx = value.lastIndexOf('.');
-			Assertion.checkState(idx != -1, "Le paramètre {0} n'est pas paramètre du paramManager", value);
-			final String path = value.substring(confParamProtocol.length(), idx);
-			final String prop = value.substring(idx + 1);
+			final String property = value.substring(confParamProtocol.length());
 			try {
-				value = paramManagerOption.get().getStringValue(path, prop);
+				value = paramManagerOption.get().getStringValue(property);
 			} catch (final Throwable t) {
 				// Problème lors de l'accès au paramètre. On loggue et on utilise la valeur null
 				Logger.getLogger(ComponentParamsContainer.class).warn(
-						"Pas d'entrée dans le config manager pour " + path + "." + prop);
+						"Pas d'entrée dans le config manager pour " + property);
 				value = null;
 			}
 			//-----

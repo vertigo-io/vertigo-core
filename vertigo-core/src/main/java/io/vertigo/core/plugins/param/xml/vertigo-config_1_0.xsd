@@ -20,22 +20,14 @@
 
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-	<xs:element name="application-config">
+	<xs:element name="config">
 		<xs:complexType>
-	    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
-	        	<xs:element name="config" type="configType"/>
+			<xs:sequence>
+				<xs:element name="property" type="propertyType" minOccurs="1" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
-	</xs:element>
+  	</xs:element>
 
-	<xs:complexType name="configType">
-		<xs:sequence>
-			<xs:element name="property" type="propertyType" minOccurs="1" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-	</xs:complexType>
-	
 	<xs:complexType name="propertyType">
 	  	<xs:attribute name="name" type="xs:string" use="required"/>
 	  	<xs:attribute name="value" type="xs:string" use="required"/>

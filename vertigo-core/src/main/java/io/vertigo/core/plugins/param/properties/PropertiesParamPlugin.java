@@ -38,7 +38,6 @@ import javax.inject.Named;
  */
 public final class PropertiesParamPlugin implements ParamPlugin {
 	private final Properties properties;
-	private final String managedConfigPath;
 
 	/**
 	 * Constructeur.
@@ -48,13 +47,11 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	 * @throws IOException erreur de lecture du fichier
 	 */
 	@Inject
-	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url, @Named("configPath") final String configPath) throws IOException {
+	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) throws IOException {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
-		Assertion.checkArgNotEmpty(configPath);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
-		managedConfigPath = configPath;
 		properties = loadProperties(configURL);
 	}
 
@@ -68,10 +65,9 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String configPath, final String property) {
-		Assertion.checkArgNotEmpty(configPath);
+	public Option<String> getValue(final String property) {
 		Assertion.checkArgNotEmpty(property);
 		//-----
-		return managedConfigPath.equals(configPath) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
+		return properties.containsKey(property) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
 	}
 }

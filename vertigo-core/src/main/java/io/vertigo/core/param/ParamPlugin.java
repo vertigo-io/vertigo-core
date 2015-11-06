@@ -34,5 +34,5 @@ public interface ParamPlugin extends Plugin {
 	 * @param propertyName Nom de la propriété de la configuration
 	 * @return Valeur de la propriété
 	 */
-	Option<String> getValue(String config, String propertyName);
+	Option<String> getValue(String propertyName);
 }
