@@ -31,10 +31,8 @@ import java.util.Map;
  * @author pchretien, npiedeloup
  */
 public final class LogicalDataStoreConfig {
-	private static final String MAIN_DATA_STORE_NAME = "main";
-
 	/** Map des stores utilisés spécifiquement */
-	private final Map<String, DataStorePlugin> dataStoresMap = new HashMap<>();
+	private final Map<String, DataStorePlugin> dataStorePluginsMap = new HashMap<>();
 
 	/**
 	 * @param dataStorePlugins DataStore plugins
@@ -44,7 +42,7 @@ public final class LogicalDataStoreConfig {
 		//-----
 		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
 			final String name = dataStorePlugin.getName();
-			final DataStorePlugin previous = dataStoresMap.put(name, dataStorePlugin);
+			final DataStorePlugin previous = dataStorePluginsMap.put(name, dataStorePlugin);
 			Assertion.checkState(previous == null, "DataStorePlugin {0}, was already registered", name);
 		}
 		Assertion.checkNotNull(dataStoresMap.get(MAIN_DATA_STORE_NAME), "No " + MAIN_DATA_STORE_NAME + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + MAIN_DATA_STORE_NAME + "'.");
@@ -59,9 +57,7 @@ public final class LogicalDataStoreConfig {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		final DataStorePlugin dataStore = dataStoresMap.get(definition.getStoreName().getOrElse(MAIN_DATA_STORE_NAME));
-		Assertion.checkNotNull(dataStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
-		return dataStore;
+		return getDataStorePlugin(definition.getStoreName());
 	}
 
 	/**
@@ -72,8 +68,14 @@ public final class LogicalDataStoreConfig {
 	public String getConnectionName(final String storeName) {
 		Assertion.checkArgNotEmpty(storeName);
 		//-----
-		final DataStorePlugin dataStore = dataStoresMap.get(storeName);
+		return getDataStorePlugin(storeName).getConnectionName();
+	}
+
+	private DataStorePlugin getDataStorePlugin(String storeName) {
+		Assertion.checkArgNotEmpty(storeName);
+		//-----
+		final DataStorePlugin dataStore = dataStorePluginsMap.get(storeName);
 		Assertion.checkNotNull(dataStore, "Aucun store ayant pour nom '{0}'", storeName);
-		return dataStore.getConnectionName();
+		return dataStore;
 	}
 }

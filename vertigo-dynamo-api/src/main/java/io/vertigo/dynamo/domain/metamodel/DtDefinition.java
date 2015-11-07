@@ -65,7 +65,7 @@ public final class DtDefinition implements Definition {
 	private Option<DtField> sortField = Option.none();
 	private Option<DtField> displayField = Option.none();
 
-	private final Option<String> storeName;
+	private final String storeName;
 
 	/**
 	 * Constructeur.
@@ -77,11 +77,12 @@ public final class DtDefinition implements Definition {
 			final boolean persistent,
 			final List<DtField> dtFields,
 			final boolean dynamic,
-			final Option<String> storeName) {
+			final String storeName) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
-		Assertion.checkNotNull(storeName);
+		Assertion.checkArgNotEmpty(storeName);
+		Assertion.checkState(vérifier via regex storeName);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
@@ -262,7 +263,7 @@ public final class DtDefinition implements Definition {
 	/**
 	 * @return StoreName
 	 */
-	public Option<String> getStoreName() {
+	public String getStoreName() {
 		return storeName;
 	}
 

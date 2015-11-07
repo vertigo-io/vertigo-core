@@ -23,7 +23,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -209,7 +208,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withStoreName(final String storeName) {
-		//storeName peut être null
+		//storeName may be null
 		//-----
 		myStoreName = storeName;
 		return this;
@@ -220,7 +219,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, Option.option(myStoreName));
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? "main" : myStoreName);
 		return dtDefinition;
 	}
 
