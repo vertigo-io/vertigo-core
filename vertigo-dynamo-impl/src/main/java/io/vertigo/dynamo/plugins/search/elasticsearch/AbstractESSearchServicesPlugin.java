@@ -93,7 +93,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexName = indexName;
+		this.indexName = indexName.toLowerCase().trim();
 		if (configFile.isDefined()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
