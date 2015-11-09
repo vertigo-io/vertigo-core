@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.store.kvstore;
+package io.vertigo.dynamo.impl.kvdatabase;
 
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;

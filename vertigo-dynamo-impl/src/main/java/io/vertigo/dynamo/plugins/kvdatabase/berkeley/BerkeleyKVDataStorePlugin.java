@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatabase.berkeley;
 
-import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
+import io.vertigo.dynamo.impl.kvdatabase.KVDataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;

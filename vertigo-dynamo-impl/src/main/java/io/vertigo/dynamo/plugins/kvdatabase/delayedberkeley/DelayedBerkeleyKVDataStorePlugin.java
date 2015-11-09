@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.kvdatabase.delayedberkeley;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
+import io.vertigo.dynamo.impl.kvdatabase.KVDataStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

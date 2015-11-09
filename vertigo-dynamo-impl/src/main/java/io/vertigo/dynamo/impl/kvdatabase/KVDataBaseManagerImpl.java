@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.impl.kvdatabase;
 
-import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
-import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
 import io.vertigo.dynamo.kvdatabase.KVDataBaseManager;
 import io.vertigo.dynamo.kvdatabase.KVStore;
 import io.vertigo.lang.Assertion;

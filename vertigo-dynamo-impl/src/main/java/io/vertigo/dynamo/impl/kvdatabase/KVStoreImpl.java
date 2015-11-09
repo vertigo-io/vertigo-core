@@ -16,14 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.store.kvstore;
+package io.vertigo.dynamo.impl.kvdatabase;
 
 import io.vertigo.dynamo.kvdatabase.KVStore;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.MapBuilder;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +35,11 @@ public final class KVStoreImpl implements KVStore {
 	public KVStoreImpl(final List<KVDataStorePlugin> kvDataStorePlugins) {
 		Assertion.checkNotNull(kvDataStorePlugins);
 		//-----
-		final Map<String, KVDataStorePlugin> map = new HashMap<>();
+		final MapBuilder<String, KVDataStorePlugin> mapBuilder = new MapBuilder<>();
 		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
-			map.put(kvDataStorePlugin.getDataStoreName(), kvDataStorePlugin);
+			mapBuilder.put(kvDataStorePlugin.getDataStoreName(), kvDataStorePlugin);
 		}
-		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
+		kvDataStorePluginBinding = mapBuilder.unmodifiable().build();
 	}
 
 	@Override

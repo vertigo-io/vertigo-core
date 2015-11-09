@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 @DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
 	/** Expression réguliére vérifiée par les noms des stores. */
-	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][A-Z0-9]{3,60}");
+	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
 	/** Nom de la définition. */
 	private final String name;
