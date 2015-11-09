@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Définition d'un type de DT.
@@ -38,6 +39,9 @@ import java.util.Map;
  */
 @DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
+	/** Expression réguliére vérifiée par les noms des stores. */
+	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][A-Z0-9]{3,60}");
+
 	/** Nom de la définition. */
 	private final String name;
 
@@ -82,7 +86,7 @@ public final class DtDefinition implements Definition {
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
 		Assertion.checkArgNotEmpty(storeName);
-		Assertion.checkState(vérifier via regex storeName);
+		Assertion.checkState(REGEX_STORE_NAME.matcher(storeName).matches(), "StoreName {0} must match pattern {1}", storeName, REGEX_STORE_NAME);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
