@@ -37,6 +37,9 @@ import java.util.List;
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
+
+	public static final String DEFAULT_STORE_NAME = "main";
+
 	private static class MessageKeyImpl implements MessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
 
@@ -219,7 +222,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? "main" : myStoreName);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? DEFAULT_STORE_NAME : myStoreName);
 		return dtDefinition;
 	}
 

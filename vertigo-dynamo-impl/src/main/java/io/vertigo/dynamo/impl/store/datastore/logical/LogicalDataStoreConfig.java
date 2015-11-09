@@ -19,9 +19,11 @@
 package io.vertigo.dynamo.impl.store.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,7 @@ import java.util.Map;
  */
 public final class LogicalDataStoreConfig {
 	/** Map des stores utilisés spécifiquement */
-	private final Map<String, DataStorePlugin> dataStorePluginsMap = new HashMap<>();
+	private final Map<String, DataStorePlugin> dataStorePluginsMap;
 
 	/**
 	 * @param dataStorePlugins DataStore plugins
@@ -40,12 +42,14 @@ public final class LogicalDataStoreConfig {
 	public LogicalDataStoreConfig(final List<DataStorePlugin> dataStorePlugins) {
 		Assertion.checkNotNull(dataStorePlugins);
 		//-----
+		final Map<String, DataStorePlugin> pluginsMap = new HashMap<>();
 		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
 			final String name = dataStorePlugin.getName();
-			final DataStorePlugin previous = dataStorePluginsMap.put(name, dataStorePlugin);
+			final DataStorePlugin previous = pluginsMap.put(name, dataStorePlugin);
 			Assertion.checkState(previous == null, "DataStorePlugin {0}, was already registered", name);
 		}
-		Assertion.checkNotNull(dataStoresMap.get(MAIN_DATA_STORE_NAME), "No " + MAIN_DATA_STORE_NAME + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + MAIN_DATA_STORE_NAME + "'.");
+		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_STORE_NAME), "No " + DtDefinitionBuilder.DEFAULT_STORE_NAME + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_STORE_NAME + "'.");
+		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}
 
 	/**
@@ -71,7 +75,7 @@ public final class LogicalDataStoreConfig {
 		return getDataStorePlugin(storeName).getConnectionName();
 	}
 
-	private DataStorePlugin getDataStorePlugin(String storeName) {
+	private DataStorePlugin getDataStorePlugin(final String storeName) {
 		Assertion.checkArgNotEmpty(storeName);
 		//-----
 		final DataStorePlugin dataStore = dataStorePluginsMap.get(storeName);
