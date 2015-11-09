@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.engines;
-
-import io.vertigo.lang.Engine;
+package io.vertigo.shell.command;
 
 /**
+ * Local execution.
+ * example : resolve configuration of a specific component. 
  * @author pchretien
  */
-public interface JsonEngine extends Engine {
-	String toJson(Object data);
+public interface VCommandExecutor<R> {
+	R exec(VCommand command);
 }
