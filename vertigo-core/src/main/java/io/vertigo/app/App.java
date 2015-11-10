@@ -72,13 +72,13 @@ public final class App implements AutoCloseable {
 		Home.setApp(this);
 		state = State.starting;
 		//-----
-		try {
-			//-----0. Boot (considered as a Module)
-			boot = new Boot(appConfig.getBootConfig());
-			//-----0. Boot
-			componentSpace = new ComponentSpace();
-			definitionSpace = new DefinitionSpace();
+		//-----0. Boot (considered as a Module)
+		boot = new Boot(appConfig.getBootConfig());
+		//-----0. Boot
+		componentSpace = new ComponentSpace();
+		definitionSpace = new DefinitionSpace();
 
+		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopEngine(), appConfig.getBootConfig().getElasticaEngine());
 			//contient donc à minima resourceManager et paramManager.
