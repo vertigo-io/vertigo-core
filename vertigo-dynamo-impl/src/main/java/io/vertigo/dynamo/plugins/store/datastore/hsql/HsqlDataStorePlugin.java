@@ -115,7 +115,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField pk = dtDefinition.getIdField().get();
 		pk.getDataAccessor().setValue(dto, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));
-		//			executeInsert(transaction, dto);
+		//executeInsert(transaction, dto);
 	}
 
 	/** {@inheritDoc} */

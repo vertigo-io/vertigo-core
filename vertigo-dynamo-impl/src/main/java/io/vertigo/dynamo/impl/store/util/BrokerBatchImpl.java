@@ -145,11 +145,12 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 				.toString();
 
 		// Exécution de la tache
-		Domain dtcDomain = Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class);
+		final Domain dtcDomain = Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class);
 		final String taskName = "TK_LOAD_BY_LST_" + fieldName + "_" + dtDef.getLocalName();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(dtDef.getStoreName())
 				.withRequest(request)
 				.addInAttribute(inDtcName, dtcDomain, true)
 				.withOutAttribute("out", dtcDomain, true)
@@ -162,7 +163,7 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
 					.addValue(inDtcName, paq);
 			// Exécution de la tache
-			DtList<D> result = taskManager
+			final DtList<D> result = taskManager
 					.execute(taskBuilder.build())
 					.getResult();
 			ret.addAll(result);

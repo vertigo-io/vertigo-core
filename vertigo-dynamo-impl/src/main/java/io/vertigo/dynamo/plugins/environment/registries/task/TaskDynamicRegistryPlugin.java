@@ -64,8 +64,10 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
+		final String storeName = (String) xtaskDefinition.getPropertyValue(KspProperty.STORE_NAME);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(taskEngineClass)
+				.withStore(storeName)
 				.withRequest(request)
 				.withPackageName(xtaskDefinition.getPackageName());
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {

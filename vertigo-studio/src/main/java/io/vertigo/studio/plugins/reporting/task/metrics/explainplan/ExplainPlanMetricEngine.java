@@ -123,6 +123,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(taskDefinition.getTaskEngineClass())
+				.withStore(taskDefinition.getStoreName())
 				.withRequest(explainPlanRequest)
 				.withPackageName(getClass().getPackage().getName());
 
