@@ -47,6 +47,8 @@ final class BrokerNNImpl implements BrokerNN {
 	private final TaskManager taskManager;
 
 	private static final class DescriptionNN {
+
+		final String storeName;
 		final String tableName;
 		final DtField sourceField;
 		final Object sourceValue;
@@ -56,6 +58,9 @@ final class BrokerNNImpl implements BrokerNN {
 			Assertion.checkNotNull(dtListURIForAssociation);
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
+			tableName = associationNNDefinition.getTableName();
+			storeName = associationNNDefinition.getAssociationNodeA().getDtDefinition().getStoreName();
+
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
 			sourceField = sourceAssociationNode.getDtDefinition().getIdField().get();
@@ -64,7 +69,6 @@ final class BrokerNNImpl implements BrokerNN {
 			final AssociationNode targetAssociationNode = AssociationUtil.getAssociationNode(associationNNDefinition, dtListURIForAssociation.getRoleName());
 			targetField = targetAssociationNode.getDtDefinition().getIdField().get();
 			sourceValue = dtListURIForAssociation.getSource().getId();
-			tableName = associationNNDefinition.getTableName();
 		}
 	}
 
@@ -130,7 +134,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String taskName = "TK_DELETE_" + nn.tableName;
 		final String request = String.format("delete from %s where %s = #%s#", nn.tableName, sourceFieldName, sourceFieldName);
 
-		processNN(taskName, request, nn.sourceField, nn.sourceValue, null, null);
+		processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, null, null);
 	}
 
 	/**
@@ -145,7 +149,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String taskName = "TK_INSERT_" + nn.tableName;
 
 		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceFieldName, targetFieldName, sourceFieldName, targetFieldName);
-		final int sqlRowCount = processNN(taskName, request, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
+		final int sqlRowCount = processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new RuntimeException("Plus de 1 ligne a été insérée");
 		} else if (sqlRowCount == 0) {
@@ -166,7 +170,7 @@ final class BrokerNNImpl implements BrokerNN {
 
 		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",
 				nn.tableName, sourceFieldName, sourceFieldName, targetFieldName, targetFieldName);
-		final int sqlRowCount = processNN(taskName, request, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
+		final int sqlRowCount = processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new RuntimeException("Plus de 1 ligne a été supprimée");
 		} else if (sqlRowCount == 0) {
@@ -174,7 +178,7 @@ final class BrokerNNImpl implements BrokerNN {
 		}
 	}
 
-	private int processNN(final String taskDefinitionName, final String request,
+	private int processNN(final String taskDefinitionName, final String request, final String storeName,
 			final DtField sourceField, final Object sourceValue,
 			final DtField targetField, final Object targetValue) {
 		//FieldName
@@ -182,6 +186,7 @@ final class BrokerNNImpl implements BrokerNN {
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineProc.class)
+				.withStore(storeName)
 				.withRequest(request)
 				.addInAttribute(sourceFieldName, sourceField.getDomain(), true); //IN, obligatoire
 		if (targetField != null) {
