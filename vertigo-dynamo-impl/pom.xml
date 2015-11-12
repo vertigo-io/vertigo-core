@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
-			<version>4.2.1</version> <!-- dernière version en license LGPL/MPL -->
+			<version>2.1.7</version> <!-- dernière version en license LGPL/MPL -->
 			<optional>true</optional>
 			<exclusions>
 				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non utilisé pour les générations. -->
