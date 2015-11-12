@@ -23,6 +23,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.kvdatabase.KVDataStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,8 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVDataStorePlugin.class);
 
 	private final String dataStoreName;
+	private final List<String> collections;
+
 	private final long timeToLiveSeconds;
 	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
 	private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
@@ -57,10 +60,21 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
-	public DelayedMemoryKVDataStorePlugin(final DaemonManager daemonManager, final @Named("dataStoreName") String dataStoreName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedMemoryKVDataStorePlugin(
+			final @Named("dataStoreName") String dataStoreName,
+			final @Named("collections") String collections,
+			final DaemonManager daemonManager,
+			final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(dataStoreName);
+		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.dataStoreName = dataStoreName;
+		ListBuilder<String> listBuilder = new ListBuilder<>();
+		for (String collection : collections.split(", ")) {
+			listBuilder.add(collection.trim());
+		}
+		this.collections = listBuilder.unmodifiable().build();
+		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
@@ -75,7 +89,15 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String key, final Object data) {
+	public List<String> getCollections() {
+		return collections;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void put(final String collection, final String key, final Object data) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
 		Assertion.checkNotNull(data);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(data);
@@ -85,13 +107,20 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final String key) {
+	public void remove(final String collection, final String key) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
+		//-----
 		cacheDatas.remove(key);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(final String key, final Class<C> clazz) {
+	public <C> Option<C> find(final String collection, final String key, final Class<C> clazz) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
+		Assertion.checkNotNull(clazz);
+		//-----
 		final DelayedMemoryCacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
 			return Option.some(clazz.cast(cacheValue.getValue()));
@@ -102,7 +131,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
 		throw new UnsupportedOperationException("This implementation doesn't use ordered datas. Method findAll can't be called.");
 	}
 

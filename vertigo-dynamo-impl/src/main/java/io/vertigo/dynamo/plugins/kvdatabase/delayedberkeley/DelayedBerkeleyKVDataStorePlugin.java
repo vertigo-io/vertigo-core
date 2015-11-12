@@ -25,6 +25,7 @@ import io.vertigo.dynamo.impl.kvdatabase.KVDataStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 import java.io.File;
 import java.io.Serializable;
@@ -65,6 +66,8 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
 	private final String dataStoreName;
+	private final List<String> collections;
+
 	private final int timeToLiveSeconds;
 	private Database cacheDatas;
 
@@ -80,11 +83,25 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final DaemonManager daemonManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(
+			final @Named("dataStoreName") String dataStoreName,
+			final @Named("collections") String collections,
+			final CodecManager codecManager,
+			final DaemonManager daemonManager,
+			@Named("cachePath") final String cachePath,
+			@Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(dataStoreName);
+		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.dataStoreName = dataStoreName;
+		ListBuilder<String> listBuilder = new ListBuilder<>();
+		for (String collection : collections.split(", ")) {
+			listBuilder.add(collection.trim());
+		}
+		this.collections = listBuilder.unmodifiable().build();
+		//-----
+
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
@@ -115,7 +132,15 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String key, final Object data) {
+	public List<String> getCollections() {
+		return collections;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void put(final String collection, final String key, final Object data) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
 		Assertion.checkNotNull(data);
 		Assertion.checkArgument(data instanceof Serializable, "Value must be Serializable {0}", data.getClass().getSimpleName());
 		//-----
@@ -146,7 +171,11 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(final String key, final Class<C> clazz) {
+	public <C> Option<C> find(final String collection, final String key, final Class<C> clazz) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
+		Assertion.checkNotNull(clazz);
+		//-----
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
@@ -168,7 +197,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkNotNull(clazz);
+		//-----
 		final DatabaseEntry theKey = new DatabaseEntry();
 		final DatabaseEntry theData = new DatabaseEntry();
 		final List<C> list = new ArrayList<>();
@@ -196,7 +228,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final String key) {
+	public void remove(final String collection, final String key) {
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkArgNotEmpty(key);
+		//-----
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);

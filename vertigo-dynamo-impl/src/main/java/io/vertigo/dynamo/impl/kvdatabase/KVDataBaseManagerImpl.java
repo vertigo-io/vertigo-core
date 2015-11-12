@@ -21,8 +21,10 @@ package io.vertigo.dynamo.impl.kvdatabase;
 import io.vertigo.dynamo.kvdatabase.KVDataBaseManager;
 import io.vertigo.dynamo.kvdatabase.KVStore;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.MapBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -32,7 +34,7 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class KVDataBaseManagerImpl implements KVDataBaseManager {
-	private final KVStore kvStore;
+	private final Map<String, KVStore> kvStoreByCollection;
 
 	/**
 	 * Constructeur.
@@ -43,12 +45,23 @@ public final class KVDataBaseManagerImpl implements KVDataBaseManager {
 	public KVDataBaseManagerImpl(final List<KVDataStorePlugin> kvDataStorePlugins) {
 		Assertion.checkNotNull(kvDataStorePlugins);
 		//-----
-		kvStore = new KVStoreImpl(kvDataStorePlugins);
+		MapBuilder<String, KVStore> mapBuilder = new MapBuilder<>();
+		for (KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
+			for (String collection : kvDataStorePlugin.getCollections()) {
+				KVStore kvStore = new KVStoreImpl(collection, kvDataStorePlugin);
+				mapBuilder.putCheckKeyNotExists(collection, kvStore);
+			}
+		}
+		kvStoreByCollection = mapBuilder.unmodifiable().build();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KVStore getKVStore() {
+	public KVStore getKVStore(String collection) {
+		Assertion.checkArgNotEmpty(collection);
+		//-----
+		KVStore kvStore = kvStoreByCollection.get(collection);
+		Assertion.checkNotNull(kvStore, "no store found for collection '{0}'", collection);
 		return kvStore;
 	}
 }

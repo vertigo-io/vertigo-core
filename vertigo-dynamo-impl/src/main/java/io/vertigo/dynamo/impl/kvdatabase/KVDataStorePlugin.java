@@ -29,14 +29,15 @@ import java.util.List;
  * @author pchretien
  */
 public interface KVDataStorePlugin extends Plugin {
+	List<String> getCollections();
 
 	String getDataStoreName();
 
-	void put(String id, Object objet);
+	void put(String collection, String id, Object objet);
 
-	void remove(String id);
+	void remove(String collection, String id);
 
-	<C> Option<C> find(String id, Class<C> clazz);
+	<C> Option<C> find(String collection, String id, Class<C> clazz);
 
-	<C> List<C> findAll(int skip, Integer limit, Class<C> clazz);
+	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
 }

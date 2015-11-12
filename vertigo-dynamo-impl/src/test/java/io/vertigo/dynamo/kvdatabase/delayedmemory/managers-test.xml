@@ -12,6 +12,7 @@
 		<component api="KVDataBaseManager" class="io.vertigo.dynamo.impl.kvdatabase.KVDataBaseManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.kvdatabase.delayedmemory.DelayedMemoryKVDataStorePlugin">
 				<param name="dataStoreName" value="default" />
+				<param name="collections" value="flowers" />
 				<param name="timeToLiveSeconds" value="5" />
 			</plugin>
 		</component>

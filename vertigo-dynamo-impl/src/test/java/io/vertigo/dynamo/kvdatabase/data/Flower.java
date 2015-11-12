@@ -33,12 +33,14 @@ public final class Flower implements Serializable {
 		return name;
 	}
 
-	public void setPrice(final Double price) {
+	public Flower setPrice(final Double price) {
 		this.price = price;
+		return this;
 	}
 
-	public void setName(final String name) {
+	public Flower setName(final String name) {
 		this.name = name;
+		return this;
 	}
 
 }

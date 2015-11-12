@@ -31,11 +31,11 @@ import java.util.List;
  */
 public interface KVStore {
 
-	void put(String dataStoreName, String id, Object object);
+	void put(String id, Object object);
 
-	void remove(String dataStoreName, String id);
+	void remove(String id);
 
-	<C> Option<C> find(String dataStoreName, String id, Class<C> clazz);
+	<C> Option<C> find(String id, Class<C> clazz);
 
-	<C> List<C> findAll(String dataStoreName, int skip, Integer limit, Class<C> clazz);
+	<C> List<C> findAll(int skip, Integer limit, Class<C> clazz);
 }

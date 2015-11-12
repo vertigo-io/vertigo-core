@@ -24,12 +24,12 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.impl.kvdatabase.KVDataBaseManagerImpl;
+import io.vertigo.dynamo.kvdatabase.KVDataBaseManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatabase.delayedmemory.DelayedMemoryKVDataStorePlugin;
-import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
@@ -78,14 +78,16 @@ public final class MyAppConfig {
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class).withCache(MemoryCachePlugin.class).endModule()
 			.beginModule(DynamoFeatures.class)
-				.withStore()
+				//.withStore()
 				.getModuleConfigBuilder()
-				.addPlugin(PDFExporterPlugin.class) //pour exportManager
-				.beginPlugin(PostgreSqlDataStorePlugin.class)
-					.addParam("sequencePrefix","SEQ_")
-				.endPlugin()
+				.addComponent(KVDataBaseManager.class, KVDataBaseManagerImpl.class)
+			//	.addPlugin(PDFExporterPlugin.class) //pour exportManager
+//				.beginPlugin(PostgreSqlDataStorePlugin.class)
+//					.addParam("sequencePrefix","SEQ_")
+//				.endPlugin()
 				.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
 					.addParam("dataStoreName", "UiSecurityStore")
+					.addParam("collections", "sessions")
 					.addParam("timeToLiveSeconds", "120")
 				.endPlugin()
 			.endModule()

@@ -38,19 +38,18 @@ import javax.inject.Named;
  * @author npiedeloup
  */
 public final class TokenManagerImpl implements TokenManager {
-
-	private final String dataStoreName;
+	private final String collection;
 	private final VSecurityManager securityManager;
 	/** Object token, by */
 	private final KVDataBaseManager kvDataBaseManager;
 
 	@Inject
-	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final VSecurityManager securityManager, final KVDataBaseManager kvDataBaseManager) {
-		Assertion.checkArgNotEmpty(dataStoreName);
+	public TokenManagerImpl(@Named("collection") final String collection, final VSecurityManager securityManager, final KVDataBaseManager kvDataBaseManager) {
+		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataBaseManager);
 		//-----
-		this.dataStoreName = dataStoreName;
+		this.collection = collection;
 		this.securityManager = securityManager;
 		this.kvDataBaseManager = kvDataBaseManager;
 	}
@@ -66,7 +65,7 @@ public final class TokenManagerImpl implements TokenManager {
 		//-----
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);
-		kvDataBaseManager.getKVStore().put(dataStoreName, tokenKey, data);
+		kvDataBaseManager.getKVStore(collection).put(tokenKey, data);
 		return objectUUID; //We only return the object part.
 	}
 
@@ -76,7 +75,7 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
-		return kvDataBaseManager.getKVStore().find(dataStoreName, tokenKey, Serializable.class);
+		return kvDataBaseManager.getKVStore(collection).find(tokenKey, Serializable.class);
 	}
 
 	/** {@inheritDoc} */
@@ -85,9 +84,9 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
-		final Option<Serializable> result = kvDataBaseManager.getKVStore().find(dataStoreName, tokenKey, Serializable.class);
+		final Option<Serializable> result = kvDataBaseManager.getKVStore(collection).find(tokenKey, Serializable.class);
 		if (result.isDefined()) {
-			kvDataBaseManager.getKVStore().remove(dataStoreName, tokenKey);
+			kvDataBaseManager.getKVStore(collection).remove(tokenKey);
 		}
 		return result;
 	}

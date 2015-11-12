@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.kvdatabase.berkeley;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
-import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.Environment;
 import com.sleepycat.je.Transaction;
 
 /**
@@ -38,11 +38,11 @@ final class BerkeleyResource implements VTransactionResource {
 	 * Constructeur.
 	 * @param database Base Berkeley DB.
 	 */
-	BerkeleyResource(final Database database) {
-		Assertion.checkNotNull(database);
+	BerkeleyResource(final Environment environment) {
+		Assertion.checkNotNull(environment);
 		//======================================================================
 		try {
-			transaction = database.getEnvironment().beginTransaction(null, null);
+			transaction = environment.beginTransaction(null, null);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}

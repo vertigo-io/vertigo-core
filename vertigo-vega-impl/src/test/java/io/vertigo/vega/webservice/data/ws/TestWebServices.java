@@ -26,7 +26,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
@@ -103,8 +102,8 @@ public final class TestWebServices implements WebServices {
 	private VSecurityManager securityManager;
 	@Inject
 	private CollectionsManager collectionsManager;
-	@Inject
-	private ExportManager exportManager;
+	//	@Inject
+	//	private ExportManager exportManager;
 	@Inject
 	private ResourceManager resourcetManager;
 	@Inject

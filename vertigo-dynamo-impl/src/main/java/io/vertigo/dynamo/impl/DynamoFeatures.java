@@ -21,12 +21,10 @@ package io.vertigo.dynamo.impl;
 import io.vertigo.app.config.Features;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
-import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
@@ -49,7 +47,6 @@ public final class DynamoFeatures extends Features {
 	protected void setUp() {
 		getModuleConfigBuilder()
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
-				.addComponent(ExportManager.class, ExportManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)

@@ -61,12 +61,16 @@ final class BerkeleyDatabase {
 		this.database = database;
 	}
 
+	Database getDatabase() {
+		return database;
+	}
+
 	private Transaction getCurrentBerkeleyTransaction() {
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
 		BerkeleyResource berkeleyResource = transaction.getResource(berkeleyResourceId);
 		if (berkeleyResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
-			berkeleyResource = new BerkeleyResource(database);
+			berkeleyResource = new BerkeleyResource(database.getEnvironment());
 			transaction.addResource(berkeleyResourceId, berkeleyResource);
 		}
 		return berkeleyResource.getBerkeleyTransaction();
@@ -120,7 +124,7 @@ final class BerkeleyDatabase {
 			throw new RuntimeException(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new RuntimeException("put a échouée");
+			throw new RuntimeException("put failed");
 		}
 	}
 

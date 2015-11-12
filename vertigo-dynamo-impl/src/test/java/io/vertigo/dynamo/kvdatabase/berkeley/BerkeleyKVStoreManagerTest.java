@@ -37,12 +37,12 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test
 	public void testInsertMass() {
-		final KVStore kvStore = kvDataBaseManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore("flowers");
 
 		for (int j = 0; j < 10; j++) {
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				for (int i = 0; i < 10; i++) {
-					kvStore.put(DEFAULT_DATA_STORE_NAME, String.valueOf(j * 1000 + i), buildFlower("Test", 60));
+					kvStore.put(String.valueOf(j * 1000 + i), buildFlower("Test", 60));
 				}
 				transaction.commit();
 			}
@@ -51,7 +51,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test
 	public void testFindAll() {
-		final KVStore kvStore = kvDataBaseManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore("flowers");
 		final List<Flower> flowers = new ListBuilder<Flower>()
 				.add(buildFlower("daisy", 60))
 				.add(buildFlower("tulip", 100))
@@ -61,17 +61,17 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 				.build();
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final List<Flower> foundFlowers = kvStore.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Flower.class);
+			final List<Flower> foundFlowers = kvStore.findAll(0, null, Flower.class);
 			Assert.assertTrue(foundFlowers.isEmpty());
 
 			int i = 0;
 			for (final Flower flower : flowers) {
 				final String id = "" + i++;
-				kvStore.put(DEFAULT_DATA_STORE_NAME, id, flower);
+				kvStore.put(id, flower);
 
 			}
 
-			final List<Flower> foundFlowers2 = kvStore.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			final List<Flower> foundFlowers2 = kvStore.findAll(0, 1000, Flower.class);
 			Assert.assertEquals(flowers.size(), foundFlowers2.size());
 			transaction.commit();
 		}
@@ -79,36 +79,36 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test(expected = RuntimeException.class)
 	public void testRemoveFail() {
-		final KVStore kvStore = kvDataBaseManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore("flowers");
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			kvStore.remove(DEFAULT_DATA_STORE_NAME, "1");
+			kvStore.remove("1");
 		}
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testRollback() {
-		final KVStore kvStore = kvDataBaseManager.getKVStore();
+		final KVStore kvStore = kvDataBaseManager.getKVStore("flowers");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Flower tulip = buildFlower("tulip", 100);
-			kvStore.put(DEFAULT_DATA_STORE_NAME, "1", tulip);
+			kvStore.put("1", tulip);
 			transaction.commit();
 		}
-		final Option<Flower> flower1 = kvStore.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+		final Option<Flower> flower1 = kvStore.find("1", Flower.class);
 		Assert.assertTrue("Flower id 1 not found", flower1.isDefined());
 
-		final Option<Flower> flower2 = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
+		final Option<Flower> flower2 = kvStore.find("2", Flower.class);
 		Assert.assertTrue("There is already a flower id 2", flower2.isEmpty());
 		try {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final Flower tulip = buildFlower("rose", 100);
-				kvStore.put(DEFAULT_DATA_STORE_NAME, "2", tulip);
+				kvStore.put("2", tulip);
 				throw new RuntimeException("Error");
 			}
 		} catch (final RuntimeException e) {
 			//on doit passer par là
 		}
 
-		final Option<Flower> flower2bis = kvStore.find(DEFAULT_DATA_STORE_NAME, "2", Flower.class);
+		final Option<Flower> flower2bis = kvStore.find("2", Flower.class);
 		Assert.assertTrue("Rollback flower id 2 failed", flower2bis.isEmpty());
 
 	}

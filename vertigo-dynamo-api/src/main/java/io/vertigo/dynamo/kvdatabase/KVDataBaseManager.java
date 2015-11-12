@@ -29,5 +29,5 @@ public interface KVDataBaseManager extends Component {
 	/**
 	 * @return Key Value Store
 	 */
-	KVStore getKVStore();
+	KVStore getKVStore(String collection);
 }

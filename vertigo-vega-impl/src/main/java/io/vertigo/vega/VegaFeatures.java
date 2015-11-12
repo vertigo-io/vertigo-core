@@ -101,7 +101,7 @@ public final class VegaFeatures extends Features {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("dataStoreName", "UiSecurityStore")
+					.addParam("collection", "session")
 					.endComponent();
 		}
 		if (withMisc) {
