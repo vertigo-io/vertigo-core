@@ -1,0 +1,21 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<module name="vertigo-commons">
+		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
+		</component>
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+	</module>
+	<module name="vertigo-dynamo">
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
+		<component api="KVStoreManager" class="io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.kvstore.delayedberkeley.DelayedBerkeleyKVStorePlugin">
+				<param name="dataStoreName" value="default" />
+				<param name="collections" value="flowers" />
+				<param name="cachePath" value="d:/dynamo-tmp" />
+				<param name="timeToLiveSeconds" value="5" />
+			</plugin>
+		</component>
+	</module>
+</config>

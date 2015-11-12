@@ -24,12 +24,12 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.kvdatabase.KVDataBaseManagerImpl;
-import io.vertigo.dynamo.kvdatabase.KVDataBaseManager;
+import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
+import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.kvdatabase.delayedmemory.DelayedMemoryKVDataStorePlugin;
+import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
@@ -80,12 +80,12 @@ public final class MyAppConfig {
 			.beginModule(DynamoFeatures.class)
 				//.withStore()
 				.getModuleConfigBuilder()
-				.addComponent(KVDataBaseManager.class, KVDataBaseManagerImpl.class)
+				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
 			//	.addPlugin(PDFExporterPlugin.class) //pour exportManager
 //				.beginPlugin(PostgreSqlDataStorePlugin.class)
 //					.addParam("sequencePrefix","SEQ_")
 //				.endPlugin()
-				.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
+				.beginPlugin(DelayedMemoryKVStorePlugin.class)
 					.addParam("dataStoreName", "UiSecurityStore")
 					.addParam("collections", "sessions")
 					.addParam("timeToLiveSeconds", "120")

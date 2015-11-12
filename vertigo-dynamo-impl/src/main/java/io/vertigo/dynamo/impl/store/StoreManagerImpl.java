@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.store;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.impl.kvdatabase.KVDataStorePlugin;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
@@ -66,7 +66,7 @@ public final class StoreManagerImpl implements StoreManager {
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
-			final List<KVDataStorePlugin> kvDataStorePlugins,
+			final List<KVStorePlugin> kvDataStorePlugins,
 			final EventManager eventManager) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(cacheManager);
