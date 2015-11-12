@@ -1286,13 +1286,14 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContact() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
-		dtList.add(createDefaultContact(123L));
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(createDefaultContact(123L))
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 6 contacts"))
@@ -1303,15 +1304,17 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContactValidationError() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
-		dtList.add(newContact);
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1348,15 +1351,17 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContactValidationError2() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.put("birthday", convertDate("24/10/2012"));
-		dtList.add(newContact);
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body("objectFieldErrors.idx2.birthday", Matchers.contains("You can't add contact younger than 16"))
