@@ -73,4 +73,14 @@ public final class FilterCriteria<D extends DtObject> implements Criteria<D> {
 	public boolean isEmpty() {
 		return mapFilter.isEmpty() && mapPrefix.isEmpty();
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mapFilter == null) ? 0 : mapFilter.hashCode());
+		result = prime * result + ((mapPrefix == null) ? 0 : mapPrefix.hashCode());
+		return result;
+	}
 }
