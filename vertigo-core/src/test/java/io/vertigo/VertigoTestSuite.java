@@ -18,7 +18,8 @@
  */
 package io.vertigo;
 
-import io.vertigo.app.config.xml.AppConfigTest;
+import io.vertigo.app.config.xml.AppConfig2Test;
+import io.vertigo.app.config.xml2.AppConfigTest;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
@@ -62,6 +63,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		ReactorTest.class,
 		//Boot
 		AppConfigTest.class,
+		AppConfig2Test.class,
 		AspectTest.class,
 		//Lang
 		AssertionTest.class,

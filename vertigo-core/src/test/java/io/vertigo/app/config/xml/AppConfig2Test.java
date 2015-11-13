@@ -28,7 +28,7 @@ import java.util.Properties;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class AppConfigTest {
+public final class AppConfig2Test {
 	@Test
 	public void HomeTest() {
 
