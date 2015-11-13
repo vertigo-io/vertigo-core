@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.mutlistore;
+package io.vertigo.dynamo.store.multistore;
 
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
