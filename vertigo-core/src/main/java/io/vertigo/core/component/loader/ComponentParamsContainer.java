@@ -22,13 +22,12 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
 
 /**
  * This container contains params initialized with String.
@@ -66,7 +65,7 @@ final class ComponentParamsContainer implements Container {
 		//-----
 		unusedKeys.remove(id);
 		final Object value = getParamValue(id, clazz);
-		final Class<O> type = box(clazz);
+		final Class<O> type = ClassUtil.box(clazz);
 		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
 		return type.cast(value);
 	}
@@ -93,19 +92,14 @@ final class ComponentParamsContainer implements Container {
 			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
 			//-----
 			final String property = paramValue.substring(confParamProtocol.length());
-			try {
-				return paramManagerOption.get().getValue(property, paramType);
-			} catch (final Throwable t) {
-				// Problème lors de l'accès au paramètre. On loggue et on retourne la valeur null
-				Logger.getLogger(ComponentParamsContainer.class).warn(
-						"Pas d'entrée dans le ParamManager pour " + property);
-				return null;
-			}
+			return paramManagerOption.get().getValue(property, paramType);
 		}
-		return cast(paramType, paramValue);
+		return cast(paramName, ClassUtil.box(paramType), paramValue);
 	}
 
-	private static Object cast(final Class<?> paramType, final String value) {
+	private static Object cast(final String paramName, final Class<?> paramType, final String value) {
+		Assertion.checkArgument(!paramType.isPrimitive(), "only non primitive types are accepted for param " + paramName + " of type " + paramType);
+		//-----
 		if (String.class.equals(paramType)) {
 			return value;
 		} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
@@ -115,35 +109,7 @@ final class ComponentParamsContainer implements Container {
 		} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
 			return Long.valueOf(value);
 		}
-		return null;
-	}
-
-	private static Class box(final Class<?> clazz) {
-		Assertion.checkNotNull(clazz);
-		//-----
-		if (clazz.isPrimitive()) {
-			//Boolean n'est pas assignable à boolean
-			//Or dans notre cas value est un objet et clazz peut être un type primitif !
-			if (boolean.class.equals(clazz)) {
-				return Boolean.class;
-			} else if (byte.class.equals(clazz)) {
-				return Byte.class;
-			} else if (char.class.equals(clazz)) {
-				return Character.class;
-			} else if (short.class.equals(clazz)) {
-				return Short.class;
-			} else if (int.class.equals(clazz)) {
-				return Integer.class;
-			} else if (long.class.equals(clazz)) {
-				return Long.class;
-			} else if (float.class.equals(clazz)) {
-				return Float.class;
-			} else if (double.class.equals(clazz)) {
-				return Double.class;
-			}
-			throw new IllegalArgumentException(clazz + "est un type primitif non géré");
-		}
-		return clazz;
+		throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 	}
 
 	/*

@@ -21,6 +21,7 @@ package io.vertigo.core.param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -79,7 +80,22 @@ public final class ParamManager implements Component {
 		Assertion.checkNotNull(paramType);
 		//-----
 		final String paramValue = doGetParamValueAsString(paramName);
-		return castValue(paramName, paramType, paramValue);
+		return (C) cast(paramName, ClassUtil.box(paramType), paramValue);
+	}
+
+	private static Object cast(final String paramName, final Class<?> paramType, final String paramValue) {
+		Assertion.checkArgument(!paramType.isPrimitive(), "only non primitive types are accepted");
+		//-----
+		if (String.class.equals(paramType)) {
+			return paramValue;
+		} else if (Boolean.class.equals(paramType)) {
+			return toBoolean(paramName, paramValue);
+		} else if (Integer.class.equals(paramType)) {
+			return toInteger(paramName, paramValue);
+		} else if (Long.class.equals(paramType)) {
+			return toLong(paramName, paramValue);
+		}
+		throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 	}
 
 	/**
@@ -96,8 +112,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public Integer getIntValue(final String paramName) {
-		return getValue(paramName, Integer.class);
+	public int getIntValue(final String paramName) {
+		return toInteger(paramName, doGetParamValueAsString(paramName));
 	}
 
 	/**
@@ -105,8 +121,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public Long getLongValue(final String paramName) {
-		return getValue(paramName, Long.class);
+	public long getLongValue(final String paramName) {
+		return toLong(paramName, doGetParamValueAsString(paramName));
 	}
 
 	/**
@@ -114,8 +130,8 @@ public final class ParamManager implements Component {
 	 * @param paramName param's name
 	 * @return Value of the param
 	 */
-	public Boolean getBooleanValue(final String paramName) {
-		return getValue(paramName, Boolean.class);
+	public boolean getBooleanValue(final String paramName) {
+		return toBoolean(paramName, doGetParamValueAsString(paramName));
 	}
 
 	/**
@@ -134,29 +150,7 @@ public final class ParamManager implements Component {
 		throw new IllegalArgumentException("param '" + paramName + "' not found");
 	}
 
-	/**
-	 * Cast the paramValue into the paramClass.
-	 * @param paramName param's name
-	 * @param paramClass param's class
-	 * @return casted value
-	 */
-	private static <C> C castValue(final String paramName, final Class<C> paramClass, final String paramValue) {
-		final Object value;
-		if (boolean.class.equals(paramClass) || Boolean.class.equals(paramClass)) {
-			value = toBoolean(paramName, paramValue);
-		} else if (long.class.equals(paramClass) || Long.class.equals(paramClass)) {
-			value = toLong(paramName, paramValue);
-		} else if (int.class.equals(paramClass) || Integer.class.equals(paramClass)) {
-			value = toInteger(paramName, paramValue);
-		} else if (String.class.equals(paramClass)) {
-			value = paramValue;
-		} else {
-			throw new IllegalArgumentException("Param :" + paramName + " of type ' " + paramClass + " is not supported");
-		}
-		return paramClass.cast(value);
-	}
-
-	private static Boolean toBoolean(final String paramName, final String paramValue) {
+	private static boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
 			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'boolean'");
 		}
@@ -171,7 +165,7 @@ public final class ParamManager implements Component {
 		}
 	}
 
-	private static Long toLong(final String paramName, final String paramValue) {
+	private static long toLong(final String paramName, final String paramValue) {
 		try {
 			return Long.parseLong(paramValue);
 		} catch (final NumberFormatException e) {

@@ -423,4 +423,39 @@ public final class ClassUtil {
 		//On abaisse la première lettre
 		return StringUtil.first2LowerCase(property);
 	}
+
+	/**
+	 * Box a type into a TRUE Object type.
+	 *  - The primitive types, namely boolean, byte, char, short, int, long, float, and double 
+	 *  are boxed into Boolean, Byte, Char...
+	 *  - Object Type are unchangde
+	 *  
+	 * @param clazz type 
+	 * @return True Object class
+	 */
+	public static Class box(final Class<?> clazz) {
+		Assertion.checkNotNull(clazz);
+		//-----
+		if (clazz.isPrimitive()) {
+			if (boolean.class.equals(clazz)) {
+				return Boolean.class;
+			} else if (byte.class.equals(clazz)) {
+				return Byte.class;
+			} else if (char.class.equals(clazz)) {
+				return Character.class;
+			} else if (short.class.equals(clazz)) {
+				return Short.class;
+			} else if (int.class.equals(clazz)) {
+				return Integer.class;
+			} else if (long.class.equals(clazz)) {
+				return Long.class;
+			} else if (float.class.equals(clazz)) {
+				return Float.class;
+			} else if (double.class.equals(clazz)) {
+				return Double.class;
+			}
+			throw new IllegalArgumentException(clazz + "is a primitive class not (yet) supported.");
+		}
+		return clazz;
+	}
 }
