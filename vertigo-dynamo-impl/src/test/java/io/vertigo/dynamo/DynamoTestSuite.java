@@ -44,7 +44,6 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRu
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
-import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
@@ -109,8 +108,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerTest.class,
 		SearchManagerStoreTest.class,
 		DslListFilterBuilderTest.class,
-		//---
-		ExportManagerTest.class,
 })
 public final class DynamoTestSuite {
 	//
