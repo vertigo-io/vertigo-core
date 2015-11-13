@@ -67,6 +67,7 @@ public final class StoreManagerTest extends AbstractStoreManagerTest {
 
 	private List<String> getCreateOtherStoreRequests() {
 		final List<String> requests = getCreateFamilleRequests();
+		requests.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);");
 		return requests;
 	}
 
