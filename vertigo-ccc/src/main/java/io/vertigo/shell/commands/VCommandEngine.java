@@ -18,20 +18,11 @@
  */
 package io.vertigo.shell.commands;
 
-import io.vertigo.app.AppListener;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.shell.command.VCommand;
 import io.vertigo.shell.command.VCommandExecutor;
-import io.vertigo.shell.command.VResponse;
-import io.vertigo.util.MapBuilder;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * @author pchretien
@@ -48,51 +39,51 @@ public final class VCommandEngine implements VCommandExecutor /* mplements VComm
 		commmandExecutors.put(name, commandExecutor);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		Home.getApp().registerAppListener(new AppListener() {
-			@Override
-			public void onPostStart() {
-				registerCommandAndStartServer();
-			}
-		});
-	}
+	//	/** {@inheritDoc} */
+	//	@Override
+	//	public void start() {
+	//		Home.getApp().registerAppListener(new AppListener() {
+	//			@Override
+	//			public void onPostStart() {
+	//				registerCommandAndStartServer();
+	//			}
+	//		});
+	//	}
 
-	private void registerCommandAndStartServer() {
-		//Chargement des commandes
-		registerCommandExecutor("ping", new VPingCommandExecutor());
-		registerCommandExecutor("system", new VSystemCommandExecutor());
-
-		//---
-		registerCommandExecutor("help", new VCommandExecutor<Set<String>>() {
-			//All commands are listed
-			/** {@inheritDoc} */
-			@Override
-			public Set<String> exec(final VCommand command) {
-				Assertion.checkNotNull(command);
-				//Assertion.checkArgument(command.getName());
-				//-----
-				return commmandExecutors.keySet();
-			}
-		});
-
-		registerCommandExecutor("config", new VConfigCommandExecutor());
-		registerCommandExecutor("definitions", new VDefinitionsCommandExecutor());
-
-		scanAllComponents();
-	}
-
-	private void scanAllComponents() {
-		final MapBuilder<String, VCommandExecutor> mapBuilder = new MapBuilder<>();
-		for (final String componentId : Home.getApp().getComponentSpace().keySet()) {
-			CommandScannerUtil.scan(mapBuilder, componentId, Home.getApp().getComponentSpace().resolve(componentId, Object.class));
-		}
-
-		for (final Entry<String, VCommandExecutor> entry : mapBuilder.build().entrySet()) {
-			registerCommandExecutor(entry.getKey(), entry.getValue());
-		}
-	}
+	//	private void registerCommandAndStartServer() {
+	//		//Chargement des commandes
+	//		registerCommandExecutor("ping", new VPingCommandExecutor());
+	//		registerCommandExecutor("system", new VSystemCommandExecutor());
+	//
+	//		//---
+	//		registerCommandExecutor("help", new VCommandExecutor<Set<String>>() {
+	//			//All commands are listed
+	//			/** {@inheritDoc} */
+	//			@Override
+	//			public Set<String> exec(final VCommand command) {
+	//				Assertion.checkNotNull(command);
+	//				//Assertion.checkArgument(command.getName());
+	//				//-----
+	//				return commmandExecutors.keySet();
+	//			}
+	//		});
+	//
+	//		registerCommandExecutor("config", new VConfigCommandExecutor());
+	//		registerCommandExecutor("definitions", new VDefinitionsCommandExecutor());
+	//
+	//		scanAllComponents();
+	//	}
+	//
+	//	private void scanAllComponents() {
+	//		final MapBuilder<String, VCommandExecutor> mapBuilder = new MapBuilder<>();
+	//		for (final String componentId : Home.getApp().getComponentSpace().keySet()) {
+	//			CommandScannerUtil.scan(mapBuilder, componentId, Home.getApp().getComponentSpace().resolve(componentId, Object.class));
+	//		}
+	//
+	//		for (final Entry<String, VCommandExecutor> entry : mapBuilder.build().entrySet()) {
+	//			registerCommandExecutor(entry.getKey(), entry.getValue());
+	//		}
+	//	}
 
 	@Override
 	public Object exec(final VCommand command) {
@@ -114,10 +105,10 @@ public final class VCommandEngine implements VCommandExecutor /* mplements VComm
 			return error;
 		}
 	}
-
-	@Override
-	public VResponse onCommand(final VCommand command) {
-		return VResponse.createResponse(JsonUtil.toJson(exec(command)));
-	}
+	//
+	//	@Override
+	//	public VResponse onCommand(final VCommand command) {
+	//		return VResponse.createResponse(JsonUtil.toJson(exec(command)));
+	//	}
 
 }
