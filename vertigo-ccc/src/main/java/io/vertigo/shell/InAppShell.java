@@ -1,7 +1,5 @@
 package io.vertigo.shell;
 
-import io.vertigo.shell.command.VCommand;
-
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,7 +116,6 @@ final class InAppShell implements Command, Runnable {
 			throw new InterruptedIOException();
 		}
 		String response;
-		new VCommand(line)
 		try {
 			if (line.equalsIgnoreCase(SHELL_CMD_VERSION)) {
 				response = "InApp version 1.0.0";
