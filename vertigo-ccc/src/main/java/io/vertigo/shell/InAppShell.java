@@ -1,5 +1,10 @@
 package io.vertigo.shell;
 
+import io.vertigo.shell.command.VCommand;
+import io.vertigo.shell.commands.VDefinitionsCommandExecutor;
+import io.vertigo.shell.util.JSonBeautifier;
+import io.vertigo.shell.util.JsonUtil;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.apache.sshd.server.Command;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
+
+import com.google.gson.JsonElement;
 
 final class InAppShell implements Command, Runnable {
 
@@ -121,6 +128,9 @@ final class InAppShell implements Command, Runnable {
 				response = "InApp version 1.0.0";
 			} else if (line.equalsIgnoreCase(SHELL_CMD_HELP)) {
 				response = "Help is not implemented yet...";
+			} else if (line.equalsIgnoreCase("definitions")) {
+				final JsonElement jsonElement = JsonUtil.toJsonElement(new VDefinitionsCommandExecutor().exec(new VCommand(line)));
+				response = JSonBeautifier.beautify(jsonElement);
 			} else {
 				response = "======> \"" + line + "\"";
 			}
