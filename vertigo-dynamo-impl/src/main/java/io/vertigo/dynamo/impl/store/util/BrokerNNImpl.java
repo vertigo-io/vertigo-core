@@ -59,7 +59,7 @@ final class BrokerNNImpl implements BrokerNN {
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
-			storeName = associationNNDefinition.getAssociationNodeA().getDtDefinition().getStoreName();
+			storeName = associationNNDefinition.getAssociationNodeB().getDtDefinition().getStoreName();
 
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
