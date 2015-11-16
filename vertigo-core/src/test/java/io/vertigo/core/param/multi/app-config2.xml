@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
-	<param name="server.verbose" value="true" /> <!-- this value must be overridden to pass the tests ; the first value wins -->
+	<path name = "server">
+		<param name="verbose" value="true" /> <!-- this value must be overridden to pass the tests ; the first value wins -->
+	</path>
 </config>

@@ -30,10 +30,11 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
-		config, param;
+		config, path, param;
 	}
 
 	private final Map<String, String> params;
+	private String currentPath;
 
 	XmlConfigHandler(final Map<String, String> params) {
 		Assertion.checkNotNull(params);
@@ -46,10 +47,14 @@ final class XmlConfigHandler extends DefaultHandler {
 		switch (TagName.valueOf(qName)) {
 			case config:
 				break;
+			case path:
+				currentPath = attrs.getValue("name").trim();
+				break;
 			case param:
 				final String paramName = attrs.getValue("name").trim();
+				Assertion.checkArgument(!paramName.endsWith("."), "a path must not be ended with a point");
 				final String paramValue = attrs.getValue("value").trim();
-				params.put(paramName, paramValue);
+				params.put(currentPath + "." + paramName, paramValue);
 				break;
 			default:
 		}
@@ -57,7 +62,16 @@ final class XmlConfigHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
-		//
+		switch (TagName.valueOf(qName)) {
+			case config:
+				break;
+			case path:
+				currentPath = null;
+				break;
+			case param:
+				break;
+			default:
+		}
 	}
 
 }

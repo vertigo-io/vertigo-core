@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<param name="server.host" value="wiki"/>    	
-	<param name="server.active" value="true"/>    	    	
-	<param name="server.verbose" value="false"/>    	    	
-	<param name="server.port" value="8080"/>    	    	
+	<path name="server">
+		<param name="host" value="wiki"/>    	
+		<param name="active" value="true"/>    	    	
+		<param name="verbose" value="false"/>    	    	
+		<param name="port" value="8080"/>    	    	
+	</path>
 </config>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
-	<param name="server.active" value="true" />
-	<param name="server.verbose" value="false" /> 
+	<path name="server">
+		<param name="active" value="true" />
+		<param name="verbose" value="false" /> 
+	</path>
 </config>
