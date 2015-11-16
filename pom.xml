@@ -55,7 +55,7 @@ limitations under the License. -->
 		<module>vertigo-struts2</module>
 		
 
-		<module>vertigo-ccc</module>
+		<module>vertigo-shell</module>
 		
 		<module>vertigo-bundle</module>
 	</modules>
