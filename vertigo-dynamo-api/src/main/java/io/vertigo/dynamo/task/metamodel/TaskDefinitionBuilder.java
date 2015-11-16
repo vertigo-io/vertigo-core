@@ -33,6 +33,8 @@ import java.util.List;
  * @author  fconstantin, pchretien
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
+	private static final String DEFAULT_STORE_NAME = "main";
+
 	private final List<TaskAttribute> myInTaskAttributes = new ArrayList<>();
 	private TaskAttribute myOutTaskAttribute;
 	private final String myTaskDefinitionName;
@@ -92,7 +94,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	public TaskDefinitionBuilder withStore(final String storeName) {
-		Assertion.checkArgNotEmpty(storeName);
+		//storeName may be null
 		//-----
 		myStoreName = storeName;
 		return this;
@@ -133,7 +135,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
-				Option.option(myStoreName),
+				myStoreName == null ? DEFAULT_STORE_NAME : myStoreName,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
