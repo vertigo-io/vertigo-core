@@ -133,7 +133,7 @@ public final class DIReactor {
 			// Si lors d'une itération on ne fait rien c'est qu'il y a une dépendance cyclique
 			if (countSorted == sorted.size()) {
 				// On a une dépendance cyclique !
-				throw new DIException("Cyclic dependencies with components :" + unsorted);
+				throw new DIException("Dependencies can't be resolved on components :" + unsorted);
 			}
 		}
 		//-----
