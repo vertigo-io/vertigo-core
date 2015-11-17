@@ -38,7 +38,7 @@ public final class Logo {
 		out.println("+--------------------------------------------------+");
 		out.println("|   _____________                                  |");
 		out.println("|  |     _     / |                                 |");
-		out.println("|  |#   / \\   / /|  Vertigo v0.8.4 - 2015          |");
+		out.println("|  |#   / \\   / /|  Vertigo v0.9.0 - 2015          |");
 		out.println("|  |  __\\ /__/ / |                                 |");
 		out.println("|  | / _      /  |                                 |");
 		out.println("|  |/ / \\  ()/  *|                                 |");
