@@ -47,7 +47,6 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
-import com.sleepycat.je.Transaction;
 
 /**
  * Implémentation Berkeley du KVDataStorePlugin.
@@ -72,7 +71,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	private Database cacheDatas;
 
 	private final File myCacheEnvPath;
-	private Environment myEnv;
+	private Environment environment;
 
 	/**
 	 * Constructeur.
@@ -95,8 +94,8 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.dataStoreName = dataStoreName;
-		ListBuilder<String> listBuilder = new ListBuilder<>();
-		for (String collection : collections.split(", ")) {
+		final ListBuilder<String> listBuilder = new ListBuilder<>();
+		for (final String collection : collections.split(", ")) {
 			listBuilder.add(collection.trim());
 		}
 		this.collections = listBuilder.unmodifiable().build();
@@ -145,24 +144,14 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		Assertion.checkArgument(data instanceof Serializable, "Value must be Serializable {0}", data.getClass().getSimpleName());
 		//-----
 		try {
-			final Transaction transaction = createTransaction();
-			boolean committed = false;
-			try {
-				final DatabaseEntry theKey = new DatabaseEntry();
-				keyBinding.objectToEntry(key, theKey);
-				final DatabaseEntry theData = new DatabaseEntry();
-				cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) data, System.currentTimeMillis()), theData);
+			final DatabaseEntry theKey = new DatabaseEntry();
+			keyBinding.objectToEntry(key, theKey);
+			final DatabaseEntry theData = new DatabaseEntry();
+			cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) data, System.currentTimeMillis()), theData);
 
-				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
-				if (!OperationStatus.SUCCESS.equals(status)) {
-					throw new SimpleDatabaseException("Write error in UiSecurityTokenCache");
-				}
-				transaction.commit();
-				committed = true;
-			} finally {
-				if (!committed) {
-					transaction.abort();
-				}
+			final OperationStatus status = cacheDatas.put(null, theKey, theData);
+			if (!OperationStatus.SUCCESS.equals(status)) {
+				throw new SimpleDatabaseException("Write error in UiSecurityTokenCache");
 			}
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
@@ -257,10 +246,6 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
 	}
 
-	private Transaction createTransaction() {
-		return cacheDatas.getEnvironment().beginTransaction(null, null);
-	}
-
 	/**
 	 * Purge les elements trop vieux.
 	 * @throws DatabaseException Si erreur
@@ -290,7 +275,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	@Override
 	public void start() {
 		try {
-			myEnv = createDbEnv();
+			environment = createDbEnv();
 			cacheDatas = createDb();
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
@@ -300,11 +285,11 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		if (myEnv != null) {
+		if (environment != null) {
 			try {
 				cacheDatas.close();
 				// Finally, close the environment.
-				myEnv.close();
+				environment.close();
 			} catch (final DatabaseException dbe) {
 				LOGGER.error("Error closing " + getClass().getSimpleName() + ": " + dbe.toString(), dbe);
 			}
@@ -315,7 +300,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()
 				.setReadOnly(false)
 				.setAllowCreate(true)
-				.setTransactional(true);
+				.setTransactional(false);
 		//we limit cache usage to 20% of global memory.
 		myEnvConfig.setCachePercent(20);
 		// Open the environment
@@ -328,7 +313,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 				.setAllowCreate(true)
 				.setTransactional(true);
 		try {
-			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
+			return environment.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
