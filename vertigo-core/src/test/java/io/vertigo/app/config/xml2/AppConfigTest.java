@@ -49,7 +49,7 @@ public final class AppConfigTest {
 			.beginModule("bio")
 			.addComponent(BioManager.class, BioManagerImpl.class)
 			.beginComponent(MathManager.class, MathManagerImpl.class)
-				.addParam("start", "conf:math.test.start")
+				.addParam("start", "${math.test.start}")
 			.endComponent()
 			.beginPlugin(MathPlugin.class)
 				.addParam("factor", "20")

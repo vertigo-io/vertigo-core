@@ -87,11 +87,10 @@ final class ComponentParamsContainer implements Container {
 		Assertion.checkNotNull(paramType);
 		//-----
 		final String paramValue = params.get(paramName);
-		final String confParamProtocol = "conf:";
-		if (paramValue != null && paramValue.startsWith(confParamProtocol)) {
+		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
 			//-----
-			final String property = paramValue.substring(confParamProtocol.length());
+			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
 			return paramManagerOption.get().getValue(property, paramType);
 		}
 		return cast(paramName, ClassUtil.box(paramType), paramValue);
