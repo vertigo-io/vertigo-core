@@ -90,14 +90,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@Inject
 	public FsFullFileStorePlugin(@Named("name") final Option<String> name, @Named("path") final String path,
 			final FileManager fileManager, final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes) {
-		final Option<DaemonManager> daemonManager = Option.none();
+			@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
-		Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager.isDefined(), "DeamonManager is mandatory when using a purgeDelay");
+		//Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager != null, "DeamonManager is mandatory when using a purgeDelay");
 		//-----
 		this.name = name.getOrElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
@@ -106,7 +105,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		fsResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS-" + name);
 		//-----
 		if (purgeDelayMinutes.isDefined()) {
-			daemonManager.get().registerDaemon("PurgeTempFileDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
+			daemonManager.registerDaemon("PurgeTempFileDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
 		}
 	}
 
