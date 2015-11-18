@@ -18,7 +18,6 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
@@ -37,7 +36,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final Option<Class<?>> apiClass;
 	private final Class<?> implClass;
 	private final boolean elastic;
-	private Class<? extends ComponentInitializer<?>> managerInitializerClass;
 	private final Map<String, String> myParams = new HashMap<>();
 
 	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
@@ -49,13 +47,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.apiClass = apiClass;
 		this.implClass = implClass;
 		this.elastic = elastic;
-	}
-
-	public ComponentConfigBuilder withInitializer(final Class<? extends ComponentInitializer<?>> managerInitialierClass) {
-		Assertion.checkNotNull(managerInitialierClass);
-		//-----
-		managerInitializerClass = managerInitialierClass;
-		return this;
 	}
 
 	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
@@ -71,7 +62,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, myParams);
+		return new ComponentConfig(apiClass, implClass, elastic, myParams);
 	}
 
 	public ModuleConfigBuilder endComponent() {

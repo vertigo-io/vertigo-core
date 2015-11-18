@@ -19,7 +19,6 @@
 package io.vertigo.app.config;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -39,7 +38,6 @@ public final class ComponentConfig {
 	private final Option<Class<?>> apiClass;
 	private final Class<?> implClass;
 	private final Map<String, String> params;
-	private final Class<? extends ComponentInitializer<?>> componentInitializerClass;
 	private final boolean elastic;
 
 	/**
@@ -49,25 +47,17 @@ public final class ComponentConfig {
 	 * @param pluginConfigurations Liste des plugins du composant
 	 * @param params paramètres du composant
 	 */
-	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Class<? extends ComponentInitializer<?>> componentInitializerClass, final Map<String, String> params) {
+	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//-----
 		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
 		this.elastic = elastic;
-		this.componentInitializerClass = componentInitializerClass;
 		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;
 		this.params = new HashMap<>(params);
-	}
-
-	/**
-	 * @return Classe d'initialisation du composant. (Nullable)
-	 */
-	public Class<? extends ComponentInitializer<?>> getInitializerClass() {
-		return componentInitializerClass;
 	}
 
 	/**

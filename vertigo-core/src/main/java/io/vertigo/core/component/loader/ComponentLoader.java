@@ -20,6 +20,7 @@ package io.vertigo.core.component.loader;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
+import io.vertigo.app.config.ComponentInitializerConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.core.component.AopEngine;
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author pchretien
@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 public final class ComponentLoader {
 	private final AopEngine aopEngine;
 	private final Option<ElasticaEngine> elasticaEngineOption;
-	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
+	private final List<ComponentInitializer> initializers = new ArrayList<>();
 	/** Aspects.*/
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
@@ -72,12 +72,18 @@ public final class ComponentLoader {
 
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
 		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
+		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
+		Assertion.checkArgument(bootModuleConfig.getComponentInitialzerConfigs().isEmpty(), "boot module can't contain initiliazers");
+		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
+		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");
+		//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 	}
 
 	private void injectComponent(final ComponentSpace componentSpace, final Option<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		doInjectComponents(componentSpace, paramManagerOption, moduleConfig);
+		doInjectInitializers(componentSpace, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
@@ -118,11 +124,8 @@ public final class ComponentLoader {
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
 				final Object component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
-				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
-				final Option<ComponentInitializer> currentComponentInitializer = createComponentInitializer(componentSpace, componentConfig);
-				// 2.c. On enregistre le composant puis son initializer
+				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
-				registerInitializer(componentConfig.getId(), currentComponentInitializer);
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
@@ -144,13 +147,18 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void registerInitializer(final String componentId, final Option<ComponentInitializer> componentInitializer) {
-		Assertion.checkNotNull(componentId);
+	private void doInjectInitializers(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+		for (final ComponentInitializerConfig componentInitializerConfig : moduleConfig.getComponentInitialzerConfigs()) {
+			final ComponentInitializer componentInitializer = createComponentInitializer(componentSpace, componentInitializerConfig);
+			//On enregistre l'initializer
+			registerInitializer(componentInitializer);
+		}
+	}
+
+	private void registerInitializer(final ComponentInitializer componentInitializer) {
 		Assertion.checkNotNull(componentInitializer);
 		//-----
-		if (componentInitializer.isDefined()) {
-			initializers.put(componentId, componentInitializer.get());
-		}
+		initializers.add(componentInitializer);
 	}
 
 	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
@@ -200,12 +208,8 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static final Option<ComponentInitializer> createComponentInitializer(final Container componentContainer, final ComponentConfig componentConfig) {
-		if (componentConfig.getInitializerClass() != null) {
-			final ComponentInitializer<?> componentInitializer = Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
-			return Option.<ComponentInitializer> some(componentInitializer);
-		}
-		return Option.none();
+	private static final ComponentInitializer createComponentInitializer(final Container componentContainer, final ComponentInitializerConfig componentInitializerConfig) {
+		return Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentContainer);
 	}
 
 	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
@@ -230,14 +234,11 @@ public final class ComponentLoader {
 		return plugin;
 	}
 
-	public void initializeAllComponents(final ComponentSpace componentSpace) {
+	public void initializeAllComponents() {
 		//le démarrage des composants est effectué au fur et à mesure de leur création.
 		//L'initialisation est en revanche globale.
-		for (final Entry<String, ComponentInitializer> entry : initializers.entrySet()) {
-			final ComponentInitializer initializer = entry.getValue();
-			final String componentId = entry.getKey();
-			initializer.init(componentSpace.resolve(componentId, Object.class));
+		for (final ComponentInitializer componentInitializer : initializers) {
+			componentInitializer.init();
 		}
 	}
-
 }

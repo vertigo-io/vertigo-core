@@ -311,7 +311,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		final DatabaseConfig myDbConfig = new DatabaseConfig()
 				.setReadOnly(false)
 				.setAllowCreate(true)
-				.setTransactional(true);
+				.setTransactional(false);
 		try {
 			return environment.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {

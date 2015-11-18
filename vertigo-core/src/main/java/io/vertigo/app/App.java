@@ -94,9 +94,10 @@ public final class App implements AutoCloseable {
 			if (!appConfig.getBootConfig().isSilence()) {
 				appConfig.print(System.out);
 			}
+			//-----4. post-Initialize all components
+			componentLoader.initializeAllComponents();
 			//-----3. Start
 			appStart();
-			componentLoader.initializeAllComponents(componentSpace);
 			appPostStart();
 			//-----
 			state = State.active;

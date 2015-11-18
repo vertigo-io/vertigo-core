@@ -42,6 +42,7 @@ public final class ModuleConfig {
 	private final List<DefinitionResourceConfig> definitionResources;
 	private final List<ComponentConfig> components;
 	private final List<AspectConfig> aspects;
+	private final List<ComponentInitializerConfig> initializers;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
 	private final List<PluginConfig> plugins;
@@ -50,6 +51,7 @@ public final class ModuleConfig {
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<DefinitionResourceConfig> definitionResourceConfigs,
 			final List<ComponentConfig> componentConfigs,
+			final List<ComponentInitializerConfig> componentInitializerConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ModuleRule> moduleRules) {
@@ -57,16 +59,18 @@ public final class ModuleConfig {
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
+		Assertion.checkNotNull(componentInitializerConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
 		//-----
 		this.name = name;
-		this.definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
-		this.definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
-		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
-		this.plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
-		this.aspects = aspectConfigs;
+		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
+		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
+		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
+		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
+		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
+		aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
 
@@ -76,6 +80,10 @@ public final class ModuleConfig {
 
 	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
 		return definitionResources;
+	}
+
+	public List<ComponentInitializerConfig> getComponentInitialzerConfigs() {
+		return initializers;
 	}
 
 	/**

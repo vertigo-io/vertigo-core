@@ -19,14 +19,12 @@
 package io.vertigo.core.spaces.component;
 
 /**
- * Initializer de composant.
+ * Initializer of components.
  * @author npiedeloup, ,pchretien
- * @param <M> Type of component
  */
-public interface ComponentInitializer<M> {
+public interface ComponentInitializer {
 	/**
-	 * Initialise le composant.
-	 * @param component Composant
+	 * Initialize.
 	 */
-	void init(final M component);
+	void init();
 }
