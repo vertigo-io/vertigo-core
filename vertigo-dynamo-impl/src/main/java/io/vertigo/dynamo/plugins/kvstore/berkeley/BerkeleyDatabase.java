@@ -42,7 +42,7 @@ import com.sleepycat.je.Transaction;
  * @author pchretien
  */
 final class BerkeleyDatabase {
-	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "demo-berkeley");
+	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
 	private static final TupleBinding dataBinding = new BerkeleyDataBinding();
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
