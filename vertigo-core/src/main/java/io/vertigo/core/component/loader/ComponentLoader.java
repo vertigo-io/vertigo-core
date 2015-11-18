@@ -217,7 +217,7 @@ public final class ComponentLoader {
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
 		return component;
 	}
 
@@ -226,7 +226,7 @@ public final class ComponentLoader {
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in plugin '{1}'", paramsContainer.getUnusedKeys(), pluginConfig.getId());
 		return plugin;
 	}
 
