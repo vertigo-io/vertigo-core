@@ -130,7 +130,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String initClass = attrs.getValue("initClass");
 				if (initClass != null) {
 					final Class componentInitialierClass = ClassUtil.classForName(initClass);
-					moduleConfigBuilder.addInitializer(componentInitialierClass);
+					appConfigBuilder.addInitializer(componentInitialierClass);
 				}
 				break;
 			case plugin:

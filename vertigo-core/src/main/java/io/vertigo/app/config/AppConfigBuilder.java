@@ -22,6 +22,7 @@ import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.ClassUtil;
@@ -38,6 +39,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
 	private final BootConfigBuilder myBootConfigBuilder;
 	private final ModuleConfigBuilder myBootModuleConfigBuilder;
+	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
 
 	public AppConfigBuilder() {
 		myBootConfigBuilder = new BootConfigBuilder(this);
@@ -59,6 +61,11 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	public BootConfigBuilder beginBoot() {
 		return myBootConfigBuilder;
+	}
+
+	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitialierClass) {
+		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitialierClass));
+		return this;
 	}
 
 	/**
@@ -96,6 +103,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	public AppConfig build() {
 		beginBoot().withModule(myBootModuleConfigBuilder.build()).endBoot();
 
-		return new AppConfig(myBootConfigBuilder.build(), myModuleConfigs);
+		return new AppConfig(myBootConfigBuilder.build(), myModuleConfigs, myComponentInitializerConfigs);
 	}
 }

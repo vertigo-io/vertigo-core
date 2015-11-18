@@ -19,7 +19,6 @@
 package io.vertigo.app.config;
 
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
@@ -43,7 +42,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
-	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
@@ -71,11 +69,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		boot = false;
 		myName = name;
 		myAppConfigBuilder = appConfigBuilder;
-	}
-
-	public ModuleConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitialierClass) {
-		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitialierClass));
-		return this;
 	}
 
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
@@ -261,7 +254,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myDefinitionProviderConfigs,
 				myDefinitionResourceConfigs,
 				componentConfig,
-				myComponentInitializerConfigs,
 				pluginConfigs,
 				myAspectConfigs,
 				moduleRules);

@@ -20,7 +20,6 @@ package io.vertigo.core.component.loader;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
-import io.vertigo.app.config.ComponentInitializerConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.core.component.AopEngine;
@@ -29,7 +28,6 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -50,7 +48,6 @@ import java.util.Map;
 public final class ComponentLoader {
 	private final AopEngine aopEngine;
 	private final Option<ElasticaEngine> elasticaEngineOption;
-	private final List<ComponentInitializer> initializers = new ArrayList<>();
 	/** Aspects.*/
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
@@ -73,7 +70,6 @@ public final class ComponentLoader {
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
 		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
-		Assertion.checkArgument(bootModuleConfig.getComponentInitialzerConfigs().isEmpty(), "boot module can't contain initiliazers");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");
 		//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
@@ -83,7 +79,6 @@ public final class ComponentLoader {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		doInjectComponents(componentSpace, paramManagerOption, moduleConfig);
-		doInjectInitializers(componentSpace, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
@@ -147,20 +142,6 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void doInjectInitializers(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
-		for (final ComponentInitializerConfig componentInitializerConfig : moduleConfig.getComponentInitialzerConfigs()) {
-			final ComponentInitializer componentInitializer = createComponentInitializer(componentSpace, componentInitializerConfig);
-			//On enregistre l'initializer
-			registerInitializer(componentInitializer);
-		}
-	}
-
-	private void registerInitializer(final ComponentInitializer componentInitializer) {
-		Assertion.checkNotNull(componentInitializer);
-		//-----
-		initializers.add(componentInitializer);
-	}
-
 	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
 		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
@@ -208,10 +189,6 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static final ComponentInitializer createComponentInitializer(final Container componentContainer, final ComponentInitializerConfig componentInitializerConfig) {
-		return Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentContainer);
-	}
-
 	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
 			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
@@ -232,13 +209,5 @@ public final class ComponentLoader {
 		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in plugin '{1}'", paramsContainer.getUnusedKeys(), pluginConfig.getId());
 		return plugin;
-	}
-
-	public void initializeAllComponents() {
-		//le démarrage des composants est effectué au fur et à mesure de leur création.
-		//L'initialisation est en revanche globale.
-		for (final ComponentInitializer componentInitializer : initializers) {
-			componentInitializer.init();
-		}
 	}
 }

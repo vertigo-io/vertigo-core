@@ -19,9 +19,12 @@
 package io.vertigo.app;
 
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -95,7 +98,7 @@ public final class App implements AutoCloseable {
 				appConfig.print(System.out);
 			}
 			//-----4. post-Initialize all components
-			componentLoader.initializeAllComponents();
+			initializeAllComponents();
 			//-----3. Start
 			appStart();
 			appPostStart();
@@ -175,5 +178,12 @@ public final class App implements AutoCloseable {
 
 	public ComponentSpace getComponentSpace() {
 		return componentSpace;
+	}
+
+	private void initializeAllComponents() {
+		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitialzerConfigs()) {
+			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
+			componentInitializer.init();
+		}
 	}
 }

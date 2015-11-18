@@ -47,4 +47,5 @@ public final class AspectConfig {
 	public Class<? extends Aspect> getAspectImplClass() {
 		return implClass;
 	}
+
 }

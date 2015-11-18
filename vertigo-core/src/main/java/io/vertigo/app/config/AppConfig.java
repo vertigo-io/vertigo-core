@@ -32,15 +32,19 @@ import java.util.List;
 public final class AppConfig {
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
+	private final List<ComponentInitializerConfig> initializers;
 
 	AppConfig(
 			final BootConfig bootConfig,
-			final List<ModuleConfig> moduleConfigs) {
+			final List<ModuleConfig> moduleConfigs,
+			final List<ComponentInitializerConfig> componentInitializerConfigs) {
 		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
+		Assertion.checkNotNull(componentInitializerConfigs);
 		//---
 		this.bootConfig = bootConfig;
-		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
+		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
+		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
 	}
 
 	public BootConfig getBootConfig() {
@@ -52,6 +56,10 @@ public final class AppConfig {
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
+	}
+
+	public List<ComponentInitializerConfig> getComponentInitialzerConfigs() {
+		return initializers;
 	}
 
 	//=========================================================================
