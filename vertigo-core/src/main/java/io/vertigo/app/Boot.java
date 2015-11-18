@@ -20,14 +20,10 @@ package io.vertigo.app;
 
 import io.vertigo.app.config.BootConfig;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Engine;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -35,46 +31,13 @@ import org.apache.log4j.xml.DOMConfigurator;
 /**
  * @author pchretien
  */
-final class Boot implements Activeable {
+final class Boot {
 	private final BootConfig bootConfig;
 
 	Boot(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
 		//-----
 		this.bootConfig = bootConfig;
-		//-----
-		if (bootConfig.getLogConfig().isDefined()) {
-			initLog(bootConfig.getLogConfig().get());
-		}
-	}
-
-	@Override
-	public void start() {
-		startEngines();
-	}
-
-	private void startEngines() {
-		for (final Engine engine : bootConfig.getEngines()) {
-			if (engine instanceof Activeable) {
-				Activeable.class.cast(engine).start();
-			}
-		}
-	}
-
-	@Override
-	public void stop() {
-		stopEngines();
-	}
-
-	private void stopEngines() {
-		final List<Engine> reverseEngines = new ArrayList<>(bootConfig.getEngines());
-		java.util.Collections.reverse(reverseEngines);
-
-		for (final Engine engine : reverseEngines) {
-			if (engine instanceof Activeable) {
-				Activeable.class.cast(engine).stop();
-			}
-		}
 	}
 
 	private static void initLog(final LogConfig log4Config) {
@@ -96,4 +59,9 @@ final class Boot implements Activeable {
 		Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 	}
 
+	void init() {
+		if (bootConfig.getLogConfig().isDefined()) {
+			initLog(bootConfig.getLogConfig().get());
+		}
+	}
 }

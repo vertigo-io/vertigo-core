@@ -23,7 +23,6 @@ import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.core.component.AopEngine;
-import io.vertigo.core.component.ElasticaEngine;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
@@ -47,16 +46,13 @@ import java.util.Map;
  */
 public final class ComponentLoader {
 	private final AopEngine aopEngine;
-	private final Option<ElasticaEngine> elasticaEngineOption;
 	/** Aspects.*/
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	public ComponentLoader(final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngineOption) {
+	public ComponentLoader(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
-		Assertion.checkNotNull(elasticaEngineOption);
 		//-----
 		this.aopEngine = aopEngine;
-		this.elasticaEngineOption = elasticaEngineOption;
 	}
 
 	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
@@ -178,10 +174,10 @@ public final class ComponentLoader {
 	}
 
 	private Object createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
-		// 2. On crée le composant
+		// 1. An instance is created
 		final Object instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
-		//3. AOP, on aopise le composant
+		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
 		if (!joinPoints.isEmpty()) {
 			return aopEngine.create(instance, joinPoints);
@@ -190,9 +186,9 @@ public final class ComponentLoader {
 	}
 
 	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
-		if (componentConfig.isElastic()) {
-			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
-		}
+		//		if (componentConfig.isElastic()) {
+		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
+		//		}
 		//---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);

@@ -19,7 +19,6 @@
 package io.vertigo.app.config;
 
 import io.vertigo.core.component.AopEngine;
-import io.vertigo.core.component.ElasticaEngine;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -35,7 +34,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
-	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
 	private ModuleConfig myBootModuleConfig; //required 
 
 	/**
@@ -88,18 +86,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * @param elasticaEngine ElasticaEngine
-	 * @return this builder
-	 */
-	public BootConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
-		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkState(myElasticaEngine == null, "elasticaEngine is already completed");
-		//-----
-		myElasticaEngine = elasticaEngine;
-		return this;
-	}
-
-	/**
 	 * @param aopEngine AopEngine
 	 * @return this builder
 	 */
@@ -126,7 +112,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				myLogConfigOption,
 				myBootModuleConfig,
 				myAopEngine,
-				Option.option(myElasticaEngine),
 				mySilence);
 	}
 }

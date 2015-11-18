@@ -56,7 +56,6 @@ public final class App implements AutoCloseable {
 	private final AppConfig appConfig;
 	private State state;
 
-	private final Boot boot;
 	private final DefinitionSpace definitionSpace;
 	private final ComponentSpace componentSpace;
 
@@ -76,14 +75,15 @@ public final class App implements AutoCloseable {
 		state = State.starting;
 		//-----
 		//-----0. Boot (considered as a Module)
-		boot = new Boot(appConfig.getBootConfig());
+		final Boot boot = new Boot(appConfig.getBootConfig());
+		boot.init();
 		//-----0. Boot
 		componentSpace = new ComponentSpace();
 		definitionSpace = new DefinitionSpace();
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopEngine(), appConfig.getBootConfig().getElasticaEngine());
+			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopEngine());
 			//contient donc à minima resourceManager et paramManager.
 			componentLoader.injectBootComponents(componentSpace, appConfig.getBootConfig().getBootModuleConfig());
 
@@ -99,11 +99,12 @@ public final class App implements AutoCloseable {
 			}
 			//-----4. post-Initialize all components
 			initializeAllComponents();
-			//-----3. Start
+			//-----5. Start
 			appStart();
-			appPostStart();
 			//-----
 			state = State.active;
+			//-----6. AfterStart (application is active)
+			appPostStart();
 		} catch (final Exception e) {
 			close();
 			throw new RuntimeException("an error occured when starting", e);
@@ -127,7 +128,6 @@ public final class App implements AutoCloseable {
 	}
 
 	private void appStart() {
-		boot.start();
 		definitionSpace.start();
 		componentSpace.start();
 		Thread.currentThread().setName("MAIN");
@@ -136,7 +136,6 @@ public final class App implements AutoCloseable {
 	private void appStop() {
 		componentSpace.stop();
 		definitionSpace.stop();
-		boot.stop();
 	}
 
 	/** {@inheritDoc} */
