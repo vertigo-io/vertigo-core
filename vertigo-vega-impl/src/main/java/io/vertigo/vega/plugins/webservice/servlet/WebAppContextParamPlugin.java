@@ -24,6 +24,10 @@ import io.vertigo.lang.Option;
 
 import java.util.Map;
 
+/**
+ * Plugin d'accès à la configuration de la WebApp.
+ * @author npiedeloup
+*/
 public final class WebAppContextParamPlugin implements ParamPlugin {
 	private static Map<String, String> params;
 
