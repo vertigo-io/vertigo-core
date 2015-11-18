@@ -53,7 +53,7 @@ public final class DefinitionLoader implements Component {
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	@Inject
 	public DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
@@ -104,7 +104,7 @@ public final class DefinitionLoader implements Component {
 		//-----
 		final List<DefinitionResourceConfig> definitionResourceConfigs = moduleConfig.getDefinitionResourceConfigs();
 		if (!definitionResourceConfigs.isEmpty()) {
-			this.parse(definitionSpace, definitionResourceConfigs);
+			parse(definitionSpace, definitionResourceConfigs);
 		}
 		//-----
 		for (final DefinitionProviderConfig definitionProviderConfig : moduleConfig.getDefinitionProviderConfigs()) {

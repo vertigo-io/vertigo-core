@@ -18,8 +18,8 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.core.component.AopEngine;
-import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopEngine;
+import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
@@ -33,7 +33,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
-	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
+	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private ModuleConfig myBootModuleConfig; //required 
 
 	/**
@@ -86,13 +86,13 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * @param aopEngine AopEngine
+	 * @param aopPlugin AopPlugin
 	 * @return this builder
 	 */
-	public BootConfigBuilder withAopEngine(final AopEngine aopEngine) {
-		Assertion.checkNotNull(aopEngine);
+	public BootConfigBuilder withAopEngine(final AopPlugin aopPlugin) {
+		Assertion.checkNotNull(aopPlugin);
 		//-----
-		myAopEngine = aopEngine;
+		myAopPlugin = aopPlugin;
 		return this;
 	}
 
@@ -111,7 +111,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return new BootConfig(
 				myLogConfigOption,
 				myBootModuleConfig,
-				myAopEngine,
+				myAopPlugin,
 				mySilence);
 	}
 }

@@ -22,7 +22,7 @@ import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.PluginConfig;
-import io.vertigo.core.component.AopEngine;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
@@ -41,18 +41,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * @author pchretien
  */
 public final class ComponentLoader {
-	private final AopEngine aopEngine;
+	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	public ComponentLoader(final AopEngine aopEngine) {
-		Assertion.checkNotNull(aopEngine);
+	/**
+	 * Constructor.
+	 */
+	@Inject
+	public ComponentLoader(final AopPlugin aopPlugin) {
+		Assertion.checkNotNull(aopPlugin);
 		//-----
-		this.aopEngine = aopEngine;
+		this.aopPlugin = aopPlugin;
 	}
 
 	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
@@ -180,7 +186,7 @@ public final class ComponentLoader {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
 		if (!joinPoints.isEmpty()) {
-			return aopEngine.create(instance, joinPoints);
+			return aopPlugin.create(instance, joinPoints);
 		}
 		return instance;
 	}

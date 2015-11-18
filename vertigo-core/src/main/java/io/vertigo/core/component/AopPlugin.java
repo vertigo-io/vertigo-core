@@ -19,7 +19,7 @@
 package io.vertigo.core.component;
 
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.lang.Engine;
+import io.vertigo.lang.Plugin;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.Map;
  * 
  * @author pchretien
  */
-public interface AopEngine extends Engine {
+public interface AopPlugin extends Plugin {
 
 	/**
 	 * Create a proxy-reference.

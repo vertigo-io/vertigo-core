@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.plugins.component.aop.cglib;
 
-import io.vertigo.core.component.AopEngine;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -34,7 +34,7 @@ import net.sf.cglib.proxy.Enhancer;
 /**
  * @author pchretien
  */
-public final class CGLIBAopEngine implements AopEngine {
+public final class CGLIBAopPlugin implements AopPlugin {
 
 	/** {@inheritDoc} */
 	@Override

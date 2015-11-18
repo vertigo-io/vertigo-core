@@ -18,7 +18,7 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.core.component.AopEngine;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
@@ -32,7 +32,7 @@ public final class BootConfig {
 	private final Option<LogConfig> logConfigOption;
 	private final boolean silence;
 	@JsonExclude
-	private final AopEngine aopEngine;
+	private final AopPlugin aopPlugin;
 
 	private final ModuleConfig bootModuleConfig;
 
@@ -45,16 +45,16 @@ public final class BootConfig {
 	BootConfig(
 			final Option<LogConfig> logConfigOption,
 			final ModuleConfig bootModuleConfig,
-			final AopEngine aopEngine,
+			final AopPlugin aopPlugin,
 			final boolean silence) {
 		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(bootModuleConfig);
-		Assertion.checkNotNull(aopEngine);
+		Assertion.checkNotNull(aopPlugin);
 		//-----
 		this.logConfigOption = logConfigOption;
 		this.bootModuleConfig = bootModuleConfig;
 		this.silence = silence;
-		this.aopEngine = aopEngine;
+		this.aopPlugin = aopPlugin;
 	}
 
 	public Option<LogConfig> getLogConfig() {
@@ -75,7 +75,7 @@ public final class BootConfig {
 	/**
 	 * @return AopEngine
 	 */
-	public AopEngine getAopEngine() {
-		return aopEngine;
+	public AopPlugin getAopPlugin() {
+		return aopPlugin;
 	}
 }
