@@ -183,7 +183,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	private String evalParamValue(final String paramValue) {
-		if (paramValue.startsWith("${") && paramValue.endsWith("}")) {
+		if (paramValue.startsWith("${boot.") && paramValue.endsWith("}")) {
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
 			return params.getParam(property);
 		}
