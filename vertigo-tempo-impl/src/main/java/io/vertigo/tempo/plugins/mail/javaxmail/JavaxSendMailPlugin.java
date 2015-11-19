@@ -134,7 +134,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				properties.put("mail.smtp.ssl.trust", mailHost);
 				properties.put("mail.smtp.starttls.enable", true);
 				properties.put("mail.smtp.auth", "true");
-				
+
 				final String username = mailLogin.get();
 				final String password = mailPassword.get();
 				session = Session.getInstance(properties, new javax.mail.Authenticator() {
@@ -144,7 +144,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 						return new PasswordAuthentication(username, password);
 					}
 				});
-			} else {			
+			} else {
 				session = Session.getDefaultInstance(properties);
 			}
 			session.setDebug(false);
@@ -252,16 +252,16 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");
 			final BodyPart plainMessageBodyPart = new MimeBodyPart();
-			plainMessageBodyPart.setContent(textContent, "text/plain");
+			plainMessageBodyPart.setContent(textContent, "text/plain; charset=" + CHARSET_USED);
 			multipart.addBodyPart(plainMessageBodyPart);
 			final BodyPart htmlMessageBodyPart = new MimeBodyPart();
-			htmlMessageBodyPart.setContent(htmlContent, "text/html");
+			htmlMessageBodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
 			multipart.addBodyPart(htmlMessageBodyPart);
 			bodyPart.setContent(multipart);
 		} else if (textContent != null) {
 			bodyPart.setText(textContent);
 		} else if (htmlContent != null) {
-			bodyPart.setContent(htmlContent, "text/html");
+			bodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
 		}
 	}
 
