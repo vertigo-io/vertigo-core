@@ -478,7 +478,6 @@ public final class WebServiceManagerTest {
 		addresses.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"));
 
 		loggedAndExpect(given().body(newContactView))
-				.body("conId", Matchers.equalTo(100))
 				.body("honorificCode", Matchers.notNullValue())
 				.body("name", Matchers.notNullValue())
 				.body("firstName", Matchers.notNullValue())
@@ -486,6 +485,24 @@ public final class WebServiceManagerTest {
 				.body("email", Matchers.notNullValue())
 				.body("addresses.size()", Matchers.equalTo(3))
 				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/contacts/contactView");
+	}
+
+	@Test
+	public void testPutContactViewError() throws ParseException {
+		final Map<String, Object> newContactView = createDefaultContact(100L);
+		final List<Map<String, Object>> addresses = new ArrayList<>();
+		newContactView.remove("address");
+		newContactView.put("addresses", addresses);
+		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
+		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
+		addresses.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
+
+		loggedAndExpect(given().body(newContactView))
+				.body("fieldErrors", Matchers.notNullValue())
+				//.body("fieldErrors.addresses[2]", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.put("/contacts/contactView");
 	}
