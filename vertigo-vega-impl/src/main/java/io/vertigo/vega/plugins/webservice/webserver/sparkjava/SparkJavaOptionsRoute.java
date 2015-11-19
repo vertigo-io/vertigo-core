@@ -66,9 +66,9 @@ public final class SparkJavaOptionsRoute extends Route {
 	public Object handle(final Request request, final Response response) {
 		try {
 			return handlerChain.handle(request, response, new WebServiceCallContext(request, response, webServiceCors)); //no WebService
-		} catch (final Throwable th) {
-			LOGGER.error(th);
-			return th.getMessage();
+		} catch (final Exception e) {
+			LOGGER.error(e);
+			return e.getMessage();
 		}
 	}
 }
