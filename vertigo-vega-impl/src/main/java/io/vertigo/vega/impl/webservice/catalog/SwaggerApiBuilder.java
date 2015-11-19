@@ -61,6 +61,12 @@ import java.util.Map;
  */
 public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
+	private static final String REQUIRED = "required";
+
+	private static final String SCHEMA = "schema";
+
+	private static final String DESCRIPTION = "description";
+
 	private static final String UNKNOWN_OBJECT_NAME = "unkwnown";
 
 	private final Map<String, Object> builderDefinitions = new LinkedHashMap<>();
@@ -152,7 +158,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			description.append("This operation keep a full ServerSide state of returned object");
 			description.append("<br/>");
 		}
-		putIfNotEmpty(operation, "description", description.toString());
+		putIfNotEmpty(operation, DESCRIPTION, description.toString());
 		operation.put("operationId", webServiceDefinition.getName());
 		putIfNotEmpty(operation, "consumes", createConsumesArray(webServiceDefinition));
 		putIfNotEmpty(operation, "parameters", createParametersArray(webServiceDefinition));
@@ -223,8 +229,8 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Map<String, Object> headers) {
 		final Map<String, Object> response = new LinkedHashMap<>();
-		response.put("description", description);
-		putIfNotEmpty(response, "schema", createSchemaObject(returnType));
+		response.put(DESCRIPTION, description);
+		putIfNotEmpty(response, SCHEMA, createSchemaObject(returnType));
 		putIfNotEmpty(response, "headers", headers);
 		return response;
 	}
@@ -293,7 +299,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			//could add enum on field to specify all values authorized
 			properties.put(fieldName, fieldSchema);
 		}
-		putIfNotEmpty(entity, "required", required);
+		putIfNotEmpty(entity, REQUIRED, required);
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
@@ -319,7 +325,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				properties.put(field.getName(), fieldSchema);
 			}
 		}
-		putIfNotEmpty(entity, "required", requireds);
+		putIfNotEmpty(entity, REQUIRED, requireds);
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
@@ -368,17 +374,17 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			final Map<String, Object> parameter = new LinkedHashMap<>();
 			parameter.put("name", "x-access-token");
 			parameter.put("in", "header");
-			parameter.put("description", "Security access token, must be sent to allow operation.");
-			parameter.put("required", "true");
+			parameter.put(DESCRIPTION, "Security access token, must be sent to allow operation.");
+			parameter.put(REQUIRED, "true");
 			parameter.put("type", "string");
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
 			final String bodyName = StringUtil.constToUpperCamelCase(webServiceDefinition.getName().replaceAll("__", "_").replaceAll("__", "_")) + "Body";
-			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
-			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
+			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
+			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
-			bodyDefinition.put("required", compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
+			bodyDefinition.put(REQUIRED, compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
 			putIfNotEmpty(bodyDefinition, "properties", compositeSchema);
 			builderDefinitions.put(bodyName, bodyDefinition);
 
@@ -392,7 +398,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		if (isOneInMultipleOutParams(webServiceParam)) {
 			for (final WebServiceParam pseudoWebServiceParam : createPseudoWebServiceParams(webServiceParam)) {
 				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam, webServiceDefinition);
-				parameter.remove("required"); //query params aren't required
+				parameter.remove(REQUIRED); //query params aren't required
 				parameters.add(parameter);
 			}
 		} else if (isMultipleInOneOutParams(webServiceParam)) {
@@ -400,12 +406,12 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			if (bodyParameter.isEmpty()) {
 				bodyParameter.putAll(parameter);
 			} else {
-				final String newDescription = (String) parameter.get("description");
-				final String oldDescription = (String) bodyParameter.get("description");
-				bodyParameter.put("description", oldDescription + ", " + newDescription);
+				final String newDescription = (String) parameter.get(DESCRIPTION);
+				final String oldDescription = (String) bodyParameter.get(DESCRIPTION);
+				bodyParameter.put(DESCRIPTION, oldDescription + ", " + newDescription);
 
-				final Map<String, Object> newSchema = (Map<String, Object>) parameter.get("schema");
-				final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get("schema");
+				final Map<String, Object> newSchema = (Map<String, Object>) parameter.get(SCHEMA);
+				final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 				oldSchema.putAll(newSchema);
 			}
 		} else {
@@ -416,7 +422,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
-		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
+		final String prefix = (!webServiceParam.getName().isEmpty()) ? (webServiceParam.getName() + ".") : "";
 		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
@@ -483,14 +489,14 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		final Map<String, Object> parameter = new LinkedHashMap<>();
 		parameter.put("name", nameValue);
 		parameter.put("in", inValue);
-		putIfNotEmpty(parameter, "description", description);
-		parameter.put("required", "true");
+		putIfNotEmpty(parameter, DESCRIPTION, description);
+		parameter.put(REQUIRED, "true");
 		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
-			parameter.put("schema", createSchemaObject(webServiceParam.getGenericType()));
+			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType()));
 		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType()));
-			parameter.put("schema", bodyParameter);
+			parameter.put(SCHEMA, bodyParameter);
 		} else {
 			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
@@ -512,9 +518,9 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		} else if (long.class.isAssignableFrom(paramClass) || Long.class.isAssignableFrom(paramClass)) {
 			return new String[] { "integer", "int64" };
 		} else if (float.class.isAssignableFrom(paramClass) || Float.class.isAssignableFrom(paramClass)) {
-			return new String[] { "integer", "int32" };
+			return new String[] { "number", "float" };
 		} else if (double.class.isAssignableFrom(paramClass) || Double.class.isAssignableFrom(paramClass)) {
-			return new String[] { "integer", "int64" };
+			return new String[] { "number", "double" };
 		} else if (Date.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", "date-time" };
 		} else if (VFile.class.isAssignableFrom(paramClass)) {
