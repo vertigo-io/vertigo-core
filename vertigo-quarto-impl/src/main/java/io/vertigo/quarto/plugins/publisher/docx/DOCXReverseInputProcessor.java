@@ -18,6 +18,7 @@
  */
 package io.vertigo.quarto.plugins.publisher.docx;
 
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.publisher.impl.merger.processor.MergerProcessor;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -78,7 +79,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 			// rendu du xml final
 			return DOCXUtil.renderXML(xmlDoc);
 		} catch (final XPathExpressionException e) {
-			throw new RuntimeException("Erreur de format du Docx", e);
+			throw new WrappedException("Erreur de format du Docx", e);
 		}
 	}
 

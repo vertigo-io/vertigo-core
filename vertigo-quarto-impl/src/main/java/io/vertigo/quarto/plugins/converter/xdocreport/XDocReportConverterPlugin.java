@@ -28,6 +28,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 import java.io.FileOutputStream;
@@ -66,7 +67,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			final VFile pdf = new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile);
 			return pdf;
 		} catch (final IOException | XDocConverterException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

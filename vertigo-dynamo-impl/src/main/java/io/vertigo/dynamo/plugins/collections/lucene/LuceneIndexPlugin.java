@@ -31,6 +31,7 @@ import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -119,7 +120,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			final LuceneIndex<D> index = indexList(dtc, false);
 			return index.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur d'indexation", e);
+			throw new WrappedException("Erreur d'indexation", e);
 		}
 	}
 

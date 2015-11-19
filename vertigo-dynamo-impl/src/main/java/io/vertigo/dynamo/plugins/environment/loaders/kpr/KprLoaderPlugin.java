@@ -23,6 +23,8 @@ import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -84,7 +86,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		try {
 			return doGetKspFiles(kprURL, resourceManager);
 		} catch (final Exception e) {
-			throw new RuntimeException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
+			throw new WrappedException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
 		}
 	}
 
@@ -107,7 +109,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 						// ksp
 						kspFiles.add(url);
 					} else {
-						throw new RuntimeException("Type de fichier inconnu : " + fileName);
+						throw new VSystemException("Type de fichier inconnu : " + fileName);
 					}
 				}
 			}

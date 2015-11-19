@@ -33,6 +33,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.DateUtil;
 
 import java.io.ByteArrayInputStream;
@@ -144,7 +145,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			fsFileInfo.setURIStored(uri);
 			return fsFileInfo;
 		} catch (final IOException e) {
-			throw new RuntimeException("Can't read fileInfo " + uri.toURN(), e);
+			throw new WrappedException("Can't read fileInfo " + uri.toURN(), e);
 		}
 	}
 
@@ -160,12 +161,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			obtainFsTransactionRessource().saveFile(inputStream, obtainFullFilePath(fileInfo.getURI()));
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de lire le fichier uploadé.", e);
+			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
 		try (InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
 			obtainFsTransactionRessource().saveFile(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()));
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de lire le fichier uploadé.", e);
+			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
 	}
 

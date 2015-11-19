@@ -21,6 +21,7 @@ package io.vertigo.persona.plugins.security.loaders;
 import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 
@@ -128,7 +129,7 @@ final class XmlSecurityLoader {
 			builder.setEntityResolver(entityResolver);
 			return builder.build(url.openStream());
 		} catch (final Exception e) {
-			throw new RuntimeException("Erreur durant la lecture du fichier XML " + url, e);
+			throw new WrappedException("Erreur durant la lecture du fichier XML " + url, e);
 		}
 	}
 

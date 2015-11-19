@@ -19,6 +19,7 @@
 package io.vertigo.app.config;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -27,7 +28,11 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 interface ModuleRule {
-	void chek(final ModuleConfig moduleConfig);
+	/**
+	 * Check rule of module.
+	 * @param moduleConfig Module config to check
+	 */
+	void check(final ModuleConfig moduleConfig);
 }
 
 /**
@@ -38,10 +43,10 @@ interface ModuleRule {
 final class APIModuleRule implements ModuleRule {
 	/** {@inheritDoc} */
 	@Override
-	public void chek(final ModuleConfig moduleConfig) {
+	public void check(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			if (componentConfig.getApiClass().isEmpty()) {
-				throw new RuntimeException("api rule : all components of module '" + moduleConfig + "' must have an api. Component '" + componentConfig + "' doesn't respect this rule.");
+				throw new VSystemException("api rule : all components of module '" + moduleConfig + "' must have an api. Component '" + componentConfig + "' doesn't respect this rule.");
 			}
 		}
 	}
@@ -63,7 +68,7 @@ final class InheritanceModuleRule implements ModuleRule {
 
 	/** {@inheritDoc} */
 	@Override
-	public void chek(final ModuleConfig moduleConfig) {
+	public void check(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			Class<?> clazz;
 			if (componentConfig.getApiClass().isDefined()) {
@@ -73,7 +78,7 @@ final class InheritanceModuleRule implements ModuleRule {
 				clazz = componentConfig.getImplClass();
 			}
 			if (!superClass.isAssignableFrom(clazz)) {
-				throw new RuntimeException(StringUtil.format("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName()));
+				throw new VSystemException(StringUtil.format("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName()));
 			}
 		}
 	}

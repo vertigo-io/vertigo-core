@@ -105,7 +105,7 @@ public final class ModuleConfig {
 
 	void checkRules() {
 		for (final ModuleRule moduleRule : moduleRules) {
-			moduleRule.chek(this);
+			moduleRule.check(this);
 		}
 	}
 

@@ -39,6 +39,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -151,7 +152,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	}
 
 	private static void handleIOException(final IOException e) {
-		throw new RuntimeException("Serveur ElasticSearch indisponible", e);
+		throw new WrappedException("Serveur ElasticSearch indisponible", e);
 	}
 
 	/**

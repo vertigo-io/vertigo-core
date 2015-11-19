@@ -50,6 +50,7 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 
 import java.util.Map;
 
@@ -375,7 +376,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final boolean insert = true;
 		final boolean saved = put(dto, insert);
 		if (!saved) {
-			throw new RuntimeException("no data created");
+			throw new VSystemException("no data created");
 		}
 	}
 
@@ -387,7 +388,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final boolean insert = false;
 		final boolean saved = put(dto, insert);
 		if (!saved) {
-			throw new RuntimeException("no data updated");
+			throw new VSystemException("no data updated");
 		}
 	}
 
@@ -401,7 +402,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			saved = put(dto, true);
 		}
 		if (!saved) {
-			throw new RuntimeException("no data merged");
+			throw new VSystemException("no data merged");
 		}
 	}
 
@@ -478,7 +479,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new RuntimeException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée");
+			throw new VSystemException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée");
 		}
 		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
 	}
@@ -520,9 +521,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new RuntimeException("Plus de 1 ligne a été supprimée");
+			throw new VSystemException("Plus de 1 ligne a été supprimée");
 		} else if (sqlRowCount == 0) {
-			throw new RuntimeException("Aucune ligne supprimée");
+			throw new VSystemException("Aucune ligne supprimée");
 		}
 	}
 

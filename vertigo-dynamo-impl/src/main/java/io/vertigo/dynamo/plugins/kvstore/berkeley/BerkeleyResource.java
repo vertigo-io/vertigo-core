@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
@@ -44,7 +45,7 @@ final class BerkeleyResource implements VTransactionResource {
 		try {
 			transaction = environment.beginTransaction(null, null);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

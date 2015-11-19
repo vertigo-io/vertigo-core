@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.kvstore.delayedberkeley;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.Serializable;
 
@@ -55,7 +56,7 @@ final class DelayedBerkeleySerializableBinding extends TupleBinding<Serializable
 			ti.readFast(buffer);
 			return codec.decode(buffer);
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -68,7 +69,7 @@ final class DelayedBerkeleySerializableBinding extends TupleBinding<Serializable
 			to.writeInt(buffer.length);
 			to.writeFast(buffer);
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

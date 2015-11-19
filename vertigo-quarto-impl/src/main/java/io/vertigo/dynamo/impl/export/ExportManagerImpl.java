@@ -25,6 +25,8 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,7 +70,7 @@ public final class ExportManagerImpl implements ExportManager {
 				return exporterPlugin;
 			}
 		}
-		throw new RuntimeException("aucun plugin trouve pour le format " + exportFormat);
+		throw new VSystemException("aucun plugin trouve pour le format " + exportFormat);
 	}
 
 	/** {@inheritDoc} */
@@ -82,7 +84,7 @@ public final class ExportManagerImpl implements ExportManager {
 			// Quelle que soit l'exception on l'encapsule pour préciser le nom
 			// du fichier.
 			final String msg = "La génération du fichier a échoué.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
-			throw new RuntimeException(msg, e);
+			throw new WrappedException(msg, e);
 		}
 	}
 

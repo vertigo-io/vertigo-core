@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -182,7 +183,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 				dto = dataStore.get(uri);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
-				throw new RuntimeException(e);
+				throw new WrappedException(e);
 			}
 			return mdFieldSort.getDataAccessor().getValue(dto);
 		}

@@ -23,6 +23,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -89,7 +90,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		try {
 			home = new File(URLDecoder.decode(esHomeURL.getFile(), "UTF-8"));
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("Error de parametrage du ElasticSearchHome " + esHomeURL, e);
+			throw new WrappedException("Error de parametrage du ElasticSearchHome " + esHomeURL, e);
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());

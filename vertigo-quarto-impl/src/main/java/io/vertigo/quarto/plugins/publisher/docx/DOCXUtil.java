@@ -20,6 +20,7 @@ package io.vertigo.quarto.plugins.publisher.docx;
 
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.publisher.impl.merger.processor.ZipUtil;
 
 import java.io.BufferedInputStream;
@@ -287,7 +288,7 @@ final class DOCXUtil {
 			final DocumentBuilder builder = domFactory.newDocumentBuilder();
 			return builder.parse(new InputSource(reader));
 		} catch (final ParserConfigurationException | SAXException | IOException e) {
-			throw new RuntimeException("Erreur de chargement du fichier XML", e);
+			throw new WrappedException("Erreur de chargement du fichier XML", e);
 		}
 	}
 

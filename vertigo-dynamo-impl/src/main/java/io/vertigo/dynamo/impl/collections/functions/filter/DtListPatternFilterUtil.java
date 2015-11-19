@@ -24,6 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
 
@@ -78,7 +79,7 @@ public final class DtListPatternFilterUtil {
 			case Term:
 				return createDtListTermFilter(parsedFilter, fieldName, dataType);
 			default:
-				throw new RuntimeException(StringUtil.format("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern()));
+				throw new VSystemException(StringUtil.format("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern()));
 		}
 	}
 
@@ -151,7 +152,7 @@ public final class DtListPatternFilterUtil {
 			case DtObject:
 			case DtList:
 			default:
-				throw new RuntimeException("Type de données non comparable : " + dataType.name());
+				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}
 		return Option.some(result);
 	}

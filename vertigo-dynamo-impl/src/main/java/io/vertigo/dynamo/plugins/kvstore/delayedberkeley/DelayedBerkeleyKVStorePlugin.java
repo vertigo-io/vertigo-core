@@ -25,6 +25,7 @@ import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 import java.io.File;
@@ -144,7 +145,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 				throw new SimpleDatabaseException("Write error in UiSecurityTokenCache");
 			}
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -169,7 +170,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 				}
 			}
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		return Option.none();
 	}
@@ -201,7 +202,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new RuntimeException("findAll failed", e);
+			throw new WrappedException("findAll failed", e);
 		}
 	}
 
@@ -216,7 +217,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			keyBinding.objectToEntry(key, theKey);
 			cacheDatas.delete(null, theKey);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -268,7 +269,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			environment = createDbEnv();
 			cacheDatas = createDb();
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -305,7 +306,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		try {
 			return environment.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

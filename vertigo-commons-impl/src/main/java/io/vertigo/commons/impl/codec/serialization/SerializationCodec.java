@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.codec.serialization;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,7 +50,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 			}
 			return baos.toByteArray();
 		} catch (final IOException e) {
-			throw new RuntimeException("Serialisation : erreur d'ecriture du flux pour " + object.getClass().getName(), e);
+			throw new WrappedException("Serialisation : write stream exception for " + object.getClass().getName(), e);
 		}
 	}
 
@@ -64,9 +65,9 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 				return (Serializable) ois.readObject();
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException("Deserialisation : erreur de lecture du flux", e);
+			throw new WrappedException("Deserialisation : read stream exception", e);
 		} catch (final ClassNotFoundException e) {
-			throw new RuntimeException("Deserialisation", e);
+			throw new WrappedException("Deserialisation", e);
 		}
 	}
 

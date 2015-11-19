@@ -22,6 +22,7 @@ import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 import io.vertigo.util.XMLUtil;
 
@@ -78,11 +79,11 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {
-			throw new RuntimeException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()), pce);
+			throw new WrappedException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()), pce);
 		} catch (final SAXException se) {
-			throw new RuntimeException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()), se);
+			throw new WrappedException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()), se);
 		} catch (final IOException ioe) {
-			throw new RuntimeException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()), ioe);
+			throw new WrappedException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()), ioe);
 		}
 	}
 

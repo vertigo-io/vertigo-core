@@ -27,6 +27,7 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getName(), e);
+			throw new WrappedException("Erreur dans le traitement de " + xdefinition.getName(), e);
 		}
 	}
 

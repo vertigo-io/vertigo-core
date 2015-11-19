@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Field;
@@ -42,7 +43,7 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 		try {
 			return doEntryToObject(ti);
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -77,8 +78,8 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 			case "S":
 				return ti.readString();
 			case "*":
-				int size = ti.readInt();
-				Set set = new HashSet();
+				final int size = ti.readInt();
+				final Set set = new HashSet();
 				for (int i = 0; i < size; i++) {
 					set.add(readValue(ti));
 				}
@@ -94,7 +95,7 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 		try {
 			doObjectToEntry(object, to);
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -132,7 +133,7 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 		} else if (value instanceof Set) {
 			to.writeString("*");
 			to.writeInt(Set.class.cast(value).size());
-			for (Object item : Set.class.cast(value)) {
+			for (final Object item : Set.class.cast(value)) {
 				writeValue(to, item);
 			}
 		} else {

@@ -34,6 +34,7 @@ import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
 
@@ -99,10 +100,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			myBuildQuery = DslParserUtil.parseMultiExpression(buildQuery);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
-			throw new RuntimeException(message, e);
+			throw new WrappedException(message, e);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getMessage());
-			throw new RuntimeException(message, e);
+			throw new WrappedException(message, e);
 		}
 		return this;
 	}

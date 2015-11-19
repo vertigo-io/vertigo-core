@@ -31,6 +31,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
 import java.util.Collection;
@@ -78,7 +79,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		if (isReindexInProgress()) {
 			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + getReindexCount() + " elements done)";
 			LOGGER.warn(warnMessage);
-			reindexFuture.fail(new RuntimeException(warnMessage));
+			reindexFuture.fail(new VSystemException(warnMessage));
 		} else {
 			//-----
 			startReindex();

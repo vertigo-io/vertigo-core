@@ -67,11 +67,11 @@ public final class Base64Codec implements Codec<byte[], String> {
 			return new byte[0];
 		}
 		if (length % BASE64_ENCODED_BLOCK_LEN != 0) {
-			throw new RuntimeException("Données transmises malformées");
+			throw new IllegalArgumentException("Données transmises malformées");
 		}
 		for (int i = 0; i < coded.length(); i++) {
 			if (coded.charAt(i) != PADDING && DECODE_TABLE[coded.charAt(i)] == -1) {
-				throw new RuntimeException("Données transmises malformées");
+				throw new IllegalArgumentException("Données transmises malformées");
 			}
 		}
 		// ----

@@ -16,39 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.daemon;
+package io.vertigo.lang;
 
-import io.vertigo.lang.Component;
+/**
+ * Vertigo system exception.
+ *
+ * @author fconstantin, pchretien, npiedeloup
+ */
+public class VSystemException extends RuntimeException {
 
-import javax.inject.Inject;
+	private static final long serialVersionUID = -2256807194400285743L;
 
-public class FakeComponent implements Component {
-	int executions = 0;
-
-	@Inject
-	public FakeComponent(final DaemonManager daemonManager) {
-		daemonManager.registerDaemon("simple", SimpleDaemon.class, 2);
-	}
-
-	public int getExecutionCount() {
-		return executions;
-	}
-
-	void execute() {
-		executions++;
-		if (executions == 1) {
-			throw new IllegalStateException();
-		}
-	}
-
-	public static final class SimpleDaemon implements Daemon {
-		@Inject
-		private FakeComponent fakeComponent;
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() throws Exception {
-			fakeComponent.execute();
-		}
+	/**
+	 * Constructor.
+	 * @param message Message
+	 */
+	public VSystemException(final String message) {
+		super(message);
 	}
 }

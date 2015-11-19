@@ -22,6 +22,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -66,7 +67,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 			return generateFile(fileName, modelFileURL, data);
 		} catch (final IOException e) {
 			final String msg = "La generation du fichier a echoue.<!-- " + e.getMessage() + "--> pour le fichier " + fileName;
-			throw new RuntimeException(msg, e);
+			throw new WrappedException(msg, e);
 		}
 	}
 

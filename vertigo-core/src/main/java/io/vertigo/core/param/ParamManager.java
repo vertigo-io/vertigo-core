@@ -21,6 +21,7 @@ package io.vertigo.core.param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
 import java.util.List;
@@ -30,12 +31,12 @@ import javax.inject.Inject;
 
 /**
  * Interface du gestionnaire de la configuration applicative.
- * 
+ *
  * Une configuration possède une liste de paramètres.
- * Un paramètre est 
+ * Un paramètre est
  *  - identifié par un nom.
  *  - camelCase.camelCase et ne contient que des lettres et chiffres; les séparateurs sont des points.
- * 	
+ *
  * Les paramètres sont de trois types :
  * -boolean
  * -String
@@ -152,7 +153,7 @@ public final class ParamManager implements Component {
 
 	private static boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
-			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'boolean'");
+			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'boolean'");
 		}
 		return Boolean.parseBoolean(paramValue);
 	}
@@ -161,7 +162,7 @@ public final class ParamManager implements Component {
 		try {
 			return Integer.parseInt(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'int'");
+			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'int'");
 		}
 	}
 
@@ -169,7 +170,7 @@ public final class ParamManager implements Component {
 		try {
 			return Long.parseLong(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'long'");
+			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'long'");
 		}
 	}
 }

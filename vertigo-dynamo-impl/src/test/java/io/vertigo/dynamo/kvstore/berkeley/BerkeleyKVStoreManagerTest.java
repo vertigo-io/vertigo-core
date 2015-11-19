@@ -22,6 +22,7 @@ import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
 
 import java.util.List;
@@ -96,7 +97,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final Flower tulip = buildFlower("rose", 100);
 				kvStoreManager.put("flowers", "2", tulip);
-				throw new RuntimeException("Error");
+				throw new VSystemException("Error");
 			}
 		} catch (final RuntimeException e) {
 			//on doit passer par là

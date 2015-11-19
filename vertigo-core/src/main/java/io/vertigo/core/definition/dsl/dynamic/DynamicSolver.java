@@ -20,6 +20,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,13 +43,13 @@ final class DynamicSolver {
 	List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionRepository) {
 		Assertion.checkNotNull(definitionSpace);
 		Assertion.checkNotNull(definitionRepository);
-		//-----	
+		//-----
 		//Liste des clés résolues
 		final List<DynamicDefinition> orderedList = new ArrayList<>();
 
 		final Collection<String> orphanCollection = definitionRepository.getOrphanDefinitionKeys();
 		if (!orphanCollection.isEmpty()) {
-			throw new RuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
+			throw new VSystemException(" Les clés suivantes " + orphanCollection + " sont orphelines");
 		}
 		//-----
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
@@ -68,7 +69,7 @@ final class DynamicSolver {
 			}
 			//Si la liste n'a pas diminuée c'est que l'on a fini de résoudre ce qui peut l'être.
 			if (size == coll.size()) {
-				throw new RuntimeException(" Les références " + coll + " ne peuvent être résolues");
+				throw new VSystemException(" Les références " + coll + " ne peuvent être résolues");
 			}
 			size = coll.size();
 		}
@@ -88,7 +89,7 @@ final class DynamicSolver {
 			if (!definitionSpace.containsDefinitionName(definitionName)) {
 				//or references should be in currently parsed resources
 				if (!definitionRepository.containsDefinitionName(definitionName)) {
-					throw new RuntimeException("Clé " + definitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
+					throw new VSystemException("Clé " + definitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
 				}
 				final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
 				if (!orderedList.contains(linkedDefinition)) {

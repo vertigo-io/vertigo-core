@@ -20,6 +20,7 @@ package io.vertigo.app.config.xml;
 
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.XMLUtil;
 
 import java.io.BufferedInputStream;
@@ -68,11 +69,11 @@ final class XMLModulesParser {
 		try {
 			doParse(appConfigBuilder, managersURL, params);
 		} catch (final ParserConfigurationException pce) {
-			throw new RuntimeException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
+			throw new WrappedException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
 		} catch (final SAXException se) {
-			throw new RuntimeException("Erreur de parsing (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", se);
+			throw new WrappedException("Erreur de parsing (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", se);
 		} catch (final IOException ioe) {
-			throw new RuntimeException("Erreur d'entrée/sortie (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", ioe);
+			throw new WrappedException("Erreur d'entrée/sortie (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", ioe);
 		}
 	}
 

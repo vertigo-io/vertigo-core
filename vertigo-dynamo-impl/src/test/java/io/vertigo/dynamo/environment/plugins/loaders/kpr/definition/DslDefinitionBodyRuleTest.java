@@ -24,6 +24,7 @@ import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionBodyRule;
+import io.vertigo.lang.VSystemException;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class DslDefinitionBodyRuleTest {
 				return entity;
 			}
 		}
-		throw new RuntimeException("not found " + entityName);
+		throw new VSystemException("not found " + entityName);
 	}
 
 	@Test

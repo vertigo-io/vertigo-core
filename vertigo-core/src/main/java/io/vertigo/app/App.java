@@ -28,6 +28,7 @@ import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public final class App implements AutoCloseable {
 
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
-			//-----3. Print 
+			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
 				appConfig.print(System.out);
 			}
@@ -107,7 +108,7 @@ public final class App implements AutoCloseable {
 			appPostStart();
 		} catch (final Exception e) {
 			close();
-			throw new RuntimeException("an error occured when starting", e);
+			throw new IllegalStateException("an error occured when starting", e);
 		}
 	}
 
@@ -150,7 +151,7 @@ public final class App implements AutoCloseable {
 		} catch (final Exception e) {
 			LOGGER.error("an error occured when stopping", e);
 			//Quel que soit l'état, on part en échec de l'arrét.
-			throw new RuntimeException("an error occured when stopping", e);
+			throw new WrappedException("an error occured when stopping", e);
 		} finally {
 			state = State.closed;
 			Home.setApp(null);

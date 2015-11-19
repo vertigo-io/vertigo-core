@@ -133,7 +133,7 @@ public final class PublisherDataUtil {
 					}
 					break;
 				case Image:
-					throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
+					throw new IllegalArgumentException("Type unsupported : " + publisherField.getFieldType());
 				default:
 					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}

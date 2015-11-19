@@ -26,6 +26,7 @@ import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.VSystemException;
 
 import java.sql.SQLException;
 
@@ -66,7 +67,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 */
 	private TaskAttribute getOutTaskAttribute() {
 		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
-			throw new RuntimeException("TaskEngineSelect must have at least on DtObject or one DtList!");
+			throw new VSystemException("TaskEngineSelect must have at least on DtObject or one DtList!");
 		}
 		return getTaskDefinition().getOutAttributeOption().get();
 

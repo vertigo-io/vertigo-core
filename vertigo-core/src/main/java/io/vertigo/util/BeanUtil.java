@@ -19,6 +19,8 @@
 package io.vertigo.util;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -56,7 +58,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			throw new RuntimeException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new VSystemException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
 		}
 		return ClassUtil.invoke(object, readMethod);
 	}
@@ -76,7 +78,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
-			throw new RuntimeException("Setter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new VSystemException("Setter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
 		}
 		ClassUtil.invoke(object, writeMethod, value);
 	}
@@ -117,14 +119,14 @@ public final class BeanUtil {
 				return propertyDescriptor;
 			}
 		}
-		throw new RuntimeException("Aucune méthode trouvée pour l'attribut \"" + propertyName + "\" sur classe \"" + beanClass.getName() + '\"');
+		throw new VSystemException("Aucune méthode trouvée pour l'attribut \"" + propertyName + "\" sur classe \"" + beanClass.getName() + '\"');
 	}
 
 	private static PropertyDescriptor[] getPropertyDescriptors(final Class<?> beanClass) {
 		try {
 			return getBeanInfo(beanClass).getPropertyDescriptors();
 		} catch (final IntrospectionException e) {
-			throw new RuntimeException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
+			throw new WrappedException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
 		}
 	}
 }

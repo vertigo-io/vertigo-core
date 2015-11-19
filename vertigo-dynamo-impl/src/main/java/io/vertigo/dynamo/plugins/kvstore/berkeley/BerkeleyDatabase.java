@@ -23,6 +23,8 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,14 +100,14 @@ final class BerkeleyDatabase {
 		try {
 			status = database.get(getCurrentBerkeleyTransaction(), idEntry, dataEntry, LockMode.DEFAULT);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		if (status == OperationStatus.NOTFOUND) {
 			//Si on n'a rien trouvé
 			return Option.none();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new RuntimeException("find a échouée");
+			throw new VSystemException("find a échouée");
 		}
 		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
@@ -128,10 +130,10 @@ final class BerkeleyDatabase {
 		try {
 			status = database.put(getCurrentBerkeleyTransaction(), idEntry, dataEntry);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new RuntimeException("put failed");
+			throw new VSystemException("put failed");
 		}
 	}
 
@@ -161,7 +163,7 @@ final class BerkeleyDatabase {
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new RuntimeException("findAll a échouée", e);
+			throw new WrappedException("findAll a échouée", e);
 		}
 	}
 
@@ -179,13 +181,13 @@ final class BerkeleyDatabase {
 		try {
 			status = database.delete(getCurrentBerkeleyTransaction(), idEntry);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		if (OperationStatus.NOTFOUND.equals(status)) {
-			throw new RuntimeException("delete has failed because no data found with key : " + id);
+			throw new VSystemException("delete has failed because no data found with key : " + id);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new RuntimeException("delete has failed");
+			throw new VSystemException("delete has failed");
 		}
 	}
 }

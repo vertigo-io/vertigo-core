@@ -21,6 +21,8 @@ package io.vertigo.quarto.publisher.impl.merger.script;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.util.Stack;
 
@@ -93,7 +95,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 			}
 		}
 		//Cas de malformation des balises
-		throw new RuntimeException("bloc " + tagName + " mal forme : balise de fin manquante");
+		throw new VSystemException("bloc " + tagName + " mal forme : balise de fin manquante");
 	}
 
 	/**
@@ -167,7 +169,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 		try {
 			return tagDefinition.getClassTag().newInstance();
 		} catch (final InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Probleme a l'initialisation du tag personalise : " + tagDefinition.getName(), e);
+			throw new WrappedException("Probleme a l'initialisation du tag personalise : " + tagDefinition.getName(), e);
 		}
 	}
 

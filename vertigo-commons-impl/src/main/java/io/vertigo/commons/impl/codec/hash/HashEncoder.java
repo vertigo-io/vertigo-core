@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.codec.hash;
 
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,11 +39,11 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 */
 	public enum Hash {
 		/**
-		 * MD5.
+		 * MD5. Unsure already cracked.
 		 */
 		MD5("MD5"),
 		/**
-		 * SHA1.
+		 * SHA1. Unsure attack in progress.
 		 */
 		SHA1("SHA-1"),
 		/**
@@ -85,7 +86,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		try {
 			digest = MessageDigest.getInstance(hash.getAlgoName());
 		} catch (final NoSuchAlgorithmException e) {
-			throw new RuntimeException(hash.getAlgoName(), e);
+			throw new WrappedException(hash.getAlgoName(), e);
 		}
 		digest.update(data);
 		return digest.digest();

@@ -24,6 +24,7 @@ import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,25 +44,25 @@ import org.apache.log4j.Logger;
 
 /**
  * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.
- * 
+ *
  * Il est possible de gérer des ressources externalisées dans des dictionnaires.
- * 
+ *
  * Toute ressource est identifiée par une clé :  @see MessageKey
  * Pour un composant donné, la liste des clés est implémentée idéalement sous la forme d'une enum.
  * Un fichier de ressource, appelé dictionnaire est associée à la liste des clés.
- * 
- * Si le libellé n'est pas trouvé dans une langue, on renvoie un message "panic", en précisant la langue demandée 
+ *
+ * Si le libellé n'est pas trouvé dans une langue, on renvoie un message "panic", en précisant la langue demandée
  * de plus on loggue un warning.
- * 
+ *
  * Exemple message panic :
  * MessageText(null,messageKey.TOTO) en 'fr_FR' : <<fr:TOTO>>
  * MessageText(null,messageKey.TOTO) en 'en' : <<en:TOTO>>
- * 
+ *
  * Un libellé peut être paramétré.
- * 
+ *
  * @see MessageText permet de créer des libellés connecté au dictionnaire.
- * 
- *  
+ *
+ *
  * @author pchretien
  */
 public final class LocaleManager implements Component, Describable {
@@ -174,7 +175,7 @@ public final class LocaleManager implements Component, Describable {
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw new RuntimeException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
+				throw new WrappedException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
 			}
 			//On a trouvé un dictionnaire
 			check(resourceBundle, enums, override);
@@ -232,7 +233,7 @@ public final class LocaleManager implements Component, Describable {
 	 * Retourne null si le message n'est pas trouvé
 	 *
 	 * @param messageKey clé du message .
-	 * @param locale Locale 
+	 * @param locale Locale
 	 * @return Message non formatté dans la langue de la locale.
 	  */
 	public String getMessage(final MessageKey messageKey, final Locale locale) {

@@ -21,6 +21,7 @@ package io.vertigo.commons.plugins.script.janino;
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -67,14 +68,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
 			//Unpacking the exception
-			final Throwable t = e.getCause();
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException) t;
-			}
-			if (t instanceof Error) {
-				throw (Error) t;
-			}
-			throw new RuntimeException("An error occurred during expression's evaluation", t);
+			throw WrappedException.wrapIfNeeded(e.getCause(), "An error occurred during expression's evaluation");
 		}
 	}
 
@@ -82,7 +76,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		try {
 			return new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
 		} catch (final Exception ex) {
-			throw new RuntimeException("An error occurred during expression's preprocessing  in \n" + expression + '\n', ex);
+			throw new WrappedException("An error occurred during expression's preprocessing  in \n" + expression + '\n', ex);
 		}
 	}
 }

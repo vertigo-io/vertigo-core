@@ -36,6 +36,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -123,7 +124,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
 			}
 		} catch (final ElasticsearchException e) {
-			throw new RuntimeException("Error on index " + indexName, e);
+			throw new WrappedException("Error on index " + indexName, e);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
@@ -286,7 +287,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			putMappingResponse.isAcknowledged();
 
 		} catch (final IOException e) {
-			throw new RuntimeException("Serveur ElasticSearch indisponible", e);
+			throw new WrappedException("Serveur ElasticSearch indisponible", e);
 		}
 	}
 

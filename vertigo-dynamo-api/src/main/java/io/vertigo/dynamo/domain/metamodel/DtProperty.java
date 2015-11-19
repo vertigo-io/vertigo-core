@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.lang.reflect.Field;
 
@@ -86,7 +87,7 @@ public final class DtProperty {
 			Assertion.checkNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException("Propriete " + propertyName + " non trouvee sur DtProperty", e);
+			throw new WrappedException("Propriete " + propertyName + " non trouvee sur DtProperty", e);
 		}
 	}
 }

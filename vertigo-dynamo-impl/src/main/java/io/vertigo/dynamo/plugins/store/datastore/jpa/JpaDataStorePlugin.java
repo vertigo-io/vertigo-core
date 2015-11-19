@@ -45,6 +45,7 @@ import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
@@ -401,7 +402,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try {
 			final Object dto = loadWithoutClear(uri);
 			if (dto == null) {
-				throw new RuntimeException("Aucune ligne supprimée");
+				throw new VSystemException("Aucune ligne supprimée");
 			}
 			em.remove(dto);
 			em.flush();

@@ -38,6 +38,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -195,7 +196,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			obtainFsTransactionRessource().saveFile(inputStream, documentRoot + pathToSave);
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de lire le fichier uploadé.", e);
+			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
 	}
 

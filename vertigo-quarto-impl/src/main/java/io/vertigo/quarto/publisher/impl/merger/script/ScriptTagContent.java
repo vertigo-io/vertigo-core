@@ -19,6 +19,7 @@
 package io.vertigo.quarto.publisher.impl.merger.script;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Stocke le contenu d'un tag de la grammaire ODT
@@ -80,7 +81,7 @@ public final class ScriptTagContent {
 	 */
 	private void checkAttribute() {
 		if (!hasAttribute()) {
-			throw new RuntimeException("tag malforme : le tag " + getScriptTagDefinition().getName() + " doit avoir un attribut");
+			throw new VSystemException("tag malforme : le tag " + getScriptTagDefinition().getName() + " doit avoir un attribut");
 		}
 	}
 

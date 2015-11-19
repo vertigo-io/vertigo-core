@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.WrappedException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,12 +50,12 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		try {
 			maxPrecision = Integer.parseInt(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException(args + " : first part is a not an integer", e);
+			throw new WrappedException(args + " : first part is a not an integer", e);
 		}
 		try {
 			maxScale = Integer.parseInt(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException(args + " : second part is a not an integer", e);
+			throw new WrappedException(args + " : second part is a not an integer", e);
 		}
 		// ---
 		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");

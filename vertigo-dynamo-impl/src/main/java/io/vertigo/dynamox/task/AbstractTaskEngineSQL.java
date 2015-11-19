@@ -41,6 +41,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 import java.sql.BatchUpdateException;
@@ -421,7 +422,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			try {
 				connection = getConnectionProvider().obtainConnection();
 			} catch (final SQLException e) {
-				throw new RuntimeException("Obtention de connexion impossible", e);
+				throw new WrappedException("Can't connect to database", e);
 			}
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}

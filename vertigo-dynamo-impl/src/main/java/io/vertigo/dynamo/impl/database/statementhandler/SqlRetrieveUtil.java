@@ -140,6 +140,6 @@ final class SqlRetrieveUtil {
 	}
 
 	private static RuntimeException createTooManyRowsException() {
-		return new RuntimeException("load TooManyRows");
+		return new IllegalStateException("load TooManyRows");
 	}
 }

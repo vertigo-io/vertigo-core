@@ -23,6 +23,7 @@ import io.vertigo.commons.parser.Rule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 import java.io.BufferedReader;
@@ -68,10 +69,10 @@ final class KspLoader {
 			rule.createParser().parse(s, 0);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
-			throw new RuntimeException(message, e);
+			throw new WrappedException(message, e);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
-			throw new RuntimeException(message, e);
+			throw new WrappedException(message, e);
 		}
 	}
 

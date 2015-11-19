@@ -20,6 +20,7 @@ package io.vertigo.core.component.loader;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
+import io.vertigo.lang.VSystemException;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -65,7 +66,7 @@ final class ComponentDualContainer implements Container {
 		if (container2.contains(id)) {
 			return container2.resolve(id, clazz);
 		}
-		throw new RuntimeException("component info with id '" + id + "' not found.");
+		throw new VSystemException("component info with id '" + id + "' not found.");
 	}
 
 	/** {@inheritDoc} */

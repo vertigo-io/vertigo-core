@@ -23,6 +23,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public final class TestUtil {
 	/**
 	 * Crée un VFile relativement d'un class de base.
 	 * @param fileName Nom/path du fichier
-	 * @param baseClass Class de base pour le chemin relatif 
+	 * @param baseClass Class de base pour le chemin relatif
 	 * @return VFile
 	 */
 	public static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
@@ -59,14 +60,14 @@ public final class TestUtil {
 				return fileManager.createFile(file);
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
 	/**
 	 * Récupère un File (pointeur de fichier) vers un fichier relativement à une class.
 	 * @param fileName Nom/path du fichier
-	 * @param baseClass Class de base pour le chemin relatif  
+	 * @param baseClass Class de base pour le chemin relatif
 	 * @return File
 	 */
 	public static File getFile(final String fileName, final Class<?> baseClass) {
@@ -74,7 +75,7 @@ public final class TestUtil {
 		try {
 			return new File(fileURL.toURI());
 		} catch (final URISyntaxException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

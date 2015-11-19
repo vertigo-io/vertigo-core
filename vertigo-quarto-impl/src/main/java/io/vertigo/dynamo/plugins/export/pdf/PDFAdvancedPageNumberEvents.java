@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.export.pdf;
 
+import io.vertigo.lang.WrappedException;
+
 import java.io.IOException;
 
 import com.lowagie.text.Document;
@@ -64,7 +66,7 @@ final class PDFAdvancedPageNumberEvents extends PdfPageEventHelper {
 			cb = writer.getDirectContent();
 			template = cb.createTemplate(50, 50);
 		} catch (final DocumentException | IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

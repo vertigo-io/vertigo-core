@@ -26,6 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -155,7 +156,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			try {
 				statement.close();
 			} catch (final SQLException e) {
-				throw new RuntimeException(e);
+				throw new WrappedException(e);
 			}
 		}
 	}
@@ -265,7 +266,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		beginExecution();
 		try {
 			//execution de la Requête
-			int res = statement.executeUpdate();
+			final int res = statement.executeUpdate();
 			ok = true;
 			nbModifiedRow = res;
 			return res;
@@ -308,7 +309,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	private void beginExecution() {
 		Assertion.checkArgument(state == State.DEFINED, "L'exécution ne peut se faire que sur l'état STATE_DEFINED ; une fois les types enregistrés, l'enregistrement clôturé par la méthode init() et les valeurs settées");
-		dataBaseListener.onStart(this.toString());
+		dataBaseListener.onStart(toString());
 		begin = System.currentTimeMillis();
 	}
 
@@ -324,9 +325,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		} else {
 			state = State.ABORTED;
 		}
-		long elapsedTime = System.currentTimeMillis() - begin;
+		final long elapsedTime = System.currentTimeMillis() - begin;
 		dataBaseListener.onFinish(
-				this.toString(),
+				toString(),
 				success,
 				elapsedTime,
 				nbModifiedRow,

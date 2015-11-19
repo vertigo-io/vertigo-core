@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
+import io.vertigo.lang.WrappedException;
+
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -67,7 +69,7 @@ public final class TextFile extends AbstractVFile {
 			return content.getBytes(TEXT_CHARSET);
 		} catch (final UnsupportedEncodingException e) {
 			//Just rethrow this "utf8 charset not found" error
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }
