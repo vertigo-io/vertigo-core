@@ -449,6 +449,24 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	//TODO : pas cool, il n'y a pas de controle de contrainte des domaines
+	private static class DtListDeserializer<D extends DtObject> implements JsonDeserializer<DtList<D>> {
+		/** {@inheritDoc} */
+		@Override
+		public DtList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
+			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
+			final JsonArray jsonArray = json.getAsJsonArray();
+
+			final DtList<D> dtList = new DtList<>(dtoClass);
+			for (final JsonElement element : jsonArray) {
+				final D inputDto = context.deserialize(element, dtoClass);
+				dtList.add(inputDto);
+			}
+			return dtList;
+		}
+	}
+
 	private static Gson createGson() {
 		return new GsonBuilder()
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -457,6 +475,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 				.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
+				.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 				.registerTypeAdapter(FacetedQueryResult.class, new FacetedQueryResultJsonSerializer())
 				.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 				.registerTypeAdapter(List.class, new ListJsonSerializer())
