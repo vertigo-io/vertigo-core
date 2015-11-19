@@ -58,7 +58,7 @@ final class XMLModulesParser {
 			parse(appConfigBuilder, managersURL, params);
 		}
 		//-----
-		Assertion.checkArgument(params.unreadProperties().isEmpty(), "Some properties are unused {0}", params.unreadProperties());
+		Assertion.checkArgument(params.unreadProperties().isEmpty(), "Some boot properties are unused {0}; Check they must starts with 'boot.'", params.unreadProperties());
 	}
 
 	private static void parse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params) {
