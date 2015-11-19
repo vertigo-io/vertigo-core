@@ -76,6 +76,13 @@ public final class FilterCriteria<D extends DtObject> implements Criteria<D> {
 
 	/** {@inheritDoc} */
 	@Override
+	public boolean equals(final Object obj) {
+		//equals overrided just because hashCode is.
+		return super.equals(obj);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
