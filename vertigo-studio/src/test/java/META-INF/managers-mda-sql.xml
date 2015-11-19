@@ -57,7 +57,7 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="{kpr}" />
+			<resource type="kpr" path="${boot.kpr}" />
 		</definitions>
 	</module>
 </config>

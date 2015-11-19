@@ -29,7 +29,6 @@
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin" />
 		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
