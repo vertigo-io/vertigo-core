@@ -4,7 +4,6 @@
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="KVStoreManager" class="io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin">
-				<param name="dataStoreName" value="MyDB" />
 				<param name="collections" value="flowers, trees" />
 				<param name="fileName" value="d:/dynamo-tmp" />
 				<param name="inMemory" value="true" />
