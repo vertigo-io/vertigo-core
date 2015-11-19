@@ -40,11 +40,8 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 		Assertion.checkNotNull(handlerChain);
 		Assertion.checkNotNull(webServiceDefinitions);
 		//-----
-		final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
+		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			if (webServiceDefinition.isCorsProtected()) {
-				Spark.options(sparkJavaOptionsRoute);
-			}
 			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
 				case GET:
@@ -65,6 +62,13 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 				default:
 					throw new UnsupportedOperationException();
 			}
+			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
+
 		}
+		if (corsProtected) {
+			final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
+			Spark.options(sparkJavaOptionsRoute);
+		}
+
 	}
 }
