@@ -23,6 +23,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.WebServices;
@@ -62,7 +63,7 @@ public final class ComponentCmdWebServices implements WebServices {
 				}
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
@@ -91,7 +92,7 @@ public final class ComponentCmdWebServices implements WebServices {
 				return jsonEngine.toJson(jsonModuleConfig);
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
@@ -114,7 +115,7 @@ public final class ComponentCmdWebServices implements WebServices {
 				return jsonEngine.toJson(Home.getApp().getDefinitionSpace().getAll(definitionClass));
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed

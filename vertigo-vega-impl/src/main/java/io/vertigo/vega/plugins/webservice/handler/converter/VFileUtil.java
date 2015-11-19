@@ -23,6 +23,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 
 import java.io.IOException;
@@ -107,7 +108,7 @@ final class VFileUtil {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
-			throw new RuntimeException("Error while sending file. <!-- " + e.getMessage() + "-->", e);
+			throw new WrappedException("Error while sending file. <!-- " + e.getMessage() + "-->", e);
 		}
 		// response already send
 	}
@@ -128,7 +129,7 @@ final class VFileUtil {
 			}
 			return createVFile(file);
 		} catch (IOException | ServletException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

@@ -72,7 +72,8 @@ public final class WrappedException extends RuntimeException {
 		if (t instanceof Error) {
 			throw (Error) t;
 		}
-		throw new WrappedException(StringUtil.format(msg, params), t);
+		final String message = msg != null ? StringUtil.format(msg, params) : null;
+		throw new WrappedException(message, t);
 	}
 
 }

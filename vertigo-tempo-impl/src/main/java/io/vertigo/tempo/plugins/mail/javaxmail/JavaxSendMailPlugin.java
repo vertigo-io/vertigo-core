@@ -27,6 +27,7 @@ import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.tempo.impl.mail.Resources;
 import io.vertigo.tempo.impl.mail.SendMailPlugin;
 import io.vertigo.tempo.mail.Mail;
@@ -179,7 +180,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isDefined() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("Probleme d'encodage lors de l'envoi du mail", e);
+			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
 	}
 
@@ -273,7 +274,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de lecture des pieces jointes", e);
+			throw new WrappedException("Can't read attached file", e);
 		}
 	}
 

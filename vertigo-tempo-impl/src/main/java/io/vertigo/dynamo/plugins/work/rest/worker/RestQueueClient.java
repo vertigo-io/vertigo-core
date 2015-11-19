@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -161,7 +162,7 @@ final class RestQueueClient {
 	private static void checkResponseStatus(final ClientResponse response) {
 		final Status status = response.getClientResponseStatus();
 		if (status.getFamily() != Family.SUCCESSFUL) {
-			throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
+			throw new VSystemException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
 		}
 	}
 

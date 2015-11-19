@@ -22,6 +22,7 @@ import io.vertigo.app.App;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
@@ -94,7 +95,7 @@ final class HomeServletStarter {
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			throw new RuntimeException("Problème d'initialisation de l'application", e);
+			throw new WrappedException("Problème d'initialisation de l'application", e);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -172,7 +173,7 @@ final class HomeServletStarter {
 		try {
 			readFile(servletParams, externalPropertiesFileName);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur lors de la lecture du fichier", e);
+			throw new WrappedException("Erreur lors de la lecture du fichier", e);
 		}
 
 		return servletParams;

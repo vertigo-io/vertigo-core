@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodStringUtil;
 
@@ -106,7 +107,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		try {
 			generateFile(resultBuilder, file);
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

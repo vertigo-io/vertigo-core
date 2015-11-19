@@ -18,6 +18,8 @@
  */
 package io.vertigo.tempo.scheduler;
 
+import io.vertigo.lang.WrappedException;
+
 public final class TestJob implements Runnable {
 	private static int count = 0;
 
@@ -27,7 +29,7 @@ public final class TestJob implements Runnable {
 			//On simule une attente qui correspond à un traitement métier de 100 ms
 			Thread.sleep(100);
 		} catch (final InterruptedException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		incCount();
 	}

@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.work.worker.distributed;
 
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -49,6 +50,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		redirect = null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
@@ -64,6 +66,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void onStart() {
 		if (redirect != null) {
@@ -71,6 +74,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean cancel(final boolean mayInterruptIfRunning) {
 		if (done.compareAndSet(false, true)) {
@@ -82,19 +86,21 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isCancelled() {
 		if (done.get()) {
 			try {
 				countDownLatch.await();
 			} catch (final InterruptedException e) {
-				throw new RuntimeException(e);
+				throw new WrappedException(e);
 			}
 			return myError instanceof CancellationException;
 		}
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isDone() {
 		return done.get() && countDownLatch.getCount() == 0;

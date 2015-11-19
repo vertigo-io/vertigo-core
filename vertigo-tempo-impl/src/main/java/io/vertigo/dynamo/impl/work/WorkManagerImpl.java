@@ -31,6 +31,7 @@ import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -109,9 +110,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			if (e.getCause() instanceof RuntimeException) {
 				throw (RuntimeException) e.getCause();
 			}
-			throw new RuntimeException(e.getCause());
+			throw new WrappedException(e.getCause());
 		} catch (final InterruptedException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -178,7 +179,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			try {
 				return callable.call();
 			} catch (final Exception e) {
-				throw new RuntimeException(e);
+				throw new WrappedException(e);
 			}
 		}
 	}

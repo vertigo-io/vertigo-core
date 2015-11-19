@@ -29,6 +29,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
@@ -483,7 +484,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				break;
 			case Implicit://must be escape before
 			default:
-				throw new RuntimeException("Unsupported type : " + webServiceParam.getParamType());
+				throw new VSystemException("Unsupported type : " + webServiceParam.getParamType());
 		}
 
 		final Map<String, Object> parameter = new LinkedHashMap<>();

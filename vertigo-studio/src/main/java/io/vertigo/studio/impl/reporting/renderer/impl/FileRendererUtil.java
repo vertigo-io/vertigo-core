@@ -19,6 +19,7 @@
 package io.vertigo.studio.impl.reporting.renderer.impl;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -82,7 +83,7 @@ final class FileRendererUtil {
 				}
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur IO", e);
+			throw new WrappedException(e);
 		}
 	}
 }

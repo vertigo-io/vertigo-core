@@ -23,6 +23,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public final class TestUtil {
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
