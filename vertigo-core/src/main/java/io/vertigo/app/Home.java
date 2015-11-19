@@ -31,7 +31,7 @@ public final class Home {
 		// Classe statique d'accès aux composants.
 	}
 
-	static void setApp(final App app) {
+	static synchronized void setApp(final App app) {
 		CURRENT_APP = app;
 	}
 
@@ -40,6 +40,7 @@ public final class Home {
 	 */
 	public static App getApp() {
 		Assertion.checkNotNull(CURRENT_APP, "app has not been started");
+		//no synchronized for perf purpose
 		return CURRENT_APP;
 	}
 }
