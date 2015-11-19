@@ -40,7 +40,7 @@ public class DslDefinitionBodyRuleTest {
 				return entity;
 			}
 		}
-		throw new VSystemException("not found " + entityName);
+		throw new VSystemException("not found {0}", entityName);
 	}
 
 	@Test

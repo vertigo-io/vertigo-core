@@ -47,9 +47,9 @@ final class DynamicSolver {
 		//Liste des clés résolues
 		final List<DynamicDefinition> orderedList = new ArrayList<>();
 
-		final Collection<String> orphanCollection = definitionRepository.getOrphanDefinitionKeys();
-		if (!orphanCollection.isEmpty()) {
-			throw new VSystemException(" Les clés suivantes " + orphanCollection + " sont orphelines");
+		final Collection<String> orphans = definitionRepository.getOrphanDefinitionKeys();
+		if (!orphans.isEmpty()) {
+			throw new VSystemException(" Les clés suivantes {0} sont orphelines", orphans);
 		}
 		//-----
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
@@ -89,7 +89,7 @@ final class DynamicSolver {
 			if (!definitionSpace.containsDefinitionName(definitionName)) {
 				//or references should be in currently parsed resources
 				if (!definitionRepository.containsDefinitionName(definitionName)) {
-					throw new VSystemException("Clé " + definitionName + " référencée par " + xdefRoot.getName() + " non trouvée");
+					throw new VSystemException("Clé {0} référencée par {1} non trouvée", definitionName, xdefRoot.getName());
 				}
 				final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
 				if (!orderedList.contains(linkedDefinition)) {

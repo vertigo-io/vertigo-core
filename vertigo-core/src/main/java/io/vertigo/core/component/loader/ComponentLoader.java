@@ -33,7 +33,6 @@ import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -141,7 +140,7 @@ public final class ComponentLoader {
 		}
 
 		if (!pluginConfigById.isEmpty()) {
-			throw new VSystemException(StringUtil.format("plugins '{0}' in module'{1}' are not used by injection", pluginConfigById.values(), moduleConfig));
+			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", pluginConfigById.values(), moduleConfig);
 		}
 	}
 

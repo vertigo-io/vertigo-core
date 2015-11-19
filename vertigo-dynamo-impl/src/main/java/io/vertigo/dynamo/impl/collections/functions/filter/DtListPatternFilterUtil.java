@@ -26,7 +26,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.DateUtil;
-import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -79,7 +78,7 @@ public final class DtListPatternFilterUtil {
 			case Term:
 				return createDtListTermFilter(parsedFilter, fieldName, dataType);
 			default:
-				throw new VSystemException(StringUtil.format("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern()));
+				throw new VSystemException("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern());
 		}
 	}
 

@@ -73,6 +73,6 @@ public final class ResourceManager implements Component {
 			}
 		}
 		//On n'a pas trouvé de resolver permettant de lire la ressource.
-		throw new VSystemException("Ressource '" + resource + "' non trouvée");
+		throw new VSystemException("Ressource '{0}' non trouvée", resource);
 	}
 }

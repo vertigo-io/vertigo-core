@@ -187,9 +187,9 @@ public final class Domain implements Definition {
 		if (dtDefinitionName == null) {
 			//On fournit un message d'erreur explicite
 			if (getDataType().isPrimitive()) {
-				throw new VSystemException("Le domain " + getName() + " n'est ni un DTO ni une DTC");
+				throw new VSystemException("Le domain {0} n'est ni un DTO ni une DTC", getName());
 			}
-			throw new VSystemException("Le domain " + getName() + " est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.");
+			throw new VSystemException("Le domain {0} est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.", getName());
 		}
 		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}

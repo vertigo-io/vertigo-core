@@ -81,7 +81,7 @@ public final class ScriptTagContent {
 	 */
 	private void checkAttribute() {
 		if (!hasAttribute()) {
-			throw new VSystemException("tag malforme : le tag " + getScriptTagDefinition().getName() + " doit avoir un attribut");
+			throw new VSystemException("tag malforme : le tag {0} doit avoir un attribut", getScriptTagDefinition().getName());
 		}
 	}
 

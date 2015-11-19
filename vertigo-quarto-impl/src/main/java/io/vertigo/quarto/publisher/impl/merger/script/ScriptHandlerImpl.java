@@ -95,7 +95,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 			}
 		}
 		//Cas de malformation des balises
-		throw new VSystemException("bloc " + tagName + " mal forme : balise de fin manquante");
+		throw new VSystemException("bloc {0} mal forme : balise de fin manquante", tagName);
 	}
 
 	/**

@@ -18,6 +18,8 @@
  */
 package io.vertigo.lang;
 
+import io.vertigo.util.StringUtil;
+
 /**
  * Vertigo system exception.
  *
@@ -31,7 +33,11 @@ public class VSystemException extends RuntimeException {
 	 * Constructor.
 	 * @param message Message
 	 */
-	public VSystemException(final String message) {
-		super(message);
+	public VSystemException(final String msg) {
+		super(msg);
+	}
+
+	public VSystemException(final String msg, final Object... params) {
+		this(StringUtil.format(msg, params));
 	}
 }

@@ -109,7 +109,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 						// ksp
 						kspFiles.add(url);
 					} else {
-						throw new VSystemException("Type de fichier inconnu : " + fileName);
+						throw new VSystemException("Type de fichier inconnu : {0}", fileName);
 					}
 				}
 			}

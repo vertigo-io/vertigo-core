@@ -153,7 +153,7 @@ public final class ParamManager implements Component {
 
 	private static boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
-			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'boolean'");
+			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'boolean'", paramName, paramValue);
 		}
 		return Boolean.parseBoolean(paramValue);
 	}
@@ -162,7 +162,7 @@ public final class ParamManager implements Component {
 		try {
 			return Integer.parseInt(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'int'");
+			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'int'", paramName, paramValue);
 		}
 	}
 
@@ -170,7 +170,7 @@ public final class ParamManager implements Component {
 		try {
 			return Long.parseLong(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new VSystemException("Param :" + paramName + " with value ' " + paramValue + " can't be cast into 'long'");
+			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'long'", paramName, paramValue);
 		}
 	}
 }

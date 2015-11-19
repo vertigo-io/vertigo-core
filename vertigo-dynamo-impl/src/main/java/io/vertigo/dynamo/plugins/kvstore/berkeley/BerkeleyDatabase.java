@@ -184,7 +184,7 @@ final class BerkeleyDatabase {
 			throw new WrappedException(e);
 		}
 		if (OperationStatus.NOTFOUND.equals(status)) {
-			throw new VSystemException("delete has failed because no data found with key : " + id);
+			throw new VSystemException("delete has failed because no data found with key : {0}", id);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("delete has failed");

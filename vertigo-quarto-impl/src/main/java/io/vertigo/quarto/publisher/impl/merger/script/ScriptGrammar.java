@@ -20,7 +20,6 @@ package io.vertigo.quarto.publisher.impl.merger.script;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -101,6 +100,6 @@ public final class ScriptGrammar {
 				return new ScriptTagContent(getDefinition(key), attribute);
 			}
 		}
-		throw new VSystemException(StringUtil.format("{0} n'appartient pas a la grammaire : {1}", value, orderedParsingTags));
+		throw new VSystemException("{0} n'appartient pas a la grammaire : {1}", value, orderedParsingTags);
 	}
 }

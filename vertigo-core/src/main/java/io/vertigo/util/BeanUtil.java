@@ -119,7 +119,7 @@ public final class BeanUtil {
 				return propertyDescriptor;
 			}
 		}
-		throw new VSystemException("Aucune méthode trouvée pour l'attribut \"" + propertyName + "\" sur classe \"" + beanClass.getName() + '\"');
+		throw new VSystemException("Aucune méthode trouvée pour l'attribut '{0}' sur classe '{1}'", propertyName, beanClass.getName());
 	}
 
 	private static PropertyDescriptor[] getPropertyDescriptors(final Class<?> beanClass) {

@@ -149,7 +149,7 @@ abstract class AbstractKScriptTag {
 		final Matcher matcher = pattern.matcher(attribute);
 
 		if (!matcher.matches()) {
-			throw new VSystemException(StringUtil.format("attribut \'{0}\' mal forme (ne respect pas le format {1})", attribute, regEexpFormat));
+			throw new VSystemException("attribut \'{0}\' mal forme (ne respect pas le format {1})", attribute, regEexpFormat);
 		}
 
 		nbGroup = matcher.groupCount();

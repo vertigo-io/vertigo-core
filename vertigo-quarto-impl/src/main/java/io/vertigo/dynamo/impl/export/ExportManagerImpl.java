@@ -70,7 +70,7 @@ public final class ExportManagerImpl implements ExportManager {
 				return exporterPlugin;
 			}
 		}
-		throw new VSystemException("aucun plugin trouve pour le format " + exportFormat);
+		throw new VSystemException("aucun plugin trouve pour le format {0}", exportFormat);
 	}
 
 	/** {@inheritDoc} */

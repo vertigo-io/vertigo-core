@@ -66,7 +66,7 @@ final class ComponentDualContainer implements Container {
 		if (container2.contains(id)) {
 			return container2.resolve(id, clazz);
 		}
-		throw new VSystemException("component info with id '" + id + "' not found.");
+		throw new VSystemException("component info with id '{0}' not found.", id);
 	}
 
 	/** {@inheritDoc} */
