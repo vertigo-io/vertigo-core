@@ -29,7 +29,6 @@ import java.util.List;
  * @author pchretien
  */
 public interface KVStorePlugin extends Plugin {
-	String getDataStoreName();
 
 	List<String> getCollections();
 

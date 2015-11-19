@@ -61,6 +61,9 @@ final class BerkeleyDatabase {
 		this.database = database;
 	}
 
+	/**
+	 * @return Database
+	 */
 	Database getDatabase() {
 		return database;
 	}
@@ -107,6 +110,10 @@ final class BerkeleyDatabase {
 		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
 
+	/**
+	 * @param id key
+	 * @param object value
+	 */
 	void put(final String id, final Object object) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(object);
@@ -128,6 +135,13 @@ final class BerkeleyDatabase {
 		}
 	}
 
+	/**
+	 * @param <C> Value type
+	 * @param skip elements to skip
+	 * @param limit elements to return
+	 * @param clazz Value class
+	 * @return Values
+	 */
 	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
 		final DatabaseEntry idEntry = new DatabaseEntry();
 		final DatabaseEntry dataEntry = new DatabaseEntry();

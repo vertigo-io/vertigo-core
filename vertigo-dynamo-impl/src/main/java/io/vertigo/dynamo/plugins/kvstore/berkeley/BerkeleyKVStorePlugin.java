@@ -45,7 +45,6 @@ import com.sleepycat.je.EnvironmentConfig;
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
 
-	private final String dataStoreName;
 	private final List<String> collections;
 
 	private final VTransactionManager transactionManager;
@@ -53,28 +52,27 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private final boolean inMemory;
 
 	private Environment environment;
-	private Map<String, BerkeleyDatabase> databases = new HashMap<>();
+	private final Map<String, BerkeleyDatabase> databases = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
+	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param dbFileName Base Berkeley DB
+	 * @param inMemory If store in memory
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
-			final @Named("dataStoreName") String dataStoreName,
 			final @Named("collections") String collections,
 			@Named("fileName") final String dbFileName,
 			@Named("inMemory") final boolean inMemory,
 			final VTransactionManager transactionManager) {
-		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(collections);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);
 		//-----
-		this.dataStoreName = dataStoreName;
-		ListBuilder<String> listBuilder = new ListBuilder<>();
-		for (String collection : collections.split(", ")) {
+		final ListBuilder<String> listBuilder = new ListBuilder<>();
+		for (final String collection : collections.split(", ")) {
 			listBuilder.add(collection.trim());
 		}
 		this.collections = listBuilder.unmodifiable().build();
@@ -82,12 +80,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		dbFile = new File(dbFileName);
 		this.transactionManager = transactionManager;
 		this.inMemory = inMemory;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getDataStoreName() {
-		return dataStoreName;
 	}
 
 	/** {@inheritDoc} */
@@ -113,7 +105,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.setAllowCreate(!readOnly)
 				.setTransactional(!readOnly);
 
-		for (String collection : collections) {
+		for (final String collection : collections) {
 			databases.put(collection, new BerkeleyDatabase(environment.openDatabase(null, collection, databaseConfig), transactionManager));
 		}
 	}
@@ -122,7 +114,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	@Override
 	public void stop() {
 		try {
-			for (BerkeleyDatabase berkeleyDatabase : databases.values()) {
+			for (final BerkeleyDatabase berkeleyDatabase : databases.values()) {
 				berkeleyDatabase.getDatabase().close();
 			}
 		} finally {
@@ -132,27 +124,31 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		}
 	}
 
-	private BerkeleyDatabase getDatabase(String collection) {
-		BerkeleyDatabase database = databases.get(collection);
+	private BerkeleyDatabase getDatabase(final String collection) {
+		final BerkeleyDatabase database = databases.get(collection);
 		Assertion.checkNotNull("database {0] not null", collection);
 		return database;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final String collection, final String id) {
 		getDatabase(collection).delete(id);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void put(final String collection, final String id, final Object object) {
 		getDatabase(collection).put(id, object);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <C> Option<C> find(final String collection, final String id, final Class<C> clazz) {
 		return getDatabase(collection).find(id, clazz);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
 		return getDatabase(collection).findAll(skip, limit, clazz);

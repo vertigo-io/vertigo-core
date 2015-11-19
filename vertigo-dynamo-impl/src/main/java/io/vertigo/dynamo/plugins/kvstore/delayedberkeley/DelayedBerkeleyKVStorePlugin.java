@@ -64,7 +64,6 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	private final TupleBinding<DelayedBerkeleyCacheValue> cacheValueBinding;
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
-	private final String dataStoreName;
 	private final List<String> collections;
 
 	private final int timeToLiveSeconds;
@@ -75,25 +74,22 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 
 	/**
 	 * Constructeur.
+	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 * @param daemonManager Manager des daemons
-	 * @param dataStoreName Store utilisé
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
 	public DelayedBerkeleyKVStorePlugin(
-			final @Named("dataStoreName") String dataStoreName,
 			final @Named("collections") String collections,
 			final CodecManager codecManager,
 			final DaemonManager daemonManager,
 			@Named("cachePath") final String cachePath,
 			@Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(collections);
 		//-----
-		this.dataStoreName = dataStoreName;
 		final ListBuilder<String> listBuilder = new ListBuilder<>();
 		for (final String collection : collections.split(", ")) {
 			listBuilder.add(collection.trim());
@@ -121,12 +117,6 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
 				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
 				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getDataStoreName() {
-		return dataStoreName;
 	}
 
 	/** {@inheritDoc} */

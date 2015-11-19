@@ -45,8 +45,6 @@ import org.apache.log4j.Logger;
 public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVStorePlugin.class);
-
-	private final String dataStoreName;
 	private final List<String> collections;
 
 	private final long timeToLiveSeconds;
@@ -56,19 +54,15 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 	/**
 	 * Constructor.
 	 * @param daemonManager Manager des daemons
-	 * @param dataStoreName Store utilisé
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
 	public DelayedMemoryKVStorePlugin(
-			final @Named("dataStoreName") String dataStoreName,
 			final @Named("collections") String collections,
 			final DaemonManager daemonManager,
 			final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
-		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(collections);
 		//-----
-		this.dataStoreName = dataStoreName;
 		final ListBuilder<String> listBuilder = new ListBuilder<>();
 		for (final String collection : collections.split(", ")) {
 			listBuilder.add(collection.trim());
@@ -79,12 +73,6 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
 		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getDataStoreName() {
-		return dataStoreName;
 	}
 
 	/** {@inheritDoc} */
