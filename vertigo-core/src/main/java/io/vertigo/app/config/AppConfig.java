@@ -95,17 +95,6 @@ public final class AppConfig {
 			printComponent(out, moduleName, componentConfig.getImplClass().getSimpleName(), null);
 			moduleName = null;
 		}
-		//		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
-		//			printComponent(out, null, null, plugin.getClass().getSimpleName());
-		//		}
-		//			final ComponentDescription componentDescription = entry.getValue().getDescription();
-		//final String info;
-		//			if (componentDescription != null && componentDescription.getMainSummaryInfo() != null) {
-		//				info = componentDescription.getMainSummaryInfo().getInfo();
-		//			} else {
-		//info = null;
-		//}
-		//		printComponent(out, componentClass.getSimpleName(), component.getClass().getSimpleName(), buffer.toString());
 	}
 
 	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
