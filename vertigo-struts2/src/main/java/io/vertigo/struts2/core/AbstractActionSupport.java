@@ -18,10 +18,11 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.commons.config.ConfigManager;
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
 import io.vertigo.struts2.exception.VSecurityException;
@@ -79,7 +80,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	@Inject
 	private ContextCacheManager contextCacheManager;
 	@Inject
-	private ConfigManager configManager;
+	private ParamManager paramManager;
 
 	private final UiMessageStack uiMessageStack;
 
@@ -87,7 +88,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		uiMessageStack = new UiMessageStack(this);
 	}
 
@@ -100,7 +101,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 
 	private void prepareContext(final HttpServletRequest request) throws ExpiredContextException, VSecurityException {
 		final String ctxId = request.getParameter(KActionContext.CTX);
-		if ("POST".equals(request.getMethod()) || (ctxId != null && acceptCtxQueryParam())) {
+		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {
@@ -151,7 +152,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext() {
-		context.put("appVersion", configManager.getStringValue("app", "version"));
+		context.put("appVersion", paramManager.getStringValue("app.version"));
 		context.put(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
 	}
@@ -259,7 +260,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			response.setCharacterEncoding("UTF-8");
 			return new AjaxResponseBuilder(response.getWriter(), false);
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de récupérer la response.", e);
+			throw new WrappedException("Impossible de récupérer la response.", e);
 		}
 	}
 

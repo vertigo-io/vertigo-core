@@ -76,7 +76,18 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-quarto-api</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-quarto-impl</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
@@ -108,7 +119,7 @@
 	    <dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
-			<version>4.2.1</version> <!-- dernière version en license LGPL/MPL -->
+			<version>2.1.7</version> <!-- dernière version en license LGPL/MPL -->
 			<scope>test</scope>
 			<exclusions>
 				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non utilisé pour les générations. -->

@@ -1,0 +1,5 @@
+package io.vertigo.dynamock.domain.famille
+
+alter DtDefinition DT_FAMILLE {
+	storeName : "otherStore"
+}

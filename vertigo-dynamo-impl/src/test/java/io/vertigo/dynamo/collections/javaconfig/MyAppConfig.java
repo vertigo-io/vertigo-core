@@ -18,17 +18,11 @@
  */
 package io.vertigo.dynamo.collections.javaconfig;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
@@ -41,16 +35,11 @@ public final class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.addPlugin( ClassPathResourceResolverPlugin.class)
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-					.addPlugin(AnnotationLoaderPlugin.class)
-					.addPlugin(KprLoaderPlugin.class)
-					.addPlugin(DomainDynamicRegistryPlugin.class)
+			.beginBootModule("fr")
+				.addPlugin( ClassPathResourceResolverPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(KprLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule()
 			.beginBoot()
 				.silently()

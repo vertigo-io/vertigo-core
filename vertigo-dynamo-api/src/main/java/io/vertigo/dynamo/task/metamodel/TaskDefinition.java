@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Définition d'une tache et de ses attributs.
@@ -37,11 +38,17 @@ import java.util.Map;
  */
 @DefinitionPrefix("TK")
 public final class TaskDefinition implements Definition {
+	/** Expression réguliére vérifiée par les noms des stores. */
+	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
+
 	/** Nom de la définition. */
 	private final String name;
 
 	/** Nom du package. */
 	private final String packageName;
+
+	/** Nom du store. */
+	private final String storeName;
 
 	/** Chaine de configuration du service. */
 	private final String request;
@@ -64,11 +71,14 @@ public final class TaskDefinition implements Definition {
 	TaskDefinition(
 			final String name,
 			final String packageName,
+			final String storeName,
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
 			final Option<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
+		Assertion.checkArgNotEmpty(storeName);
+		Assertion.checkState(REGEX_STORE_NAME.matcher(storeName).matches(), "StoreName {0} must match pattern {1}", storeName, REGEX_STORE_NAME);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(inTaskAttributes);
@@ -76,6 +86,7 @@ public final class TaskDefinition implements Definition {
 		//-----
 		this.name = name;
 		this.packageName = packageName;
+		this.storeName = storeName;
 		this.request = request;
 		this.inTaskAttributes = createMap(inTaskAttributes);
 		this.outTaskAttributeOption = outTaskAttributeOption;
@@ -118,6 +129,16 @@ public final class TaskDefinition implements Definition {
 	 */
 	public Class<? extends TaskEngine> getTaskEngineClass() {
 		return taskEngineClass;
+	}
+
+	/**
+	 * Return storeName use by this task.
+	 * Used by TaskEngine.
+	 *
+	 * @return storeName.
+	 */
+	public String getStoreName() {
+		return storeName;
 	}
 
 	/**

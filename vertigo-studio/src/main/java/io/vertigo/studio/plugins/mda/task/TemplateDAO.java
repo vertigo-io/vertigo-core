@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -69,16 +69,16 @@ public final class TemplateDAO {
 		}
 		hasOptions = hasOption;
 		//TODO : find better than one dependency per behavior
-		if (Home.getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
+		if (Home.getApp().getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
 			SearchIndexDefinition currentIndexDefinition = null;
-			for (final SearchIndexDefinition tmpIndexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+			for (final SearchIndexDefinition tmpIndexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 				if (tmpIndexDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
 					currentIndexDefinition = tmpIndexDefinition;
 				}
 			}
 			indexDefinition = currentIndexDefinition;
 			if (indexDefinition != null) {
-				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
+				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getApp().getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
 					if (facetedQueryDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
 						final TemplateFacetedQueryDefinition templateFacetedQueryDefinition = new TemplateFacetedQueryDefinition(facetedQueryDefinition);
 						facetedQueryDefinitions.add(templateFacetedQueryDefinition);

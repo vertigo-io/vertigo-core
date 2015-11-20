@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -30,6 +30,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.Metric.Status;
@@ -123,6 +124,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(taskDefinition.getTaskEngineClass())
+				.withStore(taskDefinition.getStoreName())
 				.withRequest(explainPlanRequest)
 				.withPackageName(getClass().getPackage().getName());
 
@@ -140,9 +142,9 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 			/*TaskResult taskResult =*/taskManager.execute(currentTask);
 			//On n'exploite pas le résultat
-			return readExplainPlan(taskDefinition, currentSequence);
+			return readExplainPlan(currentSequence);
 		} catch (final Exception e) {
-			throw new RuntimeException("explainPlanElement", e);
+			throw new WrappedException("explainPlanElement", e);
 		}
 	}
 
@@ -153,7 +155,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		return value.substring(0, maxSize - endTruncString.length()) + endTruncString;
 	}
 
-	private static String readExplainPlan(final TaskDefinition taskDefinition, final int currentSequence) {
+	private static String readExplainPlan(final int currentSequence) throws SQLException {
 		final StringBuilder sb = new StringBuilder();
 		final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'PLAN_" + currentSequence + "'))";
 		final SqlConnection kConnection = getCurrentConnection();
@@ -165,9 +167,6 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 				}
 				return sb.toString();
 			}
-
-		} catch (final SQLException e) {
-			throw new RuntimeException("doGetExplainPlan", e);
 		}
 	}
 
@@ -176,8 +175,8 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 * @return Connexion SQL
 	 */
 	private static SqlConnection getCurrentConnection() {
-		final VTransaction transaction = Home.getComponentSpace().resolve(VTransactionManager.class).getCurrentTransaction();
-		return transaction.getResource(AbstractTaskEngineSQL.SQL_RESOURCE_ID);
+		final VTransaction transaction = Home.getApp().getComponentSpace().resolve(VTransactionManager.class).getCurrentTransaction();
+		return transaction.getResource(AbstractTaskEngineSQL.SQL_MAIN_RESOURCE_ID);
 	}
 
 }

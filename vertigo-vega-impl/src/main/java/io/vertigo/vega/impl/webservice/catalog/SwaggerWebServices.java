@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -61,7 +61,7 @@ public final class SwaggerWebServices implements WebServices {
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
 		return new SwaggerApiBuilder()
 				.withContextPath(request.getContextPath())
-				.withWebServiceDefinitions(Home.getDefinitionSpace().getAll(WebServiceDefinition.class))
+				.withWebServiceDefinitions(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}
 

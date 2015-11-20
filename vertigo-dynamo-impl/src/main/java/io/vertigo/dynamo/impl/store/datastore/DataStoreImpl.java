@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.event.EventManager;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -92,7 +92,7 @@ public final class DataStoreImpl implements DataStore {
 	}
 
 	private static VTransactionManager getTransactionManager() {
-		return Home.getComponentSpace().resolve(VTransactionManager.class);
+		return Home.getApp().getComponentSpace().resolve(VTransactionManager.class);
 	}
 
 	//--- Transactionnal Event

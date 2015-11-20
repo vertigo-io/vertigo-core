@@ -37,6 +37,9 @@ import java.util.List;
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
+
+	public static final String DEFAULT_STORE_NAME = "main";
+
 	private static class MessageKeyImpl implements MessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
 
@@ -60,6 +63,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private boolean myPersistent;
 	private boolean myDynamic;
 	private final List<DtField> myFields = new ArrayList<>();
+	private String myStoreName;
 
 	/**
 	 * Constructeur.
@@ -202,12 +206,23 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return new DtField(id, fieldName, type, domain, label, required, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
+	/**
+	 * @param storeName Definition's storeName (nullable)
+	 * @return this builder
+	 */
+	public DtDefinitionBuilder withStoreName(final String storeName) {
+		//storeName may be null
+		//-----
+		myStoreName = storeName;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? DEFAULT_STORE_NAME : myStoreName);
 		return dtDefinition;
 	}
 

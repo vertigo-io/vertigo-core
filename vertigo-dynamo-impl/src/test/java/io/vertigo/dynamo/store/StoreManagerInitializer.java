@@ -21,19 +21,22 @@ package io.vertigo.dynamo.store;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamock.domain.car.Car;
+
+import javax.inject.Inject;
 
 /**
  * Initialisation des listes de références.
  *
  * @author jmforhan
  */
-public class StoreManagerInitializer implements ComponentInitializer<StoreManager> {
+public class StoreManagerInitializer implements ComponentInitializer {
+	@Inject
+	private StoreManager storeManager;
 
 	/** {@inheritDoc} */
 	@Override
-	public void init(final StoreManager storeManager) {
+	public void init() {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
 		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true);
 	}

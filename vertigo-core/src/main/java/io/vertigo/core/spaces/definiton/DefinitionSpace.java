@@ -20,6 +20,7 @@ package io.vertigo.core.spaces.definiton;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.JsonExclude;
 
 import java.util.Collection;
@@ -36,7 +37,7 @@ import java.util.Map;
  *
  * @author pchretien
  */
-public final class DefinitionSpace implements Activeable {
+public final class DefinitionSpace implements Component, Activeable {
 	/**
 	 * Liste des objets indexés par Class (le type) et nom.
 	 */
@@ -60,7 +61,7 @@ public final class DefinitionSpace implements Activeable {
 	 * @param definition Objet à enregistrer
 	 */
 	public void put(final Definition definition) {
-		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
+		Assertion.checkNotNull(definition, "A definition can't be null.");
 		//-----
 		if (!definitions.containsKey(definition.getClass())) {
 			register(definition.getClass());

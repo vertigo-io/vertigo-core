@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import static io.vertigo.core.dsl.entity.EntityPropertyType.String;
-import io.vertigo.core.dsl.entity.Entity;
-import io.vertigo.core.dsl.entity.EntityBuilder;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityBuilder;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 

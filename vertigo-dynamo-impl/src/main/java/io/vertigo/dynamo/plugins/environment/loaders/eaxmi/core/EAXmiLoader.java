@@ -24,6 +24,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 import java.net.URL;
@@ -63,7 +64,7 @@ public final class EAXmiLoader implements XmlLoader {
 			final SAXParser saxParser = factory.newSAXParser();
 			saxParser.parse(xmiFileURL.openStream(), handler);
 		} catch (final Exception e) {
-			throw new RuntimeException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
+			throw new WrappedException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
 		}
 	}
 

@@ -18,10 +18,11 @@
  */
 package io.vertigo.studio.tools;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.App;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.App;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
@@ -88,7 +89,7 @@ public final class NameSpace2Java {
 			properties.load(in);
 			return properties;
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

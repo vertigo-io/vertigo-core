@@ -19,17 +19,16 @@
 package io.vertigo.dynamo.collections.facet;
 
 import io.vertigo.core.spaces.component.ComponentInitializer;
-import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
 
 /**
  * Configuration du manager Search.
  * @author dchallas
  */
-public final class CollectionsManagerInitializer implements ComponentInitializer<CollectionsManager> {
+public final class CollectionsManagerInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
-	public void init(final CollectionsManager collectionsManager) {
+	public void init() {
 		CarFacetInitializer.initCarFacet();
 	}
 }

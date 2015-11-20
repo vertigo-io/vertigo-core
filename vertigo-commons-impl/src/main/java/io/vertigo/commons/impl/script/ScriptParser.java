@@ -103,7 +103,7 @@ final class ScriptParser {
 				//on le remet donc dans la requete
 				scriptHandler.onText(String.valueOf(separator.getSeparator()));
 			} else {
-				throw new RuntimeException("Le paramètre est vide");
+				throw new IllegalArgumentException("Empty parameter");
 			}
 		} else {
 			scriptHandler.onExpression(script.substring(beginCar, endCar), separator);

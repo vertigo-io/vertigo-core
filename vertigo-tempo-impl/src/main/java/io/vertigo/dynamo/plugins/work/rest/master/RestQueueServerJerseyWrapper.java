@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.rest.master;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -40,7 +40,7 @@ import com.sun.jersey.spi.resource.Singleton;
 public final class RestQueueServerJerseyWrapper {
 
 	private static RestQueueServer getWorkQueueRestServer() {
-		final RestMasterPlugin masterPlugin = Home.getComponentSpace().resolve("masterPlugin", RestMasterPlugin.class);
+		final RestMasterPlugin masterPlugin = Home.getApp().getComponentSpace().resolve("masterPlugin", RestMasterPlugin.class);
 		return masterPlugin.getWorkQueueRestServer();
 	}
 

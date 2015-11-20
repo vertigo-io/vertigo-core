@@ -1,19 +1,9 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<boot>
-		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
-		</component>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+		<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
 	</boot>
-	
-	<module name="vertigo-commons">
-		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-	</module>
 
 	<module name="vertigo-persona">
 		<component api="VSecurityManager" class="io.vertigo.persona.impl.security.VSecurityManagerImpl">

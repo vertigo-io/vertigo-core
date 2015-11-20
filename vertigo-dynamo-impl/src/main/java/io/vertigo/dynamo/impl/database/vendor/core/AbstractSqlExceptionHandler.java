@@ -25,6 +25,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 import java.sql.SQLException;
@@ -127,7 +128,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 */
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new RuntimeException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
+		throw new WrappedException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
 	}
 
 	private static final class SQLConstraintMessageKey implements MessageKey {

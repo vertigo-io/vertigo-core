@@ -1,0 +1,73 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.core.plugins.param.properties;
+
+import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+/**
+ * Plugin de gestion de configuration de fichiers properties.
+ *
+ * @author skerdudou
+ */
+public final class PropertiesParamPlugin implements ParamPlugin {
+	private final Properties params;
+
+	/**
+	 * Constructeur.
+	 *
+	 * @param resourceManager Selector
+	 * @param url Url du fichier XML de configuration
+	 * @throws IOException erreur de lecture du fichier
+	 */
+	@Inject
+	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) throws IOException {
+		Assertion.checkNotNull(resourceManager);
+		Assertion.checkArgNotEmpty(url);
+		//-----
+		final URL configURL = resourceManager.resolve(url);
+		params = loadProperties(configURL);
+	}
+
+	private static Properties loadProperties(final URL configURL) throws IOException {
+		try (final InputStream input = configURL.openStream()) {
+			final Properties tmpProperties = new Properties();
+			tmpProperties.load(input);
+			return tmpProperties;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Option<String> getValue(final String paramName) {
+		Assertion.checkArgNotEmpty(paramName);
+		//-----
+		return params.containsKey(paramName) ? Option.<String> option(params.getProperty(paramName)) : Option.<String> none();
+	}
+}

@@ -26,6 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 
@@ -46,8 +47,8 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineInsertWithGeneratedKeys(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, sqlDataBaseManager);
+	public TaskEngineInsertWithGeneratedKeys(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */

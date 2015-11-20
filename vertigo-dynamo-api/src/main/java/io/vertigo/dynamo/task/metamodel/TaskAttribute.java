@@ -21,6 +21,7 @@ package io.vertigo.dynamo.task.metamodel;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Attribut d'une tache.
@@ -126,7 +127,7 @@ public final class TaskAttribute {
 			getDomain().checkValue(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

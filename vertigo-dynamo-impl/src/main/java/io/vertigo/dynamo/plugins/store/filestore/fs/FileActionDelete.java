@@ -22,6 +22,7 @@
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 import java.io.File;
 
@@ -50,11 +51,11 @@ final class FileActionDelete implements FileAction {
 
 		if (!file.exists()) {
 			LOG.error("Impossible de trouver le fichier pour suppression : " + file.getAbsolutePath());
-			throw new RuntimeException("Impossible de trouver le fichier à supprimer.");
+			throw new VSystemException("Impossible de trouver le fichier à supprimer.");
 		}
 		if (!file.canWrite()) {
 			LOG.error("Impossible de supprimer le fichier : " + file.getAbsolutePath());
-			throw new RuntimeException("Impossible de supprimer le fichier.");
+			throw new VSystemException("Impossible de supprimer le fichier.");
 		}
 
 		state = State.READY;
@@ -69,7 +70,7 @@ final class FileActionDelete implements FileAction {
 		if (!file.delete()) {
 			LOG.fatal("Impossible de supprimer le fichier " + file.getAbsolutePath());
 			state = State.ERROR;
-			throw new RuntimeException("Erreur fatale : Impossible de supprimer le fichier.");
+			throw new VSystemException("Erreur fatale : Impossible de supprimer le fichier.");
 		}
 
 		state = State.PROCESSED;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.tools.generate;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.tools.Goal;
 
@@ -27,7 +27,7 @@ public final class GenerateGoal implements Goal {
 	@Override
 	public void process() {
 		//Génération des fichiers données (code java, properties)
-		Home.getComponentSpace().resolve(MdaManager.class)
+		Home.getApp().getComponentSpace().resolve(MdaManager.class)
 				.generate()
 				/* Impression du Rapport d'exécution. */
 				.displayResultMessage(System.out);

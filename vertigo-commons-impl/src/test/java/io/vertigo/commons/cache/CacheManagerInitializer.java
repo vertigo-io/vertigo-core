@@ -20,16 +20,21 @@ package io.vertigo.commons.cache;
 
 import io.vertigo.core.spaces.component.ComponentInitializer;
 
+import javax.inject.Inject;
+
 /**
  * Initialisation du manager des caches.
  * @author dchallas
  */
-public final class CacheManagerInitializer implements ComponentInitializer<CacheManager> {
+public final class CacheManagerInitializer implements ComponentInitializer {
 	public static final String CONTEXT = "testCacheManager";
+
+	@Inject
+	private CacheManager manager;
 
 	/** {@inheritDoc} */
 	@Override
-	public void init(final CacheManager manager) {
+	public void init() {
 		//Paramétrage d'un cache spécifique au test
 		/** Parametre du cache, pour une config ou il est multi-session*/
 		final int maxElementsInMemory = 5000;

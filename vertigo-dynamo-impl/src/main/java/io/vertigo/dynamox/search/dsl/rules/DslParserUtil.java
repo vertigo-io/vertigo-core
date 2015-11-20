@@ -22,8 +22,8 @@ import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiExpressionDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslUserCriteria;
+import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
 import java.util.List;
 
@@ -42,10 +42,10 @@ public final class DslParserUtil {
 	 * @return Parsed pattern
 	 * @throws NotFoundException If pattern doesn't match grammar
 	 */
-	public static List<DslMultiExpressionDefinition> parseMultiExpression(final String buildQuery) throws NotFoundException {
-		final Rule<DslMultiExpressionDefinition> expressionsRule = new DslMultiExpressionRule();
-		final ManyRule<DslMultiExpressionDefinition> many = new ManyRule<>(expressionsRule, false, true); //repeat true => on veut tout la chaine
-		final Parser<List<DslMultiExpressionDefinition>> parser = many.createParser();
+	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) throws NotFoundException {
+		final Rule<DslMultiExpression> expressionsRule = new DslMultiExpressionRule();
+		final ManyRule<DslMultiExpression> many = new ManyRule<>(expressionsRule, false, true); //repeat true => on veut tout la chaine
+		final Parser<List<DslMultiExpression>> parser = many.createParser();
 		parser.parse(buildQuery, 0);
 		return parser.get();
 	}

@@ -18,11 +18,12 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Option;
 
@@ -55,7 +56,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition definition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
 		dynamicDefinitions.add(definition);
 		return Option.none();
 	}

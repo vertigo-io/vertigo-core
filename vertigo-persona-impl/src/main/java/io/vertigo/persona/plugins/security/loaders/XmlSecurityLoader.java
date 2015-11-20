@@ -18,9 +18,10 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 
@@ -95,13 +96,13 @@ final class XmlSecurityLoader {
 		final List<Element> permissions = root.getChildren(PERMISSION_KEY);
 		for (final Element permissionElement : permissions) {
 			final Permission permission = createPermission(permissionElement);
-			Home.getDefinitionSpace().put(permission);
+			Home.getApp().getDefinitionSpace().put(permission);
 		}
 		// Role
 		final List<Element> roleKeys = root.getChildren(ROLE_KEY);
 		for (final Element roleElement : roleKeys) {
 			final Role role = createRole(roleElement);
-			Home.getDefinitionSpace().put(role);
+			Home.getApp().getDefinitionSpace().put(role);
 		}
 	}
 
@@ -128,7 +129,7 @@ final class XmlSecurityLoader {
 			builder.setEntityResolver(entityResolver);
 			return builder.build(url.openStream());
 		} catch (final Exception e) {
-			throw new RuntimeException("Erreur durant la lecture du fichier XML " + url, e);
+			throw new WrappedException("Erreur durant la lecture du fichier XML " + url, e);
 		}
 	}
 
@@ -154,7 +155,7 @@ final class XmlSecurityLoader {
 		for (final Element element : xps) {
 			final String permissionRef = element.getAttributeValue(REF_KEY);
 			//-----
-			final Permission permission = Home.getDefinitionSpace().resolve(permissionRef, Permission.class);
+			final Permission permission = Home.getApp().getDefinitionSpace().resolve(permissionRef, Permission.class);
 			//-----
 			permissions.add(permission);
 		}

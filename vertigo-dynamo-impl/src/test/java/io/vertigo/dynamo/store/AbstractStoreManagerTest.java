@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.store;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -50,6 +50,7 @@ import io.vertigo.dynamock.fileinfo.FileInfoStd;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
 import java.io.OutputStream;
@@ -71,13 +72,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
-	private StoreManager storeManager;
+	protected StoreManager storeManager;
 	@Inject
-	private FileManager fileManager;
+	protected FileManager fileManager;
 	@Inject
-	private VTransactionManager transactionManager;
+	protected VTransactionManager transactionManager;
 	@Inject
-	private TaskManager taskManager;
+	protected TaskManager taskManager;
 
 	private DtDefinition dtDefinitionFamille;
 	private DAOBroker<Famille, Integer> familleDAO;
@@ -87,27 +88,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
-		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final List<String> requests = new ListBuilder<String>()
-					.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
-					.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
-					.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
-					.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
-					.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
-					.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
-					.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
-					.build();
+		initMainStore();
+	}
 
-			for (final String request : requests) {
-				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
-						.withEngine(TaskEngineProc.class)
-						.withRequest(request)
-						.build();
-				final Task task = new TaskBuilder(taskDefinition).build();
-				taskManager.execute(task);
-			}
-		}
+	protected void initMainStore() {
+		//A chaque test on recrée la table famille
+		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> none());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -121,15 +107,66 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> storeName) {
+		//A chaque test on recrée la table famille
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			for (final String request : requests) {
+				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+						.withEngine(TaskEngineProc.class)
+						.withRequest(request);
+				if (storeName.isDefined()) {
+					taskDefinitionBuilder.withStore(storeName.get());
+				}
+				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
+				taskManager.execute(task);
+			}
+		}
+	}
+
+	protected List<String> getCreateMainStoreRequests() {
+		final List<String> requests = getCreateFamilleRequests();
+		requests.addAll(getCreateCarRequests());
+		requests.addAll(getCreateFileInfoRequests());
+		return requests;
+	}
+
+	protected final List<String> getCreateFamilleRequests() {
+		return new ListBuilder<String>()
+				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
+				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
+				.build();
+	}
+
+	protected final List<String> getCreateCarRequests() {
+		return new ListBuilder<String>()
+				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
+				.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
+				.build();
+	}
+
+	protected final List<String> getCreateFileInfoRequests() {
+		return new ListBuilder<String>()
+				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
+				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+				.build();
+	}
+
 	@Override
 	protected void doTearDown() throws Exception {
+		shutDown("TK_SHUT_DOWN", Option.<String> none());
+	}
+
+	protected void shutDown(final String taskName, final Option<String> storeName) {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_SHUT_DOWN")
+				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
-						.withRequest("shutdown;")
-						.build();
-				final Task task = new TaskBuilder(taskDefinition).build();
+						.withRequest("shutdown;");
+				if (storeName.isDefined()) {
+					taskDefinitionBuilder.withStore(storeName.get());
+				}
+				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
 
 				//A chaque fin de test on arréte la base.
@@ -159,7 +196,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
@@ -180,7 +218,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//-----
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
 				.withEngine(TaskEngineProc.class)
@@ -206,8 +245,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final Car nativeLoadCar(final long carId) {
-		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
-		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final Domain doId = definitionSpace.resolve("DO_IDENTIFIANT", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
 				.withEngine(TaskEngineSelect.class)
@@ -225,7 +265,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
@@ -336,7 +377,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static String secureSubString(final String read, final int index, final String searchString) {
+	protected static String secureSubString(final String read, final int index, final String searchString) {
 		if (read != null && read.length() > index) {
 			return read.substring(index, Math.min(read.length() - 1, index + searchString.length()));
 		}

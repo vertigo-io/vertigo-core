@@ -1,8 +1,4 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<boot>
-		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-	</boot>
+	<boot locales="fr_FR"/>
 </config>	

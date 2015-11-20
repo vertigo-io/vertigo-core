@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.x.publisher;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -133,7 +133,7 @@ public final class PublisherDataUtil {
 					}
 					break;
 				case Image:
-					throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
+					throw new IllegalArgumentException("Type unsupported : " + publisherField.getFieldType());
 				default:
 					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
@@ -180,7 +180,7 @@ public final class PublisherDataUtil {
 	public static String generatePublisherNodeDefinitionAsKsp(final String... dtDefinitions) {
 		final StringBuilder sb = new StringBuilder();
 		for (final String dtDefinitionUrn : dtDefinitions) {
-			appendPublisherNodeDefinition(sb, Home.getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
+			appendPublisherNodeDefinition(sb, Home.getApp().getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
 			sb.append("\n");
 		}
 		return sb.toString();

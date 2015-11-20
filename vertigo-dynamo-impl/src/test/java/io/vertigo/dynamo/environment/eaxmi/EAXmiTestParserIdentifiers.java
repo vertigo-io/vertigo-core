@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 import org.junit.Assert;
@@ -36,8 +35,8 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 		return new String[] { "managers-test.xml", "resources-test.xml" };
 	}
 
-	private static DtDefinition getDtDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, DtDefinition.class);
+	private DtDefinition getDtDefinition(final String urn) {
+		return getApp().getDefinitionSpace().resolve(urn, DtDefinition.class);
 	}
 
 	@Test

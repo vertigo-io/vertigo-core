@@ -18,13 +18,16 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactCriteria;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
 import io.vertigo.vega.webservice.data.domain.ContactValidator;
+import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
@@ -73,6 +76,36 @@ public final class ContactsWebServices implements WebServices {
 		}
 		//200
 		return contact;
+	}
+
+	@GET("/contactView/{conId}")
+	public ContactView readContactView(@PathParam("conId") final long conId) {
+		final Contact contact = contactDao.get(conId);
+		if (contact == null) {
+			//404 ?
+			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+		}
+		final DtList<Address> addresses = new DtList<>(Address.class);
+		addresses.add(contact.getAddress());
+		addresses.add(contact.getAddress());
+		addresses.add(contact.getAddress()); //we sheet and use 3 times the same address.
+
+		final ContactView contactView = new ContactView();
+		contactView.setName(contact.getName());
+		contactView.setFirstName(contact.getFirstName());
+		contactView.setHonorificCode(contact.getHonorificCode());
+		contactView.setEmail(contact.getEmail());
+		contactView.setBirthday(contact.getBirthday());
+		contactView.setAddresses(addresses);
+		//200
+		return contactView;
+	}
+
+	//PUT is indempotent : ID obligatoire
+	@PUT("/contactView")
+	public ContactView updateContactView(final ContactView contactView) {
+		//200
+		return contactView;
 	}
 
 	//@POST is non-indempotent

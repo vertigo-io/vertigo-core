@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -94,14 +94,14 @@ public final class DomainUtil {
 			case Integer:
 			case Long:
 			case String:
-				throw new RuntimeException("Type unsupported : " + dataType);
+				throw new IllegalArgumentException("Type unsupported : " + dataType);
 			default:
 				throw new IllegalArgumentException("Type unknown : " + dataType);
 		}
 	}
 
 	static Collection<DtDefinition> getDtDefinitions() {
-		return sortDefinitionCollection(Home.getDefinitionSpace().getAll(DtDefinition.class));
+		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(DtDefinition.class));
 	}
 
 	static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
@@ -109,11 +109,11 @@ public final class DomainUtil {
 	}
 
 	static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
-		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
 	}
 
 	static Collection<AssociationNNDefinition> getNNAssociations() {
-		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationNNDefinition.class));
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationNNDefinition.class));
 	}
 
 	/**

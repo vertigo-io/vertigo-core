@@ -1,19 +1,12 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<boot>
-		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-		</component>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	</boot>
 
 	<module name="vertigo-commons">
@@ -44,7 +37,9 @@
 
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" initClass="io.vertigo.dynamo.store.StoreManagerInitializer">
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.jpa.JpaDataStorePlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin">
+				<param name="storeDtName" value="DT_VX_FILE_INFO"/>
+			</plugin>
 		</component>
 
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />

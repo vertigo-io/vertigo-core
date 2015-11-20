@@ -18,17 +18,17 @@
  */
 package io.vertigo;
 
-import io.vertigo.commons.config.hierarchy.ConfigManagerTest;
-import io.vertigo.commons.config.multi.MultiConfigManagerTest;
-import io.vertigo.commons.config.properties.PropertiesConfigManagerTest;
-import io.vertigo.commons.config.xml.XmlConfigManagerTest;
-import io.vertigo.commons.locale.LocaleManagerTest;
-import io.vertigo.commons.resource.ResourceManagerTest;
-import io.vertigo.core.aop.AspectTest;
-import io.vertigo.core.config.AppConfigTest;
-import io.vertigo.core.di.injector.InjectorTest;
-import io.vertigo.core.di.reactor.ReactorTest;
-import io.vertigo.core.environment.EnvironmentManagerTest;
+import io.vertigo.app.config.xml.AppConfig2Test;
+import io.vertigo.app.config.xml2.AppConfigTest;
+import io.vertigo.core.component.aop.AspectTest;
+import io.vertigo.core.component.di.injector.InjectorTest;
+import io.vertigo.core.component.di.reactor.ReactorTest;
+import io.vertigo.core.definition.loader.EnvironmentManagerTest;
+import io.vertigo.core.locale.LocaleManagerTest;
+import io.vertigo.core.param.multi.MultiParamManagerTest;
+import io.vertigo.core.param.properties.PropertiesParamManagerTest;
+import io.vertigo.core.param.xml.XmlParamManagerTest;
+import io.vertigo.core.resource.ResourceManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;
@@ -54,39 +54,37 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		//LocaleManager
-		LocaleManagerTest.class,
-		//core
+		//Core
 		DefinitionSpaceTest.class,
 		ComponentSpaceTest.class,
 		ComponentSpace2Test.class,
 		ComponentSpace3Test.class,
 		InjectorTest.class,
 		ReactorTest.class,
-		//boot
+		//Boot
 		AppConfigTest.class,
+		AppConfig2Test.class,
 		AspectTest.class,
-		//lang
+		//Lang
 		AssertionTest.class,
 		OptionTest.class,
 		TuplesTest.class,
-		//util
+		//Util
 		BeanUtilTest.class,
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
 		DateUtilTest.class,
 		StringUtilTest.class,
 		MapBuilderTest.class,
-
-		//--config
-		ConfigManagerTest.class,
-		MultiConfigManagerTest.class,
-		PropertiesConfigManagerTest.class,
-		XmlConfigManagerTest.class,
-		//--resource
+		//--Params
+		MultiParamManagerTest.class,
+		PropertiesParamManagerTest.class,
+		XmlParamManagerTest.class,
+		//--Resources
 		ResourceManagerTest.class,
-		EnvironmentManagerTest.class
-
+		EnvironmentManagerTest.class,
+		//Locales
+		LocaleManagerTest.class
 })
 public final class VertigoTestSuite {
 	//

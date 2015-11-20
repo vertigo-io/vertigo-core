@@ -18,7 +18,7 @@
  */
 package io.vertigo.lang;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.util.StringUtil;
 
@@ -96,7 +96,7 @@ public final class MessageText implements Serializable {
 			try {
 				//Il est nécessaire que LocaleManager soit enregistré.
 				//Si pas d'utilisateur on prend la première langue déclarée.
-				localeManager = Home.getComponentSpace().resolve(LocaleManager.class);
+				localeManager = Home.getApp().getComponentSpace().resolve(LocaleManager.class);
 				locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
 			} catch (final Exception e) {

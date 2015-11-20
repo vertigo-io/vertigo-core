@@ -18,7 +18,8 @@
  */
 package io.vertigo.vega;
 
-import io.vertigo.core.config.Features;
+import io.vertigo.app.config.Features;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
@@ -50,6 +51,7 @@ import io.vertigo.vega.webservice.WebServiceManager;
 public final class VegaFeatures extends Features {
 
 	private boolean withTokens = false;
+	private String tokenCollection;
 	private boolean withMisc = false;
 
 	public VegaFeatures() {
@@ -61,8 +63,11 @@ public final class VegaFeatures extends Features {
 		//rien
 	}
 
-	public VegaFeatures withTokens() {
+	public VegaFeatures withTokens(final String collection) {
+		Assertion.checkArgNotEmpty(collection);
+		//-----
 		withTokens = true;
+		tokenCollection = collection;
 		return this;
 	}
 
@@ -101,7 +106,7 @@ public final class VegaFeatures extends Features {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("dataStoreName", "UiSecurityStore")
+					.addParam("collection", tokenCollection)
 					.endComponent();
 		}
 		if (withMisc) {

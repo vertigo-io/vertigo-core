@@ -23,12 +23,12 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -119,7 +119,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 			final Future<File> targetFileFuture = executors.submit(convertTask);
 			targetFile = targetFileFuture.get(convertTimeoutSeconds, TimeUnit.SECONDS);
 		} catch (final Exception e) {
-			throw new RuntimeException("Erreur de conversion du document au format " + targetFormat.name() + " (" + e.getClass().getSimpleName() + ")", e);
+			throw new WrappedException("Erreur de conversion du document au format " + targetFormat.name() + " (" + e.getClass().getSimpleName() + ")", e);
 		}
 		return fileManager.createFile(targetFile);
 	}
@@ -283,7 +283,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 				//			case CSV:
 				//				return "Text - txt - csv (StarCalc)";
 			default:
-				throw new InvalidParameterException("Type de document non géré : " + docType);
+				throw new IllegalArgumentException("Type de document non géré : " + docType);
 		}
 	}
 }

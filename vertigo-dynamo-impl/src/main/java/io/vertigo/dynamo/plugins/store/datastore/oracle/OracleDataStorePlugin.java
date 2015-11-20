@@ -25,6 +25,7 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,11 +41,14 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 	/**
 	 * Constructeur.
+	 * @param name Store name
+	 * @param connectionName Connection name
 	 * @param sequencePrefix Configuration du préfixe de la séquence
+	 * @param taskManager TaskManager
 	 */
 	@Inject
-	public OracleDataStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(taskManager);
+	public OracleDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(name, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;
@@ -108,4 +112,5 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
 		request.append(separator).append(" rownum <= ").append(maxRows.toString());
 	}
+
 }

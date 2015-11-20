@@ -19,14 +19,33 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 
+@DtDefinition
 public final class Address implements DtObject {
 	private static final long serialVersionUID = 8922834274442256496L;
+
+	@Field(domain = "DO_ID", type = "PRIMARY_KEY", required = true, label = "address Id")
+	private Long adrId;
+	@Field(domain = "DO_TEXTE_50", label = "street1")
 	private String street1;
+	@Field(domain = "DO_TEXTE_50", label = "street2")
 	private String street2;
+	@Field(domain = "DO_TEXTE_50", label = "city")
 	private String city;
+	@Field(domain = "DO_TEXTE_50", label = "postal code")
 	private String postalCode;
-	private String Country;
+	@Field(domain = "DO_TEXTE_50", label = "country")
+	private String country;
+
+	public Long getAdrId() {
+		return adrId;
+	}
+
+	public void setAdrId(final Long adrId) {
+		this.adrId = adrId;
+	}
 
 	public String getStreet1() {
 		return street1;
@@ -61,11 +80,11 @@ public final class Address implements DtObject {
 	}
 
 	public String getCountry() {
-		return Country;
+		return country;
 	}
 
 	public void setCountry(final String country) {
-		Country = country;
+		this.country = country;
 	}
 
 }

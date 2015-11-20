@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import io.vertigo.core.AppListener;
-import io.vertigo.core.Home;
+import io.vertigo.app.AppListener;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -104,8 +104,8 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 			/** {@inheritDoc} */
 			@Override
 			public void onPostStart() {
-				final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getComponentSpace());
-				WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getDefinitionSpace(), webServiceDefinitions);
+				final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
+				WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
 			}
 		});
 	}
@@ -172,7 +172,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final WebServiceDefinition webServiceDefinition1, final WebServiceDefinition webServiceDefinition2) {
-			return webServiceDefinition1.getPath().compareTo(webServiceDefinition2.getPath());
+			return webServiceDefinition1.getName().compareTo(webServiceDefinition2.getName());
 		}
 	}
 }

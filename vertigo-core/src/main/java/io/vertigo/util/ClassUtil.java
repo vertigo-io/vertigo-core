@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -101,24 +102,12 @@ public final class ClassUtil {
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
-			throw handle(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
+			throw WrappedException.wrapIfNeeded(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw new RuntimeException("accès final impossible à la classe :" + constructor.getDeclaringClass().getName(), e);
+			throw new WrappedException("Accès final impossible à la classe :" + constructor.getDeclaringClass().getName(), e);
 		} catch (final Exception e) {
-			throw new RuntimeException("Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName(), e);
+			throw new WrappedException("Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName(), e);
 		}
-	}
-
-	private static RuntimeException handle(final InvocationTargetException e, final String msg, final Object... params) {
-		final Throwable t = e.getTargetException();
-		if (t instanceof RuntimeException) {
-			return (RuntimeException) t;
-		}
-		//		if (t instanceof Error) {
-		//			return (Error) t;
-		//		}
-		return new RuntimeException(StringUtil.format(msg, params), e);
-
 	}
 
 	/**
@@ -146,9 +135,9 @@ public final class ClassUtil {
 		} catch (final NoSuchMethodException e) {
 			if (parameterTypes.length == 0) {
 				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
-				throw new RuntimeException("Aucun constructeur vide trouvé sur " + clazz.getSimpleName(), e);
+				throw new WrappedException("Aucun constructeur vide trouvé sur " + clazz.getSimpleName(), e);
 			}
-			throw new RuntimeException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + Arrays.toString(parameterTypes), e);
+			throw new WrappedException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + Arrays.toString(parameterTypes), e);
 		}
 	}
 
@@ -164,7 +153,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
-			throw new RuntimeException("Impossible de trouver la classe : " + javaClassName, e);
+			throw new WrappedException("Impossible de trouver la classe : " + javaClassName, e);
 		}
 	}
 
@@ -183,7 +172,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
-			throw new RuntimeException("Impossible de trouver la classe : " + javaClassName, e);
+			throw new WrappedException("Impossible de trouver la classe : " + javaClassName, e);
 		}
 	}
 
@@ -202,9 +191,9 @@ public final class ClassUtil {
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName(), e);
+			throw new WrappedException("accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName(), e);
 		} catch (final InvocationTargetException e) {
-			throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			throw WrappedException.wrapIfNeeded(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
 		}
 	}
 
@@ -223,7 +212,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			field.set(instance, value);
 		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
+			throw new WrappedException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
 		}
 	}
 
@@ -242,7 +231,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			return field.get(instance);
 		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
+			throw new WrappedException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
 		}
 	}
 
@@ -261,7 +250,7 @@ public final class ClassUtil {
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
-			throw new RuntimeException("Méthode " + methodName + " non trouvée sur " + clazz.getName(), e);
+			throw new WrappedException("Méthode " + methodName + " non trouvée sur " + clazz.getName(), e);
 		}
 	}
 
@@ -422,5 +411,40 @@ public final class ClassUtil {
 		}
 		//On abaisse la première lettre
 		return StringUtil.first2LowerCase(property);
+	}
+
+	/**
+	 * Box a type into a TRUE Object type.
+	 *  - The primitive types, namely boolean, byte, char, short, int, long, float, and double
+	 *  are boxed into Boolean, Byte, Char...
+	 *  - Object Type are unchangde
+	 *
+	 * @param clazz type
+	 * @return True Object class
+	 */
+	public static Class box(final Class<?> clazz) {
+		Assertion.checkNotNull(clazz);
+		//-----
+		if (clazz.isPrimitive()) {
+			if (boolean.class.equals(clazz)) {
+				return Boolean.class;
+			} else if (byte.class.equals(clazz)) {
+				return Byte.class;
+			} else if (char.class.equals(clazz)) {
+				return Character.class;
+			} else if (short.class.equals(clazz)) {
+				return Short.class;
+			} else if (int.class.equals(clazz)) {
+				return Integer.class;
+			} else if (long.class.equals(clazz)) {
+				return Long.class;
+			} else if (float.class.equals(clazz)) {
+				return Float.class;
+			} else if (double.class.equals(clazz)) {
+				return Double.class;
+			}
+			throw new IllegalArgumentException(clazz + "is a primitive class not (yet) supported.");
+		}
+		return clazz;
 	}
 }

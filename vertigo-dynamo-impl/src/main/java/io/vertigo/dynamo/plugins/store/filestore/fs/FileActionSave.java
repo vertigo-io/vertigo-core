@@ -23,6 +23,8 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,16 +63,16 @@ final class FileActionSave implements FileAction {
 		// création du fichier temporaire
 		if (!newFile.getParentFile().exists() && !newFile.getParentFile().mkdirs()) {
 			LOG.error("Can't create temp directories " + newFile.getAbsolutePath());
-			throw new RuntimeException("Can't create temp directories");
+			throw new VSystemException("Can't create temp directories");
 		}
 		try {
 			if (!newFile.createNewFile()) {
 				LOG.error("Can't create temp file " + newFile.getAbsolutePath());
-				throw new RuntimeException("Can't create temp file.");
+				throw new VSystemException("Can't create temp file.");
 			}
 		} catch (final IOException e) {
 			LOG.error("Can't save temp file " + newFile.getAbsolutePath());
-			throw new RuntimeException("Can't save temp file.", e);
+			throw new WrappedException("Can't save temp file.", e);
 		}
 
 		// copie des données dans le fichier temporaire. Permet de vérifier l'espace disque avant d'arriver à la phase
@@ -79,7 +81,7 @@ final class FileActionSave implements FileAction {
 			FileUtil.copy(inputStream, newFile);
 		} catch (final IOException e) {
 			LOG.error("Can't copy uploaded file to : " + newFile.getAbsolutePath());
-			throw new RuntimeException("Can't save uploaded file.", e);
+			throw new WrappedException("Can't save uploaded file.", e);
 		}
 
 		state = State.READY;
@@ -94,14 +96,14 @@ final class FileActionSave implements FileAction {
 		if (file.exists() && !file.delete()) {
 			LOG.fatal("Impossible supprimer l'ancien fichier (" + file.getAbsolutePath() + ") lors de la sauvegarde. Le fichier a sauvegarder se trouve dans " + newFile.getAbsolutePath());
 			state = State.ERROR;
-			throw new RuntimeException("Erreur fatale : Impossible de sauvegarder le fichier.");
+			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
 
 		// on met le fichier au bon emplacement
 		if (!newFile.renameTo(file)) {
 			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de " + newFile.getAbsolutePath() + " vers " + file.getAbsolutePath());
 			state = State.ERROR;
-			throw new RuntimeException("Erreur fatale : Impossible de sauvegarder le fichier.");
+			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
 
 		state = State.PROCESSED;

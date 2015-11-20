@@ -24,7 +24,7 @@ import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.commons.parser.WordRule;
-import io.vertigo.dynamox.search.dsl.definition.DslTermQueryDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
  * (preQuery)(term)(postQuery)
  * @author npiedeloup
  */
-final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?>> {
+final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
@@ -66,7 +66,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslTermQueryDefinition handle(final List<?> parsing) {
+	protected DslTermQuery handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String preQuery = (String) parsing.get(1);
 
@@ -84,7 +84,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQueryDefinition, List<?
 
 		final String postQuery = (String) parsing.get(3);
 		//final String postSpaces = (String) parsing.get(4);
-		return new DslTermQueryDefinition(DslUtil.concat(preSpaces, preQuery), preTerm, termField, postTerm, defaultValue, postQuery);
+		return new DslTermQuery(DslUtil.concat(preSpaces, preQuery), preTerm, termField, postTerm, defaultValue, postQuery);
 	}
 
 }

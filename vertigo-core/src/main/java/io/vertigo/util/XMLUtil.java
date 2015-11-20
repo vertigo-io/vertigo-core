@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -59,10 +60,10 @@ public final class XMLUtil {
 			try {
 				validator.validate(streamSource);
 			} catch (final SAXException e) {
-				throw new RuntimeException("'" + xml.toString() + "' non valide", e);
+				throw new WrappedException("'" + xml.toString() + "' non valide", e);
 			}
 		} catch (final SAXException | IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class FakeComponent implements Component {
 	void execute() {
 		executions++;
 		if (executions == 1) {
-			throw new RuntimeException();
+			throw new IllegalStateException();
 		}
 	}
 

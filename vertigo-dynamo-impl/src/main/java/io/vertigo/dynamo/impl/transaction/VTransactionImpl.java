@@ -24,6 +24,7 @@ import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -178,7 +179,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 		//-----
 		final Throwable throwable = this.doEnd(false);
 		if (throwable != null) {
-			doThrow(throwable);
+			throw WrappedException.wrapIfNeeded(throwable, "Transaction");
 		}
 	}
 
@@ -187,7 +188,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	public void rollback() {
 		final Throwable throwable = doRollback();
 		if (throwable != null) {
-			doThrow(throwable);
+			throw WrappedException.wrapIfNeeded(throwable, "Transaction");
 		}
 	}
 
@@ -335,20 +336,6 @@ public final class VTransactionImpl implements VTransactionWritable {
 			throwable = t;
 		}
 		return throwable;
-	}
-
-	/**
-	 * Lance une KSystem exception.
-	 * @param error Exception à lancer.
-	 */
-	private static void doThrow(final Throwable error) {
-		if (error instanceof Error) {
-			throw (Error) error;
-		}
-		if (error instanceof RuntimeException) {
-			throw (RuntimeException) error;
-		}
-		throw new RuntimeException("Transaction", error);
 	}
 
 	/** {@inheritDoc} */

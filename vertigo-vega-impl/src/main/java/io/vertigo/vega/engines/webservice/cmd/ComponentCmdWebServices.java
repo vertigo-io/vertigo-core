@@ -18,11 +18,12 @@
  */
 package io.vertigo.vega.engines.webservice.cmd;
 
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.Home;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.WebServices;
@@ -62,7 +63,7 @@ public final class ComponentCmdWebServices implements WebServices {
 				}
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
@@ -91,35 +92,35 @@ public final class ComponentCmdWebServices implements WebServices {
 				return jsonEngine.toJson(jsonModuleConfig);
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions")
 	public DefinitionSpace getDefinitionsSpace() {
-		return Home.getDefinitionSpace();
+		return Home.getApp().getDefinitionSpace();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/types")
 	public Collection<Class<? extends Definition>> getDefinitionTypes() {
-		return Home.getDefinitionSpace().getAllTypes();
+		return Home.getApp().getDefinitionSpace().getAllTypes();
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/types/{definitionType}")
 	public String getDefinitionType(@PathParam("definitionType") final String definitionType) {
-		for (final Class<? extends Definition> definitionClass : Home.getDefinitionSpace().getAllTypes()) {
+		for (final Class<? extends Definition> definitionClass : Home.getApp().getDefinitionSpace().getAllTypes()) {
 			if (definitionClass.getSimpleName().equals(definitionType)) {
-				return jsonEngine.toJson(Home.getDefinitionSpace().getAll(definitionClass));
+				return jsonEngine.toJson(Home.getApp().getDefinitionSpace().getAll(definitionClass));
 			}
 		}
-		throw new RuntimeException("NotFoundException");
+		throw new VSystemException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
-		return Home.getDefinitionSpace().resolve(definitionName);
+		return Home.getApp().getDefinitionSpace().resolve(definitionName);
 	}
 }

@@ -19,10 +19,13 @@
 package io.vertigo.dynamo.impl.store.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,11 +33,24 @@ import java.util.Map;
  * @author pchretien, npiedeloup
  */
 public final class LogicalDataStoreConfig {
-	/** Store physique par défaut. */
-	private DataStorePlugin defaultDataStore;
+	/** Map des stores utilisés spécifiquement */
+	private final Map<String, DataStorePlugin> dataStorePluginsMap;
 
-	/** Map des stores utilisés spécifiquement pour certains DT */
-	private final Map<DtDefinition, DataStorePlugin> dataStores = new HashMap<>();
+	/**
+	 * @param dataStorePlugins DataStore plugins
+	 */
+	public LogicalDataStoreConfig(final List<DataStorePlugin> dataStorePlugins) {
+		Assertion.checkNotNull(dataStorePlugins);
+		//-----
+		final Map<String, DataStorePlugin> pluginsMap = new HashMap<>();
+		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
+			final String name = dataStorePlugin.getName();
+			final DataStorePlugin previous = pluginsMap.put(name, dataStorePlugin);
+			Assertion.checkState(previous == null, "DataStorePlugin {0}, was already registered", name);
+		}
+		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_STORE_NAME), "No " + DtDefinitionBuilder.DEFAULT_STORE_NAME + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_STORE_NAME + "'.");
+		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
+	}
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
@@ -45,31 +61,25 @@ public final class LogicalDataStoreConfig {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		DataStorePlugin dataStore = dataStores.get(definition);
-
-		dataStore = dataStore == null ? defaultDataStore : dataStore;
-		Assertion.checkNotNull(dataStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
-		return dataStore;
+		return getDataStorePlugin(definition.getStoreName());
 	}
 
 	/**
-	 * Enregistre un Store spécifique pour une dtDefinition donnée.
-	 * @param definition Définition
-	 * @param dataStore Store spécifique
+	 * Fournit le nom de la connection adpatée pour ce Store.
+	 * @param storeName Nom du store
+	 * @return Connection utilisée pour ce nom
 	 */
-	public void register(final DtDefinition definition, final DataStorePlugin dataStore) {
-		//check();
-		Assertion.checkNotNull(definition);
-		Assertion.checkNotNull(dataStore);
-		Assertion.checkArgument(!dataStores.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", dataStores.get(definition));
+	public String getConnectionName(final String storeName) {
+		Assertion.checkArgNotEmpty(storeName);
 		//-----
-		dataStores.put(definition, dataStore);
+		return getDataStorePlugin(storeName).getConnectionName();
 	}
 
-	public void registerDefault(final DataStorePlugin dataStorePlugin) {
-		Assertion.checkNotNull(dataStorePlugin);
-		Assertion.checkState(defaultDataStore == null, "defaultStore deja initialisé");
+	private DataStorePlugin getDataStorePlugin(final String storeName) {
+		Assertion.checkArgNotEmpty(storeName);
 		//-----
-		defaultDataStore = dataStorePlugin;
+		final DataStorePlugin dataStore = dataStorePluginsMap.get(storeName);
+		Assertion.checkNotNull(dataStore, "Aucun store ayant pour nom '{0}'", storeName);
+		return dataStore;
 	}
 }

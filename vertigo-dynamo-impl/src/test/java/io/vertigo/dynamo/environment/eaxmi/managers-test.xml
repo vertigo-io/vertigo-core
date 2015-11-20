@@ -1,16 +1,9 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<boot>
-		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.eaxmi.EAXmiLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-		</component>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.eaxmi.EAXmiLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 	</boot>
 </config>

@@ -22,6 +22,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,7 +110,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		try {
 			nop(vFile.createInputStream());
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 

@@ -18,17 +18,20 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.App;
-import io.vertigo.core.config.LogConfig;
+import io.vertigo.app.App;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
-import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.struts2.plugins.config.servlet.WebAppContextParamPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -61,8 +64,8 @@ final class HomeServletStarter {
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Properties webAppConf = createWebAppProperties(servletContext);
-			WebAppContextConfigPlugin.setInitConfig(webAppConf);
+			final Map<String, String> webParams = createWebParams(servletContext);
+			WebAppContextParamPlugin.setParams(webParams);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
@@ -92,7 +95,7 @@ final class HomeServletStarter {
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			throw new RuntimeException("Problème d'initialisation de l'application", e);
+			throw new WrappedException("Problème d'initialisation de l'application", e);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -101,14 +104,14 @@ final class HomeServletStarter {
 	}
 
 	/**
-	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppConfigPlugin du ConfigManager.
+	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppConfigPlugin du ParamManager.
 	 * @return Properties
 	 */
-	private static Properties createWebAppProperties(final ServletContext servletContext) {
+	private static Map<String, String> createWebParams(final ServletContext servletContext) {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
-		final Properties servletParams = new Properties();
+		final Map<String, String> servletParams = new HashMap<>();
 		String name;
 		/*
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
@@ -170,7 +173,7 @@ final class HomeServletStarter {
 		try {
 			readFile(servletParams, externalPropertiesFileName);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur lors de la lecture du fichier", e);
+			throw new WrappedException("Erreur lors de la lecture du fichier", e);
 		}
 
 		return servletParams;

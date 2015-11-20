@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.Codec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 import java.security.Key;
@@ -96,7 +97,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			keyGenerator.init(crypto.getKeySize());
 			return keyGenerator.generateKey();
 		} catch (final java.security.NoSuchAlgorithmException e) {
-			throw new RuntimeException("Crypto", e);
+			throw new WrappedException(crypto.getAlgoName(), e);
 		}
 	}
 
@@ -114,7 +115,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			return cipher.doFinal(data);
 		} catch (final Exception e) {
-			throw new RuntimeException("Crypto", e);
+			throw new WrappedException(crypto.getAlgoName(), e);
 		}
 	}
 
@@ -132,7 +133,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			return cipher.doFinal(data);
 		} catch (final Exception e) {
-			throw new RuntimeException("Crypto", e);
+			throw new WrappedException(crypto.getAlgoName(), e);
 		}
 	}
 

@@ -24,6 +24,7 @@ import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
 import java.sql.SQLException;
@@ -60,7 +61,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 			final javax.naming.Context context = new javax.naming.InitialContext();
 			this.dataSource = (DataSource) context.lookup(dataSource);
 		} catch (final NamingException e) {
-			throw new RuntimeException("Impossible de récupérer la DataSource", e);
+			throw new WrappedException("Can't obtain DataSource : " + dataSource, e);
 		}
 	}
 

@@ -23,6 +23,7 @@ import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.core.KActionContext;
 import io.vertigo.struts2.impl.context.ContextCachePlugin;
 
@@ -124,7 +125,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 				}
 			}
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -146,7 +147,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 				cacheDatas.delete(null, theKey);
 			}
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		return null;
 	}
@@ -204,7 +205,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 			myEnv = createDbEnv();
 			cacheDatas = createDb();
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 
@@ -242,7 +243,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 		try {
 			db = myEnv.openDatabase(null, "KActionContext", myDbConfig);
 		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		return db;
 	}

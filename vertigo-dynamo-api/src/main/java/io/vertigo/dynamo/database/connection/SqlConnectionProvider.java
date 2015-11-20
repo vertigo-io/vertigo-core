@@ -23,22 +23,22 @@ import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import java.sql.SQLException;
 
 /**
- * Provides connections 'KConnection'.
+ * Provides a sql connections.
  * This provider is defined for a particular database. 
  *
  * @author pchretien
  */
 public interface SqlConnectionProvider {
 	/**
-	 * Retourne une connexion.
+	 * Provides a sql connection.
 	 *
-	 * @return Connexion
-	 * @throws SQLException Exception sql
+	 * @return Connection
+	 * @throws SQLException
 	 */
 	SqlConnection obtainConnection() throws SQLException;
 
 	/**
-	 * @return Type de base de données
+	 * @return Type of sql database
 	 */
 	SqlDataBase getDataBase();
 }

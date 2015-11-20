@@ -44,21 +44,20 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRu
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
-import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
+import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
+import io.vertigo.dynamo.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
+import io.vertigo.dynamo.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
 import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsTest;
 import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
+import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.berkeley.BerkeleyKVStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
-import io.vertigo.dynamox.search.RegExpListFilterBuilderTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -107,10 +106,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerDynaFieldsTest.class,
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
+		SearchManagerStoreTest.class,
 		DslListFilterBuilderTest.class,
-		//---
-		ExportManagerTest.class,
-		RegExpListFilterBuilderTest.class,
 })
 public final class DynamoTestSuite {
 	//

@@ -137,7 +137,7 @@ public class FormatterNumber implements Formatter {
 				case DtList:
 				case DtObject:
 				case String:
-					throw new RuntimeException("Type unsupported : " + dataType);
+					throw new IllegalArgumentException("Type unsupported : " + dataType);
 				default:
 					throw new IllegalArgumentException("Type unknown : " + dataType);
 			}
@@ -227,7 +227,7 @@ public class FormatterNumber implements Formatter {
 				case DtList:
 				case DtObject:
 				case String:
-					throw new RuntimeException("Type unsupported" + dataType);
+					throw new IllegalArgumentException("Type unsupported" + dataType);
 				default:
 					throw new IllegalArgumentException("Type unknown : " + dataType);
 			}

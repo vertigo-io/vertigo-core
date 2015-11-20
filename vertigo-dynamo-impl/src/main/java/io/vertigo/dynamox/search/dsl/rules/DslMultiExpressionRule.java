@@ -22,10 +22,12 @@ import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
+import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.dynamox.search.dsl.definition.DslExpressionDefinition;
-import io.vertigo.dynamox.search.dsl.definition.DslMultiExpressionDefinition;
+import io.vertigo.dynamox.search.dsl.model.DslExpression;
+import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ import java.util.List;
  * (preMultiExpression)\((expression|multiExpression)+\)(postMultiExpression)
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefinition, Choice> {
+final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choice> {
 	private final static int MAX_DEPTH = 3;
 	private final int level;
 
@@ -63,11 +65,12 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		);
 		final Rule<List<Choice>> manyExpressionRule = new ManyRule<>(expressionsRule, false);
 		final Rule<List<?>> blockExpressionRule = new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
-				DslSyntaxRules.BLOCK_START, //1
-				manyExpressionRule, //2
-				DslSyntaxRules.BLOCK_END, //3
-				DslSyntaxRules.POST_MODIFIER_VALUE); //4
+				new OptionRule<>(new DslBooleanOperatorRule()), //0
+				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				DslSyntaxRules.BLOCK_START, //2
+				manyExpressionRule, //3
+				DslSyntaxRules.BLOCK_END, //4
+				DslSyntaxRules.POST_MODIFIER_VALUE); //5
 		final Rule<Choice> blockRule = new FirstOfRule(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
@@ -77,10 +80,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiExpressionDefinition handle(final Choice parsing) {
+	protected DslMultiExpression handle(final Choice parsing) {
 		final String preMultiExpression;
-		final List<DslExpressionDefinition> expressionDefinitions = new ArrayList<>();
-		final List<DslMultiExpressionDefinition> multiExpressionDefinitions = new ArrayList<>();
+		final List<DslExpression> expressionDefinitions = new ArrayList<>();
+		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 		final String postMultiExpression;
 		//---
 		final boolean block = parsing.getValue() == 0;
@@ -88,9 +91,9 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		switch (parsing.getValue()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getResult();
-				preMultiExpression = (String) blockExpression.get(0);
-				many = (List<Choice>) blockExpression.get(2);
-				postMultiExpression = (String) blockExpression.get(4);
+				preMultiExpression = ((Option<String>) blockExpression.get(0)).getOrElse("") + (String) blockExpression.get(1);
+				many = (List<Choice>) blockExpression.get(3);
+				postMultiExpression = (String) blockExpression.get(5);
 				break;
 			case 1:
 				preMultiExpression = "";
@@ -104,16 +107,16 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpressionDefini
 		for (final Choice item : many) {
 			switch (item.getValue()) {
 				case 0:
-					expressionDefinitions.add((DslExpressionDefinition) item.getResult());
+					expressionDefinitions.add((DslExpression) item.getResult());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((DslMultiExpressionDefinition) item.getResult());
+					multiExpressionDefinitions.add((DslMultiExpression) item.getResult());
 					break;
 				default:
 					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
 			}
 		}
 		//---
-		return new DslMultiExpressionDefinition(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
+		return new DslMultiExpression(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
 	}
 }

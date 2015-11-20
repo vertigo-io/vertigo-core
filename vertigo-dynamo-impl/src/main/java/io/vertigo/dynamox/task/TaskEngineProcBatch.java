@@ -28,6 +28,7 @@ import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
@@ -45,8 +46,8 @@ public class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatem
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, sqlDataBaseManager);
+	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */

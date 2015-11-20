@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.search;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -72,7 +72,7 @@ final class ReindexTask implements Runnable {
 			}
 			dirtyElementsCount = reindexUris.size();
 			if (!reindexUris.isEmpty()) {
-				final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
 				// >>> Tx start

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
@@ -89,7 +89,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	@Override
 	protected DecimalFormatSymbols getDecimalFormatSymbols() {
 		//Il n'y a pas besoin de synchroniser la méthode car la map l'est déjà.
-		final Locale currentLocale = Home.getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
+		final Locale currentLocale = Home.getApp().getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
 		DecimalFormatSymbols decimalFormatSymbols = decimalFormatSymbolsMap.get(currentLocale);
 		if (decimalFormatSymbols == null) {
 			// si Locale.FRANCE cela donne la virugle comme séparateur décimal

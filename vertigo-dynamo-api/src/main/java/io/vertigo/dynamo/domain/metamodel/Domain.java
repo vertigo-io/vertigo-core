@@ -18,11 +18,12 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,11 +187,11 @@ public final class Domain implements Definition {
 		if (dtDefinitionName == null) {
 			//On fournit un message d'erreur explicite
 			if (getDataType().isPrimitive()) {
-				throw new RuntimeException("Le domain " + getName() + " n'est ni un DTO ni une DTC");
+				throw new VSystemException("Le domain {0} n'est ni un DTO ni une DTC", getName());
 			}
-			throw new RuntimeException("Le domain " + getName() + " est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.");
+			throw new VSystemException("Le domain {0} est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.", getName());
 		}
-		return Home.getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}
 
 	/** {@inheritDoc} */

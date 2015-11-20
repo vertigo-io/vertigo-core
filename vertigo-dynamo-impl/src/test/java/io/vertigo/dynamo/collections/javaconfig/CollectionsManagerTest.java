@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.collections.javaconfig;
 
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.app.config.AppConfig;
 
 /**
  * @author pchretien

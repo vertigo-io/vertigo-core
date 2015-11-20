@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.database;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.Movie;
@@ -117,10 +117,11 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectList() throws Exception {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTC", Domain.class);
+		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTC", Domain.class);
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
@@ -150,10 +151,11 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectObject() throws Exception {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTO", Domain.class);
+		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
 		final SqlQueryResult result = executeQuery(domain, "select * from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		final Movie movie = (Movie) result.getValue();
@@ -201,6 +203,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testTwoDataSource() throws Exception {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On crée les données dans main
 		createDatas();
 
@@ -220,7 +223,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 			}
 			//----
 			final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
-			final Domain movieDomain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTO", Domain.class);
+			final Domain movieDomain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
 
 			final SqlQueryResult result2 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
 			Assert.assertEquals(1, result2.getSQLRowCount());

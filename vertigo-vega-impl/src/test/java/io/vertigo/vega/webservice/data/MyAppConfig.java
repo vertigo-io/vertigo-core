@@ -18,32 +18,32 @@
  */
 package io.vertigo.vega.webservice.data;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.impl.export.ExportManagerImpl;
+import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
+import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
-import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
+import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactCriteria;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
+import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
@@ -60,7 +60,8 @@ public final class MyAppConfig {
 		@Override
 		public Iterator<Class<?>> iterator() {
 			return Arrays.asList(new Class<?>[] {
-					Contact.class, ContactCriteria.class
+					Contact.class, ContactCriteria.class,
+					Address.class, ContactView.class
 			}).iterator();
 		}
 	}
@@ -68,17 +69,12 @@ public final class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.addPlugin( ClassPathResourceResolverPlugin.class)
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-					.addPlugin(SecurityResourceLoaderPlugin.class)
-					.addPlugin(AnnotationLoaderPlugin.class)
-					.addPlugin(KprLoaderPlugin.class)
-					.addPlugin(DomainDynamicRegistryPlugin.class)
+			.beginBootModule("fr")
+				.addPlugin( ClassPathResourceResolverPlugin.class)
+				.addPlugin(SecurityResourceLoaderPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(KprLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule()
 			.beginBoot()
 				.silently()
@@ -88,17 +84,19 @@ public final class MyAppConfig {
 			.beginModule(DynamoFeatures.class)
 				.withStore()
 				.getModuleConfigBuilder()
+				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
+				.addComponent(ExportManager.class, ExportManagerImpl.class)
 				.addPlugin(PDFExporterPlugin.class) //pour exportManager
 				.beginPlugin(PostgreSqlDataStorePlugin.class)
 					.addParam("sequencePrefix","SEQ_")
 				.endPlugin()
-				.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
-					.addParam("dataStoreName", "UiSecurityStore")
+				.beginPlugin(DelayedMemoryKVStorePlugin.class)
+					.addParam("collections", "tokens")
 					.addParam("timeToLiveSeconds", "120")
 				.endPlugin()
 			.endModule()
 			.beginModule(VegaFeatures.class)
-				.withTokens()
+				.withTokens("tokens")
 				.withMisc()
 				.withEmbeddedServer(WS_PORT)
 			.endModule()

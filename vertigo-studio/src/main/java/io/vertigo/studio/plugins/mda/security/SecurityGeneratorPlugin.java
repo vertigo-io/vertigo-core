@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.security;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.studio.mda.ResultBuilder;
@@ -62,7 +62,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Collection<Role> getRoles() {
-		return Home.getDefinitionSpace().getAll(Role.class);
+		return Home.getApp().getDefinitionSpace().getAll(Role.class);
 	}
 
 	private static void generateRole(final String targetSubDir, final FileConfig securityConfig, final ResultBuilder resultBuilder) {

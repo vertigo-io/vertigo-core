@@ -38,7 +38,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		return this;
 	}
 
-	public ListBuilder<X> addAll(final List<X> values) {
+	public ListBuilder<X> addAll(final List<? extends X> values) {
 		Assertion.checkNotNull(values);
 		//-----
 		list.addAll(values);

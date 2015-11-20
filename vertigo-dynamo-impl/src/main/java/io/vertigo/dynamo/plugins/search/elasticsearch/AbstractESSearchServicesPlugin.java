@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -36,10 +36,10 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -72,28 +72,29 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private Client esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
-	private final Set<String> cores;
+	private final String indexName;
+	private final Set<String> types = new HashSet<>();
 	private final URL configFile;
 	private boolean indexSettingsValid = false;
 
 	/**
 	 * Constructeur.
-	 * @param cores Nom des noyeaux ES
+	 * @param indexName Nom de l'index ES
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String cores, final int defaultMaxRows, final Option<String> configFile,
+	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Option<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(cores);
+		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.cores = new HashSet<>(Arrays.asList(cores.split(",")));
+		this.indexName = indexName.toLowerCase().trim();
 		if (configFile.isDefined()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
@@ -107,37 +108,35 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//Init ElasticSearch Client
 		esClient = createClient();
 		indexSettingsValid = true;
-		for (final String core : cores) {
-			final String indexName = core.toLowerCase().trim();
-			//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
-			waitForYellowStatus();
-			try {
-				if (!esClient.admin().indices().prepareExists(indexName).get().isExists()) {
-					if (configFile == null) {
-						esClient.admin().indices().prepareCreate(indexName).get();
-					} else {
-						final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
-					}
-				} else if (configFile != null) {
-					// If we use local config file, we check config against ES server
+		//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
+		waitForYellowStatus();
+		try {
+			if (!esClient.admin().indices().prepareExists(indexName).get().isExists()) {
+				if (configFile == null) {
+					esClient.admin().indices().prepareCreate(indexName).get();
+				} else {
 					final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(indexName, settings);
+					esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
 				}
-			} catch (final ElasticsearchException e) {
-				throw new RuntimeException("Error on index " + indexName, e);
+			} else if (configFile != null) {
+				// If we use local config file, we check config against ES server
+				final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
+				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
 			}
+		} catch (final ElasticsearchException e) {
+			throw new WrappedException("Error on index " + indexName, e);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
-		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
 			logMappings(indexDefinition);
+			types.add(indexDefinition.getName().toLowerCase());
 		}
 
 		waitForYellowStatus();
 	}
 
-	private boolean isIndexSettingsDirty(final String indexName, final Settings settings) {
+	private boolean isIndexSettingsDirty(final Settings settings) {
 		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
 				.addIndices(indexName).get()
 				.getSettings().get(indexName);
@@ -161,7 +160,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private void logMappings(final SearchIndexDefinition indexDefinition) {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexDefinition.getName().toLowerCase()).get().getMappings();
+		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
 			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
 			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
@@ -248,9 +247,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexDefinition.getName().toLowerCase(), esClient);
+		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(), esClient);
 	}
 
 	/**
@@ -281,14 +280,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			//
 			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin)
-					.setIndices(indexDefinition.getName().toLowerCase())
-					.setType(indexDefinition.getIndexDtDefinition().getName())
+					.setIndices(indexName)
+					.setType(indexDefinition.getName().toLowerCase())
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
 
 		} catch (final IOException e) {
-			throw new RuntimeException("Serveur ElasticSearch indisponible", e);
+			throw new WrappedException("Serveur ElasticSearch indisponible", e);
 		}
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.core.App;
+import io.vertigo.app.App;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
@@ -453,6 +453,58 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.put("/test/contact");
+	}
+
+	@Test
+	public void testGetContactView() {
+		loggedAndExpect()
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("addresses.size()", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/contacts/contactView/1");
+	}
+
+	@Test
+	public void testPutContactView() throws ParseException {
+		final Map<String, Object> newContactView = createDefaultContact(100L);
+		final List<Map<String, Object>> addresses = new ArrayList<>();
+		newContactView.remove("address");
+		newContactView.put("addresses", addresses);
+		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
+		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
+		addresses.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"));
+
+		loggedAndExpect(given().body(newContactView))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.body("addresses.size()", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/contacts/contactView");
+	}
+
+	@Test
+	public void testPutContactViewError() throws ParseException {
+		final Map<String, Object> newContactView = createDefaultContact(100L);
+		final List<Map<String, Object>> addresses = new ArrayList<>();
+		newContactView.remove("address");
+		newContactView.put("addresses", addresses);
+		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
+		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
+		addresses.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
+
+		loggedAndExpect(given().body(newContactView))
+				.body("fieldErrors", Matchers.notNullValue())
+				//.body("fieldErrors.addresses[2]", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/contacts/contactView");
 	}
 
 	@Test
@@ -1251,13 +1303,14 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContact() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
-		dtList.add(createDefaultContact(123L));
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(createDefaultContact(123L))
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 6 contacts"))
@@ -1268,15 +1321,17 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContactValidationError() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
-		dtList.add(newContact);
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1313,15 +1368,17 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContactValidationError2() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(120L));
-		dtList.add(createDefaultContact(121L));
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.put("birthday", convertDate("24/10/2012"));
-		dtList.add(newContact);
-		dtList.add(createDefaultContact(124L));
-		dtList.add(createDefaultContact(125L));
-		dtList.add(createDefaultContact(126L));
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body("objectFieldErrors.idx2.birthday", Matchers.contains("You can't add contact younger than 16"))

@@ -19,7 +19,6 @@
 package io.vertigo.tempo.job;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 import javax.inject.Inject;
@@ -44,7 +43,7 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecute() {
 		final JobDefinition jobDefinition = new JobDefinition("JB_TEST_SYNC", TestJob.class);
-		Home.getDefinitionSpace().put(jobDefinition);
+		getApp().getDefinitionSpace().put(jobDefinition);
 
 		jobManager.execute(jobDefinition);
 		Assert.assertEquals(1, TestJob.getCount());

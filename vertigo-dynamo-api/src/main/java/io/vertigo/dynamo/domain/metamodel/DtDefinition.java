@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Définition d'un type de DT.
@@ -38,6 +39,9 @@ import java.util.Map;
  */
 @DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
+	/** Expression réguliére vérifiée par les noms des stores. */
+	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
+
 	/** Nom de la définition. */
 	private final String name;
 
@@ -65,6 +69,8 @@ public final class DtDefinition implements Definition {
 	private Option<DtField> sortField = Option.none();
 	private Option<DtField> displayField = Option.none();
 
+	private final String storeName;
+
 	/**
 	 * Constructeur.
 	 */
@@ -74,10 +80,13 @@ public final class DtDefinition implements Definition {
 			final DtStereotype stereotype,
 			final boolean persistent,
 			final List<DtField> dtFields,
-			final boolean dynamic) {
+			final boolean dynamic,
+			final String storeName) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
+		Assertion.checkArgNotEmpty(storeName);
+		Assertion.checkState(REGEX_STORE_NAME.matcher(storeName).matches(), "StoreName {0} must match pattern {1}", storeName, REGEX_STORE_NAME);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
@@ -95,6 +104,7 @@ public final class DtDefinition implements Definition {
 		}
 		idField = Option.option(id);
 		this.dynamic = dynamic;
+		this.storeName = storeName;
 		//-----
 		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
 	}
@@ -135,6 +145,9 @@ public final class DtDefinition implements Definition {
 		}
 	}
 
+	/**
+	 * @return Stereotype du Dt
+	 */
 	public DtStereotype getStereotype() {
 		return stereotype;
 	}
@@ -249,6 +262,13 @@ public final class DtDefinition implements Definition {
 	 */
 	public Option<DtField> getSortField() {
 		return sortField;
+	}
+
+	/**
+	 * @return StoreName
+	 */
+	public String getStoreName() {
+		return storeName;
 	}
 
 	/** {@inheritDoc} */

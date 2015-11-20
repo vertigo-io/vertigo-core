@@ -23,6 +23,7 @@ import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
@@ -50,7 +51,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 		try {
 			threadLocalsField = Thread.class.getDeclaredField("threadLocals");
 		} catch (final SecurityException | NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 		threadLocalsField.setAccessible(true);
 	}
@@ -96,7 +97,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 				workResultHandler.get().onDone(null, e);
 			}
 			logError(e);
-			throw asRuntimeException(e);
+			throw WrappedException.wrapIfNeeded(e, null);
 		} finally {
 			try {
 				//Vide le threadLocal
@@ -112,13 +113,6 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
 	}
 
-	private static RuntimeException asRuntimeException(final Exception e) {
-		if (e instanceof RuntimeException) {
-			return (RuntimeException) e;
-		}
-		return new RuntimeException(e);
-	}
-
 	/**
 	 * Vide le threadLocal du thread avant de le remettre dans le pool.
 	 * Ceci protège contre les WorkEngine utilsant un ThreadLocal sans le vider.
@@ -129,7 +123,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 		try {
 			threadLocalsField.set(Thread.currentThread(), null);
 		} catch (final IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

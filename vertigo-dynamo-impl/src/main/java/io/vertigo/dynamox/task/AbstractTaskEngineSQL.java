@@ -33,6 +33,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.transaction.VTransaction;
@@ -40,6 +41,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 import java.sql.BatchUpdateException;
@@ -92,16 +94,18 @@ import java.util.Map;
  * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
+
+	private static final Object DEFAULT_STORE_NAME = "main";
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	public static final VTransactionResourceId<SqlConnection> SQL_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql");
+	public static final VTransactionResourceId<SqlConnection> SQL_MAIN_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-main");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
 	 * Dans le cas des Batchs ce nombre correspond à la somme de toutes les lignes affectées par le batch.
 	 */
-	//Qui utilise ça ?? // peut on revenir à une forme explicite 
+	//Qui utilise ça ?? // peut on revenir à une forme explicite
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
 	/**
@@ -116,6 +120,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
+	private final StoreManager storeManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
 
 	/**
@@ -125,13 +130,16 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	protected AbstractTaskEngineSQL(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
+		this.storeManager = storeManager;
 		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
@@ -414,7 +422,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			try {
 				connection = getConnectionProvider().obtainConnection();
 			} catch (final SQLException e) {
-				throw new RuntimeException("Obtention de connexion impossible", e);
+				throw new WrappedException("Can't connect to database", e);
 			}
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}
@@ -425,7 +433,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
-		return SQL_RESOURCE_ID;
+		final String storeName = getTaskDefinition().getStoreName();
+		if (DEFAULT_STORE_NAME.equals(storeName)) {
+			return SQL_MAIN_RESOURCE_ID;
+		}
+		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + storeName);
 	}
 
 	/**
@@ -440,7 +452,9 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		return getDataBaseManager().getMainConnectionProvider();
+		final String storeName = getTaskDefinition().getStoreName();
+		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(storeName);
+		return getDataBaseManager().getConnectionProvider(connectionName);
 	}
 
 	/**

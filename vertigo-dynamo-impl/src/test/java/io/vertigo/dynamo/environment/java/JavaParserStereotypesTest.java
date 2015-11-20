@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 
@@ -32,13 +32,15 @@ import org.junit.Test;
  * @author npiedeloup
  */
 public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
+
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "managers-test-stereotypes.xml" };
 	}
 
-	private static DtDefinition getDtDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, DtDefinition.class);
+	private DtDefinition getDtDefinition(final String urn) {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		return definitionSpace.resolve(urn, DtDefinition.class);
 	}
 
 	/**

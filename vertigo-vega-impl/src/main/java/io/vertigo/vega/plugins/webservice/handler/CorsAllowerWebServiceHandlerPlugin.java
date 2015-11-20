@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -36,7 +37,7 @@ import spark.Response;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
- * @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny
+ * @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny"
  * @author npiedeloup
  */
 public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
@@ -88,7 +89,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @throws VSecurityException If Cors error
 	 */
 	public void putCorsResponseHeaders(final Request request, final Response response) throws VSecurityException {
-		/** @see https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny */
+		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
 		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
 		if (origin != null) {
@@ -96,7 +97,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.status(HttpServletResponse.SC_FORBIDDEN);
 				response.raw().resetBuffer();
-				throw new VSecurityException("Invalid CORS Access (Origin:" + origin + ", Method:" + method + ")");
+				throw new VSecurityException(new MessageText("Invalid CORS Access (Origin:{0}, Method:{1})", null, origin, method));
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);

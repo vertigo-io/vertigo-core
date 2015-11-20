@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.search;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -31,6 +31,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
 import java.util.Collection;
@@ -78,7 +79,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		if (isReindexInProgress()) {
 			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + getReindexCount() + " elements done)";
 			LOGGER.warn(warnMessage);
-			reindexFuture.fail(new RuntimeException(warnMessage));
+			reindexFuture.fail(new VSystemException(warnMessage));
 		} else {
 			//-----
 			startReindex();
@@ -86,7 +87,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			final long startTime = System.currentTimeMillis();
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
-				final SearchLoader<S, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				String lastUri = "*";
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
 				for (final Iterator<SearchChunk<S>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {

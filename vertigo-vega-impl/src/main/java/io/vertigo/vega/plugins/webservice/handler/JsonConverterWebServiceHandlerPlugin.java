@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -188,7 +188,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		//-----
 
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
-			final JsonConverter jsonConverter = Injector.newInstance(jsonConverterClass, Home.getComponentSpace());
+			final JsonConverter jsonConverter = Injector.newInstance(jsonConverterClass, Home.getApp().getComponentSpace());
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
 				List<JsonConverter> jsonConverterBySourceType = jsonConverters.get(inputType);
 				if (jsonConverterBySourceType == null) {
@@ -200,7 +200,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 
 		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
-			final JsonReader<?> jsonReader = Injector.newInstance(jsonReaderClass, Home.getComponentSpace());
+			final JsonReader<?> jsonReader = Injector.newInstance(jsonReaderClass, Home.getApp().getComponentSpace());
 			for (final WebServiceParamType restParamType : jsonReader.getSupportedInput()) {
 				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
 				if (jsonReaderByRestParamType == null) {
@@ -211,7 +211,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 		}
 		for (final Class<? extends JsonSerializer> jsonSerializerClass : JSON_SERIALIZER_CLASSES) {
-			final JsonSerializer jsonSerializer = Injector.newInstance(jsonSerializerClass, Home.getComponentSpace());
+			final JsonSerializer jsonSerializer = Injector.newInstance(jsonSerializerClass, Home.getApp().getComponentSpace());
 			jsonWriters.add(jsonSerializer);
 		}
 

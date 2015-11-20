@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.task;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.impl.task.listener.TaskListener;
 import io.vertigo.dynamo.impl.task.listener.TaskListenerImpl;
@@ -44,7 +44,7 @@ public final class TaskManagerImpl implements TaskManager {
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getComponentSpace());
+			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
 			final TaskResult taskResult = taskEngine.process(task);
 			executed = true;
 			return taskResult;

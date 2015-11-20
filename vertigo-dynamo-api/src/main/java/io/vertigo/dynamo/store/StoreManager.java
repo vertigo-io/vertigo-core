@@ -24,7 +24,6 @@ import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.dynamo.store.kvstore.KVStore;
 import io.vertigo.lang.Component;
 
 /**
@@ -52,11 +51,6 @@ public interface StoreManager extends Component {
 	 * @return DataStore
 	 */
 	DataStore getDataStore();
-
-	/**
-	 * @return Key Value Store
-	 */
-	KVStore getKVStore();
 
 	/**
 	 * @return Configuration du composant de persistance

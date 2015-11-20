@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.tools.reporting;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.studio.reporting.ReportingManager;
 import io.vertigo.studio.tools.Goal;
 
@@ -29,7 +29,7 @@ public final class ReportingGoal implements Goal {
 
 	@Override
 	public void process() {
-		final ReportingManager reportingManager = Home.getComponentSpace().resolve(ReportingManager.class);
+		final ReportingManager reportingManager = Home.getApp().getComponentSpace().resolve(ReportingManager.class);
 
 		reportingManager.analyze();
 	}

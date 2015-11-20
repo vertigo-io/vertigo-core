@@ -36,6 +36,20 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 * @param value Value not null
 	 * @return this builder
 	 */
+	public MapBuilder<K, V> putCheckKeyNotExists(final K key, final V value) {
+		Assertion.checkNotNull(key);
+		Assertion.checkNotNull(value);
+		//-----
+		final Object previous = map.put(key, value);
+		Assertion.checkArgument(previous == null, "Data with key '{0}' already registered", key);
+		return this;
+	}
+
+	/**
+	 * @param key Key
+	 * @param value Value not null
+	 * @return this builder
+	 */
 	public MapBuilder<K, V> put(final K key, final V value) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);

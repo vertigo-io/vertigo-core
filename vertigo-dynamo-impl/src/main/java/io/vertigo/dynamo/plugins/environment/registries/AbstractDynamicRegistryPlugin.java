@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries;
 
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.dsl.entity.EntityGrammar;
-import io.vertigo.core.impl.environment.DynamicRegistryPlugin;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;

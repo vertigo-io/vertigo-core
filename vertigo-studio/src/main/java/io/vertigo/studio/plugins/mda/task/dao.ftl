@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import java.util.List;
 </#if>
 <#if !dao.taskDefinitions.empty || dao.hasSearchBehavior() >
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 </#if>
 <#if dao.hasSearchBehavior()>
 import io.vertigo.core.component.di.injector.Injector;
@@ -94,8 +94,8 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
 	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final List<ListFilter> listFilters) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
-		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = Injector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getComponentSpace());
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
+		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = Injector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getApp().getComponentSpace());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return new SearchQueryBuilder(criteriaListFilter).withFacetStrategy(facetedQueryDefinition, listFilters);
 	}

@@ -16,19 +16,33 @@
 	<!-- ====================================================================== -->
 	<target name="0.8.2 to 0.8.3" description="Usefull renames from 0.8.2 to 0.8.3">
 		<echo message="Renamed in *.ksp : io.vertigo.dynamox.search.DslListFilterBuilderDefaultListFilterBuilder to io.vertigo.dynamox.search.DslListFilterBuilderDslListFilterBuilder" />
-				<replace dir="${src.path}" encoding="${src.encoding}"
-					token="io.vertigo.dynamox.search.DefaultListFilterBuilder" value="io.vertigo.dynamox.search.DslListFilterBuilder">
-					<include name="**/*.ksp"/>
-				</replace>
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.dynamox.search.DefaultListFilterBuilder" value="io.vertigo.dynamox.search.DslListFilterBuilder">
+			<include name="**/*.ksp"/>
+		</replace>
+		
+		<echo message="Renamed in pom.xml : &lt;vertigo.version&gt;0.8.2&lt;/vertigo.version&gt; to &lt;vertigo.version&gt;0.8.3&lt;/vertigo.version&gt;" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="&lt;vertigo.version&gt;0.8.2&lt;/vertigo.version&gt;" value="&lt;vertigo.version&gt;0.8.3&lt;/vertigo.version&gt;" >
+			<include name="**/pom.xml"/>
+		</replace>
 	</target>
 	
 	<target name="0.8.1 to 0.8.2" description="Usefull renames from 0.8.1 to 0.8.2">
-		<echo message="Renamed in *.xml : io.vertigo.vega.rest.engine.GoogleJsonEngine to io.vertigo.vega.engines.webservice.json.GoogleJsonEngine" />
+		<echo message="Renamed in *.xml : io.vertigo.vega.rest.* to io.vertigo.vega.webservice.*" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
-			token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." >
+			token="io.vertigo.vega.rest." value="io.vertigo.vega.webservice." >
 			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
 		</replace>
-				
+		
+		<echo message="Renamed in pom.xml : &lt;vertigo.version&gt;0.8.1&lt;/vertigo.version&gt; to &lt;vertigo.version&gt;0.8.2&lt;/vertigo.version&gt;" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="&lt;vertigo.version&gt;0.8.1&lt;/vertigo.version&gt;" value="&lt;vertigo.version&gt;0.8.2&lt;/vertigo.version&gt;" >
+			<include name="**/pom.xml"/>
+		</replace>
+		
+		
 		<echo message="Renamed in *.java : import io.vertigo.vega.rest.* to io.vertigo.vega.webservice.*" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
 		    token="import io.vertigo.vega.rest." value="import io.vertigo.vega.webservice." >
@@ -40,29 +54,84 @@
 		    token="&quot;vertigo.rest.Session&quot;" value="&quot;vertigo.webservice.Session&quot;" >
 			<include name="**/*.java"/>
 		</replace>
+
+		<echo message="Renamed in *.xml : io.vertigo.vega.impl.rest.RestManagerImpl to io.vertigo.vega.impl.webservice.WebServiceManagerImpl" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="io.vertigo.vega.impl.rest.RestManagerImpl" value="io.vertigo.vega.impl.webservice.WebServiceManagerImpl" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : RestManager to WebServiceManager" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="RestManager" value="WebServiceManager" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
 		
 		<echo message="Renamed in *.java : extends DefaultSearchLoader to extends AbstractSqlSearchLoader" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
 		    token="extends DefaultSearchLoader" value="extends AbstractSqlSearchLoader" >
 			<include name="**/*.java"/>
 		</replace>
-		
-		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.rest.* to io.vertigo.vega.plugins.webservice.*" />
+
+		<echo message="Renamed in *.java : extends .getFileInfo( to extends .get(" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
-		    token="io.vertigo.vega.plugins.rest." value="io.vertigo.vega.plugins.webservice." >
-			<include name="**/*.xml"/>
+		    token=".getFileInfo(" value=".get(" >
+			<include name="**/*.java"/>
 		</replace>
-		
-		<echo message="Renamed in *.xml : io.vertigo.vega.impl.rest.* to io.vertigo.vega.impl.webservice.*" />
+
+		<echo message="Renamed in *.java : .deleteFileInfo( to extends .delete(" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
-			token="io.vertigo.vega.impl.rest." value="io.vertigo.vega.impl.webservice." >
-			<include name="**/*.xml"/>
+		    token=".deleteFileInfo(" value=".delete(" >
+			<include name="**/*.java"/>
 		</replace>
-		
-		<echo message="Renamed in *.xml : XxxxRestHandlerPlugin to XxxxWebServiceHandlerPlugin" />
+
+		<echo message="Renamed in *.java : getBrokerConfig() to extends getDataStoreConfig()" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="getBrokerConfig()" value="getDataStoreConfig()" >
+			<include name="**/*.java"/>
+		</replace>
+
+		<echo message="Renamed in *.java : extends DefaultSearchLoader to extends AbstractSqlSearchLoader" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+		    token="io.vertigo.dynamox.search.DefaultSearchLoader" value="io.vertigo.dynamox.search.AbstractSqlSearchLoader" >
+			<include name="**/*.java"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin to io.vertigo.vega.plugins.webservice.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin" value="io.vertigo.vega.plugins.webservice.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin to io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin" value="io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : io.vertigo.vega.rest.engine.GoogleJsonEngine to io.vertigo.vega.engines.webservice.json.GoogleJsonEngine" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="io.vertigo.vega.rest.engine.GoogleJsonEngine" value="io.vertigo.vega.engines.webservice.json.GoogleJsonEngine" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : SwaggerWebServices to SwaggerWebServices" />
+		<replace dir="${src.path}" encoding="${src.encoding}"
+			token="SwaggerRestServices" value="SwaggerWebServices" >
+			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
+		</replace>
+
+		<echo message="Renamed in *.xml : XxxxWebRestHandlerPlugin to XxxxWebServiceHandlerPlugin" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
 			token="RestHandlerPlugin" value="WebServiceHandlerPlugin" >
 			<include name="**/*.xml"/>
+			<exclude name="update-renaming-tool.xml"/>
 		</replace>
 		
 		<echo message="Renamed in *.java : import io.vertigo.vega.webservice.RestfulService to import io.vertigo.vega.webservice.WebServices" />
@@ -84,19 +153,21 @@
 		</replace>
 		
 		<echo message="Replaced in web.xml spark.servlet.SparkFilter and application by a new VegaSparkFilter" />
-		<replaceregexp dir="${src.path}" encoding="${src.encoding}" flags="gis" byline="false"
-			value="io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter" >
-			<include name="**/web.xml"/>
-			<regexp><![CDATA[<filter-name>SparkFilter</filter-name>
-([ \t]+?)<filter-class>spark.servlet.SparkFilter</filter-class>
-([ \t]+?)<init-param>
-([ \t]+?)<param-name>applicationClass</param-name>
-([ \t]+?)<param-value>io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication</param-value>
-([ \t]+?)</init-param>]]></regexp>
-			<substitution><![CDATA[<filter>
-([ \t]+?)<filter-name>SparkFilter</filter-name>
-([ \t]+?)<filter-class>io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter</filter-class>    
-([ \t]+?)</filter>]]></substitution>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+		     	<include name="**/web.xml"/>
+		     </fileset>
+			
+			<regexp pattern="&lt;filter-name&gt;SparkFilter&lt;/filter-name&gt;
+([ \t\n]+?)&lt;filter-class&gt;spark.servlet.SparkFilter&lt;/filter-class&gt;
+([ \t\n]+?)&lt;init-param&gt;
+([ \t\n]+?)&lt;param-name&gt;applicationClass&lt;/param-name&gt;
+([ \t\n]+?)&lt;param-value&gt;io.vertigo.vega.plugins.webservice.routesregister.sparkjava.VegaSparkApplication&lt;/param-value&gt;
+([ \t\n]+?)&lt;/init-param&gt;&gt;" />
+			<substitution expression="&lt;filter&gt;
+([ \t\n]+?)&lt;filter-name&gt;SparkFilter&lt;/filter-name&gt;
+([ \t\n]+?)&lt;filter-class&gt;io.vertigo.vega.plugins.webservice.webserver.sparkjava.VegaSparkFilter&lt;/filter-class&gt;    
+([ \t\n]+?)&lt;/filter&gt;&gt;" />
 		</replaceregexp>
 		
 	</target>

@@ -53,7 +53,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	 * Constructeur.
 	 *
 	 * @param serversNamesStr URL du serveur ElasticSearch avec le port de communication de cluster (9300 en général)
-	 * @param cores Liste des indexes
+	 * @param envIndex Nom de l'index de l'environment
 	 * @param rowsPerQuery Liste des indexes
 	 * @param clusterName : nom du cluster à rejoindre
 	 * @param configFile fichier de configuration des index
@@ -62,10 +62,10 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESNodeSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
+	public ESNodeSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("envIndex") final String envIndex,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
 			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager, final ResourceManager resourceManager) {
-		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
@@ -216,6 +216,6 @@ public final class FormatterDate implements Formatter {
 	}
 
 	private static LocaleManager getLocaleManager() {
-		return Home.getComponentSpace().resolve(LocaleManager.class);
+		return Home.getApp().getComponentSpace().resolve(LocaleManager.class);
 	}
 }

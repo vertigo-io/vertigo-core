@@ -22,6 +22,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 
 import java.sql.SQLException;
@@ -55,10 +56,13 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
+	 * @param transactionManager Transaction manager
+	 * @param storeManager Store manager
+	 * @param sqlDataBaseManager Sql dataBase manager
 	 */
 	@Inject
-	public TaskEngineProc(final ScriptManager scriptManager, final VTransactionManager transactionManager, final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, sqlDataBaseManager);
+	public TaskEngineProc(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */

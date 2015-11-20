@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -70,7 +70,7 @@ public final class WorkEngineProvider<WR, W> {
 			engineClazz = (Class<? extends WorkEngine<WR, W>>) ClassUtil.classForName(className);
 		}
 		//récupéartion de l'engine par sa classe.
-		return Injector.newInstance(engineClazz, Home.getComponentSpace());
+		return Injector.newInstance(engineClazz, Home.getApp().getComponentSpace());
 	}
 
 	public String getName() {

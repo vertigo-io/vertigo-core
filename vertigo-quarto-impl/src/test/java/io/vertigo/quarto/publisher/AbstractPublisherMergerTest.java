@@ -19,11 +19,12 @@
 package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.mock.Address;
 import io.vertigo.quarto.publisher.mock.Enquete;
@@ -291,7 +292,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//	}
 
 	private static PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = Home.getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assert.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);
@@ -304,7 +305,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		try {
 			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
 		} catch (final IOException e) {
-			throw new RuntimeException(e);
+			throw new WrappedException(e);
 		}
 	}
 }

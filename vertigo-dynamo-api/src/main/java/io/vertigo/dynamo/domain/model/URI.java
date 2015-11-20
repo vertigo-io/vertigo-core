@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.model;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
@@ -134,7 +134,7 @@ public final class URI<D extends DtObject> implements Serializable {
 		final Object id = stringToId(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final DtDefinition definition = Home.getDefinitionSpace().resolve(dname, DtDefinition.class);
+		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
 		return new URI(definition, id);
 	}
 

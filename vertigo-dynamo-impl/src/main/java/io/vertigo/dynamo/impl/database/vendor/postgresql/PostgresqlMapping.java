@@ -59,10 +59,6 @@ final class PostgresqlMapping implements SqlMapping {
 	/** {@inheritDoc} */
 	@Override
 	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final DataType dataType) throws SQLException {
-		if (dataType == DataType.Boolean) {
-			final boolean vb = callableStatement.getBoolean(index);
-			return callableStatement.wasNull() ? null : vb;
-		}
 		return defaultSQLMapping.getValueForCallableStatement(callableStatement, index, dataType);
 	}
 

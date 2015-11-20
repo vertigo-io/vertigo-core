@@ -18,9 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import io.vertigo.core.Home;
-import io.vertigo.core.dsl.dynamic.DynamicDefinition;
+import io.vertigo.app.Home;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
@@ -44,7 +45,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final Definition definition = createTaskDefinition(xdefinition);
@@ -63,15 +64,17 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
+		final String storeName = (String) xtaskDefinition.getPropertyValue(KspProperty.STORE_NAME);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(taskEngineClass)
+				.withStore(storeName)
 				.withRequest(request)
 				.withPackageName(xtaskDefinition.getPackageName());
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
 			final String domainName = xtaskAttribute.getDefinitionName("domain");
-			final Domain domain = Home.getDefinitionSpace().resolve(domainName, Domain.class);
+			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {

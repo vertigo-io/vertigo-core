@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.search;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -79,9 +79,10 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
+				.withStore(dtDefinition.getStoreName())
 				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
-				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

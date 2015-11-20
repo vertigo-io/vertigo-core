@@ -18,6 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.grammar;
 
+import io.vertigo.lang.VSystemException;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptContext;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptTag;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
@@ -59,7 +60,7 @@ public final class TagObject extends AbstractKScriptTag implements ScriptTag {
 	@Override
 	public String renderClose(final ScriptTagContent content, final ScriptContext context) {
 		if (context.empty()) {
-			throw new RuntimeException("document malforme : le tag object est mal ferme");
+			throw new VSystemException("document malforme : le tag object est mal ferme");
 		}
 		context.pop();
 		return START_BLOC_JSP + '}' + END_BLOC_JSP;

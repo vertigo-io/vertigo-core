@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -56,7 +56,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = webServiceDefinition.getMethod();
-		final WebServices webServices = (WebServices) Home.getComponentSpace().resolve(method.getDeclaringClass());
+		final WebServices webServices = (WebServices) Home.getApp().getComponentSpace().resolve(method.getDeclaringClass());
 
 		if (method.getName().startsWith("create")) {
 			//by convention, if method starts with 'create', an http 201 status code is returned (if ok)

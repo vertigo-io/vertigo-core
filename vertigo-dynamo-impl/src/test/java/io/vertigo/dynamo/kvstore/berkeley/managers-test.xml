@@ -1,0 +1,13 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<module name="vertigo-dynamo">
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
+		<component api="KVStoreManager" class="io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin">
+				<param name="collections" value="flowers, trees" />
+				<param name="fileName" value="d:/dynamo-tmp" />
+				<param name="inMemory" value="true" />
+			</plugin>
+		</component>
+	</module>
+</config>

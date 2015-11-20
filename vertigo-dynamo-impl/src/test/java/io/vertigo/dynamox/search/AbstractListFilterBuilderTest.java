@@ -68,24 +68,41 @@ public abstract class AbstractListFilterBuilderTest {
 	public void testStringAdvancedQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
-				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
+				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
 				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //2
 				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //3
 				{ "ALL:#query#", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3))" }, //4
 				{ "ALL:#query*#", "Test AND test2", "ALL:(Test* AND test2*)" }, //5
 				{ "ALL:#query*#", "Test AND (test2 OR test3)", "ALL:(Test* AND (test2* OR test3*))" }, //6
 				{ "ALL:#+query*#", "Test AND (test2 OR test3)", "ALL:(+Test* AND (+test2* OR +test3*))" }, //7
-				{ "+ALL:#query#", "Test or test2", "+ALL:(Test or test2)" }, //8
+				{ "+ALL:#query#", "Test or test2", "+ALL:(Test OR test2)" }, //8
 				{ "ALL:#+query~#", "Test AND (test2 OR test3)", "ALL:(+Test~ AND (+test2~ OR +test3~))" }, //9
 				{ "ALL:#+query~1#", "Test AND (test2 OR test3)", "ALL:(+Test~1 AND (+test2~1 OR +test3~1))" }, //10
 				{ "ALL:#+query#", "Test AND (test2^2 OR test3)", "ALL:(+Test AND (+test2^2 OR +test3))" }, //11
 				{ "ALL:#+query^2#", "Test AND (test2 OR test3)", "ALL:(+Test^2 AND (+test2^2 OR +test3^2))" }, //12
 				{ "ALL:#+query#^2", "Test AND (test2 OR test3)", "ALL:(+Test AND (+test2 OR +test3))^2" }, //13
 				{ "ALL:#+query*#", "Test, test2, test3", "ALL:(+Test*, +test2*, +test3*)" }, //14
-				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 to 2005]" }, //15
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 TO 2005]" }, //15
 				{ "ALL:(#query# #query*# #Query~2#)", "Test test2", "ALL:((Test test2) Test* test2* (Test~2 test2~2))", "ALL:((Test test2) (Test* test2*) (Test~2 test2~2))" }, //16
 				{ "ALL:(#query#^4 #query*#^2 #Query~2#)", "Test test2", "ALL:((Test test2)^4 (Test* test2*)^2 (Test~2 test2~2))" }, //17
+				{ "+JOB_CODE:#+query*#", "00000-1111", "+JOB_CODE:(+00000-1111*)" }, //18
+				{ "+JOB_CODE:#+query*#", "130.IC", "+JOB_CODE:(+130.IC*)" }, //19
+				{ "+JOB_CODE:+#query*#", "130.IC rouge", "+JOB_CODE:(+(130.IC* rouge*))" }, //20
+				{ "PART_NUMBER:#+query*#", "130.IC rouge", "PART_NUMBER:(+130.IC* +rouge*)" }, //21
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringBooleanQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "F1:#query# or F2:#query#", "Test", "F1:Test OR F2:Test" }, //0
+				{ "F1:#query# and F2:#query#", "Test", "F1:Test AND F2:Test" }, //1
+				{ "F1:#query# OR F2:#query#", "Test", "F1:Test OR F2:Test" }, //2
+				{ "F1:#query# AND F2:#query#", "Test", "F1:Test AND F2:Test" }, //3
+				{ "F1:#query# AND (F2:#query# OR F3:#query#)", "Test", "F1:Test AND (F2:Test OR F3:Test)" }, //4
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -95,7 +112,7 @@ public abstract class AbstractListFilterBuilderTest {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "", "ALL:*" }, //0
-				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 to *]" }, //1
+				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 TO *]" }, //1
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -191,6 +208,7 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query*#", ";Test;", "ALL:(;+Test*;)" },
 				{ "ALL:#+query*#", "(Test)", "ALL:((+Test*))", "ALL:(+Test*)" },
 				{ "ALL:#+query*#", "[Test]", "ALL:([Test])", "ALL:[Test]" },
+				{ "ALL:#+query*#", "l'avion n'est pas là", "ALL:(+l'avion* +n'est* +pas* +là*)" },
 
 		};
 		testStringFixedQuery(testQueries);
@@ -221,19 +239,19 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23T16:45:00.000Z\"" }, //3
 				{ "ALL:#int1#", testBean, "ALL:5" }, //4
 				{ "ALL:#int2#", testBean, "ALL:10" }, //5
-				{ "ALL:[#int1# to #int2#]", testBean, "ALL:[5 to 10]" }, //6
-				{ "ALL:[#int1# TO #int2#]", testBean, "ALL:[5 to 10]" }, //7
-				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //8
-				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 to *]" }, //9
-				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 to *]" }, //10
-				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* to 10]" }, //11
+				{ "ALL:[#int1# to #int2#]", testBean, "ALL:[5 TO 10]" }, //6
+				{ "ALL:[#int1# TO #int2#]", testBean, "ALL:[5 TO 10]" }, //7
+				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO \"2015-07-23T16:45:00.000Z\"]" }, //8
+				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 TO *]" }, //9
+				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 TO *]" }, //10
+				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* TO 10]" }, //11
 				{ "ALL:[#null# to #null#]", testBean, "" }, //12
 				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //13
-				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //14
-				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* to *]", "" }, //15
-				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 to 10]" }, //16
-				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 to 10}" }, //17
-				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 to 10}" }, //18
+				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO *]" }, //14
+				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* TO *]", "" }, //15
+				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //16
+				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //17
+				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //18
 		};
 		testObjectFixedQuery(testQueries);
 	}

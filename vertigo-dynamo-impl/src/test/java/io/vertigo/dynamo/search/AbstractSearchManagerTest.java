@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.search;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -85,14 +85,15 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
 		facetSuffix = CarFacetInitializer.FCT_CAR_SUFFIX;
-		makeFacetDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.FCT_MAKE_CAR, FacetDefinition.class);
-		yearFacetDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.FCT_YEAR_CAR, FacetDefinition.class);
-		carIndexDefinition = Home.getDefinitionSpace().resolve(indexName, SearchIndexDefinition.class);
-		carFacetQueryDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.QRY_CAR_FACET, FacetedQueryDefinition.class);
+		makeFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_MAKE_CAR, FacetDefinition.class);
+		yearFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_YEAR_CAR, FacetDefinition.class);
+		carIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
+		carFacetQueryDefinition = definitionSpace.resolve(CarFacetInitializer.QRY_CAR_FACET, FacetedQueryDefinition.class);
 		clean(carIndexDefinition);
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
@@ -42,7 +42,7 @@ public final class CatalogWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getDefinitionSpace().getAll(WebServiceDefinition.class);
+		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class);
 		return publishCatalog(webServiceDefinitions);
 	}
 

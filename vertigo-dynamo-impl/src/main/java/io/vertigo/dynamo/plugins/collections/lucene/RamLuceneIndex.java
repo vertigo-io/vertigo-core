@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -33,6 +33,7 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Modifiable;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
@@ -229,7 +230,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	private static StoreManager getStoreManager() {
-		return Home.getComponentSpace().resolve(StoreManager.class);
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 
 	private static String getStringValue(final DtObject dto, final DtField field) {
@@ -321,7 +322,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 			try {
 				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
-				throw new RuntimeException("Erreur lors de la création du filtrage de la requete", e);
+				throw new WrappedException("Erreur lors de la création du filtrage de la requete", e);
 			}
 		}
 		return query;

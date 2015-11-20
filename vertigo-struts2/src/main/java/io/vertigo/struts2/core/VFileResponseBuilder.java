@@ -20,6 +20,7 @@ package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -101,7 +102,7 @@ public final class VFileResponseBuilder {
 	 * @param exception L'exception à gérer
 	 */
 	private static void handleException(final Exception exception) {
-		throw new RuntimeException("Impossible d'envoyer le fichier.<!-- " + exception.getMessage() + "-->", exception);
+		throw new WrappedException("Impossible d'envoyer le fichier.<!-- " + exception.getMessage() + "-->", exception);
 	}
 
 	/**

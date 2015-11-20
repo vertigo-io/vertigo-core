@@ -33,12 +33,15 @@ import java.util.List;
  * @author  fconstantin, pchretien
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
+	private static final String DEFAULT_STORE_NAME = "main";
+
 	private final List<TaskAttribute> myInTaskAttributes = new ArrayList<>();
 	private TaskAttribute myOutTaskAttribute;
 	private final String myTaskDefinitionName;
 	private Class<? extends TaskEngine> myTaskEngineClass;
 	private String myRequest;
 	private String myPackageName;
+	private String myStoreName;
 
 	/**
 	 * Constructor.
@@ -90,6 +93,13 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
+	public TaskDefinitionBuilder withStore(final String storeName) {
+		//storeName may be null
+		//-----
+		myStoreName = storeName;
+		return this;
+	}
+
 	/**
 	 * Add an input attribute.
 	 *
@@ -125,9 +135,11 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
+				myStoreName == null ? DEFAULT_STORE_NAME : myStoreName,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
 				Option.option(myOutTaskAttribute));
 	}
+
 }

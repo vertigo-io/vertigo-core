@@ -97,7 +97,7 @@ public final class DIReactor {
 		final StringBuilder missing = new StringBuilder();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
-				//Si une référence est requise 
+				//Si une référence est requise
 				//et qu'elle est absente, c'est qu'elle est manquante !
 				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getName())) {
 					missing.append(dependency).append(" (referenced by " + componentInfo.getId() + ")")
@@ -133,7 +133,7 @@ public final class DIReactor {
 			// Si lors d'une itération on ne fait rien c'est qu'il y a une dépendance cyclique
 			if (countSorted == sorted.size()) {
 				// On a une dépendance cyclique !
-				throw new DIException("Liste des composants non résolus :" + unsorted);
+				throw new DIException("Dependencies can't be resolved on components :" + unsorted);
 			}
 		}
 		//-----
@@ -145,7 +145,7 @@ public final class DIReactor {
 	private static boolean isSolved(final DIComponentInfo componentInfo, final Set<String> parentComponentInfos, final Set<String> allComponentInfos, final List<String> sorted) {
 		//Un composant est résolu si
 		// les dépendances obligatoires sont déjà résolues
-		// les dépendantes facultatives 
+		// les dépendantes facultatives
 		for (final DIDependency dependency : componentInfo.getDependencies()) {
 			if (!isSolved(dependency, parentComponentInfos, allComponentInfos, sorted)) {
 				return false;

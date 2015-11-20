@@ -27,9 +27,11 @@ import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.tempo.impl.mail.Resources;
 import io.vertigo.tempo.impl.mail.SendMailPlugin;
 import io.vertigo.tempo.mail.Mail;
+import io.vertigo.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -88,7 +91,10 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
 	 */
 	@Inject
-	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol, @Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode, @Named("developmentMailTo") final String developmentMailTo, @Named("port") final Option<Integer> mailPort, @Named("login") final Option<String> mailLogin, @Named("pwd") final Option<String> mailPassword) {
+	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol,
+			@Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode,
+			@Named("developmentMailTo") final String developmentMailTo, @Named("port") final Option<Integer> mailPort,
+			@Named("login") final Option<String> mailLogin, @Named("pwd") final Option<String> mailPassword) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);
@@ -96,6 +102,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mailPort);
 		Assertion.checkNotNull(mailLogin);
 		Assertion.checkNotNull(mailPassword);
+		Assertion.checkArgument(mailLogin.isEmpty() || !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
+				"When defined Login can't be empty");
 		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isDefined(), // login and password must be null or not null both
 				"Password is required when login is defined");
 		//-----
@@ -122,13 +130,24 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				properties.put("mail.port", mailPort.get());
 			}
 			properties.put("mail.debug", "false");
+			Session session;
 			if (mailLogin.isDefined()) {
-				properties.put("mail.starttls.enable", true);
-				properties.put("mail.auth", "true");
-				properties.put("mail.user", mailLogin.get());
-				properties.put("mail.password", mailPassword.get());
+				properties.put("mail.smtp.ssl.trust", mailHost);
+				properties.put("mail.smtp.starttls.enable", true);
+				properties.put("mail.smtp.auth", "true");
+
+				final String username = mailLogin.get();
+				final String password = mailPassword.get();
+				session = Session.getInstance(properties, new javax.mail.Authenticator() {
+
+					@Override
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(username, password);
+					}
+				});
+			} else {
+				session = Session.getDefaultInstance(properties);
 			}
-			final Session session = Session.getDefaultInstance(properties);
 			session.setDebug(false);
 			final Message message = new MimeMessage(session);
 			setFromAddress(mail.getFrom(), message);
@@ -161,7 +180,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isDefined() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("Probleme d'encodage lors de l'envoi du mail", e);
+			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
 	}
 
@@ -234,16 +253,16 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");
 			final BodyPart plainMessageBodyPart = new MimeBodyPart();
-			plainMessageBodyPart.setContent(textContent, "text/plain");
+			plainMessageBodyPart.setContent(textContent, "text/plain; charset=" + CHARSET_USED);
 			multipart.addBodyPart(plainMessageBodyPart);
 			final BodyPart htmlMessageBodyPart = new MimeBodyPart();
-			htmlMessageBodyPart.setContent(htmlContent, "text/html");
+			htmlMessageBodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
 			multipart.addBodyPart(htmlMessageBodyPart);
 			bodyPart.setContent(multipart);
 		} else if (textContent != null) {
 			bodyPart.setText(textContent);
 		} else if (htmlContent != null) {
-			bodyPart.setContent(htmlContent, "text/html");
+			bodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
 		}
 	}
 
@@ -255,7 +274,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de lecture des pieces jointes", e);
+			throw new WrappedException("Can't read attached file", e);
 		}
 	}
 

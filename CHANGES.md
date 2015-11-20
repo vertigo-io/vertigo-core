@@ -1,14 +1,54 @@
 Version history
 ===============
 
-Running 0.8.4-SNAPSHOT
+Running 0.9.1-SNAPSHOT
 ----------------------
 
 more to come :)
 
+Release 0.9.0 - 2015/11/20
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-083-to-090)
+
+__In Bold__ : Potential compatibility problems 
+* [All] Code cleaning and refactoring
+* [All] Refactored RuntimeExceptions to VSystemException and WrappedException
+* [Core] Detect prefix boot. to resolved env properties
+* __[Core] Refactored initializers (not generics anymore, should use @Inject)__
+* [Vega] Fixed routes order : /x/* are now after more specialized routes
+*	__[Dynamo] Renamed DslXxxDefinition to DslXxx and removed deprecated RegExpListFilterBuilder__
+* [Dynamo] Replaced RegExpListFilterBuilder by Dsl ones
+* [Vega] Made VSecurityException runtime and using MessageText
+* __[Vega] Added DtList deserializer support. WARN : no constraints check__
+*	[Dynamo] Fixed delete order for TwoTablesDbFileStorePlugin
+* [Core] Replaced componentSpace and definitionSpace accesses by Home.getApp().xx instead of Home.xx
+* [Core] Changed syntax for params in config => '${xx}' instead of 'conf:xx' or '{xx}'
+* [Core] Added method addAll with array on ListBuilder
+* [Core] Added ResourceManager, LocaleManager and ConfigManager in the boot phase
+* __[Core] Renamed ConfigManager to ParamManager__
+* [core] Supported boot params from environment variables
+* [Core] Removed EnvironmentManager 
+* [core] Refactored DefinitionSpace and ComponentSpace as simple containers
+* [Core] Better cyclic dependencies message
+* [Dynamo] Splitted KVStoreManager from StoreManager
+* [Dynamo] Added DataStoreName on DT and TK to allow multiple databases
+* [Dynamo] Refactored Search : indices by conf for env, uses types for clustering documents
+* [Dynamo] Fixed tests : DefinitionSpace no more injectable	
+* [Dynamo] Fixed managers.xml, add locales on boot tag
+* [Dynamo] Fixed search listFilterBuilder range 'to' to 'TO' ES keywords must be uppercase
+* [Dynamo] Renamed cores to envIndex on ElasticSearch plugins
+* [Dynamo] Changed elasticSearch version from 1.5.2 to 1.7.3 (can be downgraded)
+* [All] Rollback to itext 2.1.7 (after they overrided 4.2.1 version on maven repo to scrap it)
+* [Dynamo] Fix #38. Added hashCode on FilterCriteria
+* [Tempo] Fixed mail starttls support (by @Jerom138)
+* Merge pull request #36 from durandx/rename-tool-fix Fix rename issues for v0.8.1 & v0.8.2
+
+
+
 Release 0.8.3 - 2015/10/08
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-082-to-083)
+
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning and refactoring
 * __[All] Updated dependencies libs : gson 2.4, jedis 2.7.3, elasticsearch 1.5.2, poi 3.13__

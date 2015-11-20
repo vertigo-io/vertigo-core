@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
+import io.vertigo.lang.WrappedException;
 
 import java.sql.SQLException;
 
@@ -68,7 +69,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
-		throw new RuntimeException("[Erreur SQL](" + errCode + ") : " + statement, sqle);
+		throw new WrappedException("[Erreur SQL](" + errCode + ") : " + statement, sqle);
 	}
 
 	/** {@inheritDoc} */

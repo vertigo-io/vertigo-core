@@ -55,7 +55,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -129,7 +128,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	@Override
 	public String toJsonError(final Throwable th) {
 		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-		return gson.toJson(Collections.singletonMap("globalErrors", Collections.singletonList(exceptionMessage)));//TODO +stack;
+		return gson.toJson(Collections.singletonMap("globalErrors", Collections.singletonList(exceptionMessage)));
 	}
 
 	/** {@inheritDoc} */
@@ -144,13 +143,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 		final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
 		return gson.fromJson(json, typeOfDest);
 	}
-
-	/** {@inheritDoc} */
-	/*@Override
-	public <D extends DtObject> UiObjectExtended<D> uiObjectExtendedFromJson(final String json, final Type paramType) {
-		final Type typeOfDest = createParameterizedType(UiObjectExtended.class, paramType);
-		return gson.fromJson(json, typeOfDest);
-	}*/
 
 	/** {@inheritDoc} */
 	@Override
@@ -295,8 +287,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 		/** {@inheritDoc} */
 		@Override
-		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext)
-				throws JsonParseException {
+		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
 			return URI.fromURN(json.getAsString());
 		}
 	}
@@ -402,29 +393,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	/*private static class UiObjectExtendedDeserializer<D extends DtObject> implements JsonDeserializer<UiObjectExtended<D>> {
-		@Override
-		public UiObjectExtended<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);
-			final UiObject<D> uiObject = context.deserialize(json, uiObjectType);
-			final Set<String> uiObjectModifiedFields = uiObject.getModifiedFields();
-			final UiObjectExtended<D> uiObjectExtended = new UiObjectExtended(uiObject);
-
-			final JsonObject jsonObject = json.getAsJsonObject();
-			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-				final String key = entry.getKey();
-				final JsonElement jsonSubElement = entry.getValue();
-				if (!uiObjectModifiedFields.contains(key)) {
-					//Can't type value : bad solution.
-					uiObjectExtended.put(key, jsonSubElement.getAsString());
-				}
-			}
-			return uiObjectExtended;
-		}
-	}*/
-
 	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
@@ -446,8 +414,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final Map<String, UiObject<D>> collUpdates = parseUiObjectMap(jsonObject, "collUpdates", uiObjectType, context);
 			final Map<String, UiObject<D>> collDeletes = parseUiObjectMap(jsonObject, "collDeletes", uiObjectType, context);
 
-			final UiListDelta<D> uiListDelta = new UiListDelta<>(dtoClass, collCreates, collUpdates, collDeletes);
-			return uiListDelta;
+			return new UiListDelta<>(dtoClass, collCreates, collUpdates, collDeletes);
 		}
 
 		private Map<String, UiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
@@ -467,7 +434,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	private static class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiList<D>> {
 		/** {@inheritDoc} */
 		@Override
-		public UiList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+		public UiList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);
@@ -482,30 +449,33 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	//TODO : pas cool, il n'y a pas de controle de contrainte des domaines
+	private static class DtListDeserializer<D extends DtObject> implements JsonDeserializer<DtList<D>> {
+		/** {@inheritDoc} */
+		@Override
+		public DtList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
+			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
+			final JsonArray jsonArray = json.getAsJsonArray();
+
+			final DtList<D> dtList = new DtList<>(dtoClass);
+			for (final JsonElement element : jsonArray) {
+				final D inputDto = context.deserialize(element, dtoClass);
+				dtList.add(inputDto);
+			}
+			return dtList;
+		}
+	}
+
 	private static Gson createGson() {
 		return new GsonBuilder()
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 				.setPrettyPrinting()
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
-				//.serializeNulls()//On veut voir les null
 				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 				.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
-				//.registerTypeAdapter(UiObjectExtended.class, new UiObjectExtendedDeserializer<>())
-				/*.registerTypeAdapter(DtObjectExtended.class, new JsonSerializer<DtObjectExtended<?>>() {
-					@Override
-					public JsonElement serialize(final DtObjectExtended<?> src, final Type typeOfSrc, final JsonSerializationContext context) {
-						final JsonObject jsonObject = new JsonObject();
-						final JsonObject jsonInnerObject = (JsonObject) context.serialize(src.getInnerObject());
-						for (final Entry<String, JsonElement> entry : jsonInnerObject.entrySet()) {
-							jsonObject.add(entry.getKey(), entry.getValue());
-						}
-						for (final Entry<String, Serializable> entry : src.entrySet()) {
-							jsonObject.add(entry.getKey(), context.serialize(entry.getValue()));
-						}
-						return jsonObject;
-					}
-				})*/
+				.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 				.registerTypeAdapter(FacetedQueryResult.class, new FacetedQueryResultJsonSerializer())
 				.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 				.registerTypeAdapter(List.class, new ListJsonSerializer())

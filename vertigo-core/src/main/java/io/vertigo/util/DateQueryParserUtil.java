@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,7 +91,7 @@ final class DateQueryParserUtil {
 			} else if ('-' == operator) {
 				sign = -1;
 			} else {
-				throw new RuntimeException("a valid operator (+ or -) is expected :'" + operator + "' on " + dateQuery);
+				throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateQuery);
 			}
 			//---
 			//operand = 21d
@@ -103,7 +104,7 @@ final class DateQueryParserUtil {
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
 			if (!CALENDAR_UNITS.containsKey(calendarUnit)) {
-				throw new RuntimeException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
+				throw new VSystemException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
 			}
 			//---
 			final Calendar calendar = new GregorianCalendar();
@@ -118,7 +119,7 @@ final class DateQueryParserUtil {
 			calendar.setTime(simpleDateFormat.parse(dateQuery));
 			return calendar.getTime();
 		} catch (final ParseException e) {
-			throw new RuntimeException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+			throw new VSystemException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
 		}
 
 	}

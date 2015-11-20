@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import io.vertigo.app.AppListener;
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.core.AppListener;
-import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -109,7 +109,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
 		final Constructor<? extends Daemon> constructor = findConstructor(daemonInfo.getDaemonClass(), daemonInfo.getConstructorArgs());
 		final Daemon daemon = ClassUtil.newInstance(constructor, daemonInfo.getConstructorArgs());
-		Injector.injectMembers(daemon, Home.getComponentSpace());
+		Injector.injectMembers(daemon, Home.getApp().getComponentSpace());
 		return daemon;
 	}
 

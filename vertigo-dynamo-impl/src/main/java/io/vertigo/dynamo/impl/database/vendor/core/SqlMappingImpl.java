@@ -39,7 +39,6 @@ import java.sql.Types;
  */
 public final class SqlMappingImpl implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
-	private static final String TYPE_INCONNU = "Type unknown : ";
 
 	/** {@inheritDoc} */
 	@Override
@@ -108,9 +107,8 @@ public final class SqlMappingImpl implements SqlMapping {
 				return Types.BLOB;
 			case DtList:
 			case DtObject:
-				throw new RuntimeException(TYPE_UNSUPPORTED + dataType);
 			default:
-				throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 	}
 
@@ -161,9 +159,8 @@ public final class SqlMappingImpl implements SqlMapping {
 					break;
 				case DtList:
 				case DtObject:
-					throw new RuntimeException(TYPE_UNSUPPORTED + dataType);
 				default:
-					throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+					throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 			}
 		}
 	}
@@ -206,9 +203,8 @@ public final class SqlMappingImpl implements SqlMapping {
 			case DataStream:
 			case DtList:
 			case DtObject:
-				throw new RuntimeException(TYPE_UNSUPPORTED + dataType);
 			default:
-				throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 		if (callableStatement.wasNull()) {
 			o = null;
@@ -272,9 +268,8 @@ public final class SqlMappingImpl implements SqlMapping {
 				break;
 			case DtList:
 			case DtObject:
-				throw new RuntimeException(TYPE_UNSUPPORTED + dataType);
 			default:
-				throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 		return value;
 	}

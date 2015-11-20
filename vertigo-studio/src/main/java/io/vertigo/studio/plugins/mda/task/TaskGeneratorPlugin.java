@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -140,7 +140,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Map<String, List<TaskDefinition>> buildPackageMap() {
-		final Collection<TaskDefinition> taskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
+		final Collection<TaskDefinition> taskDefinitions = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<String, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 		//---
 		for (final TaskDefinition taskDefinition : taskDefinitions) {
@@ -167,12 +167,12 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Map<DtDefinition, List<TaskDefinition>> builDtDefinitiondMap() {
-		final Collection<TaskDefinition> taskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
+		final Collection<TaskDefinition> taskDefinitions = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<DtDefinition, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 
 		//---
 		//Par défaut, On crée pour chaque DT une liste vide des taches lui étant associées.
-		final Collection<DtDefinition> dtDefinitions = Home.getDefinitionSpace().getAll(DtDefinition.class);
+		final Collection<DtDefinition> dtDefinitions = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class);
 		for (final DtDefinition dtDefinition : dtDefinitions) {
 			taskDefinitionsMap.put(dtDefinition, new ArrayList<TaskDefinition>());
 		}

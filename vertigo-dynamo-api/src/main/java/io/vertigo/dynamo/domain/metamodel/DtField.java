@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -236,7 +236,7 @@ public final class DtField implements DtFieldName {
 	public DtDefinition getFkDtDefinition() {
 		Assertion.checkNotNull(fkDtDefinitionName);
 		//-----
-		return Home.getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
+		return Home.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}
 
 	/**

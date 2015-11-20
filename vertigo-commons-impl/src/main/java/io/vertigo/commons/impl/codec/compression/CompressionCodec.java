@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.Codec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 import java.util.Arrays;
@@ -96,7 +97,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 
 	private static void checkMaxSize(final int length) {
 		if (length >= MAX_SIZE_FOR_COMPRESSION) {
-			throw new RuntimeException("L'objet est trop gros pour être compressé en mémoire (" + length / (1024 * 1024) + " Mo)");
+			throw new IllegalArgumentException("L'objet est trop gros pour être compressé en mémoire (" + length / (1024 * 1024) + " Mo)");
 		}
 	}
 
@@ -132,7 +133,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 						inflater.inflate(uncompressedObject);
 					}
 				} catch (final DataFormatException e) {
-					throw new RuntimeException("décompression", e);
+					throw new WrappedException(e);
 				}
 			}
 		}

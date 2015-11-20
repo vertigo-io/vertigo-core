@@ -24,6 +24,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -255,7 +256,7 @@ final class RestQueueServer {
 			obtainWorkQueue(workItem.getWorkType()).put(new WaitingWorkInfos(workItem));
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
-			throw new RuntimeException("putWorkItem", e);
+			throw new WrappedException("putWorkItem", e);
 		}
 	}
 

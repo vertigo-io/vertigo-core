@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.core.App;
+import io.vertigo.app.App;
 import io.vertigo.vega.webservice.data.MyAppConfig;
 
 /**

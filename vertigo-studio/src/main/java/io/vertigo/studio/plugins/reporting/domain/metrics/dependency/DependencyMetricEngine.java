@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.dependency;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -48,7 +48,7 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 
 	private static int count(final DtDefinition dtDefinition) {
 		int count = 0;
-		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
+		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 				count += count(dtDefinition, taskAttribute);
 			}
