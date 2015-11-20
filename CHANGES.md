@@ -6,16 +6,20 @@ Running 0.9.1-SNAPSHOT
 
 more to come :)
 
-Release 0.9.0 - 2015/11/17
+Release 0.9.0 - 2015/11/20
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-083-to-090)
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning and refactoring
+* [All] Refactored RuntimeExceptions to VSystemException and WrappedException
+* [Core] Detect prefix boot. to resolved env properties
+* __[Core] Refactored initializers (not generics anymore, should use @Inject)__
 * [Vega] Fixed routes order : /x/* are now after more specialized routes
 *	__[Dynamo] Renamed DslXxxDefinition to DslXxx and removed deprecated RegExpListFilterBuilder__
 * [Dynamo] Replaced RegExpListFilterBuilder by Dsl ones
 * [Vega] Made VSecurityException runtime and using MessageText
+* __[Vega] Added DtList deserializer support. WARN : no constraints check__
 *	[Dynamo] Fixed delete order for TwoTablesDbFileStorePlugin
 * [Core] Replaced componentSpace and definitionSpace accesses by Home.getApp().xx instead of Home.xx
 * [Core] Changed syntax for params in config => '${xx}' instead of 'conf:xx' or '{xx}'
