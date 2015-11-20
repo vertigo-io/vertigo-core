@@ -91,11 +91,11 @@ public final class DOCXMergerPlugin implements MergerPlugin {
 		Assertion.checkNotNull(data);
 		//-----
 		final File file = DOCXUtil.obtainModelFile(modelFileURL);
-		file.setReadOnly();
+		file.setReadOnly(); //on protège le fichier
 		try {
 			return doExecute(file, data);
 		} finally {
-			file.setWritable(true);
+			file.setWritable(true); //on le remet éditable
 		}
 	}
 
