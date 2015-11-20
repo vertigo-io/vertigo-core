@@ -108,9 +108,8 @@ public final class SqlMappingImpl implements SqlMapping {
 				return Types.BLOB;
 			case DtList:
 			case DtObject:
-				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 			default:
-				throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 	}
 
@@ -161,9 +160,8 @@ public final class SqlMappingImpl implements SqlMapping {
 					break;
 				case DtList:
 				case DtObject:
-					throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 				default:
-					throw new IllegalArgumentException(TYPE_INCONNU + dataType);
+					throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 			}
 		}
 	}

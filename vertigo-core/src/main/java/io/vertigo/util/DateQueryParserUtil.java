@@ -91,7 +91,7 @@ final class DateQueryParserUtil {
 			} else if ('-' == operator) {
 				sign = -1;
 			} else {
-				throw new VSystemException("a valid operator (+ or -) is expected :'" + operator + "' on " + dateQuery);
+				throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateQuery);
 			}
 			//---
 			//operand = 21d
