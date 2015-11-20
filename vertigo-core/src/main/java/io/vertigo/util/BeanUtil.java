@@ -58,7 +58,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			throw new VSystemException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new VSystemException("Getter non trouvé pour l'attribut '{0}' sur classe '{1}'", propertyName, object.getClass().getName());
 		}
 		return ClassUtil.invoke(object, readMethod);
 	}
@@ -78,7 +78,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
-			throw new VSystemException("Setter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new VSystemException("Setter non trouvé pour l'attribut '{0}' sur classe '{1}'", propertyName, object.getClass().getName());
 		}
 		ClassUtil.invoke(object, writeMethod, value);
 	}

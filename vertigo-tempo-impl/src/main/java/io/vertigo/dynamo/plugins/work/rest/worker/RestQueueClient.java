@@ -162,7 +162,7 @@ final class RestQueueClient {
 	private static void checkResponseStatus(final ClientResponse response) {
 		final Status status = response.getClientResponseStatus();
 		if (status.getFamily() != Family.SUCCESSFUL) {
-			throw new VSystemException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
+			throw new VSystemException("An error occured : {0} {1} ", status.getStatusCode(), status.getReasonPhrase());
 		}
 	}
 

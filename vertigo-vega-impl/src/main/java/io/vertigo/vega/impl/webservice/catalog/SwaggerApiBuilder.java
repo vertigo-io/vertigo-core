@@ -423,7 +423,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
-		final String prefix = (!webServiceParam.getName().isEmpty()) ? (webServiceParam.getName() + ".") : "";
+		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
 		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
@@ -484,7 +484,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				break;
 			case Implicit://must be escape before
 			default:
-				throw new VSystemException("Unsupported type : " + webServiceParam.getParamType());
+				throw new VSystemException("Unsupported type : {0}", webServiceParam.getParamType());
 		}
 
 		final Map<String, Object> parameter = new LinkedHashMap<>();

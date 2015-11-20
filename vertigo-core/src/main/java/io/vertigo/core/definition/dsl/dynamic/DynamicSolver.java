@@ -69,7 +69,7 @@ final class DynamicSolver {
 			}
 			//Si la liste n'a pas diminuée c'est que l'on a fini de résoudre ce qui peut l'être.
 			if (size == coll.size()) {
-				throw new VSystemException(" Les références " + coll + " ne peuvent être résolues");
+				throw new VSystemException(" Les références {0} ne peuvent être résolues", coll);
 			}
 			size = coll.size();
 		}
