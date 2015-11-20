@@ -35,6 +35,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.Type3Font;
 
 /**
  * Plugin de conversion du format ODT au format PDF.
@@ -56,6 +62,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		//-----
 		final Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 		final IConverter converter = ConverterRegistry.getRegistry().getConverter(options);
+		final SnapshotBuiltinFont snapshotBuiltinFont = new SnapshotBuiltinFont();
 		try (InputStream in = file.createInputStream()) {
 			String fileName = file.getFileName();
 			if (fileName.indexOf('.') > 0) {
@@ -68,6 +75,39 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			return pdf;
 		} catch (final IOException | XDocConverterException e) {
 			throw new WrappedException(e);
+		} finally {
+			snapshotBuiltinFont.restoreDefaultBuiltinFonts(); //xdocreport surcharge les font par défaut d'iText.
 		}
+	}
+
+	/**
+	 * Used to saved iText builtin font, overrided by xDocReport.
+	 * @author npiedeloup
+	 */
+	protected static final class SnapshotBuiltinFont extends Type3Font {
+		private final Map<String, PdfName> savedBuiltinFonts14;
+
+		/**
+		 * Constructor.
+		 * Take snapshot of iText's BuiltinFonts14.
+		 */
+		public SnapshotBuiltinFont() {
+			super(null, false);
+			synchronized (BuiltinFonts14) {
+				Assertion.checkArgument(BuiltinFonts14.size() >= 14, "Default iText BuiltinFonts14, not correclty loaded (only {0} elements instead of 14)", BuiltinFonts14.size());
+				//----
+				savedBuiltinFonts14 = Collections.unmodifiableMap(new HashMap<String, PdfName>(BuiltinFonts14));
+			}
+		}
+
+		/**
+		 * Restore snapshot of iText's BuiltinFonts14.
+		 */
+		public void restoreDefaultBuiltinFonts() {
+			synchronized (BuiltinFonts14) {
+				BuiltinFonts14.putAll(savedBuiltinFonts14);
+			}
+		}
+
 	}
 }

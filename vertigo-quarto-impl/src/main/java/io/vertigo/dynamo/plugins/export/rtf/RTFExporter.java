@@ -57,6 +57,7 @@ final class RTFExporter extends AbstractExporterIText {
 		// writer.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
 
 		// advanced page numbers : x/y
+
 		final Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
 		//-----
 		final Paragraph footerParagraph = new Paragraph();
