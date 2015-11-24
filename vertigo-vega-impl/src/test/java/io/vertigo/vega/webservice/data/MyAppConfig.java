@@ -101,7 +101,7 @@ public final class MyAppConfig {
 				.withEmbeddedServer(WS_PORT)
 			.endModule()
 			//-----
-			.beginModule("dao-app").withNoAPI().withInheritance(Object.class)
+			.beginModule("dao-app").withNoAPI()
 				.addComponent(ContactDao.class)
 			.endModule()
 			.beginModule("webservices-app").withNoAPI().withInheritance(WebServices.class)
