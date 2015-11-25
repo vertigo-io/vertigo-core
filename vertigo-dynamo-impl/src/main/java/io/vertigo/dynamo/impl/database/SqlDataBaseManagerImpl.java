@@ -45,8 +45,6 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
-	/** Main connectionProvider's name. */
-	public static final String MAIN_CONNECTION_PROVIDER_NAME = "main";
 	private final SqlDataBaseListener dataBaseListener;
 	private final SqlStatementHandler statementHandler;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
@@ -73,12 +71,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		}
 		Assertion.checkNotNull(connectionProviderPluginMap.containsKey(MAIN_CONNECTION_PROVIDER_NAME), "No main ConnectionProvider was set. Configure one and only one connectionProviderPlugin with name 'main'.");
 		localeManager.add("io.vertigo.dynamo.impl.database.DataBase", io.vertigo.dynamo.impl.database.Resources.values());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public SqlConnectionProvider getMainConnectionProvider() {
-		return connectionProviderPluginMap.get(MAIN_CONNECTION_PROVIDER_NAME);
 	}
 
 	/** {@inheritDoc} */

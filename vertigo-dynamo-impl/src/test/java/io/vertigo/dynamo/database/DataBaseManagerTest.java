@@ -56,20 +56,20 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
-		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		//A chaque fin de test on arrête la base.
-		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "shutdown;");
 	}
 
 	@Test
 	public void testConnection() throws Exception {
-		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		Assert.assertNotNull(connection);
 		connection.commit();
 	}
@@ -96,7 +96,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	public void createDatas() throws Exception {
-		final SqlConnection connection = dataBaseManager.getMainConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		try {
 			execCallableStatement(connection, "insert into movie values (1, 'citizen kane')");
 			//-----
@@ -163,7 +163,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private SqlQueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
-		return executeQuery(domain, sql, dataBaseManager.getMainConnectionProvider());
+		return executeQuery(domain, sql, dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
 	}
 
 	private SqlQueryResult executeQuery(final Domain domain, final String sql, final SqlConnectionProvider sqlConnectionProvider) throws SQLException, Exception {
@@ -232,7 +232,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals(1, resultMovie1.getSQLRowCount());
 			Assert.assertEquals("Star wars", ((Movie) resultMovie1.getValue()).getTitle());
 
-			final SqlQueryResult result1 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getMainConnectionProvider());
+			final SqlQueryResult result1 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
 			Assert.assertEquals(1, result1.getSQLRowCount());
 			Assert.assertEquals(3, result1.getValue());
 		} finally {
