@@ -38,7 +38,6 @@ import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
-import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactCriteria;
@@ -104,7 +103,7 @@ public final class MyAppConfig {
 			.beginModule("dao-app").withNoAPI()
 				.addComponent(ContactDao.class)
 			.endModule()
-			.beginModule("webservices-app").withNoAPI().withInheritance(WebServices.class)
+			.beginModule("webservices-app").withNoAPI()
 				.addComponent(ComponentCmdWebServices.class)
 				.addComponent(CommonWebServices.class)
 				.addComponent(ContactsWebServices.class)

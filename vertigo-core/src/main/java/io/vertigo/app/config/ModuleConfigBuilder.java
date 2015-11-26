@@ -48,7 +48,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
-	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
 	//State to avoid reuse of this Builder
 	private boolean ended = false;
@@ -82,14 +81,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
 		myHasApi = false;
-		return this;
-	}
-
-	public ModuleConfigBuilder withInheritance(final Class<? extends Component> superClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		Assertion.checkNotNull(superClass);
-		//-----
-		mySuperClass = superClass;
 		return this;
 	}
 
@@ -239,7 +230,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		if (myHasApi) {
 			moduleRules.add(new APIModuleRule());
 		}
-		moduleRules.add(new InheritanceModuleRule(mySuperClass));
 		//-----
 		final List<ComponentConfig> componentConfig = new ArrayList<>();
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {

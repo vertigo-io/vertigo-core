@@ -107,15 +107,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
-				final String superClass = attrs.getValue("inheritance");
 				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
 				if (api != null) {
 					if (!Boolean.parseBoolean(api)) {
 						moduleConfigBuilder.withNoAPI();
 					}
-				}
-				if (superClass != null) {
-					moduleConfigBuilder.withInheritance(ClassUtil.classForName(superClass, Component.class));
 				}
 				break;
 			case component:
