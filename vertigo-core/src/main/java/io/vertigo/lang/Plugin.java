@@ -25,6 +25,6 @@ package io.vertigo.lang;
  * 
  * @author pchretien
  */
-public interface Plugin {
+public interface Plugin extends Component {
 	//Un plugin peut être activeable.
 }

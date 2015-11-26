@@ -35,13 +35,14 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.store.util.DAOBroker;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.lang.Component;
 import ${dao.dtClassCanonicalName};
 
 /**
  * DAO : Accès à un object (DTO, DTC). 
  * ${dao.classSimpleName}
  */
-public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleName}, ${dao.pkFieldType}> {
+public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleName}, ${dao.pkFieldType}> implements Component {
 	<#if dao.keyConcept && dao.hasSearchBehavior()>
 	private final SearchManager searchManager;
 	</#if>

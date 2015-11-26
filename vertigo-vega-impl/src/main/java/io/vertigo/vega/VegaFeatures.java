@@ -86,7 +86,7 @@ public final class VegaFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.withNoAPI().withInheritance(Object.class)
+				.withNoAPI()
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceIntrospectorPlugin.class)

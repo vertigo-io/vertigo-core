@@ -29,6 +29,7 @@ import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
@@ -120,7 +121,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
+				final Component component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			} else {
@@ -179,9 +180,9 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private Object createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Component createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 1. An instance is created
-		final Object instance = createComponent(paramManagerOption, componentContainer, componentConfig);
+		final Component instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
@@ -191,7 +192,7 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Component createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		//		if (componentConfig.isElastic()) {
 		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		//		}
@@ -199,7 +200,7 @@ public final class ComponentLoader {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
-		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
+		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
 		return component;
 	}

@@ -25,6 +25,7 @@ import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
@@ -114,16 +115,16 @@ final class XMLModulesHandler extends DefaultHandler {
 					}
 				}
 				if (superClass != null) {
-					moduleConfigBuilder.withInheritance(ClassUtil.classForName(superClass));
+					moduleConfigBuilder.withInheritance(ClassUtil.classForName(superClass, Component.class));
 				}
 				break;
 			case component:
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
-				final Class<?> componentImplClass = ClassUtil.classForName(attrs.getValue("class"));
+				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
 				if (componentApi != null) {
 					final Class<?> componentClass = resolveInterface(componentApi, componentImplClass);
-					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentClass, componentImplClass);
+					componentConfigBuilder = moduleConfigBuilder.beginComponent((Class<? extends Component>) componentClass, componentImplClass);
 				} else {
 					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentImplClass);
 				}
@@ -170,7 +171,7 @@ final class XMLModulesHandler extends DefaultHandler {
 
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
 	//Cette interface doit exister et être unique.
-	private static Class<?> resolveInterface(final String simpleName, final Class<?> clazz) {
+	private static Class<?> resolveInterface(final String simpleName, final Class<? extends Component> clazz) {
 		Class<?> found = null;
 		for (final Class<?> interfaceClazz : ClassUtil.getAllInterfaces(clazz)) {
 			if (simpleName.equals(interfaceClazz.getSimpleName())) {

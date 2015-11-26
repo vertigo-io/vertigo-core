@@ -85,7 +85,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this;
 	}
 
-	public ModuleConfigBuilder withInheritance(final Class<?> superClass) {
+	public ModuleConfigBuilder withInheritance(final Class<? extends Component> superClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkNotNull(superClass);
 		//-----
@@ -122,10 +122,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param apiClass Classe du composant (Interface)
 	* @return Builder
 	*/
-	public ComponentConfigBuilder beginElasticComponent(final Class<?> apiClass) {
+	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
-		return doBeginComponent(Option.<Class<?>> some(apiClass), Object.class, true);
+		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), Component.class, true);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param implClass impl of the component
 	 * @return Builder
 	 */
-	public ModuleConfigBuilder addComponent(final Class<?> implClass) {
+	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass) {
 		return beginComponent(implClass).endComponent();
 	}
 
@@ -143,7 +143,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param implClass impl of the component
 	 * @return Builder
 	 */
-	public ModuleConfigBuilder addComponent(final Class<?> apiClass, final Class<?> implClass) {
+	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		return beginComponent(apiClass, implClass).endComponent();
 	}
 
@@ -153,10 +153,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return Builder
 	*/
-	public ComponentConfigBuilder beginComponent(final Class<?> implClass) {
+	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
-		return doBeginComponent(Option.<Class<?>> none(), implClass, false);
+		return doBeginComponent(Option.<Class<? extends Component>> none(), implClass, false);
 	}
 
 	/**
@@ -166,10 +166,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return Builder
 	*/
-	public ComponentConfigBuilder beginComponent(final Class<?> apiClass, final Class<?> implClass) {
+	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
-		return doBeginComponent(Option.<Class<?>> some(apiClass), implClass, false);
+		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), implClass, false);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass Classe d'implémentation du composant
 	* @return Builder
 	*/
-	private ComponentConfigBuilder doBeginComponent(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
+	private ComponentConfigBuilder doBeginComponent(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
 		myComponentConfigBuilders.add(componentConfigBuilder);
 		return componentConfigBuilder;

@@ -20,6 +20,7 @@ package io.vertigo.app.config;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.HashMap;
@@ -35,8 +36,8 @@ import java.util.Map;
  */
 public final class ComponentConfig {
 	private final String id;
-	private final Option<Class<?>> apiClass;
-	private final Class<?> implClass;
+	private final Option<Class<? extends Component>> apiClass;
+	private final Class<? extends Component> implClass;
 	private final Map<String, String> params;
 	private final boolean elastic;
 
@@ -47,9 +48,11 @@ public final class ComponentConfig {
 	 * @param pluginConfigurations Liste des plugins du composant
 	 * @param params paramètres du composant
 	 */
-	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
+		Assertion.checkArgument(apiClass.isEmpty() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
 		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
@@ -63,14 +66,14 @@ public final class ComponentConfig {
 	/**
 	 * @return Classe de l'implémentation du composant
 	 */
-	public Class<?> getImplClass() {
+	public Class<? extends Component> getImplClass() {
 		return implClass;
 	}
 
 	/**
 	 * @return API du composant
 	 */
-	public Option<Class<?>> getApiClass() {
+	public Option<Class<? extends Component>> getApiClass() {
 		return apiClass;
 	}
 

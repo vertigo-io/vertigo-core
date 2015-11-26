@@ -19,6 +19,7 @@
 package io.vertigo.vega.engines.webservice.json;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Component;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -34,7 +35,7 @@ import java.util.Set;
  * - UiObject (contains a DtObject buffer and security token if present)
  * @author npiedeloup (17 juil. 2014 11:56:17)
  */
-public interface JsonEngine {
+public interface JsonEngine extends Component {
 
 	static final String LIST_VALUE_FIELDNAME = "value";
 	static final String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
