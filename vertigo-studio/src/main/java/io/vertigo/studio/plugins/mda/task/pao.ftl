@@ -12,12 +12,13 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamo.store.StoreServices;
 
 /**
  * PAO : Accès aux objects du package. 
  * ${pao.classSimpleName}
  */
-public final class ${pao.classSimpleName} {
+public final class ${pao.classSimpleName} implements StoreServices {
 	private final TaskManager taskManager;
 
 	/**
@@ -25,9 +26,9 @@ public final class ${pao.classSimpleName} {
 	 * @param taskManager Manager des Task
 	 */
 	@Inject
-	public ${pao.classSimpleName}(final TaskManager taskManager) {
+	public ${pao.classSimpleName}(final TaskManager taskManager) implements StoreServices {
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskManager = taskManager;
 	}
     <@lib.generateBody pao.taskDefinitions/> 
