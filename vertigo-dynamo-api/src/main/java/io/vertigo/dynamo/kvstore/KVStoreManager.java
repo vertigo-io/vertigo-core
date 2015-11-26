@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.kvstore;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 *
 * @author pchretien
 */
-public interface KVStoreManager extends Component {
+public interface KVStoreManager extends Manager {
 	void put(String collection, String id, Object object);
 
 	void remove(String collection, String id);

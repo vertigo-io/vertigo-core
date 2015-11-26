@@ -18,13 +18,13 @@
  */
 package io.vertigo.studio.mda;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * Manager MDA.
  * @author pchretien
  */
-public interface MdaManager extends Component {
+public interface MdaManager extends Manager {
 	/**
 	 * Génération des fichiers. 
 	 * @return Rapport resultat de la génération

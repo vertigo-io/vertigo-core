@@ -19,7 +19,7 @@
 package io.vertigo.core.param;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
@@ -57,7 +57,7 @@ import javax.inject.Inject;
  *
  * @author pchretien, npiedeloup, prahmoune
  */
-public final class ParamManager implements Component {
+public final class ParamManager implements Manager {
 	/** Regexp paramName. */
 	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+)*");
 	private final List<ParamPlugin> paramPlugins;

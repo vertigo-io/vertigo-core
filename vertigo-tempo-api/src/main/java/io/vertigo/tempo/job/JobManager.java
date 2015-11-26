@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.job;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 /**
@@ -33,7 +33,7 @@ import io.vertigo.tempo.job.metamodel.JobDefinition;
  *
  * @author evernat
  */
-public interface JobManager extends Component {
+public interface JobManager extends Manager {
 
 	/**
 	 * Exécution immédiate et synchrone d'un job.

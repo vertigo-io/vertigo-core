@@ -20,8 +20,8 @@ package io.vertigo.core.locale;
 
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.WrappedException;
@@ -65,7 +65,7 @@ import org.apache.log4j.Logger;
  *
  * @author pchretien
  */
-public final class LocaleManager implements Component, Describable {
+public final class LocaleManager implements Manager, Describable {
 	private static final Logger LOG = Logger.getLogger(LocaleManager.class);
 
 	/**

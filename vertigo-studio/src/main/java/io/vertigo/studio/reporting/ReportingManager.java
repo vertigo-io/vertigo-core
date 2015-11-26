@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.reporting;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
  * 
  * @author tchassagnette
  */
-public interface ReportingManager extends Component {
+public interface ReportingManager extends Manager {
 	/**
 	 * Méthode d'analyse des requetes.
 	 */

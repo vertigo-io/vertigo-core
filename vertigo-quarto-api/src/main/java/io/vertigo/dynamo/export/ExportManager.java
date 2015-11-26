@@ -20,7 +20,7 @@ package io.vertigo.dynamo.export;
 
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * Gestionnaire centralisé des éditions de données.
@@ -28,7 +28,7 @@ import io.vertigo.lang.Component;
  *
  * @author pchretien, npiedeloup
  */
-public interface ExportManager extends Component {
+public interface ExportManager extends Manager {
 
 	/**
 	 * Create a file from a config.

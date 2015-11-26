@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.daemon;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author tingargiola
  */
-public interface DaemonManager extends Component {
+public interface DaemonManager extends Manager {
 	/**
 	 * Provides a snapshot/copy of execution's stats.
 	 * @return Stats

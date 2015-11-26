@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.event;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.io.Serializable;
 
@@ -33,7 +33,7 @@ import java.io.Serializable;
  *
  * @author pchretien, npiedeloup
  */
-public interface EventManager extends Component {
+public interface EventManager extends Manager {
 
 	/**
 	 * Fire an event on a channel.

@@ -19,7 +19,7 @@
 package io.vertigo.core.resource;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  *
  * @author pchretien
  */
-public final class ResourceManager implements Component {
+public final class ResourceManager implements Manager {
 	private final List<ResourceResolverPlugin> resourceResolverPlugins;
 
 	@Inject

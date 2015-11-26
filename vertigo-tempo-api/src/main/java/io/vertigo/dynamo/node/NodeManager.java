@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.node;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * Gestion des Nodes distribués .
@@ -29,6 +29,6 @@ import io.vertigo.lang.Component;
  *
  * @author npiedeloup, pchretien
  */
-public interface NodeManager extends Component {
+public interface NodeManager extends Manager {
 	//nothing
 }

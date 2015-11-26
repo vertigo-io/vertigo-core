@@ -20,7 +20,7 @@ package io.vertigo.commons.script;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public interface ScriptManager extends Component {
+public interface ScriptManager extends Manager {
 	/**
 	 * Parse le script, notifie le handler.
 	 * La grammaire est constituées de simples balises (Séparateurs). 

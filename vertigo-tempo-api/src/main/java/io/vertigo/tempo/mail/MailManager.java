@@ -19,7 +19,7 @@
 package io.vertigo.tempo.mail;
 
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.util.Date;
 
@@ -28,7 +28,7 @@ import java.util.Date;
  *
  * @author npiedeloup
  */
-public interface MailManager extends Component {
+public interface MailManager extends Manager {
 	/**
 	 * Envoyer un mail.
 	 * @param mail Mail à envoyer

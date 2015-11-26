@@ -20,7 +20,7 @@ package io.vertigo.dynamo.file;
 
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.io.File;
 import java.util.Date;
@@ -29,7 +29,7 @@ import java.util.Date;
  * Gestionnaire de la notion de fichier.
  * @author npiedeloup
  */
-public interface FileManager extends Component {
+public interface FileManager extends Manager {
 
 	/**
 	 * @param vFile VFile à lire

@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.scheduler;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 import java.util.Date;
@@ -31,7 +31,7 @@ import java.util.Date;
  *
  * @author pchretien s
  */
-public interface SchedulerManager extends Component {
+public interface SchedulerManager extends Manager {
 	/**
 	 * Programme un job pour exécution à une fréquence donnée en secondes.
 	 * @param periodInSecond Fréquence d'exécution en secondes

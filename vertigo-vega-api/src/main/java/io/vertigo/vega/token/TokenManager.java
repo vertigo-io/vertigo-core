@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.token;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 
 import java.io.Serializable;
@@ -27,7 +27,7 @@ import java.io.Serializable;
  * Manager of Security Access Token.
  * @author npiedeloup (16 juil. 2014 12:49:49)
  */
-public interface TokenManager extends Component {
+public interface TokenManager extends Manager {
 
 	/**
 	 * Store object and return unique key.

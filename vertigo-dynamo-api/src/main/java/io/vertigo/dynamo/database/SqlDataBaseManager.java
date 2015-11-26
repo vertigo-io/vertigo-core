@@ -22,7 +22,7 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
 * Manages connections to database.
@@ -31,7 +31,7 @@ import io.vertigo.lang.Component;
 *
 * @author pchretien
 */
-public interface SqlDataBaseManager extends Component {
+public interface SqlDataBaseManager extends Manager {
 	/** Main connectionProvider's name. */
 	static final String MAIN_CONNECTION_PROVIDER_NAME = "main";
 

@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
+import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ContactDao implements Component {
+public class ContactDao implements StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
 	public ContactDao() throws ParseException {
