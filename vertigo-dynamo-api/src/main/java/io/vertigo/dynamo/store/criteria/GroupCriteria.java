@@ -142,4 +142,24 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	public boolean isEmpty() {
 		return groupCriterias.isEmpty() && filterCriterias.isEmpty() && firstGroupCriteria == null;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + filterCriterias.hashCode();
+		result = prime * result + ((firstGroupCriteria == null) ? 0 : firstGroupCriteria.hashCode()); //seul attribut nullable
+		result = prime * result + groupCriterias.hashCode();
+		result = prime * result + joinType.hashCode();
+		return result;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object obj) {
+		//equals overrided just because hashCode is.
+		return super.equals(obj);
+	}
+
 }
