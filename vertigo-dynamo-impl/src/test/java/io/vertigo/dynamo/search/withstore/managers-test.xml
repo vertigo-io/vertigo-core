@@ -51,7 +51,7 @@
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 	</module>
 
-	<module name="myApp" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
+	<module name="myApp" api="false">
 		<definitions>
 			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/searchIndex.kpr" />			
 			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
