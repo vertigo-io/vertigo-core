@@ -20,12 +20,13 @@ package io.vertigo.core.component.aop.data.components;
 
 import io.vertigo.core.component.aop.data.aspects.OneMore;
 import io.vertigo.core.component.aop.data.aspects.TenMore;
+import io.vertigo.lang.Component;
 
 /**
  * @author pchretien
  */
 @OneMore
-public class F {
+public class F implements Component {
 	public int getValue(final int value) {
 		return value;
 	}

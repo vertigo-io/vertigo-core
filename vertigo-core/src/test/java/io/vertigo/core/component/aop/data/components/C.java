@@ -19,6 +19,7 @@
 package io.vertigo.core.component.aop.data.components;
 
 import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Component;
 
 import javax.inject.Named;
 
@@ -26,7 +27,7 @@ import javax.inject.Named;
  * @author prahmoune
  */
 @Named("c")
-public class C implements Activeable {
+public class C implements Component, Activeable {
 	private boolean initialized;
 	private boolean finalized;
 

@@ -20,11 +20,12 @@ package io.vertigo.core.component.aop.data.components;
 
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Component;
 
 /**
  * @author prahmoune
  */
-public interface B extends Activeable {
+public interface B extends Component, Activeable {
 	boolean isInitialized();
 
 	boolean isFinalized();
