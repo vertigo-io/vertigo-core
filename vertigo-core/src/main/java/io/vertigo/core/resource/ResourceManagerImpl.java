@@ -16,42 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.plugins.security.loaders;
+package io.vertigo.core.resource;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.loader.LoaderPlugin;
-import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+
+import java.net.URL;
+import java.util.List;
 
 import javax.inject.Inject;
 
 /**
  * @author pchretien
  */
-public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
-	private final ResourceManager resourceManager;
+public final class ResourceManagerImpl implements ResourceManager {
+	private final List<ResourceResolverPlugin> resourceResolverPlugins;
 
-	/**
-	 * Constructeur
-	 */
 	@Inject
-	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {
-		Assertion.checkNotNull(resourceManager);
+	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
+		Assertion.checkNotNull(resourceResolverPlugins);
 		//-----
-		this.resourceManager = resourceManager;
-
+		this.resourceResolverPlugins = resourceResolverPlugins;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String getType() {
-		return "security";
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelRepository) {
-		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
-		xmlSecurityLoader.load();
+	public URL resolve(final String resource) {
+		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
+			final Option<URL> url = resourceResolver.resolve(resource);
+			if (url.isDefined()) {
+				return url.get();
+			}
+		}
+		//On n'a pas trouvé de resolver permettant de lire la ressource.
+		throw new VSystemException("Ressource '{0}' non trouvée", resource);
 	}
 }

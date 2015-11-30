@@ -1,32 +1,8 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.core.resource;
 
-import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Manager;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
 
 import java.net.URL;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Selecteurs de ressources.
@@ -49,30 +25,13 @@ import javax.inject.Inject;
  *
  * @author pchretien
  */
-public final class ResourceManager implements Manager {
-	private final List<ResourceResolverPlugin> resourceResolverPlugins;
-
-	@Inject
-	public ResourceManager(final List<ResourceResolverPlugin> resourceResolverPlugins) {
-		Assertion.checkNotNull(resourceResolverPlugins);
-		//-----
-		this.resourceResolverPlugins = resourceResolverPlugins;
-	}
-
+public interface ResourceManager extends Manager {
 	/**
 	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
 	 *
 	 * @param resource Url de la ressource(chaîne de caractères)
 	 * @return URL associée à la ressource (Not Null)
 	 */
-	public URL resolve(final String resource) {
-		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
-			final Option<URL> url = resourceResolver.resolve(resource);
-			if (url.isDefined()) {
-				return url.get();
-			}
-		}
-		//On n'a pas trouvé de resolver permettant de lire la ressource.
-		throw new VSystemException("Ressource '{0}' non trouvée", resource);
-	}
+	URL resolve(final String resource);
+
 }
