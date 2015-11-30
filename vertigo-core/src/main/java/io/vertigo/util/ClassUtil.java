@@ -274,6 +274,25 @@ public final class ClassUtil {
 	}
 
 	/**
+	 * Retourne toutes les méthodes déclarées et annotées par la dite annotation.
+	 * @param clazz Class
+	 * @param annotation Annotation attendue
+	 * @return Tous les champs déclarés (incluant les champs parents)
+	 */
+	public static Collection<Method> getAllMethods(final Class<?> clazz, final Class<? extends Annotation> annotation) {
+		Assertion.checkNotNull(clazz);
+		Assertion.checkNotNull(annotation);
+		//-----
+		final List<Method> methods = new ArrayList<>();
+		for (final Method method : ClassUtil.getAllMethods(clazz)) {
+			if (method.isAnnotationPresent(annotation)) {
+				methods.add(method);
+			}
+		}
+		return methods;
+	}
+
+	/**
 	 * Retourne tous les champs déclarés (incluant les champs parents) pour une classe donnée.
 	 * @param clazz Class
 	 * @return Tous les champs déclarés (incluant les champs parents)
@@ -289,6 +308,24 @@ public final class ClassUtil {
 			fields.addAll(getAllFields(parent));
 		}
 		return Collections.unmodifiableCollection(fields);
+	}
+
+	/**
+	 * Retourne toutes les méthodes déclarées pour une classe donnée (incluant les méthodes des parents).
+	 * @param clazz Class
+	 * @return Toutes les méthodes déclarées (incluant les méthodes des parents)
+	 */
+	public static Collection<Method> getAllMethods(final Class<?> clazz) {
+		Assertion.checkNotNull(clazz);
+		//-----
+		final List<Method> methods = new ArrayList<>();
+		final Method[] declaredMethods = clazz.getDeclaredMethods();
+		methods.addAll(Arrays.asList(declaredMethods));
+		final Class<?> parent = clazz.getSuperclass();
+		if (parent != null) {
+			methods.addAll(getAllMethods(parent));
+		}
+		return Collections.unmodifiableCollection(methods);
 	}
 
 	/**
