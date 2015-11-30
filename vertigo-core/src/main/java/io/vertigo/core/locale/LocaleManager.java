@@ -25,6 +25,7 @@ import io.vertigo.lang.Manager;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,7 +115,7 @@ public final class LocaleManager implements Manager, Describable {
 	}
 
 	private static List<Locale> createLocales(final String locales) {
-		final List<Locale> myLocales = new ArrayList<>();
+		final ListBuilder<Locale> listBuilder = new ListBuilder<>();
 		//Liste des variables utilisées dans la boucle
 		String language;
 		String country;
@@ -125,9 +126,9 @@ public final class LocaleManager implements Manager, Describable {
 			language = loc[0];
 			country = loc.length > 1 ? loc[1] : "";
 			variant = loc.length > 2 ? loc[2] : "";
-			myLocales.add(new Locale(language, country, variant));
+			listBuilder.add(new Locale(language, country, variant));
 		}
-		return Collections.unmodifiableList(myLocales);
+		return listBuilder.unmodifiable().build();
 	}
 
 	/**
@@ -303,16 +304,14 @@ public final class LocaleManager implements Manager, Describable {
 	/** {@inheritDoc} */
 	@Override
 	public List<ComponentInfo> getInfos() {
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		//---
 		long nbRessources = 0;
 		for (final Map<String, String> resourceMap : getDictionaries().values()) {
 			nbRessources += resourceMap.size();
 		}
-		componentInfos.add(new ComponentInfo("locale.count", nbRessources));
-		//---
-		componentInfos.add(new ComponentInfo("locale.languages", getDictionaries().size()));
-		//---
-		return componentInfos;
+
+		return new ListBuilder<ComponentInfo>()
+				.add(new ComponentInfo("locale.count", nbRessources))
+				.add(new ComponentInfo("locale.languages", getDictionaries().size()))
+				.build();
 	}
 }
