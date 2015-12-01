@@ -13,17 +13,13 @@ public class MySuscriber {
 	}
 
 	@EventSuscriber
-	public void onRedColor(final ColorEvent colorEvent) {
-		if ("red".equalsIgnoreCase(colorEvent.getColor())) {
-			redCount++;
-		}
+	public void onRedColor(final RedColorEvent colorEvent) {
+		redCount++;
 	}
 
 	@EventSuscriber
-	public void onBlueColor(final ColorEvent colorEvent) {
-		if ("blue".equalsIgnoreCase(colorEvent.getColor())) {
-			blueCount++;
-		}
+	public void onBlueColor(final BlueColorEvent colorEvent) {
+		blueCount++;
 	}
 
 	public int getCount() {

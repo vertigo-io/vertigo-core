@@ -33,14 +33,14 @@ import java.util.List;
  * @author pchretien, npiedeloup
  */
 public final class EventBusManagerImpl implements EventBusManager {
-	private final List<MyHandler> myEventHandlers = new ArrayList<>();
+	private final List<Subscription> subscriptions = new ArrayList<>();
 	private final List<EventListener> deadEventListeners = new ArrayList<>();
 
-	private class MyHandler<E extends Event> {
+	private class Subscription<E extends Event> {
 		private final Class<E> eventType;
 		private final EventListener<E> eventListener;
 
-		MyHandler(final Class<E> eventType, final EventListener<E> eventListener) {
+		Subscription(final Class<E> eventType, final EventListener<E> eventListener) {
 			this.eventType = eventType;
 			this.eventListener = eventListener;
 		}
@@ -62,9 +62,9 @@ public final class EventBusManagerImpl implements EventBusManager {
 		Assertion.checkNotNull(event);
 		//-----
 		boolean emitted = false;
-		for (final MyHandler myHandler : myEventHandlers) {
-			if (myHandler.accept(event)) {
-				myHandler.getListener().onEvent(event);
+		for (final Subscription subscription : subscriptions) {
+			if (subscription.accept(event)) {
+				subscription.getListener().onEvent(event);
 				emitted = true;
 			}
 		}
@@ -110,7 +110,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 		Assertion.checkNotNull(eventType);
 		Assertion.checkNotNull(eventListener);
 		//-----
-		myEventHandlers.add(new MyHandler<>(eventType, eventListener));
+		subscriptions.add(new Subscription<>(eventType, eventListener));
 	}
 
 	/** {@inheritDoc} */
