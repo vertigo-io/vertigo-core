@@ -80,7 +80,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	protected TaskManager taskManager;
 
-	private DtDefinition dtDefinitionFamille;
+	protected DtDefinition dtDefinitionFamille;
 	private DAOBroker<Famille, Integer> familleDAO;
 	private long initialDbCarSize = 0;
 
