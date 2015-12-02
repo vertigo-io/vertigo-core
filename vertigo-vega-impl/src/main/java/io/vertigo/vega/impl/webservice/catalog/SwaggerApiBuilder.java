@@ -34,7 +34,6 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
@@ -475,7 +474,8 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				nameValue = webServiceParam.getName();
 				break;
 			case Query:
-				inValue = webServiceDefinition.getVerb() == Verb.GET ? "query" : "formData";
+				//Never use "formData": WebServices don't use formData while XHR request
+				inValue = "query";
 				nameValue = webServiceParam.getName();
 				break;
 			case Header:
@@ -491,7 +491,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		parameter.put("name", nameValue);
 		parameter.put("in", inValue);
 		putIfNotEmpty(parameter, DESCRIPTION, description);
-		parameter.put(REQUIRED, "true");
+		parameter.put(REQUIRED, !webServiceParam.isOptional());
 		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
 			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType()));
 		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
