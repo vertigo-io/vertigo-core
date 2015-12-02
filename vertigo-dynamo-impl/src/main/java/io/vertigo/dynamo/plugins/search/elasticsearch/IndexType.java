@@ -51,7 +51,8 @@ final class IndexType {
 		final String[] indexTypeArray = indexType.split(":", 3);
 		indexAnalyzer = indexTypeArray[0]; //le premier est toujours l'analyzer
 		//le deuxième est optionnel et soit indexDataType, soit le indexStored
-		final String secondParam = indexTypeArray.length >= 2 ? indexTypeArray[1] : "string";
+		final String defaultIndexType = domain.getDataType().name().toLowerCase();
+		final String secondParam = indexTypeArray.length >= 2 ? indexTypeArray[1] : defaultIndexType;
 		if (INDEX_STORED.equals(secondParam) || INDEX_NOT_STORED.equals(secondParam)) {
 			indexDataType = "string";
 			indexStored = INDEX_STORED.equals(secondParam);

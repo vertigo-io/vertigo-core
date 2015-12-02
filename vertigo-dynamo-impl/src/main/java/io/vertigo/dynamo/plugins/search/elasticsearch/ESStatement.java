@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountResponse;
@@ -76,7 +77,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
-import org.elasticsearch.search.aggregations.bucket.range.Range;
+import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -100,7 +101,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
-	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
+	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\{])(.*) TO (.*)([\\}\\]])");
+	private static final Logger LOGGER = Logger.getLogger(ESStatement.class);
 
 	private final String indexName;
 	private final String typeName;
@@ -217,6 +219,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
 		appendFacetDefinition(searchQuery, searchRequestBuilder);
+		LOGGER.info("loadList " + searchRequestBuilder.toString());
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 		return translateQuery(indexDefinition, queryResponse, searchQuery);
 	}
@@ -319,6 +322,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 						.format(DATE_PATTERN);
 				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 					final String filterValue = facetRange.getListFilter().getFilterValue();
+					Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 					final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 					final String minValue = parsedFilter[3];
 					final String maxValue = parsedFilter[4];
@@ -331,24 +335,34 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					}
 				}
 				return dateRangeBuilder;
+			} else if (dataType == DataType.Double || dataType == DataType.BigDecimal
+					|| dataType == DataType.Long || dataType == DataType.Integer) {
+				final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
+						.field(dtField.getName());
+				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+					final String filterValue = facetRange.getListFilter().getFilterValue();
+					Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+					final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+					final Option<Double> minValue = convertToDouble(parsedFilter[3]);
+					final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
+					if (minValue.isEmpty()) {
+						rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
+					} else if (maxValue.isEmpty()) {
+						rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
+					} else {
+						rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+					}
+				}
+				return rangeBuilder;
 			}
 
-			final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-					.field(dtField.getName());
+			final FiltersAggregationBuilder filters = AggregationBuilders.filters(facetDefinition.getName());
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final String filterValue = facetRange.getListFilter().getFilterValue();
-				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-				final Option<Double> minValue = convertToDouble(parsedFilter[3]);
-				final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
-				if (minValue.isEmpty()) {
-					rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
-				} else if (maxValue.isEmpty()) {
-					rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
-				} else {
-					rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
-				}
+				Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+				filters.filter(filterValue, FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(filterValue)));
 			}
-			return rangeBuilder;
+			return filters;
 		}
 		//facette par field
 		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
@@ -416,46 +430,38 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
 		if (facetDefinition.isRangeFacet()) {
 			//Cas des facettes par 'range'
-			final Range rangeBuckets = (Range) facetAggregation;
+			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
-				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
-				for (final SearchHit searchHit : facetSearchHits) {
-					I result = dtcIndex.get(searchHit.getId());
-					if (result == null) {
-						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getIndexDtObject();
-						dtcIndex.put(searchHit.getId(), result);
-					}
-					facetDtc.add(result);
-				}
-				resultCluster.put(facetRange, facetDtc);
+				final Bucket value = multiBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+				populateCluster(value, facetRange, resultCluster, dtcIndex, indexDefinition);
 			}
 		} else {
 			//Cas des facettes par 'term'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
 			for (final Bucket value : multiBuckets.getBuckets()) {
-				final MessageText label = new MessageText(value.getKey(), null);
 				final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
+				final MessageText label = new MessageText(value.getKey(), null);
 				facetValue = new FacetValue(new ListFilter(query), label);
-
-				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
-				for (final SearchHit searchHit : facetSearchHits) {
-					I result = dtcIndex.get(searchHit.getId());
-					if (result == null) {
-						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getIndexDtObject();
-						dtcIndex.put(searchHit.getId(), result);
-					}
-					facetDtc.add(result);
-				}
-				resultCluster.put(facetValue, facetDtc);
+				populateCluster(value, facetValue, resultCluster, dtcIndex, indexDefinition);
 			}
 		}
 		return resultCluster;
+	}
+
+	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final SearchIndexDefinition indexDefinition) {
+		final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
+		for (final SearchHit searchHit : facetSearchHits) {
+			I result = dtcIndex.get(searchHit.getId());
+			if (result == null) {
+				final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				result = index.getIndexDtObject();
+				dtcIndex.put(searchHit.getId(), result);
+			}
+			facetDtc.add(result);
+		}
+		resultCluster.put(facetValue, facetDtc);
 	}
 
 	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition) {
@@ -486,7 +492,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					final Facet currentFacet;
 					if (facetDefinition.isRangeFacet()) {
 						//Cas des facettes par 'range'
-						final Range rangeBuckets = (Range) aggregation;
+						final MultiBucketsAggregation rangeBuckets = (MultiBucketsAggregation) aggregation;
 						currentFacet = createFacetRange(facetDefinition, rangeBuckets);
 					} else {
 						//Cas des facettes par 'term'
@@ -518,7 +524,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		return new Facet(facetDefinition, sortedFacetValues);
 	}
 
-	private static Facet createFacetRange(final FacetDefinition facetDefinition, final Range rangeBuckets) {
+	private static Facet createFacetRange(final FacetDefinition facetDefinition, final MultiBucketsAggregation rangeBuckets) {
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
