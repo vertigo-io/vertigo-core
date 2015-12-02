@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.webservice.model;
 
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -89,4 +90,10 @@ public final class UiListState implements Serializable {
 		return listServerToken;
 	}
 
+	/**
+	 * @return Extract DtListState from this UiListState
+	 */
+	public DtListState toDtListState() {
+		return new DtListState(getTop(), getSkip(), getSortFieldName(), isSortDesc());
+	}
 }
