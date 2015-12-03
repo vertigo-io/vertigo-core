@@ -418,7 +418,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@POST("/search")
+	@POST("/search()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearch(//
 			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
@@ -430,7 +430,7 @@ public final class TestWebServices implements WebServices {
 		return result;
 	}
 
-	@POST("/searchPagined")
+	@POST("/searchPagined()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServicePagined(//
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
@@ -444,7 +444,7 @@ public final class TestWebServices implements WebServices {
 		return applySortAndPagination(result, uiListState);
 	}
 
-	@POST("/searchQueryPagined")
+	@POST("/searchQueryPagined()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact,
 			@QueryParam("") final UiListState uiListState) {
@@ -458,7 +458,7 @@ public final class TestWebServices implements WebServices {
 	}
 
 	@AutoSortAndPagination
-	@POST("/searchAutoPagined")
+	@POST("/searchAutoPagined()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);

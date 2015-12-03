@@ -50,6 +50,7 @@ import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
@@ -489,6 +490,7 @@ public final class WebServiceManagerTest {
 				.put("/contacts/contactView");
 	}
 
+	@Ignore("Not supported yet")
 	@Test
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
@@ -1178,7 +1180,7 @@ public final class WebServiceManagerTest {
 
 	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(sessionFilter);
-		final String wsUrl = isAuto ? "/test/searchAutoPagined" : "/test/searchQueryPagined";
+		final String wsUrl = isAuto ? "/test/searchAutoPagined()" : "/test/searchQueryPagined()";
 		if (top != null) {
 			given.queryParam("top", top);
 		}

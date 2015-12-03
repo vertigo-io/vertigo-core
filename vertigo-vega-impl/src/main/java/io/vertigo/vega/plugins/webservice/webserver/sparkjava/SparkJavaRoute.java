@@ -65,6 +65,8 @@ final class SparkJavaRoute extends Route {
 	}
 
 	private static String convertJaxRsPathToSpark(final String path) {
-		return path.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
+		return path.replaceAll("\\(", "%28")
+				.replaceAll("\\)", "%29")
+				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

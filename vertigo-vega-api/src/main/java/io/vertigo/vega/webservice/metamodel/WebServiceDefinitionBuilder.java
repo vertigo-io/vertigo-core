@@ -96,7 +96,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 
 	private static String normalizePath(final String servicePath) {
 		return servicePath.replaceAll("\\{.*?\\}", "_")//.*? : reluctant quantifier;
-				.replaceAll("[//\\*]", "_");
+				.replaceAll("[//\\*\\(\\)]", "_");
 	}
 
 	/**

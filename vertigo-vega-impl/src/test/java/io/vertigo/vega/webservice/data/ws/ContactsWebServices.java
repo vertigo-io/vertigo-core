@@ -51,7 +51,7 @@ public final class ContactsWebServices implements WebServices {
 	@Inject
 	private ContactDao contactDao;
 
-	@GET("/search")
+	@GET("/search()")
 	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
 		//code 200
