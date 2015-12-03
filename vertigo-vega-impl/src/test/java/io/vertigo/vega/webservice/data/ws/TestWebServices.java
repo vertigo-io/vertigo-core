@@ -164,6 +164,18 @@ public final class TestWebServices implements WebServices {
 		return contactDao.getList();
 	}
 
+	@Doc("Use passPhrase : RtFM")
+	@GET("/docTest/")
+	public List<Contact> docTestEmpty() throws VSecurityException {
+		return docTest(null);
+	}
+
+	@Doc("Not the same than /docTest/")
+	@GET("/docTest")
+	public void docTest() throws VSecurityException {
+		//rien
+	}
+
 	@GET("/{conId}")
 	public Contact testRead(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
