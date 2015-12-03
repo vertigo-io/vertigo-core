@@ -46,7 +46,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 
 	private static final String DEFAULT_ALLOW_ORIGIN_CORS_FILTER = "*";
 	private static final String DEFAULT_ALLOW_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT, OPTIONS"; // may use *
-	private static final String DEFAULT_ALLOW_HEADERS_CORS_FILTER = "Cache-Control, X-Requested-With"; // may use *
+	private static final String DEFAULT_ALLOW_HEADERS_CORS_FILTER = "Content-Type, Cache-Control, X-Requested-With"; // may use *
 	private static final String DEFAULT_EXPOSED_HEADERS_CORS_FILTER = "Content-Type, listServerToken, content-length, x-total-count, x-access-token"; // may use *
 
 	private final String originCORSFilter;
@@ -78,6 +78,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 		putCorsResponseHeaders(request, response);
 		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
 			response.status(200);
+			response.type("application/json;charset=UTF-8");
 			return "";
 		}
 		return chain.handle(request, response, routeContext);
