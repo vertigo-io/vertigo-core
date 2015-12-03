@@ -34,7 +34,6 @@ import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -61,14 +60,13 @@ public final class StoreManagerImpl implements StoreManager {
 	 * @param collectionsManager Manager de gestion des collections
 	 */
 	@Inject
-	public StoreManagerImpl(final TaskManager taskManager,
+	public StoreManagerImpl(
 			final CacheManager cacheManager,
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
 			final List<KVStorePlugin> kvDataStorePlugins,
 			final EventManager eventManager) {
-		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(dataStorePlugins);
