@@ -33,7 +33,7 @@
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
-		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" initClass="io.vertigo.dynamo.store.StoreManagerInitializer">
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
@@ -51,4 +51,8 @@
 			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
 		</definitions>
 	</module>
+	
+	<init>
+		<initializer class="io.vertigo.dynamo.store.StoreManagerInitializer"/>
+	</init>
 </config>

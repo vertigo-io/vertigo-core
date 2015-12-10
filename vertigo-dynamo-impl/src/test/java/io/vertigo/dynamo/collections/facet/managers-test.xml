@@ -7,7 +7,7 @@
 	</boot>
 
 	<module name="vertigo-dynamo">
-		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.collections.facet.CollectionsManagerInitializer" />
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 	</module>
 
 	<module name="myApp">
@@ -16,4 +16,8 @@
 			<resource type="kpr" path="io/vertigo/dynamo/collections/facet/ksp/facet.kpr" />
 		</definitions>
 	</module>
+
+	<init>
+		<initializer class="io.vertigo.dynamo.collections.facet.CollectionsManagerInitializer" />
+	</init>
 </config>

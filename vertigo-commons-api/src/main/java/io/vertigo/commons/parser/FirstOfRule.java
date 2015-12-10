@@ -93,7 +93,6 @@ public final class FirstOfRule implements Rule<Choice> {
 						}
 						return end;
 					} catch (final NotFoundException e) {
-						//i++;
 						if (e.getIndex() > bestIndex) {
 							bestIndex = e.getIndex();
 							best = e;

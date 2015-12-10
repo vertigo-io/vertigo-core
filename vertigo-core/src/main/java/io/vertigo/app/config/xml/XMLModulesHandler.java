@@ -55,6 +55,7 @@ final class XMLModulesHandler extends DefaultHandler {
 		config,
 		boot,
 		module,
+		init,
 		//---
 		definitions,
 		resource,
@@ -63,7 +64,9 @@ final class XMLModulesHandler extends DefaultHandler {
 		component,
 		plugin,
 		param,
-		aspect
+		aspect,
+		//-----
+		initializer
 	}
 
 	private TagName current;
@@ -86,12 +89,15 @@ final class XMLModulesHandler extends DefaultHandler {
 				pluginConfigBuilder.endPlugin();
 				pluginConfigBuilder = null;
 				break;
-			case aspect: //non géré
-			case param: //non géré
-			case definitions: //non géré
-			case provider: //non géré
-			case resource: //non géré
-			case config: //non géré
+			case aspect:
+			case param:
+			case definitions:
+			case provider:
+			case resource:
+			case config:
+			case init:
+			case initializer:
+				//non géré
 			default:
 		}
 	}
@@ -122,7 +128,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				} else {
 					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentImplClass);
 				}
-				final String initClass = attrs.getValue("initClass");
+				break;
+			case initializer:
+				final String initClass = attrs.getValue("class");
 				if (initClass != null) {
 					final Class componentInitialierClass = ClassUtil.classForName(initClass);
 					appConfigBuilder.addInitializer(componentInitialierClass);
@@ -157,8 +165,10 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
 				break;
-			case definitions: //non géré
-			case config: //non géré
+			case definitions:
+			case config:
+			case init:
+				//non géré
 			default:
 		}
 	}
