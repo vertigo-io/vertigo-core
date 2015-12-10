@@ -183,7 +183,6 @@ public final class StringUtil {
 				}
 			} else if (Character.isUpperCase(c)) {
 				if (!upperCase || upperCase && i == 1) {
-					//upperCase = true;
 					result.append('_');
 				}
 			} else {

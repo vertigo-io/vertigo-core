@@ -108,10 +108,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
 				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
-				if (api != null) {
-					if (!Boolean.parseBoolean(api)) {
-						moduleConfigBuilder.withNoAPI();
-					}
+				if (api != null && !Boolean.parseBoolean(api)) {
+					moduleConfigBuilder.withNoAPI();
 				}
 				break;
 			case component:

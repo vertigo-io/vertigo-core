@@ -113,7 +113,6 @@ public final class DIReactor {
 		//2.On résout les dépendances
 		final List<DIComponentInfo> unsorted = new ArrayList<>(diComponentInfos);
 		//Niveaux de dépendances des composants
-		//		final List<List<String>> levels = new ArrayList<>();
 		final List<String> sorted = new ArrayList<>();
 
 		//. Par défaut on considére comme triés tous les parents

@@ -88,7 +88,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 */
 	@Inject
 	public JpaDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
-		//super(workManager);
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(transactionManager);
@@ -226,7 +225,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static String getTableName(final DtDefinition dtDefinition) {
-		return dtDefinition.getClassSimpleName(); // Attention jSQL est "almost case-insensitive" il faut garder la case des objects java :);
+		// Attention jSQL est "almost case-insensitive" il faut garder la case des objects java :);
+		return dtDefinition.getClassSimpleName();
 	}
 
 	private static <D extends DtObject> String getListTaskName(final String tableName, final FilterCriteria<D> filter) {

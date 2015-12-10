@@ -269,7 +269,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withStore(name)
-				.withRequest(request.toString());
+				.withRequest(request);
 		//IN, obligatoire
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
 			taskDefinitionBuilder.addInAttribute(fieldName, dtDefinition.getField(fieldName).getDomain(), true);
@@ -362,7 +362,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param request Request à mettre à jour
 	 */
 	protected final void postAlterLoadRequest(final StringBuilder request) {
-		//rien par defaut;
+		//
 	}
 
 	//==========================================================================
@@ -543,7 +543,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withStore(name)
-				.withRequest(request.toString())
+				.withRequest(request)
 				.withOutAttribute("dto", countDomain, true)
 				.build();
 

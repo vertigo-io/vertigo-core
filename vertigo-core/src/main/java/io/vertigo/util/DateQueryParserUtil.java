@@ -119,7 +119,7 @@ final class DateQueryParserUtil {
 			calendar.setTime(simpleDateFormat.parse(dateExpression));
 			return calendar.getTime();
 		} catch (final ParseException e) {
-			throw new VSystemException("La date " + dateExpression + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+			throw new VSystemException("La date " + dateExpression + " ne respecte pas le pattern : " + simpleDateFormat.toPattern());
 		}
 
 	}

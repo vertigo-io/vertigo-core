@@ -36,7 +36,6 @@ final class MemoryCache {
 	private final boolean eternal;
 	private long totalHits;
 	private long totalCalls;
-	//private long totalPuts;
 	private final Map<Serializable, MemoryCacheValue> cacheDatas = new HashMap<>();
 
 	/**
@@ -127,7 +126,6 @@ final class MemoryCache {
 	 * @param value Element
 	 */
 	synchronized void put(final Serializable key, final Object value) {
-		//totalPuts++;
 		cacheDatas.put(key, new MemoryCacheValue(value));
 	}
 

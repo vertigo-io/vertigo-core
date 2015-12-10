@@ -150,7 +150,6 @@ public final class DomainGrammar {
 				.addField(DYNAMIC, Boolean, false)
 				.addField(STEREOTYPE, String, false)
 				.addField(STORE_NAME, String, false)
-				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
