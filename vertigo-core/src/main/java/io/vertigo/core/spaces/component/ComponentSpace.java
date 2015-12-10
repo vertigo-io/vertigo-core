@@ -68,7 +68,6 @@ public final class ComponentSpace implements Container, Activeable {
 	public void stop() {
 		stopComponents();
 		clear();
-
 	}
 
 	/**

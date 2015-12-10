@@ -95,15 +95,18 @@ public final class Entity implements EntityType {
 	}
 
 	/**
-	 * @param property Propriété
-	 * @return Si la propriété mentionnée est nulle
+	 * Returns true if the field is required.
+	 * @param fieldName Name of the field
+	 * @return true if the specified field is required
 	 */
 	public boolean isRequired(final String fieldName) {
 		return getAttribute(fieldName).isRequired();
 	}
 
 	/**
-	 * @return Set des attributs de l'entité
+	 * Returns the value to which the specified name is mapped.
+	 * @param fieldName Name of the field
+	 * @return Field 
 	 */
 	public EntityField getAttribute(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
@@ -113,7 +116,7 @@ public final class Entity implements EntityType {
 	}
 
 	/**
-	 * @return Set des attributs de l'entité
+	 * @return List of the entity's fields 
 	 */
 	public Set<EntityField> getAttributes() {
 		final Set<EntityField> attributes = new HashSet<>();

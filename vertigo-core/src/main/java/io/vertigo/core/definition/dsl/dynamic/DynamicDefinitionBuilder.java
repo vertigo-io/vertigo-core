@@ -38,40 +38,40 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 
 	/**
 	 * @param dynamicDefinition Definition body
-	 * @return Builder
+	 * @return this builder
 	 */
 	DynamicDefinitionBuilder addBody(DynamicDefinition dynamicDefinition);
 
 	/**
-	 * @param fieldName Nom du champ
+	 * @param fieldName Name of the field 
 	 * @param value Valeur de la propriété
-	 * @return Builder
+	 * @return this builder
 	 */
 	DynamicDefinitionBuilder addPropertyValue(final String fieldName, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
 	 * La définition n'est connue que par sa référence, son nom.
-	 * @param fieldName Nom du champ
-	 * @param definitionKey Clé de la définition
-	 * @return Builder
+	 * @param fieldName Name of the field 
+	 * @param definitionName Name of the definition
+	 * @return this builder
 	 */
 	DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.
 	 * La définition n'est connue que par sa référence, son nom.
-	 * @param fieldName Nom du champ
-	 * @param definitionKeys  Liste des clés de définition
-	 * @return Builder
+	 * @param fieldName Name of the field 
+	 * @param definitionNames  list of the names of the dedinitions
+	 * @return this builder
 	 */
 	DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
-	 * @param fieldName Nom du champ
+	 * @param fieldName Name of the field 
 	 * @param definition Définition
-	 * @return Builder
+	 * @return this builder
 	 */
 	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition);
 }

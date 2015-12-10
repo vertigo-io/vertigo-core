@@ -59,6 +59,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param fieldName Nom
 	 * @param type Entité référencée
 	 * @param required Si l'attribut est obligatoire
+	 * @return this builder
 	 */
 	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean required) {
 		return addField(fieldName, type, false, required);
@@ -69,6 +70,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param fieldName Nom
 	 * @param entity Entité référencée
 	 * @param required Si l'attribut est obligatoire
+	 * @return this builder
 	 */
 	public EntityBuilder addFields(final String fieldName, final Entity entity, final boolean required) {
 		//Only Entities may be multiple
@@ -86,6 +88,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param entity Entité référencée
 	 * @param multiple Si il y a plusieurs entités référencées
 	 * @param required Si l'attribut est obligatoire
+	 * @return this builder
 	 */
 	private EntityBuilder addField(final String fieldName, final EntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);

@@ -32,7 +32,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Paramétrage de l'application.
+ * The moduleConfigBuilder defines the configuration of a module.
+ * A module has a name.
+ * A module is composed of 
+ *  - components & plugins 
+ *  - aspects
+ *  - definitions (defined by resources or providers)
  *
  * @author npiedeloup, pchretien
  */
@@ -41,17 +46,22 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final boolean boot;
 	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
+
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
+	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
-	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
 
 	//State to avoid reuse of this Builder
 	private boolean ended = false;
 
+	/**
+	 * Constructor of the boot module.
+	 * @param appConfigBuilder the builder of the appConfig 
+	 */
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkNotNull(appConfigBuilder);
 		//-----
@@ -60,6 +70,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		myAppConfigBuilder = appConfigBuilder;
 	}
 
+	/**
+	 * Constructor of a module.
+	 * @param appConfigBuilder the builder of the appConfig 
+	 * @param name Name of the module
+	 */
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
@@ -70,6 +85,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		myAppConfigBuilder = appConfigBuilder;
 	}
 
+	/**
+	 * Add an aspect.
+	 * @param implClass Class of the aspect
+	 * @return this builder
+	 */
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
@@ -77,6 +97,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this;
 	}
 
+	/**
+	 * Mark this module as having no api.
+	 * @return this builder
+	 */
 	public ModuleConfigBuilder withNoAPI() {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
@@ -85,7 +109,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Ajout de définitions définie par un iterable.
+	 * Add a provider of definitions.
+	 * @param definitionProviderClass Class of the definitions provider
+	 * @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -96,8 +122,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Ajout de resources
+	 * Add definitions defined by a resource file. 
 	 * @param resourceType Type of resource
+	 * @param resourcePath Path of resource
+	* @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -111,7 +139,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/**
 	* Ajout d'un composant distribué.
 	* @param apiClass Classe du composant (Interface)
-	* @return Builder
+	* @return this builder
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -122,7 +150,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/**
 	 * Add a component.
 	 * @param implClass impl of the component
-	 * @return Builder
+	 * @return this builder
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass) {
 		return beginComponent(implClass).endComponent();
@@ -132,7 +160,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * Add a component.
 	 * @param apiClass api of the component
 	 * @param implClass impl of the component
-	 * @return Builder
+	 * @return this builder
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		return beginComponent(apiClass, implClass).endComponent();
@@ -142,7 +170,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* Open the builder of a component.
 	* Component is added when you close the builder uising end() method. 
 	* @param implClass impl of the component
-	* @return Builder
+	* @return this builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -155,7 +183,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param apiClass api of the component
 	* Component is added when you close the builder uising end() method. 
 	* @param implClass impl of the component
-	* @return Builder
+	* @return this builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -164,10 +192,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Ajout d'un composant.
-	* @param apiClass Classe du composant (Interface)
-	* @param implClass Classe d'implémentation du composant
-	* @return Builder
+	* Add a component defined by an api and an immplementation.
+	* @param apiClass Class of the api (should be an interface)
+	* @param implClass Class of the implementation of the component
+	* @return this builder
 	*/
 	private ComponentConfigBuilder doBeginComponent(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
@@ -176,8 +204,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Mark end of current module.
-	 * @return Builder
+	 * Close the current module.
+	 * @return the parent's builder (AppConfigBuilder)
 	 */
 	public AppConfigBuilder endModule() {
 		Assertion.checkArgument(!ended, "this builder is ended");
@@ -185,7 +213,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		if (boot) {
 			// we don't close the module	
 		} else {
-			myAppConfigBuilder.withModules(Collections.singletonList(build()));
+			myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
 			ended = true;
 		}
 		return myAppConfigBuilder;
@@ -236,7 +264,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 			componentConfig.add(componentConfigBuilder.build());
 		}
 
-		//Création des pluginConfigs
+		//creation of the pluginConfigs
 		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
 
 		final ModuleConfig moduleConfig = new ModuleConfig(

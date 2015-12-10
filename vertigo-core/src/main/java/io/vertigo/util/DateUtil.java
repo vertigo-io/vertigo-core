@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Utilitaire concernant les dates.
+ * The DateUtil provides usefull methods concerning dates.
  *
  * On distingue deux types de date
  *  - les dates précises au jour
@@ -128,10 +128,13 @@ public final class DateUtil {
 	 * now-12M
 	 * now-2y
 	 * "06/12/2003", "dd/MM/yyyy"
+	 * 
+	 * @param dateExpression Expression
+	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 *
 	 * @return date
 	 */
-	public static Date parse(final String dateQuery, final String datePattern) {
-		return DateQueryParserUtil.parse(dateQuery, datePattern);
+	public static Date parse(final String dateExpression, final String datePattern) {
+		return DateQueryParserUtil.parse(dateExpression, datePattern);
 	}
 }

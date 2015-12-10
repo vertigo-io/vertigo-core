@@ -19,19 +19,19 @@
 package io.vertigo.lang;
 
 /**
- * Interface assurant le cycle de vie des composants (Optionnelle).
- * Comportement transverse permettant de démarrer et d'arréter des services.
+ * The Activeable class allows you to provide a behavior to a component.
+ * The methods start() and stop() are called after the creation and before the destruction of the managed components. 
  *
- * @author pchretien, prahmoune
+ * @author pchretien
  */
 public interface Activeable {
 	/**
-	 * Called when component is starting.
+	 * Called after the component has been created and filled by injection (for the components built by configuration).
 	 */
 	void start();
 
 	/**
-	 * Called when component is stopped.
+	 * Called before the component is stopped.
 	 */
 	void stop();
 }

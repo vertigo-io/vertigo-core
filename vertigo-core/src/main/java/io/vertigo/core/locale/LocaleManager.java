@@ -34,7 +34,7 @@ public interface LocaleManager extends Manager {
 	 * Enregistre une stratégie de choix de langue.
 	 * @param localeProvider Définit la langue par défaut de façon contextuelle
 	 */
-	void registerLocaleProvider(LocaleProvider newLocaleProvider);
+	void registerLocaleProvider(LocaleProvider localeProvider);
 
 	/**
 	 * Ajout d'un dictionnaire de ressources.

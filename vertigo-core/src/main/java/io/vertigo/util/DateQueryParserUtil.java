@@ -70,32 +70,32 @@ final class DateQueryParserUtil {
 	 * Retourne la date correspondant à l'expression passée en parametre.
 	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date au format dd/MM/yy
 	 *
-	 * @param dateQuery Expression
+	 * @param dateExpression Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 * @return date
 	 */
-	static Date parse(final String dateQuery, final String datePattern) {
-		Assertion.checkArgNotEmpty(dateQuery);
+	static Date parse(final String dateExpression, final String datePattern) {
+		Assertion.checkArgNotEmpty(dateExpression);
 		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
-		if (NOW.equals(dateQuery)) {
+		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
 			return new Date();
 		}
-		if (dateQuery.startsWith(NOW)) {
+		if (dateExpression.startsWith(NOW)) {
 			final int index = NOW.length();
-			final char operator = dateQuery.charAt(index);
+			final char operator = dateExpression.charAt(index);
 			final int sign;
 			if ('+' == operator) {
 				sign = 1;
 			} else if ('-' == operator) {
 				sign = -1;
 			} else {
-				throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateQuery);
+				throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateExpression);
 			}
 			//---
 			//operand = 21d
-			final String operand = dateQuery.substring(index + 1);
+			final String operand = dateExpression.substring(index + 1);
 			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
@@ -116,10 +116,10 @@ final class DateQueryParserUtil {
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 		try {
 			final Calendar calendar = new GregorianCalendar();
-			calendar.setTime(simpleDateFormat.parse(dateQuery));
+			calendar.setTime(simpleDateFormat.parse(dateExpression));
 			return calendar.getTime();
 		} catch (final ParseException e) {
-			throw new VSystemException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+			throw new VSystemException("La date " + dateExpression + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
 		}
 
 	}

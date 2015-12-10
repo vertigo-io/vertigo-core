@@ -54,6 +54,7 @@ public final class ComponentLoader {
 
 	/**
 	 * Constructor.
+	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
 	@Inject
 	public ComponentLoader(final AopPlugin aopPlugin) {

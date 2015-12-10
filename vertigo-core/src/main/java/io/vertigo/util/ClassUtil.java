@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche étant utilisée pour créer des liens plus souples entre des objets.
+ * The ClassUtil class provides methods to determine the structure of a class or to create instances.
  *
  * @author pchretien
  */
@@ -45,10 +45,10 @@ public final class ClassUtil {
 	private static final Class<?>[] EMPTY_CLAZZ_ARRAY = new Class[0];
 
 	/**
-	 * Constructeur privé pour classe utilitaire
+	 * Constructor
 	 */
 	private ClassUtil() {
-		// RAS
+		// private constructor
 	}
 
 	/**
@@ -177,12 +177,12 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Invocation dynamique d'une méthode sur une instance.
+	 * Dynamic invocation of a method on a specific instance.
 	 *
-	 * @param instance Objet sur lequel est invoqué la méthode
-	 * @param method Methode invoquée
-	 * @param args Arguments
-	 * @return R Valeur retournée par l'invocation
+	 * @param instance Object
+	 * @param method method which is invocated
+	 * @param args Args
+	 * @return value provided as the result by the method
 	 */
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
 		Assertion.checkNotNull(instance);

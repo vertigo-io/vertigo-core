@@ -21,34 +21,31 @@ package io.vertigo.lang;
 import java.util.Set;
 
 /**
- * Container universel des composants.
- * Les composants sont tous identifiés par un identifiant.
- * Cet identifiant est camelCase. (Voir REGEX ci-dessous)
+ * The Container interface defines a universal container for the components.
+ * Each component is identified by an id.
  * 
  * @author pchretien, prahmoune
  */
 public interface Container {
-	//final Pattern REGEX_ID = Pattern.compile("[a-z][a-zA-Z0-9]{0,79}");
 
 	/**
-	 * Vérification si un composant est déjà enregistré.
-	 * La casse du premier caractère de l'Id n'est pas prise en compte.
-	 * @param id Id du composant
-	 * @return Si le composant est déjà enregistré.
+	 * Returns true if this container contains the specified component
+	 * @param id Id of the component
+	 * @return true if the component is already registered.
 	 */
 	boolean contains(final String id);
 
 	/**
-	 * Récupère un composant par son id et assure sn typage.
-	 * La casse du premier caractère de l'Id n'est pas prise en compte.
-	 * @param id Id du composant
-	 * @return Composant
+	 * Resolve a component from its id and class.
+	 * @param id Id of the component
+	 * @param componentClass Type of the component
+	 * @return Component
 	 */
 	<T> T resolve(final String id, final Class<T> componentClass);
 
 	/**
-	 * Liste des ids gérés.
-	 * @return Liste des ids de TOUS les composants gérés par le présent container
+	 * Returns the list of the ids of the components managed in this container.
+	 * @return list of ids
 	 */
 	Set<String> keySet();
 }

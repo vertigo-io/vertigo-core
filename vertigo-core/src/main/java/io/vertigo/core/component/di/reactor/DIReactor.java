@@ -53,7 +53,7 @@ public final class DIReactor {
 	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
-	 * @return Reactor
+	 * @return this reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass) {
 		return addComponent(id, implClass, Collections.<String> emptySet());
@@ -64,8 +64,8 @@ public final class DIReactor {
 	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
-	 * @params params List of ID of all local params - which will be automatically injected-
-	 * @return Reactor
+	 * @param params List of ID of all local params - which will be automatically injected-
+	 * @return this reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
 		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, params);
@@ -79,6 +79,7 @@ public final class DIReactor {
 	 * Add a component identified by its ID.
 	 * This component is ready to be injected in other components (and it does not need to be resolved).
 	 * @param id ID of the component
+	 * @return this reactor
 	 */
 	public DIReactor addParent(final String id) {
 		check(id);
@@ -133,7 +134,7 @@ public final class DIReactor {
 			// Si lors d'une itération on ne fait rien c'est qu'il y a une dépendance cyclique
 			if (countSorted == sorted.size()) {
 				// On a une dépendance cyclique !
-				throw new DIException("Dependencies can't be resolved on components :" + unsorted);
+				throw new DIException("Dependencies can't be solved on components :" + unsorted);
 			}
 		}
 		//-----

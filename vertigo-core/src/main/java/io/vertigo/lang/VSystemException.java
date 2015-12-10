@@ -21,7 +21,7 @@ package io.vertigo.lang;
 import io.vertigo.util.StringUtil;
 
 /**
- * Vertigo system exception.
+ * This class defines a Vertigo system exception.
  *
  * @author fconstantin, pchretien, npiedeloup
  */
@@ -31,12 +31,17 @@ public class VSystemException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param message Message
+	 * @param msg  Message
 	 */
 	public VSystemException(final String msg) {
 		super(msg);
 	}
 
+	/**
+	 * Constructor.
+	 * @param msg  Message
+	 * @param params Params
+	 */
 	public VSystemException(final String msg, final Object... params) {
 		this(StringUtil.format(msg, params));
 	}

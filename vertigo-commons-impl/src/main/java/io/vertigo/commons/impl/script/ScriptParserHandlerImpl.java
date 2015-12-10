@@ -46,7 +46,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	/**
 	 * Si il y a au moins un paramètre alors la requête est dynamique.
 	 */
-	private boolean isDynamic; //implicite = false;
+	private boolean isDynamic;
 
 	private final List<String> texts = new ArrayList<>();
 	private final List<ExpressionParameter> parameters;

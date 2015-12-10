@@ -43,7 +43,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 */
 	private final Stack<TagStackEntry> blockStack = new Stack<>();
 
-	private boolean isGrammarClosed; // initialisé à false
+	private boolean isGrammarClosed;
 
 	private final ScriptGrammar scriptGrammar;
 	private final ScriptContext scriptContext;
@@ -94,7 +94,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 				return tagStackEntry.getTagHandler();
 			}
 		}
-		//Cas de malformation des balises
+		/*Cas de malformation des balises*/
 		throw new VSystemException("bloc {0} mal forme : balise de fin manquante", tagName);
 	}
 

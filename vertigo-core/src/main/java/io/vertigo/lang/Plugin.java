@@ -19,12 +19,18 @@
 package io.vertigo.lang;
 
 /**
- * Tout plugin doit être ThreadSafe. 
- * Les plugins sont tous des singletons.
- * Un plugin peut posséder un état actif / inactif via l'interface Activeable.
+ * A plugin is a particular component.
+ * A plugin is not referenced in the ComponentSpace.
+ * A plugin is usefull to encapsulate a specific set of operations.
+ * A plugin is often used as a strategy pattern to make an operation interchangeable without changing the component.     
+ * 
+ * All plugins MUST BE thread safe.
+ * Plugins are singletons.
+ * 
+ * As a plugin is a component, it can own component's behaviors such as Activeable.
  * 
  * @author pchretien
  */
 public interface Plugin extends Component {
-	//Un plugin peut être activeable.
+	//
 }

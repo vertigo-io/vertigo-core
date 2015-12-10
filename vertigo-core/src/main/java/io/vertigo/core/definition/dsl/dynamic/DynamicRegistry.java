@@ -31,7 +31,7 @@ import java.util.List;
  */
 public interface DynamicRegistry {
 	/**
-	 * @return Grammaire
+	 * @return Grammar
 	 */
 	EntityGrammar getGrammar();
 
@@ -42,8 +42,10 @@ public interface DynamicRegistry {
 	List<DynamicDefinition> getRootDynamicDefinitions();
 
 	/**
-	 * Enregistrement d'une définition.
-	 * @param definition Définition
+	 * Create (or not) a definition from a dynamic definition.
+	 * @param definitionSpace Space where all the definitions are stored.
+	 * @param definition Definition
+	 * @return An optional definition
 	 */
 	Option<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
 

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Configuration.
+ * The AppConfigBuilder builder allows you to create an AppConfig using a fluent, simple style .
  *
  * @author npiedeloup, pchretien
  */
@@ -44,6 +44,9 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final ModuleConfigBuilder myBootModuleConfigBuilder;
 	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
 
+	/**
+	 * Constructor.
+	 */
 	public AppConfigBuilder() {
 		myBootConfigBuilder = new BootConfigBuilder(this);
 		myBootModuleConfigBuilder =
@@ -53,8 +56,13 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 						.addComponent(DefinitionLoader.class);
 	}
 
-	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
-
+	/**
+	 * Open the boot module.
+	 * There is exactly one BootConfig per AppConfig.  
+	 * 
+	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @return this builder
+	 */
 	public ModuleConfigBuilder beginBootModule(final String locales) {
 		return myBootModuleConfigBuilder
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
@@ -62,21 +70,30 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 				.endComponent();
 	}
 
+	/**
+	 * Open the bootConfigBuilder.
+	 * @return this builder
+	 */
 	public BootConfigBuilder beginBoot() {
 		return myBootConfigBuilder;
 	}
 
-	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitialierClass) {
-		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitialierClass));
+	/**
+	 * Add an initializer to the current config.
+	 * @param componentInitializerClass Class of the initializer
+	 * @return this builder
+	 */
+	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitializerClass) {
+		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitializerClass));
 		return this;
 	}
 
 	/**
-	 * Permet d'externaliser le processus de chargement dans un système dédié
-	 * @param moduleConfigs Liste des modules
-	 * @return Builder
+	 * Add a list of ModuleConfig.
+	 * @param moduleConfigs list of moduleConfig
+	 * @return this builder
 	 */
-	public AppConfigBuilder withModules(final List<ModuleConfig> moduleConfigs) {
+	public AppConfigBuilder addAllModules(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		myModuleConfigs.addAll(moduleConfigs);
@@ -84,9 +101,9 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Ajout d'un module
-	 * @param name Nom du module
-	 * @return Builder
+	 * Add a new module
+	 * @param name Name of the module
+	 * @return this builder
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
 		return new ModuleConfigBuilder(this, name);
@@ -99,8 +116,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Update the 'already set' componentSpaceConfigBuilder and return it.
-	 * @return ComponentSpaceConfigBuilder
+	 * Build the appConfig.
+	 * @return appConfig.
 	 */
 	@Override
 	public AppConfig build() {

@@ -32,6 +32,7 @@ public final class Logo {
 
 	/**
 	 * Displays logo in console.
+	 * @param out Out 
 	 */
 	public static void printCredits(final PrintStream out) {
 		out.println();

@@ -26,7 +26,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The MapBuilder class allows to build a map.
+ * The map can be immutable using unmodifiable().
+ * Several put() methods exist to cover the frequent cases. 
+ *   
  * @author pchretien
+ * @param <K> the type of keys 
+ * @param <V> the type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private Map<K, V> map = new HashMap<>();
@@ -73,8 +79,8 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	}
 
 	/**
-	 * Make this map unmodifiable.
-	 * @return this build
+	 * Make this map as unmodifiable.
+	 * @return this builder
 	 */
 	public MapBuilder<K, V> unmodifiable() {
 		this.map = Collections.unmodifiableMap(map);
