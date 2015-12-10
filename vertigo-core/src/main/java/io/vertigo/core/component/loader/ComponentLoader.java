@@ -45,6 +45,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
+ * The componentLoader class defines the way to load the components defined in the config into componentSpace.
  * @author pchretien
  */
 public final class ComponentLoader {
@@ -63,6 +64,13 @@ public final class ComponentLoader {
 		this.aopPlugin = aopPlugin;
 	}
 
+	/**
+	 * Add all the components defined in the moduleConfigs into the componentSpace. 
+	 * 
+	 * @param componentSpace Space where all the components are stored
+	 * @param paramManager Manager of params
+	 * @param moduleConfigs Configs of modules to add.
+	 */
 	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
@@ -71,6 +79,11 @@ public final class ComponentLoader {
 		}
 	}
 
+	/**
+	 * Add all the components depending on the boot module.
+	 * @param componentSpace Space where all the components are stored
+	 * @param bootModuleConfig Configs of the boot module
+	 */
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
 		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");

@@ -21,7 +21,7 @@ package io.vertigo.core.definition.dsl.entity;
 import io.vertigo.lang.Assertion;
 
 /**
- * Attribut d'une entité.
+ * Field of an entity.
  *
  * @author pchretien
  */
@@ -32,11 +32,11 @@ public final class EntityField {
 	private final EntityType type;
 
 	/**
-	 * Constructeur.
-	 * @param name Nom
-	 * @param entity Entité / Méta-définition parente (composition ou référence)
-	 * @param multiple Si multiple
-	 * @param required Si not null
+	 * Constructor.
+	 * @param name Name
+	 * @param type Type of the entity
+	 * @param multiple If multiple
+	 * @param required If not null
 	 */
 	EntityField(final String name, final EntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
@@ -49,28 +49,28 @@ public final class EntityField {
 	}
 
 	/**
-	 * @return Nom
+	 * @return Name
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return Si multiple
+	 * @return If multiple
 	 */
 	boolean isMultiple() {
 		return multiple;
 	}
 
 	/**
-	 * @return Si not null
+	 * @return If required
 	 */
 	boolean isRequired() {
 		return required;
 	}
 
 	/**
-	 * @return Entité référencée. (composition ou référence)
+	 * @return the type of the entity
 	 */
 	public EntityType getType() {
 		return type;

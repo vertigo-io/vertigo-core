@@ -76,7 +76,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public BerkeleyContextCachePlugin(final CodecManager codecManager, final DaemonManager daemonManager, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public BerkeleyContextCachePlugin(final CodecManager codecManager, final DaemonManager daemonManager, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;

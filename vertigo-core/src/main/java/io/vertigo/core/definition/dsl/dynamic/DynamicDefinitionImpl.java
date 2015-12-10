@@ -66,14 +66,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/**
 	 * Constructeur.
-	 * @param dynamicDefinitionKey Clé de la définition
+	 * @param dynamicDefinitionName name of the dynamicDefinition
 	 * @param entity Entité
 	 */
 	DynamicDefinitionImpl(final String dynamicDefinitionName, final Entity entity) {
 		Assertion.checkNotNull(dynamicDefinitionName);
 		Assertion.checkNotNull(entity);
 		//-----
-		this.name = dynamicDefinitionName;
+		name = dynamicDefinitionName;
 		this.entity = entity;
 	}
 

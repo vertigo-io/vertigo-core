@@ -62,7 +62,7 @@ import org.junit.Test;
  * @author  npiedeloup
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
-	private final static List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
+	private static final List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());

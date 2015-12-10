@@ -44,8 +44,6 @@ public final class ComponentConfig {
 	/**
 	 * @param apiClass Class de l'api du composant
 	 * @param implClass Class de l'implémentation du composant
-	 * @param componentInitializerClass Class de l'initialiseur du composant
-	 * @param pluginConfigurations Liste des plugins du composant
 	 * @param params paramètres du composant
 	 */
 	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {

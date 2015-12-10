@@ -38,8 +38,7 @@ public final class BootConfig {
 
 	/**
 	 * Constructor.
-	 * @param aopEngine AopEngine
-	 * @param elasticaEngine ElasticaEngine (optional)
+	 * @param aopPlugin AopPlugin
 	 * @param silence is no logs
 	 */
 	BootConfig(
@@ -57,10 +56,17 @@ public final class BootConfig {
 		this.aopPlugin = aopPlugin;
 	}
 
+	/**
+	 * @return the logconfig
+	 */
 	public Option<LogConfig> getLogConfig() {
 		return logConfigOption;
 	}
 
+	/**
+	 * 
+	 * @return the config of the boot consireded as a module
+	 */
 	public ModuleConfig getBootModuleConfig() {
 		return bootModuleConfig;
 	}

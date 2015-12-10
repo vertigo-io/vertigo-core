@@ -28,11 +28,20 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
+ * Standard implementation for the resourceManager.
+ * The strategy to access resources is defined by plugins.
+ * 
+ * So, you can extend the capabilities and define your own plugin to be able to access your own resources wherever they are.  
+ * 
  * @author pchretien
  */
 public final class ResourceManagerImpl implements ResourceManager {
 	private final List<ResourceResolverPlugin> resourceResolverPlugins;
 
+	/**
+	 * Constructor.
+	 * @param resourceResolverPlugins List of plugins  which resolve the resources.
+	 */
 	@Inject
 	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
 		Assertion.checkNotNull(resourceResolverPlugins);
@@ -49,7 +58,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 				return url.get();
 			}
 		}
-		//On n'a pas trouvé de resolver permettant de lire la ressource.
-		throw new VSystemException("Ressource '{0}' non trouvée", resource);
+		/* We have not found any resolver for this resource */
+		throw new VSystemException("Resource '{0}' not found", resource);
 	}
 }

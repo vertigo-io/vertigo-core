@@ -71,9 +71,9 @@ public final class ComponentSpace implements Container, Activeable {
 	}
 
 	/**
-	 * @param componentClass Classe type du composant(Interface)
-	 * @param <T> Type du composant
-	 * @return Gestionnaire centralisé des documents.
+	 * Resolve a component from its class.
+	 * @param componentClass Type of the component
+	 * @return Component
 	 */
 	public <C> C resolve(final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(componentClass.getSimpleName());

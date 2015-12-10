@@ -51,18 +51,26 @@ public final class AppConfig {
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
 	}
 
+	/**
+	 * 
+	 * @return the config of the boot
+	 */
 	public BootConfig getBootConfig() {
 		return bootConfig;
 	}
 
 	/**
-	 * @return Liste des configurations de modules
+	 * @return list of the configs of the modules
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
 	}
 
-	public List<ComponentInitializerConfig> getComponentInitialzerConfigs() {
+	/**
+	 * 
+	 * @return List of the config of the initializers 
+	 */
+	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
 		return initializers;
 	}
 

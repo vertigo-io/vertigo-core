@@ -44,7 +44,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  jcassignol, pchretien
  */
-abstract public class AssociationDefinition implements Definition {
+public abstract class AssociationDefinition implements Definition {
 	/**
 	 * Nom de la définition.
 	 */

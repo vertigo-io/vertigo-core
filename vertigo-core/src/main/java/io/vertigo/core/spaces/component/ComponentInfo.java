@@ -23,11 +23,9 @@ import io.vertigo.lang.Assertion;
 import java.util.Date;
 
 /**
- * Conteneur d'informations d'un composant.
- *
- * Contient une combinaison de :
- *  - un titre
- *  - une valeur
+ * The ComponentInfo class defines an info and its associated value.
+ * 
+ * Value may have only a few types. (boolean, string, numeric, date)
  *
  * @author npiedeloup
  */
@@ -36,8 +34,59 @@ public final class ComponentInfo {
 	private final String title;
 
 	/**
-	 * @param value Valeur chaine ou numérique
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
 	 */
+	public ComponentInfo(final String title, final boolean value) {
+		this(title, value, false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
+	 */
+	public ComponentInfo(final String title, final String value) {
+		this(title, value, false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
+	 */
+	public ComponentInfo(final String title, final Long value) {
+		this(title, value, false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
+	 */
+	public ComponentInfo(final String title, final Integer value) {
+		this(title, value, false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
+	 */
+	public ComponentInfo(final String title, final Double value) {
+		this(title, value, false);
+	}
+
+	/**
+	 * Constructor.
+	 * @param title Title which defines the componentInfo
+	 * @param value Value
+	 */
+	public ComponentInfo(final String title, final Date value) {
+		this(title, value, false);
+	}
+
 	private ComponentInfo(final String title, final Object value, final boolean dummy) {
 		Assertion.checkArgNotEmpty(title);
 		//-----
@@ -45,60 +94,19 @@ public final class ComponentInfo {
 		this.value = value;
 	}
 
-	public ComponentInfo(final String title, final boolean value) {
-		this(title, value, false);
-	}
-
-	public ComponentInfo(final String title, final String value) {
-		this(title, value, false);
-	}
-
-	public ComponentInfo(final String title, final Long value) {
-		this(title, value, false);
-	}
-
-	public ComponentInfo(final String title, final Integer value) {
-		this(title, value, false);
-	}
-
-	public ComponentInfo(final String title, final Double value) {
-		this(title, value, false);
-	}
-
-	public ComponentInfo(final String title, final Date value) {
-		this(title, value, false);
-	}
-
 	/**
-	 * @return Titre ou unité de la valeur
+	 * Returns the title
+	 * @return title
 	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Returns the value
+	 * @return value
+	 */
 	public Object getValue() {
 		return value;
 	}
-	//	/**
-	//	 * @return Valeur convertie en HTML
-	//	 */
-	//	public String getFormattedValue() {
-	//		return value;
-	//	}
-	//
-	//	private static String formatValue(final Object value) {
-	//		final String formattedValue;
-	//		if (value instanceof Boolean) {
-	//			formattedValue = String.valueOf(value);
-	//		} else if (value instanceof String) {
-	//			formattedValue = String.valueOf(value);
-	//		} else if (value instanceof Long || value instanceof Integer) {
-	//			formattedValue = new DecimalFormat("#,###", new DecimalFormatSymbols(Locale.FRENCH)).format(value);
-	//		} else if (value instanceof Double) {
-	//			formattedValue = new DecimalFormat("#,###.##", new DecimalFormatSymbols(Locale.FRENCH)).format(value);
-	//		} else {
-	//			throw new IllegalArgumentException("Format non implémenté");
-	//		}
-	//		return formattedValue;
-	//	}
 }

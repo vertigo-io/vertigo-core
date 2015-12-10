@@ -29,7 +29,11 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * Implementation of ParamManager.
+ * Standard implementation of the paramManager.
+ * 
+ * The strategy to access params is defined in a list of plugins.
+ * 
+ * 
  * @author pchretien, npiedeloup, prahmoune
  */
 public final class ParamManagerImpl implements ParamManager {
@@ -39,6 +43,10 @@ public final class ParamManagerImpl implements ParamManager {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
+	/**
+	 * Constructor.
+	 * @param paramPlugins List of plugins
+	 */
 	@Inject
 	public ParamManagerImpl(final List<ParamPlugin> paramPlugins) {
 		Assertion.checkNotNull(paramPlugins);

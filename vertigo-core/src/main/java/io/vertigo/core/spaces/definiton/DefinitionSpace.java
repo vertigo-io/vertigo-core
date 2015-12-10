@@ -143,6 +143,9 @@ public final class DefinitionSpace implements Component, Activeable {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * @return true if there is no definition in this space
+	 */
 	public boolean isEmpty() {
 		return definitions.isEmpty() && allObjects.isEmpty();
 	}
