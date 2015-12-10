@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Gestion des couples : propriété et valeur.
+ * This entry defines a property and its value.
  *
  * @author pchretien
  */
@@ -30,9 +30,9 @@ public final class DslPropertyEntry {
 	private final String propertyName;
 
 	/**
-	 * Constructeur.
-	 * @param property Propriété
-	 * @param propertyValue Valeur de la propriété
+	 * Constructor.
+	 * @param propertyName Name of the property
+	 * @param propertyValue Value of the property
 	 */
 	public DslPropertyEntry(final String propertyName, final String propertyValue) {
 		Assertion.checkNotNull(propertyName);
@@ -42,14 +42,14 @@ public final class DslPropertyEntry {
 	}
 
 	/**
-	 * @return Valeur de la propriété
+	 * @return Value of the property
 	 */
 	public String getPropertyValueAsString() {
 		return propertyValue;
 	}
 
 	/**
-	 * @return Propriété
+	 * @return Name of the property
 	 */
 	public String getPropertyName() {
 		return propertyName;

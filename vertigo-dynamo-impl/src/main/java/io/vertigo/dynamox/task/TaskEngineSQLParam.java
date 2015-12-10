@@ -70,8 +70,6 @@ final class TaskEngineSQLParam {
 		}
 	}
 
-	// ==========================================================================
-	// ==========================================================================
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
@@ -79,10 +77,10 @@ final class TaskEngineSQLParam {
 	private int index = -1;
 
 	/**
-	 * Crée un objet Paramètre pour la requête.
+	 * Constructor.
 	 *
 	 * @param betweenCar String
-	 * @param inOut Type du Parametre
+	 * @param in If the param is in
 	 */
 	TaskEngineSQLParam(final String betweenCar, final boolean in) {
 		String newAttributeName = betweenCar;

@@ -315,9 +315,8 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/**
 	 * Enregistre la fin d'exécution du PrepareStatement
-	 * @param ok True si l'exécution s'est effectuée sans erreur
+	 * @param success True si l'exécution s'est effectuée sans erreur
 	 */
-
 	private void endExecution(final boolean success, final Integer nbModifiedRow, final Integer nbSelectedRow) {
 		if (success) {
 			//On passe à l'état exécuté

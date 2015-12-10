@@ -33,7 +33,6 @@ final class SqlParameter {
 	 * Constructeur.
 	 * @param dataType KDataType
 	 * @param in boolean
-	 * @param out boolean
 	 */
 	SqlParameter(final DataType dataType, final boolean in) {
 		this.dataType = dataType;

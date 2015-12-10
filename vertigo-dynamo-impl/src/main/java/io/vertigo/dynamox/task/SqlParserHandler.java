@@ -69,7 +69,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 
 	/**
 	 * Vérifie qu'un nom de champ pour un attribut de type DTX existe
-	 * @param attributeName Nom parametre de type du DTX
+	 * @param taskAttribute TaskAttribute
 	 * @param fieldName Nom du champ dont il faut vérifier l'existence
 	 */
 	private void checkFieldName(final TaskAttribute taskAttribute, final String fieldName) {

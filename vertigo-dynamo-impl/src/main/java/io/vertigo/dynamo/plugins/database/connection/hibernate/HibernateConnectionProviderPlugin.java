@@ -64,8 +64,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 
 	/**
 	 * @param em EntityManager
-	 * @return KConnection sous jacente
-	 * @throws SQLException Exception sql
+	 * @return the sqlConnection
 	 */
 	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection

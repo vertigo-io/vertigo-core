@@ -111,8 +111,6 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	 * Retourne la valeur typée en fonction de son expression sous forme de String
 	 * L'expression est celle utilisée dans le fichier xml/ksp.
 	 * Cette méthode n'a pas besoin d'être optimisée elle est appelée au démarrage uniquement.
-	 * @param property Propriété à lire.
-	 * @param stringValue Valeur de la propriété sous forme String
 	 * @return J Valeur typée de la propriété
 	 */
 	private static Object readProperty(final Entity entity, final DslPropertyEntry dslPropertyEntry) {

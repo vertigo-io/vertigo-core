@@ -76,9 +76,7 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 	private final TaskManager taskManager;
 
 	/**
-	 * Construit une instance de BrokerBatchImpl.
-	 *
-	 * @param dtDefinition Définition associé à l'objet géré
+	 * Constructor.
 	 */
 	BrokerBatchImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);

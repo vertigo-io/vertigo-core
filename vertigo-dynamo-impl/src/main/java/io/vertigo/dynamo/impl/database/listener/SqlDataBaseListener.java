@@ -26,13 +26,13 @@ package io.vertigo.dynamo.impl.database.listener;
 public interface SqlDataBaseListener {
 	/**
 	 * Enregistre le début d'exécution d'un PreparedStatement.
-	 * @param preparedStatement Statement
+	 * @param statement Statement
 	 */
 	void onStart(String statement);
 
 	/**
 	 * Enregistre la fin d'une exécution de PreparedStatement avec le temps d'exécution en ms et son statut (OK/KO).
-	 * @param statementStats Informations sur l'éxécution
+	 * @param statement Statement
 	 */
 	void onFinish(final String statement, final boolean success, final long elapsedTime, final Integer nbModifiedRow, final Integer nbSelectedRow);
 }
