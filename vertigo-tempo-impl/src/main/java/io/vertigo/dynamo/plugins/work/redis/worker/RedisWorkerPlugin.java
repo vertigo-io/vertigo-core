@@ -44,7 +44,14 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	private final RedisDB redisDB;
 
 	@Inject
-	public RedisWorkerPlugin(final CodecManager codecManager, @Named("nodeId") final String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, @Named("timeoutSeconds") final int timeoutSeconds, final @Named("password") Option<String> password) {
+	public RedisWorkerPlugin(
+			final CodecManager codecManager,
+			final @Named("nodeId") String nodeId,
+			final @Named("workTypes") String workTypes,
+			final @Named("host") String redisHost,
+			final @Named("port") int redisPort,
+			final @Named("timeoutSeconds") int timeoutSeconds,
+			final @Named("password") Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(redisHost);

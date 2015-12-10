@@ -59,31 +59,31 @@ final class DslUserCriteriaRule {
 	 *  3 : anythings
 	 *  4 : )
 	 */
-	private final static String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)(\\()([^\\\"]*)(\\)))"; //attention a bien avoir 4 groups
-	private final static String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
-	private final static String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
-	private final static String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:(\\S+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
-	//private final static String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
-	//private final static String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
-	//private final static String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
+	private static final String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)(\\()([^\\\"]*)(\\)))"; //attention a bien avoir 4 groups
+	private static final String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
+	private static final String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
+	private static final String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:(\\S+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
+	//private static final String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
+	//private static final String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
+	//private static final String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//\p{Punct}:  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-	private final static String START_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.	//
-	private final static String INNER_WORD_RESERVERD_PATTERN = "\\S*";
-	private final static String END_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.
-	private final static String WORD_RESERVERD_PATTERN = START_WORD_RESERVERD_PATTERN + INNER_WORD_RESERVERD_PATTERN + END_WORD_RESERVERD_PATTERN; //Punct sauf _.
-	private final static String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
-	private final static String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
-	//private final static String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";
-	//private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + NOT_WORD_PATTERN + "]*)([^" + NOT_WORD_PATTERN + "]+)([^\\w" + NOT_WORD_PATTERN + "]*))";
-	private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([" + PREFIX_RESERVERD_PATTERN + "]*?)(" + WORD_RESERVERD_PATTERN + ")((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
-	private final static String CRITERIA_VALUE_PATTERN_STRING = "(?:((?:\\s|^).*?)?)(?:" //group 1
+	private static final String START_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.	//
+	private static final String INNER_WORD_RESERVERD_PATTERN = "\\S*";
+	private static final String END_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.
+	private static final String WORD_RESERVERD_PATTERN = START_WORD_RESERVERD_PATTERN + INNER_WORD_RESERVERD_PATTERN + END_WORD_RESERVERD_PATTERN; //Punct sauf _.
+	private static final String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
+	private static final String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
+	//private static final String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";
+	//private static final String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + NOT_WORD_PATTERN + "]*)([^" + NOT_WORD_PATTERN + "]+)([^\\w" + NOT_WORD_PATTERN + "]*))";
+	private static final String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([" + PREFIX_RESERVERD_PATTERN + "]*?)(" + WORD_RESERVERD_PATTERN + ")((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
+	private static final String CRITERIA_VALUE_PATTERN_STRING = "(?:((?:\\s|^).*?)?)(?:" //group 1
 			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 2-5
 			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING // group 6-9
 			+ "|" + CRITERIA_VALUE_RANGE_PATTERN_STRING // group 10-13
 			+ "|" + CRITERIA_VALUE_STAR_PATTERN_STRING // group 14-17
 			+ "|" + CRITERIA_VALUE_WORD_PATTERN_STRING // group 18-21
 			+ ")(\\S*)"; // group 22
-	private final static Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
+	private static final Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
 
 	/**
 	 * @param userString User string

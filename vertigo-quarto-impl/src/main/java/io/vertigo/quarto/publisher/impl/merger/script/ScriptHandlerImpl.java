@@ -115,6 +115,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	// traitement d'un tag
 	// ==========================================================================
 	/*
+	 * 
 	 * parse un Tag pour trouver son type et ses attributs ces deux informations
 	 * sont ensuite stockées dans un objet de type TagContent
 	 */

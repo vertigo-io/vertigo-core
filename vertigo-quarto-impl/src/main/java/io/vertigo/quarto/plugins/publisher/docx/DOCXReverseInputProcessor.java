@@ -145,12 +145,12 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
 	private static void cleanNotWordBESTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
-		String controlContent = null; // valeur de controle pour vérifier que le champ n'est pas WORD.
+		String controlContent; // valeur de controle pour vérifier que le champ n'est pas WORD.
 		final List<Node> removeNodes = new ArrayList<>(); // liste des noeuds à supprimer
 		Node currentNode; // noeud en cours de traitement.
 		Node controlNode;
 		Node node;
-		boolean afterSeparate = false;
+		boolean afterSeparate;
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_BEGIN, xmlDoc, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			afterSeparate = false;
