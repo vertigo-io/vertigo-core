@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -57,17 +58,20 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				/** {@inheritDoc} */
 				@Override
 				public boolean hasNext() {
-					return hasNextChunk(keyConceptClass, next);
+					if (next == null) {
+						next = nextChunk(keyConceptClass, current);
+					}
+					return !next.getAllURIs().isEmpty();
 				}
 
 				/** {@inheritDoc} */
 				@Override
 				public SearchChunk<K> next() {
-					if (next == null) {
-						next = nextChunk(keyConceptClass, null);
+					if (!hasNext()) {
+						throw new NoSuchElementException();
 					}
 					current = next;
-					next = nextChunk(keyConceptClass, current);
+					next = null;
 					return current;
 				}
 
@@ -137,11 +141,6 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
 		}
 		return pkValue;
-	}
-
-	private boolean hasNextChunk(final Class<K> keyConceptClass, final SearchChunk<K> currentChunck) {
-		// il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
-		return currentChunck == null || !currentChunck.getAllURIs().isEmpty();
 	}
 
 	/**
