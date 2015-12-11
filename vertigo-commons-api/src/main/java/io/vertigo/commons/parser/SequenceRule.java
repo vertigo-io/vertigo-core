@@ -39,7 +39,7 @@ public final class SequenceRule implements Rule<List<?>> {
 	private final String expression;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public SequenceRule(final Rule<?>... rules) {
 		this(Arrays.asList(rules));

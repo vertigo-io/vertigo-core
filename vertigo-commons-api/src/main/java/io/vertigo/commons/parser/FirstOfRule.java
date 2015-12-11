@@ -25,8 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * On retourne la première des règles qui matche.
- * Si on ne trouve rien on lance une erreur sur la règle pour laquelle on a le plus avancé.
+ * The first rule that matches is taken.
+ * If no rule is found then an notFoundException is thrown. 
+ * 
  * @author pchretien
  */
 public final class FirstOfRule implements Rule<Choice> {
@@ -34,14 +35,14 @@ public final class FirstOfRule implements Rule<Choice> {
 	private final String expression;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FirstOfRule(final Rule<?>... rules) {
 		this(Arrays.asList(rules));
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FirstOfRule(final List<Rule<?>> rules) {
 		Assertion.checkNotNull(rules);
@@ -70,7 +71,7 @@ public final class FirstOfRule implements Rule<Choice> {
 			private Choice result;
 
 			/**
-			 * @return numéro de la règle ayant aboutie.
+			 * @return the choice number that succeeded.
 			 */
 			@Override
 			public Choice get() {
@@ -101,9 +102,9 @@ public final class FirstOfRule implements Rule<Choice> {
 						//on recommence jusqu'à trouver la première qui fonctionne.
 					}
 				}
-				//On a rien trouvé.
+				//Nothing has been found
 				if (best == null) {
-					throw new NotFoundException(text, start, null, "Echec lors de l''évaluation d''une règle FirstOf : ''{0}''", getExpression());
+					throw new NotFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
 				}
 				throw best;
 			}

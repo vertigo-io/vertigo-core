@@ -22,7 +22,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
 /**
- * Règle optionnelle.
+ * An optional rule.
+ * This rule is usefull each time there is an optional part inside a more global expression.
+ * 
  * @author pchretien
  */
 public final class OptionRule<P> implements Rule<Option<P>> {
@@ -30,8 +32,8 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 	private final Rule<P> rule;
 
 	/**
-	 * Constructeur.
-	 * @param rule Règle optionnelle
+	 * Constructor.
+	 * @param rule Optional rule
 	 */
 	public OptionRule(final Rule<P> rule) {
 		super();
@@ -56,14 +58,14 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
-				//======================================================================
+				//-----
 				option = Option.none();
 				try {
 					final Parser<P> parser = rule.createParser();
 					index = parser.parse(text, index);
 					option = Option.option(parser.get());
 				} catch (final NotFoundException e) {
-					//Comme la règle est optionnelle si on ne trouve rien on reste au point de départ.
+					//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
 				}
 				return index;
 			}
