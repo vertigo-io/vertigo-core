@@ -27,7 +27,7 @@ import java.io.PrintStream;
  */
 public final class Logo {
 	private Logo() {
-		//constructor is proteceted
+		//constructor is protected
 	}
 
 	/**

@@ -27,24 +27,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Paramétrage d'un composant.
- * - nom du compposant
- * - class du composant
- * - api du composant (option)
- * - liste des Plugins
+ * The componentconfig class defines the configuration of a component.
+ * 
+ * A component is defined by 
+ *  - an id.
+ *  - a implemenation class.
+ *  - an optional api class.
+ *  - a map of params
+ * 
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfig {
 	private final String id;
-	private final Option<Class<? extends Component>> apiClass;
 	private final Class<? extends Component> implClass;
+	private final Option<Class<? extends Component>> apiClass;
 	private final Map<String, String> params;
 	private final boolean elastic;
 
 	/**
-	 * @param apiClass Class de l'api du composant
-	 * @param implClass Class de l'implémentation du composant
-	 * @param params paramètres du composant
+	 * Constructor.
+	 * @param apiClass api of the component
+	 * @param implClass impl class of the component
+	 * @param params params
 	 */
 	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
@@ -62,28 +66,28 @@ public final class ComponentConfig {
 	}
 
 	/**
-	 * @return Classe de l'implémentation du composant
+	 * @return impl class of the component
 	 */
 	public Class<? extends Component> getImplClass() {
 		return implClass;
 	}
 
 	/**
-	 * @return API du composant
+	 * @return api of the component
 	 */
 	public Option<Class<? extends Component>> getApiClass() {
 		return apiClass;
 	}
 
 	/**
-	 * @return Identifiant du composant
+	 * @return id of the component
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * @return Map des paramètres du composant
+	 * @return params
 	 */
 	public Map<String, String> getParams() {
 		return params;
