@@ -43,7 +43,7 @@ public final class VSecurityException extends RuntimeException {
 	 * Gestion des messages d'erreur externalisés.
 	 * @return messageText.
 	 */
-	public final MessageText getMessageText() {
+	public MessageText getMessageText() {
 		return messageText;
 	}
 }

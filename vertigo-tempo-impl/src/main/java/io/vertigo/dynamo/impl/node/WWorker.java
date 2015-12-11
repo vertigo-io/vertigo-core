@@ -46,7 +46,7 @@ final class WWorker implements Runnable {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void run() {
+	public void run() {
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				doRun();

@@ -62,21 +62,21 @@ public final class DslBlockQuery implements DslQuery {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return queries
 	 */
-	public final List<DslQuery> getQueries() {
+	public List<DslQuery> getQueries() {
 		return queries;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
 }

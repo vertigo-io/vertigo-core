@@ -50,6 +50,12 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.elastic = elastic;
 	}
 
+	/**
+	 * Add a param to this component config.
+	 * @param paramName Name of the param 
+	 * @param paramValue Value of the param
+	 * @return this builder
+	 */
 	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
 		//paramValue can be null
@@ -66,6 +72,10 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return new ComponentConfig(apiClass, implClass, elastic, myParams);
 	}
 
+	/**
+	 * close this component config and returns to the module config. 
+	 * @return the builder of the moduleConfig
+	 */
 	public ModuleConfigBuilder endComponent() {
 		return moduleConfigBuilder;
 	}

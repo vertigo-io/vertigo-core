@@ -25,12 +25,12 @@ import io.vertigo.vega.impl.webservice.WebServiceIntrospectorPlugin;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinitionBuilder;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
@@ -185,7 +185,7 @@ public final class AnnotationsWebServiceIntrospectorPlugin implements WebService
 		return null;
 	}
 
-	private static final boolean isImplicitParam(final Type paramType) {
+	private static boolean isImplicitParam(final Type paramType) {
 		for (final ImplicitParam implicitParam : ImplicitParam.values()) {
 			if (implicitParam.getImplicitType().equals(paramType)) {
 				return true;

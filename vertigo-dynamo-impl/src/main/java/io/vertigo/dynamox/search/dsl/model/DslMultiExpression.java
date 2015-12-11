@@ -83,29 +83,28 @@ public final class DslMultiExpression {
 	/**
 	 * @return block
 	 */
-	public final boolean isBlock() {
+	public boolean isBlock() {
 		return block;
 	}
 
 	/**
 	 * @return expressions
 	 */
-	public final List<DslExpression> getExpressions() {
+	public List<DslExpression> getExpressions() {
 		return expressions;
 	}
 
 	/**
 	 * @return multiExpressions
 	 */
-	public final List<DslMultiExpression> getMultiExpressions() {
+	public List<DslMultiExpression> getMultiExpressions() {
 		return multiExpressions;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
-
 }

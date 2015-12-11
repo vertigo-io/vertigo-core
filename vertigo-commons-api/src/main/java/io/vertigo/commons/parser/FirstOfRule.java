@@ -61,7 +61,7 @@ public final class FirstOfRule implements Rule<Choice> {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getExpression() {
+	public String getExpression() {
 		return expression;
 	}
 

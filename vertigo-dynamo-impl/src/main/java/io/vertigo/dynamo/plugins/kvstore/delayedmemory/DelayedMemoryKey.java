@@ -58,7 +58,7 @@ final class DelayedMemoryKey implements Delayed {
 	/**
 	 * @return Security Token key
 	 */
-	public final String getKey() {
+	public String getKey() {
 		return key;
 	}
 }

@@ -57,7 +57,7 @@ final class HomeServletStarter {
 	 * Initialize application.
 	 * @param servletContext ServletContext
 	 */
-	public final void contextInitialized(final ServletContext servletContext) {
+	public void contextInitialized(final ServletContext servletContext) {
 		final long start = System.currentTimeMillis();
 		try {
 			// Initialisation du web context de l'application (porteur des singletons applicatifs)
@@ -191,7 +191,7 @@ final class HomeServletStarter {
 	 * Called when this servlet is stopped.
 	 * @param servletContext Servlet Context
 	 */
-	public final void contextDestroyed(final ServletContext servletContext) {
+	public void contextDestroyed(final ServletContext servletContext) {
 		app.close();
 		servletListener.onServletDestroy(getClass().getName());
 	}

@@ -190,7 +190,7 @@ public final class WebServiceDefinition implements Definition {
 	/**
 	 * @return needAuthentification
 	 */
-	public final boolean isNeedAuthentification() {
+	public boolean isNeedAuthentification() {
 		return needAuthentification;
 	}
 

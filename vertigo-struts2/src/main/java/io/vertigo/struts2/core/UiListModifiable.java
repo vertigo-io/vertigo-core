@@ -92,7 +92,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public final DtDefinition getDtDefinition() {
+	public DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 

@@ -51,7 +51,7 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static final Map<Method, List<Aspect>> createJoinPoints(final ComponentConfig componentConfig, final Collection<Aspect> aspects) {
+	static Map<Method, List<Aspect>> createJoinPoints(final ComponentConfig componentConfig, final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(aspects);
 		//-----

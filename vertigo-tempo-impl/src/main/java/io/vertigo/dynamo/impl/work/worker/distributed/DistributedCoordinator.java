@@ -109,13 +109,13 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void start() {
+	public void start() {
 		watcher.start();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void stop() {
+	public void stop() {
 		watcher.interrupt();
 		try {
 			watcher.join();
@@ -124,7 +124,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 		}
 	}
 
-	private final <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
+	private <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
 		workResultHandlers.put(workItem.getId(), workResultHandler);
 		masterPlugin.putWorkItem(workItem);
 	}

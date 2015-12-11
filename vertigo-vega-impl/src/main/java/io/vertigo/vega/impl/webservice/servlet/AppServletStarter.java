@@ -58,7 +58,7 @@ final class AppServletStarter {
 	 * Initialize and start Vertigo Home.
 	 * @param servletContext ServletContext
 	 */
-	public final void contextInitialized(final ServletContext servletContext) {
+	public void contextInitialized(final ServletContext servletContext) {
 		final long start = System.currentTimeMillis();
 		try {
 			// Initialisation du web context de l'application (porteur des singletons applicatifs)
@@ -189,7 +189,7 @@ final class AppServletStarter {
 	 * Stop Vertigo Home.
 	 * @param servletContext ServletContext
 	 */
-	public final void contextDestroyed(final ServletContext servletContext) {
+	public void contextDestroyed(final ServletContext servletContext) {
 		app.close();
 		appServletListener.onServletDestroy(getClass().getName());
 

@@ -91,12 +91,10 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		}
 	}
 
-	// ==========================================================================
-
 	/**
 	 * @return Objet interne utilisé par le context pour indexer les clés par DtObject.
 	 */
-	final D getInnerObject() {
+	D getInnerObject() {
 		return dto;
 	}
 
