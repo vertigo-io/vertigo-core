@@ -41,7 +41,7 @@ public final class FormatterId implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) {
+	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
 		//-----
 		try {

@@ -98,7 +98,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	@Override
 	public void stop() {
-		//nothing
+		executorService.shutdown();
 	}
 
 	/** {@inheritDoc} */

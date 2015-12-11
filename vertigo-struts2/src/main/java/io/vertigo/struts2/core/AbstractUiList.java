@@ -22,6 +22,7 @@ import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -171,8 +172,9 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 * @param keyFieldName Nom du champ identifiant
 	 * @param keyValueAsString Valeur de l'identifiant
 	 * @return UiObject
+	 * @throws FormatterException Format error
 	 */
-	public UiObject<D> getById(final String keyFieldName, final String keyValueAsString) {
+	public UiObject<D> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
 		final Map<String, UiObject<D>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		UiObject<D> uiObject = uiObjectById.get(keyValueAsString);
 		if (uiObject == null) {
