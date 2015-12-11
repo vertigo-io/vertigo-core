@@ -148,7 +148,7 @@ public class FormatterNumber implements Formatter {
 
 	}
 
-	private static Integer toInteger(final String sValue) {
+	private static Integer toInteger(final String sValue) throws FormatterException {
 		// on commence par vérifier que c'est bien un entier (Integer ou Long)
 		Long.valueOf(sValue);
 		try {

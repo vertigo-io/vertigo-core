@@ -20,7 +20,6 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.VUserException;
 
 import java.io.Serializable;
 
@@ -29,8 +28,9 @@ import java.io.Serializable;
  *
  * @author pchretien
  */
-public final class FormatterException extends VUserException {
+public final class FormatterException extends Exception {
 	private static final long serialVersionUID = -7317938262923785123L;
+	private final MessageText messageText;
 
 	/**
 	 * Constructeur.
@@ -39,6 +39,10 @@ public final class FormatterException extends VUserException {
 	 * @param params Paramètres de la ressource
 	 */
 	public FormatterException(final MessageKey key, final Serializable... params) {
-		super(new MessageText(null, key, params));
+		messageText = new MessageText(null, key, params);
+	}
+
+	public MessageText getMessageText() {
+		return messageText;
 	}
 }

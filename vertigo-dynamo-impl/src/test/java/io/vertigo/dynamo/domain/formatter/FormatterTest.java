@@ -86,7 +86,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testUpper() throws FormatterException {
+	public void testUpper() {
 		Assert.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
 	}
 
@@ -178,10 +178,10 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test du formatter de booléen.
-	* @throws FormatterException e
+	 * @throws FormatterException 
 	*/
 	@Test
-	public void testFormatterBoolean() {
+	public void testFormatterBoolean() throws FormatterException {
 		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("OUI", DataType.Boolean));
 		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("OUI ", DataType.Boolean));
 		Assert.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NON", DataType.Boolean));
@@ -199,7 +199,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test(expected = FormatterException.class)
-	public void testFormatterBoolean1() {
+	public void testFormatterBoolean1() throws FormatterException {
 		formatterBoolean.stringToValue("abc ", DataType.Boolean);
 	}
 
