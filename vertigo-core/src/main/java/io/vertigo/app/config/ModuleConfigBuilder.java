@@ -55,9 +55,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	private boolean myHasApi = true; //par défaut on a une api.
 
-	//State to avoid reuse of this Builder
-	private boolean ended = false;
-
 	/**
 	 * Constructor of the boot module.
 	 * @param appConfigBuilder the builder of the appConfig 
@@ -91,8 +88,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		myAspectConfigs.add(new AspectConfig(implClass));
 		return this;
 	}
@@ -102,8 +97,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder withNoAPI() {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		myHasApi = false;
 		return this;
 	}
@@ -114,7 +107,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkNotNull(definitionProviderClass);
 		//-----
 		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
@@ -128,7 +120,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//-----
@@ -142,8 +133,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return this builder
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), Component.class, true);
 	}
 
@@ -173,8 +162,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return this builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		return doBeginComponent(Option.<Class<? extends Component>> none(), implClass, false);
 	}
 
@@ -186,8 +173,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return this builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), implClass, false);
 	}
 
@@ -208,13 +193,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return the parent's builder (AppConfigBuilder)
 	 */
 	public AppConfigBuilder endModule() {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		if (boot) {
 			// we don't close the module	
 		} else {
 			myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
-			ended = true;
 		}
 		return myAppConfigBuilder;
 	}
@@ -251,8 +233,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
-		Assertion.checkArgument(!ended, "this builder is ended");
-		//-----
 		final List<ModuleRule> moduleRules = new ArrayList<>();
 		//Mise à jour des règles.
 		if (myHasApi) {
