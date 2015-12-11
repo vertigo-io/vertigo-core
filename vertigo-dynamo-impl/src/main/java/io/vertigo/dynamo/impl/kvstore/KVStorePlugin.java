@@ -30,13 +30,42 @@ import java.util.List;
  */
 public interface KVStorePlugin extends Plugin {
 
+	/**
+	 * @return list of collections names 
+	 */
 	List<String> getCollections();
 
+	/**
+	 * Add a new element in the store.
+	 * @param collection Name of the collection
+	 * @param id Id of the elemnt
+	 * @param objet element to add
+	 */
 	void put(String collection, String id, Object objet);
 
+	/**
+	 * Removes an element defined by an id.
+	 * @param collection Name of the collection
+	 * @param id Id of the element to remove
+	 */
 	void remove(String collection, String id);
 
+	/**
+	 * Find the element corresponding to an id in a specified collection.
+	 * If element not found an empty option is returned.
+	 * @param collection Name of the collection
+	 * @param clazz Type of the element
+	 * @return the element corresponding to the id as an option.
+	 */
 	<C> Option<C> find(String collection, String id, Class<C> clazz);
 
+	/**
+	 * Find all the elements of a collection in a range defined by (skip, limit).  
+	 * @param collection Name of the collection
+	 * @param skip Skips the first elements 
+	 * @param limit Limit size of the number of elements 	
+	 * @param clazz Type of elements
+	 * @return the list of elements
+	 */
 	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
 }

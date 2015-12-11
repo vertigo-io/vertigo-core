@@ -28,10 +28,9 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AssociationUtil {
-	//	private static final Log LOG = LogFactory.getLog(AssociationHelper.class);
 
 	private AssociationUtil() {
-		//Classe utilitaire
+		//private constructor
 	}
 
 	/**
@@ -141,7 +140,6 @@ public final class AssociationUtil {
 				isAPrimaryNode = false;
 			}
 		}
-		//		LOG.trace("isAPrimaryNode:" + isAPrimaryNode);
 		return isAPrimaryNode;
 	}
 

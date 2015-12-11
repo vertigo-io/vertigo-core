@@ -29,6 +29,7 @@ import java.util.List;
  * On remonte une erreur dés qu'une seule des règles n'est pas suivie.
  * L'erreur précise le début du bloc ET et précise la cause. (C'est à dire l clause et qui n'est pas suivie).
  * @author pchretien
+ * @param<P> Type of the product text parsing
  */
 public final class ManyRule<R> implements Rule<List<R>> {
 	private final Rule<R> rule;

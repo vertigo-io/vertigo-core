@@ -53,9 +53,6 @@ public final class DataStoreImpl implements DataStore {
 	public DataStoreImpl(final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
-		//On vérrouille la configuration.
-		//brokerConfiguration.lock();
-		//On crée la pile de Store.
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		cacheDataStore = new CacheDataStore(dataStoreConfig);
 		eventsManager = dataStoreConfig.getEventsManager();
@@ -107,7 +104,6 @@ public final class DataStoreImpl implements DataStore {
 		//-----
 		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeCreate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -120,7 +116,6 @@ public final class DataStoreImpl implements DataStore {
 		//-----
 		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -132,7 +127,6 @@ public final class DataStoreImpl implements DataStore {
 		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
 		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
-		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -144,7 +138,6 @@ public final class DataStoreImpl implements DataStore {
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
 		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeDelete, uri);
-		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
