@@ -61,7 +61,6 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public void register(final DtListURIForMasterData uri, final String fieldName, final Serializable value) {
-		//check();
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//-----
@@ -73,7 +72,6 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public void register(final DtListURIForMasterData uri, final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
-		//check();
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
@@ -87,7 +85,6 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public void register(final DtListURIForMasterData uri) {
-		//check();
 		Assertion.checkNotNull(uri);
 		//-----
 		register(uri, identityFunction);

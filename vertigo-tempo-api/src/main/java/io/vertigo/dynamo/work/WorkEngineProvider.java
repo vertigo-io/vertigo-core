@@ -29,13 +29,16 @@ import io.vertigo.util.ClassUtil;
  * Dans la plupart des cas le moyen est une classe.
  * Dans certain cs il peut s'agir du nom de la classe.
  * @author  pchretien
+ * 
+ * @param<R> result
+ * @param<W> work
  */
-public final class WorkEngineProvider<WR, W> {
+public final class WorkEngineProvider<R, W> {
 	private final String className;
-	private final Class<? extends WorkEngine<WR, W>> clazz;
-	private final WorkEngine<WR, W> workEngine;
+	private final Class<? extends WorkEngine<R, W>> clazz;
+	private final WorkEngine<R, W> workEngine;
 
-	public WorkEngineProvider(final Class<? extends WorkEngine<WR, W>> clazz) {
+	public WorkEngineProvider(final Class<? extends WorkEngine<R, W>> clazz) {
 		Assertion.checkNotNull(clazz);
 		//-----
 		this.clazz = clazz;
@@ -43,7 +46,7 @@ public final class WorkEngineProvider<WR, W> {
 		this.workEngine = null;
 	}
 
-	public WorkEngineProvider(final WorkEngine<WR, W> workEngine) {
+	public WorkEngineProvider(final WorkEngine<R, W> workEngine) {
 		Assertion.checkNotNull(workEngine);
 		//-----
 		this.workEngine = workEngine;
@@ -59,15 +62,15 @@ public final class WorkEngineProvider<WR, W> {
 		this.workEngine = null;
 	}
 
-	public WorkEngine<WR, W> provide() {
+	public WorkEngine<R, W> provide() {
 		if (workEngine != null) {
 			return workEngine;
 		}
-		final Class<? extends WorkEngine<WR, W>> engineClazz;
+		final Class<? extends WorkEngine<R, W>> engineClazz;
 		if (clazz != null) {
 			engineClazz = clazz;
 		} else {
-			engineClazz = (Class<? extends WorkEngine<WR, W>>) ClassUtil.classForName(className);
+			engineClazz = (Class<? extends WorkEngine<R, W>>) ClassUtil.classForName(className);
 		}
 		//récupéartion de l'engine par sa classe.
 		return Injector.newInstance(engineClazz, Home.getApp().getComponentSpace());

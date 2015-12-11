@@ -37,16 +37,19 @@ public interface WorkerPlugin extends Plugin {
 	 * Polling workitem.
 	 * @param workType Type de tache
 	 * @return Workitem or null (if timeout)
+	 * @param<R> result
+	 * @param<W> work
 	 */
-	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType);
+	<R, W> WorkItem<R, W> pollWorkItem(final String workType);
 
 	/**
 	 * Send result or error if execution failed
 	 * @param workId WorkId
 	 * @param result Result (not null if execution succeeded)
 	 * @param error Error ( not null if execution failed)
+	 * @param<R> result
 	 */
-	<WR> void putResult(final String workId, WR result, Throwable error);
+	<R> void putResult(final String workId, R result, Throwable error);
 
 	void putStart(final String workId);
 }

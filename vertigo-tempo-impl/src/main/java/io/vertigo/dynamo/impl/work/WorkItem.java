@@ -21,9 +21,16 @@ package io.vertigo.dynamo.impl.work;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.lang.Assertion;
 
-public final class WorkItem<WR, W> {
+/**
+ * 
+ * @author pchretien
+ *
+ * @param<R> result
+ * @param<W> work
+ */
+public final class WorkItem<R, W> {
 	private final W work;
-	private final WorkEngineProvider<WR, W> workEngineProvider;
+	private final WorkEngineProvider<R, W> workEngineProvider;
 	private final String id;
 
 	/**
@@ -31,7 +38,7 @@ public final class WorkItem<WR, W> {
 	 * This workItem is used to define a synchronous work.
 	 * @param work Travail dont on représente l'état.
 	 */
-	public WorkItem(final String id, final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+	public WorkItem(final String id, final W work, final WorkEngineProvider<R, W> workEngineProvider) {
 		Assertion.checkNotNull(id);
 		//work can be null
 		Assertion.checkNotNull(workEngineProvider);
@@ -57,7 +64,7 @@ public final class WorkItem<WR, W> {
 		return getWorkEngineProvider().getName();
 	}
 
-	public WorkEngineProvider<WR, W> getWorkEngineProvider() {
+	public WorkEngineProvider<R, W> getWorkEngineProvider() {
 		return workEngineProvider;
 	}
 }

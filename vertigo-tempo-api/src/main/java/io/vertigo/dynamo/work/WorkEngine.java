@@ -23,11 +23,12 @@ package io.vertigo.dynamo.work;
  * Le moteur N'EST PAS THREADSAFE ; il doit donc être instancié à chaque utilisation.
  * Le moteur est créé par Injection de dépendances.
  *  
- * @param <W> Type de Work (Travail)
- * @param <WR> Produit d'un work à l'issu de son exécution
  * @author   pchretien
+ *  
+ * @param<R> result
+ * @param<W> work
  */
-public interface WorkEngine<WR, W> {
+public interface WorkEngine<R, W> {
 	/**
 	 * Exécute le travail.
 	 * Le travail s'exécute dans la transaction courante si elle existe.
@@ -36,5 +37,5 @@ public interface WorkEngine<WR, W> {
 	 * @param work paramétrage du WorkEngine
 	 * @return WorkResult contenant les résultats
 	 */
-	WR process(W work);
+	R process(W work);
 }

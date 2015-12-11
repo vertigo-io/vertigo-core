@@ -31,11 +31,11 @@ final class PublisherGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	static final String STRING_FIELD = "stringField";
-	static final String BOOLEAN_FIELD = "booleanField";
-	static final String IMAGE_FIELD = "imageField";
-	static final String DATA_FIELD = "dataField";
-	static final String LIST_FIELD = "listField";
+	public static final String STRING_FIELD = "stringField";
+	public static final String BOOLEAN_FIELD = "booleanField";
+	public static final String IMAGE_FIELD = "imageField";
+	public static final String DATA_FIELD = "dataField";
+	public static final String LIST_FIELD = "listField";
 
 	private static final String PUB_DEFINITION_META_DEFINITION = "PublisherDefinition";
 	private static final String NODE_DEFINITION_META_DEFINITION = "PublisherNode";

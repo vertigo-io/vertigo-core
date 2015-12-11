@@ -25,45 +25,61 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
 /**
+ * This builder allows you to build a DtList using fluent style.
  * @author pchretien
+ * 
+ * @param<D> type of objects in this list
  */
-public final class DtListBuilder<X extends DtObject> implements Builder<DtList<X>> {
-	private final DtList<X> list;
+public final class DtListBuilder<D extends DtObject> implements Builder<DtList<D>> {
+	private final DtList<D> list;
 
-	public DtListBuilder(final Class<X> dtObjectClass) {
+	/**
+	 * Constructor.
+	 * @param dtObjectClass type of the object, defined by its class
+	 */
+	public DtListBuilder(final Class<D> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
 		list = new DtList(dtDefinition);
 	}
 
+	/**
+	 * Constructor.
+	 * @param dtDefinition type of the object, defined by its definition
+	 */
 	public DtListBuilder(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		list = new DtList(dtDefinition);
 	}
 
-	public DtListBuilder<X> add(final X value) {
+	/**
+	 * Add an new object
+	 * @param value object 
+	 * @return this builder
+	 */
+	public DtListBuilder<D> add(final D value) {
 		Assertion.checkNotNull(value);
 		//-----
 		list.add(value);
 		return this;
 	}
 
-	public DtListBuilder<X> addAll(final DtList<X> values) {
+	/**
+	 * Add an list of objects
+	 * @param values list of objects 
+	 * @return this builder
+	 */
+	public DtListBuilder<D> addAll(final DtList<D> values) {
 		Assertion.checkNotNull(values);
 		//-----
 		list.addAll(values);
 		return this;
 	}
 
-	//	public DtListBuilder<X> unmodifiable() {
-	//		this.list = Collections.unmodifiableList(list);
-	//		return this;
-	//	}
-
 	@Override
-	public DtList<X> build() {
+	public DtList<D> build() {
 		return list;
 	}
 }
