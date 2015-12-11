@@ -76,7 +76,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void start() {
+	public void start() {
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.start();
 		}
@@ -84,7 +84,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void stop() {
+	public void stop() {
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.interrupt();
 		}

@@ -37,8 +37,8 @@ import java.util.Set;
  */
 public interface JsonEngine extends Component {
 
-	static final String LIST_VALUE_FIELDNAME = "value";
-	static final String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
+	String LIST_VALUE_FIELDNAME = "value";
+	String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
 
 	/**
 	 * Standard convert full object to Json.

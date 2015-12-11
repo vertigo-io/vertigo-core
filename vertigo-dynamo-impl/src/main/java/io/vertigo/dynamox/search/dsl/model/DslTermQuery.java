@@ -67,42 +67,42 @@ public final class DslTermQuery implements DslQuery {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return preTerm
 	 */
-	public final String getPreTerm() {
+	public String getPreTerm() {
 		return preTerm;
 	}
 
 	/**
 	 * @return termField
 	 */
-	public final String getTermField() {
+	public String getTermField() {
 		return termField;
 	}
 
 	/**
 	 * @return postTerm
 	 */
-	public final String getPostTerm() {
+	public String getPostTerm() {
 		return postTerm;
 	}
 
 	/**
 	 * @return defaultValue
 	 */
-	public final Option<String> getDefaultValue() {
+	public Option<String> getDefaultValue() {
 		return defaultValue;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
 }

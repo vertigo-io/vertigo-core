@@ -97,7 +97,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -120,19 +120,19 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<String> getDefinitionNames(final String fieldName) {
+	public List<String> getDefinitionNames(final String fieldName) {
 		return obtainList(definitionNamesByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+	public List<DynamicDefinition> getChildDefinitions(final String fieldName) {
 		return obtainList(definitionsByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<DynamicDefinition> getAllChildDefinitions() {
+	public List<DynamicDefinition> getAllChildDefinitions() {
 		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
 			dynamicDefinitions.addAll(dynamicDefinitionList);
@@ -142,13 +142,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final boolean containsDefinitionName(final String fieldName) {
+	public boolean containsDefinitionName(final String fieldName) {
 		return definitionNamesByFieldName.containsKey(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getDefinitionName(final String fieldName) {
+	public String getDefinitionName(final String fieldName) {
 		Assertion.checkArgument(containsDefinitionName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
 		final List<String> list = definitionNamesByFieldName.get(fieldName);
 		final String definitionName = list.get(0);
@@ -160,7 +160,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final List<String> getAllDefinitionNames() {
+	public List<String> getAllDefinitionNames() {
 		final List<String> allDefinitionNames = new ArrayList<>();
 		for (final List<String> dynamicDefinitionNames : definitionNamesByFieldName.values()) {
 			allDefinitionNames.addAll(dynamicDefinitionNames);
@@ -177,7 +177,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
+	public DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
 		getEntity().getPrimitiveType(propertyName).checkValue(value);
 		propertyValueByFieldName.put(propertyName, value);
 		return this;
@@ -197,12 +197,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition) {
+	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition) {
 		addAllChildrenDefinition(fieldName, Collections.singletonList(definition));
 		return this;
 	}
 
-	private final void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
+	private void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
 		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof Entity,
@@ -213,7 +213,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
+	public DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionNames);
 		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof EntityLink,
@@ -225,13 +225,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
+	public DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
 		return addAllDefinitions(fieldName, Collections.singletonList(definitionName));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final DynamicDefinitionBuilder addBody(final DynamicDefinition dynamicDefinition) {
+	public DynamicDefinitionBuilder addBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final String propertyName : dynamicDefinition.getPropertyNames()) {
 			addPropertyValue(propertyName, dynamicDefinition.getPropertyValue(propertyName));

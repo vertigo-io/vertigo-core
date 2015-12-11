@@ -52,7 +52,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
 	 */
-	public static final String contextKey(final UiObject<?> uiObject) {
+	public static String contextKey(final UiObject<?> uiObject) {
 		final ActionContext actionContext = ActionContext.getContext();
 		final KActionContext kActionContext = ((AbstractActionSupport) actionContext.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
@@ -63,7 +63,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Objet de la liste
 	 * @return index de l'objet dans sa liste
 	 */
-	public static final int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
+	public static int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
 		return uiList.indexOf(uiObject);
 	}
 
@@ -71,7 +71,7 @@ public final class UiUtil implements Serializable {
 	 * @param fieldPath Chemin du champ
 	 * @return Label du champs
 	 */
-	public static final String label(final String fieldPath) {
+	public static String label(final String fieldPath) {
 		return getDtField(fieldPath).getLabel().getDisplay();
 	}
 
@@ -80,7 +80,7 @@ public final class UiUtil implements Serializable {
 	 * @param value Valeur à formater
 	 * @return rendu du champs boolean
 	 */
-	public static final String formatBoolean(final String fieldPath, final Boolean value) {
+	public static String formatBoolean(final String fieldPath, final Boolean value) {
 		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			formatter = DEFAULT_FORMATTER;
@@ -94,7 +94,7 @@ public final class UiUtil implements Serializable {
 	 * @param fieldPath Chemin du champ
 	 * @return Si le champs est obligatoire
 	 */
-	public static final boolean required(final String fieldPath) {
+	public static boolean required(final String fieldPath) {
 		if (fieldPath.indexOf('.') > 0) { //Le champs est n'est pas porté par un Object
 			return getDtField(fieldPath).isRequired();
 		}
@@ -105,7 +105,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ display de cette liste
 	 */
-	public static final String getDisplayField(final AbstractUiList<?> uiList) {
+	public static String getDisplayField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
 	}
@@ -114,7 +114,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ de la pk de cette liste
 	 */
-	public static final String getIdField(final AbstractUiList<?> uiList) {
+	public static String getIdField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
 	}

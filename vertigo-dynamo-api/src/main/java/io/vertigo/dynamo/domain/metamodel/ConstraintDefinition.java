@@ -67,13 +67,13 @@ public final class ConstraintDefinition implements Constraint, Definition {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return name;
 	}
 
@@ -81,7 +81,7 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	 * @return Message d'erreur (Nullable)
 	 */
 	@Override
-	public final MessageText getErrorMessage() {
+	public MessageText getErrorMessage() {
 		return msg != null ? msg : constraint.getErrorMessage();
 	}
 

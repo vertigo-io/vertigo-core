@@ -75,7 +75,7 @@ public final class UiMessageStack {
 	 * @param level Niveau de message
 	 * @param message Message
 	 */
-	public final void addActionMessage(final Level level, final String message) {
+	public void addActionMessage(final Level level, final String message) {
 		if (level == Level.ERROR) {
 			actionSupport.addActionError(message);
 		} else {
@@ -86,21 +86,21 @@ public final class UiMessageStack {
 	/**
 	 * @param message Message d'erreur
 	 */
-	public final void error(final String message) {
+	public void error(final String message) {
 		addActionMessage(Level.ERROR, message);
 	}
 
 	/**
 	 * @param message Message d'alerte
 	 */
-	public final void warning(final String message) {
+	public void warning(final String message) {
 		addActionMessage(Level.WARNING, message);
 	}
 
 	/**
 	 * @param message Message d'info
 	 */
-	public final void info(final String message) {
+	public void info(final String message) {
 		addActionMessage(Level.INFO, message);
 	}
 
@@ -111,7 +111,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champs portant l'erreur
 	 */
-	public final void addActionMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
+	public void addActionMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
 		Assertion.checkNotNull(level);
 		Assertion.checkArgNotEmpty(message);
 		Assertion.checkNotNull(dto);
@@ -127,7 +127,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void error(final String message, final DtObject dto, final String fieldName) {
+	public void error(final String message, final DtObject dto, final String fieldName) {
 		addActionMessage(Level.ERROR, message, dto, fieldName);
 	}
 
@@ -136,7 +136,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void warning(final String message, final DtObject dto, final String fieldName) {
+	public void warning(final String message, final DtObject dto, final String fieldName) {
 		addActionMessage(Level.WARNING, message, dto, fieldName);
 	}
 
@@ -145,7 +145,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void info(final String message, final DtObject dto, final String fieldName) {
+	public void info(final String message, final DtObject dto, final String fieldName) {
 		addActionMessage(Level.INFO, message, dto, fieldName);
 	}
 
@@ -156,7 +156,7 @@ public final class UiMessageStack {
 	 * @param uiObject Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void addActionMessage(final Level level, final String message, final UiObject<?> uiObject, final String fieldName) {
+	public void addActionMessage(final Level level, final String message, final UiObject<?> uiObject, final String fieldName) {
 		addActionMessage(level, message, uiObject.getInnerObject(), fieldName);
 	}
 
@@ -165,7 +165,7 @@ public final class UiMessageStack {
 	 * @param uiObject Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void error(final String message, final UiObject<?> uiObject, final String fieldName) {
+	public void error(final String message, final UiObject<?> uiObject, final String fieldName) {
 		addActionMessage(Level.ERROR, message, uiObject, fieldName);
 	}
 
@@ -174,7 +174,7 @@ public final class UiMessageStack {
 	 * @param uiObject Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void warning(final String message, final UiObject<?> uiObject, final String fieldName) {
+	public void warning(final String message, final UiObject<?> uiObject, final String fieldName) {
 		addActionMessage(Level.WARNING, message, uiObject, fieldName);
 	}
 
@@ -183,7 +183,7 @@ public final class UiMessageStack {
 	 * @param uiObject Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void info(final String message, final UiObject<?> uiObject, final String fieldName) {
+	public void info(final String message, final UiObject<?> uiObject, final String fieldName) {
 		addActionMessage(Level.INFO, message, uiObject, fieldName);
 	}
 

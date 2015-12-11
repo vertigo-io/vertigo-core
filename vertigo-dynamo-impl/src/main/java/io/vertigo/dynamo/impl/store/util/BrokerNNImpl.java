@@ -49,11 +49,11 @@ final class BrokerNNImpl implements BrokerNN {
 
 	private static final class DescriptionNN {
 
-		final String storeName;
-		final String tableName;
-		final DtField sourceField;
-		final Object sourceValue;
-		final DtField targetField;
+		private final String storeName;
+		private final String tableName;
+		private final DtField sourceField;
+		private final Object sourceValue;
+		private final DtField targetField;
 
 		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
 			Assertion.checkNotNull(dtListURIForAssociation);

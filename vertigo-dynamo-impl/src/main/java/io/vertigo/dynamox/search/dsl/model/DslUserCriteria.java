@@ -60,42 +60,42 @@ public final class DslUserCriteria {
 	/**
 	 * @return preMissingPart
 	 */
-	public final String getPreMissingPart() {
+	public String getPreMissingPart() {
 		return preMissingPart;
 	}
 
 	/**
 	 * @return overridedFieldName
 	 */
-	public final String getOverridedFieldName() {
+	public String getOverridedFieldName() {
 		return overridedFieldName;
 	}
 
 	/**
 	 * @return overridedPreModifier
 	 */
-	public final String getOverridedPreModifier() {
+	public String getOverridedPreModifier() {
 		return overridedPreModifier;
 	}
 
 	/**
 	 * @return criteriaWord
 	 */
-	public final String getCriteriaWord() {
+	public String getCriteriaWord() {
 		return criteriaWord;
 	}
 
 	/**
 	 * @return overridedPostModifier
 	 */
-	public final String getOverridedPostModifier() {
+	public String getOverridedPostModifier() {
 		return overridedPostModifier;
 	}
 
 	/**
 	 * @return postMissingPart
 	 */
-	public final String getPostMissingPart() {
+	public String getPostMissingPart() {
 		return postMissingPart;
 	}
 }

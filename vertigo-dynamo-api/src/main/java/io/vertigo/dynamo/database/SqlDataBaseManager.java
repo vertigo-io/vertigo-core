@@ -33,7 +33,7 @@ import io.vertigo.lang.Manager;
 */
 public interface SqlDataBaseManager extends Manager {
 	/** Main connectionProvider's name. */
-	static final String MAIN_CONNECTION_PROVIDER_NAME = "main";
+	String MAIN_CONNECTION_PROVIDER_NAME = "main";
 
 	/**
 	 * @param name ConnectionProvider name

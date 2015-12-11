@@ -79,14 +79,14 @@ public final class DslExpression {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return optional Field
 	 */
-	public final Option<DslField> getField() {
+	public Option<DslField> getField() {
 		return field;
 	}
 
@@ -94,21 +94,21 @@ public final class DslExpression {
 	 * @return optional MultiField
 	 */
 
-	public final Option<DslMultiField> getMultiField() {
+	public Option<DslMultiField> getMultiField() {
 		return multiField;
 	}
 
 	/**
 	 * @return query
 	 */
-	public final DslQuery getQuery() {
+	public DslQuery getQuery() {
 		return query;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
 

@@ -64,21 +64,21 @@ public final class DslMultiField {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return fields
 	 */
-	public final List<DslField> getFields() {
+	public List<DslField> getFields() {
 		return fields;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
 }

@@ -103,7 +103,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
-	public final DtDefinition getDtDefinition() {
+	public DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 
