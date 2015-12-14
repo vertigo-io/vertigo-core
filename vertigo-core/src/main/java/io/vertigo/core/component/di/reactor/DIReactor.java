@@ -107,7 +107,7 @@ public final class DIReactor {
 			}
 		}
 		if (missing.length() > 0) {
-			throw new DIException("Components not found :" + missing.toString() + "\n\tLoaded components : " + diComponentInfos);
+			throw new DIException("Components or params not found :" + missing.toString() + "\n\tLoaded components/params : " + diComponentInfos);
 		}
 		//-----
 		//2.On résout les dépendances
