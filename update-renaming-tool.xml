@@ -14,6 +14,88 @@
 	<!-- ====================================================================== -->
 	<!-- Generation des classes de tests                                        -->
 	<!-- ====================================================================== -->
+	
+	<target name="0.8.3 to 0.9.0" description="Usefull renames from 0.8.3 to 0.9.0">
+			<!-- <echo message="Renamed in LocalManager in boot : LocalManager to <boot local=\'<boot>\'" />
+				<replace dir="${src.path}" encoding="${src.encoding}"
+					token="io.vertigo.dynamox.search.DefaultListFilterBuilder" value="io.vertigo.dynamox.search.DslListFilterBuilder">
+					<include name="**/*.xml"/>
+					<exclude name="update-renaming-tool.xml"/>
+				</replace>
+				-->
+			<echo message="Renamed in *.xml : io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin to io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" value="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+			<echo message="Renamed in *.xml : io.vertigo.core.plugins.config.xml.XmlConfigPlugin to io.vertigo.core.plugins.param.xml.XmlParamPlugin" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.plugins.config.xml.XmlConfigPlugin" value="io.vertigo.core.plugins.param.xml.XmlParamPlugin">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+
+			<echo message="Renamed in *.xml : &lt;property to &lt;param" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;property " value="&lt;param ">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+			<!-- Can't replace because of too many false positives 
+			<echo message="Renamed in *.xml : &lt;/property to &lt;/param" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;/property" value="&lt;/param">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+			-->
+			<echo message="Renamed in *.xml : &lt;config to &lt;path" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;config " value="&lt;path ">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+			<!-- Can't replace because of too many false positives 
+			<echo message="Renamed in *.xml : &lt;/config to &lt;/path" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;/config" value="&lt;/path">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace -->
+
+			<echo message="Renamed in *.xml : &lt;application-config to &lt;config" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;application-config" value="&lt;config">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+
+			<echo message="Renamed in *.xml : &lt;/application-config to &lt;/config" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;/application-config" value="&lt;/config">
+				<include name="**/*.xml" />
+				<exclude name="update-renaming-tool.xml" />
+			</replace>
+
+			<echo message="Renamed in *.java : io.vertigo.core.Home to io.vertigo.app.Home" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.Home" value="io.vertigo.app.Home">
+				<include name="**/*.java" />
+			</replace>
+		    <echo message="Renamed in *.java : io.vertigo.core.App and AppListener to io.vertigo.app.App" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.App" value="io.vertigo.app.App">
+				<include name="**/*.java" />
+			</replace>
+		    <echo message="Renamed in *.java : io.vertigo.core.Boot to io.vertigo.app.Boot" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.Boot" value="io.vertigo.app.Boot">
+				<include name="**/*.java" />
+			</replace>
+		    <echo message="Renamed in *.java : io.vertigo.core.config. to io.vertigo.app.config." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.config." value="io.vertigo.app.config.">
+				<include name="**/*.java" />
+			</replace>
+			<echo message="Renamed in *.java : Home.getComponentSpace() to Home.getApp().getComponentSpace()" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="Home.getComponentSpace()" value="Home.getApp().getComponentSpace()">
+				<include name="**/*.java" />
+			</replace>
+			<echo message="Renamed in *.java : Home.getDefinitionSpace() to Home.getApp().getDefinitionSpace()" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="Home.getDefinitionSpace()" value="Home.getApp().getDefinitionSpace()">
+				<include name="**/*.java" />
+			</replace>
+		</target>
+	
 	<target name="0.8.2 to 0.8.3" description="Usefull renames from 0.8.2 to 0.8.3">
 		<echo message="Renamed in *.ksp : io.vertigo.dynamox.search.DslListFilterBuilderDefaultListFilterBuilder to io.vertigo.dynamox.search.DslListFilterBuilderDslListFilterBuilder" />
 		<replace dir="${src.path}" encoding="${src.encoding}"
