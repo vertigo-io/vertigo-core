@@ -30,10 +30,10 @@ import javax.inject.Inject;
 
 /**
  * Standard implementation of the paramManager.
- * 
+ *
  * The strategy to access params is defined in a list of plugins.
- * 
- * 
+ *
+ *
  * @author pchretien, npiedeloup, prahmoune
  */
 public final class ParamManagerImpl implements ParamManager {
