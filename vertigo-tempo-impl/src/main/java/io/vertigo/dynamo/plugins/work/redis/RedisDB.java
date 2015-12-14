@@ -27,6 +27,7 @@ import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.DateUtil;
+import io.vertigo.util.MapBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -96,15 +97,14 @@ public final class RedisDB implements Activeable {
 		try (Jedis jedis = jedisPool.getResource()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
-			final Map<String, String> datas = new HashMap<>();
-			datas.put("work64", encode(workItem.getWork()));
-			datas.put("provider64", encode(workItem.getWorkType()));
-			datas.put("x-date", DateUtil.newDate().toString());
+			final Map<String, String> datas = new MapBuilder<String, String>()
+					.put("work64", encode(workItem.getWork()))
+					.put("provider64", encode(workItem.getWorkType()))
+					.put("x-date", DateUtil.newDate().toString())
+					.build();
 
 			final Transaction tx = jedis.multi();
-
 			tx.hmset("work:" + workItem.getId(), datas);
-
 			//tx.expire("work:" + workId, 70);
 			//On publie la demande de travaux
 			tx.lpush("works:todo:" + workItem.getWorkType(), workItem.getId());
@@ -113,7 +113,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
+	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
 		Assertion.checkNotNull(workType);
 		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
@@ -124,12 +124,12 @@ public final class RedisDB implements Activeable {
 			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
 			final W work = (W) decode(hash.get("work64"));
 			final String name = (String) decode(hash.get("provider64"));
-			final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(name);
+			final WorkEngineProvider<R, W> workEngineProvider = new WorkEngineProvider<>(name);
 			return new WorkItem<>(workId, work, workEngineProvider);
 		}
 	}
 
-	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
+	public <R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
@@ -150,7 +150,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR> WorkResult<WR> pollResult(final int waitTimeSeconds) {
+	public <R> WorkResult<R> pollResult(final int waitTimeSeconds) {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			if (workId == null) {
@@ -158,7 +158,7 @@ public final class RedisDB implements Activeable {
 			}
 			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
 			//final boolean succeeded = "ok".equals(hash.get("status"));
-			final WR value = (WR) decode(hash.get("result"));
+			final R value = (R) decode(hash.get("result"));
 			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
 			//et on détruit le work (ou bien on l'archive ???
 			jedis.del("work:" + workId);
@@ -171,9 +171,10 @@ public final class RedisDB implements Activeable {
 		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.lpush("nodes", node.getUID());
-			final Map<String, String> hash = new HashMap<>();
-			hash.put("id", node.getUID());
-			hash.put("active", node.isActive() ? "true" : "false");
+			final Map<String, String> hash = new MapBuilder<String, String>()
+					.put("id", node.getUID())
+					.put("active", node.isActive() ? "true" : "false")
+					.build();
 			jedis.hmset("node:" + node.getUID(), hash);
 		}
 	}
