@@ -148,7 +148,7 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withStore(dtDef.getStoreName())
+				.withCollection(dtDef.getCollection())
 				.withRequest(request)
 				.addInAttribute(inDtcName, dtcDomain, true)
 				.withOutAttribute("out", dtcDomain, true)

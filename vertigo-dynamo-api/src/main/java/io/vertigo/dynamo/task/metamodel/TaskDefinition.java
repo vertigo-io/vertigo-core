@@ -21,6 +21,7 @@ package io.vertigo.dynamo.task.metamodel;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -29,7 +30,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Définition d'une tache et de ses attributs.
@@ -38,17 +38,14 @@ import java.util.regex.Pattern;
  */
 @DefinitionPrefix("TK")
 public final class TaskDefinition implements Definition {
-	/** Expression réguliére vérifiée par les noms des stores. */
-	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
-
-	/** Nom de la définition. */
+	/** the name of the definition. */
 	private final String name;
 
-	/** Nom du package. */
+	/** Package name. */
 	private final String packageName;
 
-	/** Nom du store. */
-	private final String storeName;
+	/**Collection. */
+	private final String collection;
 
 	/** Chaine de configuration du service. */
 	private final String request;
@@ -71,14 +68,14 @@ public final class TaskDefinition implements Definition {
 	TaskDefinition(
 			final String name,
 			final String packageName,
-			final String storeName,
+			final String collection,
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
 			final Option<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
-		Assertion.checkArgNotEmpty(storeName);
-		Assertion.checkState(REGEX_STORE_NAME.matcher(storeName).matches(), "StoreName {0} must match pattern {1}", storeName, REGEX_STORE_NAME);
+		Assertion.checkArgNotEmpty(collection);
+		Assertion.checkState(DtDefinition.REGEX_COLLECTION.matcher(collection).matches(), "collection {0} must match pattern {1}", collection, REGEX_COLLECTION);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(inTaskAttributes);
@@ -86,7 +83,7 @@ public final class TaskDefinition implements Definition {
 		//-----
 		this.name = name;
 		this.packageName = packageName;
-		this.storeName = storeName;
+		this.collection = collection;
 		this.request = request;
 		this.inTaskAttributes = createMap(inTaskAttributes);
 		this.outTaskAttributeOption = outTaskAttributeOption;
@@ -132,13 +129,12 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
-	 * Return storeName use by this task.
-	 * Used by TaskEngine.
+	 * Returns the collection to which the taskDefinition belongs.
 	 *
-	 * @return storeName.
+	 * @return the collection.
 	 */
-	public String getStoreName() {
-		return storeName;
+	public String getCollection() {
+		return collection;
 	}
 
 	/**

@@ -37,8 +37,7 @@ import java.util.List;
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
-
-	public static final String DEFAULT_STORE_NAME = "main";
+	public static final String DEFAULT_COLLECTION = "main";
 
 	private static class MessageKeyImpl implements MessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
@@ -63,7 +62,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private boolean myPersistent;
 	private boolean myDynamic;
 	private final List<DtField> myFields = new ArrayList<>();
-	private String myStoreName;
+	private String myCollection;
 
 	/**
 	 * Constructeur.
@@ -207,13 +206,13 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * @param storeName Definition's storeName (nullable)
+	 * @param collection Collection to which the DtDefinition is mapped. (nullable)
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withStoreName(final String storeName) {
+	public DtDefinitionBuilder withCollection(final String collection) {
 		//storeName may be null
 		//-----
-		myStoreName = storeName;
+		myCollection = collection;
 		return this;
 	}
 
@@ -222,7 +221,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? DEFAULT_STORE_NAME : myStoreName);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myCollection == null ? DEFAULT_COLLECTION : myCollection);
 		return dtDefinition;
 	}
 

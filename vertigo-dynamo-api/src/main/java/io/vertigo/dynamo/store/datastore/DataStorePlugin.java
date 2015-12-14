@@ -28,20 +28,20 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 
 /**
- * Plugin permettant de gérer les accès physiques à un quelconque système de stockage.
- * SQL ou non SQL.
+ * The DataStorePlugin class defines the logical way used to read and write data in a data store.
+ * This plugin can be implemented in a sql or no sql way.
  *
  * @author  pchretien
  */
 public interface DataStorePlugin extends Plugin {
 
 	/**
-	 * @return Store's name
+	 * @return the collection
 	 */
-	String getName();
+	String getCollection();
 
 	/**
-	 * @return Store's connectionName
+	 * @return the name of the connection
 	 */
 	String getConnectionName();
 
@@ -50,9 +50,9 @@ public interface DataStorePlugin extends Plugin {
 	//==========================================================================
 
 	/**
-	 * Nombre d'éléments.
+	 * Returns the number of elements contained in the definition.
 	 * @param dtDefinition Définition de DT
-	 * @return Nombre d'éléments.
+	 * @return the number of elements
 	 */
 	int count(final DtDefinition dtDefinition);
 
@@ -86,7 +86,7 @@ public interface DataStorePlugin extends Plugin {
 	//=============================== WRITE ====================================
 	//==========================================================================
 	/**
-	* Create an object.
+	* Creates an object.
 	* No object with the same id must have been created previously.
 	*
 	* @param dtDefinition Definition
@@ -95,7 +95,7 @@ public interface DataStorePlugin extends Plugin {
 	void create(DtDefinition dtDefinition, DtObject dto);
 
 	/**
-	* Update an object.
+	* Updates an object.
 	* This object must have an id.
 	* @param dtDefinition Definition
 	* @param dto Object to update
@@ -103,7 +103,7 @@ public interface DataStorePlugin extends Plugin {
 	void update(DtDefinition dtDefinition, DtObject dto);
 
 	/**
-	* Merge an object.
+	* Merges an object.
 	* Strategy to create or update this object depends on the state of the database.
 	*
 	*  - If  this object is already created : update
@@ -115,14 +115,14 @@ public interface DataStorePlugin extends Plugin {
 	void merge(DtDefinition dtDefinition, DtObject dto);
 
 	/**
-	 * Suppression d'un objet.
+	 * Deletes an object identified by an uri.
 	 * @param dtDefinition Definition
-	 * @param uri URI de l'objet à supprimmer
+	 * @param uri URI 
 	 */
 	void delete(DtDefinition dtDefinition, URI uri);
 
 	/**
-	 * Lock for update.
+	 * Locks for update.
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
 	 */
