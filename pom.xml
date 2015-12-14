@@ -45,9 +45,7 @@ limitations under the License. -->
 		<module>vertigo-vega-impl</module>
 
 		<module>vertigo-tempo-api</module>
-		<module>vertigo-tempo-impl</module>
-		
-		<module>vertigo-bundle</module>
+		<module>vertigo-tempo-impl</module>		
 	</modules>
 
 	<scm>
