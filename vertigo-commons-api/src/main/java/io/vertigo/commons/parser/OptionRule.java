@@ -26,16 +26,17 @@ import io.vertigo.lang.Option;
  * This rule is usefull each time there is an optional part inside a more global expression.
  * 
  * @author pchretien
+ * @param<R> Type of the product text parsing
  */
-public final class OptionRule<P> implements Rule<Option<P>> {
+public final class OptionRule<R> implements Rule<Option<R>> {
 	private final String expression;
-	private final Rule<P> rule;
+	private final Rule<R> rule;
 
 	/**
 	 * Constructor.
 	 * @param rule Optional rule
 	 */
-	public OptionRule(final Rule<P> rule) {
+	public OptionRule(final Rule<R> rule) {
 		super();
 		Assertion.checkNotNull(rule);
 		//-----
@@ -50,9 +51,9 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 	}
 
 	@Override
-	public Parser<Option<P>> createParser() {
-		return new Parser<Option<P>>() {
-			private Option<P> option;
+	public Parser<Option<R>> createParser() {
+		return new Parser<Option<R>>() {
+			private Option<R> option;
 
 			/** {@inheritDoc} */
 			@Override
@@ -61,7 +62,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 				//-----
 				option = Option.none();
 				try {
-					final Parser<P> parser = rule.createParser();
+					final Parser<R> parser = rule.createParser();
 					index = parser.parse(text, index);
 					option = Option.option(parser.get());
 				} catch (final NotFoundException e) {
@@ -71,7 +72,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 			}
 
 			@Override
-			public Option<P> get() {
+			public Option<R> get() {
 				return option;
 			}
 		};

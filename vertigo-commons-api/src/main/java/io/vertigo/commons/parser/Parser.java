@@ -24,9 +24,9 @@ package io.vertigo.commons.parser;
  * A parser is responsible for moving the index position or throw an exception. 
  *
  * @author pchretien
- * @param<P> Type of the product text parsing
+ * @param<R> Type of the product text parsing
  */
-public interface Parser<P> {
+public interface Parser<R> {
 	/**
 	 * Return the new index position.
 	 * @param text Text to parse
@@ -39,5 +39,5 @@ public interface Parser<P> {
 	/**
 	 * @return Product text parsing 
 	 */
-	P get();
+	R get();
 }

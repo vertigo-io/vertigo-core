@@ -22,7 +22,7 @@ package io.vertigo.commons.parser;
  * Règle.
  *
  * @author pchretien
- * @param<P> Type of the product text parsing
+ * @param<R> Type of the product text parsing
  */
 public interface Rule<R> {
 	/**

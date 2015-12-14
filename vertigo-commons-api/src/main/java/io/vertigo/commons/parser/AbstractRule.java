@@ -26,6 +26,7 @@ import io.vertigo.lang.Assertion;
  * - la gestion du résultat du parsing
  *
  * @author pchretien
+ * @param<R> Type of the product text parsing
  */
 public abstract class AbstractRule<R, M> implements Rule<R> {
 	private Rule<M> mainRule;
