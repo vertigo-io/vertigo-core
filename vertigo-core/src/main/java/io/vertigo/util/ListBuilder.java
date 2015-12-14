@@ -36,7 +36,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	private List<X> list = new ArrayList<>();
 
 	/**
-	 * Add a value in the list.
+	 * Adds a value in the list.
 	 * The value CAN NOT be null.
 	 * @param value Value not null
 	 * @return this builder
@@ -49,7 +49,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	}
 
 	/**
-	 * Add a collection of values in the list.
+	 * Adds a collection of values in the list.
 	 * These values CAN NOT be null.
 	 * @param values Values not null
 	 * @return this builder
@@ -64,7 +64,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	}
 
 	/**
-	 * Make this list as unmodifiable.
+	 * Makes this list as unmodifiable.
 	 * @return this builder
 	 */
 	public ListBuilder<X> unmodifiable() {

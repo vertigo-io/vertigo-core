@@ -454,7 +454,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return webServiceParam.getParamType() == WebServiceParamType.InnerBody;
 	}
 
-	private Map<String, Object> createParameterObject(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition) {
+	private Map<String, Object> createParameterObject(final WebServiceParam webServiceParam) {
 
 		final String inValue;
 		final String nameValue;

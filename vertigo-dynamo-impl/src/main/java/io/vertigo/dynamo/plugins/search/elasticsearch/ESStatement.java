@@ -177,10 +177,9 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	/**
 	 * Supprime des documents.
-	 * @param indexDefinition Index concerné
 	 * @param query Requete de filtrage des documents à supprimer
 	 */
-	void remove(final SearchIndexDefinition indexDefinition, final ListFilter query) {
+	void remove(final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
 		final QueryBuilder queryBuilder = translateToQueryBuilder(query);
@@ -193,10 +192,9 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	/**
 	 * Supprime un document.
-	 * @param indexDefinition Index concerné
 	 * @param uri Uri du document à supprimer
 	 */
-	void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
+	void remove(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		esClient.prepareDelete()

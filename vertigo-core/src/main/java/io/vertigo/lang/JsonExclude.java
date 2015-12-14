@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation is required to exclude some properties of json (un)marshalling.
  * Json Exclusion 
  * @author pchretien
  */

@@ -212,7 +212,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
-		createElasticStatement(indexDefinition).remove(indexDefinition, uri);
+		createElasticStatement(indexDefinition).remove(uri);
 		markToOptimize(indexDefinition);
 	}
 
@@ -240,7 +240,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(listFilter);
 		//-----
-		createElasticStatement(indexDefinition).remove(indexDefinition, listFilter);
+		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(indexDefinition);
 	}
 

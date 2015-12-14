@@ -39,7 +39,7 @@ public final class Tuples {
 		private final T2 val2;
 
 		/**
-		* Create e new instance of Tuple2.
+		* Creates e new instance of Tuple2.
 		*
 		* @param val1 Value 1.
 		* @param val2 Value 2.
@@ -95,7 +95,7 @@ public final class Tuples {
 		private final T3 val3;
 
 		/**
-		* Create e new instance of Tuple3.
+		* Creates a new instance of Tuple3.
 		*
 		* @param val1 Value 1.
 		* @param val2 Value 2.

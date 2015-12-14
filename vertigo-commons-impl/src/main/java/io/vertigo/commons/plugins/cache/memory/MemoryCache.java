@@ -33,7 +33,6 @@ import java.util.Map;
 final class MemoryCache {
 	private final String name;
 	private final long timeToLiveSeconds;
-	private final boolean eternal;
 	private long totalHits;
 	private long totalCalls;
 	private final Map<Serializable, MemoryCacheValue> cacheDatas = new HashMap<>();
@@ -44,17 +43,13 @@ final class MemoryCache {
 	 * @param eternal Si eternal
 	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */
-	MemoryCache(final String name, final boolean eternal, final long timeToLiveSeconds) {
+	MemoryCache(final String name, final long timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		this.name = name;
-		this.eternal = eternal;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 	}
 
-	//=========================================================================
-	//=============================Configuration===============================
-	//=========================================================================
 	/**
 	 * @return Conf : Nom du cache
 	 */
@@ -67,13 +62,6 @@ final class MemoryCache {
 	 */
 	long getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
-	}
-
-	/**
-	 * @return Conf : si cache eternel
-	 */
-	boolean isEternal() {
-		return eternal;
 	}
 
 	/**
@@ -116,9 +104,8 @@ final class MemoryCache {
 
 	private boolean isAlive(final MemoryCacheValue cacheValue) {
 		//Data is alive
-		// - if it's eternal
 		// - if its age is less than than 'timeToLiveSeconds'
-		return eternal || System.currentTimeMillis() - cacheValue.getCreateTime() < timeToLiveSeconds * 1000;
+		return System.currentTimeMillis() - cacheValue.getCreateTime() < timeToLiveSeconds * 1000;
 	}
 
 	/**

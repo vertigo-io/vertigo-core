@@ -79,7 +79,7 @@ public final class Domain implements Definition {
 	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
 		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
-		//		Assertion.checkNotNull(formatterDefinition);
+		//formatterDefinition can be null
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----

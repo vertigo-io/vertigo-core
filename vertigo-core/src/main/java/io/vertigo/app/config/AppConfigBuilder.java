@@ -57,7 +57,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Open the boot module.
+	 * Opens the boot module.
 	 * There is exactly one BootConfig per AppConfig.  
 	 * 
 	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
@@ -71,7 +71,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Open the bootConfigBuilder.
+	 * Opens the bootConfigBuilder.
 	 * @return this builder
 	 */
 	public BootConfigBuilder beginBoot() {
@@ -79,7 +79,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Add an initializer to the current config.
+	 * Adds an initializer to the current config.
 	 * @param componentInitializerClass Class of the initializer
 	 * @return this builder
 	 */
@@ -89,7 +89,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Add a list of ModuleConfig.
+	 * Adds a list of ModuleConfig.
 	 * @param moduleConfigs list of moduleConfig
 	 * @return this builder
 	 */
@@ -101,14 +101,19 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Add a new module
+	 * Adds a new module.
 	 * @param name Name of the module
-	 * @return this builder
+	 * @return the module builder 
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
 		return new ModuleConfigBuilder(this, name);
 	}
 
+	/**
+	 * Begins a new module defined by its features.
+	 * @param featuresClass Type of features
+	 * @return the module builder 
+	 */
 	public <F extends Features> F beginModule(final Class<F> featuresClass) {
 		final F features = ClassUtil.newInstance(featuresClass);
 		features.init(this);
@@ -116,7 +121,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Build the appConfig.
+	 * Builds the appConfig.
 	 * @return appConfig.
 	 */
 	@Override

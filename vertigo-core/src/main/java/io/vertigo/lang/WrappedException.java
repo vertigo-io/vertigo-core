@@ -23,7 +23,7 @@ import io.vertigo.util.StringUtil;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Encapsulate some Exception inside a RuntimeException.
+ * Encapsulates some Exception inside a RuntimeException.
  * Inspired by gnu.mapping.WrappedException.
  *
  * @author npiedeloup

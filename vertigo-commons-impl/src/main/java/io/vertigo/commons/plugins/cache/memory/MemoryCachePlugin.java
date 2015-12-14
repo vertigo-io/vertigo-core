@@ -73,7 +73,7 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 	@Override
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!cachesPerContext.containsKey(context)) {
-			final MemoryCache cache = new MemoryCache(context, cacheConfig.isEternal(), cacheConfig.getTimeToLiveSeconds());
+			final MemoryCache cache = new MemoryCache(context, cacheConfig.getTimeToLiveSeconds());
 			cachesPerContext.put(context, cache);
 		}
 		registerCacheType(context, cacheConfig.getCacheType());
@@ -183,7 +183,6 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 			componentInfos.add(new ComponentInfo("cache." + cacheName + ".hits", mapCache.getHits()));
 			componentInfos.add(new ComponentInfo("cache." + cacheName + ".calls", mapCache.getCalls()));
 			componentInfos.add(new ComponentInfo("cache." + cacheName + ".ttl", mapCache.getTimeToLiveSeconds()));
-			componentInfos.add(new ComponentInfo("cache." + cacheName + ".eternal", mapCache.isEternal()));
 			hits += mapCache.getHits();
 			calls += mapCache.getCalls();
 		}
