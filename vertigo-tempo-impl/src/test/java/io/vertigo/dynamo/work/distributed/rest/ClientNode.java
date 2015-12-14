@@ -54,10 +54,10 @@ final class ClientNode {
 	}
 
 	public void start() throws IOException {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("java -cp ");
-		sb.append(System.getProperty("java.class.path"));
-		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime);
+		final StringBuilder sb = new StringBuilder()
+				.append("java -cp ")
+				.append(System.getProperty("java.class.path"))
+				.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime);
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));

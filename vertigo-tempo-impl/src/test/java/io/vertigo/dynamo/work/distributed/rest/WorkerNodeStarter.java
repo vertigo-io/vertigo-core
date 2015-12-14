@@ -18,7 +18,12 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
+import io.vertigo.app.App;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
+
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -36,10 +41,37 @@ public class WorkerNodeStarter {
 	public static void main(final String[] args) throws InterruptedException {
 		Assertion.checkArgument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter managers.xml <maxLifeTime>");
 		//-----
-		final Starter starter = new Starter(args[0], WorkerNodeStarter.class, args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L);
+		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
+
+		final String managersXmlFileName = args[0];
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withModules(WorkerNodeStarter.class, new Properties(), managersXmlFileName)
+				.build();
+
 		LOG.info("Node starting");
-		starter.run();
+		run(appConfig, timeToWait);
 		LOG.info("Node stop");
+	}
+
+	private static void run(final AppConfig appConfig, final long timeToWait) {
+		try (App app = new App(appConfig)) {
+			System.out.println("Node started (timout in " + timeToWait / 1000 + "s)");
+			if (timeToWait > 0) {
+				Thread.sleep(timeToWait);
+			} else {
+				//infinite
+				while (!Thread.currentThread().isInterrupted()) {
+					Thread.sleep(60 * 1000);
+				}
+			}
+			System.out.println("Node stopping by timeout");
+		} catch (final InterruptedException e) {
+			//rien arret normal
+			System.out.println("Node stopping by interrupted");
+		} catch (final Exception e) {
+			System.err.println("Application error, exit " + e.getMessage());
+			e.printStackTrace(System.err);
+		}
 	}
 
 }
