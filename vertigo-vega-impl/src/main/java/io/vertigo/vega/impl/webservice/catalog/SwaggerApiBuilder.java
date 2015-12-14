@@ -366,7 +366,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		final List<Map<String, Object>> parameters = new ArrayList<>();
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
 			if (webServiceParam.getParamType() != WebServiceParamType.Implicit) {//if implicit : no public parameter
-				appendParameters(webServiceParam, webServiceDefinition, parameters, bodyParameter);
+				appendParameters(webServiceParam, parameters, bodyParameter);
 			}
 		}
 
@@ -394,15 +394,15 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return parameters;
 	}
 
-	private void appendParameters(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
+	private void appendParameters(final WebServiceParam webServiceParam, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
 		if (isOneInMultipleOutParams(webServiceParam)) {
 			for (final WebServiceParam pseudoWebServiceParam : createPseudoWebServiceParams(webServiceParam)) {
-				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam, webServiceDefinition);
+				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam);
 				parameter.remove(REQUIRED); //query params aren't required
 				parameters.add(parameter);
 			}
 		} else if (isMultipleInOneOutParams(webServiceParam)) {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
+			final Map<String, Object> parameter = createParameterObject(webServiceParam);
 			if (bodyParameter.isEmpty()) {
 				bodyParameter.putAll(parameter);
 			} else {
@@ -415,7 +415,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				oldSchema.putAll(newSchema);
 			}
 		} else {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
+			final Map<String, Object> parameter = createParameterObject(webServiceParam);
 			parameters.add(parameter);
 		}
 	}
