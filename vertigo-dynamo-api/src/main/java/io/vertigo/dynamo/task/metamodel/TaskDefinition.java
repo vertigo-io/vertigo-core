@@ -75,7 +75,7 @@ public final class TaskDefinition implements Definition {
 			final Option<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
 		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkState(DtDefinition.REGEX_COLLECTION.matcher(collection).matches(), "collection {0} must match pattern {1}", collection, REGEX_COLLECTION);
+		Assertion.checkState(DtDefinition.REGEX_COLLECTION.matcher(collection).matches(), "collection {0} must match pattern {1}", collection, DtDefinition.REGEX_COLLECTION);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(inTaskAttributes);

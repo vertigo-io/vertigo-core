@@ -160,7 +160,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Si Stereotype est non renseigné on suppose que la définition est DtStereotype.Data.
 		final DtStereotype stereotype = tmpStereotype != null ? DtStereotype.valueOf(tmpStereotype) : DtStereotype.Data;
 		//-----
-		final String storeName = (String) xdtDefinition.getPropertyValue(KspProperty.STORE_NAME);
+		final String collection = (String) xdtDefinition.getPropertyValue(KspProperty.STORE_NAME);
 		//-----
 		final Boolean persistent = (Boolean) xdtDefinition.getPropertyValue(KspProperty.PERSISTENT);
 		Assertion.checkNotNull(persistent, "Le mot-clé ''persistent'' est obligatoire sur une DtDefinition ({0}).", xdtDefinition.getName());
@@ -175,7 +175,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.withStereoType(stereotype)
 				.withPersistent(persistent)
 				.withDynamic(dynamic)
-				.withStoreName(storeName);
+				.withCollection(collection);
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
 		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' déjà enregistrée", dtDefinitionName);
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);

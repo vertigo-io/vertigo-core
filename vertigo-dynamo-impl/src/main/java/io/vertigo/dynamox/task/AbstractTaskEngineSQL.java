@@ -29,6 +29,7 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -94,8 +95,6 @@ import java.util.Map;
  * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
-
-	private static final Object DEFAULT_STORE_NAME = "main";
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
@@ -433,11 +432,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
-		final String storeName = getTaskDefinition().getStoreName();
-		if (DEFAULT_STORE_NAME.equals(storeName)) {
+		final String collection = getTaskDefinition().getCollection();
+		if (DtDefinitionBuilder.DEFAULT_COLLECTION.equals(collection)) {
 			return SQL_MAIN_RESOURCE_ID;
 		}
-		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + storeName);
+		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + collection);
 	}
 
 	/**
@@ -452,8 +451,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		final String storeName = getTaskDefinition().getStoreName();
-		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(storeName);
+		final String collection = getTaskDefinition().getCollection();
+		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(collection);
 		return getDataBaseManager().getConnectionProvider(connectionName);
 	}
 

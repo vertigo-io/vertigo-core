@@ -114,15 +114,15 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> storeName) {
+	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> collection) {
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final String request : requests) {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request);
-				if (storeName.isDefined()) {
-					taskDefinitionBuilder.withStore(storeName.get());
+				if (collection.isDefined()) {
+					taskDefinitionBuilder.withCollection(collection.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
@@ -164,14 +164,14 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		shutDown("TK_SHUT_DOWN", Option.<String> none());
 	}
 
-	protected void shutDown(final String taskName, final Option<String> storeName) {
+	protected void shutDown(final String taskName, final Option<String> collectionOption) {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest("shutdown;");
-				if (storeName.isDefined()) {
-					taskDefinitionBuilder.withStore(storeName.get());
+				if (collectionOption.isDefined()) {
+					taskDefinitionBuilder.withCollection(collectionOption.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);

@@ -49,7 +49,7 @@ final class BrokerNNImpl implements BrokerNN {
 
 	private static final class DescriptionNN {
 
-		private final String storeName;
+		private final String collection;
 		private final String tableName;
 		private final DtField sourceField;
 		private final Object sourceValue;
@@ -60,7 +60,7 @@ final class BrokerNNImpl implements BrokerNN {
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
-			storeName = associationNNDefinition.getAssociationNodeB().getDtDefinition().getStoreName();
+			collection = associationNNDefinition.getAssociationNodeB().getDtDefinition().getCollection();
 
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
@@ -135,7 +135,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String taskName = "TK_DELETE_" + nn.tableName;
 		final String request = String.format("delete from %s where %s = #%s#", nn.tableName, sourceFieldName, sourceFieldName);
 
-		processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, null, null);
+		processNN(taskName, request, nn.collection, nn.sourceField, nn.sourceValue, null, null);
 	}
 
 	/**
@@ -150,7 +150,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String taskName = "TK_INSERT_" + nn.tableName;
 
 		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceFieldName, targetFieldName, sourceFieldName, targetFieldName);
-		final int sqlRowCount = processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
+		final int sqlRowCount = processNN(taskName, request, nn.collection, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new VSystemException("More than one row inserted");
 		} else if (sqlRowCount == 0) {
@@ -171,7 +171,7 @@ final class BrokerNNImpl implements BrokerNN {
 
 		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",
 				nn.tableName, sourceFieldName, sourceFieldName, targetFieldName, targetFieldName);
-		final int sqlRowCount = processNN(taskName, request, nn.storeName, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
+		final int sqlRowCount = processNN(taskName, request, nn.collection, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new VSystemException("More than one row removed");
 		} else if (sqlRowCount == 0) {
@@ -179,7 +179,7 @@ final class BrokerNNImpl implements BrokerNN {
 		}
 	}
 
-	private int processNN(final String taskDefinitionName, final String request, final String storeName,
+	private int processNN(final String taskDefinitionName, final String request, final String collection,
 			final DtField sourceField, final Object sourceValue,
 			final DtField targetField, final Object targetValue) {
 		//FieldName
@@ -187,7 +187,7 @@ final class BrokerNNImpl implements BrokerNN {
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineProc.class)
-				.withStore(storeName)
+				.withCollection(collection)
 				.withRequest(request)
 				.addInAttribute(sourceFieldName, sourceField.getDomain(), true); //IN, obligatoire
 		if (targetField != null) {
