@@ -35,9 +35,9 @@ public interface Coordinator {
 	/**
 	 * Exécution d'un travail de façon asynchrone.
 	 * @param <W> Type de Work (Travail)
-	 * @param <WR> Produit d'un work à l'issu de son exécution
+	 * @param<R> result
 	 * @param workItem Travail à exécuter
 	 * @return resultats
 	 */
-	<WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler);
+	<R, W> Future<R> submit(final WorkItem<R, W> workItem, final Option<WorkResultHandler<R>> workResultHandler);
 }

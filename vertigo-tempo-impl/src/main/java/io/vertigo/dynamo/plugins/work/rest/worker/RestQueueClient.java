@@ -130,7 +130,7 @@ final class RestQueueClient {
 		}
 	}
 
-	<WR> void putResult(final String workId, final WR result, final Throwable error) {
+	<R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----

@@ -56,23 +56,23 @@ final class WWorker implements Runnable {
 		}
 	}
 
-	private <WR, W> void doRun() throws InterruptedException {
-		final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType);
+	private <R, W> void doRun() throws InterruptedException {
+		final WorkItem<R, W> workItem = workerPlugin.<R, W> pollWorkItem(workType);
 		if (workItem != null) {
-			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
+			final Option<WorkResultHandler<R>> workResultHandler = Option.<WorkResultHandler<R>> some(new WorkResultHandler<R>() {
 				@Override
 				public void onStart() {
 					workerPlugin.putStart(workItem.getId());
 				}
 
 				@Override
-				public void onDone(final WR result, final Throwable error) {
+				public void onDone(final R result, final Throwable error) {
 					//nothing here, should be done by waiting the future result
 				}
 			});
 			//---Et on fait executer par le workerLocal
-			final Future<WR> futureResult = localWorker.submit(workItem, workResultHandler);
-			WR result;
+			final Future<R> futureResult = localWorker.submit(workItem, workResultHandler);
+			R result;
 			try {
 				result = futureResult.get();
 				workerPlugin.putResult(workItem.getId(), result, null);

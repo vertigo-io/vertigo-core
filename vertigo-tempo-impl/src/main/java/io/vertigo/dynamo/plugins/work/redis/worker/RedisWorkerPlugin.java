@@ -94,7 +94,7 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
+	public <R> void putResult(final String workId, final R result, final Throwable error) {
 		redisDB.putResult(workId, result, error);
 	}
 

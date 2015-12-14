@@ -76,9 +76,10 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	 * Work devant être exécuté
 	 * WorkItem contient à la fois le Work et le callback.
 	 * @param workItem WorkItem
+	 * @param<R> result
 	 */
 	@Override
-	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+	public <R, W> Future<R> submit(final WorkItem<R, W> workItem, final Option<WorkResultHandler<R>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-----
 		return workers.submit(new LocalWorker<>(workItem, workResultHandler));

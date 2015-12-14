@@ -22,8 +22,9 @@ package io.vertigo.dynamo.work;
  * Hanlder permettant de définir le comportement après exécution asynchrone d'un work.
  * 
  * @author   pchretien, npiedeloup
+ * @param<R> result
  */
-public interface WorkResultHandler<WR> {
+public interface WorkResultHandler<R> {
 	/**
 	 * Démarrage de l'exécution de la tache.
 	 * Notification pour information.
@@ -35,5 +36,5 @@ public interface WorkResultHandler<WR> {
 	 * @param result Résultat de l'excution (null si echec)
 	 * @param error  Exception (null si succès)
 	 */
-	void onDone(final WR result, final Throwable error);
+	void onDone(final R result, final Throwable error);
 }

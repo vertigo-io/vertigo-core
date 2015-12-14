@@ -243,11 +243,11 @@ final class RestQueueServer {
 
 	/**
 	 * Ajoute un travail à faire.
-	 * @param <WR> Type du résultat
+	 * @param<R> result
 	 * @param <W> Travail à effectué
 	 * @param workItem Work et WorkResultHandler
 	 */
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		if (!isActiveWorkType(workItem.getWorkType())) {
 			LOG.warn("No active node for this workType : " + workItem.getWorkType());

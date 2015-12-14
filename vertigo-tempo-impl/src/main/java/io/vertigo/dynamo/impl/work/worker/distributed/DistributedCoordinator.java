@@ -49,17 +49,17 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+	public <R, W> Future<R> submit(final WorkItem<R, W> workItem, final Option<WorkResultHandler<R>> workResultHandler) {
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
-		final WFuture<WR> future = createFuture(workItem.getId(), workResultHandler);
+		final WFuture<R> future = createFuture(workItem.getId(), workResultHandler);
 		putWorkItem(workItem, future);
 		return future;
 	}
 
-	private static <WR, W> WFuture<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
+	private static <R, W> WFuture<R> createFuture(final String workId, final Option<WorkResultHandler<R>> workResultHandler) {
 		Assertion.checkNotNull(workId);
 		//-----
-		final WFuture<WR> future;
+		final WFuture<R> future;
 		if (workResultHandler.isDefined()) {
 			future = new WFuture<>(workResultHandler.get());
 		} else {
@@ -73,13 +73,13 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	 * @param workItem Travail à effectuer
 	 * @return si ce type de work peut-être distribué.
 	 */
-	public <WR, W> boolean accept(final WorkItem<WR, W> workItem) {
+	public <R, W> boolean accept(final WorkItem<R, W> workItem) {
 		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkType());
 	}
 
 	//-----
 
-	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
+	private <R> void setResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
@@ -124,7 +124,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 		}
 	}
 
-	private <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
+	private <R, W> void putWorkItem(final WorkItem<R, W> workItem, final WorkResultHandler<R> workResultHandler) {
 		workResultHandlers.put(workItem.getId(), workResultHandler);
 		masterPlugin.putWorkItem(workItem);
 	}

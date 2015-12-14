@@ -34,10 +34,10 @@ import org.apache.log4j.Logger;
  * Exécution d'un work.
  *
  * @author pchretien, npiedeloup
- * @param <WR> Type du résultat
+ * @param<R> result
  * @param <W> Type du work
  */
-final class LocalWorker<WR, W> implements Callable<WR> {
+final class LocalWorker<R, W> implements Callable<R> {
 
 	private static final Logger LOGGER = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
 
@@ -56,14 +56,14 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 		threadLocalsField.setAccessible(true);
 	}
 
-	private final WorkItem<WR, W> workItem;
-	private final Option<WorkResultHandler<WR>> workResultHandler;
+	private final WorkItem<R, W> workItem;
+	private final Option<WorkResultHandler<R>> workResultHandler;
 
 	/**
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	LocalWorker(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+	LocalWorker(final WorkItem<R, W> workItem, final Option<WorkResultHandler<R>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
@@ -79,8 +79,8 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 
 	/** {@inheritDoc} */
 	@Override
-	public WR call() {
-		final WR result;
+	public R call() {
+		final R result;
 		try {
 			if (workResultHandler.isDefined()) {
 				workResultHandler.get().onStart();

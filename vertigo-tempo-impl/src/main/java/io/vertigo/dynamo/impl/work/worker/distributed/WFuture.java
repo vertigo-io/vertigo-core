@@ -32,15 +32,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author pchretien
+ * @param<R> result
  */
-final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
+final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 	private final AtomicBoolean done = new AtomicBoolean(false);
 	private final CountDownLatch countDownLatch = new CountDownLatch(1);
 	private Throwable myError;
-	private WR myResult;
-	private final WorkResultHandler<WR> redirect;
+	private R myResult;
+	private final WorkResultHandler<R> redirect;
 
-	WFuture(final WorkResultHandler<WR> redirect) {
+	WFuture(final WorkResultHandler<R> redirect) {
 		Assertion.checkNotNull(redirect);
 		//-----
 		this.redirect = redirect;
@@ -52,7 +53,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDone(final WR result, final Throwable error) {
+	public void onDone(final R result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
 		//-----
@@ -107,7 +108,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	}
 
 	@Override
-	public WR get() throws InterruptedException, ExecutionException {
+	public R get() throws InterruptedException, ExecutionException {
 		countDownLatch.await();
 		if (myResult != null) {
 			return myResult;
@@ -119,7 +120,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	}
 
 	@Override
-	public WR get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+	public R get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		if (!countDownLatch.await(timeout, unit)) {
 			throw new TimeoutException();
 		}

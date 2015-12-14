@@ -22,13 +22,14 @@ import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien
+ * @param<R> result
  */
-public final class WorkResult<WR> {
+public final class WorkResult<R> {
 	public final String workId;
 	public final Throwable error;
-	public final WR result;
+	public final R result;
 
-	public WorkResult(final String workId, final WR result, final Throwable error) {
+	public WorkResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----

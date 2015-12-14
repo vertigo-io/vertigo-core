@@ -24,9 +24,10 @@ import io.vertigo.lang.Assertion;
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.
  *
  * @author pchretien
+ * @param<R> result
  */
-public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
-	private WR lastResult;
+public final class MyWorkResultHanlder<R> implements WorkResultHandler<R> {
+	private R lastResult;
 	private Throwable lastError;
 	//compteurs
 	private int succeededCount;
@@ -38,7 +39,7 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 		//System.out.println("onStart");
 	}
 
-	public synchronized WR getLastResult() {
+	public synchronized R getLastResult() {
 		return lastResult;
 	}
 
@@ -47,7 +48,7 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	}
 
 	@Override
-	public synchronized void onDone(final WR result, final Throwable error) {
+	public synchronized void onDone(final R result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
 		lastResult = result;
