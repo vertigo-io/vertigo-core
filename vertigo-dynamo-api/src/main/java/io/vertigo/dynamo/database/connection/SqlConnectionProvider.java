@@ -24,7 +24,7 @@ import java.sql.SQLException;
 
 /**
  * Provides a sql connections.
- * This provider is defined for a particular database. 
+ * This provider is defined for a particular database.
  *
  * @author pchretien
  */
@@ -33,7 +33,7 @@ public interface SqlConnectionProvider {
 	 * Provides a sql connection.
 	 *
 	 * @return Connection
-	 * @throws SQLException
+	 * @throws SQLException SQL exception
 	 */
 	SqlConnection obtainConnection() throws SQLException;
 
