@@ -26,6 +26,7 @@ import io.vertigo.lang.WrappedException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.codehaus.commons.compiler.IScriptEvaluator;
 import org.codehaus.janino.ScriptEvaluator;
 
 /**
@@ -57,13 +58,13 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		}
 
 		//1. Build the scriptEvaluator
-		final ScriptEvaluator scriptEvaluator = buildEvaluator(expression, type, parameterNames, parameterTypes);
+		final IScriptEvaluator scriptEvaluator = buildEvaluator(expression, type, parameterNames, parameterTypes);
 
 		//2.Evaluate the script
 		return type.cast(doEvaluate(scriptEvaluator, parameterValues));
 	}
 
-	private static Object doEvaluate(final ScriptEvaluator scriptEvaluator, final Object[] parameterValues) {
+	private static Object doEvaluate(final IScriptEvaluator scriptEvaluator, final Object[] parameterValues) {
 		try {
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
@@ -72,7 +73,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		}
 	}
 
-	private static ScriptEvaluator buildEvaluator(final String expression, final Class<?> type, final String[] parameterNames, final Class<?>[] parameterTypes) {
+	private static IScriptEvaluator buildEvaluator(final String expression, final Class<?> type, final String[] parameterNames, final Class<?>[] parameterTypes) {
 		try {
 			return new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
 		} catch (final Exception ex) {

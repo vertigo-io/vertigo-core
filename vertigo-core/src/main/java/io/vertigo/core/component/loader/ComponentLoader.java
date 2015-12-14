@@ -159,9 +159,9 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private void doInjectAspects(final Container container, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
+		for (final Aspect aspect : findAspects(container, moduleConfig)) {
 			registerAspect(aspect);
 		}
 	}

@@ -374,7 +374,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			}
 			s.append('=');
 			if (parameter.getValue() != null) {
-				s.append(parameter.getValue().toString());
+				s.append(parameter.getValue());
 			} else {
 				s.append("null");
 			}

@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.work.redis;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
-import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -30,9 +29,7 @@ import io.vertigo.util.DateUtil;
 import io.vertigo.util.MapBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import redis.clients.jedis.Jedis;
@@ -166,31 +163,31 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public void registerNode(final Node node) {
-		Assertion.checkNotNull(node);
-		//-----
-		try (Jedis jedis = jedisPool.getResource()) {
-			jedis.lpush("nodes", node.getUID());
-			final Map<String, String> hash = new MapBuilder<String, String>()
-					.put("id", node.getUID())
-					.put("active", node.isActive() ? "true" : "false")
-					.build();
-			jedis.hmset("node:" + node.getUID(), hash);
-		}
-	}
+	//	public void registerNode(final Node node) {
+	//		Assertion.checkNotNull(node);
+	//		//-----
+	//		try (Jedis jedis = jedisPool.getResource()) {
+	//			jedis.lpush("nodes", node.getUID());
+	//			final Map<String, String> hash = new MapBuilder<String, String>()
+	//					.put("id", node.getUID())
+	//					.put("active", node.isActive() ? "true" : "false")
+	//					.build();
+	//			jedis.hmset("node:" + node.getUID(), hash);
+	//		}
+	//	}
 
-	public List<Node> getNodes() {
-		try (Jedis jedis = jedisPool.getResource()) {
-			final List<Node> nodes = new ArrayList<>();
-
-			final List<String> nodeIds = jedis.lrange("nodes", -1, -1);
-			for (final String nodeId : nodeIds) {
-				final Map<String, String> hash = jedis.hgetAll(nodeId);
-				nodes.add(new Node(hash.get("id"), Boolean.valueOf(hash.get("active"))));
-			}
-			return nodes;
-		}
-	}
+	//	public List<Node> getNodes() {
+	//		try (Jedis jedis = jedisPool.getResource()) {
+	//			final List<Node> nodes = new ArrayList<>();
+	//
+	//			final List<String> nodeIds = jedis.lrange("nodes", -1, -1);
+	//			for (final String nodeId : nodeIds) {
+	//				final Map<String, String> hash = jedis.hgetAll(nodeId);
+	//				nodes.add(new Node(hash.get("id"), Boolean.valueOf(hash.get("active"))));
+	//			}
+	//			return nodes;
+	//		}
+	//	}
 
 	private String encode(final Object toEncode) {
 		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));

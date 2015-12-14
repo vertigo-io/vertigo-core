@@ -144,7 +144,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	@Override
 	public final <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
 		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_SELECT.toString() + '_' + tableName + "_BY_URI";
+		final String taskName = TASK.TK_SELECT + "_" + tableName + "_BY_URI";
 
 		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
@@ -179,7 +179,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String tableName = getTableName(dtDefinition);
 
-		final String taskName = TASK.TK_SELECT.toString() + "_N_N_LIST_" + tableName + "_BY_URI";
+		final String taskName = TASK.TK_SELECT + "_N_N_LIST_" + tableName + "_BY_URI";
 
 		//PK de la DtList recherchée
 		final String pkFieldName = dtDefinition.getIdField().get().getName();
@@ -455,7 +455,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 
 		final String tableName = getTableName(dtDefinition);
-		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE).toString() + '_' + tableName;
+		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
 
 		final String request = insert ? createInsertQuery(dtDefinition) : createUpdateQuery(dtDefinition);
 
@@ -497,7 +497,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_DELETE.toString() + '_' + tableName;
+		final String taskName = TASK.TK_DELETE + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
 		final StringBuilder request = new StringBuilder()
@@ -536,7 +536,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String request = "select count(*) as count from " + tableName;
 
-		final String taskName = TASK.TK_COUNT.toString() + '_' + tableName;
+		final String taskName = TASK.TK_COUNT + "_" + tableName;
 
 		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject);
 
@@ -562,7 +562,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_LOCK.toString() + '_' + tableName;
+		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
 		final StringBuilder request = new StringBuilder()
