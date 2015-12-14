@@ -172,7 +172,7 @@ public final class TestWebServices implements WebServices {
 
 	@Doc("Not the same than /docTest/")
 	@GET("/docTest")
-	public void docTest() throws VSecurityException {
+	public void docTest() {
 		//rien
 	}
 

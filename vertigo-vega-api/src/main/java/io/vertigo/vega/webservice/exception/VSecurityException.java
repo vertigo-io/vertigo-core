@@ -24,7 +24,7 @@ import io.vertigo.lang.MessageText;
  * Security exception.
  * @author npiedeloup
  */
-public final class VSecurityException extends RuntimeException {
+public final class VSecurityException extends Exception {
 	private static final long serialVersionUID = 3911465988816189879L;
 	private final MessageText messageText;
 
