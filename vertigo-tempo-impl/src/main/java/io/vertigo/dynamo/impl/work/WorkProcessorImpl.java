@@ -29,8 +29,10 @@ import java.util.Arrays;
 /**
  *
  * @author pchretien
+ * @param<R> result
+ * @param<W> work
  */
-final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
+final class WorkProcessorImpl<R, W> implements WorkProcessor<R, W> {
 	private final WorkManager workManager;
 	private final WorkEngineProvider[] workEngineProviders;
 
@@ -50,7 +52,7 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, WR> workEngineProvider) {
+	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, R> workEngineProvider) {
 		Assertion.checkNotNull(workEngineProvider);
 		//-----
 		final WorkEngineProvider[] list = Arrays.copyOf(workEngineProviders, workEngineProviders.length + 1);
@@ -60,7 +62,7 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz) {
+	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, R>> clazz) {
 		Assertion.checkNotNull(clazz);
 		//-----
 		return then(new WorkEngineProvider<>(clazz));
@@ -68,11 +70,11 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 
 	/** {@inheritDoc} */
 	@Override
-	public WR exec(final W input) {
+	public R exec(final W input) {
 		Object result = input;
 		for (final WorkEngineProvider workEngineProvider : workEngineProviders) {
 			result = workManager.process(result, workEngineProvider);
 		}
-		return (WR) result;
+		return (R) result;
 	}
 }

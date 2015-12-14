@@ -48,7 +48,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
-	public RestMasterPlugin(final DaemonManager daemonManager, final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
+	public RestMasterPlugin(final DaemonManager daemonManager, @Named("distributedWorkTypes") final String distributedWorkTypes, @Named("timeoutSeconds") final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----

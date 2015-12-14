@@ -206,7 +206,7 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private Component createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private static Component createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		//		if (componentConfig.isElastic()) {
 		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		//		}

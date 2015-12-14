@@ -197,7 +197,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		saveFile(metaData, fileInfo);
 	}
 
-	private FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
+	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
 		final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + UUID.randomUUID();
 		return new FileInfoURI(fileInfoDefinition, pathToSave);
@@ -284,7 +284,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			purgeOlderFile(documentRootFile, maxTime);
 		}
 
-		private void purgeOlderFile(final File documentRootFile, final long maxTime) {
+		private static void purgeOlderFile(final File documentRootFile, final long maxTime) {
 			for (final File subFiles : documentRootFile.listFiles()) {
 				if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
 					purgeOlderFile(subFiles, maxTime);

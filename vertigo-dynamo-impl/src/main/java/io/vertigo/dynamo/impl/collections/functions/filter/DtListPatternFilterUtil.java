@@ -56,10 +56,10 @@ public final class DtListPatternFilterUtil {
 	}
 
 	/**
-	 * Constructeur privé.
+	 * Constructor.
 	 */
 	private DtListPatternFilterUtil() {
-		//rien
+		//private constructor
 	}
 
 	static <D extends DtObject> DtListFilter<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
@@ -92,15 +92,13 @@ public final class DtListPatternFilterUtil {
 		Assertion.checkNotNull(filterString);
 		Assertion.checkNotNull(parsingPattern);
 		//-----
-		final String[] groups;
-		int nbGroup = 0;
 		final Matcher matcher = parsingPattern.matcher(filterString);
 		if (!matcher.matches()) {
 			return Option.none();
 		}
 
-		nbGroup = matcher.groupCount() + 1;
-		groups = new String[nbGroup];
+		final int nbGroup = matcher.groupCount() + 1;
+		final String[] groups = new String[nbGroup];
 		for (int i = 0; i < nbGroup; i++) {
 			groups[i] = matcher.group(i);
 		}
