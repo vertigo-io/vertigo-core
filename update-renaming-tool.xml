@@ -94,6 +94,11 @@
 			<replace dir="${src.path}" encoding="${src.encoding}" token="Home.getDefinitionSpace()" value="Home.getApp().getDefinitionSpace()">
 				<include name="**/*.java" />
 			</replace>
+			<echo message="Renamed in *.java : ConfigManager to ParamManager" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="ConfigManager" value="ParamManager">
+				<include name="**/*.java" />
+			</replace>
+		
 		</target>
 	
 	<target name="0.8.2 to 0.8.3" description="Usefull renames from 0.8.2 to 0.8.3">
