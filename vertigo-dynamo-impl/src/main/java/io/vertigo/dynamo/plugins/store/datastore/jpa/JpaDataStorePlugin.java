@@ -112,7 +112,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return connectionName;
 	}
 
-	private EntityManager obtainEntityManager() {
+	private EntityManager getEntityManager() {
 		return obtainJpaResource().getEntityManager();
 	}
 
@@ -128,11 +128,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private <D extends DtObject> D loadWithoutClear(final URI<D> uri) {
-		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final D result = em.find(objectClass, uri.getId());
+			final D result = getEntityManager().find(objectClass, uri.getId());
 			jpaTracker.markAsSucceded(0, result != null ? 1 : 0);
 			return result;
 			//Objet null géré par le dataStore
@@ -143,9 +142,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	@Override
 	public int count(final DtDefinition dtDefinition) {
 		//Add the where condition to the end of the query
-		final EntityManager em = obtainEntityManager();
 		final String tableName = getTableName(dtDefinition);
-		final Query query = em.createQuery("select count(*) from " + tableName + " t");
+		final Query query = getEntityManager().createQuery("select count(*) from " + tableName + " t");
 		final Long count = (Long) query.getSingleResult();
 		return count.intValue();
 	}
@@ -170,7 +168,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
-		obtainEntityManager().clear();
+		getEntityManager().clear();
 		return dto;
 	}
 
@@ -178,7 +176,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
 		//-----
-		final EntityManager em = obtainEntityManager();
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
@@ -187,7 +184,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, filterCriteria);
 
-			final TypedQuery<D> q = em.createQuery(request, resultClass);
+			final TypedQuery<D> q = getEntityManager().createQuery(request, resultClass);
 			//IN, obligatoire
 			for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
 				q.setParameter(filterEntry.getKey(), filterEntry.getValue());
@@ -286,7 +283,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
-		final EntityManager em = obtainEntityManager();
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
@@ -316,7 +312,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 			final URI uri = dtcUri.getSource();
 
-			final Query q = em.createNativeQuery(request.toString(), resultClass);
+			final Query q = getEntityManager().createNativeQuery(request.toString(), resultClass);
 			q.setParameter(fkFieldName, uri.getId());
 
 			final List<D> results = q.getResultList();
@@ -338,7 +334,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private void put(final String prefixServiceName, final DtObject dto, final boolean persist) {
-		final EntityManager em = obtainEntityManager();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
@@ -347,12 +342,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 				//sinon on ferait persist aussi si em.contains(dto)).
-				em.persist(dto);
+				getEntityManager().persist(dto);
 			} else {
-				em.merge(dto);
+				getEntityManager().merge(dto);
 			}
-			em.flush();
-			em.clear();
+			getEntityManager().flush();
+			getEntityManager().clear();
 			jpaTracker.markAsSucceded(1, 0);
 		}
 	}
@@ -365,7 +360,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 
 		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
@@ -373,9 +367,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			if (dto == null) {
 				throw new VSystemException("Aucune ligne supprimée");
 			}
-			em.remove(dto);
-			em.flush();
-			em.clear();
+			getEntityManager().remove(dto);
+			getEntityManager().flush();
+			getEntityManager().clear();
 			jpaTracker.markAsSucceded(1, 0);
 		}
 	}
@@ -383,12 +377,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
-		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
 		try (final JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final DtObject result = em.find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
+			final DtObject result = getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			jpaTracker.markAsSucceded(0, result != null ? 1 : 0);
 			//Objet null géré par le dataStore
 		}
