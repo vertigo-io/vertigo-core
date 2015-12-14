@@ -319,20 +319,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xassociation) {
-		final String fkFieldName = getPropertyValueAsString(xassociation, KspProperty.FK_FIELD_NAME);
 
-		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionName("dtDefinitionA"), DtDefinition.class);
 		final String multiplicityA = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_A);
-		final boolean navigabilityA = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_A).booleanValue();
-		final String roleA = getPropertyValueAsString(xassociation, KspProperty.ROLE_A);
-		final String labelA = getPropertyValueAsString(xassociation, KspProperty.LABEL_A);
-
-		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionName("dtDefinitionB"), DtDefinition.class);
 		final String multiplicityB = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_B);
-		final boolean navigabilityB = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_B).booleanValue();
-		final String roleB = getPropertyValueAsString(xassociation, KspProperty.ROLE_B);
-		final String labelB = getPropertyValueAsString(xassociation, KspProperty.LABEL_B);
-
 		// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 		if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 			//Relation n-n
@@ -342,6 +331,18 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			//Relation 1-1
 			throw new IllegalArgumentException("Les associations 1-1 sont interdites");
 		}
+
+		final String fkFieldName = getPropertyValueAsString(xassociation, KspProperty.FK_FIELD_NAME);
+
+		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionName("dtDefinitionA"), DtDefinition.class);
+		final boolean navigabilityA = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_A).booleanValue();
+		final String roleA = getPropertyValueAsString(xassociation, KspProperty.ROLE_A);
+		final String labelA = getPropertyValueAsString(xassociation, KspProperty.LABEL_A);
+
+		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionName("dtDefinitionB"), DtDefinition.class);
+		final boolean navigabilityB = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_B).booleanValue();
+		final String roleB = getPropertyValueAsString(xassociation, KspProperty.ROLE_B);
+		final String labelB = getPropertyValueAsString(xassociation, KspProperty.LABEL_B);
 
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(ASSOCIATION_SIMPLE_DEFINITION_PREFIX, xassociation.getName());
