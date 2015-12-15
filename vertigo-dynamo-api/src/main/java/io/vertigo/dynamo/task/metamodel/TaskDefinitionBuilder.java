@@ -40,7 +40,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	private Class<? extends TaskEngine> myTaskEngineClass;
 	private String myRequest;
 	private String myPackageName;
-	private String myCollection;
+	private String myDataSpace;
 
 	/**
 	 * Constructor.
@@ -96,22 +96,23 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param collection Collection
+	 * Sets the dataSpace
+	 * @param dataSpace the dataSpace
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder withCollection(final String collection) {
-		//collection can be null
+	public TaskDefinitionBuilder withDataSpace(final String dataSpace) {
+		//dataSpace can be null
 		//-----
-		myCollection = collection;
+		myDataSpace = dataSpace;
 		return this;
 	}
 
 	/**
-	 * Add an input attribute.
+	 * Adds an input attribute.
 	 *
-	 * @param attributeName Name of the attribute
-	 * @param domain Domain of the attribute
-	 * @param notNull If attribute must be not null
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param notNull if attribute is not null
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
@@ -124,11 +125,11 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * Add an output attribute.
+	 * Adds an output attribute.
 	 *
-	 * @param attributeName Name of the attribute
-	 * @param domain Domain of the attribute
-	 * @param notNull If attribute must be not null
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param notNull if attribute is not null
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
@@ -143,7 +144,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
-				myCollection == null ? DtDefinitionBuilder.DEFAULT_COLLECTION : myCollection,
+				myDataSpace == null ? DtDefinitionBuilder.DEFAULT_DATA_SPACE : myDataSpace,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,

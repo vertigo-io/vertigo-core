@@ -41,11 +41,11 @@ public final class TaskDefinition implements Definition {
 	/** the name of the definition. */
 	private final String name;
 
-	/** Package name. */
+	/** the package name. */
 	private final String packageName;
 
-	/**Collection. */
-	private final String collection;
+	/** the dataSpace. */
+	private final String dataSpace;
 
 	/** Chaine de configuration du service. */
 	private final String request;
@@ -68,14 +68,14 @@ public final class TaskDefinition implements Definition {
 	TaskDefinition(
 			final String name,
 			final String packageName,
-			final String collection,
+			final String dataSpace,
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
 			final Option<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
-		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkState(DtDefinition.REGEX_COLLECTION.matcher(collection).matches(), "collection {0} must match pattern {1}", collection, DtDefinition.REGEX_COLLECTION);
+		Assertion.checkArgNotEmpty(dataSpace);
+		Assertion.checkState(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE);
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(inTaskAttributes);
@@ -83,7 +83,7 @@ public final class TaskDefinition implements Definition {
 		//-----
 		this.name = name;
 		this.packageName = packageName;
-		this.collection = collection;
+		this.dataSpace = dataSpace;
 		this.request = request;
 		this.inTaskAttributes = createMap(inTaskAttributes);
 		this.outTaskAttributeOption = outTaskAttributeOption;
@@ -129,12 +129,12 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
-	 * Returns the collection to which the taskDefinition belongs.
+	 * Returns the dataSpace to which the taskDefinition belongs.
 	 *
-	 * @return the collection.
+	 * @return the dataSpace.
 	 */
-	public String getCollection() {
-		return collection;
+	public String getDataSpace() {
+		return dataSpace;
 	}
 
 	/**

@@ -72,7 +72,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 */
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
-	private final String collection;
+	private final String dataSpace;
 	private final String connectionName;
 	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
@@ -93,7 +93,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
-		collection = collectionOption.getOrElse(DtDefinitionBuilder.DEFAULT_COLLECTION);
+		dataSpace = collectionOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
 		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
@@ -102,8 +102,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public String getCollection() {
-		return collection;
+	public String getDataSpace() {
+		return dataSpace;
 	}
 
 	/** {@inheritDoc} */

@@ -29,7 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class defines how the collections are mapped to the physical stores.
+ * This class defines how the dataSpaces are mapped to the physical stores.
+ * A dataSpace is a set of collections. 
+ * A dataSpace has a name.
+ * A dataSpace can have one dataStore.
  * 
  * @author pchretien, npiedeloup
  */
@@ -48,11 +51,11 @@ public final class LogicalDataStoreConfig {
 		//-----
 		final Map<String, DataStorePlugin> pluginsMap = new HashMap<>();
 		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
-			final String collection = dataStorePlugin.getCollection();
-			final DataStorePlugin previous = pluginsMap.put(collection, dataStorePlugin);
-			Assertion.checkState(previous == null, "DataStorePlugin {0}, was already registered", collection);
+			final String dataSpace = dataStorePlugin.getDataSpace();
+			final DataStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
+			Assertion.checkState(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
-		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_COLLECTION), "No " + DtDefinitionBuilder.DEFAULT_COLLECTION + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_COLLECTION + "'.");
+		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_DATA_SPACE), "No " + DtDefinitionBuilder.DEFAULT_DATA_SPACE + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_DATA_SPACE + "'.");
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}
 
@@ -65,25 +68,25 @@ public final class LogicalDataStoreConfig {
 	public DataStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		return getDataStorePlugin(dtDefinition.getCollection());
+		return getDataStorePlugin(dtDefinition.getDataSpace());
 	}
 
 	/**
 	 * Provides the name of the connection.
-	 * @param collection the collection
+	 * @param dataSpace the dataSpace
 	 * @return the name of the connection
 	 */
-	public String getConnectionName(final String collection) {
-		Assertion.checkArgNotEmpty(collection);
+	public String getConnectionName(final String dataSpace) {
+		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
-		return getDataStorePlugin(collection).getConnectionName();
+		return getDataStorePlugin(dataSpace).getConnectionName();
 	}
 
-	private DataStorePlugin getDataStorePlugin(final String collection) {
-		Assertion.checkArgNotEmpty(collection);
+	private DataStorePlugin getDataStorePlugin(final String dataSpace) {
+		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
-		final DataStorePlugin dataStore = dataStorePluginsMap.get(collection);
-		Assertion.checkNotNull(dataStore, "No store found mapped to collection '{0}'", collection);
+		final DataStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
+		Assertion.checkNotNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
 		return dataStore;
 	}
 }

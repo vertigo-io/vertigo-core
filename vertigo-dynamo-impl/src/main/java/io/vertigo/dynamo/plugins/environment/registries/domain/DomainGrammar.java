@@ -43,7 +43,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
@@ -149,7 +149,7 @@ public final class DomainGrammar {
 				.addField(PERSISTENT, Boolean, false)
 				.addField(DYNAMIC, Boolean, false)
 				.addField(STEREOTYPE, String, false)
-				.addField(STORE_NAME, String, false)
+				.addField(DATA_SPACE, String, false)
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)

@@ -39,9 +39,9 @@ import io.vertigo.lang.Plugin;
 public interface DataStorePlugin extends Plugin {
 
 	/**
-	 * @return the collection
+	 * @return the dataSpace
 	 */
-	String getCollection();
+	String getDataSpace();
 
 	/**
 	 * @return the name of the connection

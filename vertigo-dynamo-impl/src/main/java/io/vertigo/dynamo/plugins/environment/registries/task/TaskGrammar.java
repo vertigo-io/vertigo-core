@@ -24,7 +24,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
@@ -53,7 +53,7 @@ final class TaskGrammar {
 
 		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")
 				.addField(REQUEST, String, true)
-				.addField(STORE_NAME, String, false)
+				.addField(DATA_SPACE, String, false)
 				.addField(CLASS_NAME, String, true)
 				.addFields(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
 				.build();

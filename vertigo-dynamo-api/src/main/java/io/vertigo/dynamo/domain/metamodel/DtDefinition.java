@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
  */
 @DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
-	/** the collection must match this pattern. */
-	public static final Pattern REGEX_COLLECTION = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
+	/** the dataSpace must match this pattern. */
+	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
 	/** name of the definition. */
 	private final String name;
@@ -70,7 +70,7 @@ public final class DtDefinition implements Definition {
 	private Option<DtField> sortField = Option.none();
 	private Option<DtField> displayField = Option.none();
 
-	private final String collection;
+	private final String dataSpace;
 
 	/**
 	 * Constructeur.
@@ -82,12 +82,12 @@ public final class DtDefinition implements Definition {
 			final boolean persistent,
 			final List<DtField> dtFields,
 			final boolean dynamic,
-			final String collection) {
+			final String dataSpace) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
-		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkState(REGEX_COLLECTION.matcher(collection).matches(), "collection {0} must match pattern {1}", collection, REGEX_COLLECTION);
+		Assertion.checkArgNotEmpty(dataSpace);
+		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
@@ -105,7 +105,7 @@ public final class DtDefinition implements Definition {
 		}
 		idField = Option.option(id);
 		this.dynamic = dynamic;
-		this.collection = collection;
+		this.dataSpace = dataSpace;
 		//-----
 		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
 	}
@@ -266,10 +266,10 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return the collection
+	 * @return the dataSpace
 	 */
-	public String getCollection() {
-		return collection;
+	public String getDataSpace() {
+		return dataSpace;
 	}
 
 	/** {@inheritDoc} */

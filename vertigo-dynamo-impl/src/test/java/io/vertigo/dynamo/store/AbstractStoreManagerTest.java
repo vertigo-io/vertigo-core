@@ -122,7 +122,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request);
 				if (collection.isDefined()) {
-					taskDefinitionBuilder.withCollection(collection.get());
+					taskDefinitionBuilder.withDataSpace(collection.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
@@ -171,7 +171,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 						.withEngine(TaskEngineProc.class)
 						.withRequest("shutdown;");
 				if (collectionOption.isDefined()) {
-					taskDefinitionBuilder.withCollection(collectionOption.get());
+					taskDefinitionBuilder.withDataSpace(collectionOption.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);

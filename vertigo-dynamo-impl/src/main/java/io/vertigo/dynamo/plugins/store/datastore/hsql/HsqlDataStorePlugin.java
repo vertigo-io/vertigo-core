@@ -88,7 +88,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withCollection(getCollection())
+				.withDataSpace(getDataSpace())
 				.withRequest(request.toString())
 				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
 				.build();

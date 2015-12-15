@@ -144,9 +144,9 @@ public final class DataStoreImpl implements DataStore {
 	@Override
 	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		final D dto = cacheDataStore.<D> load(uri);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
 		return dto;
 	}

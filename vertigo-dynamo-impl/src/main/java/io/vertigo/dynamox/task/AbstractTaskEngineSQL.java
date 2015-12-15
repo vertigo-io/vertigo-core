@@ -432,11 +432,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
-		final String collection = getTaskDefinition().getCollection();
-		if (DtDefinitionBuilder.DEFAULT_COLLECTION.equals(collection)) {
+		final String dataSpace = getTaskDefinition().getDataSpace();
+		if (DtDefinitionBuilder.DEFAULT_DATA_SPACE.equals(dataSpace)) {
 			return SQL_MAIN_RESOURCE_ID;
 		}
-		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + collection);
+		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
 	}
 
 	/**
@@ -451,8 +451,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Configuration SQL.
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
-		final String collection = getTaskDefinition().getCollection();
-		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(collection);
+		final String dataSpace = getTaskDefinition().getDataSpace();
+		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(dataSpace);
 		return getDataBaseManager().getConnectionProvider(connectionName);
 	}
 
