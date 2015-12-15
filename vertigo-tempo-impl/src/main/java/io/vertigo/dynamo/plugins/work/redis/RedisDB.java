@@ -88,7 +88,7 @@ public final class RedisDB implements Activeable {
 		//Todo
 	}
 
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
 		try (Jedis jedis = jedisPool.getResource()) {

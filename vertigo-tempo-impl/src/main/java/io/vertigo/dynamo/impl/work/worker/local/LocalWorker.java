@@ -71,7 +71,7 @@ final class LocalWorker<R, W> implements Callable<R> {
 		this.workResultHandler = workResultHandler;
 	}
 
-	private static <WR, W> WR executeNow(final WorkItem<WR, W> workItem) {
+	private static <R, W> R executeNow(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
 		return workItem.getWorkEngineProvider().provide().process(workItem.getWork());

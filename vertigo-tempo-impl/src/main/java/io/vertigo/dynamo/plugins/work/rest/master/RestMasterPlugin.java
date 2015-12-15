@@ -78,7 +78,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		getWorkQueueRestServer().putWorkItem(workItem);
 	}
 

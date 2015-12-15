@@ -85,7 +85,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		redisDB.putWorkItem(workItem);
 	}
 }

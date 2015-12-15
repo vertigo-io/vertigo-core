@@ -72,7 +72,7 @@ final class RestQueueClient {
 		locatorClient.setReadTimeout(timeoutSeconds * 1000);
 	}
 
-	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
+	<R, W> WorkItem<R, W> pollWorkItem(final String workType) {
 		//call methode distante, passe le workItem à started
 		try {
 			try {

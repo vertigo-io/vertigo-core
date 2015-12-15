@@ -30,7 +30,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public interface MasterPlugin extends Plugin {
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem);
+	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
 
 	WorkResult pollResult(final int waitTimeSeconds);
 

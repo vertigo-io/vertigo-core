@@ -88,7 +88,7 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
+	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
 		return redisDB.pollWorkItem(workType);
 	}
 
