@@ -534,27 +534,27 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
 		final String tableName = getTableName(dtDefinition);
-		final String request = "select count(*) as count from " + tableName;
+		final String request = "select count(*) from " + tableName;
 
 		final String taskName = TASK.TK_COUNT + "_" + tableName;
 
-		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject);
+		final Domain countDomain = new Domain("DO_COUNT", DataType.Long);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withCollection(collection)
 				.withRequest(request)
-				.withOutAttribute("dto", countDomain, true)
+				.withOutAttribute("count", countDomain, true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.build();
 
-		final DtObject dto = taskManager
+		final Long count = taskManager
 				.execute(task)
 				.getResult();
 
-		return (Integer) DtObjectUtil.findDtDefinition(dto).getField("COUNT").getDataAccessor().getValue(dto);
+		return count.intValue();
 	}
 
 	/** {@inheritDoc} */
@@ -575,7 +575,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withCollection(collection)
 				.withRequest(request.toString())
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
-				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
+				.withOutAttribute("DUMMY_OUT", integerDomain, true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

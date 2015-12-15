@@ -729,8 +729,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			checkCrudCarsCount(1);
 			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
 			storeManager.getDataStore().delete(carUri);
-			checkCrudCarsCount(0);
+			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
 			transaction.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			checkCrudCarsCount(0); //car is cacheable : must wait commit to see delete
 		}
 	}
 
