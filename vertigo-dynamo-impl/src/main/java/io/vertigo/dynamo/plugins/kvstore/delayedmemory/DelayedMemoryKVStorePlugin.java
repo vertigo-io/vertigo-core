@@ -83,12 +83,12 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String collection, final String key, final Object data) {
+	public void put(final String collection, final String key, final Object element) {
 		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkArgNotEmpty(key);
-		Assertion.checkNotNull(data);
+		Assertion.checkNotNull(element);
 		//-----
-		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(data);
+		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(element);
 		cacheDatas.put(key, cacheValue);
 		timeoutQueue.put(new DelayedMemoryKey(key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));
 	}

@@ -521,9 +521,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new VSystemException("Plus de 1 ligne a été supprimée");
+			throw new VSystemException("more tha one row has been deleted");
 		} else if (sqlRowCount == 0) {
-			throw new VSystemException("Aucune ligne supprimée");
+			throw new VSystemException("no row has been deleted");
 		}
 	}
 
@@ -531,7 +531,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	@Override
 	public int count(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition n'est pas persistante");
+		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String request = "select count(*) as count from " + tableName;

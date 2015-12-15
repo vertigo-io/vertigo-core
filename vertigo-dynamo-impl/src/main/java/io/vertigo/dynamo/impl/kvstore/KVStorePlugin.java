@@ -24,48 +24,51 @@ import io.vertigo.lang.Plugin;
 import java.util.List;
 
 /**
- * This plugin defines the strategy used to store a 'collection' of objects, identified by their name.
+ * This plugin defines the strategy used to store a 'collection' of elements.
+ * Each element is identified by a name.
  *
  * @author pchretien
  */
 public interface KVStorePlugin extends Plugin {
 
 	/**
-	 * @return list of collections names 
+	 * Returns the list of collections managed by this plugin. 
+	 * @return list of collections; 
 	 */
 	List<String> getCollections();
 
 	/**
-	 * Add a new element in the store.
-	 * @param collection Name of the collection
-	 * @param id Id of the elemnt
-	 * @param objet element to add
+	 * Adds an element defined by an id in a collection.
+	 * @param collection the collection 
+	 * @param id the id
+	 * @param element the element
 	 */
-	void put(String collection, String id, Object objet);
+	void put(String collection, String id, Object element);
 
 	/**
-	 * Removes an element defined by an id.
-	 * @param collection Name of the collection
-	 * @param id Id of the element to remove
+	 * Removes an element defined by an id from a collection.
+	 * If the collection doesn't contain the is then a exception is thrown.
+	 * @param collection the collection 
+	 * @param id the id
 	 */
 	void remove(String collection, String id);
 
 	/**
-	 * Find the element corresponding to an id in a specified collection.
-	 * If element not found an empty option is returned.
-	 * @param collection Name of the collection
-	 * @param clazz Type of the element
-	 * @return the element corresponding to the id as an option.
+	 * Finds the optional element to which the id is mapped inside the specified collection.
+	 * If the element is not found then an empty option is returned.
+	 * @param collection the collection
+	 * @param id the id
+	 * @param clazz the type of the searched element
+	 * @return the option 
 	 */
 	<C> Option<C> find(String collection, String id, Class<C> clazz);
 
 	/**
-	 * Find all the elements of a collection in a range defined by (skip, limit).  
-	 * @param collection Name of the collection
-	 * @param skip Skips the first elements 
-	 * @param limit Limit size of the number of elements 	
-	 * @param clazz Type of elements
-	 * @return the list of elements
+	 * Finds all elements contained inside the specified collection.
+	 * @param collection the collection
+	 * @param skip the position from which the elements are returned
+	 * @param limit the limit size of elements
+	 * @return the list of elements.
 	 */
 	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
 }

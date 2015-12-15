@@ -128,17 +128,17 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String collection, final String key, final Object data) {
+	public void put(final String collection, final String key, final Object element) {
 		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkArgNotEmpty(key);
-		Assertion.checkNotNull(data);
-		Assertion.checkArgument(data instanceof Serializable, "Value must be Serializable {0}", data.getClass().getSimpleName());
+		Assertion.checkNotNull(element);
+		Assertion.checkArgument(element instanceof Serializable, "Value must be Serializable {0}", element.getClass().getSimpleName());
 		//-----
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
 			final DatabaseEntry theData = new DatabaseEntry();
-			cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) data, System.currentTimeMillis()), theData);
+			cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) element, System.currentTimeMillis()), theData);
 
 			final OperationStatus status = cacheDatas.put(null, theKey, theData);
 			if (!OperationStatus.SUCCESS.equals(status)) {

@@ -63,8 +63,8 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String collection, final String id, final Object object) {
-		getKVStorePlugin(collection).put(collection, id, object);
+	public void put(final String collection, final String id, final Object element) {
+		getKVStorePlugin(collection).put(collection, id, element);
 	}
 
 	/** {@inheritDoc} */

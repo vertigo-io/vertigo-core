@@ -36,7 +36,7 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
- * Utilitaire offrant des méthodes sur  DtObject.
+ * The DtObjectUtil class is a set of utils about the DtObject. 
  *
  * @author pchretien
  */
@@ -45,13 +45,13 @@ public final class DtObjectUtil {
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	private DtObjectUtil() {
-		//constructeur privé.
+		//private constructor.
 	}
 
 	/**
-	 * Crée une nouvelle instance de DtObject à partir du type spécifié.
+	 * Creates a new instance of 'DtObject' from a 'DtDefinition'.
 	 *
-	 * @return Nouveau DtObject
+	 * @return the new instance
 	 */
 	public static DtObject createDtObject(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
@@ -64,7 +64,8 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * @return Valeur de la PK
+	 * Returns the 'id' of a 'DtObject'.
+	 * @return the id of the specified 'DtObject'
 	 */
 	public static Object getId(final DtObject dto) {
 		Assertion.checkNotNull(dto);
@@ -184,9 +185,11 @@ public final class DtObjectUtil {
 		return stringBuilder.toString();
 	}
 
-	//=========================================================================
-	//===========================STATIC========================================
-	//=========================================================================
+	/**
+	 * Finds the definition to which the specified 'DtObject' is mapped.
+	 * @param dto DtObject
+	 * @return the id 
+	 */
 	public static DtDefinition findDtDefinition(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
@@ -196,6 +199,11 @@ public final class DtObjectUtil {
 		return findDtDefinition(dto.getClass());
 	}
 
+	/**
+	 * Finds the definition from a type of 'DtObject'
+	 * @param dtObjectClass  the type of the 'DtObject'
+	 * @return the id 
+	 */
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
 		//-----

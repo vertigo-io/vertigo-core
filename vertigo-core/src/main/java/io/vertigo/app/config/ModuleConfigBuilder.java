@@ -83,7 +83,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Add an aspect.
+	 * Adds an aspect.
 	 * @param implClass Class of the aspect
 	 * @return this builder
 	 */
@@ -93,7 +93,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Mark this module as having no api.
+	 * Marks this module as having no api.
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder withNoAPI() {
@@ -102,7 +102,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Add a provider of definitions.
+	 * Adds a provider of definitions.
 	 * @param definitionProviderClass Class of the definitions provider
 	 * @return this builder
 	 */
@@ -114,9 +114,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Add definitions defined by a resource file. 
-	 * @param resourceType Type of resource
-	 * @param resourcePath Path of resource
+	 * Adds definitions defined by a resource file. 
+	 * @param resourceType Type of the resource
+	 * @param resourcePath Path of the resource
 	* @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
@@ -128,9 +128,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Ajout d'un composant distribué.
-	* @param apiClass Classe du composant (Interface)
-	* @return this builder
+	* Adds a distributed component.
+	* @param apiClass api of the component
+	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
 		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), Component.class, true);
@@ -156,31 +156,31 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Open the builder of a component.
+	* Begins the builder of a component.
 	* Component is added when you close the builder uising end() method. 
 	* @param implClass impl of the component
-	* @return this builder
+	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
 		return doBeginComponent(Option.<Class<? extends Component>> none(), implClass, false);
 	}
 
 	/**
-	* Open the builder of a component.
+	* Begins the builder of a component.
 	* @param apiClass api of the component
 	* Component is added when you close the builder uising end() method. 
 	* @param implClass impl of the component
-	* @return this builder
+	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), implClass, false);
 	}
 
 	/**
-	* Add a component defined by an api and an immplementation.
-	* @param apiClass Class of the api (should be an interface)
-	* @param implClass Class of the implementation of the component
-	* @return this builder
+	* Adds a component defined by an api and an implementation.
+	* @param apiClass api of the component
+	* @param implClass impl of the component
+	* @return  the builder of the component
 	*/
 	private ComponentConfigBuilder doBeginComponent(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
@@ -189,8 +189,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Close the current module.
-	 * @return the parent's builder (AppConfigBuilder)
+	 * Ends the current module config.
+	 * @return the builder of this app
 	 */
 	public AppConfigBuilder endModule() {
 		if (boot) {
@@ -201,10 +201,20 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return myAppConfigBuilder;
 	}
 
+	/**
+	 * Adds a plugin defined by its implementation.
+	 * @param pluginImplClass  impl of the plugin
+	 * @return this builder
+	 */
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass) {
 		return beginPlugin(pluginImplClass).endPlugin();
 	}
 
+	/**
+	 * Begins the builder of a plugin.
+	 * @param pluginImplClass impl of the plugin
+	 * @return  the builder of the plugin
+	 */
 	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {
 		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
 		plugins.add(pluginConfigBuilder);

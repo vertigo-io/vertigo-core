@@ -504,7 +504,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 
 			//on récupère la liste des voitures
@@ -515,7 +515,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
@@ -526,7 +526,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertNativeSelectRollback() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 
 			//on récupère la liste des voitures
@@ -537,7 +537,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertNativeSelectRollback() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
@@ -548,7 +548,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertRollbackCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -560,7 +560,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertRollbackCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -572,7 +572,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertRollbackNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -583,7 +583,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertRollbackNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -594,8 +594,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertCrudInsertCommit() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
-			final Car car2 = createNewCar(null);
+			final Car car = createNewCar();
+			final Car car2 = createNewCar();
 			nativeInsertCar(car2);
 			storeManager.getDataStore().create(car);
 			transaction.commit();
@@ -605,7 +605,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalStateException.class)
 	public void testTxCrudInsertTwoCommit() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 			transaction.commit();
@@ -615,7 +615,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
@@ -628,7 +628,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertCommitCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
@@ -641,7 +641,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertCommitNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
@@ -654,7 +654,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxNativeInsertCommitNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
@@ -666,13 +666,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = NullPointerException.class)
 	public void testCrudInsertNoTx() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		storeManager.getDataStore().create(car);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNativeInsertNoTx() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		nativeInsertCar(car);
 	}
 
@@ -721,8 +721,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testTxCrudInsertDeleteCommit() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			checkCrudCarsCount(0);
 			storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
@@ -735,7 +736,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testTxCrudInsertCommitCrudDeleteCommit() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().create(car);
 			checkCrudCarsCount(1);
@@ -751,7 +752,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testTxCrudLockCommit() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().create(car);
 			//Check cars count
@@ -775,9 +776,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
 	}
 
-	private static Car createNewCar(final Long id) {
+	private static Car createNewCar() {
 		final Car car = new Car();
-		car.setId(id);
+		car.setId(null);
 		car.setPrice(5600);
 		car.setMake("Peugeot");
 		car.setModel("407");
