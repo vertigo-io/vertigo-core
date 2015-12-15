@@ -98,7 +98,7 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 
 	/** {@inheritDoc} */
 	@Override
-	public String getConnectionName(final String storeName) {
-		return logicalDataStoreConfig.getConnectionName(storeName);
+	public String getConnectionName(final String collection) {
+		return logicalDataStoreConfig.getConnectionName(collection);
 	}
 }

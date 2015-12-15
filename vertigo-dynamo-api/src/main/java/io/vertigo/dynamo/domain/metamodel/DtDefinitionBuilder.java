@@ -210,7 +210,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withCollection(final String collection) {
-		//storeName may be null
+		//the collection can be null
 		//-----
 		myCollection = collection;
 		return this;

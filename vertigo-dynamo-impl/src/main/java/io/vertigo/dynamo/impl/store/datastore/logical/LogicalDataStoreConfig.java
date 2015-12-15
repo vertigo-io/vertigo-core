@@ -29,14 +29,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Configuration logique des stores physiques.
+ * This class defines how the collections are mapped to the physical stores.
+ * 
  * @author pchretien, npiedeloup
  */
 public final class LogicalDataStoreConfig {
-	/** Map des stores utilisés spécifiquement */
+	/**
+	 * Map (collection-dataStorePlugin). 
+	 * This map defines the dataStore for each collection */
 	private final Map<String, DataStorePlugin> dataStorePluginsMap;
 
 	/**
+	 * Constructor.
 	 * @param dataStorePlugins DataStore plugins
 	 */
 	public LogicalDataStoreConfig(final List<DataStorePlugin> dataStorePlugins) {
@@ -53,26 +57,26 @@ public final class LogicalDataStoreConfig {
 	}
 
 	/**
-	 * Fournit un store adpaté au type de l'objet.
-	 * @param definition Définition
-	 * @return Store utilisé pour cette definition
+	 * Provides a 'DataStorePlugin' for the specified 'DtDefinition'.
+	 * Each DtDefinition is mapped to a collection.
+	 * @param dtDefinition the DtDefinition 
+	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
-	public DataStorePlugin getPhysicalDataStore(final DtDefinition definition) {
-		Assertion.checkNotNull(definition);
+	public DataStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
 		//-----
-		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		return getDataStorePlugin(definition.getCollection());
+		return getDataStorePlugin(dtDefinition.getCollection());
 	}
 
 	/**
-	 * Fournit le nom de la connection adpatée pour ce Store.
-	 * @param storeName Nom du store
-	 * @return Connection utilisée pour ce nom
+	 * Provides the name of the connection.
+	 * @param collection the collection
+	 * @return the name of the connection
 	 */
-	public String getConnectionName(final String storeName) {
-		Assertion.checkArgNotEmpty(storeName);
+	public String getConnectionName(final String collection) {
+		Assertion.checkArgNotEmpty(collection);
 		//-----
-		return getDataStorePlugin(storeName).getConnectionName();
+		return getDataStorePlugin(collection).getConnectionName();
 	}
 
 	private DataStorePlugin getDataStorePlugin(final String collection) {
