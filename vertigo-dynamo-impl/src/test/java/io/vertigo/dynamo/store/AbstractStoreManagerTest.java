@@ -723,7 +723,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testTxCrudInsertDeleteCommit() {
 		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			checkCrudCarsCount(0);
 			storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
