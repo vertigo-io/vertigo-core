@@ -61,15 +61,15 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private final String sequencePrefix;
 
 	/**
-	 * Constructeur.
-	 * @param name store name
-	 * @param connectionName Connection name
-	 * @param taskManager Manager des Tasks
-	 * @param sequencePrefix Configuration du préfixe de la séquence
+	 * Constructor.
+	 * @param dataSpaceOption the dataSpace (optional)
+	 * @param connectionName the name of the connection
+	 * @param taskManager the taskManager
+	 * @param sequencePrefix the prefix used by the sequence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(name, connectionName, taskManager);
+	public HsqlDataStorePlugin(@Named("dataSpace") final Option<String> dataSpaceOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(dataSpaceOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;
