@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Définition d'une tache et de ses attributs.
+ * This class defines a task and its attributes.
  *
  * @author  fconstantin, pchretien
  */

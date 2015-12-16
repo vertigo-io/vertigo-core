@@ -33,6 +33,7 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 
 /**
+ * This class implements the aspects using the CGLIB library.
  * @author pchretien
  */
 public final class CGLIBAopPlugin implements AopPlugin {

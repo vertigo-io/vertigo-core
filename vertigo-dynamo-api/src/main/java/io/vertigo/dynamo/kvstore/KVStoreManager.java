@@ -41,6 +41,7 @@ import java.util.List;
 public interface KVStoreManager extends Manager {
 	/**
 	 * Adds an element defined by an id in a collection.
+	 * 
 	 * @param collection the collection 
 	 * @param id the id
 	 * @param element the element
@@ -50,6 +51,7 @@ public interface KVStoreManager extends Manager {
 	/**
 	 * Removes an element defined by an id from a collection.
 	 * If the collection doesn't contain the is then a exception is thrown.
+	 * 
 	 * @param collection the collection 
 	 * @param id the id
 	 */
@@ -58,6 +60,7 @@ public interface KVStoreManager extends Manager {
 	/**
 	 * Finds the optional element to which the id is mapped inside the specified collection.
 	 * If the element is not found then an empty option is returned.
+	 * 
 	 * @param collection the collection
 	 * @param id the id
 	 * @param clazz the type of the searched element
@@ -67,6 +70,7 @@ public interface KVStoreManager extends Manager {
 
 	/**
 	 * Finds all elements contained inside the specified collection.
+	 * 
 	 * @param collection the collection
 	 * @param skip the position from which the elements are returned
 	 * @param limit the limit size of elements
