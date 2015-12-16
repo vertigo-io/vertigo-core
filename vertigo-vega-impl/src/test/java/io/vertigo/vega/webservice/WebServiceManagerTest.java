@@ -35,11 +35,9 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -471,12 +469,15 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testPutContactView() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
-		final List<Map<String, Object>> addresses = new ArrayList<>();
+
+		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
+				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"))
+				.build();
+
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
-		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
-		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
-		addresses.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"));
 
 		loggedAndExpect(given().body(newContactView))
 				.body("honorificCode", Matchers.notNullValue())
@@ -494,12 +495,14 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
-		final List<Map<String, Object>> addresses = new ArrayList<>();
+		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
+				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
+				.build();
+
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
-		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
-		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
-		addresses.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
 
 		loggedAndExpect(given().body(newContactView))
 				.body("fieldErrors", Matchers.notNullValue())
@@ -631,9 +634,10 @@ public final class WebServiceManagerTest {
 				.when().get("/test/6")
 				.body().as(Map.class);
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("size()", Matchers.equalTo(2))
@@ -658,9 +662,10 @@ public final class WebServiceManagerTest {
 				.body().as(Map.class);
 		contactTo.put("firstName", "MoreThan50CharactersIsTooLongForAFirstNameInThisTestApi");
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("objectFieldErrors.contactFrom.email", Matchers.contains("Le courriel n'est pas valide"))
@@ -675,9 +680,10 @@ public final class WebServiceManagerTest {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("objectFieldErrors.contactFrom.firstname", Matchers.contains("Process validation error"))
@@ -688,9 +694,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testPostInnerBodyLong() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("size()", Matchers.equalTo(2))
@@ -705,9 +712,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testInnerBodyLongToDtList() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("serverToken", Matchers.notNullValue())
@@ -723,9 +731,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testUiContext() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("contactFrom.name", Matchers.equalTo("Moreau"))
