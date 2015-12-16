@@ -34,10 +34,9 @@ public interface IndexDtListFunctionBuilder<D extends DtObject> extends Builder<
 	 * Création d'un tri de colonne.
 	 * @param fieldName Nom du champ concerné par le tri
 	 * @param desc Si tri descendant
-	 * @param nullLast Si les objets Null sont en derniers
 	 * @return Ce builder
 	 */
-	IndexDtListFunctionBuilder<D> sort(final String fieldName, final boolean desc, final boolean nullLast);
+	IndexDtListFunctionBuilder<D> sort(final String fieldName, final boolean desc);
 
 	//=======================FILTER============================================
 	/**

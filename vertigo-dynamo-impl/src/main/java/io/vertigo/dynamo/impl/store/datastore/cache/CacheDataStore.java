@@ -127,7 +127,7 @@ public final class CacheDataStore {
 		//1.on filtre
 		//2.on trie
 		return storeManager.getMasterDataConfig().getFilter(uri)
-				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
+				.sort(uri.getDtDefinition().getSortField().get().getName(), false)
 				.apply(unFilteredDtc);
 	}
 

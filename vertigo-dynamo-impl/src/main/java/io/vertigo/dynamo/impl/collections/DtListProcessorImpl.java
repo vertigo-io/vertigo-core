@@ -30,7 +30,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -77,9 +76,8 @@ final class DtListProcessorImpl implements DtListProcessor {
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
-		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
-		return add(new SortFunction<>(sortState, getStoreManager()));
+	public DtListProcessor sort(final String fieldName, final boolean desc) {
+		return add(new SortFunction<>(fieldName, desc, getStoreManager()));
 	}
 
 	/** {@inheritDoc} */

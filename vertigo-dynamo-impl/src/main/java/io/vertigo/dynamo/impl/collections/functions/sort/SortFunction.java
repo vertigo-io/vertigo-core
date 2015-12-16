@@ -34,27 +34,28 @@ import java.util.List;
  * @author pchretien
  */
 public final class SortFunction<D extends DtObject> implements DtListFunction<D> {
-	private final SortState sortState;
+	private final String sortFieldName;
+	private final boolean sortDesc;
 	private final StoreManager storeManager;
 
-	public SortFunction(final SortState sortState, final StoreManager storeManager) {
+	public SortFunction(final String sortFieldName, final boolean sortDesc, final StoreManager storeManager) {
 		Assertion.checkNotNull(storeManager);
-		Assertion.checkNotNull(sortState);
+		Assertion.checkArgNotEmpty(sortFieldName);
 		//-----
-		this.sortState = sortState;
+		this.sortFieldName = sortFieldName;
+		this.sortDesc = sortDesc;
 		this.storeManager = storeManager;
 	}
 
 	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
-		Assertion.checkNotNull(sortState);
 		//-----
 		//On crée une liste triable par l'utilitaire java.util.Collections
 		final List<D> list = new ArrayList<>(dtc);
 
 		//On trie.
-		final Comparator<D> comparator = new DtObjectComparator<>(storeManager, dtc.getDefinition(), sortState);
+		final Comparator<D> comparator = new DtObjectComparator<>(storeManager, dtc.getDefinition(), sortFieldName, sortDesc);
 		Collections.sort(list, comparator);
 
 		//On reconstitue la collection.
