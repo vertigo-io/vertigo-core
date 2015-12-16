@@ -194,7 +194,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = myPersistent;
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(fieldName, DtField.FieldType.PRIMARY_KEY, domain, label, required, persistent, null, null, myDynamic, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
 		return this;
 	}

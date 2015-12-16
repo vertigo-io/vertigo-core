@@ -415,7 +415,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			//On ne met à jour que les champs persistants hormis la PK
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
 				request.append(separator);
 				request.append(dtField.getName()).append(" = #DTO.").append(dtField.getName()).append('#');
 				separator = ", ";

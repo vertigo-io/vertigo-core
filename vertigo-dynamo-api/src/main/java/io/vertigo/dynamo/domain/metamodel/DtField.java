@@ -49,16 +49,17 @@ public final class DtField implements DtFieldName {
 	public static final String PREFIX = "FLD_";
 
 	/**
-	 * Type des champs.
+	 * This enum lists all types that can be used by a field.
+	 * The most common types are ID and DATA
 	 */
 	public enum FieldType {
 		/**
-		 * Champ désignant la clé (primaire).
+		 * identity 
 		 */
-		PRIMARY_KEY,
+		ID,
 
 		/**
-		 * Champ représentant une donnée interne (ou attribut) de l'objet.
+		 * a simple data field 
 		 */
 		DATA,
 
@@ -68,27 +69,16 @@ public final class DtField implements DtFieldName {
 		FOREIGN_KEY,
 
 		/**
-		 * Champ calculé.
+		 * a compute field
 		 */
 		COMPUTED
 	}
 
-	/** Nom du champ. */
 	private final String name;
-
-	/** Indicateur du type. */
 	private final FieldType type;
-
-	/** Si le champ obligatoire. */
 	private final boolean required;
-
-	/** Domain.*/
 	private final DefinitionReference<Domain> domainRef;
-
-	/** Libellé du champ. */
 	private final MessageText label;
-
-	/** Si le champ est persistant. */
 	private final boolean persistent;
 
 	/** Cas des FK ; référence à une FK. */
@@ -106,25 +96,33 @@ public final class DtField implements DtFieldName {
 	private final boolean display;
 
 	/**
-	 * Constructeur.
-	 * @param id ID du champ
-	 * @param fieldName Nom du champ
-	 * @param type Type du champ
-	 * @param domain Domaine du champ
-	 * @param label Label
-	 * @param required Si champ not null
-	 * @param persistent Si champ persistent
+	 * Constructor.
+	 * 
+	 * @param id the ID of the field 
+	 * @param fieldName the name of the field
+	 * @param type the type of the field 
+	 * @param domain the domain of the field 
+	 * @param label the label of the field 
+	 * @param required if the field is required
+	 * @param persistent if the field is persistent
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
-	 * @param dynamic Gestion des champs dynamiques
-	 * @param sort If this field is use for sorting
-	 * @param display If this field is use for display
+	 * @param dynamic if the field is dynamic
+	 * @param sort if this field is used for sorting
+	 * @param display if this field is used for display
 	 */
-	DtField(final String id, final String fieldName, final FieldType type,
-			final Domain domain, final MessageText label, final boolean required,
-			final boolean persistent, final String fkDtDefinitionName,
-			final ComputedExpression computedExpression, final boolean dynamic,
-			final boolean sort, final boolean display) {
+	DtField(final String id,
+			final String fieldName,
+			final FieldType type,
+			final Domain domain,
+			final MessageText label,
+			final boolean required,
+			final boolean persistent,
+			final String fkDtDefinitionName,
+			final ComputedExpression computedExpression,
+			final boolean dynamic,
+			final boolean sort,
+			final boolean display) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(domain);
@@ -168,7 +166,7 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * @return Clé de la resource (i18n)
+	 * @return the key of the resource (i18n)
 	 */
 	public String getResourceKey() {
 		return id;
@@ -182,24 +180,21 @@ public final class DtField implements DtFieldName {
 
 	/**
 	 * Retourne le nom du champ.
-	 * @return Nom du champ
+	 * @return the name of the field
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Retourne si la propriété est non null
-	 * (Obligatoire en entrée ou en sortie selon le paramètre inout).
-	 *
-	 * @return Si la propriété est non null
+	 * @return if the field is required
 	 */
 	public boolean isRequired() {
 		return required;
 	}
 
 	/**
-	 * @return Type du champ.
+	 * @return the type of the field
 	 */
 	public FieldType getType() {
 		return type;
@@ -208,14 +203,14 @@ public final class DtField implements DtFieldName {
 	/**
 	 * Renvoie le domaine associé au Champ.
 	 * Le domaine possède obligatoirement un formatter.
-	 * @return Domaine (non null)
+	 * @return the domain of the field
 	 */
 	public Domain getDomain() {
 		return domainRef.get();
 	}
 
 	/**
-	 * @return Libellé du champ.
+	 * @return the label of the field
 	 */
 	public MessageText getLabel() {
 		return label;
@@ -250,29 +245,29 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * Permet d'accéder aux données.
-	 * @return Accesseur des propriétés du dto.
+	 * Returns the way to access the data.
+	 * @return the data accessor.
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ dynamique ou statique
+	 * @return if the field is dynamic
 	 */
 	public boolean isDynamic() {
 		return dynamic;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ utilisé pour le tri
+	 * @return if this field is used for sorting
 	 */
 	public boolean isSort() {
 		return sort;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ utilisé pour l'affichage
+	 * @return if this field is used for display
 	 */
 	public boolean isDisplay() {
 		return display;

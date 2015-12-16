@@ -94,7 +94,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
 				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+				if (dtField.getType() != DtField.FieldType.ID) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
 					request.append(getSequenceName(dtDefinition)).append(".nextval ");

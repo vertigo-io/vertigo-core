@@ -79,7 +79,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		String separator = "";
 
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
 				request.append(separator)
 						.append(dtField.getName());
 				separator = ", ";
@@ -90,9 +90,9 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		separator = "";
 
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
 				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+				if (dtField.getType() != DtField.FieldType.ID) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				}
 				separator = ", ";
