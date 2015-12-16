@@ -388,7 +388,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.append(listFilter.getFilterValue())
 				.append(')')
 				.toString();
-		return QueryBuilders.queryString(query)
+		return QueryBuilders.queryStringQuery(query)
 				.lowercaseExpandedTerms(false)
 				.analyzeWildcard(true);
 	}
