@@ -30,16 +30,22 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Gestion des manipulations sur des scripts.
- *
+ * This manager allows you to script a text.
+ * Some expressions can be used inside the text.
+ * These expressions will be parsed and evaluated.   
+ * 
  * @author pchretien
  */
 public final class ScriptManagerImpl implements ScriptManager {
 	/**
-	 * Plugin pour l'évaluation d'expression.
+	 * the plugin used to evaluate an expression.
 	 */
 	private final ExpressionEvaluatorPlugin expressionEvaluatorPlugin;
 
+	/**
+	 * Constructor.
+	 * @param expressionEvaluatorPlugin the plugin used to evaluate an expression
+	 */
 	@Inject
 	public ScriptManagerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin) {
 		Assertion.checkNotNull(expressionEvaluatorPlugin);

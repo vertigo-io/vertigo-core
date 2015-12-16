@@ -101,46 +101,37 @@ public final class AssociationUtil {
 	public static boolean isAPrimaryNode(
 			final boolean isAMultiple, final boolean isANotNull,
 			final boolean isBMultiple, final boolean isBNotNull) {
-
-		final boolean isAPrimaryNode;
 		if (isAMultiple && isBMultiple) {
 			//relation n-n
 			throw new IllegalAccessError();
-		} else if (!isAMultiple && !isBMultiple) {
+		}
+
+		if (!isAMultiple && !isBMultiple) {
 			//relation simple 1-1
 			if (isANotNull && isBNotNull) {
 				throw new IllegalArgumentException("Les relations 1..1--1..1 ne sont pas gérées.");
 				//Il est impossible de gérer ce type de relation dans un SGBD.
-			} else if (isANotNull && !isBNotNull) {
-				// dans le cas d'une relation simple A(1..1)--B(0..1),
-				// A possède la clé primaire
-				// B possède la clé étrangère.
-				//Exemple
-				// Une personne possède 0 ou 1 voiture
-				// Une voiture est possédée obligatoirement par une personne.
-				//Personne possède la clé primaire,
-				//et voiture référence via la clé étrangère cette clé primaire.
-				isAPrimaryNode = true;
-			} else {
-				isAPrimaryNode = false;
 			}
-		} else {
-			//relation multiple 1-n
-			//A XOR B est multiple.
-			if (isBMultiple) {
-				//Si B est multiple
-				//Il faut donc copier la référence de A dans B.
-				//Exemple une personne possède n livre, tout livre appartient à une et une seule personne.
-				// A personne 1..1
-				// B livre 1..*
-				// la clé de personne va être injectée dans Livre
-				isAPrimaryNode = true;
-			} else {
-				//Cas inverse du précédent
-				isAPrimaryNode = false;
-			}
+			return isANotNull && !isBNotNull;
+			// dans le cas d'une relation simple A(1..1)--B(0..1),
+			// A possède la clé primaire
+			// B possède la clé étrangère.
+			//Exemple
+			// Une personne possède 0 ou 1 voiture
+			// Une voiture est possédée obligatoirement par une personne.
+			//Personne possède la clé primaire,
+			//et voiture référence via la clé étrangère cette clé primaire.
 		}
-		return isAPrimaryNode;
+
+		//relation multiple 1-n
+		//A XOR B est multiple.
+		return isBMultiple;
+		//Si B est multiple
+		//Il faut donc copier la référence de A dans B.
+		//Exemple une personne possède n livre, tout livre appartient à une et une seule personne.
+		// A personne 1..1
+		// B livre 1..*
+		// la clé de personne va être injectée dans Livre
 	}
 
 	/**
