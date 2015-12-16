@@ -282,7 +282,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 				// Finally, close the environment.
 				environment.close();
 			} catch (final DatabaseException dbe) {
-				LOGGER.error("Error closing " + getClass().getSimpleName() + ": " + dbe.toString(), dbe);
+				LOGGER.error("Error closing " + getClass().getSimpleName() + ": " + dbe, dbe);
 			}
 		}
 	}
@@ -351,7 +351,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			try {
 				delayedBerkeleyKVDataStorePlugin.removeTooOldElements();
 			} catch (final DatabaseException dbe) {
-				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
+				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
 			}
 		}
 	}

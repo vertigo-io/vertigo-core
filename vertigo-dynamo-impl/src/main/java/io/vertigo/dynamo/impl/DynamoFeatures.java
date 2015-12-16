@@ -38,14 +38,20 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 
 /**
+ * Defines dynamo features.
+ * 
  * @author pchretien
  */
 public final class DynamoFeatures extends Features {
 
+	/**
+	 * Constructor.
+	 */
 	public DynamoFeatures() {
 		super("dynamo");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void setUp() {
 		getModuleConfigBuilder()

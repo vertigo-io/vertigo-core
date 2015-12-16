@@ -21,7 +21,7 @@ package io.vertigo.app.config;
 import io.vertigo.lang.Assertion;
 
 /**
- * Defines a module by the features.
+ * Defines a module by its features.
  * @author pchretien
  */
 public abstract class Features {

@@ -35,15 +35,19 @@ import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 
 /**
- * Defines module commons.
+ * Defines commons module.
  * @author pchretien
  */
 public final class CommonsFeatures extends Features {
 
+	/**
+	 * Constructor.
+	 */
 	public CommonsFeatures() {
 		super("commons");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void setUp() {
 		getModuleConfigBuilder()
@@ -53,6 +57,11 @@ public final class CommonsFeatures extends Features {
 				.addComponent(EventManager.class, EventManagerImpl.class);
 	}
 
+	/**
+	 * Activates script.
+	 * 
+	 * @return these features
+	 */
 	public CommonsFeatures withScript() {
 		getModuleConfigBuilder()
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
@@ -60,10 +69,16 @@ public final class CommonsFeatures extends Features {
 		return this;
 	}
 
-	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachepluginClass) {
+	/**
+	 * Activates caches.
+	 * 
+	 * @param cachePluginClass the cache plugin
+	 * @return these features
+	 */
+	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
-				.beginPlugin(cachepluginClass).endPlugin();
+				.beginPlugin(cachePluginClass).endPlugin();
 		return this;
 	}
 }

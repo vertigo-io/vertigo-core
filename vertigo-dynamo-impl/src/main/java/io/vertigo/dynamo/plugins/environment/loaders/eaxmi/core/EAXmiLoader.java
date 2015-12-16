@@ -76,7 +76,7 @@ public final class EAXmiLoader implements XmlLoader {
 	public List<XmlClass> getClasses() {
 		final List<XmlClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
-			LOG.debug("classe : " + obj.toString());
+			LOG.debug("classe : " + obj);
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == EAXmiType.Class) {
 				list.add(createClass(obj));
