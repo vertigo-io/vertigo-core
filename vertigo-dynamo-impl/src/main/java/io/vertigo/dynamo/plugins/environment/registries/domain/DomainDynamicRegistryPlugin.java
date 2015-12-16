@@ -346,9 +346,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(ASSOCIATION_SIMPLE_DEFINITION_PREFIX, xassociation.getName());
-		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName,
-				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA),
-				dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
+
+		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));
+		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
+
+		final AssociationSimpleDefinition associationSimpleDefinition = new AssociationSimpleDefinition(urn, fkFieldName, associationNodeA, associationNodeB);
 
 		final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();
 		final AssociationNode foreignAssociationNode = associationSimpleDefinition.getForeignAssociationNode();
