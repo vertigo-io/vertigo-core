@@ -45,8 +45,8 @@ public final class Car implements KeyConcept {
 	private Long famId;
 
 	/**
-	 * Champ : PRIMARY_KEY. récupère la valeur de la propriété 'identifiant
-	 * de la voiture'.
+	 * Champ : ID. 
+	 * récupère la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @return Long id <b>Obligatoire</b>
 	 */
@@ -54,14 +54,14 @@ public final class Car implements KeyConcept {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_CAR")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY. Définit la valeur de la propriété 'identifiant de
-	 * la voiture'.
+	 * Champ : ID. 
+	 * Définit la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @param id
 	 *            Long <b>Obligatoire</b>

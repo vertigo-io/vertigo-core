@@ -25,22 +25,17 @@ import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.MessageText;
 
 /**
- * Définition de la structure d'un champ.
+ * This class defines the structure of a field. 
  *
- * Un champ représente une donnée nommée et typée.
- * Un champ permet de valider des données en s'appuyant sur le caractère requis et sur la validation intrinsèque au domaine.
+ * A field represents a named and typed data
  *
- * Un champ possède
- *   - un nom
- *   - un domaine métier
- *   - un label (obligatoirement renseigné)
- *   - un caractère requis ou non
- *   - un caractère persistent ou non
- *   - un index
- * *
- * Un champ référence
- * 	 - la définition qu'il enrichit (DtDefinition)
- * 	 - la définition qu'il relie (équivalent d'une Foreign Key)
+ * A field
+ *   - has a name
+ *   - has a domain
+ *   - has a label 
+ *   - can be required 
+ *   - can be persistent 
+ *   - can be dynamic
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
@@ -64,7 +59,7 @@ public final class DtField implements DtFieldName {
 		DATA,
 
 		/**
-		 * Champ représentant une donnée externe i.e. une référence vers un autre objet.
+		 * a link towards an other object
 		 */
 		FOREIGN_KEY,
 
@@ -134,14 +129,14 @@ public final class DtField implements DtFieldName {
 		this.required = required;
 		//-----
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fieldName.length() <= 30, "Le Nom du champ {0} doit être inférieur à 30", fieldName);
-		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "Le nom du champ {0} doit être en majuscules", fieldName);
+		Assertion.checkArgument(fieldName.length() <= 30, "the name of the field {0} has a limit size of 30", fieldName);
+		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
 		name = fieldName;
 		//-----
 		Assertion.checkNotNull(label);
 		this.label = label;
 		//-----
-		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "Un champ calculé n'est jamais persistant");
+		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
@@ -152,9 +147,9 @@ public final class DtField implements DtFieldName {
 		this.fkDtDefinitionName = fkDtDefinitionName;
 		//-----
 		if (getType() == DtField.FieldType.COMPUTED) {
-			Assertion.checkNotNull(computedExpression, "Le champ {0} de type Computed doit référencer une expression ", fieldName);
+			Assertion.checkNotNull(computedExpression, "the field {0}, declared as computed, must have an expression", fieldName);
 		} else {
-			Assertion.checkState(computedExpression == null, "Le champ {0} n''est pas Computed", fieldName);
+			Assertion.checkState(computedExpression == null, "the field {0}, not declared as computed, must have an empty expression", fieldName);
 		}
 		this.computedExpression = computedExpression;
 		//-----
@@ -179,7 +174,6 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * Retourne le nom du champ.
 	 * @return the name of the field
 	 */
 	public String getName() {
@@ -201,8 +195,6 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * Renvoie le domaine associé au Champ.
-	 * Le domaine possède obligatoirement un formatter.
 	 * @return the domain of the field
 	 */
 	public Domain getDomain() {

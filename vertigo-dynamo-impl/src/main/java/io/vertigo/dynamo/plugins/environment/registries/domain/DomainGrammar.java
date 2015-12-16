@@ -60,7 +60,7 @@ public final class DomainGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	public static final String PRIMARY_KEY = "key";
+	public static final String ID = "key";
 	/**
 	 * Clé des FIELD_DEFINITION de type FIELD utilisés dans les DT_DEFINITION.
 	 */
@@ -145,7 +145,7 @@ public final class DomainGrammar {
 				.addField(SORT_FIELD, String, false)
 				.addFields(FIELD, DT_FIELD_ENTITY, false)
 				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
-				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false)
+				.addField(ID, DT_FIELD_ENTITY, false)
 				.addField(PERSISTENT, Boolean, false)
 				.addField(DYNAMIC, Boolean, false)
 				.addField(STEREOTYPE, String, false)

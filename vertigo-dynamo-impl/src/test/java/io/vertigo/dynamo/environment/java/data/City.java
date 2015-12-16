@@ -40,7 +40,7 @@ public final class City implements DtMasterData {
 	private String postalCode;
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
@@ -48,13 +48,13 @@ public final class City implements DtMasterData {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_CITY")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CIT_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getCitId() {
 		return citId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param citId Long <b>Obligatoire</b>
 	 */

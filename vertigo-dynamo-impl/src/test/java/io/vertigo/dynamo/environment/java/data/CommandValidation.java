@@ -41,7 +41,7 @@ public final class CommandValidation implements DtObject {
 	private io.vertigo.dynamo.environment.java.data.Command command;
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cvaId <b>Obligatoire</b>
 	 */
@@ -49,13 +49,13 @@ public final class CommandValidation implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_VALIDATION")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CVA_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getCvaId() {
 		return cvaId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param cvaId Long <b>Obligatoire</b>
 	 */

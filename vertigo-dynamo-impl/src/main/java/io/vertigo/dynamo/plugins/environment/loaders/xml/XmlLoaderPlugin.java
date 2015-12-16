@@ -91,7 +91,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.ID, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute);
@@ -167,7 +167,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionName(association.getCodeB()));
 
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(association.getMultiplicityA(), association.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
-		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
+		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.ID);
 		if (primaryKeys.isEmpty()) {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getName() + "'");
 		}

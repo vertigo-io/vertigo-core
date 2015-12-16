@@ -181,7 +181,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
 
 		//Déclaration de la clé primaire
-		final List<DynamicDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
+		final List<DynamicDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
 		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys, sortFieldName, displayFieldName);
 
 		//Déclaration des champs du DT

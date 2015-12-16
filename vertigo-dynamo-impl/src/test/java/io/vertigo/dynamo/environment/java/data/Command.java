@@ -42,7 +42,7 @@ public final class Command implements KeyConcept {
 	private io.vertigo.dynamo.environment.java.data.City city;
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cmdId <b>Obligatoire</b>
 	 */
@@ -50,13 +50,13 @@ public final class Command implements KeyConcept {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CMD_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getCmdId() {
 		return cmdId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param cmdId Long <b>Obligatoire</b>
 	 */

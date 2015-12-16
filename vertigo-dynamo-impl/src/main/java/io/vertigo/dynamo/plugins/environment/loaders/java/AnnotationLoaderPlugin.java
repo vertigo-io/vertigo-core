@@ -255,7 +255,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		switch (type) {
 			case ID:
-				dtDefinition.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+				dtDefinition.addDefinition(DomainGrammar.ID, dtField);
 				break;
 			case DATA:
 				dtDefinition.addDefinition("field", dtField);
