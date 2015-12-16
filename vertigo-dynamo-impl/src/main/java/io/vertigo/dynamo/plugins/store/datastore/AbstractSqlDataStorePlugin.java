@@ -144,11 +144,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
-		final StringBuilder request = new StringBuilder()
+		final String request = new StringBuilder()
 				.append(" select * from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
-		postAlterLoadRequest(request);
+				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.toString();
+
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
@@ -190,14 +191,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = associationNode.getDtDefinition().getIdField().get();
 		final String fkFieldName = fkField.getName();
 
-		final StringBuilder request = new StringBuilder(" select t.* from ")
+		final String request = new StringBuilder(" select t.* from ")
 				.append(tableName).append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
 				.append(" join ").append(joinTableName)
 				.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName)
 				//Condition de la recherche
-				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#');
-		postAlterLoadRequest(request);
+				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
+				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -212,6 +213,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(fkFieldName, uri.getId())
 				.build();
+
 		return taskManager
 				.execute(task)
 				.getResult();
@@ -313,7 +315,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		if (maxRows != null) {
 			appendMaxRows(sep, request, maxRows);
 		}
-		postAlterLoadRequest(request);
 		return request.toString();
 	}
 
@@ -349,16 +350,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			result = result.substring(0, indexOfList + "_LIST_".length()) + result.substring(indexOfList + "_LIST_".length() + result.length() - 40);
 		}
 		return result;
-	}
-
-	/**
-	 * Post traitement de modification d'une request de chargement (SELECT).
-	 * Ceci permet de rajouter des begin,end ou des SET de properties particulieres.
-	 * TODO voir s'il ne faudrait pas des paramètres de la tache.
-	 * @param request Request à mettre à jour
-	 */
-	protected final void postAlterLoadRequest(final StringBuilder request) {
-		//
 	}
 
 	//==========================================================================
@@ -416,7 +407,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param dtDefinition the dtDefinition
 	 * @return the sql request 
 	 */
-	protected static final String createUpdateQuery(final DtDefinition dtDefinition) {
+	private static final String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final DtField pk = dtDefinition.getIdField().get();
 		final StringBuilder request = new StringBuilder()
@@ -445,7 +436,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param insert Si opération de type insert (update sinon)
 	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
-	protected final boolean put(final DtObject dto, final boolean insert) {
+	private boolean put(final DtObject dto, final boolean insert) {
 		if (insert) {
 			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
 			preparePrimaryKey(dto);
@@ -465,9 +456,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
 				.build();
 
-		/*
-		 * Création de la tache.
-		 */
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue("DTO", dto)
 				.build();
@@ -477,7 +465,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new VSystemException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée");
+			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
 		}
 		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
 	}
@@ -498,6 +486,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_DELETE + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
+
 		final String request = new StringBuilder()
 				.append("delete from ").append(tableName)
 				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
@@ -533,11 +522,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
 		final String tableName = getTableName(dtDefinition);
-		final String request = "select count(*) from " + tableName;
-
 		final String taskName = TASK.TK_COUNT + "_" + tableName;
-
 		final Domain countDomain = new Domain("DO_COUNT", DataType.Long);
+
+		final String request = "select count(*) from " + tableName;
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -564,6 +552,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
+
 		final String request = new StringBuilder()
 				.append("select 1 from ").append(tableName)
 				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
