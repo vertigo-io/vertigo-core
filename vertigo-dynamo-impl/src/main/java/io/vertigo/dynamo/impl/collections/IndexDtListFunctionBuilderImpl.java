@@ -55,8 +55,8 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 
 	/** {@inheritDoc} */
 	@Override
-	public IndexDtListFunctionBuilder<D> sort(final String fieldName, final boolean desc, final boolean nullLast) {
-		indexFilterFunction.sort(fieldName, desc, nullLast);
+	public IndexDtListFunctionBuilder<D> sort(final String fieldName, final boolean desc) {
+		indexFilterFunction.sort(fieldName, desc);
 		return this;
 	}
 

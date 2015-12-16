@@ -23,10 +23,10 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
@@ -262,13 +262,16 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	//-----
+	/** {@inheritDoc} */
 	@Override
-	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField) throws IOException {
+	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
+		Assertion.checkNotNull(dtListState);
+		Assertion.checkNotNull(dtListState.getMaxRows().isDefined(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = createFilterQuery(keywords, searchedFields, listFilters, boostedField);
-		final Sort sortQuery = createSortQuery(sortState);
-		return executeQuery(filterQuery, skip, top, sortQuery);
+		final Sort sortQuery = createSortQuery(dtListState);
+		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortQuery);
 	}
 
 	private Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
@@ -282,16 +285,14 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		return filteredQuery;
 	}
 
-	private static Sort createSortQuery(final Option<SortState> sortStateOpt) {
-		if (sortStateOpt.isDefined()) {
-			final SortState sortState = sortStateOpt.get();
-			Assertion.checkArgument(sortState.isIgnoreCase(), "Sort by index is always case insensitive. Set sortState.isIgnoreCase to true.");
-			//-----
+	private static Sort createSortQuery(final DtListState dtListState) {
+		if (dtListState.getSortFieldName().isDefined()) {
+			final String sortFieldName = dtListState.getSortFieldName().get();
+			final boolean sortDesc = dtListState.isSortDesc().get();
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
-			final String fieldName = RamLuceneIndex.SORT_FIELD_PREFIX + sortState.getFieldName(); //can't use the tokenized field with sorting
-			final SortField sortField = new SortField(fieldName, luceneType, sortState.isDesc());
-			final boolean nullLast = sortState.isDesc() ? !sortState.isNullLast() : sortState.isNullLast(); //oh yeah : lucene use nullLast first then revert list if sort Desc :)
-			sortField.setMissingValue(nullLast ? SortField.STRING_LAST : SortField.STRING_FIRST);
+			final String fieldName = RamLuceneIndex.SORT_FIELD_PREFIX + sortFieldName; //can't use the tokenized field with sorting
+			final SortField sortField = new SortField(fieldName, luceneType, sortDesc);
+			sortField.setMissingValue(SortField.STRING_LAST);
 			return new Sort(sortField);
 		}
 		return null;//default null -> sort by score

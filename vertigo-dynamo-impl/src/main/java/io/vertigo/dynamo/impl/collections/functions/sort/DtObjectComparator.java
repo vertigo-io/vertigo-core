@@ -60,25 +60,26 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	 * Constructeur.
 	 * @param storeManager Manager de persistence
 	 * @param dtDefinition DtDefinition des éléments à comparer
-	 * @param sortState Etat du tri
+	 * @param sortFieldName sort fieldName
+	 * @param sortDesc sort order
 	 */
-	DtObjectComparator(final StoreManager storeManager, final DtDefinition dtDefinition, final SortState sortState) {
+	DtObjectComparator(final StoreManager storeManager, final DtDefinition dtDefinition, final String sortFieldName, final boolean sortDesc) {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(sortState);
+		Assertion.checkNotNull(sortFieldName);
 		//-----
 		//On recherche le comparateur associé au champ de la collection
 		//Si il n'y a pas de comparateur alors on applique la comparaison standard.
-		this.sortField = dtDefinition.getField(sortState.getFieldName());
+		this.sortField = dtDefinition.getField(sortFieldName);
 
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
 		if (sortField.getType() == FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(sortField.getFkDtDefinition())) {
 			//Il existe une Liste de référence associée
 			//Dans le cas des liste de référence on délégue la comparaison
 			final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(sortField.getFkDtDefinition());
-			this.comparator = createMasterDataComparator(sortState, storeManager, mdlUri, sortState);
+			this.comparator = createMasterDataComparator(sortDesc, storeManager, mdlUri);
 		} else {
 			//Cas par défaut
-			this.comparator = createDefaultComparator(sortState);
+			this.comparator = createDefaultComparator(sortDesc);
 		}
 	}
 
@@ -93,25 +94,30 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		return comparator.compare(dataAccessor.getValue(dto1), dataAccessor.getValue(dto2));
 	}
 
-	/*
-	 * Visibilité package car utilisé au sein d'une classe interne.
+	/**
+	 * Compare values.
+	 * @param sortDesc sort order
+	 * @param fieldValue1 value 1
+	 * @param fieldValue2 value 2
+	 * @return compare value1 to value2
 	 */
-	static int compareValues(final SortState sortState, final Object fieldValue1, final Object fieldValue2) {
+	// Visibilité package car utilisé au sein d'une classe interne.
+	static int compareValues(final Object fieldValue1, final Object fieldValue2, final boolean sortDesc) {
 		final int result;
 		if (fieldValue1 == null && fieldValue2 == null) {
 			return 0;
 		}
 
 		if (fieldValue1 == null) {
-			return sortState.isNullLast() ? 1 : -1;
+			return 1;
 		}
 
 		if (fieldValue2 == null) {
-			return sortState.isNullLast() ? -1 : 1;
+			return -1;
 		}
 
 		//Objet1 et Objet2 sont désormais non null.
-		if (sortState.isIgnoreCase() && fieldValue1 instanceof String) {
+		if (fieldValue1 instanceof String) {
 			// pour ignorer les accents
 			final Collator compareOperator = Collator.getInstance(Locale.FRENCH);
 			compareOperator.setStrength(Collator.PRIMARY);
@@ -121,7 +127,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		} else {
 			result = fieldValue1.toString().compareTo(fieldValue2.toString());
 		}
-		return sortState.isDesc() ? -result : result;
+		return sortDesc ? -result : result;
 	}
 
 	/**
@@ -129,49 +135,47 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	 * Il s'agit du comparateur par défaut.
 	 * @return Comparator
 	 */
-	private static Comparator<Object> createDefaultComparator(final SortState sortState) {
-		return new DefaultComparator(sortState);
+	private static Comparator<Object> createDefaultComparator(final boolean sortDesc) {
+		return new DefaultComparator(sortDesc);
 	}
 
 	/**
 	 * Fournit le comparateur à utiliser pour trier une colonne référenéant une MasterDataList.
-	 * @param sortStateParam Etat du tri
 	 * @return Comparator à utiliser pour trier la colonne.
 	 */
-	private static Comparator<Object> createMasterDataComparator(final SortState sortState, final StoreManager storeManager, final DtListURIForMasterData dtcURIForMasterData, final SortState sortStateParam) {
+	private static Comparator<Object> createMasterDataComparator(final boolean sortDesc, final StoreManager storeManager, final DtListURIForMasterData dtcURIForMasterData) {
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(dtcURIForMasterData);
-		Assertion.checkNotNull(sortStateParam);
 		//-----
 		final DataStore dataStore = storeManager.getDataStore();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
-		return new MasterDataComparator(dtcURIForMasterData, sortState, dataStore, mdFieldSort);
+		return new MasterDataComparator(dtcURIForMasterData, sortDesc, dataStore, mdFieldSort);
 	}
 
 	private static final class DefaultComparator implements Comparator<Object> {
-		private final SortState sortState;
+		private final boolean sortDesc;
 
-		DefaultComparator(final SortState sortState) {
-			this.sortState = sortState;
+		DefaultComparator(final boolean sortDesc) {
+			this.sortDesc = sortDesc;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final Object v1, final Object v2) {
-			return compareValues(sortState, v1, v2);
+			return compareValues(v1, v2, sortDesc);
 		}
 	}
 
 	private static final class MasterDataComparator implements Comparator<Object> {
 		private final DtListURIForMasterData dtcURIForMasterData;
-		private final SortState sortState;
+		private final boolean sortDesc;
 		private final DataStore dataStore;
 		private final DtField mdFieldSort;
 
-		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final SortState sortState, final DataStore dataStore, final DtField mdFieldSort) {
+		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final boolean sortDesc, final DataStore dataStore, final DtField mdFieldSort) {
 			this.dtcURIForMasterData = dtcURIForMasterData;
-			this.sortState = sortState;
+			this.sortDesc = sortDesc;
 			this.dataStore = dataStore;
 			this.mdFieldSort = mdFieldSort;
 		}
@@ -193,9 +197,9 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			if (o1 != null && o2 != null) {
 				final Object lib1 = getSortValue(o1);
 				final Object lib2 = getSortValue(o2);
-				return compareValues(sortState, lib1, lib2);
+				return compareValues(lib1, lib2, sortDesc);
 			}
-			return compareValues(sortState, o1, o2);//si l'un des deux est null on retombe sur la comparaison standard
+			return compareValues(o1, o2, sortDesc); //si l'un des deux est null on retombe sur la comparaison standard
 		}
 	}
 

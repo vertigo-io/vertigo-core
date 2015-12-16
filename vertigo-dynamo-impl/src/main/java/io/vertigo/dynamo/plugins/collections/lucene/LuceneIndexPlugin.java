@@ -25,10 +25,10 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
@@ -99,26 +99,13 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return luceneDb;
 	}
 
-	/**
-	 * Filtre une liste par des mots clés et une recherche fullText.
-	 * @param <D> type d'objet de la liste
-	 * @param keywords Mots clés de la recherche
-	 * @param searchedFields Liste des champs sur lesquels porte la recheche
-	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
-	 * @param skip Nombre de résultat à sauter
-	 * @param top Nombre de résultat maximum
-	 * @param boostedField Liste des champs boostés (boost de 4 en dur)
-	 * @param dtc Liste d'origine à filtrer
-	 * @return Liste résultat
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField, final DtList<D> dtc) {
-		if (top == 0) { //like arrayList sublist implementation : accept top==0 but return empty list.
-			return new DtList<>(dtc.getDefinition());
-		}
+	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc) {
+		Assertion.checkArgument(listState.getMaxRows().isDefined(), "Can't return all results, you must define maxRows");
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
-			return index.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField);
+			return index.<D> getCollection(keywords, searchedFields, listFilters, listState, boostedField);
 		} catch (final IOException e) {
 			throw new WrappedException("Erreur d'indexation", e);
 		}
