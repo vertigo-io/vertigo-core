@@ -70,7 +70,7 @@ public final class FirstOfRule implements Rule<Choice> {
 	/**
 	 * @return the list of rules to test
 	 */
-	public List<Rule<?>> getRules() {
+	List<Rule<?>> getRules() {
 		return rules;
 	}
 
@@ -79,5 +79,4 @@ public final class FirstOfRule implements Rule<Choice> {
 	public Parser<Choice> createParser() {
 		return new FirstOfRuleParser(this);
 	}
-
 }

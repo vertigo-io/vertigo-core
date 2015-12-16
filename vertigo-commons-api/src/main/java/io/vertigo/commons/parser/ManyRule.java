@@ -20,7 +20,6 @@ package io.vertigo.commons.parser;
 
 import io.vertigo.lang.Assertion;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,48 +62,21 @@ public final class ManyRule<R> implements Rule<List<R>> {
 		return "(" + rule.getExpression() + ")" + (emptyAccepted ? "*" : "+");
 	}
 
+	boolean isEmptyAccepted() {
+		return emptyAccepted;
+	}
+
+	boolean isRepeat() {
+		return repeat;
+	}
+
+	Rule<R> getRule() {
+		return rule;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public Parser<List<R>> createParser() {
-		return new Parser<List<R>>() {
-			private List<R> results;
-
-			/** {@inheritDoc} */
-			@Override
-			public int parse(final String text, final int start) throws NotFoundException {
-				int index = start;
-				//======================================================================
-				results = new ArrayList<>();
-				NotFoundException best = null;
-				try {
-					int prevIndex = -1;
-					while (index < text.length() && index > prevIndex) {
-						prevIndex = index;
-						final Parser<R> parser = rule.createParser();
-						index = parser.parse(text, index);
-						if (index > prevIndex) {
-							//celé signifie que l"index n a pas avancé, on sort
-							results.add(parser.get());
-						}
-					}
-				} catch (final NotFoundException e) {
-					best = e;
-					if (best.getIndex() > index) { //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
-						throw best;
-					}
-				}
-				if (!emptyAccepted && results.isEmpty()) {
-					throw new NotFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
-				}
-				if (repeat && text.length() > index) {
-					throw new NotFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
-				}
-				return index;
-			}
-
-			@Override
-			public List<R> get() {
-				return results;
-			}
-		};
+		return new ManyRuleParser<>(this);
 	}
 }
