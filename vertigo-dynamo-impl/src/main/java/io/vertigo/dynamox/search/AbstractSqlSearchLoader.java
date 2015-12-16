@@ -79,7 +79,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(dtDefinition.getCollection())
+				.withDataSpace(dtDefinition.getDataSpace())
 				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)

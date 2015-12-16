@@ -37,6 +37,9 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 
+/**
+ * @author pchretien
+ */
 public final class DynamoFeatures extends Features {
 
 	public DynamoFeatures() {

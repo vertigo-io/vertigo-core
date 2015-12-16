@@ -31,8 +31,8 @@ import io.vertigo.lang.Plugin;
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.
  * This plugin can be implemented in a sql or no sql way.
  * 
- * this datatore is linked to a collection.
- * Several 'DtDefinition' can be included in a collection.
+ * this datatore is linked to a dataSpace.
+ * Several dtDefinition can be included in a dataSpace.
  *
  * @author  pchretien
  */

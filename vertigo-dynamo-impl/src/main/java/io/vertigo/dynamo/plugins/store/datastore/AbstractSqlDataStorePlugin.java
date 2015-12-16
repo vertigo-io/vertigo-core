@@ -498,14 +498,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_DELETE + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
-		final StringBuilder request = new StringBuilder()
+		final String request = new StringBuilder()
 				.append("delete from ").append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
+				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
-				.withRequest(request.toString())
+				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
 				.build();
@@ -563,15 +564,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
 		final String pkFieldName = pk.getName();
-		final StringBuilder request = new StringBuilder()
+		final String request = new StringBuilder()
 				.append("select 1 from ").append(tableName)
 				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
-				.append(" for update ");
+				.append(" for update ")
+				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
-				.withRequest(request.toString())
+				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				.withOutAttribute("DUMMY_OUT", integerDomain, true)
 				.build();
