@@ -32,7 +32,8 @@ public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 	private final ResourceManager resourceManager;
 
 	/**
-	 * Constructeur
+	 * Constructor.
+	 * @param resourceManager the resourceManager
 	 */
 	@Inject
 	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {

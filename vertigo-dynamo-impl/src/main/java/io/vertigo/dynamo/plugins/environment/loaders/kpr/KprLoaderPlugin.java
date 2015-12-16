@@ -49,9 +49,9 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	private final String charset;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
-	 * @param resourceManager manager de ressources
+	 * @param resourceManager the resourceManager
 	 * @param encoding encoding des KSP
 	 */
 	@Inject
