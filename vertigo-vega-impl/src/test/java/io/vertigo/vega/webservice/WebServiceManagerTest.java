@@ -1098,9 +1098,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPagined(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		final String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1120,9 +1121,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedSortName(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
 
 		final String serverSideToken;
@@ -1145,9 +1147,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedSortDate(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		final String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1167,9 +1170,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedMissing(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1284,9 +1288,11 @@ public final class WebServiceManagerTest {
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collDeletes = new LinkedHashMap<>();
+
 		dtListDelta.put("collCreates", collCreates);
 		dtListDelta.put("collUpdates", collUpdates);
 		dtListDelta.put("collDeletes", collDeletes);
+
 		collCreates.put("c110", createDefaultContact(110L));
 		collCreates.put("c111", createDefaultContact(111L));
 		final Map<String, Object> newContact = createDefaultContact(100L);
