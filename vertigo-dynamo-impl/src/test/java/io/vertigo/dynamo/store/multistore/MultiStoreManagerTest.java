@@ -38,7 +38,7 @@ import org.junit.Test;
  *
  * @author pchretien
  */
-public final class StoreManagerTest extends AbstractStoreManagerTest {
+public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	@Override
 	protected void doSetUp() throws Exception {

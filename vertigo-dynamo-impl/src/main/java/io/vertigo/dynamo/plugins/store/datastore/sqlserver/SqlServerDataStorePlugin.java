@@ -40,13 +40,13 @@ import javax.inject.Named;
 public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
 	 * Constructor.
-	 * @param dataSpaceOption the dataSpace (optional)
+	 * @param nameOption the name of the dataSpace (optional)
 	 * @param connectionName the name of the connection
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(@Named("dataSpace") final Option<String> dataSpaceOption, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
-		super(dataSpaceOption, connectionName, taskManager);
+	public SqlServerDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
+		super(nameOption, connectionName, taskManager);
 	}
 
 	/** {@inheritDoc} */

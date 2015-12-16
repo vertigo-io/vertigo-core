@@ -80,20 +80,20 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Constructor.
-	 * @param collectionOption  Collection option
+	 * @param nameOption the name of the dataSpace (optional)
 	 * @param connectionName Connection name
 	 * @param transactionManager Transaction manager
 	 * @param dataBaseManager  Database manager
 	 * @param analyticsManager  Analytics manager
 	 */
 	@Inject
-	public JpaDataStorePlugin(@Named("collection") final Option<String> collectionOption, @Named("connectionName") final Option<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
-		Assertion.checkNotNull(collectionOption);
+	public JpaDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
+		Assertion.checkNotNull(nameOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
-		dataSpace = collectionOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
+		dataSpace = nameOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
 		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
