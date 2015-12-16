@@ -25,6 +25,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 import java.net.URL;
@@ -46,8 +47,8 @@ public final class OOMLoader implements XmlLoader {
 	private final Map<XmlId, OOMObject> map;
 
 	/**
-	 * Constructeur.
-	 * @param powerAMCURL URL du fichier PowerAMC
+	 * Constructor.
+	 * @param powerAMCURL the url of the OOM file
 	 */
 	public OOMLoader(final URL powerAMCURL) {
 		Assertion.checkNotNull(powerAMCURL);
@@ -67,28 +68,28 @@ public final class OOMLoader implements XmlLoader {
 
 	@Override
 	public List<XmlClass> getClasses() {
-		final List<XmlClass> list = new ArrayList<>();
+		final ListBuilder<XmlClass> listBuilder = new ListBuilder<>();
 		for (final OOMObject obj : map.values()) {
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == OOMType.Class) {
-				list.add(createClass(obj));
+				listBuilder.add(createClass(obj));
 			}
 		}
-		return java.util.Collections.unmodifiableList(list);
+		return listBuilder.unmodifiable().build();
 	}
 
 	@Override
 	public List<XmlAssociation> getAssociations() {
-		final List<XmlAssociation> list = new ArrayList<>();
+		final ListBuilder<XmlAssociation> listBuilder = new ListBuilder<>();
 		for (final OOMObject obj : map.values()) {
 			if (obj.getType() == OOMType.Association) {
 				final XmlAssociation associationOOM = createAssociation(obj);
 				if (associationOOM != null) {
-					list.add(associationOOM);
+					listBuilder.add(associationOOM);
 				}
 			}
 		}
-		return java.util.Collections.unmodifiableList(list);
+		return listBuilder.unmodifiable().build();
 	}
 
 	private XmlClass createClass(final OOMObject obj) {
