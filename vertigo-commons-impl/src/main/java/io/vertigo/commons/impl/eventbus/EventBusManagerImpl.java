@@ -36,7 +36,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 	private final List<Subscription> subscriptions = new ArrayList<>();
 	private final List<EventListener> deadEventListeners = new ArrayList<>();
 
-	private class Subscription<E extends Event> {
+	private static class Subscription<E extends Event> {
 		private final Class<E> eventType;
 		private final EventListener<E> eventListener;
 

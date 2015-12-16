@@ -36,6 +36,7 @@ public final class FirstOfRule implements Rule<Choice> {
 
 	/**
 	 * Constructor.
+	 * @param rules the list of rules to test
 	 */
 	public FirstOfRule(final Rule<?>... rules) {
 		this(Arrays.asList(rules));
@@ -43,6 +44,7 @@ public final class FirstOfRule implements Rule<Choice> {
 
 	/**
 	 * Constructor.
+	 * @param rules the list of rules to test
 	 */
 	public FirstOfRule(final List<Rule<?>> rules) {
 		Assertion.checkNotNull(rules);
@@ -65,10 +67,14 @@ public final class FirstOfRule implements Rule<Choice> {
 		return expression;
 	}
 
+	/**
+	 * @return the list of rules to test
+	 */
 	public List<Rule<?>> getRules() {
 		return rules;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Parser<Choice> createParser() {
 		return new FirstOfRuleParser(this);
