@@ -18,67 +18,15 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-
 /**
  * Rule : all components of a module must respect this rule.
  *
  * @author pchretien
  */
-interface ModuleRule {
+public interface ModuleRule {
 	/**
-	 * Check rule of module.
+	 * Check the rule on a module.
 	 * @param moduleConfig Module config to check
 	 */
 	void check(final ModuleConfig moduleConfig);
-}
-
-/**
- * Rule : all components of a module must have an API.
- *
- * @author pchretien
- */
-final class APIModuleRule implements ModuleRule {
-	/** {@inheritDoc} */
-	@Override
-	public void check(final ModuleConfig moduleConfig) {
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			if (componentConfig.getApiClass().isEmpty()) {
-				throw new VSystemException("api rule : all components of module '{0}' must have an api. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig);
-			}
-		}
-	}
-}
-
-/**
- * Rule : all components of a module must inherit a class.
- *
- * @author pchretien
- */
-final class InheritanceModuleRule implements ModuleRule {
-	private final Class<?> superClass;
-
-	InheritanceModuleRule(final Class<?> superClass) {
-		Assertion.checkNotNull(superClass);
-		//-----
-		this.superClass = superClass;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void check(final ModuleConfig moduleConfig) {
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			Class<?> clazz;
-			if (componentConfig.getApiClass().isDefined()) {
-				//if component is defined by an api, then we check that api respects the rule.
-				clazz = componentConfig.getApiClass().get();
-			} else {
-				clazz = componentConfig.getImplClass();
-			}
-			if (!superClass.isAssignableFrom(clazz)) {
-				throw new VSystemException("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName());
-			}
-		}
-	}
 }

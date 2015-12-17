@@ -18,6 +18,7 @@
  */
 package io.vertigo.app.config;
 
+import io.vertigo.app.config.rules.APIModuleRule;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
