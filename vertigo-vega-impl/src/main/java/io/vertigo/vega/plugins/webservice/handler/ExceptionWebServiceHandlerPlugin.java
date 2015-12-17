@@ -20,6 +20,7 @@ package io.vertigo.vega.plugins.webservice.handler;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -70,7 +71,12 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 	@Override
 	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) {
 		try {
-			return chain.handle(request, response, routeContext);
+			try {
+				return chain.handle(request, response, routeContext);
+			} catch (final WrappedException e) {
+				//unwrap exception
+				throw unwrap(e);
+			}
 		} catch (final ValidationUserException e) {
 			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 			e.flushToUiMessageStack(uiMessageStack);
@@ -92,6 +98,12 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 			LOGGER.error("Internal Server Error", e);
 			return sendJsonError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, response);
 		}
+	}
+
+	private Throwable unwrap(final WrappedException e) {
+		final Throwable cause = e.getCause();
+		LOGGER.info("Unwrap '" + e.getMessage() + "' as '" + cause.getClass().getSimpleName() + "'", cause);
+		return cause;
 	}
 
 	private Object sendJsonUiMessageStack(final int statusCode, final UiMessageStack uiMessageStack, final Response response) {
