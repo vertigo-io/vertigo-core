@@ -31,7 +31,7 @@ public class VSystemException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param msg  Message
+	 * @param msg  the message
 	 */
 	public VSystemException(final String msg) {
 		super(msg);
@@ -39,10 +39,20 @@ public class VSystemException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param msg  Message
-	 * @param params Params
+	 * @param msg  the message
+	 * @param params the params
 	 */
 	public VSystemException(final String msg, final Object... params) {
 		this(StringUtil.format(msg, params));
+	}
+
+	/**
+	 * Constructor.
+	 * @param e the cause exception
+	 * @param msg  the message
+	 * @param params the params
+	 */
+	public VSystemException(final Exception e, final String msg, final Object... params) {
+		super(StringUtil.format(msg, params), e);
 	}
 }

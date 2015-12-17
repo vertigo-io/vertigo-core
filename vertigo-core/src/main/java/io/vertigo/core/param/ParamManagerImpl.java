@@ -131,11 +131,11 @@ public final class ParamManagerImpl implements ParamManager {
 		return Boolean.parseBoolean(paramValue);
 	}
 
-	private static Integer toInteger(final String paramName, final String paramValue) {
+	private static int toInteger(final String paramName, final String paramValue) {
 		try {
 			return Integer.parseInt(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'int'", paramName, paramValue);
+			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into 'Integer'", paramName, paramValue);
 		}
 	}
 
@@ -143,7 +143,7 @@ public final class ParamManagerImpl implements ParamManager {
 		try {
 			return Long.parseLong(paramValue);
 		} catch (final NumberFormatException e) {
-			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'long'", paramName, paramValue);
+			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into 'Long'", paramName, paramValue);
 		}
 	}
 }
