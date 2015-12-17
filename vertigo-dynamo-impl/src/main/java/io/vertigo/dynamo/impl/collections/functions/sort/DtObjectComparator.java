@@ -107,17 +107,11 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		if (fieldValue1 == null && fieldValue2 == null) {
 			return 0;
 		}
-
 		if (fieldValue1 == null) {
-			return 1;
-		}
-
-		if (fieldValue2 == null) {
-			return -1;
-		}
-
-		//Objet1 et Objet2 sont désormais non null.
-		if (fieldValue1 instanceof String) {
+			result = 1;
+		} else if (fieldValue2 == null) {
+			result = -1;
+		} else if (fieldValue1 instanceof String) { //Objet1 et Objet2 sont désormais non null.
 			// pour ignorer les accents
 			final Collator compareOperator = Collator.getInstance(Locale.FRENCH);
 			compareOperator.setStrength(Collator.PRIMARY);
