@@ -661,7 +661,7 @@ public final class TestWebServices implements WebServices {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
 			sortedList = collectionsManager.createDtListProcessor()
-					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc(), true, true)
+					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
