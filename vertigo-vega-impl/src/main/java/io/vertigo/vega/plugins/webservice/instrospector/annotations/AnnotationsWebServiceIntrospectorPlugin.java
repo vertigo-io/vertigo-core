@@ -76,7 +76,7 @@ public final class AnnotationsWebServiceIntrospectorPlugin implements WebService
 		//-----
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
 		for (final Method method : webServicesClass.getMethods()) {
-			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method, webServicesClass);
+			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
 			if (webServiceDefinition.isDefined()) {
 				webServiceDefinitions.add(webServiceDefinition.get());
 			}
@@ -84,7 +84,7 @@ public final class AnnotationsWebServiceIntrospectorPlugin implements WebService
 		return webServiceDefinitions;
 	}
 
-	private static <C extends WebServices> Option<WebServiceDefinition> buildWebServiceDefinition(final Method method, final Class<C> webServicesClass) {
+	private static <C extends WebServices> Option<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
 		final WebServiceDefinitionBuilder builder = new WebServiceDefinitionBuilder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {

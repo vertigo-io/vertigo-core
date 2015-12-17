@@ -36,12 +36,14 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author npiedeloup, pchretien
  */
 final class XMLModulesHandler extends DefaultHandler {
+	private final AppConfigBuilder appConfigBuilder;
+	//Global Params
+	private final XMLModulesParams params;
+
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
-	//Global Params
-	private final XMLModulesParams params;
-	private final AppConfigBuilder appConfigBuilder;
+	private TagName current;
 
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
 		Assertion.checkNotNull(appConfigBuilder);
@@ -68,8 +70,6 @@ final class XMLModulesHandler extends DefaultHandler {
 		//-----
 		initializer
 	}
-
-	private TagName current;
 
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {

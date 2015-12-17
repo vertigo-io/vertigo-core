@@ -86,7 +86,7 @@ import org.apache.lucene.util.Version;
  */
 final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifiable {
 	/** Prefix for a created field use for sorting. */
-	static final String SORT_FIELD_PREFIX = "4SORT_";
+	private static final String SORT_FIELD_PREFIX = "4SORT_";
 
 	private boolean modifiable = true;
 	//DtDefinition est non serializable
