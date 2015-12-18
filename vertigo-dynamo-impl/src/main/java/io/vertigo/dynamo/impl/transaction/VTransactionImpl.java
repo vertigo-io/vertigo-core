@@ -320,7 +320,6 @@ public final class VTransactionImpl implements VTransactionWritable {
 
 		populate(list, VTransactionResourceId.Priority.TOP);
 		populate(list, VTransactionResourceId.Priority.NORMAL);
-		populate(list, VTransactionResourceId.Priority.LOW);
 		return list;
 	}
 
