@@ -25,9 +25,10 @@ package io.vertigo.dynamo.transaction;
  * - est soit démarrée, soit terminée.
  * - peut posséder (ou être) une transaction imbriquée.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public interface VTransaction {
+
 	/**
 	 * Ajoute une ressource à la transaction en précisant son ordre au sein de la transaction.
 	 * Il n'est pas possible d'enregistrer pour une même transaction, deux ressources avec le même identifiant.
@@ -43,4 +44,33 @@ public interface VTransaction {
 	 * @param <R> Ressource transactionnelle
 	 */
 	<R extends VTransactionResource> R getResource(VTransactionResourceId<R> transactionResourceId);
+
+	/**
+	 * Adds function that is executed just before transaction commit.
+	 * Functions are executed in registration order
+	 * If an exception occures then
+	 * - current transaction is rollbacked
+	 * - other beforeCommit functions are not executed
+	 *
+	 * Examples :
+	 * - saves a file and keeps the main database as the master
+	 *
+	 * @param function the function to execute beforeCommit
+	 */
+	void addBeforeCommit(final Runnable function);
+
+	/**
+	 * Adds function that is executed after transaction commit.
+	 * Functions are executed in registration order
+	 * There is no execution, if transaction failed.
+	 * If an exception occures then
+	 * - current transaction was NOT rollbacked
+	 * - all afterCommit functions ARE executed
+	 *
+	 * Examples :
+	 * - send a mail or a notification when an operation has been successfully done (an item updated,...)
+	 *
+	 * @param function the function to execute afterCommit
+	 */
+	void addAfterCommit(final Runnable function);
 }

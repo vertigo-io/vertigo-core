@@ -58,6 +58,7 @@ import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.multistore.MultiStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
+import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
@@ -105,9 +106,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		//--transaction
 		VTransactionManagerTest.class,
+		VTransactionBeforeAfterCommitTest.class,
 
 		//Rule
-		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class, DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
+		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class,
+		DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
 
 		//Search
 		SearchManagerDynaFieldsTest.class,

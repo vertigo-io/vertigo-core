@@ -21,21 +21,18 @@ package io.vertigo.dynamo.impl.transaction.listener;
 import org.apache.log4j.Logger;
 
 /**
- * Réception des  événements produits lors de l'exécution des transactions.
+ * This class is the standard implementation.
  *
  * @author pchretien
  */
 public final class VTransactionListenerImpl implements VTransactionListener {
 	private static final String MS = " ms)";
 
-	/**
-	 * Mécanisme de log utilisé pour les transactions
-	 */
 	private static final Logger LOGGER = Logger.getLogger("transaction");
 
 	/** {@inheritDoc} */
 	@Override
-	public void onTransactionStart() {
+	public void onStart() {
 		if (LOGGER.isTraceEnabled()) {
 			LOGGER.trace("Start transaction");
 		}
@@ -43,13 +40,19 @@ public final class VTransactionListenerImpl implements VTransactionListener {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onTransactionFinish(final boolean rollback, final long elapsedTime) {
+	public void onFinish(final boolean commitSucceeded, final long elapsedTime) {
 		if (LOGGER.isTraceEnabled()) {
-			if (rollback) {
-				LOGGER.trace(">>Transaction rollback ( " + elapsedTime + MS);
-			} else {
+			if (commitSucceeded) {
 				LOGGER.trace(">>Transaction commit ( " + elapsedTime + MS);
+			} else {
+				LOGGER.trace(">>Transaction rollback ( " + elapsedTime + MS);
 			}
 		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void logAfterCommitError(final Throwable th) {
+		LOGGER.info("an error occured after commit : " + th.getMessage(), th);
 	}
 }

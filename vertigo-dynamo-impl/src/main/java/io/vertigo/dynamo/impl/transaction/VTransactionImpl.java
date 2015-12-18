@@ -38,12 +38,12 @@ import java.util.Map;
  */
 public final class VTransactionImpl implements VTransactionWritable {
 	/**
-	 * Contient la transaction du Thread courant.
+	 * The current transaction is bound to the current thread.
 	 */
 	private static final ThreadLocal<VTransactionImpl> CURRENT_THREAD_LOCAL_TRANSACTION = new ThreadLocal<>();
 
 	/**
-	 * A la création la transaction est démarrée.
+	 * At the start the current transaction is alive (not closed).
 	 */
 	private boolean transactionClosed;
 	private final VTransactionListener transactionListener;
@@ -52,6 +52,9 @@ public final class VTransactionImpl implements VTransactionWritable {
 	 */
 	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new HashMap<>();
 
+	private final List<Runnable> beforeCommitFunctions = new ArrayList<>();
+	private final List<Runnable> afterCommitFunctions = new ArrayList<>();
+
 	/**
 	 * Transaction parente dans le cadre d'une transaction imbriquée.
 	 * Nullable.
@@ -59,12 +62,12 @@ public final class VTransactionImpl implements VTransactionWritable {
 	private final VTransactionImpl parentTransaction;
 
 	/**
-	 * Transaction imbriquée.
+	 * Inner transaction.
 	 * Nullable.
 	 */
 	private VTransactionImpl innerTransaction;
 	/**
-	 * Début de la transaction
+	 * Start of the transaction
 	 */
 	private final long start = System.currentTimeMillis();
 
@@ -72,22 +75,23 @@ public final class VTransactionImpl implements VTransactionWritable {
 	//=========================== CONSTUCTEUR ==================================
 	//==========================================================================
 	/**
-	 * Construit un contexte de transaction.
-	 * @param transactionListener Listener des événements produits par
+	 * Constructor.
+	 *
+	 * @param transactionListener the listener of the event fired during the execution of the tranasction
 	 */
 	VTransactionImpl(final VTransactionListener transactionListener) {
 		Assertion.checkNotNull(transactionListener);
 		//-----
 		parentTransaction = null;
 		this.transactionListener = transactionListener;
-		//La transaction démarre
-		transactionListener.onTransactionStart();
+		//We notify the start of the transaction
+		transactionListener.onStart();
 		CURRENT_THREAD_LOCAL_TRANSACTION.set(this);
 	}
 
 	/**
-	 * Construit un contexte de transaction imbriquée.
-	 * @param parentTransaction transaction parente
+	 * Constructor of an inner transaction.
+	 * @param parentTransaction the parent transaction
 	 */
 	VTransactionImpl(final VTransactionImpl parentTransaction) {
 		Assertion.checkNotNull(parentTransaction);
@@ -95,18 +99,16 @@ public final class VTransactionImpl implements VTransactionWritable {
 		this.parentTransaction = parentTransaction;
 		parentTransaction.addInnerTransaction(this);
 		transactionListener = parentTransaction.transactionListener;
-		//La transaction démarre
-		transactionListener.onTransactionStart();
+		//We notify the start of the transaction
+		transactionListener.onStart();
 	}
 
 	//==========================================================================
 	//=========================== API ==========================================
 	//==========================================================================
 	/**
-	 * Une transaction est
-	 * - soit en cours,
-	 * - soit terminée.
-	 * @return boolean True si la transaction est terminée.
+	 * A transaction is alive or closed.
+	 * @return if the transaction is closed.
 	 */
 	boolean isClosed() {
 		return transactionClosed;
@@ -130,14 +132,15 @@ public final class VTransactionImpl implements VTransactionWritable {
 	}
 
 	/**
-	 * Ajout d'une transaction imbriquée.
-	 * Vérification de l'état de la transaction imbriquée.
-	 * - non null
-	 * - démarrée
-	 * @param newInnerTransaction Transaction imbriquée
+	 * Adds an inner transaction .
+	 * Checks the status of the inner transaction.
+	 *
+	 * the inner transaction must be alive.
+	 *
+	 * @param newInnerTransaction the inner transaction to add
 	 */
 	private void addInnerTransaction(final VTransactionImpl newInnerTransaction) {
-		Assertion.checkState(innerTransaction == null, "La transaction possède déjà une transaction imbriquée");
+		Assertion.checkState(innerTransaction == null, "the current transaction has already an inner transaction");
 		Assertion.checkNotNull(newInnerTransaction);
 		newInnerTransaction.checkStateStarted();
 		//-----
@@ -145,13 +148,13 @@ public final class VTransactionImpl implements VTransactionWritable {
 	}
 
 	/**
-	 * Suppression d'une transaction imbriquée.
-	 * Vérification de l'état de la transaction imbriquée.
-	 * - non null
-	 * - terminée
+	 * Removes the inner transaction.
+	 * Checks the state of the inner transaction.
+	 *
+	 * The inner transaction must be closed.
 	 */
 	private void removeInnerTransaction() {
-		Assertion.checkNotNull(innerTransaction, "La transaction ne possède pas de transaction imbriquée");
+		Assertion.checkNotNull(innerTransaction, "The current transaction doesn't have any inner transaction");
 		innerTransaction.checkStateEnded();
 		//-----
 		innerTransaction = null;
@@ -172,10 +175,14 @@ public final class VTransactionImpl implements VTransactionWritable {
 	@Override
 	public void commit() {
 		checkStateStarted();
-		//Il ne doit plus exister de transaction imbriquée
+		// There must no more inner transaction.
 		if (innerTransaction != null) {
-			throw new IllegalStateException("La transaction imbriquée doit être terminée(Commit ou Rollback) avant la transaction parente");
+			throw new IllegalStateException("The inner transaction must be closed(Commit or rollback) before the parent transaction");
 		}
+
+		// In case of exception, we rethrow it. The transaction sould be rollback.
+		doBeforeCommit();
+
 		//-----
 		final Throwable throwable = this.doEnd(false);
 		if (throwable != null) {
@@ -192,17 +199,22 @@ public final class VTransactionImpl implements VTransactionWritable {
 		}
 	}
 
+	private void doBeforeCommit() {
+		for (final Runnable function : beforeCommitFunctions) {
+			function.run();
+		}
+	}
+
 	/**
 	 * Rollback et retourne l'erreur sans la lancer (throw)
 	 * @return Erreur de rollback (null la plupart du temps)
 	 */
 	private Throwable doRollback() {
 		if (isClosed()) {
-			//Si la transaction est (déjà) fermée on ne fait rien
+			//If the transaction is already closed then we do nothing
 			return null;
 		}
-		//Si la transaction n'est pas déjà terminée
-		//alors on la rollback réellement.
+		//If the transaction is not closed the the transaction is ended.
 		//-----
 		Throwable throwable = this.doEnd(true);
 
@@ -215,41 +227,38 @@ public final class VTransactionImpl implements VTransactionWritable {
 		return throwable;
 	}
 
-	//==========================================================================
-	//=========================PRIVATE==========================================
-	//==========================================================================
 	/**
-	 * Vérifie que la transaction est démarrée
+	 * Checks if the transaction is alive
 	 */
 	private void checkStateStarted() {
 		if (isClosed()) {
-			throw new IllegalStateException("La transaction n'est plus dans l'état démarré");
+			throw new IllegalStateException("The transaction must be alive.");
 		}
 	}
 
 	/**
-	 * Vérifie que la transaction est terminée
+	 * Checks if the transaction is closed
 	 */
 	private void checkStateEnded() {
 		if (!isClosed()) {
-			throw new IllegalStateException("La transaction n'est plus dans l'état terminé");
+			throw new IllegalStateException("The transaction must be closed");
 		}
 	}
 
 	/**
-	 * Termine la transaction.
-	 * L'exception la plus grave (la première survenue dans la finalisation des ressources)
-	 * est retournée.
-	 * @param rollback Si Rollback, sinon Commit.
-	 * @return L'exception à lancer.
+	 * End the transaction.
+	 * If an error occures, then the best exception is thrown. (the first exception caught  during the finalization of the resources)
+	 *
+	 * @param rollback if rollback (commit else).
+	 * @return the exception to throw.
 	 */
 	private Throwable doEnd(final boolean rollback) {
-		//Changement d'état
+		//We change the current status of the transaction and force it to closed.
 		transactionClosed = true;
 
 		Throwable firstThrowable = null;
 		if (!resources.isEmpty()) {
-			//Il existe des ressources
+			//If there is some resources
 			firstThrowable = doEndResources(rollback);
 		}
 
@@ -258,9 +267,27 @@ public final class VTransactionImpl implements VTransactionWritable {
 			//on la supprime de la transaction parente.
 			parentTransaction.removeInnerTransaction();
 		}
+
+		final boolean commitSucceeded = !rollback && firstThrowable == null;
+		//afterCommit must not throws exceptions
+		if (commitSucceeded) {
+			doAfterCommit();
+		}
+
 		//Fin de la transaction, si firstThrowable!=null alors on a rollbacké tout ou partie des resources
-		transactionListener.onTransactionFinish(rollback || firstThrowable != null, System.currentTimeMillis() - start);
+		transactionListener.onFinish(!commitSucceeded, System.currentTimeMillis() - start);
 		return firstThrowable;
+	}
+
+	private void doAfterCommit() {
+		for (final Runnable function : afterCommitFunctions) {
+			try {
+				function.run();
+			} catch (final Throwable th) {
+				transactionListener.logAfterCommitError(th);
+				//we don't rethrow this exception, main resource was committed, we should continue to proceed afterCommit function
+			}
+		}
 	}
 
 	private Throwable doEndResources(final boolean rollback) {
@@ -346,7 +373,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 		} finally {
 			final boolean isAutonomous = parentTransaction != null;
 			if (!isAutonomous) {
-				//C'est uniquement lors de la clôture de la transaction racine qu'on la supprime du threadLocal.
+				//At the end of the root transaction then the current transaction is unbound. (removed from the thread)
 				CURRENT_THREAD_LOCAL_TRANSACTION.remove();
 			}
 		}
@@ -390,5 +417,21 @@ public final class VTransactionImpl implements VTransactionWritable {
 			transaction = null;
 		}
 		return transaction;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void addBeforeCommit(final Runnable function) {
+		Assertion.checkNotNull(function);
+		//-----
+		beforeCommitFunctions.add(function);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void addAfterCommit(final Runnable function) {
+		Assertion.checkNotNull(function);
+		//-----
+		afterCommitFunctions.add(function);
 	}
 }
