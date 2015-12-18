@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.plugins.cache.memory;
 
-
 /**
  * @author npiedeloup
  */

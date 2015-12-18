@@ -66,7 +66,8 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 
 	@Override
 	// {} | { XXXXX (,XXXX)+ }
-	protected Rule<Choice> createMainRule() {
+			protected
+			Rule<Choice> createMainRule() {
 		return new FirstOfRule(//"liste vide ou non"
 				EMPTY_LIST, //0
 				NON_EMPTY_LIST);//1

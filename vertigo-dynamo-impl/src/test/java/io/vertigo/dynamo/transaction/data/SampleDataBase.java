@@ -23,7 +23,7 @@ package io.vertigo.dynamo.transaction.data;
  * @author dchallas
  *
  */
-public final class SampleDataBase{
+public final class SampleDataBase {
 	private String data;
 
 	public SampleDataBase() {

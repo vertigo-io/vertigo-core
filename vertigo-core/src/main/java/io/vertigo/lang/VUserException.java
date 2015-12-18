@@ -18,7 +18,6 @@
  */
 package io.vertigo.lang;
 
-
 /**
  * Root Class for all user exceptions.
  * User Exceptions are built with a (localized) message 
