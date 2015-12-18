@@ -45,9 +45,9 @@ public final class FacetValue implements Serializable {
 	private final ListFilter listFilter;
 
 	/**
-	 * Contructeur.
-	 * @param listFilter Requete pour ce range
-	 * @param label Label de cette facette
+	 * Contructor.
+	 * @param listFilter the list filter 
+	 * @param label the label of the facet
 	 */
 	public FacetValue(final ListFilter listFilter, final MessageText label) {
 		Assertion.checkNotNull(listFilter);
@@ -58,14 +58,20 @@ public final class FacetValue implements Serializable {
 	}
 
 	/**
-	 * @return Label de la facette (exemples '1-2 ans' , '3-4 ans', '> 5 ans').
+	 * Returns the label of the facet.
+	 * This label must be human readable.
+	 * 
+	 * examples : 
+	 * - 'small files' can be preferred to an expression. 
+	 * 
+	 * @return the label of the facet 
 	 */
 	public MessageText getLabel() {
 		return label;
 	}
 
 	/**
-	 * @return Méthode de filtrage de la liste.
+	 * @return the listFilter
 	 */
 	public ListFilter getListFilter() {
 		return listFilter;
