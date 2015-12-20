@@ -40,12 +40,7 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 		/**
 		 * Priorité normale.
 		 */
-		NORMAL,
-		/**
-		 * Priorité faible.
-		 * Doit être utilisée pour les ressources pouvant -facilement- dysfonctionner.
-		 */
-		LOW,
+		NORMAL;
 	}
 
 	private final Priority priority;
