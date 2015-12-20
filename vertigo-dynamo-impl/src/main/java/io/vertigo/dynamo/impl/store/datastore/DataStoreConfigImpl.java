@@ -19,11 +19,9 @@
 package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -39,40 +37,17 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	private final CacheDataStoreConfig cacheStoreConfig;
 	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
-	private final StoreManager storeManager;
-	private final EventManager eventsManager;
-
 	/**
 	 * Constructeur.
 	 * @param dataStorePlugins DataStorePlugins list
 	 * @param cacheManager Manager de gestion du cache
-	 * @param storeManager Manager de persistence
-	 * @param eventsManager Manager d'events
 	 */
-	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
+	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager) {
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(cacheManager);
-		Assertion.checkNotNull(storeManager);
-		Assertion.checkNotNull(eventsManager);
 		//-----
-		this.storeManager = storeManager;
-		this.eventsManager = eventsManager;
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
 		logicalDataStoreConfig = new LogicalDataStoreConfig(dataStorePlugins);
-	}
-
-	/**
-	 * @return Manager de persistence
-	 */
-	public StoreManager getStoreManager() {
-		return storeManager;
-	}
-
-	/**
-	 * @return Manager d'events
-	 */
-	public EventManager getEventsManager() {
-		return eventsManager;
 	}
 
 	/**

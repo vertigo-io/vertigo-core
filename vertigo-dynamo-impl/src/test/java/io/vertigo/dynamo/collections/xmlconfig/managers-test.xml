@@ -19,7 +19,7 @@
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
 		</component>
-
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl"/>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
 		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />

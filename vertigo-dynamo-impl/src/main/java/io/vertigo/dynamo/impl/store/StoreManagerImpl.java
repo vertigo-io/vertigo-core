@@ -33,6 +33,7 @@ import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -61,6 +62,7 @@ public final class StoreManagerImpl implements StoreManager {
 	@Inject
 	public StoreManagerImpl(
 			final CacheManager cacheManager,
+			final VTransactionManager transactionManager,
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
@@ -74,8 +76,8 @@ public final class StoreManagerImpl implements StoreManager {
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
 		//---
 		//On enregistre le plugin principal du broker
-		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager, this, eventManager);
-		dataStore = new DataStoreImpl(dataStoreConfig);
+		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
+		dataStore = new DataStoreImpl(this, transactionManager, eventManager, dataStoreConfig);
 		//-----
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);

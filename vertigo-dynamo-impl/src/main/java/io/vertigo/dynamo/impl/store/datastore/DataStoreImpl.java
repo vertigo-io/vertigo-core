@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -32,7 +31,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -43,19 +41,24 @@ public final class DataStoreImpl implements DataStore {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
-	private final EventManager eventsManager;
+	private final EventManager eventManager;
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
 	 * Une fois le dataStore construit la configuration est bloquée.
 	 * @param dataStoreConfig config of the dataStore
 	 */
-	public DataStoreImpl(final DataStoreConfigImpl dataStoreConfig) {
+	public DataStoreImpl(final StoreManager storeManager, final VTransactionManager transactionManager, final EventManager eventManager, final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(eventManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(dataStoreConfig);
-		eventsManager = dataStoreConfig.getEventsManager();
+		cacheDataStore = new CacheDataStore(storeManager, eventManager, dataStoreConfig);
+		this.eventManager = eventManager;
+		this.transactionManager = transactionManager;
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -70,26 +73,16 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).lockForUpdate(dtDefinition, uri);
 		//-----
-		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeUpdate, uri);
+		fireAfterCommit(StoreManager.FiredEvent.storeUpdate, uri);
 	}
 
-	//--- Transactionnal Event
-	/**
-	 * Identifiant de ressource Event.
-	 */
-	public static final VTransactionResourceId<EventTransactionResource<URI>> EVENT_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.LOW, "Events");
-
-	private EventTransactionResource<URI> obtainEventTx() {
-		EventTransactionResource<URI> eventTransactionResource = getTransactionManager().getCurrentTransaction().getResource(EVENT_RESOURCE_ID);
-		if (eventTransactionResource == null) { //by convention resource is null if not already registered
-			eventTransactionResource = new EventTransactionResource<>(eventsManager);
-			getTransactionManager().getCurrentTransaction().addResource(EVENT_RESOURCE_ID, eventTransactionResource);
-		}
-		return eventTransactionResource;
-	}
-
-	private static VTransactionManager getTransactionManager() {
-		return Home.getApp().getComponentSpace().resolve(VTransactionManager.class);
+	private void fireAfterCommit(final StoreManager.FiredEvent event, final URI uri) {
+		transactionManager.getCurrentTransaction().addAfterCommit(new Runnable() {
+			@Override
+			public void run() {
+				eventManager.fire(event, uri);
+			}
+		});
 	}
 
 	//--- Transactionnal Event
@@ -102,7 +95,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
 		//-----
-		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeCreate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreManager.FiredEvent.storeCreate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -114,7 +107,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
 		//-----
-		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -126,7 +119,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
-		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 	}
 
 	/** {@inheritDoc} */
@@ -137,7 +130,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		obtainEventTx().fireOnCommit(StoreManager.FiredEvent.storeDelete, uri);
+		fireAfterCommit(StoreManager.FiredEvent.storeDelete, uri);
 	}
 
 	/** {@inheritDoc} */

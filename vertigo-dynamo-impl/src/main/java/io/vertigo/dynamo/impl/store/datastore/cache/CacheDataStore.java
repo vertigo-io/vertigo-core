@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
+import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -47,16 +48,18 @@ public final class CacheDataStore {
 	 * Constructeur.
 	 * @param dataStoreConfig Configuration
 	 */
-	public CacheDataStore(final DataStoreConfigImpl dataStoreConfig) {
+	public CacheDataStore(final StoreManager storeManager, final EventManager eventManager, final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(eventManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
-		storeManager = dataStoreConfig.getStoreManager();
+		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
+		eventManager.register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
+		eventManager.register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
+		eventManager.register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
