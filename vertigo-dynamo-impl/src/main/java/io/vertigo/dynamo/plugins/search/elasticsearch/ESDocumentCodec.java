@@ -50,7 +50,6 @@ final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
 	static final String FULL_RESULT = "FULL_RESULT";
 
-	//public static final String URN = "URI";
 	//-----
 	private final CodecManager codecManager;
 

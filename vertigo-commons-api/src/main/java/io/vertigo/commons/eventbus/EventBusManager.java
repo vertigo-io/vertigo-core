@@ -40,7 +40,7 @@ public interface EventBusManager extends Manager {
 
 	/**
 	 * Register a new listener for this type of Event.
-	 * @param type Type of event
+	 * @param eventType Type of event
 	 * @param eventListener EventListener
 	 */
 	//	@Init

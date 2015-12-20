@@ -40,7 +40,6 @@ final class MemoryCache {
 	/**
 	 * Constructeur.
 	 * @param name Nom du cache
-	 * @param eternal Si eternal
 	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */
 	MemoryCache(final String name, final long timeToLiveSeconds) {

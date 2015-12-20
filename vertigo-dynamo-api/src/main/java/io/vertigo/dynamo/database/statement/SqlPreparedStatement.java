@@ -47,7 +47,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * Ajoute un paramètre en précisant son type.
 	 * @param index Indexe du paramètre
 	 * @param dataType Type
-	 * @param inOut Type du paramètre
+	 * @param in Type du paramètre
 	 */
 	void registerParameter(final int index, final DataType dataType, final boolean in);
 

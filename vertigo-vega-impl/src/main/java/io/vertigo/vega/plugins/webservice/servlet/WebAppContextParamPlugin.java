@@ -31,9 +31,6 @@ import java.util.Map;
 public final class WebAppContextParamPlugin implements ParamPlugin {
 	private static Map<String, String> params;
 
-	/**
-	 * @param initConf Configuration initiale
-	 */
 	public static void setParams(final Map<String, String> params) {
 		Assertion.checkNotNull(params);
 		//-----
