@@ -36,11 +36,11 @@ public interface DaemonManager extends Manager {
 	List<DaemonStat> getStats();
 
 	/**
-	 * Register Daemon.
-	 * @param name Name
-	 * @param daemonClass Daemon class (must be public)
-	 * @param periodInSeconds Execution period in second
-	 * @param constructorArgs Daemon constructor args
+	 * Registers a daemon.
+	 * @param name the name of the daemon
+	 * @param daemonClass the daemon class (must be public)
+	 * @param periodInSeconds the execution period in seconds
+	 * @param constructorArgs the daemon constructor args
 	 */
 	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs);
 }

@@ -19,7 +19,7 @@
 package io.vertigo.commons.daemon;
 
 /**
- * Interface sémantique différenciant les daemons des simples runnables.
+ * This interface is a marker to identify the daemons (from the simple other runnables)
  *
  * @author TINGARGIOLA
  */
