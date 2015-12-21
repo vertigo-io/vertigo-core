@@ -30,7 +30,6 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
@@ -69,11 +68,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-	/**
-	 * Identifiant de ressource FileSystem par défaut.
-	 */
-	private final VTransactionResourceId<FsTransactionResource> fsResourceId;
-
 	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
@@ -103,7 +97,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = translatePath(path);
-		fsResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS-" + name);
 		//-----
 		if (purgeDelayMinutes.isDefined()) {
 			daemonManager.registerDaemon("PurgeTempFileDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
@@ -158,13 +151,14 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
+
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
-			obtainFsTransactionRessource().saveFile(inputStream, obtainFullFilePath(fileInfo.getURI()));
+			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
 			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
 		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
-			obtainFsTransactionRessource().saveFile(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()));
+			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
 			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
@@ -224,8 +218,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@Override
 	public void remove(final FileInfoURI uri) {
 		//-----suppression du fichier
-		obtainFsTransactionRessource().deleteFile(obtainFullFilePath(uri));
-		obtainFsTransactionRessource().deleteFile(obtainFullMetaDataFilePath(uri));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri)));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri)));
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
@@ -246,18 +240,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/** récupère la transaction courante. */
 	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
-	}
-
-	/** récupère la ressource FS de la transaction et la créé si nécessaire. */
-	private FsTransactionResource obtainFsTransactionRessource() {
-		FsTransactionResource resource = getCurrentTransaction().getResource(fsResourceId);
-
-		if (resource == null) {
-			// Si aucune ressource de type FS existe sur la transaction, on la créé
-			resource = new FsTransactionResource();
-			getCurrentTransaction().addResource(fsResourceId, resource);
-		}
-		return resource;
 	}
 
 	/**

@@ -16,46 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
-package io.vertigo.dynamo.plugins.store.filestore.fs;
+package io.vertigo.dynamo.transaction;
 
 /**
- * Interface d'action sur un fichier.
- * 
- * @author skerdudou
+ * Function call on transaction completion.
+ * Inspired from javax.transaction.Synchronization.
+ * @author npiedeloup
  */
-interface FileAction {
-
-	enum State {
-		/** Etat d'initialisation */
-		READY,
-		/** Etat après l'action process() */
-		PROCESSED,
-		/** Etat après clean */
-		END,
-		/** Etat d'erreeur */
-		ERROR
-	}
+public interface VTransactionSynchronization {
 
 	/**
-	 * Effectue l'action demandée sur le fichier.
-	 * 
-	 * @throws Exception Si impossible
+	 * Proceed function on completion.
+	 * @param txCommited if this transaction was committed
 	 */
-	void process() throws Exception;
-
-	/**
-	 * Supprime les fichiers temporaires, les informations d'annulation et vide l'action.
-	 */
-	void clean();
-
-	/**
-	 * récupère le chemin complet du fichier. Ceci est nécessaire afin de retirer des inserts sur ce fichier et qui
-	 * serait inutile au commit.
-	 * 
-	 * @return chemin du fichier
-	 */
-	String getAbsolutePath();
+	void process(final boolean txCommited);
 }

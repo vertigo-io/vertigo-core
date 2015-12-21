@@ -22,6 +22,7 @@ import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -53,7 +54,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new HashMap<>();
 
 	private final List<Runnable> beforeCommitFunctions = new ArrayList<>();
-	private final List<Runnable> afterCommitFunctions = new ArrayList<>();
+	private final List<VTransactionSynchronization> afterCompletionFunctions = new ArrayList<>();
 
 	/**
 	 * Transaction parente dans le cadre d'une transaction imbriquée.
@@ -270,22 +271,20 @@ public final class VTransactionImpl implements VTransactionWritable {
 
 		final boolean commitSucceeded = !rollback && firstThrowable == null;
 		//afterCommit must not throws exceptions
-		if (commitSucceeded) {
-			doAfterCommit();
-		}
+		doAfterCompletion(commitSucceeded);
 
 		//Fin de la transaction, si firstThrowable!=null alors on a rollbacké tout ou partie des resources
 		transactionListener.onFinish(!commitSucceeded, System.currentTimeMillis() - start);
 		return firstThrowable;
 	}
 
-	private void doAfterCommit() {
-		for (final Runnable function : afterCommitFunctions) {
+	private void doAfterCompletion(final boolean commitSucceeded) {
+		for (final VTransactionSynchronization function : afterCompletionFunctions) {
 			try {
-				function.run();
+				function.process(commitSucceeded);
 			} catch (final Throwable th) {
 				transactionListener.logAfterCommitError(th);
-				//we don't rethrow this exception, main resource was committed, we should continue to proceed afterCommit function
+				//we don't rethrow this exception, main resource was finished, we should continue to proceed afterCompletion functions
 			}
 		}
 	}
@@ -428,9 +427,9 @@ public final class VTransactionImpl implements VTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void addAfterCommit(final Runnable function) {
+	public void addAfterCompletion(final VTransactionSynchronization function) {
 		Assertion.checkNotNull(function);
 		//-----
-		afterCommitFunctions.add(function);
+		afterCompletionFunctions.add(function);
 	}
 }

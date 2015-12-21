@@ -22,6 +22,7 @@
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -38,14 +39,15 @@ import org.apache.log4j.Logger;
  *
  * @author skerdudou
  */
-final class FileActionSave implements FileAction {
+final class FileActionSave implements VTransactionSynchronization {
 	private static final String EXT_NEW = "toSave";
 	private static final char EXT_SEPARATOR = '.';
 	private static final Logger LOG = Logger.getLogger(FileActionSave.class.getName());
 
-	private State state;
-	private final File file;
-	private final File newFile;
+	//ref the file before this save action
+	private final File txPrevFile;
+	//ref the new file to save on this transaction
+	private final File txNewFile;
 
 	/**
 	 * Constructeur.
@@ -57,73 +59,62 @@ final class FileActionSave implements FileAction {
 		Assertion.checkNotNull(inputStream);
 		Assertion.checkNotNull(path);
 		//-----
-		file = new File(path);
-		newFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
+		txPrevFile = new File(path);
+		txNewFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
 
 		// création du fichier temporaire
-		if (!newFile.getParentFile().exists() && !newFile.getParentFile().mkdirs()) {
-			LOG.error("Can't create temp directories " + newFile.getAbsolutePath());
+		if (!txNewFile.getParentFile().exists() && !txNewFile.getParentFile().mkdirs()) {
+			LOG.error("Can't create temp directories " + txNewFile.getAbsolutePath());
 			throw new VSystemException("Can't create temp directories");
 		}
 		try {
-			if (!newFile.createNewFile()) {
-				LOG.error("Can't create temp file " + newFile.getAbsolutePath());
+			if (!txNewFile.createNewFile()) {
+				LOG.error("Can't create temp file " + txNewFile.getAbsolutePath());
 				throw new VSystemException("Can't create temp file.");
 			}
 		} catch (final IOException e) {
-			LOG.error("Can't save temp file " + newFile.getAbsolutePath());
+			LOG.error("Can't save temp file " + txNewFile.getAbsolutePath());
 			throw new WrappedException("Can't save temp file.", e);
 		}
 
 		// copie des données dans le fichier temporaire. Permet de vérifier l'espace disque avant d'arriver à la phase
 		// de commit. Si la phase de commit a une erreur, garde trace du fichier sur le FS.
 		try {
-			FileUtil.copy(inputStream, newFile);
+			FileUtil.copy(inputStream, txNewFile);
 		} catch (final IOException e) {
-			LOG.error("Can't copy uploaded file to : " + newFile.getAbsolutePath());
+			LOG.error("Can't copy uploaded file to : " + txNewFile.getAbsolutePath());
 			throw new WrappedException("Can't save uploaded file.", e);
 		}
-
-		state = State.READY;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void process() throws Exception {
-		Assertion.checkArgument(State.READY.equals(state), "Le fichier n'est pas dans l'état requis 'READY' pour effectuer l'action. Etat actuel : '{0}'", state);
+	public void process(final boolean txCommited) {
+		if (txCommited) {
+			doCommit();
+		} else {
+			doRollback();
+		}
+	}
 
+	private void doCommit() {
 		// on supprime l'ancien fichier s'il existe
-		if (file.exists() && !file.delete()) {
-			LOG.fatal("Impossible supprimer l'ancien fichier (" + file.getAbsolutePath() + ") lors de la sauvegarde. Le fichier a sauvegarder se trouve dans " + newFile.getAbsolutePath());
-			state = State.ERROR;
+		if (txPrevFile.exists() && !txPrevFile.delete()) {
+			LOG.fatal("Impossible supprimer l'ancien fichier (" + txPrevFile.getAbsolutePath() + ") lors de la sauvegarde. Le fichier a sauvegarder se trouve dans " + txNewFile.getAbsolutePath());
 			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
 
 		// on met le fichier au bon emplacement
-		if (!newFile.renameTo(file)) {
-			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de " + newFile.getAbsolutePath() + " vers " + file.getAbsolutePath());
-			state = State.ERROR;
+		if (!txNewFile.renameTo(txPrevFile)) {
+			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de " + txNewFile.getAbsolutePath() + " vers " + txPrevFile.getAbsolutePath());
 			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
-
-		state = State.PROCESSED;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void clean() {
+	private void doRollback() {
 		// on ne fait pas de ménage si on a eu une erreur
-		if (!State.ERROR.equals(state) && newFile.exists()) {
-			newFile.delete();
+		if (txNewFile.exists()) {
+			txNewFile.delete();
 		}
-
-		state = State.END;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getAbsolutePath() {
-		return file.getAbsolutePath();
-	}
-
 }

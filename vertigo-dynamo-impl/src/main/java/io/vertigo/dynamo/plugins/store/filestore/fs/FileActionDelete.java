@@ -21,6 +21,7 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
+import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
@@ -33,10 +34,9 @@ import org.apache.log4j.Logger;
  *
  * @author skerdudou
  */
-final class FileActionDelete implements FileAction {
+final class FileActionDelete implements VTransactionSynchronization {
 	private static final Logger LOG = Logger.getLogger(FileActionDelete.class.getName());
 
-	private State state;
 	private final File file;
 
 	/**
@@ -57,35 +57,18 @@ final class FileActionDelete implements FileAction {
 			LOG.error("Impossible de supprimer le fichier : " + file.getAbsolutePath());
 			throw new VSystemException("Impossible de supprimer le fichier.");
 		}
-
-		state = State.READY;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void process() throws Exception {
-		Assertion.checkArgument(State.READY.equals(state), "Le fichier n'est pas dans l'état requis 'READY' pour effectuer l'action. Etat actuel : '{0}'", state);
-
-		// on supprime le fichier
-		if (!file.delete()) {
-			LOG.fatal("Impossible de supprimer le fichier " + file.getAbsolutePath());
-			state = State.ERROR;
-			throw new VSystemException("Erreur fatale : Impossible de supprimer le fichier.");
+	public void process(final boolean txCommited) {
+		if (txCommited) {
+			// on supprime le fichier
+			if (!file.delete()) {
+				LOG.error("Impossible de supprimer le fichier " + file.getAbsolutePath());
+				throw new VSystemException("Erreur fatale : Impossible de supprimer le fichier.");
+			}
 		}
-
-		state = State.PROCESSED;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void clean() {
-		state = State.END;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getAbsolutePath() {
-		return file.getAbsolutePath();
 	}
 
 }

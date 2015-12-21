@@ -259,28 +259,29 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			}
 		});
 
-		currentTransaction.addAfterCommit(new Runnable() {
+		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
+
 			@Override
-			public void run() {
-				run1AfterCommit.set(true);
+			public void process(final boolean txCommited) {
+				run1AfterCommit.set(txCommited);
 				Assert.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
 			}
 		});
 
-		currentTransaction.addAfterCommit(new Runnable() {
+		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void run() {
-				run2AfterCommit.set(true);
+			public void process(final boolean txCommited) {
+				run2AfterCommit.set(txCommited);
 				if (afterCommitError) {
 					throw new ArithmeticException("Can't proceed this code");
 				}
 			}
 		});
 
-		currentTransaction.addAfterCommit(new Runnable() {
+		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void run() {
-				run3AfterCommit.set(true);
+			public void process(final boolean txCommited) {
+				run3AfterCommit.set(txCommited);
 			}
 		});
 	}

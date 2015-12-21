@@ -32,6 +32,7 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -78,10 +79,12 @@ public final class DataStoreImpl implements DataStore {
 	}
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final URI uri) {
-		transactionManager.getCurrentTransaction().addAfterCommit(new Runnable() {
+		transactionManager.getCurrentTransaction().addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void run() {
-				eventBusManager.post(new StoreEvent(evenType, uri));
+			public void process(final boolean txCommitted) {
+				if (txCommitted) {//send event only is tx successful
+					eventBusManager.post(new StoreEvent(evenType, uri));
+				}
 			}
 		});
 	}

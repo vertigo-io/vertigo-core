@@ -60,17 +60,18 @@ public interface VTransaction {
 	void addBeforeCommit(final Runnable function);
 
 	/**
-	 * Adds function that is executed after transaction commit.
+	 * Adds function that is executed after transaction commit or rollback.
 	 * Functions are executed in registration order
-	 * There is no execution, if transaction failed.
+	 * These functions are always executed.
 	 * If an exception occures then
 	 * - current transaction was NOT rollbacked
-	 * - all afterCommit functions ARE executed
+	 * - all afterCompletion functions ARE executed
 	 *
 	 * Examples :
 	 * - send a mail or a notification when an operation has been successfully done (an item updated,...)
+	 * - clear temp data if operation failed
 	 *
-	 * @param function the function to execute afterCommit
+	 * @param function the function to execute afterCompletion
 	 */
-	void addAfterCommit(final Runnable function);
+	void addAfterCompletion(final VTransactionSynchronization function);
 }
