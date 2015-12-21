@@ -22,24 +22,38 @@ import io.vertigo.lang.Manager;
 
 /**
  * Inter-components events manager.
- * Producer/Consumer on channel for communication between components.
- * When registering to channel, Listeners are configured to listen locally only.
- *
+ * Publisher / Subscriber on event type for communication between components.
+ * Listeners are configured to listen on the same JVM.
+ * 
+ * The process is synchronous.
+ * the suscribers execute their methods on the same thread.
+ * The errors are not caught.
+ * If one of the suscriber throws an error, this error is thrown on the post(). 
+ * 
+ * The purpose of this pattern is to decouple the managers.
+ * Managers that post don't need to know which components are listening.
+ * 
  * Example :
- * A cache component should listen : a modification in one app should flush cache all over the system : it's cache component responsibility to do this
- * An audit component should listen to do the audit log
+ *  - flushes local cache when an object is updated, deleted, inserted in the store
+ *  
+ * WARNING : 
+ *  By default, EventBus is not distributed.
+ *  A cache component should listen : a modification in one app should flush cache all over the system : it's cache component responsibility to do this
+ *  An audit component should listen to do the audit log
  *
  * @author pchretien, npiedeloup
  */
 public interface EventBusManager extends Manager {
 	/**
-	 * post an event.
+	 * Posts an event.
 	 * @param event Event 
 	 */
 	void post(Event event);
 
 	/**
-	 * Register a new listener for this type of Event.
+	 * Registers a new listener for this type of Event.
+	 * Registration must be executed during the init phase.
+	 * 
 	 * @param eventType Type of event
 	 * @param eventListener EventListener
 	 */
@@ -47,13 +61,13 @@ public interface EventBusManager extends Manager {
 	<E extends Event> void register(Class<E> eventType, EventListener<E> eventListener);
 
 	/**
-	 * Register all methods annotaed with @Suscriber on the object
+	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
 	void register(final Object suscriberInstance);
 
 	/**
-	 * Register a dead event listener.
+	 * Registers a dead event listener.
 	 * @param eventListener EventListener
 	 */
 	void registerDead(final EventListener<Event> eventListener);

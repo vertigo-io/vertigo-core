@@ -19,16 +19,16 @@
 package io.vertigo.commons.eventbus;
 
 /**
- * EventsListener.
+ * EventListener.
  * @author npiedeloup
+ * @param <E> Type of event
  */
 public interface EventListener<E extends Event> {
 
 	/**
-	 * Call when registered channel received an event.
-	 * This event is call by a ExecutorService, without thread context, this method should not lock.
-	 *
-	 * @param event Received event
+	 * This method is called by the engine when an event (with the right type) is published.
+	 * 
+	 * @param event the received event
 	 */
 	void onEvent(E event);
 

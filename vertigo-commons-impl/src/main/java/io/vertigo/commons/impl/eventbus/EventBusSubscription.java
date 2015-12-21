@@ -9,6 +9,9 @@ final class EventBusSubscription<E extends Event> {
 	private final EventListener<E> eventListener;
 
 	EventBusSubscription(final Class<E> eventType, final EventListener<E> eventListener) {
+		Assertion.checkNotNull(eventType);
+		Assertion.checkNotNull(eventListener);
+		//-----
 		this.eventType = eventType;
 		this.eventListener = eventListener;
 	}

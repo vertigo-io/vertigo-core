@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.store;
 
-import io.vertigo.commons.event.EventChannel;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
@@ -32,16 +30,6 @@ import io.vertigo.lang.Manager;
 * @author pchretien
 */
 public interface StoreManager extends Manager {
-
-	/**
-	 * ChannelNamed events fired.
-	 */
-	enum FiredEvent implements EventChannel<URI> {
-		storeCreate,
-		storeUpdate,
-		storeDelete
-	}
-
 	/**
 	 * @return FileStore
 	 */

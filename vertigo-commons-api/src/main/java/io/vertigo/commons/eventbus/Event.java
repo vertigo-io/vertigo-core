@@ -19,6 +19,15 @@
 package io.vertigo.commons.eventbus;
 
 /**
+ * An event is the message that is communicated from the publisher to the suscribers. 
+ * The type of events is used to dispatch an event to the right subscribers.
+ * 
+ * The event must be as simple as possible. 
+ * An event explains the WHAT  and not the HOW. 
+ * 
+ * example :
+ * - an event should contain a simple id and a type of transformation.
+ *  
  * @author pchretien
  */
 public interface Event {

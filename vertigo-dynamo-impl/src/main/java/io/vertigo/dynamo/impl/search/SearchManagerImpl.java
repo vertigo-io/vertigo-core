@@ -20,26 +20,29 @@ package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.event.EventManager;
+import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,22 +70,18 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/**
 	 * Constructor.
 	 * @param searchServicesPlugin Search plugin
-	 * @param eventsManager Events Manager
 	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
-		Assertion.checkNotNull(eventsManager);
+		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 
-		final SearchIndexDirtyEventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(this);
-		eventsManager.register(StoreManager.FiredEvent.storeCreate, searchIndexDirtyEventListener);
-		eventsManager.register(StoreManager.FiredEvent.storeUpdate, searchIndexDirtyEventListener);
-		eventsManager.register(StoreManager.FiredEvent.storeDelete, searchIndexDirtyEventListener);
+		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		this.transactionManager = transactionManager;
@@ -218,6 +217,17 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
 		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 		return reindexFuture;
+	}
+
+	@EventSuscriber
+	public void onEvent(final StoreEvent storeEvent) {
+		final URI uri = storeEvent.getUri();
+		//On ne traite l'event que si il porte sur un KeyConcept
+		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				&& hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
+			final List<URI<? extends KeyConcept>> list = Collections.<URI<? extends KeyConcept>> singletonList(uri);
+			markAsDirty(list);
+		}
 	}
 
 }

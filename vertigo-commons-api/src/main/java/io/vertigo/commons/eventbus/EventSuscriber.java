@@ -24,12 +24,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation à poser sur les méthodes implémentant un listener d'events.
+ * This annotation must be added on each method that is an event listener.
+ * The method register() on EventBusManager must be invoked to register this suscriber.  
  * 
  * @author pchretien
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventSuscriber {
-	// vide
+	// 
 }
