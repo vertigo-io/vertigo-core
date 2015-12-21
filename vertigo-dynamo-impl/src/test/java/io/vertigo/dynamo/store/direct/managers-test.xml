@@ -32,7 +32,7 @@
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" >
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />

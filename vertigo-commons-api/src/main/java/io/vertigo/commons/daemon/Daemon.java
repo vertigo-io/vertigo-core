@@ -21,7 +21,7 @@ package io.vertigo.commons.daemon;
 /**
  * This interface is a marker to identify the daemons (from the simple other runnables)
  *
- * @author TINGARGIOLA
+ * @author tingargiola
  */
 public interface Daemon {
 

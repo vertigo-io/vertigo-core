@@ -15,7 +15,7 @@
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
 		</component>
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
