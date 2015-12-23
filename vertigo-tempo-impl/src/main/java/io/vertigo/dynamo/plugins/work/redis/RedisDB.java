@@ -145,6 +145,12 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
+	/**
+	 * Puts the result for a workitem identified by an id.
+	 * @param workId the id of the workitem
+	 * @param result the result 
+	 * @param error if an error occurred 
+	 */
 	public <R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
