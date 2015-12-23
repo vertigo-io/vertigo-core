@@ -46,6 +46,14 @@ public final class RedisDB implements Activeable {
 	private final CodecManager codecManager;
 	private final int readTimeout;
 
+	/**
+	 * Constructor.
+	 * @param codecManager the codecManager
+	 * @param redisHost the REDIS host 
+	 * @param port the REDIS port 
+	 * @param readTimeout  the timeout duration used to read data 
+	 * @param password the optional REDIS password
+	 */
 	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final int readTimeout, final Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
@@ -67,11 +75,13 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		//
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stop() {
 		//see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
@@ -88,6 +98,10 @@ public final class RedisDB implements Activeable {
 		//Todo
 	}
 
+	/**
+	 * Puts a workitem in the todo list.
+	 * @param workItem the workItem
+	 */
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
@@ -110,6 +124,11 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
+	/**
+	 * Polls a workitem from the todo list.
+	 * @param workType the type of workItem
+	 * @return null or a workitem
+	 */
 	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
 		Assertion.checkNotNull(workType);
 		//-----
