@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -59,7 +60,6 @@ import javax.inject.Inject;
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
-	private static final String ANALYTICS_TYPE = "Search";
 	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
@@ -70,7 +70,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/**
 	 * Constructor.
 	 * @param searchServicesPlugin Search plugin
+	 * @param eventBusManager EventBus manager
 	 * @param transactionManager Transaction Manager
+	 * @param analyticsManager Analytics manager
 	 */
 	@Inject
 	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
@@ -80,14 +82,15 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
+		this.analyticsManager = analyticsManager;
 
 		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		this.transactionManager = transactionManager;
-		this.analyticsManager = analyticsManager;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
@@ -95,6 +98,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stop() {
 		executorService.shutdown();
@@ -103,70 +107,60 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/putAll")) {
 			searchServicesPlugin.putAll(indexDefinition, indexCollection);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", indexCollection.size());
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", indexCollection.size());
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/put")) {
 			searchServicesPlugin.put(indexDefinition, index);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", 1);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/LOAD");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/load")) {
 			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", result.getCount());
+			tracker.setMeasure("nbSelectedRow", result.getCount());
+			tracker.markAsSucceeded();
 			return result;
-		} finally {
-			analyticsManager.getAgent().stopProcess();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/COUNT");
-		try {
-			return searchServicesPlugin.count(indexDefinition);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/count")) {
+			final long result = searchServicesPlugin.count(indexDefinition);
+			tracker.markAsSucceeded();
+			return result;
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/remove")) {
 			searchServicesPlugin.remove(indexDefinition, uri);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/removeAll")) {
 			searchServicesPlugin.remove(indexDefinition, listFilter);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.markAsSucceeded();
 		}
 	}
 
@@ -219,6 +213,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return reindexFuture;
 	}
 
+	/**
+	 * Receive Store event.
+	 * @param storeEvent Store event
+	 */
 	@EventSuscriber
 	public void onEvent(final StoreEvent storeEvent) {
 		final URI uri = storeEvent.getUri();

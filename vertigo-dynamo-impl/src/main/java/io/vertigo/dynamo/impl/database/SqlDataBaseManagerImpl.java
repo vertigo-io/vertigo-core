@@ -25,8 +25,6 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListenerImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
@@ -45,7 +43,7 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
-	private final SqlDataBaseListener dataBaseListener;
+	private final AnalyticsManager analyticsManager;
 	private final SqlStatementHandler statementHandler;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
@@ -61,7 +59,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(sqlConnectionProviderPlugins);
 		//-----
-		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
+		this.analyticsManager = analyticsManager;
 		statementHandler = new SqlStatementHandlerImpl();
 		connectionProviderPluginMap = new HashMap<>(sqlConnectionProviderPlugins.size());
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
@@ -87,13 +85,13 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		//On vérifie la norme des CallableStatement (cf : http://java.sun.com/j2se/1.4.2/docs/api/java/sql/CallableStatement.html)
 		//S'il on utilise call, il faut les {..}, sinon les erreurs SQL ne sont pas tout le temps transformées en SQLException (au moins pour oracle)
 		Assertion.checkArgument(!procName.contains("call ") || procName.charAt(0) == '{' && procName.charAt(procName.length() - 1) == '}', "Les appels de procédures avec call, doivent être encapsuler avec des {...}, sans cela il y a une anomalie de remonté d'erreur SQL");
-		return new SqlCallableStatementImpl(statementHandler, dataBaseListener, connection, procName);
+		return new SqlCallableStatementImpl(statementHandler, analyticsManager, connection, procName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
-		return new SqlPreparedStatementImpl(statementHandler, dataBaseListener, connection, sql, returnGeneratedKeys);
+		return new SqlPreparedStatementImpl(statementHandler, analyticsManager, connection, sql, returnGeneratedKeys);
 
 	}
 }

@@ -19,37 +19,41 @@
 package io.vertigo.dynamo.impl.task;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.impl.task.listener.TaskListener;
-import io.vertigo.dynamo.impl.task.listener.TaskListenerImpl;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.lang.Assertion;
+
+import javax.inject.Inject;
 
 /**
- * @author  pchretien
+ * @author pchretien
  */
 public final class TaskManagerImpl implements TaskManager {
-	private final TaskListener taskListener;
+	private final AnalyticsManager analyticsManager;
 
-	public TaskManagerImpl() {
-		this.taskListener = new TaskListenerImpl();
+	/**
+	 * @param analyticsManager Manager analytics
+	 */
+	@Inject
+	public TaskManagerImpl(final AnalyticsManager analyticsManager) {
+		Assertion.checkNotNull(analyticsManager);
+		//-----
+		this.analyticsManager = analyticsManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public TaskResult execute(final Task task) {
-		taskListener.onStart(task.getDefinition().getName());
-		boolean executed = false;
-		final long start = System.currentTimeMillis();
-		try {
+		try (final AnalyticsTracker tracker = analyticsManager.startLogTracker("Task", task.getDefinition().getName())) {
 			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
 			final TaskResult taskResult = taskEngine.process(task);
-			executed = true;
+			tracker.markAsSucceeded();
 			return taskResult;
-		} finally {
-			taskListener.onFinish(task.getDefinition().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
 }

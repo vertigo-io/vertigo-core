@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -34,8 +35,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListenerImpl;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.criteria.Criteria;
@@ -76,7 +75,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	private final String connectionName;
 	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
-	private final SqlDataBaseListener dataBaseListener;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Constructor.
@@ -97,7 +96,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
-		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
+		this.analyticsManager = analyticsManager;
 	}
 
 	/** {@inheritDoc} */
@@ -129,10 +128,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private <D extends DtObject> D loadWithoutClear(final URI<D> uri) {
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
-		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = getEntityManager().find(objectClass, uri.getId());
-			jpaTracker.markAsSucceded(0, result != null ? 1 : 0);
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+			tracker.markAsSucceeded();
 			return result;
 			//Objet null géré par le dataStore
 		}
@@ -179,7 +179,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
-		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> resultClass = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, filterCriteria);
@@ -199,7 +199,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			jpaTracker.markAsSucceded(0, dtc.size());
+			tracker.setMeasure("nbSelectedRow", dtc.size());
+			tracker.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -287,7 +288,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
 		final String serviceName = "Jpa:find " + taskName;
-		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> resultClass = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			//PK de la DtList recherchée
 			final String pkFieldName = dtDefinition.getIdField().get().getName();
@@ -318,7 +319,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			jpaTracker.markAsSucceded(0, dtc.size());
+			tracker.setMeasure("nbSelectedRow", dtc.size());
+			tracker.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -337,7 +339,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
-		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			if (persist) { //si pas de PK exception
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
@@ -348,7 +350,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			}
 			getEntityManager().flush();
 			getEntityManager().clear();
-			jpaTracker.markAsSucceded(1, 0);
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
@@ -362,7 +365,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 
-		try (JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Object dto = loadWithoutClear(uri);
 			if (dto == null) {
 				throw new VSystemException("Aucune ligne supprimée");
@@ -370,7 +373,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			getEntityManager().remove(dto);
 			getEntityManager().flush();
 			getEntityManager().clear();
-			jpaTracker.markAsSucceded(1, 0);
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
@@ -379,38 +383,13 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
-		try (final JpaTracker jpaTracker = new JpaTracker(dataBaseListener, serviceName)) {
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final DtObject result = getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
-			jpaTracker.markAsSucceded(0, result != null ? 1 : 0);
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+			tracker.markAsSucceeded();
 			//Objet null géré par le dataStore
 		}
 	}
 
-	private static class JpaTracker implements AutoCloseable {
-		private final SqlDataBaseListener dataBaseListener;
-		private final String serviceName;
-		private final long start = System.currentTimeMillis();
-		private boolean executed = false;
-		private int myModifiedRows;
-		private int mySelectedRows;
-
-		JpaTracker(final SqlDataBaseListener dataBaseListener, final String serviceName) {
-			this.serviceName = serviceName;
-			this.dataBaseListener = dataBaseListener;
-			dataBaseListener.onStart(serviceName);
-		}
-
-		void markAsSucceded(final int modifiedRows, final int selectedRows) {
-			executed = true;
-			myModifiedRows = modifiedRows;
-			mySelectedRows = selectedRows;
-		}
-
-		@Override
-		public void close() {
-			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, myModifiedRows, mySelectedRows);
-		}
-
-	}
 }
