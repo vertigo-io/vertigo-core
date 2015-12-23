@@ -129,7 +129,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
-			logMappings(indexDefinition);
+			logMappings();
 			types.add(indexDefinition.getName().toLowerCase());
 		}
 
@@ -158,7 +158,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		return indexSettingsDirty;
 	}
 
-	private void logMappings(final SearchIndexDefinition indexDefinition) {
+	private void logMappings() {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
