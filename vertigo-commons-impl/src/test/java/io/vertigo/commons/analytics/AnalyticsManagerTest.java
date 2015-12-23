@@ -48,12 +48,12 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		analyticsManager.getAgent().startProcess(PROCESS_TYPE, "1000 Articles 25 Kg");
-		for (int i = 0; i < 1000; i++) {
-			analyticsManager.getAgent().incMeasure("POIDS", 25);
-			analyticsManager.getAgent().incMeasure("MONTANT", 10);
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
+			for (int i = 0; i < 1000; i++) {
+				tracker.incMeasure("POIDS", 25);
+				tracker.incMeasure("MONTANT", 10);
+			}
 		}
-		analyticsManager.getAgent().stopProcess();
 	}
 
 	/**
@@ -82,12 +82,12 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		analyticsManager.getAgent().startProcess(PROCESS_TYPE, "1000 Commandes");
-		for (int i = 0; i < 1000; i++) {
-			analyticsManager.getAgent().incMeasure("MONTANT", 5);
-			test1000Articles();
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Commandes")) {
+			for (int i = 0; i < 1000; i++) {
+				tracker.incMeasure("MONTANT", 5);
+				test1000Articles();
+			}
 		}
-		analyticsManager.getAgent().stopProcess();
 		log.trace("elapsed = " + (System.currentTimeMillis() - start));
 	}
 }

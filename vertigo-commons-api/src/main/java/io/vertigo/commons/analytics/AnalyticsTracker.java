@@ -18,34 +18,41 @@
  */
 package io.vertigo.commons.analytics;
 
-import io.vertigo.lang.Manager;
-
 /**
- * Main access to all analytics functions.
- *
+ * Collect tracker.
  * @author pchretien, npiedeloup
  */
-public interface AnalyticsManager extends Manager {
+public interface AnalyticsTracker extends AutoCloseable {
 
 	/**
-	 * @return collect agent
+	 * Incrémente une mesure (set si pas présente).
+	 * @param measureType Type de mesure
+	 * @param value Incrément de la mesure
 	 */
-	AnalyticsAgent getAgent();
+	void incMeasure(final String measureType, final double value);
 
 	/**
-	 * Start process (may be a sub-process with its own metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
-	 */
-	AnalyticsTracker startTracker(final String processType, final String category);
+	* Affecte une valeur fixe à la mesure.
+	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas).
+	* @param measureType Type de mesure
+	* @param value valeur de la mesure
+	*/
+	void setMeasure(final String measureType, final double value);
 
 	/**
-	 * Start process logging (no subProcess, only local metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
+	 * Affecte une valeur fixe à une meta-donnée.
+	 *
+	 * @param metaDataName Nom de la meta-donnée
+	 * @param value Valeur de la meta-donnée
 	 */
-	AnalyticsTracker startLogTracker(final String processType, final String category);
+	void addMetaData(final String metaDataName, final String value);
 
+	/**
+	 * Mark this tracker as succeeded.
+	 */
+	void markAsSucceeded();
+
+	/** {@inheritDoc} */
+	@Override
+	void close();
 }
