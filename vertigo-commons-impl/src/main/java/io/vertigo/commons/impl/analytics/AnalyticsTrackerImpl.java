@@ -47,7 +47,7 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 
 	private final long start;
 
-	private boolean success = false;
+	private boolean success;
 
 	/**
 	 * Constructor.
@@ -79,7 +79,7 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	@Override
 	public void incMeasure(final String measureType, final double value) {
 		final Double prevValue = measures.get(measureType);
-		measures.put(measureType, prevValue != null ? prevValue + value : value);
+		measures.put(measureType, prevValue != null ? (prevValue + value) : value);
 		analyticsAgent.incMeasure(analyticsMeasurePrefix + measureType, value);
 	}
 

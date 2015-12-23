@@ -56,10 +56,11 @@ import javax.inject.Inject;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
+	private static final String ANALYTICS_TYPE = "search";
 	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
@@ -107,7 +108,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/putAll")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll")) {
 			searchServicesPlugin.putAll(indexDefinition, indexCollection);
 			tracker.setMeasure("nbModifiedRow", indexCollection.size());
 			tracker.markAsSucceeded();
@@ -117,7 +118,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/put")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/put")) {
 			searchServicesPlugin.put(indexDefinition, index);
 			tracker.setMeasure("nbModifiedRow", 1);
 			tracker.markAsSucceeded();
@@ -127,7 +128,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/load")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/load")) {
 			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
 			tracker.setMeasure("nbSelectedRow", result.getCount());
 			tracker.markAsSucceeded();
@@ -138,7 +139,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/count")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/count")) {
 			final long result = searchServicesPlugin.count(indexDefinition);
 			tracker.markAsSucceeded();
 			return result;
@@ -148,7 +149,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/remove")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/remove")) {
 			searchServicesPlugin.remove(indexDefinition, uri);
 			tracker.setMeasure("nbModifiedRow", 1);
 			tracker.markAsSucceeded();
@@ -158,7 +159,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("search", indexDefinition.getName() + "/removeAll")) {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/removeAll")) {
 			searchServicesPlugin.remove(indexDefinition, listFilter);
 			tracker.markAsSucceeded();
 		}
