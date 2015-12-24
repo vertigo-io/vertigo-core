@@ -24,22 +24,14 @@ import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
-import io.vertigo.lang.Modifiable;
-import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implémentation MapCache du plugins.
@@ -48,35 +40,28 @@ import javax.inject.Named;
  */
 public final class MemoryCachePlugin implements CachePlugin, Describable {
 	private final CodecManager codecManager;
-	private final Map<String, List<String>> cacheTypeMap = new LinkedHashMap<>();
+	private final Map<String, CacheConfig> cacheConfigsPerContext = new HashMap<>();
 	private final Map<String, MemoryCache> cachesPerContext = new HashMap<>();
-	private final Set<String> noSerializationContext;
 
 	/**
 	 * Constructeur.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
-	 * @param noSerializationOption Liste optionnelles des noms de context à ne jamais sérialiser
 	 */
 	@Inject
-	public MemoryCachePlugin(final CodecManager codecManager, @Named("noSerialization") final Option<String> noSerializationOption) {
+	public MemoryCachePlugin(final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
-		if (noSerializationOption.isDefined()) {
-			noSerializationContext = new HashSet<>(Arrays.asList(noSerializationOption.get().split(";")));
-		} else {
-			noSerializationContext = Collections.emptySet();
-		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void addCache(final String context, final CacheConfig cacheConfig) {
+	public synchronized void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!cachesPerContext.containsKey(context)) {
 			final MemoryCache cache = new MemoryCache(context, cacheConfig.getTimeToLiveSeconds());
 			cachesPerContext.put(context, cache);
+			cacheConfigsPerContext.put(context, cacheConfig);
 		}
-		registerCacheType(context, cacheConfig.getCacheType());
 	}
 
 	/** {@inheritDoc} */
@@ -85,24 +70,19 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
 		Assertion.checkState(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//-----
-		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
-		//on peut le garder tel quel, sinon on le clone
-		//TODO à revoir : les DtObject et DtList ne peuvent plus etre non Modifiable, on ajoute un paramétrage spécifique
-		if (isUnmodifiable(value) || noSerializationContext.contains(context)) {
-			putElement(context, key, value);
-		} else {
-			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
+		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
+		if (getCacheConfig(context).shouldSerializeElements()) {
+			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it Serializable or change its CacheConfig 'serializeElement' parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
 			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.
 			putElement(context, key, serializedObject);
+		} else {
+			//on fait un cache mémoire :
+			// - adapté si l'élément est non modifiable
+			// - bcp plus performant
+			putElement(context, key, value);
 		}
-	}
-
-	private static boolean isUnmodifiable(final Object value) {
-		//s'il n'implemente pas Modifiable, il doit être cloné
-		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné
-		return value instanceof Modifiable && !((Modifiable) value).isModifiable();
 	}
 
 	/** {@inheritDoc} */
@@ -151,23 +131,14 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 
 	private synchronized MemoryCache getMapCache(final String context) {
 		final MemoryCache mapCache = cachesPerContext.get(context);
-		Assertion.checkNotNull(mapCache, "Le cache {0} n''a pas été crée.", context);
+		Assertion.checkNotNull(mapCache, "Cache {0} are not yet registered.", context);
 		return mapCache;
 	}
 
-	/**
-	 * Conserve la liste des caches par type.
-	 * Déjà synchronisé depuis le addCache.
-	 * @param cacheName Nom du cache
-	 * @param cacheType Type du cache
-	 */
-	private void registerCacheType(final String cacheName, final String cacheType) {
-		List<String> cacheNames = cacheTypeMap.get(cacheType);
-		if (cacheNames == null) {
-			cacheNames = new ArrayList<>();
-			cacheTypeMap.put(cacheType, cacheNames);
-		}
-		cacheNames.add(cacheName);
+	private synchronized CacheConfig getCacheConfig(final String context) {
+		final CacheConfig cacheConfig = cacheConfigsPerContext.get(context);
+		Assertion.checkNotNull(cacheConfig, "Cache {0} are not yet registered.", context);
+		return cacheConfig;
 	}
 
 	/** {@inheritDoc} */

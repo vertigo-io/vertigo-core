@@ -27,7 +27,10 @@ import javax.inject.Inject;
  * @author dchallas
  */
 public final class CacheManagerInitializer implements ComponentInitializer {
-	public static final String CONTEXT = "testCacheManager";
+
+	/** Cache context */
+	public static final String CONTEXT_EDITABLE = "testCacheEditableElements";
+	public static final String CONTEXT_READONLY = "testCacheReadOnlyElements";
 
 	@Inject
 	private CacheManager manager;
@@ -41,6 +44,7 @@ public final class CacheManagerInitializer implements ComponentInitializer {
 		final long timeToLiveSeconds = 10; //longévité d'un élément
 		final long timeToIdleSeconds = 10; //longévité d'un élément non utilisé
 
-		manager.addCache(CONTEXT, new CacheConfig("test", maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		manager.addCache(CONTEXT_EDITABLE, new CacheConfig("test", true, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		manager.addCache(CONTEXT_READONLY, new CacheConfig("test", false, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 }

@@ -22,16 +22,17 @@ import io.vertigo.lang.Assertion;
 
 /**
  * The cacheConfig class defines the configuration of cache.
- * 
- * These 3 params define the strategy of caching 
+ *
+ * These 3 params define the strategy of caching
  *  - max elements in memory
  *  - time to live
  *  - time to idle
- *  
+ *
  * @author pchretien
  */
 public final class CacheConfig {
 	private final String cacheType;
+	private final boolean serializeElements;
 	private final int maxElementsInMemory;
 	private final long timeToLiveSeconds;
 	private final long timeToIdleSeconds;
@@ -39,14 +40,16 @@ public final class CacheConfig {
 	/**
 	 * Constructor.
 	 * @param cacheType Type of cache.
+	 * @param serializeElements If elements are serialized
 	 * @param maxElementsInMemory Max elements stored in memory
 	 * @param timeToLiveSeconds Time to live (in seconds)
-	 * @param timeToIdleSeconds Time tio idle (in seconds)
+	 * @param timeToIdleSeconds Time to live when idle (in seconds)
 	 */
-	public CacheConfig(final String cacheType, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
+	public CacheConfig(final String cacheType, final boolean serializeElements, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
 		Assertion.checkArgNotEmpty(cacheType);
 		//-----
 		this.cacheType = cacheType;
+		this.serializeElements = serializeElements;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
@@ -57,6 +60,13 @@ public final class CacheConfig {
 	 */
 	public String getCacheType() {
 		return cacheType;
+	}
+
+	/**
+	 * @return elements should be serialized
+	 */
+	public boolean shouldSerializeElements() {
+		return serializeElements;
 	}
 
 	/**
