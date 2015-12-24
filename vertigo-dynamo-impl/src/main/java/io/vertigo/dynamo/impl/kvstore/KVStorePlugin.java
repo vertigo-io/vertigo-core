@@ -32,14 +32,20 @@ import java.util.List;
 public interface KVStorePlugin extends Plugin {
 
 	/**
-	 * Returns the list of collections managed by this plugin. 
-	 * @return list of collections; 
+	 * Returns the list of collections managed by this plugin.
+	 * @return list of collections;
 	 */
 	List<String> getCollections();
 
 	/**
+	 * @param collection the collection
+	 * @return count of elements into collection
+	 */
+	long count(String collection);
+
+	/**
 	 * Adds an element defined by an id in a collection.
-	 * @param collection the collection 
+	 * @param collection the collection
 	 * @param id the id
 	 * @param element the element
 	 */
@@ -48,7 +54,7 @@ public interface KVStorePlugin extends Plugin {
 	/**
 	 * Removes an element defined by an id from a collection.
 	 * If the collection doesn't contain the is then a exception is thrown.
-	 * @param collection the collection 
+	 * @param collection the collection
 	 * @param id the id
 	 */
 	void remove(String collection, String id);
@@ -56,19 +62,22 @@ public interface KVStorePlugin extends Plugin {
 	/**
 	 * Finds the optional element to which the id is mapped inside the specified collection.
 	 * If the element is not found then an empty option is returned.
+	 * @param <C> Element type
 	 * @param collection the collection
 	 * @param id the id
 	 * @param clazz the type of the searched element
-	 * @return the option 
+	 * @return the option
 	 */
 	<C> Option<C> find(String collection, String id, Class<C> clazz);
 
 	/**
 	 * Finds all elements contained inside the specified collection.
+	 * @param <C> Element type
 	 * @param collection the collection
 	 * @param skip the position from which the elements are returned
 	 * @param limit the limit size of elements
 	 * @return the list of elements.
 	 */
 	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
+
 }

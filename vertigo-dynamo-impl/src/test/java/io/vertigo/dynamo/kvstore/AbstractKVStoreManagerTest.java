@@ -52,6 +52,36 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public void testCount() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final long nbFlowers = kvStoreManager.count("flowers");
+			Assert.assertEquals(0, nbFlowers);
+			final Flower tulip1 = buildFlower("tulip", 100);
+			kvStoreManager.put("flowers", "1", tulip1);
+
+			final Flower tulip2 = buildFlower("tulip", 110);
+			kvStoreManager.put("flowers", "2", tulip2);
+
+			final Flower tulip3 = buildFlower("tulip", 120);
+			kvStoreManager.put("flowers", "3", tulip3);
+
+			//count after 3 inserts
+			final long nbFlowers2 = kvStoreManager.count("flowers");
+			Assert.assertEquals(3, nbFlowers2);
+
+			//count after 1 more insert of same value
+			kvStoreManager.put("flowers", "4", tulip3);
+			final long nbFlowers3 = kvStoreManager.count("flowers");
+			Assert.assertEquals(4, nbFlowers3);
+
+			//count after 1 insert of same key : update
+			kvStoreManager.put("flowers", "3", tulip3);
+			final long nbFlowers4 = kvStoreManager.count("flowers");
+			Assert.assertEquals(4, nbFlowers4);
+		}
+	}
+
+	@Test
 	public void testFind() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> foundFlower = kvStoreManager.find("flowers", "1", Flower.class);

@@ -29,14 +29,17 @@ import java.util.concurrent.TimeUnit;
  */
 final class DelayedMemoryKey implements Delayed {
 	private final long timeoutTime;
+	private final String collection;
 	private final String key;
 
 	/**
 	 * Constructor.
+	 * @param collection Collection of this element
 	 * @param key Security Token key
 	 * @param timeoutTime When key expired
 	 */
-	public DelayedMemoryKey(final String key, final long timeoutTime) {
+	public DelayedMemoryKey(final String collection, final String key, final long timeoutTime) {
+		this.collection = collection;
 		this.key = key;
 		this.timeoutTime = timeoutTime;
 	}
@@ -53,6 +56,13 @@ final class DelayedMemoryKey implements Delayed {
 	@Override
 	public long getDelay(final TimeUnit unit) {
 		return unit.convert(timeoutTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * @return Collection
+	 */
+	public String getCollection() {
+		return collection;
 	}
 
 	/**

@@ -63,6 +63,12 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
+	public long count(final String collection) {
+		return getKVStorePlugin(collection).count(collection);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void put(final String collection, final String id, final Object element) {
 		getKVStorePlugin(collection).put(collection, id, element);
 	}
@@ -84,4 +90,5 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 	public <C> List<C> findAll(final String collection, final int skip, final Integer limit, final Class<C> clazz) {
 		return getKVStorePlugin(collection).findAll(collection, skip, limit, clazz);
 	}
+
 }

@@ -168,6 +168,13 @@ final class BerkeleyDatabase {
 	}
 
 	/**
+	 * @return nb elements
+	 */
+	long count() {
+		return database.count();
+	}
+
+	/**
 	 * @param id Element id to remove
 	 */
 	void delete(final String id) {

@@ -264,6 +264,12 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 
 	/** {@inheritDoc} */
 	@Override
+	public long count(final String collection) {
+		return cacheDatas.count();
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		try {
 			environment = createDbEnv();

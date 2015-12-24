@@ -154,4 +154,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		return getDatabase(collection).findAll(skip, limit, clazz);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public long count(final String collection) {
+		return getDatabase(collection).count();
+	}
+
 }

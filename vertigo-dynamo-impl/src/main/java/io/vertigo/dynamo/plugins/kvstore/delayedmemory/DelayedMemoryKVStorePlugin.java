@@ -25,6 +25,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,10 +50,14 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 	private final long timeToLiveSeconds;
 	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
-	private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
+
+	private final Map<String, Map<String, DelayedMemoryCacheValue>> collectionsData = new HashMap<>();
+
+	//private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructor.
+	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param daemonManager Manager des daemons
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
@@ -68,6 +73,9 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 			listBuilder.add(collection.trim());
 		}
 		this.collections = listBuilder.unmodifiable().build();
+		for (final String collection : this.collections) {
+			collectionsData.put(collection, new ConcurrentHashMap<String, DelayedMemoryCacheValue>());
+		}
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
@@ -81,6 +89,18 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		return collections;
 	}
 
+	private Map<String, DelayedMemoryCacheValue> getCollectionData(final String collection) {
+		final Map<String, DelayedMemoryCacheValue> collectionData = collectionsData.get(collection);
+		Assertion.checkNotNull(collectionData, "collection {0} is null", collection);
+		return collectionData;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long count(final String collection) {
+		return getCollectionData(collection).size();
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String collection, final String key, final Object element) {
@@ -89,8 +109,8 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		Assertion.checkNotNull(element);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(element);
-		cacheDatas.put(key, cacheValue);
-		timeoutQueue.put(new DelayedMemoryKey(key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));
+		getCollectionData(collection).put(key, cacheValue);
+		timeoutQueue.put(new DelayedMemoryKey(collection, key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));
 	}
 
 	/** {@inheritDoc} */
@@ -99,7 +119,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkArgNotEmpty(key);
 		//-----
-		cacheDatas.remove(key);
+		getCollectionData(collection).remove(key);
 	}
 
 	/** {@inheritDoc} */
@@ -109,11 +129,11 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		Assertion.checkArgNotEmpty(key);
 		Assertion.checkNotNull(clazz);
 		//-----
-		final DelayedMemoryCacheValue cacheValue = cacheDatas.get(key);
+		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
 			return Option.some(clazz.cast(cacheValue.getValue()));
 		}
-		cacheDatas.remove(key);
+		getCollectionData(collection).remove(key);
 		return Option.none(); //key expired : return null
 	}
 
@@ -133,7 +153,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		while (checked < maxChecked) {
 			final DelayedMemoryKey delayedKey = timeoutQueue.poll();
 			if (delayedKey != null) {
-				cacheDatas.remove(delayedKey.getKey());
+				getCollectionData(delayedKey.getCollection()).remove(delayedKey.getKey());
 				checked++;
 			} else {
 				break;
@@ -168,4 +188,5 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 			delayedMemoryKVDataStorePlugin.removeTooOldElements();
 		}
 	}
+
 }
