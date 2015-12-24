@@ -38,32 +38,40 @@ public final class CacheDataStoreConfig {
 	private final CacheData dataCache;
 
 	/**
-	 * Constructeur.
-	 * @param cacheManager Manager du cache
+	 * Constructor.
+	 * @param cacheManager Cache manager
 	 */
 	public CacheDataStoreConfig(final CacheManager cacheManager) {
 		dataCache = new CacheData(cacheManager);
 	}
 
+	/**
+	 * @param dtDefinition Dt definition
+	 * @return if elements of this type are cacheable
+	 */
 	boolean isCacheable(final DtDefinition dtDefinition) {
 		return cacheableDtDefinitionMap.containsKey(dtDefinition);
 	}
 
+	/**
+	 * @return Data cache
+	 */
 	CacheData getDataCache() {
 		return dataCache;
 	}
 
 	/**
-	 * Enregistre si un DT peut être mis en cache et la façon de charger les données.
-	 * @param dtDefinition Définition de DT
-	 * @param timeToLiveInSeconds Durée de vie du cache
-	 * @param isReloadedByList Si ce type d'objet doit être chargé de façon ensembliste ou non
+	 * Register a Dtdefinition as cacheable and define cache behaviors.
+	 * @param dtDefinition DT definition
+	 * @param timeToLiveInSeconds time to live in cache
+	 * @param isReloadedByList On reload, elements should be load by full list or only missing ones
+	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
-	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
+	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
-		dataCache.registerContext(dtDefinition, timeToLiveInSeconds);
+		dataCache.registerContext(dtDefinition, timeToLiveInSeconds, serializeElements);
 	}
 
 	/**

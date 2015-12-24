@@ -47,8 +47,10 @@ public final class CacheDataStore {
 	private final LogicalDataStoreConfig logicalStoreConfig;
 
 	/**
-	 * Constructeur.
-	 * @param dataStoreConfig Configuration
+	 * Constructor.
+	 * @param storeManager Store manager
+	 * @param eventBusManager Event bus manager
+	 * @param dataStoreConfig Data store configuration
 	 */
 	public CacheDataStore(final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(storeManager);
@@ -65,6 +67,11 @@ public final class CacheDataStore {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 
+	/**
+	 * @param <D> Dt type
+	 * @param uri Element uri
+	 * @return Element by uri
+	 */
 	public <D extends DtObject> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
@@ -110,7 +117,8 @@ public final class CacheDataStore {
 		} else if (listUri instanceof DtListURIForNNAssociation) {
 			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) listUri);
+			final DtListURIForCriteria<D> castedListUri = DtListURIForCriteria.class.cast(listUri);
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, castedListUri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -133,6 +141,11 @@ public final class CacheDataStore {
 				.apply(unFilteredDtc);
 	}
 
+	/**
+	 * @param <D> Dt type
+	 * @param uri List uri
+	 * @return List of this uri
+	 */
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
@@ -170,9 +183,13 @@ public final class CacheDataStore {
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
 	}
 
+	/**
+	 * Receive store event.
+	 * @param event Store event
+	 */
 	@EventSuscriber
 	public void onEvent(final StoreEvent event) {
-		final URI uri = event.getUri();
+		final URI<?> uri = event.getUri();
 		clearCache(uri.getDefinition());
 	}
 }

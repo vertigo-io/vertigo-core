@@ -40,7 +40,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
 		super.doSetUp();
-		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true);
+		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true, true);
 	}
 
 	/**

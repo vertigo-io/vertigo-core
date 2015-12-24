@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Modifiable;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
@@ -84,11 +83,10 @@ import org.apache.lucene.util.Version;
  * @author  pchretien, npiedeloup
  * @param <D> Type d'objet
  */
-final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifiable {
+final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	/** Prefix for a created field use for sorting. */
 	private static final String SORT_FIELD_PREFIX = "4SORT_";
 
-	private boolean modifiable = true;
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
@@ -119,9 +117,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	private IndexWriter createIndexWriter() throws IOException {
-		checkModifiable();
-		//-----
-		final IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_9, indexAnalyser);
+		final IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, indexAnalyser); //sur une implé mémoire on peut utiliser la dernière version
 		return new IndexWriter(directory, config);
 	}
 
@@ -140,25 +136,6 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	 */
 	private void mapDocument(final String pkValue, final D dto) {
 		indexedObjectPerPk.put(pkValue, dto);
-	}
-
-	private void checkModifiable() {
-		Assertion.checkArgument(modifiable, "mode écriture désactivé");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isModifiable() {
-		return modifiable;
-	}
-
-	/**
-	 * Passe l'index en mode non modifiable.
-	 */
-	void makeUnmodifiable() {
-		checkModifiable();
-		//-----
-		modifiable = false;
 	}
 
 	private DtList<D> executeQuery(final Query query, final int skip, final int top, final Sort sort) throws IOException {
@@ -193,9 +170,10 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		return dtcResult;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		checkModifiable();
+		Assertion.checkNotNull(fullDtc);
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
 			final DtField pkField = fullDtc.getDefinition().getIdField().get();
@@ -241,7 +219,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
-				final URI<DtObject> uri = new URI(field.getFkDtDefinition(), value);
+				final URI<DtObject> uri = new URI<>(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getStoreManager().getDataStore().get(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());

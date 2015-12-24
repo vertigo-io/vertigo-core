@@ -20,6 +20,8 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -28,7 +30,9 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
+import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
@@ -46,21 +50,22 @@ import javax.inject.Inject;
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
 
-	//	private final int nbTermsMax = 1024; //a paramétrer
 	private final CacheManager cacheManager;
 
 	/**
 	 * Constructeur.
 	 * @param localeManager Manager des messages localisés
 	 * @param cacheManager Manager des caches
+	 * @param eventBusManager Event manager
 	 */
 	@Inject
-	public LuceneIndexPlugin(final LocaleManager localeManager, final CacheManager cacheManager) {
+	public LuceneIndexPlugin(final LocaleManager localeManager, final CacheManager cacheManager, final EventBusManager eventBusManager) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
+		eventBusManager.register(this);
 	}
 
 	private <D extends DtObject> LuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
@@ -71,13 +76,13 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		LuceneIndex<D> index;
 		if (useCache) {
 			final String indexName = "INDEX_" + dtcUri.toURN();
-			final String cacheContext = getContext(fullDtc.getDefinition());
+			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
-			cacheManager.addCache(cacheContext, new CacheConfig("dataCache", 1000, 1800, 3600));
-			index = (LuceneIndex<D>) cacheManager.get(cacheContext, indexName);
+			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 1800, 3600));
+			index = LuceneIndex.class.cast(cacheManager.get(cacheContext, indexName));
 			if (index == null) {
 				index = createIndex(fullDtc, storeValue);
-				cacheManager.put(getContext(fullDtc.getDefinition()), indexName, index);
+				cacheManager.put(getIndexCacheContext(fullDtc.getDefinition()), indexName, index);
 			}
 		} else {
 			index = createIndex(fullDtc, storeValue);
@@ -85,9 +90,8 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return index;
 	}
 
-	private static String getContext(final DtDefinition dtDefinition) {
-		//TODO : on met le même context que le cacheStore pour être sur la même durée de vie que la liste
-		return "DataCache:" + dtDefinition.getName();
+	private static String getIndexCacheContext(final DtDefinition dtDefinition) {
+		return "IndexCache:" + dtDefinition.getName();
 	}
 
 	private static <D extends DtObject> LuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
@@ -95,7 +99,6 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition());
 		luceneDb.addAll(fullDtc, storeValue);
-		luceneDb.makeUnmodifiable();
 		return luceneDb;
 	}
 
@@ -105,10 +108,20 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		Assertion.checkArgument(listState.getMaxRows().isDefined(), "Can't return all results, you must define maxRows");
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
-			return index.<D> getCollection(keywords, searchedFields, listFilters, listState, boostedField);
+			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);
 		} catch (final IOException e) {
 			throw new WrappedException("Erreur d'indexation", e);
 		}
+	}
+
+	/**
+	 * Receive store event.
+	 * @param event Store event
+	 */
+	@EventSuscriber
+	public void onEvent(final StoreEvent event) {
+		final URI<?> uri = event.getUri();
+		cacheManager.clear(getIndexCacheContext(uri.getDefinition()));
 	}
 
 }

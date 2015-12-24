@@ -21,23 +21,25 @@ package io.vertigo.dynamo.store.datastore;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
- * Configuration du composant de persistance.
+ * Data store configuration.
  *
  * @author pchretien
  */
 public interface DataStoreConfig {
 
 	/**
-	 * Enregistre si un DT peut être mis en cache et la façon de charger les données.
-	 * @param dtDefinition Définition de DT
-	 * @param timeToLiveInSeconds Durée de vie du cache
-	 * @param isReloadedByList Si ce type d'objet doit être chargé de façon ensembliste ou non
+	 * Register DtDefinition as Cacheable and define cache behaviors.
+	 * @param dtDefinition Dt definition
+	 * @param timeToLiveInSeconds time to live in cache
+	 * @param isReloadedByList Set if reload should be done by full list or one by one when missing
+	 * @param serializeElements Set if elements should be serialized or not (serialization guarantee elements are cloned and not modified)
 	 */
-	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList);
+	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, boolean serializeElements);
 
 	/**
 	 * @param dataSpace the dataSpace
 	 * @return connectionName use for this store
 	 */
 	String getConnectionName(String dataSpace);
+
 }
