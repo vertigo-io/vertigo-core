@@ -81,6 +81,12 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
+	public void clear(final String collection) {
+		getKVStorePlugin(collection).clear(collection);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public <C> Option<C> find(final String collection, final String id, final Class<C> clazz) {
 		return getKVStorePlugin(collection).find(collection, id, clazz);
 	}

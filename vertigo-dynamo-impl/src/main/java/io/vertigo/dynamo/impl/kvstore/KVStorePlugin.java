@@ -60,6 +60,12 @@ public interface KVStorePlugin extends Plugin {
 	void remove(String collection, String id);
 
 	/**
+	 * Removes all elements from a collection.
+	 * @param collection the collection
+	 */
+	void clear(String collection);
+
+	/**
 	 * Finds the optional element to which the id is mapped inside the specified collection.
 	 * If the element is not found then an empty option is returned.
 	 * @param <C> Element type

@@ -197,4 +197,19 @@ final class BerkeleyDatabase {
 			throw new VSystemException("delete has failed");
 		}
 	}
+
+	/**
+	 * Clear this database.
+	 */
+	public void clear() {
+		final DatabaseEntry theKey = new DatabaseEntry();
+		final DatabaseEntry theData = new DatabaseEntry();
+		try (final Cursor cursor = database.openCursor(null, null)) {
+			while (cursor.getNext(theKey, theData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+				database.delete(null, theKey);
+			}
+		} catch (final DatabaseException e) {
+			throw new WrappedException("clear failed", e);
+		}
+	}
 }

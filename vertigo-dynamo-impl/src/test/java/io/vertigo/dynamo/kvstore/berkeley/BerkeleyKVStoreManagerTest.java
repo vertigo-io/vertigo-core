@@ -35,6 +35,14 @@ import org.junit.Test;
  */
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
+	/** {@inheritDoc} */
+	@Override
+	protected void doSetUp() throws Exception {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			kvStoreManager.clear("flowers");
+		}
+	}
+
 	@Test
 	public void testInsertMass() {
 

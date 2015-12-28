@@ -138,6 +138,12 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
+	public void clear(final String collection) {
+		getDatabase(collection).clear();
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void put(final String collection, final String id, final Object element) {
 		getDatabase(collection).put(id, element);
 	}

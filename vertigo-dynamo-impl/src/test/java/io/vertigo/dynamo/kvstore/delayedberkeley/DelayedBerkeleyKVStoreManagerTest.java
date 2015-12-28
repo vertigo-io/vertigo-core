@@ -19,10 +19,19 @@
 package io.vertigo.dynamo.kvstore.delayedberkeley;
 
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 
 /**
  * @author pchretien
  */
 public final class DelayedBerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
-	// nothing
+
+	/** {@inheritDoc} */
+	@Override
+	protected void doSetUp() throws Exception {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			kvStoreManager.clear("flowers");
+		}
+	}
+
 }

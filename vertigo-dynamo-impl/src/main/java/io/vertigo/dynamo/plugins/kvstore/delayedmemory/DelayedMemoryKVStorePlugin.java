@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.
  * This store ISN'T transactional !!
- * Purge is garantee Timer et passe toutes les minutes.
+ * Purge is garantee by Timer every minute.
  *
  * @author pchretien, npiedeloup
  */
@@ -120,6 +120,14 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		Assertion.checkArgNotEmpty(key);
 		//-----
 		getCollectionData(collection).remove(key);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void clear(final String collection) {
+		Assertion.checkArgNotEmpty(collection);
+		//-----
+		getCollectionData(collection).clear();
 	}
 
 	/** {@inheritDoc} */

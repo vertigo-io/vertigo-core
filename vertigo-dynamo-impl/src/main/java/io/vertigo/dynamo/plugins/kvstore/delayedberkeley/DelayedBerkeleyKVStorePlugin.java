@@ -68,7 +68,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	private final List<String> collections;
 
 	private final int timeToLiveSeconds;
-	private Database cacheDatas;
+	private Database dataBase;
 
 	private final File myCacheEnvPath;
 	private Environment environment;
@@ -140,7 +140,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			final DatabaseEntry theData = new DatabaseEntry();
 			cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) element, System.currentTimeMillis()), theData);
 
-			final OperationStatus status = cacheDatas.put(null, theKey, theData);
+			final OperationStatus status = dataBase.put(null, theKey, theData);
 			if (!OperationStatus.SUCCESS.equals(status)) {
 				throw new SimpleDatabaseException("Write error in UiSecurityTokenCache");
 			}
@@ -160,11 +160,11 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
 			final DatabaseEntry theData = new DatabaseEntry();
-			final OperationStatus status = cacheDatas.get(null, theKey, theData, null);
+			final OperationStatus status = dataBase.get(null, theKey, theData, null);
 			if (OperationStatus.SUCCESS.equals(status)) {
 				final DelayedBerkeleyCacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
-					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it
+					dataBase.delete(null, theKey); //if corrupt (null) or too old, we delete it
 				} else {
 					return Option.some(clazz.cast(cacheValue.getValue()));
 				}
@@ -184,12 +184,12 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		final DatabaseEntry theKey = new DatabaseEntry();
 		final DatabaseEntry theData = new DatabaseEntry();
 		final List<C> list = new ArrayList<>();
-		try (final Cursor cursor = cacheDatas.openCursor(null, null)) {
+		try (final Cursor cursor = dataBase.openCursor(null, null)) {
 			int find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 				final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
-					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it
+					dataBase.delete(null, theKey); //if corrupt (null) or too old, we delete it
 				} else {
 					final Serializable value = cacheValue.getValue();
 					if (clazz.isInstance(value)) { //we only count asked class objects
@@ -215,9 +215,23 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
-			cacheDatas.delete(null, theKey);
+			dataBase.delete(null, theKey);
 		} catch (final DatabaseException e) {
 			throw new WrappedException(e);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void clear(final String collection) {
+		final DatabaseEntry theKey = new DatabaseEntry();
+		final DatabaseEntry theData = new DatabaseEntry();
+		try (final Cursor cursor = dataBase.openCursor(null, null)) {
+			while (cursor.getNext(theKey, theData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+				dataBase.delete(null, theKey);
+			}
+		} catch (final DatabaseException e) {
+			throw new WrappedException("clear " + collection + " failed", e);
 		}
 	}
 
@@ -228,7 +242,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			return cacheValueBinding.entryToObject(theData);
 		} catch (final RuntimeException e) {
 			LOGGER.warn("Read error in UiSecurityTokenCache : remove tokenKey : " + key, e);
-			cacheDatas.delete(null, theKey);
+			dataBase.delete(null, theKey);
 		}
 		return null;
 	}
@@ -244,7 +258,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
-		try (Cursor cursor = cacheDatas.openCursor(null, null)) {
+		try (Cursor cursor = dataBase.openCursor(null, null)) {
 			final int maxChecked = 500;
 			int checked = 0;
 			//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
@@ -252,7 +266,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 			while (checked < maxChecked && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 				final DelayedBerkeleyCacheValue cacheValue = readCacheValueSafely(foundKey, foundData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null si erreur de lecture
-					cacheDatas.delete(null, foundKey);
+					dataBase.delete(null, foundKey);
 					checked++;
 				} else {
 					break;
@@ -265,7 +279,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	/** {@inheritDoc} */
 	@Override
 	public long count(final String collection) {
-		return cacheDatas.count();
+		return dataBase.count();
 	}
 
 	/** {@inheritDoc} */
@@ -273,7 +287,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	public void start() {
 		try {
 			environment = createDbEnv();
-			cacheDatas = createDb();
+			dataBase = createDb();
 		} catch (final DatabaseException e) {
 			throw new WrappedException(e);
 		}
@@ -284,7 +298,7 @@ public final class DelayedBerkeleyKVStorePlugin implements KVStorePlugin, Active
 	public void stop() {
 		if (environment != null) {
 			try {
-				cacheDatas.close();
+				dataBase.close();
 				// Finally, close the environment.
 				environment.close();
 			} catch (final DatabaseException dbe) {
