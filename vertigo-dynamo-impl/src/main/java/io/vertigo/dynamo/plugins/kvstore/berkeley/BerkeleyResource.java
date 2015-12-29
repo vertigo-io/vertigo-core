@@ -28,7 +28,7 @@ import com.sleepycat.je.Transaction;
 
 /**
  * Manages a connection to a berkeley database.
- * 
+ *
  * @author pchretien
  */
 final class BerkeleyResource implements VTransactionResource {
@@ -48,6 +48,9 @@ final class BerkeleyResource implements VTransactionResource {
 		}
 	}
 
+	/**
+	 * @return Berkeley transaction
+	 */
 	Transaction getBerkeleyTransaction() {
 		return transaction;
 	}

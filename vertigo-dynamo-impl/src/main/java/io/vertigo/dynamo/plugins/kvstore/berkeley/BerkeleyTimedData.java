@@ -16,26 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvstore.delayedberkeley;
+package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
 import java.io.Serializable;
 
 /**
  * @author npiedeloup
  */
-final class DelayedBerkeleyCacheValue {
+final class BerkeleyTimedData {
 	private final long createTime;
 	private final Serializable value;
 
-	DelayedBerkeleyCacheValue(final Serializable value, final long createTime) {
+	/**
+	 * Constructor.
+	 * @param value Value
+	 * @param createTime creation time
+	 */
+	BerkeleyTimedData(final Serializable value, final long createTime) {
 		this.value = value;
 		this.createTime = createTime;
 	}
 
+	/**
+	 * @return the value
+	 */
 	Serializable getValue() {
 		return value;
 	}
 
+	/**
+	 * @return creation time
+	 */
 	long getCreateTime() {
 		return createTime;
 	}

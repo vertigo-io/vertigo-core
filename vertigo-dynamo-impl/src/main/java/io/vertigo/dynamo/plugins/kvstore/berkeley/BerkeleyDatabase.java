@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
@@ -26,8 +27,11 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.tuple.TupleBinding;
@@ -44,8 +48,10 @@ import com.sleepycat.je.Transaction;
  * @author pchretien
  */
 final class BerkeleyDatabase {
+	private static final Logger LOGGER = Logger.getLogger(BerkeleyDatabase.class);
+	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 200;
 	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
-	private static final TupleBinding dataBinding = new BerkeleyDataBinding();
+	private final TupleBinding<BerkeleyTimedData> dataBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
 	private final Database database;
@@ -53,14 +59,17 @@ final class BerkeleyDatabase {
 	/**
 	 * Constructor.
 	 * @param database Berkeley DataBase
+	 * @param timeToLiveSeconds Time to live seconds
 	 * @param transactionManager Transaction manager
+	 * @param codecManager Codec manager
 	 */
-	BerkeleyDatabase(final Database database, final VTransactionManager transactionManager) {
+	BerkeleyDatabase(final Database database, final long timeToLiveSeconds, final VTransactionManager transactionManager, final CodecManager codecManager) {
 		Assertion.checkNotNull(database);
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.database = database;
+		dataBinding = new BerkeleyTimedDataBinding(timeToLiveSeconds, new BerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
 	}
 
 	/**
@@ -85,6 +94,7 @@ final class BerkeleyDatabase {
 	 * Récupération d'un Objet par sa clé.
 	 * @param <C> D Type des objets à récupérer
 	 * @param id Id de l'objet à récupérer
+	 * @param clazz Type des objets à récupérer
 	 * @return Objet correspondant à la clé
 	 */
 	<C> Option<C> find(final String id, final Class<C> clazz) {
@@ -107,9 +117,9 @@ final class BerkeleyDatabase {
 			return Option.none();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new VSystemException("find a échouée");
+			throw new VSystemException("find has failed");
 		}
-		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry)));
+		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry).getValue()));
 	}
 
 	/**
@@ -119,12 +129,14 @@ final class BerkeleyDatabase {
 	void put(final String id, final Object object) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(object);
+		Assertion.checkArgument(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
+		//-----
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 		final DatabaseEntry dataEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);
-		dataBinding.objectToEntry(object, dataEntry);
+		dataBinding.objectToEntry(new BerkeleyTimedData(Serializable.class.cast(object), System.currentTimeMillis()), dataEntry);
 
 		final OperationStatus status;
 		try {
@@ -133,7 +145,7 @@ final class BerkeleyDatabase {
 			throw new WrappedException(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new VSystemException("put failed");
+			throw new VSystemException("put has failed");
 		}
 	}
 
@@ -152,7 +164,7 @@ final class BerkeleyDatabase {
 		try (final Cursor cursor = database.openCursor(getCurrentBerkeleyTransaction(), null)) {
 			int find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-				final Object object = dataBinding.entryToObject(dataEntry);
+				final Object object = dataBinding.entryToObject(dataEntry).getValue();
 				//@todo Pour l'instant on ne comptabilise que les collections du type demandé.
 				if (clazz.isInstance(object)) {
 					find++;
@@ -163,7 +175,7 @@ final class BerkeleyDatabase {
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new WrappedException("findAll a échouée", e);
+			throw new WrappedException("findAll has failed", e);
 		}
 	}
 
@@ -212,4 +224,41 @@ final class BerkeleyDatabase {
 			throw new WrappedException("clear failed", e);
 		}
 	}
+
+	/**
+	 * Remove too old elements.
+	 */
+	public void removeTooOldElements() {
+		final DatabaseEntry foundKey = new DatabaseEntry();
+		final DatabaseEntry foundData = new DatabaseEntry();
+
+		try (Cursor cursor = database.openCursor(null, null)) {
+			int checked = 0;
+			//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
+			//dès qu'on en trouve un trop récent, on stop
+			while (checked < MAX_REMOVED_TOO_OLD_ELEMENTS && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+				final BerkeleyTimedData timedData = readTimedDataSafely(foundKey, foundData);
+				if (timedData == null || timedData.getValue() == null) {//null si erreur de lecture, value null si trop vieux
+					database.delete(null, foundKey);
+					checked++;
+				} else {
+					break;
+				}
+			}
+			LOGGER.info("purge " + checked + " elements");
+		}
+	}
+
+	private BerkeleyTimedData readTimedDataSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
+		String key = "IdError";
+		try {
+			key = keyBinding.entryToObject(theKey);
+			return dataBinding.entryToObject(theData);
+		} catch (final RuntimeException e) {
+			LOGGER.warn("Berkeley database read error, remove tokenKey : " + key, e);
+			database.delete(null, theKey);
+		}
+		return null;
+	}
+
 }
