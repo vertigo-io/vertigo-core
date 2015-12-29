@@ -46,7 +46,6 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListR
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
-import io.vertigo.dynamo.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
 import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsTest;
 import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
@@ -93,7 +92,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--kvdatastore
 		DelayedMemoryKVStoreManagerTest.class,
 		BerkeleyKVStoreManagerTest.class,
-		DelayedBerkeleyKVStoreManagerTest.class,
 		//--persistence
 		CachedStoreManagerTest.class,
 		StoreManagerTest.class,
