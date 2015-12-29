@@ -29,7 +29,7 @@ import com.sleepycat.bind.tuple.TupleOutput;
 /**
  * @author npiedeloup
  */
-final class BerkeleyTimedDataBinding extends TupleBinding<BerkeleyTimedData> {
+final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
 	private static final String PREFIX = "TimedValue:";
 	private final TupleBinding<Serializable> serializableBinding;
 	private final long timeToLiveSeconds;
@@ -47,25 +47,23 @@ final class BerkeleyTimedDataBinding extends TupleBinding<BerkeleyTimedData> {
 
 	/** {@inheritDoc} */
 	@Override
-	public BerkeleyTimedData entryToObject(final TupleInput ti) {
+	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
 		Assertion.checkArgument(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
 		final long createTime = ti.readLong();
 		if (isValueTooOld(createTime)) {
 			//si donnée trop vieille on fait l'économie de la déserialization
-			return new BerkeleyTimedData(null, createTime);
+			return null;
 		}
-		final Serializable value = serializableBinding.entryToObject(ti);
-		return new BerkeleyTimedData(value, createTime);
+		return serializableBinding.entryToObject(ti);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void objectToEntry(final BerkeleyTimedData value, final TupleOutput to) {
-		final BerkeleyTimedData cacheValue = value;
+	public void objectToEntry(final Serializable value, final TupleOutput to) {
 		to.writeString(PREFIX);
-		to.writeLong(cacheValue.getCreateTime());
-		serializableBinding.objectToEntry(cacheValue.getValue(), to);
+		to.writeLong(System.currentTimeMillis());
+		serializableBinding.objectToEntry(value, to);
 	}
 
 	private boolean isValueTooOld(final long createTime) {

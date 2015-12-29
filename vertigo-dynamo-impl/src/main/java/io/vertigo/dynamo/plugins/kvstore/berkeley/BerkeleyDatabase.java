@@ -51,7 +51,7 @@ final class BerkeleyDatabase {
 	private static final Logger LOGGER = Logger.getLogger(BerkeleyDatabase.class);
 	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 200;
 	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
-	private final TupleBinding<BerkeleyTimedData> dataBinding;
+	private final TupleBinding<Serializable> dataBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
 	private final Database database;
@@ -119,7 +119,7 @@ final class BerkeleyDatabase {
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("find has failed");
 		}
-		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry).getValue()));
+		return Option.option(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
 
 	/**
@@ -136,7 +136,7 @@ final class BerkeleyDatabase {
 		final DatabaseEntry dataEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);
-		dataBinding.objectToEntry(new BerkeleyTimedData(Serializable.class.cast(object), System.currentTimeMillis()), dataEntry);
+		dataBinding.objectToEntry(Serializable.class.cast(object), dataEntry);
 
 		final OperationStatus status;
 		try {
@@ -164,7 +164,7 @@ final class BerkeleyDatabase {
 		try (final Cursor cursor = database.openCursor(getCurrentBerkeleyTransaction(), null)) {
 			int find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-				final Object object = dataBinding.entryToObject(dataEntry).getValue();
+				final Object object = dataBinding.entryToObject(dataEntry);
 				//@todo Pour l'instant on ne comptabilise que les collections du type demandé.
 				if (clazz.isInstance(object)) {
 					find++;
@@ -237,8 +237,8 @@ final class BerkeleyDatabase {
 			//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
 			//dès qu'on en trouve un trop récent, on stop
 			while (checked < MAX_REMOVED_TOO_OLD_ELEMENTS && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-				final BerkeleyTimedData timedData = readTimedDataSafely(foundKey, foundData);
-				if (timedData == null || timedData.getValue() == null) {//null si erreur de lecture, value null si trop vieux
+				final Serializable value = readTimedDataSafely(foundKey, foundData);
+				if (value == null) {//null si erreur de lecture, ou si trop vieux
 					database.delete(null, foundKey);
 					checked++;
 				} else {
@@ -249,7 +249,7 @@ final class BerkeleyDatabase {
 		}
 	}
 
-	private BerkeleyTimedData readTimedDataSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
+	private Serializable readTimedDataSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
 		String key = "IdError";
 		try {
 			key = keyBinding.entryToObject(theKey);

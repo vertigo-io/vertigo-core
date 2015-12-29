@@ -142,6 +142,10 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 			sleep(3);
 
+			//find unexpired element
+			final Option<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
+			Assert.assertTrue(tulip1Load.isDefined());
+
 			//count after 3 inserts and T+9s
 			final long nbFlowers3 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assert.assertEquals(3, nbFlowers3);
@@ -162,6 +166,9 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			final long nbFlowers6 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
 			Assert.assertEquals(0, nbFlowers6);
 
+			//find expired element
+			final Option<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
+			Assert.assertTrue(tulip1Reload.isEmpty());
 		}
 	}
 
