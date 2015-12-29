@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.collections.model;
 
-import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -114,8 +113,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
-		final FacetDefinition facetDefinition = Home.getApp().getDefinitionSpace().resolve(facetDefinitionName, FacetDefinition.class);
-		//Très compliqué de créer une fausse FacetDefinition, il est plus simple d'imposer une facet détournée.
+		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null));
 		clusterFacetDefinition = Option.some(facetDefinition);
 		return this;
 	}
