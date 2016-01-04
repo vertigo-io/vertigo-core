@@ -4,7 +4,7 @@ package io.vertigo.dynamo.plugins.kvstore.berkeley;
  * Collection configuration.
  * @author npiedeloup
  */
-public final class BerkeleyCollectionConfig {
+final class BerkeleyCollectionConfig {
 
 	private final String collectionName;
 	private final long timeToLiveSeconds;
@@ -25,21 +25,21 @@ public final class BerkeleyCollectionConfig {
 	/**
 	 * @return collectionName
 	 */
-	public final String getCollectionName() {
+	final String getCollectionName() {
 		return collectionName;
 	}
 
 	/**
 	 * @return timeToLiveSeconds
 	 */
-	public final long getTimeToLiveSeconds() {
+	final long getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
 	}
 
 	/**
 	 * @return inMemory
 	 */
-	public final boolean isInMemory() {
+	final boolean isInMemory() {
 		return inMemory;
 	}
 }

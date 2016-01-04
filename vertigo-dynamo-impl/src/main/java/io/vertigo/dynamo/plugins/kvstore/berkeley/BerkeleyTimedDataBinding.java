@@ -38,7 +38,7 @@ final class BerkeleyTimedDataBinding extends TupleBinding<Serializable> {
 	 * @param timeToLiveSeconds Time to live, is data too old return a null data
 	 * @param serializableBinding TupleBinding for serializable value
 	 */
-	public BerkeleyTimedDataBinding(final long timeToLiveSeconds, final TupleBinding<Serializable> serializableBinding) {
+	BerkeleyTimedDataBinding(final long timeToLiveSeconds, final TupleBinding<Serializable> serializableBinding) {
 		Assertion.checkNotNull(serializableBinding);
 		//-----
 		this.serializableBinding = serializableBinding;
