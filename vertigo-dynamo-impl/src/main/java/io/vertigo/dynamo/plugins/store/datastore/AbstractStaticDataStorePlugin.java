@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 
 /**
  * Class abstraite des Stores de données static et immutable.

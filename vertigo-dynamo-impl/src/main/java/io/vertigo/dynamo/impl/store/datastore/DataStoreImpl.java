@@ -30,7 +30,6 @@ import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.lang.Assertion;

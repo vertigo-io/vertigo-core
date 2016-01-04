@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.store.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
