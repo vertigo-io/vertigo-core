@@ -25,7 +25,7 @@ import java.util.Date;
 
 /**
  * Scheduler.
- * This component triggers the execution of tasks
+ * This component triggers the execution of jobs
  * - at a rate frequency (ex : each 10 min)
  * - at a fix hour each day (ex : at 1h am each day except ... )
  *
@@ -33,7 +33,9 @@ import java.util.Date;
  */
 public interface SchedulerManager extends Manager {
 	/**
-	 * Programme un job pour exécution à une fréquence donnée en secondes.
+	 * Schedules a job at a rate frequency defined in seconds.
+	 * 
+	 * @param jobDefinition the type of job 
 	 * @param periodInSecond Fréquence d'exécution en secondes
 	 */
 	void scheduleEverySecondInterval(final JobDefinition jobDefinition, int periodInSecond);
@@ -43,6 +45,8 @@ public interface SchedulerManager extends Manager {
 	 * <br/>Si il y a besoin de programmer un job pour exécution à jour fixe dans la semaine
 	 * ou dans le mois, il peut être programmé un job chaque puis conditioner l'exécution selon la
 	 * date courante en utilisant la classe Calendar.
+	 * 
+	 * @param jobDefinition the type of job 
 	 * @param hour Heure fixe d'exécution
 	 * @param minute Minute fixe d'exécution
 	 */
@@ -50,12 +54,16 @@ public interface SchedulerManager extends Manager {
 
 	/**
 	 * Programme un job pour une seul exécution à une date donnée.
+	 * 
+	 * @param jobDefinition the type of job 
 	 * @param date Date d'exécution
 	 */
 	void scheduleAtDate(final JobDefinition jobDefinition, Date date);
 
 	/**
 	 * Exécution immédiate et asynchrone d'un job.
+	 * 
+	 * @param jobDefinition the type of job 
 	 */
 	void scheduleNow(final JobDefinition jobDefinition);
 }
