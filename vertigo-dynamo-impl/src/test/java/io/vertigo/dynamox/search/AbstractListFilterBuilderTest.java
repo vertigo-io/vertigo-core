@@ -35,7 +35,7 @@ public abstract class AbstractListFilterBuilderTest {
 	public void testStringQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "ALL:#query#", "Test", "ALL:(Test)", "ALL:Test" }, //0
+				{ "ALL:#query#", "Test", "ALL:Test" }, //0
 				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
 				{ "ALL:#query*#", "Test", "ALL:(Test*)" }, //2
 				{ "ALL:#query*#", "Test test2", "ALL:(Test* test2*)" }, //3
