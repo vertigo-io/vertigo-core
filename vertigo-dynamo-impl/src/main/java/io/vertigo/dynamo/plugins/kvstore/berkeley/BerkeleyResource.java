@@ -32,7 +32,7 @@ import com.sleepycat.je.Transaction;
  * @author pchretien
  */
 final class BerkeleyResource implements VTransactionResource {
-	private Transaction transaction;
+	private final Transaction transaction;
 
 	/***
 	 * Constructor.
@@ -58,24 +58,18 @@ final class BerkeleyResource implements VTransactionResource {
 	/** {@inheritDoc} */
 	@Override
 	public void commit() throws Exception {
-		if (transaction != null) {
-			transaction.commit();
-		}
+		transaction.commit();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void rollback() throws Exception {
-		if (transaction != null) {
-			transaction.abort();
-		}
+		transaction.abort();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void release() {
-		if (transaction != null) {
-			transaction = null;
-		}
+		//
 	}
 }
