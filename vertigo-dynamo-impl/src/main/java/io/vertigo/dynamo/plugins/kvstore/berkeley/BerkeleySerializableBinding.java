@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 import java.io.Serializable;
 
@@ -50,26 +49,18 @@ final class BerkeleySerializableBinding extends TupleBinding<Serializable> {
 		final String prefix = ti.readString();
 		Assertion.checkArgument(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
 		//-----
-		try {
-			final int size = ti.readInt();
-			final byte[] buffer = new byte[size];
-			ti.readFast(buffer);
-			return codec.decode(buffer);
-		} catch (final Exception e) {
-			throw new WrappedException(e);
-		}
+		final int size = ti.readInt();
+		final byte[] buffer = new byte[size];
+		ti.readFast(buffer);
+		return codec.decode(buffer);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void objectToEntry(final Serializable value, final TupleOutput to) {
 		to.writeString(PREFIX);
-		try {
-			final byte[] buffer = codec.encode(value);
-			to.writeInt(buffer.length);
-			to.writeFast(buffer);
-		} catch (final Exception e) {
-			throw new WrappedException(e);
-		}
+		final byte[] buffer = codec.encode(value);
+		to.writeInt(buffer.length);
+		to.writeFast(buffer);
 	}
 }
