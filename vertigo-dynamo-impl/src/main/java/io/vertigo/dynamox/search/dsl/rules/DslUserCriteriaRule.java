@@ -70,7 +70,7 @@ final class DslUserCriteriaRule {
 	private static final String START_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.	//
 	private static final String INNER_WORD_RESERVERD_PATTERN = "\\S*";
 	private static final String END_WORD_RESERVERD_PATTERN = "[^\\s!\"#$%&'()*+,\\-/:;<=>?@[\\\\]^`{|}~]"; //Punct sauf _.
-	private static final String WORD_RESERVERD_PATTERN = START_WORD_RESERVERD_PATTERN + INNER_WORD_RESERVERD_PATTERN + END_WORD_RESERVERD_PATTERN; //Punct sauf _.
+	private static final String WORD_RESERVERD_PATTERN = START_WORD_RESERVERD_PATTERN + "(?:" + INNER_WORD_RESERVERD_PATTERN + END_WORD_RESERVERD_PATTERN + ")?"; //Punct sauf _.
 	private static final String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	private static final String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	//private static final String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";

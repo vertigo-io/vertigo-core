@@ -35,7 +35,7 @@ public abstract class AbstractListFilterBuilderTest {
 	public void testStringQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "ALL:#query#", "Test", "ALL:(Test)", "ALL:Test" }, //0
+				{ "ALL:#query#", "Test", "ALL:Test" }, //0
 				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
 				{ "ALL:#query*#", "Test", "ALL:(Test*)" }, //2
 				{ "ALL:#query*#", "Test test2", "ALL:(Test* test2*)" }, //3
@@ -43,6 +43,7 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query#", "Test test2", "ALL:(+Test +test2)" }, //5
 				{ "+ALL:#query#", "Test", "+ALL:(Test)", "+ALL:Test" }, //6
 				{ "+ALL:#query#", "Test test2", "+ALL:(Test test2)" }, //7
+				{ "+ALL:#query#", "T", "+ALL:T" }, //8
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -252,14 +253,16 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //16
 				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //17
 				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //18
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //8
 		};
 		testObjectFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testMultiQuery() {
-		final TestBean testBeanNull = new TestBean(null, "Test test2", null, null, null, null);
-		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, null, null, null);
+		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
+		final TestBean testBeanNull = new TestBean(null, "Test test2", null, dateTest1, null, 5);
+		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, dateTest1, null, 5);
 		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
 		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null);
 		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
@@ -273,7 +276,9 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
 				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //7
-
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
 		};
 		testObjectFixedQuery(testQueries);
 	}
