@@ -168,7 +168,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	private static void putIfNotEmpty(final Map<String, Object> entity, final String key, final Object value) {
-		if (value instanceof List && ((List) value).isEmpty()) {
+		if (value instanceof Collection && ((Collection) value).isEmpty()) {
 			return;
 		}
 		if (value != null) {
@@ -249,7 +249,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
 			return null;
-		} else if (WebServiceTypeUtil.isAssignableFrom(List.class, type)) {
+		} else if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
 			schema.put("items", createSchemaObject(itemsType));
@@ -526,7 +526,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			return new String[] { "string", "date-time" };
 		} else if (VFile.class.isAssignableFrom(paramClass)) {
 			return new String[] { "file", null };
-		} else if (List.class.isAssignableFrom(paramClass) || Collection.class.isAssignableFrom(paramClass)) {
+		} else if (Collection.class.isAssignableFrom(paramClass)) {
 			return new String[] { "array", null };
 		} else {
 			return new String[] { "object", null };
