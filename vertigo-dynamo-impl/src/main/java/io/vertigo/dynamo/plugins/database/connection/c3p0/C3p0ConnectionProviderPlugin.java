@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.database.connection.mock;
+package io.vertigo.dynamo.plugins.database.connection.c3p0;
 
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -24,24 +24,24 @@ import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
-import java.sql.DriverManager;
+import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 /**
  * Implémentation d'un pseudo Pool.
  *
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
- * @deprecated NE DOIT PAS ETRE UTILISE EN PRODUCTION.
  */
-@Deprecated
-public final class MockConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
-	/** Url Jdbc. */
-	private final String jdbcUrl;
+public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
+	private final ComboPooledDataSource pooledDataSource;
 
 	/**
 	 * Constructeur (deprecated).
@@ -51,21 +51,26 @@ public final class MockConnectionProviderPlugin extends AbstractSqlConnectionPro
 	 * @param jdbcUrl URL de configuration jdbc
 	 */
 	@Inject
-	public MockConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
+	public C3p0ConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
 		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
 		//-----
-		ClassUtil.classForName(jdbcDriver); //Initialisation du driver
+		pooledDataSource = new ComboPooledDataSource();
+		try {
+			pooledDataSource.setDriverClass(jdbcDriver);//loads the jdbc driver
+		} catch (final PropertyVetoException e) {
+			throw WrappedException.wrapIfNeeded(e, "Can't defined JdbcDriver {0}", jdbcDriver);
+		}
+		pooledDataSource.setJdbcUrl(jdbcUrl);
+		//c3p0 can work with defaults
 
-		this.jdbcUrl = jdbcUrl;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public SqlConnection obtainConnection() throws SQLException {
-		//Dans le pseudo pool on crée systématiquement une connexion
-		return new SqlConnection(DriverManager.getConnection(jdbcUrl), getDataBase(), true);
+		return new SqlConnection(pooledDataSource.getConnection(), getDataBase(), true);
 	}
 }

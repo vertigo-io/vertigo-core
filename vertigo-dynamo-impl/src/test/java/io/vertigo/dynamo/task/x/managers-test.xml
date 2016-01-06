@@ -22,7 +22,7 @@
 	<module name="vertigo-dynamo">
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
 				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
 				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
