@@ -71,11 +71,11 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 * Constructor.
 	 * Collections syntax :
 	 *  - collections are comma separated
-	 *  - collections may defined TimeToLive and Memory configs with a json like syntax : collName={TTL=10, inMemory=true}
+	 *  - collections may defined TimeToLive and Memory configs with a json like syntax : collName;TTL=10;inMemory
 	 *  - TTL default to -1 meaning eternal
 	 *  - inMemory default to false meaning store on file system
 	 * @param collections List of collections managed by this plugin (comma separated)
-	 * @param dbFilePath Base Berkeley DB file system path
+	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 * @param daemonManager Daemon manager
