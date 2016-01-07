@@ -52,7 +52,10 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	 * @param dataSource URL de la dataSource JNDI
 	 */
 	@Inject
-	public DataSourceConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("classname") final String dataBaseName, @Named("source") final String dataSource) {
+	public DataSourceConnectionProviderPlugin(
+			@Named("name") final Option<String> name,
+			@Named("classname") final String dataBaseName,
+			@Named("source") final String dataSource) {
 		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
 		Assertion.checkNotNull(dataSource);
 		//-----

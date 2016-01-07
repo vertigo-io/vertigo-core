@@ -32,40 +32,50 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 /**
- * Implémentation d'un pseudo Pool.
- *
+ * If there is no datasource, you have to use a simple connection provider.
+ * 
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
  */
 public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
-	private final ComboPooledDataSource pooledDataSource;
+	private final DataSource pooledDataSource;
 
 	/**
-	 * Constructeur (deprecated).
-	 * @param name ConnectionProvider's name
-	 * @param dataBaseClass Type de base de données
-	 * @param jdbcDriver Classe du driver jdbc
-	 * @param jdbcUrl URL de configuration jdbc
+	 * Constructor.
+	 * @param name the name of the connectionProvider
+	 * @param dataBaseClass the type of database
+	 * @param jdbcDriver the class of the jdbc driver
+	 * @param jdbcUrl the jdbc url
 	 */
 	@Inject
-	public C3p0ConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
+	public C3p0ConnectionProviderPlugin(
+			@Named("name") final Option<String> name,
+			@Named("dataBaseClass") final String dataBaseClass,
+			@Named("jdbcDriver") final String jdbcDriver,
+			@Named("jdbcUrl") final String jdbcUrl) {
 		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
-
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
 		//-----
-		pooledDataSource = new ComboPooledDataSource();
+		pooledDataSource = createPooledDataSource(jdbcDriver, jdbcUrl);
+	}
+
+	private static PooledDataSource createPooledDataSource(final String jdbcDriver, final String jdbcUrl) {
+		final ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
 		try {
-			pooledDataSource.setDriverClass(jdbcDriver);//loads the jdbc driver
+			//loads the jdbc driver
+			comboPooledDataSource.setDriverClass(jdbcDriver);
 		} catch (final PropertyVetoException e) {
 			throw WrappedException.wrapIfNeeded(e, "Can't defined JdbcDriver {0}", jdbcDriver);
 		}
-		pooledDataSource.setJdbcUrl(jdbcUrl);
+		comboPooledDataSource.setJdbcUrl(jdbcUrl);
 		//c3p0 can work with defaults
-
+		return comboPooledDataSource;
 	}
 
 	/** {@inheritDoc} */

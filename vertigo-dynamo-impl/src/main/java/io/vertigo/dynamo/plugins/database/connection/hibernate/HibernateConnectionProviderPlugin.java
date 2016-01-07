@@ -54,7 +54,11 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
 	 */
 	@Inject
-	public HibernateConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
+	public HibernateConnectionProviderPlugin(
+			@Named("name") final Option<String> name,
+			@Named("persistenceUnit") final String persistenceUnit,
+			@Named("dataBaseName") final String dataBaseName,
+			final VTransactionManager transactionManager) {
 		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		Assertion.checkNotNull(transactionManager);
