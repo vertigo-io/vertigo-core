@@ -97,7 +97,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long count(final String collection) {
+	public int count(final String collection) {
 		return getCollectionData(collection).size();
 	}
 

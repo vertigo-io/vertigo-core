@@ -119,7 +119,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 	@Test
 	public void testTimeToLive() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final long nbFlowers = kvStoreManager.count("flowers");
+			final int nbFlowers = kvStoreManager.count("flowers");
 			Assert.assertEquals(0, nbFlowers);
 			//put a flower a t+0s (expire a T+10s)
 			final Flower tulip1 = buildFlower("tulip", 100);

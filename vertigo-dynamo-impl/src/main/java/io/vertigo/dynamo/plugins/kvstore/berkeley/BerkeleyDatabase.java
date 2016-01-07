@@ -182,8 +182,8 @@ final class BerkeleyDatabase {
 	/**
 	 * @return nb elements
 	 */
-	long count() {
-		return database.count();
+	int count() {
+		return Long.valueOf(database.count()).intValue();
 	}
 
 	/**

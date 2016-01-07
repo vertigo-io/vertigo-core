@@ -63,7 +63,7 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public long count(final String collection) {
+	public int count(final String collection) {
 		return getKVStorePlugin(collection).count(collection);
 	}
 

@@ -44,7 +44,7 @@ public interface KVStoreManager extends Manager {
 	 * @param collection the collection
 	 * @return count of elements into collection
 	 */
-	long count(String collection);
+	int count(String collection);
 
 	/**
 	 * Adds an element defined by an id in a collection.
