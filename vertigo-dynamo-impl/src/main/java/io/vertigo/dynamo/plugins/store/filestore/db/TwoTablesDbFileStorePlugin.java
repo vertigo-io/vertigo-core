@@ -147,7 +147,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI fileInfoUri) {
+	public void delete(final FileInfoURI fileInfoUri) {
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----

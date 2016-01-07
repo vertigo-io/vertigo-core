@@ -216,7 +216,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		//-----suppression du fichier
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri)));
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri)));

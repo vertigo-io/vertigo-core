@@ -240,7 +240,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);

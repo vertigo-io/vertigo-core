@@ -65,6 +65,6 @@ public interface FileStorePlugin extends Plugin {
 	 * Delete a file.
 	 * @param uri File's URI to remove
 	 */
-	void remove(FileInfoURI uri);
+	void delete(FileInfoURI uri);
 
 }

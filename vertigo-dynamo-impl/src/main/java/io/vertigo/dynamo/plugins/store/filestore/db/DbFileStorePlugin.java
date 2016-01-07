@@ -123,7 +123,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		checkReadonly();
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());

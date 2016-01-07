@@ -66,7 +66,7 @@ public final class FileStoreImpl implements FileStore {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		getPhysicalStore(uri.getDefinition()).remove(uri);
+		getPhysicalStore(uri.getDefinition()).delete(uri);
 	}
 
 	/** {@inheritDoc} */
