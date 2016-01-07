@@ -233,7 +233,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public long count(final String collection) {
+	public int count(final String collection) {
 		return getDatabase(collection).count();
 	}
 
