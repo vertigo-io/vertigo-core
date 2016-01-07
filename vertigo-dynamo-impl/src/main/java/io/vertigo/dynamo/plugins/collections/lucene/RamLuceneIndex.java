@@ -32,12 +32,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -57,15 +51,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
-import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.TooManyClauses;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
@@ -85,14 +72,15 @@ import org.apache.lucene.util.Version;
  */
 final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	/** Prefix for a created field use for sorting. */
-	private static final String SORT_FIELD_PREFIX = "4SORT_";
+	static final String SORT_FIELD_PREFIX = "4SORT_";
 
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
 	private final Directory directory;
+
 	private final Analyzer indexAnalyser;
-	private final Analyzer queryAnalyser;
+	private final RamLuceneQueryFactory luceneQueryFactory;
 
 	/**
 	 * @param dtDefinition DtDefinition des objets indexés
@@ -102,7 +90,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
-		queryAnalyser = new DefaultAnalyzer(false);
+		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
 		this.dtDefinition = dtDefinition;
 		directory = new RAMDirectory();
 
@@ -231,6 +219,18 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
+		Assertion.checkNotNull(searchedFields);
+		Assertion.checkNotNull(dtListState);
+		Assertion.checkNotNull(dtListState.getMaxRows().isDefined(), "MaxRows is mandatory, can't get all data :(");
+		//-----
+		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
+		final Sort sortQuery = createSortQuery(dtListState);
+		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortQuery);
+	}
+
 	private static IndexableField createKeyword(final String fieldName, final String fieldValue, final boolean storeValue) {
 		return new StringField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
 	}
@@ -239,31 +239,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
 	}
 
-	//-----
-	/** {@inheritDoc} */
-	@Override
-	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
-		Assertion.checkNotNull(searchedFields);
-		Assertion.checkNotNull(dtListState);
-		Assertion.checkNotNull(dtListState.getMaxRows().isDefined(), "MaxRows is mandatory, can't get all data :(");
-		//-----
-		final Query filterQuery = createFilterQuery(keywords, searchedFields, listFilters, boostedField);
-		final Sort sortQuery = createSortQuery(dtListState);
-		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortQuery);
-	}
-
-	private Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
-		final Query filteredQuery;
-		final Query keywordsQuery = createKeywordQuery(keywords, searchedFields, boostedField);
-		if (!listFilters.isEmpty()) {
-			filteredQuery = createFilteredQuery(keywordsQuery, listFilters);
-		} else {
-			filteredQuery = keywordsQuery;
-		}
-		return filteredQuery;
-	}
-
-	private static Sort createSortQuery(final DtListState dtListState) {
+	private static final Sort createSortQuery(final DtListState dtListState) {
 		if (dtListState.getSortFieldName().isDefined()) {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();
@@ -275,61 +251,4 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		}
 		return null;//default null -> sort by score
 	}
-
-	private Query createKeywordQuery(final String keywords, final Collection<DtField> searchedFieldList, final Option<DtField> boostedField) throws IOException {
-		if (StringUtil.isEmpty(keywords)) {
-			return new MatchAllDocsQuery();
-		}
-		//-----
-		final BooleanQuery query = new BooleanQuery();
-		for (final DtField dtField : searchedFieldList) {
-			final Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
-			if (boostedField.isDefined() && dtField.equals(boostedField.get())) {
-				queryWord.setBoost(4);
-			}
-			query.add(queryWord, BooleanClause.Occur.SHOULD);
-		}
-		return query;
-	}
-
-	private Query createFilteredQuery(final Query keywordsQuery, final List<ListFilter> filters) {
-		final BooleanQuery query = new BooleanQuery();
-		query.add(keywordsQuery, BooleanClause.Occur.MUST);
-
-		for (final ListFilter filter : filters) {
-			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
-			try {
-				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
-			} catch (final QueryNodeException e) {
-				throw new WrappedException("Erreur lors de la création du filtrage de la requete", e);
-			}
-		}
-		return query;
-	}
-
-	private static boolean isExclusion(final ListFilter listFilter) {
-		final String listFilterValue = listFilter.getFilterValue().trim();
-		return listFilterValue.startsWith("-");
-	}
-
-	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords) throws IOException {
-		final BooleanQuery query = new BooleanQuery();
-		final Reader reader = new StringReader(keywords);
-		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
-			tokenStream.reset();
-			try {
-				final CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
-				while (tokenStream.incrementToken()) {
-					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
-					final PrefixQuery termQuery = new PrefixQuery(new Term(fieldName, term));
-					query.add(termQuery, BooleanClause.Occur.MUST);
-				}
-			} finally {
-				reader.reset();
-				tokenStream.end();
-			}
-		}
-		return query;
-	}
-
 }
