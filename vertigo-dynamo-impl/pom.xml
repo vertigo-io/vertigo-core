@@ -144,15 +144,6 @@
 			<version>1.1.1</version>
 		</dependency>
 		<!-- /FileManager-->
-
-		
-		 <!-- Jedis -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.7.3</version>
-		</dependency>
-		<!-- /Jedis -->
 		
 		 <!-- dependency>
 			Waiting update from ODSExporter from 0.7 to 0.8.7 
