@@ -128,9 +128,6 @@ public final class ComponentLoader {
 		final ComponentProxyContainer componentContainer = new ComponentProxyContainer(componentSpace);
 
 		for (final String id : ids) {
-			//final String currentComponentId;
-			//final Option<ComponentInitializer> currentComponentInitializer;
-			//final Object currentComponent;
 			if (componentConfigById.containsKey(id)) {
 				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
