@@ -85,7 +85,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	public BerkeleyKVStorePlugin(
 			final @Named("collections") String collections,
 			@Named("dbFilePath") final String dbFilePath,
-			final boolean inMemory,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager,
 			final DaemonManager daemonManager) {
@@ -122,13 +121,13 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			boolean inMemory = false;
 			for (final String collectionDetail : collection.split(";")) {
 				if (collectionDetail.startsWith("TTL=")) {
-					Assertion.checkState(timeToLiveSeconds == -1L, "Time to live alread defined on {0}", collection);
+					Assertion.checkState(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
 					timeToLiveSeconds = Long.parseLong(collectionDetail.substring("TTL=".length()));
 				} else if (collectionDetail.startsWith("inMemory")) {
-					Assertion.checkState(!inMemory, "inMemory alread defined on {0}", collection);
+					Assertion.checkState(!inMemory, "inMemory already defined on {0}", collection);
 					inMemory = true;
 				} else {
-					Assertion.checkState(collectionName == null, "collectionName alread defined on {0}", collection);
+					Assertion.checkState(collectionName == null, "collectionName already defined on {0}", collection);
 					collectionName = collectionDetail;
 				}
 			}
