@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * Map des autres ressources de la transaction.
 	 */
-	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new HashMap<>();
+	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new LinkedHashMap<>();
 
 	private final List<Runnable> beforeCommitFunctions = new ArrayList<>();
 	private final List<VTransactionSynchronization> afterCompletionFunctions = new ArrayList<>();
