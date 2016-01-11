@@ -100,7 +100,6 @@ public final class VegaFeatures extends Features {
 				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
 				.addPlugin(SessionWebServiceHandlerPlugin.class)
 				.addPlugin(SecurityWebServiceHandlerPlugin.class)
-				//.beginPlugin(OldJsonConverterWebServiceHandlerPlugin.class).endPlugin()
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
 		if (withTokens) {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
