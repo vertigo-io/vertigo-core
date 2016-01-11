@@ -70,7 +70,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 * Constructor.
 	 * Collections syntax :
 	 *  - collections are comma separated
-	 *  
+	 *
 	 *  a revoir (param étendus
 	 *  - collections may defined TimeToLive and Memory configs with a json like syntax : collName;TTL=10;inMemory
 	 *  - TTL default to -1 meaning eternal
@@ -83,12 +83,12 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
-			final @Named("collections") String collections,
+			@Named("collections") final String collections,
 			@Named("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager,
 			final DaemonManager daemonManager) {
-		//Assertion.checkArgNotEmpty(collections);
+		Assertion.checkArgNotEmpty(collections);
 		Assertion.checkArgNotEmpty(dbFilePath);
 		Assertion.checkNotNull(transactionManager);
 		//-----
