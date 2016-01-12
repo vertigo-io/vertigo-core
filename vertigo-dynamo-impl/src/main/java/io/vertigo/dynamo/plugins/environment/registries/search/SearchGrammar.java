@@ -39,6 +39,9 @@ final class SearchGrammar {
 	/** List filter query. */
 	public static final String LIST_FILTER_BUILDER_QUERY = "LIST_FILTER_BUILDER_QUERY";
 
+	/** Index copy fields. */
+	public static final Entity INDEX_COPY_ENTITY;
+
 	/** Fieldname. */
 	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet definition. */
@@ -50,6 +53,11 @@ final class SearchGrammar {
 	/** Faceted query definition. */
 	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
 
+	/** indexCopy to. */
+	public static final String INDEX_COPY_TO_PROPERTY = "indexCopyTo";
+	/** indexCopy from. */
+	public static final String INDEX_COPY_FROM_PROPERTY = "FROM";
+
 	/** Search Grammar instance. */
 	public static final EntityGrammar GRAMMAR;
 
@@ -58,6 +66,9 @@ final class SearchGrammar {
 	    keyConcept : DT_TEST,
 	    dtResult : DT_TEST,
 	    dtIndex : DT_TEST,
+	    indexCopyTo FIELD_TO_1 : { from: "FIELD_FROM_1,FIELD_FROM_2" }, //use field formatters
+	    indexCopyTo FIELD_TO_2 : { from: "FIELD_FROM_3" }, //use field formatters
+
 	    searchLoader : com.project.domain.search.dao.SearchLoaderPeople
 	}
 
@@ -79,9 +90,14 @@ final class SearchGrammar {
 	*/
 
 	static {
+		INDEX_COPY_ENTITY = new EntityBuilder("indexCopyTo")
+				.addField(INDEX_COPY_FROM_PROPERTY, String, true)
+				.build();
+
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
 				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
+				.addFields(INDEX_COPY_TO_PROPERTY, INDEX_COPY_ENTITY, false)// facultative
 				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 

@@ -17,3 +17,7 @@ create Domain DO_CONSO {
 	formatter : FMT_DEFAULT
 }
 
+alter Domain DO_INTEGER {
+    indexType: "standard:integer"
+}
+

@@ -79,7 +79,7 @@ final class IndexType {
 			case String:
 			case BigDecimal:
 				if (indexType == null) {
-					throw new IllegalArgumentException("## Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
+					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}
 				break;
 			case DataStream: // IllegalArgumentException

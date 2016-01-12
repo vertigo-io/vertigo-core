@@ -35,6 +35,7 @@ import io.vertigo.lang.Option;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -137,16 +138,19 @@ final class ESDocumentCodec {
 		/* 3 : Les champs du dto index */
 		final DtObject dtIndex = index.getIndexDtObject();
 		final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
+		final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
 
 		for (final DtField dtField : indexDtDefinition.getFields()) {
-			final Object value = dtField.getDataAccessor().getValue(dtIndex);
-			if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut les rechercher
-				final String indexFieldName = dtField.getName();
-				if (value instanceof String) {
-					final String encodedValue = escapeInvalidUTF8Char((String) value);
-					xContentBuilder.field(indexFieldName, encodedValue);
-				} else {
-					xContentBuilder.field(indexFieldName, value);
+			if (!copyToFields.contains(dtField)) {//On index pas les copyFields
+				final Object value = dtField.getDataAccessor().getValue(dtIndex);
+				if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
+					final String indexFieldName = dtField.getName();
+					if (value instanceof String) {
+						final String encodedValue = escapeInvalidUTF8Char((String) value);
+						xContentBuilder.field(indexFieldName, encodedValue);
+					} else {
+						xContentBuilder.field(indexFieldName, value);
+					}
 				}
 			}
 		}

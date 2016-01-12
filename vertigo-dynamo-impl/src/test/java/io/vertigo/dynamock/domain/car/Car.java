@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Attention cette classe est générée automatiquement ! Objet de données Car
@@ -45,7 +46,7 @@ public final class Car implements KeyConcept {
 	private Long famId;
 
 	/**
-	 * Champ : ID. 
+	 * Champ : ID.
 	 * récupère la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @return Long id <b>Obligatoire</b>
@@ -60,7 +61,7 @@ public final class Car implements KeyConcept {
 	}
 
 	/**
-	 * Champ : ID. 
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @param id
@@ -261,6 +262,30 @@ public final class Car implements KeyConcept {
 	// Association : Famille non navigable
 
 	// Association : Famille non navigable
+
+	/**
+	 * Champ : COMPUTED.
+	 * Récupère la valeur de la propriété calculée 'model sort'.
+	 * @return String modelSort
+	 */
+	@javax.persistence.Column(name = "MODEL_SORT")
+	@javax.persistence.Transient
+	@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
+	public String getModelSort() {
+		throw new VSystemException("Can't use index copyTo field");
+	}
+
+	/**
+	 * Champ : COMPUTED.
+	 * Récupère la valeur de la propriété calculée 'index all'.
+	 * @return String allText
+	 */
+	@javax.persistence.Column(name = "ALL_TEXT")
+	@javax.persistence.Transient
+	@Field(domain = "DO_FULL_TEXT", type = "COMPUTED", persistent = false, label = "index all")
+	public String getAllText() {
+		throw new VSystemException("Can't use index copyTo field");
+	}
 
 	/** {@inheritDoc} */
 	@Override

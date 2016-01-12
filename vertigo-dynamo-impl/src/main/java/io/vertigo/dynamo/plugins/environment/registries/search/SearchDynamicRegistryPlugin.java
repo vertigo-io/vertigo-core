@@ -40,7 +40,9 @@ import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pchretien
@@ -72,10 +74,35 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DtDefinition indexDtDefinition = definitionSpace.resolve(xsearchObjet.getDefinitionName("dtIndex"), DtDefinition.class);
 		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getName();
+
+		//Déclaration des copyField
+		final Map<DtField, List<DtField>> copyFields = populateCopyFields(xsearchObjet, indexDtDefinition);
+
 		final String searchLoaderId = getPropertyValueAsString(xsearchObjet, SearchGrammar.SEARCH_LOADER_PROPERTY);
-		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, keyConceptDtDefinition, indexDtDefinition, searchLoaderId);
+		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, keyConceptDtDefinition, indexDtDefinition, copyFields, searchLoaderId);
 		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
+	}
+
+	private static Map<DtField, List<DtField>> populateCopyFields(final DynamicDefinition xsearchObjet, final DtDefinition indexDtDefinition) {
+		final Map<DtField, List<DtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
+		final List<DynamicDefinition> copyToFieldNames = xsearchObjet.getChildDefinitions(SearchGrammar.INDEX_COPY_TO_PROPERTY);
+		for (final DynamicDefinition copyToFieldDefinition : copyToFieldNames) {
+			final DtField dtFieldTo = indexDtDefinition.getField(copyToFieldDefinition.getName());
+			final String copyFromFieldNames = (String) copyToFieldDefinition.getPropertyValue(SearchGrammar.INDEX_COPY_FROM_PROPERTY);
+
+			for (final String copyFromFieldName : copyFromFieldNames.split(",")) {
+				final DtField dtFieldFrom = indexDtDefinition.getField(copyFromFieldName.trim());
+				List<DtField> dtFieldsTo = copyToFields.get(dtFieldFrom);
+				if (dtFieldsTo == null) {
+					dtFieldsTo = new ArrayList<>();
+					copyToFields.put(dtFieldFrom, dtFieldsTo);
+				}
+				dtFieldsTo.add(dtFieldTo);
+			}
+
+		}
+		return copyToFields;
 	}
 
 	private static FacetDefinition createFacetDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {

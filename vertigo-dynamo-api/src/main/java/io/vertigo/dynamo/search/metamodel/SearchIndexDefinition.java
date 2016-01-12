@@ -21,8 +21,16 @@ package io.vertigo.dynamo.search.metamodel;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Définition de l'index de recherche.
@@ -53,6 +61,10 @@ public final class SearchIndexDefinition implements Definition {
 
 	private final DtDefinition keyConceptDtDefinition;
 
+	private final Map<DtField, List<DtField>> indexCopyToFieldsMap;
+
+	private final Set<DtField> indexCopyToFields;
+
 	private final String searchLoaderId;
 
 	/**
@@ -60,23 +72,32 @@ public final class SearchIndexDefinition implements Definition {
 	 * @param name Index name
 	 * @param keyConceptDtDefinition KeyConcept associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
+	 * @param indexCopyToFieldsMap CopyField map : (map fromField : [toField, toField, ...])
 	 * @param searchLoaderId Loader de chargement des éléments indéxés et résultat
 	 */
 	public SearchIndexDefinition(final String name,
 			final DtDefinition keyConceptDtDefinition,
 			final DtDefinition indexDtDefinition,
+			final Map<DtField, List<DtField>> indexCopyToFieldsMap,
 			final String searchLoaderId) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkState(indexDtDefinition.getIdField().isDefined(), "Index Object {0} must have a field declared as key", indexDtDefinition.getClassSimpleName());
+		Assertion.checkNotNull(indexCopyToFieldsMap);
 		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
 		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
+		this.indexCopyToFieldsMap = indexCopyToFieldsMap;
 		this.searchLoaderId = searchLoaderId;
+
+		indexCopyToFields = new HashSet<>();
+		for (final Entry<DtField, List<DtField>> entry : indexCopyToFieldsMap.entrySet()) {
+			indexCopyToFields.addAll(entry.getValue());
+		}
 	}
 
 	/**
@@ -94,6 +115,31 @@ public final class SearchIndexDefinition implements Definition {
 	 */
 	public DtDefinition getKeyConceptDtDefinition() {
 		return keyConceptDtDefinition;
+	}
+
+	/**
+	 * @param fromField Field to copy to others
+	 * @return list des copyToFields.
+	 */
+	public List<DtField> getIndexCopyToFields(final DtField fromField) {
+		final List<DtField> copyToFields = indexCopyToFieldsMap.get(fromField);
+		Assertion.checkNotNull(copyToFields);
+		//-----
+		return Collections.unmodifiableList(copyToFields);
+	}
+
+	/**
+	 * @return copyFields from.
+	 */
+	public Set<DtField> getIndexCopyFromFields() {
+		return Collections.unmodifiableSet(indexCopyToFieldsMap.keySet());
+	}
+
+	/**
+	 * @return copyFields to.
+	 */
+	public Set<DtField> getIndexCopyToFields() {
+		return Collections.unmodifiableSet(indexCopyToFields);
 	}
 
 	/**

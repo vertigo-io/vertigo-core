@@ -3,6 +3,8 @@ package io.vertigo.dynamock.search
 create IndexDefinition IDX_CAR {
     keyConcept : DT_CAR
     dtIndex : DT_CAR
+    indexCopyTo ALL_TEXT { from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" },
+    indexCopyTo MODEL_SORT { from: "MODEL" },
     loaderId : "CarSearchLoader"
 }
 

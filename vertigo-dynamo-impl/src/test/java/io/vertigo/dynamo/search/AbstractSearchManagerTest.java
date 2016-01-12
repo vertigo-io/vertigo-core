@@ -220,6 +220,35 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testCopyFieldsQuery() {
+		index(false);
+		waitIndexation();
+		long size;
+		size = query("*:*");
+		Assert.assertEquals(carDataBase.size(), size);
+
+		size = query("_all:(+peugeot +diesel)");
+		Assert.assertEquals(3L, size);
+
+		size = query("ALL_TEXT:(+peugeot +diesel)");
+		Assert.assertEquals(3L, size);
+
+		size = query("MODEL_SORT:(806)");
+		Assert.assertEquals(0L, size);
+
+		size = query("MODEL_SORT:(806*)");
+		Assert.assertEquals(1L, size);
+
+		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number
+		Assert.assertEquals(1L, size);
+
+	}
+
+	/**
 	 * Test de requétage de l'index description : insenssible à la casse et aux accents.
 	 */
 	@Test
