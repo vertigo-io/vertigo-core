@@ -165,7 +165,6 @@ final class BerkeleyDatabase {
 			int find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 				final Object object = dataBinding.entryToObject(dataEntry);
-				//@todo Pour l'instant on ne comptabilise que les collections du type demandé.
 				if (clazz.isInstance(object)) {
 					find++;
 					if (find > skip) {
@@ -183,7 +182,7 @@ final class BerkeleyDatabase {
 	 * @return nb elements
 	 */
 	int count() {
-		return Long.valueOf(database.count()).intValue();
+		return (int) database.count(); //cast long as int
 	}
 
 	/**
