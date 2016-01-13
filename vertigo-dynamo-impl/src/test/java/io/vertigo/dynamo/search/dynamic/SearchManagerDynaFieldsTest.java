@@ -30,9 +30,7 @@ public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
-
 		//attention : la première utilisation de l'index fige la définition des types
 		init(IDX_DYNA_CAR);
-		//-----
 	}
 }

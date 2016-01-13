@@ -296,7 +296,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
+	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
 		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
 		if (copyToFields.size() == 1) {
 			typeMapping.field("copy_to", copyToFields.get(0).getName());
@@ -309,7 +309,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private void appendIndexTypeMapping(final XContentBuilder typeMapping, final Option<IndexType> indexType) throws IOException {
+	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Option<IndexType> indexType) throws IOException {
 		typeMapping
 				.field("type", indexType.get().getIndexDataType())
 				.field("analyzer", indexType.get().getIndexAnalyzer());
