@@ -88,9 +88,12 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:(#query# #query*# #Query~2#)", "Test test2", "ALL:((Test test2) Test* test2* (Test~2 test2~2))", "ALL:((Test test2) (Test* test2*) (Test~2 test2~2))" }, //16
 				{ "ALL:(#query#^4 #query*#^2 #Query~2#)", "Test test2", "ALL:((Test test2)^4 (Test* test2*)^2 (Test~2 test2~2))" }, //17
 				{ "+JOB_CODE:#+query*#", "00000-1111", "+JOB_CODE:(+00000-1111*)" }, //18
-				{ "+JOB_CODE:#+query*#", "130.IC", "+JOB_CODE:(+130.IC*)" }, //19
-				{ "+JOB_CODE:+#query*#", "130.IC rouge", "+JOB_CODE:(+(130.IC* rouge*))" }, //20
-				{ "PART_NUMBER:#+query*#", "130.IC rouge", "PART_NUMBER:(+130.IC* +rouge*)" }, //21
+				{ "+JOB_CODE:#+query*#", "00000/1111", "+JOB_CODE:(+00000/1111*)" }, //19
+				{ "+JOB_CODE:#+query*#", "130.IC", "+JOB_CODE:(+130.IC*)" }, //20
+				{ "+JOB_CODE:+#query*#", "130.IC rouge", "+JOB_CODE:(+(130.IC* rouge*))" }, //21
+				{ "PART_NUMBER:#+query*#", "130.IC rouge", "PART_NUMBER:(+130.IC* +rouge*)" }, //22
+				{ "PART_NUMBER:#+query*#", "130 \\-IC \\(rouge\\)", "PART_NUMBER:(+130* +\\-IC* +\\(rouge\\)*)" }, //23
+				{ "PART_NUMBER:#+query*#", "130 \\O\\R \\(rouge\\)", "PART_NUMBER:(+130* +\\O\\R* +\\(rouge\\)*)" }, //24
 		};
 		testStringFixedQuery(testQueries);
 	}
