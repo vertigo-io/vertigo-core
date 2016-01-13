@@ -49,6 +49,9 @@ import java.util.Map;
  */
 public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 
+	/**
+	 * Constructor.
+	 */
 	public SearchDynamicRegistryPlugin() {
 		super(SearchGrammar.GRAMMAR);
 	}
@@ -72,7 +75,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static SearchIndexDefinition createIndexDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xsearchObjet) {
 		final DtDefinition keyConceptDtDefinition = definitionSpace.resolve(xsearchObjet.getDefinitionName("keyConcept"), DtDefinition.class);
 		final DtDefinition indexDtDefinition = definitionSpace.resolve(xsearchObjet.getDefinitionName("dtIndex"), DtDefinition.class);
-		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getName();
 
 		//Déclaration des copyField
@@ -80,7 +82,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final String searchLoaderId = getPropertyValueAsString(xsearchObjet, SearchGrammar.SEARCH_LOADER_PROPERTY);
 		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, keyConceptDtDefinition, indexDtDefinition, copyFields, searchLoaderId);
-		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
 	}
 
@@ -106,7 +107,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private static FacetDefinition createFacetDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xdefinition.getName();
 		final DtDefinition indexDtDefinition = definitionSpace.resolve(xdefinition.getDefinitionName("dtDefinition"), DtDefinition.class);
 		final String dtFieldName = getPropertyValueAsString(xdefinition, SearchGrammar.FIELD_NAME);
@@ -126,7 +126,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			}
 			facetDefinition = facetDefinitionByRangeBuilder.build();
 		}
-		//indexDefinition.makeUnmodifiable();
 		return facetDefinition;
 	}
 
@@ -153,7 +152,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final Domain criteriaDomain = Home.getApp().getDefinitionSpace().resolve(criteriaDomainName, Domain.class);
 
 		final FacetedQueryDefinition facetedQueryDefinition = new FacetedQueryDefinition(definitionName, keyConceptDtDefinition, facetDefinitions, criteriaDomain, listFilterBuilderClass, listFilterBuilderQuery);
-		//indexDefinition.makeUnmodifiable();
 		return facetedQueryDefinition;
 	}
 
