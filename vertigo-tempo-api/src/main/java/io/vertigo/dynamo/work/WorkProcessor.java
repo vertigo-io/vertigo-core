@@ -22,9 +22,9 @@ package io.vertigo.dynamo.work;
  * Work processor used for composing multiple WorkEngine.
  * Example : F o G o H (x) composition mean : F(G(H(x)))
  * @author pchretien
- * 
- * @param<R> result
- * @param<W> work
+ *
+ * @param <R> result
+ * @param <W> work
  */
 public interface WorkProcessor<R, W> {
 	/**

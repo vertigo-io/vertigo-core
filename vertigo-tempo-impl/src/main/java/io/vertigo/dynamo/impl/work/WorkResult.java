@@ -29,6 +29,13 @@ public final class WorkResult<R> {
 	public final Throwable error;
 	public final R result;
 
+	/**
+	 * Constructor.
+	 * Must set Result or Error, other must be null.
+	 * @param workId Work id
+	 * @param result Work result (null if error)
+	 * @param error Work error (null if result)
+	 */
 	public WorkResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");

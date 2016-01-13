@@ -22,11 +22,11 @@ package io.vertigo.dynamo.work;
  * Moteur d'exécution d'un travail.
  * Le moteur N'EST PAS THREADSAFE ; il doit donc être instancié à chaque utilisation.
  * Le moteur est créé par Injection de dépendances.
- *  
+ *
  * @author   pchretien
- *  
- * @param<R> result
- * @param<W> work
+ *
+ * @param <R> result
+ * @param <W> work
  */
 public interface WorkEngine<R, W> {
 	/**

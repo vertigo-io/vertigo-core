@@ -29,15 +29,18 @@ import io.vertigo.util.ClassUtil;
  * Dans la plupart des cas le moyen est une classe.
  * Dans certain cs il peut s'agir du nom de la classe.
  * @author  pchretien
- * 
- * @param<R> result
- * @param<W> work
+ * @param <R> result
+ * @param <W> work
  */
 public final class WorkEngineProvider<R, W> {
 	private final String className;
 	private final Class<? extends WorkEngine<R, W>> clazz;
 	private final WorkEngine<R, W> workEngine;
 
+	/**
+	 * Constructor.
+	 * @param clazz Workengine class
+	 */
 	public WorkEngineProvider(final Class<? extends WorkEngine<R, W>> clazz) {
 		Assertion.checkNotNull(clazz);
 		//-----
@@ -46,6 +49,10 @@ public final class WorkEngineProvider<R, W> {
 		this.workEngine = null;
 	}
 
+	/**
+	 * Constructor.
+	 * @param workEngine Workengine instance
+	 */
 	public WorkEngineProvider(final WorkEngine<R, W> workEngine) {
 		Assertion.checkNotNull(workEngine);
 		//-----
@@ -54,6 +61,10 @@ public final class WorkEngineProvider<R, W> {
 		this.className = workEngine.getClass().getName();
 	}
 
+	/**
+	 * Constructor.
+	 * @param className Workengine class name
+	 */
 	public WorkEngineProvider(final String className) {
 		Assertion.checkArgNotEmpty(className);
 		//-----
@@ -62,6 +73,9 @@ public final class WorkEngineProvider<R, W> {
 		this.workEngine = null;
 	}
 
+	/**
+	 * @return WorkEngine
+	 */
 	public WorkEngine<R, W> provide() {
 		if (workEngine != null) {
 			return workEngine;
@@ -76,6 +90,9 @@ public final class WorkEngineProvider<R, W> {
 		return Injector.newInstance(engineClazz, Home.getApp().getComponentSpace());
 	}
 
+	/**
+	 * @return WorkEngine name
+	 */
 	public String getName() {
 		return className;
 	}
