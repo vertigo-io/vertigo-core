@@ -30,7 +30,7 @@ import io.vertigo.lang.Plugin;
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.
  * This plugin can be implemented in a sql or no sql way.
- * 
+ *
  * this datatore is linked to a dataSpace.
  * Several dtDefinition can be included in a dataSpace.
  *
@@ -81,8 +81,26 @@ public interface DataStorePlugin extends Plugin {
 	 */
 	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
+	/**
+	 * Récupération d'une liste correspondant à l'URI fournie.
+	 * NOT NULL
+	 *
+	 * @param uri URI de la collection à charger
+	 * @param dtDefinition Definition
+	 * @return DtList<D> Liste correspondant à l'URI fournie
+	 * @param <D> Type de l'objet
+	 */
 	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
+	/**
+	 * Récupération d'une liste correspondant à l'URI fournie.
+	 * NOT NULL
+	 *
+	 * @param uri URI de la collection à charger
+	 * @param dtDefinition Definition
+	 * @return DtList<D> Liste correspondant à l'URI fournie
+	 * @param <D> Type de l'objet
+	 */
 	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
 
 	//==========================================================================
@@ -120,7 +138,7 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	 * Deletes an object identified by an uri.
 	 * @param dtDefinition Definition
-	 * @param uri URI 
+	 * @param uri URI
 	 */
 	void delete(DtDefinition dtDefinition, URI uri);
 

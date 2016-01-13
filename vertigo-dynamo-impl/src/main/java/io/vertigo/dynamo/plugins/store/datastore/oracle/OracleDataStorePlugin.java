@@ -43,6 +43,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Constructor.
 	 * @param nameOption the name of the dataSpace (optional)
 	 * @param connectionName the name of the connection
+	 * @param sequencePrefix Prefix used for sequences
 	 * @param taskManager the taskManager
 	 */
 	@Inject

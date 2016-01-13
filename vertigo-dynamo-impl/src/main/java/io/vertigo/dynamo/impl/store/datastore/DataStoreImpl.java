@@ -45,9 +45,11 @@ public final class DataStoreImpl implements DataStore {
 	private final EventBusManager eventBusManager;
 	private final VTransactionManager transactionManager;
 
-	/*Bus*
-	 * Constructeur.
-	 * Une fois le dataStore construit la configuration est bloquée.
+	/**
+	 * Constructor.
+	 * @param storeManager Store manager
+	 * @param transactionManager Transaction manager
+	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig config of the dataStore
 	 */
 	public DataStoreImpl(final StoreManager storeManager, final VTransactionManager transactionManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
