@@ -92,6 +92,35 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "+JOB_CODE:#+query*#", "130.IC", "+JOB_CODE:(+130.IC*)" }, //20
 				{ "+JOB_CODE:+#query*#", "130.IC rouge", "+JOB_CODE:(+(130.IC* rouge*))" }, //21
 				{ "PART_NUMBER:#+query*#", "130.IC rouge", "PART_NUMBER:(+130.IC* +rouge*)" }, //22
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringEscapedQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test \\or test2", "ALL:(Test \\or test2)" }, //0
+				{ "ALL:#query#", "Test \\and test2", "ALL:(Test \\and test2)" }, //1
+				{ "ALL:#query#", "Test \\OR test2", "ALL:(Test \\OR test2)" }, //2
+				{ "ALL:#query#", "Test \\AND test2", "ALL:(Test \\AND test2)" }, //3
+				{ "ALL:#query#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(Test \\AND \\(test2 \\OR test3\\))" }, //4
+				{ "ALL:#query*#", "Test \\AND test2", "ALL:(Test* \\AND* test2*)" }, //5
+				{ "ALL:#query*#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(Test* \\AND* \\(test2* \\OR* test3\\)*)" }, //6
+				{ "ALL:#+query*#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(+Test* +\\AND* +\\(test2* +\\OR* +test3\\)*)" }, //7
+				{ "+ALL:#query#", "Test \\or test2", "+ALL:(Test \\or test2)" }, //8
+				{ "ALL:#+query~#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(+Test~ +\\AND~ +\\(test2~ +\\OR~ +test3\\)~)" }, //9
+				{ "ALL:#+query~1#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(+Test~1 +\\AND~1 +\\(test2~1 +\\OR~1 +test3\\)~1)" }, //10
+				{ "ALL:#+query#", "Test \\AND \\(test2\\^2 \\OR test3\\)", "ALL:(+Test +\\AND +\\(test2\\^2 +\\OR +test3\\))" }, //11
+				{ "ALL:#+query^2#", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(+Test^2 +\\AND^2 +\\(test2^2 +\\OR^2 +test3\\)^2)" }, //12
+				{ "ALL:#+query#^2", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(+Test +\\AND +\\(test2 +\\OR +test3\\))^2" }, //13
+				{ "ALL:#+query*#", "Test\\, test2\\, test3", "ALL:(+Test\\,* +test2\\,* +test3*)" }, //14
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test \\AND \\(test2 \\OR test3\\)", "ALL:(Test \\AND \\(test2 \\OR test3\\)) +YEAR:[2000 TO 2005]" }, //15
+				{ "+JOB_CODE:#+query*#", "00000\\-1111", "+JOB_CODE:(+00000\\-1111*)" }, //18
+				{ "+JOB_CODE:#+query*#", "00000\\/1111", "+JOB_CODE:(+00000\\/1111*)" }, //19
+				{ "+JOB_CODE:#+query*#", "130\\.IC", "+JOB_CODE:(+130\\.IC*)" }, //20
+				{ "+JOB_CODE:+#query*#", "130\\.IC rouge", "+JOB_CODE:(+(130\\.IC* rouge*))" }, //21
+				{ "PART_NUMBER:#+query*#", "130\\.IC rouge", "PART_NUMBER:(+130\\.IC* +rouge*)" }, //22
 				{ "PART_NUMBER:#+query*#", "130 \\-IC \\(rouge\\)", "PART_NUMBER:(+130* +\\-IC* +\\(rouge\\)*)" }, //23
 				{ "PART_NUMBER:#+query*#", "130 \\O\\R \\(rouge\\)", "PART_NUMBER:(+130* +\\O\\R* +\\(rouge\\)*)" }, //24
 		};
