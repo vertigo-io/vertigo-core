@@ -30,6 +30,7 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
+import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
@@ -80,8 +81,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static final String USER_QUERY_KEYWORD = "query";
 
 	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
-
-	private static final String QUERY_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s";
+	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s)(or|and)(?=\\s))";
+	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
 
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
@@ -177,7 +178,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static boolean mayUseBlock(final String trimedExpression) {
 		//on place des parenthèses s'il n'y a pas encore de block, ou des caractères interdits
 		return !trimedExpression.matches("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
-				&& trimedExpression.matches(".*[" + QUERY_RESERVERD_PATTERN + "].*"); //contains any reserved char +-!*?~^=>< or any spaces
+				&& trimedExpression.matches(".*" + NEED_BLOCK_PATTERN + ".*"); //contains any reserved char +-!*?~^=>< or any spaces
 
 	}
 
@@ -235,16 +236,22 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		final String fieldName = dslQuery.getTermField();
 		final Object value;
 		if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
-			value = cleanUserCriteria(myCriteria.toString());
+			value = cleanUserCriteria(myCriteria.toString(), dslQuery.getEscapeMode());
 		} else {
-			value = cleanUserCriteria(BeanUtil.getValue(myCriteria, fieldName));
+			value = cleanUserCriteria(BeanUtil.getValue(myCriteria, fieldName), dslQuery.getEscapeMode());
 		}
 		appendTermQueryWithValue(value, query, dslQuery, expressionDefinition, outExpressionQuery);
 	}
 
-	private static <O> O cleanUserCriteria(final O value) {
-		if (value instanceof String && ((String) value).trim().isEmpty()) { //so not null too
-			return (O) "*";
+	private static <O> O cleanUserCriteria(final O value, final EscapeMode escapeMode) {
+		if (value instanceof String) {
+			if (((String) value).trim().isEmpty()) { //so not null too
+				return (O) "*";
+			} else if (escapeMode == EscapeMode.escape) {
+				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, "\\\\$0");
+			} else if (escapeMode == EscapeMode.remove) {
+				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, ""); //par on retire le deuxième espace
+			}
 		}
 		return value;
 	}

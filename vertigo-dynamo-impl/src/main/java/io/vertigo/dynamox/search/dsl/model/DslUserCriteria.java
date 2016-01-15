@@ -98,4 +98,17 @@ public final class DslUserCriteria {
 	public String getPostMissingPart() {
 		return postMissingPart;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder()
+				.append(preMissingPart)
+				.append(overridedFieldName)
+				.append(overridedPreModifier)
+				.append(criteriaWord)
+				.append(overridedPostModifier)
+				.append(postMissingPart);
+		return sb.toString();
+	}
 }

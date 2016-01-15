@@ -59,10 +59,11 @@ final class DslUserCriteriaRule {
 	 *  3 : anythings
 	 *  4 : )
 	 */
-	private static final String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)(\\()([^\\\"]*)(\\)))"; //attention a bien avoir 4 groups
-	private static final String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
-	private static final String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
-	private static final String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:(\\S+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
+	//note : .*(?<!\\\\) : le .* ne match pas si préfixé par \
+	private static final String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+(?<!\\\\):)(\\()([^\\\"]*)(\\)))"; //attention a bien avoir 4 groups
+	private static final String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+(?<!\\\\):)?(\\\")([^\\\"]*)(\\\"))";
+	private static final String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+(?<!\\\\):)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
+	private static final String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:(\\S+(?<!\\\\):)?(^|[\\s]*)(\\*)($|[\\s]+))";
 	//private static final String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
 	//private static final String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//private static final String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
@@ -75,7 +76,7 @@ final class DslUserCriteriaRule {
 	private static final String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	//private static final String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";
 	//private static final String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + NOT_WORD_PATTERN + "]*)([^" + NOT_WORD_PATTERN + "]+)([^\\w" + NOT_WORD_PATTERN + "]*))";
-	private static final String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([" + PREFIX_RESERVERD_PATTERN + "]*?)(" + WORD_RESERVERD_PATTERN + ")((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
+	private static final String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+(?<!\\\\):)?([" + PREFIX_RESERVERD_PATTERN + "]*?)(" + WORD_RESERVERD_PATTERN + ")((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
 	private static final String CRITERIA_VALUE_PATTERN_STRING = "(?:((?:\\s|^).*?)?)(?:" //group 1
 			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 2-5
 			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING // group 6-9

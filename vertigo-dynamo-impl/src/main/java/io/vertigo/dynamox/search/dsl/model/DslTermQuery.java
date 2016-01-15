@@ -23,14 +23,29 @@ import io.vertigo.lang.Option;
 
 /**
  * Term query definition.
- * (preBody)#(preBody)(termField)(postBody)#!\((defaultValue)\)(postBody)
+ * (preBody)#(preBody)(termField)(postBody)#?\((escapeMode)\)!\((defaultValue)\)(postBody)
  * @author npiedeloup
  */
 public final class DslTermQuery implements DslQuery {
+
+	/**
+	 * Reserved mode.
+	 * reserved: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ / AND OR
+	 */
+	public enum EscapeMode {
+		/** no change. */
+		none,
+		/** escape reserved syntax. */
+		escape,
+		/** remove reserved syntax. */
+		remove
+	}
+
 	private final String preBody;
 	private final String preTerm;
 	private final String termField;
 	private final String postTerm;
+	private final EscapeMode escapeMode;
 	private final Option<String> defaultValue;
 	private final String postBody;
 
@@ -39,14 +54,16 @@ public final class DslTermQuery implements DslQuery {
 	 * @param preTerm String before body
 	 * @param termField Term field (criteria's field)
 	 * @param postBody String after body
+	 * @param escapeMode Reserved escapeMode of criteria
 	 * @param defaultValue Optional default value (used if null or empty criteria)
 	 * @param postTerm String after body
 	 */
-	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final Option<String> defaultValue, final String postBody) {
+	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final EscapeMode escapeMode, final Option<String> defaultValue, final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(preTerm);
 		Assertion.checkNotNull(termField);
 		Assertion.checkNotNull(postTerm);
+		Assertion.checkNotNull(escapeMode);
 		Assertion.checkNotNull(defaultValue);
 		Assertion.checkNotNull(postBody);
 		//-----
@@ -54,6 +71,7 @@ public final class DslTermQuery implements DslQuery {
 		this.preTerm = preTerm;
 		this.termField = termField;
 		this.postTerm = postTerm;
+		this.escapeMode = escapeMode;
 		this.defaultValue = defaultValue;
 		this.postBody = postBody;
 	}
@@ -61,7 +79,7 @@ public final class DslTermQuery implements DslQuery {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return preBody + "#" + preTerm + termField + postTerm + "#" + (defaultValue.isDefined() ? "!(" + defaultValue.get() + ")" : "") + postBody;
+		return preBody + "#" + preTerm + termField + postTerm + "#" + (escapeMode != EscapeMode.none ? "?(" + escapeMode.toString() + "Reserved)" : "") + (defaultValue.isDefined() ? "!(" + defaultValue.get() + ")" : "") + postBody;
 	}
 
 	/**
@@ -90,6 +108,13 @@ public final class DslTermQuery implements DslQuery {
 	 */
 	public String getPostTerm() {
 		return postTerm;
+	}
+
+	/**
+	 * @return escapeMode
+	 */
+	public EscapeMode getEscapeMode() {
+		return escapeMode;
 	}
 
 	/**

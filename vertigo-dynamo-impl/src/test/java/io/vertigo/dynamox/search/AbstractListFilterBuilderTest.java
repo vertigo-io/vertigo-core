@@ -97,6 +97,49 @@ public abstract class AbstractListFilterBuilderTest {
 	}
 
 	@Test
+	public void testStringEscapedModeQuery() {
+		final String[][] testQueries = new String[][] {
+
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
+				{ "ALL:#query#", "Test Or test2", "ALL:(Test OR test2)" }, //2
+				{ "ALL:#query#", "Test And test2", "ALL:(Test AND test2)" }, //3
+				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //4
+				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //5
+				{ "ALL:#query#?(escapeReserved)", "Test or test2", "ALL:(Test \\or test2)" }, //6
+				{ "ALL:#query#?(escapeReserved)", "Test and test2", "ALL:(Test \\and test2)" }, //7
+				{ "ALL:#query#?(escapeReserved)", "Test Or test2", "ALL:(Test \\Or test2)" }, //8
+				{ "ALL:#query#?(escapeReserved)", "Test And test2", "ALL:(Test \\And test2)" }, //9
+				{ "ALL:#query#?(escapeReserved)", "Test OR test2", "ALL:(Test \\OR test2)" }, //10
+				{ "ALL:#query#?(escapeReserved)", "Test AND test2", "ALL:(Test \\AND test2)" }, //11
+				{ "ALL:#query#?(removeReserved)", "Test or test2", "ALL:(Test  test2)" }, //12
+				{ "ALL:#query#?(removeReserved)", "Test and test2", "ALL:(Test  test2)" }, //13
+				{ "ALL:#query#?(removeReserved)", "Test OR test2", "ALL:(Test  test2)" }, //14
+				{ "ALL:#query#?(removeReserved)", "Test AND test2", "ALL:(Test  test2)" }, //15
+				{ "ALL:#query#?(removeReserved)", "Test Or test2", "ALL:(Test  test2)" }, //16
+				{ "ALL:#query#?(removeReserved)", "Test And test2", "ALL:(Test  test2)" }, //17
+
+				{ "ALL:#query#", "test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2", "ALL:(test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2)" }, //18
+				{ "ALL:#query#", "test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2", "ALL:(test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2)" }, //19
+				{ "ALL:#query#?(escapeReserved)", "test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2",
+						"ALL:(test \\+1 \\-2 \\=3 \\&\\&4 \\|\\|5 \\>6 \\<7 \\!8 \\(9 \\)a \\{b \\}c test2)" }, //20
+				{ "ALL:#query#?(escapeReserved)", "test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2",
+						"ALL:(test \\[1 \\]2 \\^3 \\\"4 \\~5 \\*6 \\?7 \\:8 \\\\9 \\/a test2)" }, //21
+				{ "ALL:#query#?(removeReserved)", "test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2", "ALL:(test 1 2 3 4 5 6 7 8 9 a b c test2)" }, //22
+				{ "ALL:#query#?(removeReserved)", "test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2", "ALL:(test 1 2 3 4 5 6 7 8 9 a test2)" }, //23
+
+				{ "ALL:#query#?(escapeReserved)", "Test ordonance test2", "ALL:(Test ordonance test2)" }, //24
+				{ "ALL:#query#?(escapeReserved)", "Test andy test2", "ALL:(Test andy test2)" }, //25
+
+				{ "ALL:#query#?(escapeReserved)", "Test meteor test2", "ALL:(Test meteor test2)" }, //26
+				{ "ALL:#query#?(escapeReserved)", "Test nand test2", "ALL:(Test nand test2)" }, //27
+		};
+		testStringFixedQuery(testQueries[6]);
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
 	public void testStringEscapedQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
