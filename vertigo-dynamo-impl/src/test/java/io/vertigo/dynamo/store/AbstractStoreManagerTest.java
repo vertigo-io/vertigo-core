@@ -760,7 +760,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//Check cars count
 			checkCrudCarsCount(1);
 			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
-			storeManager.getDataStore().workOn(carUri);
+			storeManager.getDataStore().loadForUpdate(carUri);
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}

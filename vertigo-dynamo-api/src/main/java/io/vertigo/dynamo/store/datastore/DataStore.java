@@ -60,12 +60,12 @@ public interface DataStore {
 	<D extends DtObject> DtList<D> getList(final DtListURI uri);
 
 	/**
-	 * Mark element for update, and ensure non concurrency.
+	 * Loads and marks element for update, and ensure non concurrency.
 	 * @param <D> Object type
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D workOn(URI<? extends DtObject> uri);
+	<D extends DtObject> D loadForUpdate(URI<? extends DtObject> uri);
 
 	/**
 	* Create an object.
