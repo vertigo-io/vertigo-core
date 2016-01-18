@@ -56,7 +56,7 @@ import io.vertigo.lang.VSystemException;
 import java.util.Map;
 
 /**
- * This class is the basic implementation of the dataStore in the sql way. 
+ * This class is the basic implementation of the dataStore in the sql way.
   *
  * @author  pchretien
  */
@@ -395,17 +395,17 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Creates the insert request.
-	 * 
+	 *
 	 * @param dtDefinition the dtDefinition
-	 * @return the sql request 
+	 * @return the sql request
 	 */
 	protected abstract String createInsertQuery(final DtDefinition dtDefinition);
 
 	/**
 	 * Creates the update request.
-	 * 
+	 *
 	 * @param dtDefinition the dtDefinition
-	 * @return the sql request 
+	 * @return the sql request
 	 */
 	private static final String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
@@ -546,15 +546,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
-		final DtField pk = dtDefinition.getIdField().get();
+	public final <D extends DtObject> D loadForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
+		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
-
 		final String request = new StringBuilder()
-				.append("select 1 from ").append(tableName)
+				.append(" select * from ")
+				.append(tableName)
 				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
 				.append(" for update ")
 				.toString();
@@ -564,13 +564,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(pkFieldName, pk.getDomain(), true)
-				.withOutAttribute("DUMMY_OUT", integerDomain, true)
+				//IN, obligatoire
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(pkFieldName, uri.getId())
 				.build();
 
-		taskManager.execute(task);
+		return taskManager
+				.execute(task)
+				.getResult();
 	}
 }

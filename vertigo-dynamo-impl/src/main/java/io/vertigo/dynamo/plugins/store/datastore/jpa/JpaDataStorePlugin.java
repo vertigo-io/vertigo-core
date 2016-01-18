@@ -380,15 +380,15 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
+	public <D extends DtObject> D loadForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final DtObject result = getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
+			final D result = (D) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
 			tracker.markAsSucceeded();
-			//Objet null géré par le dataStore
+			return result;
 		}
 	}
 

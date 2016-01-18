@@ -140,12 +140,16 @@ public interface DataStorePlugin extends Plugin {
 	 * @param dtDefinition Definition
 	 * @param uri URI
 	 */
-	void delete(DtDefinition dtDefinition, URI uri);
+	void delete(DtDefinition dtDefinition, URI<?> uri);
 
 	/**
-	 * Locks for update.
+	 * Load for update.
+	 * Can be null.
+	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
+	 * @param <D> Object type
+	 * @return D Object value.
 	 */
-	void lockForUpdate(DtDefinition dtDefinition, URI uri);
+	<D extends DtObject> D loadForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }
