@@ -193,6 +193,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					.append(trimedQuery[1])
 					.append(!isAlreadyBlock && useBlock ? ")" : "")
 					.append(postExpression);
+			subQuery.setLength(0);
 		}
 	}
 
@@ -224,13 +225,42 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private void appendQuery(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
 		if (dslQuery instanceof DslTermQuery) {
-			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
+			if (expressionDefinition.getMultiField().isDefined() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
+				//recherche compact => on boucle les fields puis les user terms
+				appendCompactFields(query, expressionDefinition, expressionQuery, dslQuery);
+			} else {
+				//recherche multifield => on boucle les users terms puis les fields
+				appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
+			}
+			if (expressionDefinition.getMultiField().isDefined()) {
+				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
+				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), false, expressionQuery);
+			}
 		} else if (dslQuery instanceof DslBlockQuery) {
 			appendMultiQuery(expressionQuery, (DslBlockQuery) dslQuery, expressionDefinition, query);
 		} else if (dslQuery instanceof DslRangeQuery) {
 			appendRangeQuery(expressionQuery, (DslRangeQuery) dslQuery, expressionDefinition);
 		} else if (dslQuery instanceof DslFixedQuery) {
 			appendFixedQuery(expressionQuery, (DslFixedQuery) dslQuery);
+		}
+	}
+
+	private void appendCompactFields(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
+		String expressionSep = "";
+		final DslMultiField dslMultiField = expressionDefinition.getMultiField().get();
+		for (final DslField dslField : dslMultiField.getFields()) {
+			final DslField monoFieldDefinition = new DslField(
+					firstNotEmpty(dslField.getPreBody(), dslMultiField.getPreBody()),
+					dslField.getFieldName(),
+					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
+			final DslExpression monoFieldExpressionDefinition = new DslExpression(
+					concat(expressionSep, expressionDefinition.getPreBody()),
+					Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+					dslQuery,
+					expressionDefinition.getPostBody());
+			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
+			flushExpressionToQuery(query, monoFieldExpressionDefinition, expressionQuery);
+			expressionSep = " ";
 		}
 	}
 
@@ -361,7 +391,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 				appendMultiExpression(query, monoFieldMultiExpressionDefinition);
 				query.append(userCriteria.getPostMissingPart());
-
 			} else {
 				criteriaOnDefinitionField++;
 				query.append(userCriteria.getPreMissingPart());
