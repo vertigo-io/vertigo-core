@@ -285,7 +285,11 @@ public abstract class AbstractListFilterBuilderTest {
 				{ "ALL:#+query*#", "(Test)", "ALL:((+Test*))", "ALL:(+Test*)" },
 				{ "ALL:#+query*#", "[Test]", "ALL:([Test])", "ALL:[Test]" },
 				{ "ALL:#+query*#", "l'avion n'est pas là", "ALL:(+l'avion* +n'est* +pas* +là*)" },
-
+				{ "ALL:#\"query\"#", "Andrey Mariette", "ALL:(\"Andrey\" \"Mariette\")" },
+				{ "ALL:\"#query#\"", "Andrey Mariette", "ALL:\"Andrey Mariette\"" },
+				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" },
+				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:(\"Andrey Mariette\")" },
+				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" },
 		};
 		testStringFixedQuery(testQueries);
 	}
