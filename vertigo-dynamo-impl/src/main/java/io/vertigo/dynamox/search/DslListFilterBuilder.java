@@ -80,7 +80,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static final String USER_QUERY_KEYWORD = "query";
 
-	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
+	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { " AND ", " OR ", " and ", " or ", " And ", " Or ", "*" }));
 	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s)(or|and)(?=\\s))";
 	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
 
