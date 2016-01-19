@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -467,10 +468,27 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	private static class UTCDateAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Date date, final Type type, final JsonSerializationContext jsonSerializationContext) {
+			//Use INPUT_DATE_FORMATS[0] => ISO8601 format
+			return new JsonPrimitive(UTCDateUtil.format(date));
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Date deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return UTCDateUtil.parse(jsonElement.getAsString());
+		}
+	}
+
 	private static Gson createGson() {
 		return new GsonBuilder()
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 				.setPrettyPrinting()
+				//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+				.registerTypeAdapter(Date.class, new UTCDateAdapter())
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
