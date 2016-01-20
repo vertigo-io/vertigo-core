@@ -53,6 +53,7 @@ public final class VegaFeatures extends Features {
 	private boolean withTokens = false;
 	private String tokenCollection;
 	private boolean withMisc = false;
+	private boolean securityEnabled = false;
 
 	public VegaFeatures() {
 		super("vega");
@@ -73,6 +74,11 @@ public final class VegaFeatures extends Features {
 
 	public VegaFeatures withMisc() {
 		withMisc = true;
+		return this;
+	}
+
+	public VegaFeatures withSecurity() {
+		securityEnabled = true;
 		return this;
 	}
 
@@ -97,10 +103,13 @@ public final class VegaFeatures extends Features {
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
-				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
-				.addPlugin(SessionWebServiceHandlerPlugin.class)
-				.addPlugin(SecurityWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
+		if (securityEnabled) {
+			getModuleConfigBuilder()
+					.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
+					.addPlugin(SessionWebServiceHandlerPlugin.class)
+					.addPlugin(SecurityWebServiceHandlerPlugin.class);
+		}
 		if (withTokens) {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
