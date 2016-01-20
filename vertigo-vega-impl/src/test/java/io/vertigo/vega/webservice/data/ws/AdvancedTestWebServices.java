@@ -26,10 +26,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportManager;
-import io.vertigo.dynamo.export.model.Export;
-import io.vertigo.dynamo.export.model.ExportBuilder;
-import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
@@ -93,38 +89,11 @@ public final class AdvancedTestWebServices implements WebServices {
 	@Inject
 	private CollectionsManager collectionsManager;
 	@Inject
-	private ExportManager exportManager;
-	@Inject
 	private ResourceManager resourcetManager;
 	@Inject
 	private FileManager fileManager;
 	@Inject
 	private ContactDao contactDao;
-
-	@GET("/export/pdf/")
-	public VFile testExportContacts() {
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")
-				.beginSheet(fullList, "Contacts").endSheet()
-				.withAuthor("vertigo-test")
-				.build();
-
-		final VFile result = exportManager.createExportFile(export);
-		//200
-		return result;
-	}
-
-	@GET("/export/pdf/{conId}")
-	public VFile testExportContact(@PathParam("conId") final long conId) {
-		final Contact contact = contactDao.get(conId);
-		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId)
-				.beginSheet(contact, "Contact").endSheet()
-				.withAuthor("vertigo-test").build();
-
-		final VFile result = exportManager.createExportFile(export);
-		//200
-		return result;
-	}
 
 	@GET("/grantAccess")
 	@AccessTokenPublish

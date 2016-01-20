@@ -23,15 +23,12 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
@@ -85,8 +82,6 @@ public final class MyAppConfig {
 				.withStore()
 				.getModuleConfigBuilder()
 				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
-				.addComponent(ExportManager.class, ExportManagerImpl.class)
-				.addPlugin(PDFExporterPlugin.class) //pour exportManager
 				.beginPlugin(PostgreSqlDataStorePlugin.class)
 					.addParam("sequencePrefix","SEQ_")
 				.endPlugin()
