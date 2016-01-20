@@ -29,7 +29,7 @@ import io.vertigo.lang.Option;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
-		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), "localhost", 6379, 10, Option.<String> none());
+		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), "kasper-redis", 6379, 10, Option.<String> none());
 		redisDB.start();
 		redisDB.reset();
 		redisDB.stop();

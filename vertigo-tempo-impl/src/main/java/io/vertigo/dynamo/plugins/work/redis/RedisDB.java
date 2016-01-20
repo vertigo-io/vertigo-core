@@ -50,11 +50,11 @@ public final class RedisDB implements Activeable {
 	 * Constructor.
 	 * @param codecManager the codecManager
 	 * @param redisHost the REDIS host 
-	 * @param port the REDIS port 
+	 * @param redisPort the REDIS port 
 	 * @param readTimeout  the timeout duration used to read data 
 	 * @param password the optional REDIS password
 	 */
-	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final int readTimeout, final Option<String> password) {
+	public RedisDB(final CodecManager codecManager, final String redisHost, final int redisPort, final int readTimeout, final Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(password);
@@ -62,11 +62,7 @@ public final class RedisDB implements Activeable {
 		this.codecManager = codecManager;
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
-		if (password.isDefined()) {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, CONNECT_TIMEOUT, password.get());
-		} else {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, CONNECT_TIMEOUT);
-		}
+		jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT, password.getOrElse(null));
 		this.readTimeout = readTimeout;
 
 		//test
