@@ -33,12 +33,14 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
+import io.vertigo.dynamo.impl.search.SearchRessources;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
@@ -58,6 +60,7 @@ import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -218,8 +221,12 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
 		appendFacetDefinition(searchQuery, searchRequestBuilder);
 		LOGGER.info("loadList " + searchRequestBuilder.toString());
-		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-		return translateQuery(indexDefinition, queryResponse, searchQuery);
+		try {
+			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
+			return translateQuery(indexDefinition, queryResponse, searchQuery);
+		} catch (final SearchPhaseExecutionException e) {
+			throw new VUserException(new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+		}
 	}
 
 	/**
@@ -383,14 +390,21 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
 		Assertion.checkNotNull(listFilter);
 		//-----
+		final String listFilterString = cleanUserFilter(listFilter.getFilterValue());
 		final String query = new StringBuilder()
 				.append(" +(")
-				.append(listFilter.getFilterValue())
+				.append(listFilterString)
 				.append(')')
 				.toString();
 		return QueryBuilders.queryStringQuery(query)
 				.lowercaseExpandedTerms(false)
 				.analyzeWildcard(true);
+	}
+
+	private static String cleanUserFilter(final String filterValue) {
+		return filterValue;
+		//replaceAll "(?i)((?<=\\S\\s)(or|and)(?=\\s\\S))"
+		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
 	}
 
 	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
