@@ -92,6 +92,7 @@ public final class MyAppConfig {
 			.endModule()
 			.beginModule(VegaFeatures.class)
 				.withTokens("tokens")
+				.withSecurity()
 				.withMisc()
 				.withEmbeddedServer(WS_PORT)
 			.endModule()
