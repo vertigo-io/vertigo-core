@@ -1533,6 +1533,17 @@ public final class WebServiceManagerTest {
 				.get("/test/downloadNotModifiedFile");
 	}
 
+	@Test
+	public void testDatesUTC() {
+		final String inputUtc = "2016-01-18T17:21:42.026Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputUtc))
+				.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/dates?date=" + inputUtc);
+	}
+
 	//=========================================================================
 
 	private static RequestSpecification given() {
@@ -1565,8 +1576,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private static String convertDate(final String dateStr) throws ParseException {
-		final Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
+		final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		final Date date = dateFormat.parse(dateStr);
+		final DateFormat dateFormatUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return dateFormatUtc.format(date);
 	}
 
 	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {

@@ -23,6 +23,7 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -76,7 +77,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param analyticsManager Analytics manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final LocaleManager localeManager, final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(transactionManager);
@@ -84,7 +85,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 		this.analyticsManager = analyticsManager;
-
+		localeManager.add(io.vertigo.dynamo.impl.search.SearchRessources.class.getName(), io.vertigo.dynamo.impl.search.SearchRessources.values());
 		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();

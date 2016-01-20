@@ -52,6 +52,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -333,6 +334,14 @@ public final class SimplerTestWebServices implements WebServices {
 			final Contact text) {
 		//200
 		return text;
+	}
+
+	@GET("/dates")
+	public UiContext testDate(@QueryParam("date") final Date date) {
+		final UiContext result = new UiContext();
+		result.put("input", date);
+		result.put("inputAsString", date.toString());
+		return result;
 	}
 
 	/*@GET("/searchFacet")

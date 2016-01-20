@@ -39,9 +39,10 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 	protected Rule<List<?>> createMainRule() {
 		final Rule<List<List<?>>> otherFieldsRule = new ManyRule<>(
 				new SequenceRule(
+						DslSyntaxRules.SPACES,
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
-						new DslFieldRule() //2
+						new DslFieldRule() //3
 				), true);
 
 		return new SequenceRule(
@@ -65,7 +66,7 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 		//On récupère le produit de la règle many
 		final List<List<?>> many = (List<List<?>>) parsing.get(3);
 		for (final List<?> row : many) {
-			fields.add((DslField) row.get(2));
+			fields.add((DslField) row.get(3));
 		}
 		//---
 		final String postMultiField = "";//(String) parsing.get(7);

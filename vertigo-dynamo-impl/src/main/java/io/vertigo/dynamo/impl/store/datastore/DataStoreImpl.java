@@ -70,16 +70,17 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void workOn(final URI<? extends DtObject> uri) {
+	public <D extends DtObject> D loadForUpdate(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		getPhysicalStore(dtDefinition).lockForUpdate(dtDefinition, uri);
+		final D value = getPhysicalStore(dtDefinition).<D> loadForUpdate(dtDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.Update, uri);
+		return value;
 	}
 
-	private void fireAfterCommit(final StoreEvent.Type evenType, final URI uri) {
+	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(new VTransactionSynchronization() {
 			@Override
 			public void process(final boolean txCommitted) {

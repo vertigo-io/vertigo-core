@@ -52,6 +52,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	 * @param name ConnectionProvider's name
 	 * @param dataBaseName Nom du type de base de données
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
+	 * @param transactionManager Transaction manager
 	 */
 	@Inject
 	public HibernateConnectionProviderPlugin(

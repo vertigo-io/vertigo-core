@@ -23,7 +23,7 @@ import io.vertigo.lang.Option;
 
 /**
  * Term query definition.
- * (preBody)#(preBody)(termField)(postBody)#?\((escapeMode)\)!\((defaultValue)\)(postBody)
+ * (preBody)#(preTerm)(termField)(postTerm)#?\((escapeMode)\)!\((defaultValue)\)(postBody)
  * @author npiedeloup
  */
 public final class DslTermQuery implements DslQuery {
