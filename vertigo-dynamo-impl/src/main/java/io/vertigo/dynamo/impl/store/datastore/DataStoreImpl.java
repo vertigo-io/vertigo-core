@@ -83,7 +83,7 @@ public final class DataStoreImpl implements DataStore {
 	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void process(final boolean txCommitted) {
+			public void afterCompletion(final boolean txCommitted) {
 				if (txCommitted) {//send event only is tx successful
 					eventBusManager.post(new StoreEvent(evenType, uri));
 				}

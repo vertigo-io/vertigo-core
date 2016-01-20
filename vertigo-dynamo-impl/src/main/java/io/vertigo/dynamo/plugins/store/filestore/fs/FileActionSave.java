@@ -89,7 +89,7 @@ final class FileActionSave implements VTransactionSynchronization {
 
 	/** {@inheritDoc} */
 	@Override
-	public void process(final boolean txCommited) {
+	public void afterCompletion(final boolean txCommited) {
 		if (txCommited) {
 			doCommit();
 		} else {

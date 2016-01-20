@@ -61,7 +61,7 @@ final class FileActionDelete implements VTransactionSynchronization {
 
 	/** {@inheritDoc} */
 	@Override
-	public void process(final boolean txCommited) {
+	public void afterCompletion(final boolean txCommited) {
 		if (txCommited) {
 			// on supprime le fichier
 			if (!file.delete()) {

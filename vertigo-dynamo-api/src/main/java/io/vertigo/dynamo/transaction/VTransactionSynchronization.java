@@ -26,8 +26,10 @@ package io.vertigo.dynamo.transaction;
 public interface VTransactionSynchronization {
 
 	/**
-	 * Proceed function on completion.
-	 * @param txCommited if this transaction was committed
+	 *  This method is invoked after the transaction has committed or
+	 *  rolled back.
+	 *
+	 *  @param txCommitted if this transaction was committed successfully.
 	 */
-	void process(final boolean txCommited);
+	public void afterCompletion(boolean txCommitted);
 }

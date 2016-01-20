@@ -281,7 +281,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	private void doAfterCompletion(final boolean commitSucceeded) {
 		for (final VTransactionSynchronization function : afterCompletionFunctions) {
 			try {
-				function.process(commitSucceeded);
+				function.afterCompletion(commitSucceeded);
 			} catch (final Throwable th) {
 				transactionListener.logAfterCommitError(th);
 				//we don't rethrow this exception, main resource was finished, we should continue to proceed afterCompletion functions

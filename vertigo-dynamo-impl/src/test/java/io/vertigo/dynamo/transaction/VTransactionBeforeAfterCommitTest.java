@@ -262,7 +262,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
 
 			@Override
-			public void process(final boolean txCommited) {
+			public void afterCompletion(final boolean txCommited) {
 				run1AfterCommit.set(txCommited);
 				Assert.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
 			}
@@ -270,7 +270,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 
 		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void process(final boolean txCommited) {
+			public void afterCompletion(final boolean txCommited) {
 				run2AfterCommit.set(txCommited);
 				if (afterCommitError) {
 					throw new ArithmeticException("Can't proceed this code");
@@ -280,7 +280,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 
 		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
 			@Override
-			public void process(final boolean txCommited) {
+			public void afterCompletion(final boolean txCommited) {
 				run3AfterCommit.set(txCommited);
 			}
 		});
