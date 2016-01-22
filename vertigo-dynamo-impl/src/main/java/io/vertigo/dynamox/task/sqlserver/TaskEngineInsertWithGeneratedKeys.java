@@ -64,10 +64,10 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 		// gestion de generatedKey
 		final DtObject dto = (DtObject) getValue("DTO");
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField pk = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 
-		final Object key = statement.getGeneratedKey(pk.getName(), pk.getDomain());
-		pk.getDataAccessor().setValue(dto, key);
+		final Object id = statement.getGeneratedKey(idField.getName(), idField.getDomain());
+		idField.getDataAccessor().setValue(dto, id);
 	}
 
 	/** {@inheritDoc} */

@@ -407,7 +407,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final Object key = mapping.getValueForResultSet(rs, pkRsCol, domain.getDataType()); //attention le pkRsCol correspond au n° de column dans le RETURNING
+			final Object id = mapping.getValueForResultSet(rs, pkRsCol, domain.getDataType()); //attention le pkRsCol correspond au n° de column dans le RETURNING
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", -407);
 			}
@@ -415,7 +415,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			if (rs.next()) {
 				throw new SQLException("GeneratedKeys.size >1 ", "0100E", 464);
 			}
-			return key;
+			return id;
 		}
 	}
 }

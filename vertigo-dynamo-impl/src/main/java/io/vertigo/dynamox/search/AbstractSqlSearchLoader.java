@@ -73,20 +73,20 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
-		final DtField pk = dtDefinition.getIdField().get();
-		final String pkFieldName = pk.getName();
-		final String request = getNextIdsSqlQuery(tableName, pkFieldName);
+		final DtField idField = dtDefinition.getIdField().get();
+		final String idFieldName = idField.getName();
+		final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dtDefinition.getDataSpace())
 				.withRequest(request)
-				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(idFieldName, idField.getDomain(), true)
 				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(pkFieldName, lastId)
+				.addValue(idFieldName, lastId)
 				.build();
 
 		final DtList<S> resultDtc = taskManager

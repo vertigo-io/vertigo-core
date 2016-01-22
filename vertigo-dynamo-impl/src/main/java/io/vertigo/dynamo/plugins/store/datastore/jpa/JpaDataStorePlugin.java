@@ -291,7 +291,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> resultClass = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			//PK de la DtList recherchée
-			final String pkFieldName = dtDefinition.getIdField().get().getName();
+			final String idFieldName = dtDefinition.getIdField().get().getName();
 			//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 			final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 			final String joinTableName = associationNNDefinition.getTableName();
@@ -307,7 +307,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 					.append(dtDefinition.getLocalName()).append(" t")
 					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
 					.append(" join ").append(joinTableName)
-					.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName)
+					.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
 					//Condition de la recherche
 					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
 

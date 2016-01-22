@@ -145,7 +145,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		setValue(fileInfoDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));
 
 		if (fileInfo.getURI() != null) {
-			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 		}
 		return fileInfoDto;
 	}

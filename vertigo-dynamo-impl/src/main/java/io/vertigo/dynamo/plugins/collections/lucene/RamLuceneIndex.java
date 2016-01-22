@@ -110,11 +110,11 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	}
 
 	/**
-	 * @param pkValue Clé de l'objet
+	 * @param id Clé de l'objet
 	 * @return Objet associé dans cet index.
 	 */
-	private D getDtObjectIndexed(final String pkValue) {
-		return indexedObjectPerPk.get(pkValue);
+	private D getDtObjectIndexed(final String id) {
+		return indexedObjectPerPk.get(id);
 	}
 
 	/**
@@ -144,7 +144,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	}
 
 	private DtList<D> translateDocs(final IndexSearcher searcher, final TopDocs topDocs, final int skip, final int top) throws IOException {
-		final DtField pkField = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 
 		final DtList<D> dtcResult = new DtList<>(dtDefinition);
 		final int resultLength = topDocs.scoreDocs.length;
@@ -152,7 +152,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(pkField.name())));
+				dtcResult.add(getDtObjectIndexed(document.get(idField.name())));
 			}
 		}
 		return dtcResult;
@@ -164,15 +164,15 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		Assertion.checkNotNull(fullDtc);
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
-			final DtField pkField = fullDtc.getDefinition().getIdField().get();
+			final DtField idField = fullDtc.getDefinition().getIdField().get();
 			final Collection<DtField> dtFields = fullDtc.getDefinition().getFields();
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
-				final Object pkValue = pkField.getDataAccessor().getValue(dto);
-				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), pkField.name());
+				final Object pkValue = idField.getDataAccessor().getValue(dto);
+				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.name());
 				final String indexedPkValue = String.valueOf(pkValue);
-				document.add(createKeyword(pkField.name(), indexedPkValue, true));
+				document.add(createKeyword(idField.name(), indexedPkValue, true));
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null) {

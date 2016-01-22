@@ -174,7 +174,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
 		} else {
 			// cas de l'update
-			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
@@ -303,7 +303,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setPkValue(final DtObject dto, final Object value) {
+	private static void setIdValue(final DtObject dto, final Object value) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, value);
 	}

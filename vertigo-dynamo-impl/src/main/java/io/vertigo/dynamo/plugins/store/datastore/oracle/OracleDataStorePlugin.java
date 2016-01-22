@@ -77,7 +77,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final DtField pk = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 
 		final String tableName = getTableName(dtDefinition);
 		final StringBuilder request = new StringBuilder("begin insert into ").append(tableName).append(" ( ");
@@ -103,7 +103,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 				separator = ", ";
 			}
 		}
-		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;").append("end;");
+		request.append(") returning ").append(idField.getName()).append(" into %DTO.").append(idField.getName()).append("%;").append("end;");
 		return request.toString();
 	}
 

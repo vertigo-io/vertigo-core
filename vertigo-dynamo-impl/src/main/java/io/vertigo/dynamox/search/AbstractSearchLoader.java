@@ -116,10 +116,10 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	protected abstract List<URI<K>> loadNextURI(final P lastId, final DtDefinition dtDefinition);
 
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
-		final DtField pkField = dtDefinition.getIdField().get();
-		final DataType pkDataType = pkField.getDomain().getDataType();
+		final DtField idField = dtDefinition.getIdField().get();
+		final DataType idDataType = idField.getDomain().getDataType();
 		P pkValue;
-		switch (pkDataType) {
+		switch (idDataType) {
 			case Integer:
 				pkValue = (P) Integer.valueOf(-1);
 				break;
@@ -137,7 +137,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case DtList:
 			case DtObject:
 			default:
-				throw new IllegalArgumentException("Type's PK " + pkDataType.name() + " of "
+				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
 		}
 		return pkValue;

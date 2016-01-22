@@ -142,25 +142,25 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + tableName + "_BY_URI";
 
-		final DtField pk = dtDefinition.getIdField().get();
-		final String pkFieldName = pk.getName();
+		final DtField idField = dtDefinition.getIdField().get();
+		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
 				.append(" select * from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(idFieldName, idField.getDomain(), true)
 				//IN, obligatoire
 				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(pkFieldName, uri.getId())
+				.addValue(idFieldName, uri.getId())
 				.build();
 
 		return taskManager
@@ -179,7 +179,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_SELECT + "_N_N_LIST_" + tableName + "_BY_URI";
 
 		//PK de la DtList recherchée
-		final String pkFieldName = dtDefinition.getIdField().get().getName();
+		final String idFieldName = dtDefinition.getIdField().get().getName();
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
@@ -195,7 +195,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.append(tableName).append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
 				.append(" join ").append(joinTableName)
-				.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName)
+				.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
 				//Condition de la recherche
 				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
 				.toString();
@@ -409,7 +409,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	private static final String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final DtField pk = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 		final StringBuilder request = new StringBuilder()
 				.append("update ").append(tableName).append(" set ");
 		String separator = "";
@@ -421,7 +421,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				separator = ", ";
 			}
 		}
-		request.append(" where ").append(pk.getName()).append(" = #DTO.").append(pk.getName()).append('#');
+		request.append(" where ").append(idField.getName()).append(" = #DTO.").append(idField.getName()).append('#');
 		return request.toString();
 	}
 
@@ -481,27 +481,27 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final DtField pk = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_DELETE + "_" + tableName;
 
-		final String pkFieldName = pk.getName();
+		final String idFieldName = idField.getName();
 
 		final String request = new StringBuilder()
 				.append("delete from ").append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(idFieldName, idField.getDomain(), true)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire  --> rowcount
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(pkFieldName, uri.getId())
+				.addValue(idFieldName, uri.getId())
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -550,12 +550,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
-		final DtField pk = dtDefinition.getIdField().get();
-		final String pkFieldName = pk.getName();
+		final DtField idField = dtDefinition.getIdField().get();
+		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
 				.append(" select * from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.append(" for update ")
 				.toString();
 
@@ -563,13 +563,13 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(idFieldName, idField.getDomain(), true)
 				//IN, obligatoire
 				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(pkFieldName, uri.getId())
+				.addValue(idFieldName, uri.getId())
 				.build();
 
 		return taskManager

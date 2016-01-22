@@ -71,8 +71,8 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
-		final DtField pkField = dtDefinition.getIdField().get();
-		return pkField.getDataAccessor().getValue(dto);
+		final DtField idField = dtDefinition.getIdField().get();
+		return idField.getDataAccessor().getValue(dto);
 	}
 
 	/**
