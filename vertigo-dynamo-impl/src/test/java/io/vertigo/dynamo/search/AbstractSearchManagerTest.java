@@ -39,6 +39,7 @@ import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
+import io.vertigo.lang.VUserException;
 
 import java.io.File;
 import java.io.IOException;
@@ -245,6 +246,44 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number
 		Assert.assertEquals(1L, size);
+
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testBadSyntaxQuery() {
+		index(false);
+		waitIndexation();
+		long size;
+		size = query("_all:(error or)");
+		Assert.assertEquals(0L, size);
+
+		size = query("_all:or");
+		Assert.assertEquals(0L, size);
+
+		try {
+			size = query(" OR ");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
+		try {
+			size = query("_all: OR ");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
+		try {
+			size = query("_all:(error");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
 
 	}
 
