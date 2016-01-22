@@ -135,7 +135,6 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:#query#?(escapeReserved)", "Test meteor test2", "ALL:(Test meteor test2)" }, //26
 				{ "ALL:#query#?(escapeReserved)", "Test nand test2", "ALL:(Test nand test2)" }, //27
 		};
-		testStringFixedQuery(testQueries[6]);
 		testStringFixedQuery(testQueries);
 	}
 
