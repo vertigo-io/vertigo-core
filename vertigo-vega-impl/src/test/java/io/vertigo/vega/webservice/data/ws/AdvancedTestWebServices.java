@@ -101,6 +101,23 @@ public final class AdvancedTestWebServices implements WebServices {
 		//access token publish
 	}
 
+	@GET("/export/pdf/")
+	public VFile testExportContacts() throws URISyntaxException {
+		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contacts.pdf");
+		final VFile result = fileManager.createFile(new File(tempFile.toURI()));
+		//200
+		return result;
+	}
+
+	@GET("/export/pdf/{conId}")
+	public VFile testExportContact(@PathParam("conId") final long conId) throws URISyntaxException {
+		final URL tempFile = resourcetManager.resolve("io/vertigo/vega/webservice/data/ws/contact2.pdf");
+		final VFile result = fileManager.createFile(new File(tempFile.toURI()));
+
+		//200
+		return result;
+	}
+
 	@GET("/limitedAccess/{conId}")
 	@AccessTokenMandatory
 	public Contact testAccessToken(@PathParam("conId") final long conId) {
