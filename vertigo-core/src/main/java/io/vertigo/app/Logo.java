@@ -32,18 +32,19 @@ public final class Logo {
 
 	/**
 	 * Displays logo in console.
-	 * @param out Out 
+	 * @param out Out
 	 */
 	public static void printCredits(final PrintStream out) {
 		out.println();
 		out.println("+--------------------------------------------------+");
 		out.println("|   _____________                                  |");
 		out.println("|  |     _     / |                                 |");
-		out.println("|  |#   / \\   / /|  Vertigo v0.9.0 - 2015          |");
+		out.println("|  |#   / \\   / /|  Vertigo v0.9.1 - 2015          |");
 		out.println("|  |  __\\ /__/ / |                                 |");
 		out.println("|  | / _      /  |                                 |");
 		out.println("|  |/ / \\  ()/  *|                                 |");
 		out.println("|  | /  |   |    |  www.kleegroup.com              |");
 		out.println("|  |/___|____\\___|                                 |");
+		out.println("+--------------------------------------------------+");
 	}
 }
