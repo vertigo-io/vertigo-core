@@ -41,7 +41,7 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class DIDependency {
-	private final String name;
+	private final String targetId;
 	private final boolean isOption;
 	private final boolean isList;
 	private final Class<?> type;
@@ -59,7 +59,7 @@ public final class DIDependency {
 		isOption = isOption(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
-		name = named != null ? named : DIAnnotationUtil.buildId(type);
+		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
 	/**
@@ -76,14 +76,14 @@ public final class DIDependency {
 		isOption = isOption(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
-		name = named != null ? named : DIAnnotationUtil.buildId(type);
+		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
 	/**
 	 * @return Inject name
 	 */
 	public String getName() {
-		return name;
+		return targetId;
 	}
 
 	/**
@@ -119,11 +119,11 @@ public final class DIDependency {
 	@Override
 	public String toString() {
 		if (isList) {
-			return name + '*';
+			return targetId + '*';
 		} else if (isOption) {
-			return name + '?';
+			return targetId + '?';
 		}
-		return name;
+		return targetId;
 	}
 
 	private static boolean isList(final Class<?> type) {
