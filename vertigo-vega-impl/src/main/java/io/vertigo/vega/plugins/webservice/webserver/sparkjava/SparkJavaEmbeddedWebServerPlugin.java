@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 
 import javax.inject.Inject;
@@ -40,6 +41,7 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 		//---
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));
+		Spark.after(new JettyMultipartCleaner());
 	}
 
 }

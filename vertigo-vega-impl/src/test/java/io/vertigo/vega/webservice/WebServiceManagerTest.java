@@ -19,13 +19,10 @@
 package io.vertigo.vega.webservice;
 
 import io.vertigo.app.App;
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.data.MyAppConfig;
-import io.vertigo.vega.webservice.stereotype.POST;
-import io.vertigo.vega.webservice.stereotype.QueryParam;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -1402,14 +1399,6 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
-	}
-
-	@POST("/uploadFile")
-	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
-			final @QueryParam("id") Integer id, //
-			final @QueryParam("note") String note) {
-
-		return inputFile;
 	}
 
 	@Test
