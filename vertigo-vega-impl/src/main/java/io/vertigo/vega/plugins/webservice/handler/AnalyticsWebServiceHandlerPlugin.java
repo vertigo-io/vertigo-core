@@ -63,7 +63,9 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
 		try (final AnalyticsTracker tracker = analyticsManager.startTracker("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath())) {
 			try {
-				return chain.handle(request, response, webServiceCallContext);
+				final Object result = chain.handle(request, response, webServiceCallContext);
+				tracker.markAsSucceeded();
+				return result;
 			} catch (final RuntimeException e) {
 				tracker.addMetaData("errorHeader", String.valueOf(e));
 				throw e;

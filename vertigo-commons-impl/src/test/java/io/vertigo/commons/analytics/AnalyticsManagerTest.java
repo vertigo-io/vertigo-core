@@ -53,6 +53,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 				tracker.incMeasure("POIDS", 25);
 				tracker.incMeasure("MONTANT", 10);
 			}
+			tracker.markAsSucceeded();
 		}
 	}
 
@@ -87,6 +88,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 				tracker.incMeasure("MONTANT", 5);
 				test1000Articles();
 			}
+			tracker.markAsSucceeded();
 		}
 		log.trace("elapsed = " + (System.currentTimeMillis() - start));
 	}
