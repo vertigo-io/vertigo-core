@@ -58,7 +58,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @return Builder
 	 */
 	public FilterCriteriaBuilder<D> withPrefix(final DtFieldName fieldName, final String prefix) {
-		return addFilter(fieldName.name(), prefix);
+		return withPrefix(fieldName.name(), prefix);
 	}
 
 	/**
