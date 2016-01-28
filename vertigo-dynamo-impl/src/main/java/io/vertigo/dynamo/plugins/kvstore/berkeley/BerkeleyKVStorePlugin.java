@@ -115,7 +115,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {
 		//replace by a Json like parser (without " )
 		final ListBuilder<BerkeleyCollectionConfig> listBuilder = new ListBuilder<>();
-		for (final String collection : collections.split(",")) {
+		for (final String collection : collections.split(", *")) {
 			String collectionName = null;
 			long timeToLiveSeconds = -1;
 			boolean inMemory = false;
