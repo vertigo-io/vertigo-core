@@ -25,7 +25,7 @@ limitations under the License. -->
 	</parent>
 	
 	<artifactId>vertigo-reactor</artifactId>
-	<name>vertigo-reactor</name>
+	<name>vertigo</name>
 	<packaging>pom</packaging>
 
 	<modules>
