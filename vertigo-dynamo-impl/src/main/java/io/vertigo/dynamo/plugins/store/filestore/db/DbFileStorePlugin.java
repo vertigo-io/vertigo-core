@@ -77,7 +77,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----

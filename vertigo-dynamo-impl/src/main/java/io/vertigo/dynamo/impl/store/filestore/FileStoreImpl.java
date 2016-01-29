@@ -71,10 +71,10 @@ public final class FileStoreImpl implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo get(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final FileInfo fileInfo = getPhysicalStore(uri.getDefinition()).load(uri);
+		final FileInfo fileInfo = getPhysicalStore(uri.getDefinition()).read(uri);
 		//-----
 		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;

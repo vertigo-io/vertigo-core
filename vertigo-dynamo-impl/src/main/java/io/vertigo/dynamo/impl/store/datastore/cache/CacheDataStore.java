@@ -86,7 +86,7 @@ public final class CacheDataStore {
 				dto = this.<D> reload(dtDefinition, uri);
 			}
 		} else {
-			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
+			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
 		}
 		return dto;
 	}
@@ -100,7 +100,7 @@ public final class CacheDataStore {
 			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
+			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
 			cacheDataStoreConfig.getDataCache().putDtObject(dto);
 		}
 		return dto;
@@ -113,12 +113,12 @@ public final class CacheDataStore {
 		if (listUri instanceof DtListURIForMasterData) {
 			dtc = loadMDList((DtListURIForMasterData) listUri);
 		} else if (listUri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
 		} else if (listUri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<D> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, castedListUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, castedListUri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}

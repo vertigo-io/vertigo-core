@@ -57,7 +57,7 @@ public interface DataStore {
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> getList(final DtListURI uri);
+	<D extends DtObject> DtList<D> readAll(final DtListURI uri);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
@@ -65,7 +65,7 @@ public interface DataStore {
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D loadForUpdate(URI<? extends DtObject> uri);
+	<D extends DtObject> D readForUpdate(URI<? extends DtObject> uri);
 
 	/**
 	* Create an object.

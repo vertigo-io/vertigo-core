@@ -295,7 +295,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertNotNull(dtc);
 			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
 			transaction.commit();
@@ -309,7 +309,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -318,7 +318,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
-			dtc = storeManager.getDataStore().getList(allFamilles);
+			dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -356,7 +356,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getFileStore().create(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().read(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 
@@ -404,7 +404,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -451,7 +451,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -760,7 +760,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//Check cars count
 			checkCrudCarsCount(1);
 			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
-			storeManager.getDataStore().loadForUpdate(carUri);
+			storeManager.getDataStore().readForUpdate(carUri);
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}
@@ -773,7 +773,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
-		final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+		final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
 		Assert.assertNotNull(cars);
 		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
 	}

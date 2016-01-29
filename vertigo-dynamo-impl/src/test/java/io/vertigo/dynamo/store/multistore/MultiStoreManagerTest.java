@@ -85,7 +85,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().read(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 

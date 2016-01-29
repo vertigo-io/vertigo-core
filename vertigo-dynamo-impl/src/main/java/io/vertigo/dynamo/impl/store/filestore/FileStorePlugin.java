@@ -40,7 +40,7 @@ public interface FileStorePlugin extends Plugin {
 	 * @param uri FileURI requested
 	 * @return FileInfo for this uri (null if not found).
 	 */
-	FileInfo load(FileInfoURI uri);
+	FileInfo read(FileInfoURI uri);
 
 	//==========================================================================
 	//=============================== Write operations =========================

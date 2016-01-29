@@ -118,7 +118,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		// récupération des metadata.
 		try {
 			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;

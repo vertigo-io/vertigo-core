@@ -78,7 +78,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI fileInfoUri) {
+	public FileInfo read(final FileInfoURI fileInfoUri) {
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
 		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());

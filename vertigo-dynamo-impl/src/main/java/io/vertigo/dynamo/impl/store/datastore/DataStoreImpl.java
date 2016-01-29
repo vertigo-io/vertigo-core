@@ -70,11 +70,11 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D loadForUpdate(final URI<? extends DtObject> uri) {
+	public <D extends DtObject> D readForUpdate(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final D value = getPhysicalStore(dtDefinition).<D> loadForUpdate(dtDefinition, uri);
+		final D value = getPhysicalStore(dtDefinition).<D> readForUpdate(dtDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.Update, uri);
 		return value;
@@ -152,7 +152,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
+	public <D extends DtObject> DtList<D> readAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtList<D> dtc = cacheDataStore.loadList(uri);

@@ -68,7 +68,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<D extends DtObject> D load(DtDefinition dtDefinition, URI<D> uri);
+	<D extends DtObject> D read(DtDefinition dtDefinition, URI<D> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -79,7 +79,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -90,7 +90,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -101,7 +101,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
+	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -151,5 +151,5 @@ public interface DataStorePlugin extends Plugin {
 	 * @param <D> Object type
 	 * @return D Object value.
 	 */
-	<D extends DtObject> D loadForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<D extends DtObject> D readForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }
