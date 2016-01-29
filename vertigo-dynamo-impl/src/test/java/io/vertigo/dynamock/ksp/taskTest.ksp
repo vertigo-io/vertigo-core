@@ -8,3 +8,13 @@ create Task TK_GET_FIRST_CAR {
 			"
 	attribute DTO_CAR {domain : DO_DT_CAR_DTO  notNull:"false" inOut :"out"}
 }
+
+
+/*To test PAO*/
+create Task TK_PING {
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+    request : "
+				select * from car
+				limit 1
+			"
+}
