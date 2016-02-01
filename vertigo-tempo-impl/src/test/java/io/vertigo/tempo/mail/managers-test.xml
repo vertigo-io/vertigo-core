@@ -1,16 +1,10 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-
 	<boot locales="fr_FR"/>
 	
 	<module name="vertigo-dynamo">
-		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-			<param name="workerCount" value="5" />
-		</component>
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
-
-	<!-- <component api="AnalyticsManager" class="kasperimpl.analytics.AnalyticsManagerImpl" /> <- Pour generation de l'edition -> <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl" > <param name="workerCount" value="5" /> </component> -->
 
 	<module name="vertigo-labs">
 		<component api="MailManager" class="io.vertigo.tempo.impl.mail.MailManagerImpl">

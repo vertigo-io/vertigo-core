@@ -18,10 +18,7 @@
  */
 package io.vertigo.tempo.mail;
 
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Manager;
-
-import java.util.Date;
 
 /**
  * Gestionnaire centralisé des mails.
@@ -34,11 +31,4 @@ public interface MailManager extends Manager {
 	 * @param mail Mail à envoyer
 	 */
 	void sendMail(Mail mail);
-
-	/**
-	 * Envoyer un mail de façon asynchrone.
-	 * @param mail Mail à envoyer
-	 * param HandlerResultat de l'envoi du mail
-	 */
-	void sendMailASync(Mail mail, final WorkResultHandler<Date> workResultHandler);
 }

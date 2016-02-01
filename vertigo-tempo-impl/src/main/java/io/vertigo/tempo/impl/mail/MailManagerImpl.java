@@ -19,14 +19,9 @@
 package io.vertigo.tempo.impl.mail;
 
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.mail.Mail;
 import io.vertigo.tempo.mail.MailManager;
-
-import java.util.Date;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -37,23 +32,18 @@ import javax.inject.Inject;
  * @author npiedeloup
  */
 public final class MailManagerImpl implements MailManager {
-	private final WorkManager workManager;
 	private final SendMailPlugin sendMailPlugin;
 
 	/**
 	 * Constructor.
-	 * @param workManager the manager of the workers
 	 * @param localeManager the manager of the localized messages
 	 * @param sendMailPlugin the plugin that sends mails
 	 */
 	@Inject
-	public MailManagerImpl(final WorkManager workManager, final LocaleManager localeManager, final SendMailPlugin sendMailPlugin) {
-		super();
-		Assertion.checkNotNull(workManager);
+	public MailManagerImpl(final LocaleManager localeManager, final SendMailPlugin sendMailPlugin) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(sendMailPlugin);
 		//-----
-		this.workManager = workManager;
 		localeManager.add("io.vertigo.tempo.impl.mail.Mail", io.vertigo.tempo.impl.mail.Resources.values());
 		this.sendMailPlugin = sendMailPlugin;
 	}
@@ -64,19 +54,5 @@ public final class MailManagerImpl implements MailManager {
 		Assertion.checkNotNull(mail);
 		//-----
 		sendMailPlugin.sendMail(mail);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void sendMailASync(final Mail mail, final WorkResultHandler<Date> workResultHandler) {
-		Assertion.checkNotNull(mail);
-		//-----
-		workManager.schedule(new Callable<Date>() {
-			@Override
-			public Date call() {
-				sendMail(mail);
-				return new Date();
-			}
-		}, workResultHandler);
 	}
 }
