@@ -25,16 +25,16 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import java.util.List;
 
 /**
- * WebServices introspector.
+ * WebServices scanner.
  * @author npiedeloup
  */
-public interface WebServiceIntrospectorPlugin extends Plugin {
+public interface WebServiceScannerPlugin extends Plugin {
 
 	/**
-	 * Introspect WebService class, looking for WebServiceDefinitions.
-	 * @param webServiceClass Class to introspect
+	 * Scan WebService class, looking for WebServiceDefinitions.
+	 * @param webServiceClass Class to scan
 	 * @return List of WebServiceDefinition found
 	 */
-	List<WebServiceDefinition> instrospectWebService(Class<? extends WebServices> webServiceClass);
+	List<WebServiceDefinition> scanWebService(Class<? extends WebServices> webServiceClass);
 
 }

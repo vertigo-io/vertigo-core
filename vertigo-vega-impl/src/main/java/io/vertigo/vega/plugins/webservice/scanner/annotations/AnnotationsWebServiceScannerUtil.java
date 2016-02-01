@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.plugins.webservice.instrospector.annotations;
+package io.vertigo.vega.plugins.webservice.scanner.annotations;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.webservice.WebServiceIntrospectorPlugin;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -67,11 +66,21 @@ import java.util.List;
 /**
  * @author npiedeloup
  */
-public final class AnnotationsWebServiceIntrospectorPlugin implements WebServiceIntrospectorPlugin {
+public final class AnnotationsWebServiceScannerUtil {
 
-	/** {@inheritDoc} */
-	@Override
-	public List<WebServiceDefinition> instrospectWebService(final Class<? extends WebServices> webServicesClass) {
+	/**
+	 * Constructor.
+	 */
+	private AnnotationsWebServiceScannerUtil() {
+		//private for util class
+	}
+
+	/**
+	 * Introspect WebService class, looking for WebServiceDefinitions.
+	 * @param webServicesClass Class to introspect
+	 * @return List of WebServiceDefinition found
+	 */
+	public static List<WebServiceDefinition> scanWebService(final Class<? extends WebServices> webServicesClass) {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();

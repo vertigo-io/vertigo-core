@@ -39,7 +39,7 @@ import io.vertigo.vega.plugins.webservice.handler.ServerSideStateWebServiceHandl
 import io.vertigo.vega.plugins.webservice.handler.SessionInvalidateWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.webservice.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin;
+import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
 import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
@@ -95,7 +95,7 @@ public final class VegaFeatures extends Features {
 				.withNoAPI()
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
-				.addPlugin(AnnotationsWebServiceIntrospectorPlugin.class)
+				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
 				.addComponent(CatalogWebServices.class)
 

@@ -71,22 +71,22 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 			+ "- " + ValidatorWebServiceHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + RestfulServiceWebServiceHandlerPlugin.class.getSimpleName() + "\n";
 
-	private final WebServiceIntrospectorPlugin webServiceIntrospectorPlugin;
+	private final WebServiceScannerPlugin webServiceScannerPlugin;
 	private final WebServerPlugin webServerPlugin;
 	private final HandlerChain handlerChain;
 
 	/**
 	 * Constructor.
-	 * @param webServiceIntrospectorPlugin WebServiceIntrospector Plugin
+	 * @param webServiceScannerPlugin webServiceScanner Plugin
 	 * @param webServerPlugin WebServer use to serve routes
 	 * @param restHandlerPlugins WebServiceHandler plugins
 	 */
 	@Inject
 	public WebServiceManagerImpl(
-			final WebServiceIntrospectorPlugin webServiceIntrospectorPlugin,
+			final WebServiceScannerPlugin webServiceScannerPlugin,
 			final WebServerPlugin webServerPlugin,
 			final List<WebServiceHandlerPlugin> restHandlerPlugins) {
-		Assertion.checkNotNull(webServiceIntrospectorPlugin);
+		Assertion.checkNotNull(webServiceScannerPlugin);
 		Assertion.checkNotNull(webServerPlugin);
 		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkNotNull(webServerPlugin);
@@ -96,7 +96,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		Assertion.checkArgument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
 				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----
-		this.webServiceIntrospectorPlugin = webServiceIntrospectorPlugin;
+		this.webServiceScannerPlugin = webServiceScannerPlugin;
 		this.webServerPlugin = webServerPlugin;
 		handlerChain = new HandlerChain(sortedWebServiceHandlerPlugins);
 		//we do nothing with webServerPlugin
@@ -139,7 +139,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof WebServices) {
-				final List<WebServiceDefinition> webServiceDefinitions = webServiceIntrospectorPlugin.instrospectWebService(((WebServices) component).getClass());
+				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(((WebServices) component).getClass());
 				allWebServiceDefinitions.addAll(webServiceDefinitions);
 			}
 		}
