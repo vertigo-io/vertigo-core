@@ -205,10 +205,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public boolean shouldSkipField(final FieldAttributes arg0) {
-			if (arg0.getAnnotation(JsonExclude.class) != null) {
-				return true;
-			}
-			return false;
+			return (arg0.getAnnotation(JsonExclude.class) != null);
 		}
 
 		@Override

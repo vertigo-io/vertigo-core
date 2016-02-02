@@ -329,7 +329,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private Map<String, Object> obtainFieldSchema(final Field field, final Class<? extends Object> parameterClass, final List<String> requireds) {
+	private Map<String, Object> obtainFieldSchema(final Field field, final Class<?> parameterClass, final List<String> requireds) {
 		final Type fieldType = field.getGenericType();
 		Type usedFieldType = fieldType;
 		if (fieldType instanceof ParameterizedType) {

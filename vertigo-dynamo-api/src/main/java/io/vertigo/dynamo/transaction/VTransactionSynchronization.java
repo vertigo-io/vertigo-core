@@ -31,5 +31,5 @@ public interface VTransactionSynchronization {
 	 *
 	 *  @param txCommitted if this transaction was committed successfully.
 	 */
-	public void afterCompletion(boolean txCommitted);
+	void afterCompletion(boolean txCommitted);
 }
