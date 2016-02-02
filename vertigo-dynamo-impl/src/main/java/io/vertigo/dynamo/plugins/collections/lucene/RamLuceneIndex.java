@@ -239,7 +239,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
 	}
 
-	private static final Sort createSortQuery(final DtListState dtListState) {
+	private static Sort createSortQuery(final DtListState dtListState) {
 		if (dtListState.getSortFieldName().isDefined()) {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();

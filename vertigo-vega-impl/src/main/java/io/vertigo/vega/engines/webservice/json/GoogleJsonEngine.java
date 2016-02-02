@@ -134,7 +134,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Object> D fromJson(final String json, final Type paramType) {
+	public <D> D fromJson(final String json, final Type paramType) {
 		return gson.fromJson(json, paramType);
 	}
 

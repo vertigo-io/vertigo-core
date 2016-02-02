@@ -407,7 +407,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param dtDefinition the dtDefinition
 	 * @return the sql request
 	 */
-	private static final String createUpdateQuery(final DtDefinition dtDefinition) {
+	private static String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final DtField idField = dtDefinition.getIdField().get();
 		final StringBuilder request = new StringBuilder()

@@ -314,7 +314,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return dataType.getJavaClass();
 	}
 
-	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
+	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {
 		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();

@@ -50,7 +50,7 @@ public final class UTCDateUtil {
 		throw new JsonParseException("Unsupported Date format " + inputDate);
 	}
 
-	private static final DateFormat createDateFormat(final String dateFormat, final boolean isTruncatedDate) {
+	private static DateFormat createDateFormat(final String dateFormat, final boolean isTruncatedDate) {
 		final DateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
 		if (!isTruncatedDate) {
 			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

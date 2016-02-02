@@ -74,7 +74,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 		return result;
 	}
 
-	private final DtList<Car> loadCarList(final List<URI<Car>> uris) {
+	private DtList<Car> loadCarList(final List<URI<Car>> uris) {
 		final TaskDefinition taskLoadCars = getTaskLoadCarList(uris);
 
 		final Task task = new TaskBuilder(taskLoadCars)

@@ -48,7 +48,6 @@ import javax.inject.Inject;
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
-	private final FileStoreConfig fileStoreConfig;
 
 	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
@@ -79,7 +78,7 @@ public final class StoreManagerImpl implements StoreManager {
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
 		dataStore = new DataStoreImpl(this, transactionManager, eventBusManager, dataStoreConfig);
 		//-----
-		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
+		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);
 	}
 

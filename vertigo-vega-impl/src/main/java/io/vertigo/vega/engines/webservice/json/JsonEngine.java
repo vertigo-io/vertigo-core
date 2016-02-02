@@ -72,7 +72,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return Object filled with json typed data
 	 */
-	<D extends Object> D fromJson(String json, Type paramType);
+	<D> D fromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObject.
