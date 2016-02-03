@@ -35,7 +35,6 @@ import org.reflections.Reflections;
 
 /**
  * Lecture des webServices par annotations présentes sur les objets du classPath.
- *
  * @author npiedeloup
  */
 public final class ClassPathWebServiceLoaderPlugin implements LoaderPlugin {
@@ -50,7 +49,6 @@ public final class ClassPathWebServiceLoaderPlugin implements LoaderPlugin {
 	@Override
 	public void load(final String classPathPrefix, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(classPathPrefix);
-		//Assertion.checkArgument(classPathPrefix.endsWith("*"), "WebServices classPath scanner needs a full className or a classPath prefix endsWith * : {0}", classPathPrefix);
 		//-----
 		final Iterable<Class<? extends WebServices>> classes = getWebServicesClasses(classPathPrefix);
 		//--Enregistrement des fichiers java annotés
@@ -64,7 +62,7 @@ public final class ClassPathWebServiceLoaderPlugin implements LoaderPlugin {
 	 */
 	private static Set<Class<? extends WebServices>> getWebServicesClasses(final String classPathPrefix) {
 		if (classPathPrefix.endsWith("*")) {
-			final Set<Class<? extends WebServices>> webServicesClasses = new Reflections(classPathPrefix).getSubTypesOf(WebServices.class);
+			final Set<Class<? extends WebServices>> webServicesClasses = new Reflections(classPathPrefix.substring(0, classPathPrefix.length() - 1)).getSubTypesOf(WebServices.class);
 			Assertion.checkArgument(webServicesClasses.size() > 0, "No webServices found with prefix {0}", classPathPrefix);
 			return webServicesClasses;
 		}
