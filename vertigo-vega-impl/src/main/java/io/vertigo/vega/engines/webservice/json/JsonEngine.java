@@ -37,7 +37,9 @@ import java.util.Set;
  */
 public interface JsonEngine extends Component {
 
+	/** list value fieldname. */
 	String LIST_VALUE_FIELDNAME = "value";
+	/** server side token fieldname. */
 	String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
 
 	/**

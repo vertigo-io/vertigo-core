@@ -20,18 +20,12 @@ package io.vertigo.vega.engines.webservice.json;
 
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 
@@ -40,7 +34,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -175,15 +168,15 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 				final Serializable value;
 				if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
-					final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
+					final Type typeOfDest = new KnownParameterizedType(UiObject.class, paramType);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
-					final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
+					final Type typeOfDest = new KnownParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtList.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
-					final Type typeOfDest = createParameterizedType(UiList.class, dtoClass);
+					final Type typeOfDest = new KnownParameterizedType(UiList.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
 					value = (Serializable) gson.fromJson(jsonSubElement, paramType);
@@ -198,7 +191,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {
 		final Type[] typeArguments = { paramType };
-		return new KnowedParameterizedType(rawClass, typeArguments);
+		return new KnownParameterizedType(rawClass, typeArguments);
 	}
 
 	private static final class JsonExclusionStrategy implements ExclusionStrategy {
@@ -287,181 +280,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 		@Override
 		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
 			return URI.fromURN(json.getAsString());
-		}
-	}
-
-	private static final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final FacetedQueryResult<?, ?> facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
-			final JsonObject jsonObject = new JsonObject();
-
-			//1- add result list as data
-			if (facetedQueryResult.getClusters().isEmpty()) {
-				final JsonArray jsonList = (JsonArray) context.serialize(facetedQueryResult.getDtList());
-				jsonObject.add("list", jsonList);
-			} else {
-				//if it's a cluster add data's cluster
-				final JsonObject jsonCluster = new JsonObject();
-				for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
-					final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
-					jsonCluster.add(cluster.getKey().getLabel().getDisplay(), jsonList);
-				}
-				jsonObject.add("groups", jsonCluster);
-			}
-
-			//2- add facet list as facets
-			final List<Facet> facets = facetedQueryResult.getFacets();
-			final JsonObject jsonFacet = new JsonObject();
-			for (final Facet facet : facets) {
-				final JsonObject jsonFacetValues = new JsonObject();
-				for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-					jsonFacetValues.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
-				}
-				final String facetName = facet.getDefinition().getName();
-				jsonFacet.add(facetName, jsonFacetValues);
-			}
-			jsonObject.add("facets", jsonFacet);
-
-			//3 -add totalCount
-			jsonObject.addProperty(DtList.TOTAL_COUNT_META, facetedQueryResult.getCount());
-			return jsonObject;
-		}
-	}
-
-	private static final class KnowedParameterizedType implements ParameterizedType {
-		private final Class<?> rawClass;
-		private final Type[] typeArguments;
-
-		KnowedParameterizedType(final Class<?> rawClass, final Type[] typeArguments) {
-			this.rawClass = rawClass;
-			this.typeArguments = typeArguments;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type[] getActualTypeArguments() {
-			return typeArguments;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type getOwnerType() {
-			return null;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Type getRawType() {
-			return rawClass;
-		}
-	}
-
-	private static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
-		/** {@inheritDoc} */
-		@Override
-		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-			final JsonObject jsonObject = json.getAsJsonObject();
-			final D inputDto = context.deserialize(jsonObject, dtoClass);
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoClass);
-			final Set<String> dtFields = getFieldNames(dtDefinition);
-			final Set<String> modifiedFields = new HashSet<>();
-			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-				final String fieldName = entry.getKey();
-				if (dtFields.contains(fieldName)) { //we only keep fields of this dtObject
-					modifiedFields.add(fieldName);
-				}
-			}
-			//Send a alert if no fields match the DtObject ones : details may be a security issue ?
-			if (modifiedFields.isEmpty()) {
-				final Set<String> jsonEntry = new HashSet<>();
-				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-					jsonEntry.add(entry.getKey());
-				}
-				throw new JsonSyntaxException("Received Json's fields doesn't match " + dtoClass.getSimpleName() + " ones : " + jsonEntry);
-			}
-			final UiObject<D> uiObject = new UiObject<>(inputDto, modifiedFields);
-			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
-				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
-			}
-			return uiObject;
-		}
-	}
-
-	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
-		final Set<String> dtFieldNames = new HashSet<>();
-		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(StringUtil.constToLowerCamelCase(dtField.getName()));
-		}
-		return dtFieldNames;
-	}
-
-	private static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
-		/** {@inheritDoc} */
-		@Override
-		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);
-			final JsonObject jsonObject = json.getAsJsonObject();
-
-			final Map<String, UiObject<D>> collCreates = parseUiObjectMap(jsonObject, "collCreates", uiObjectType, context);
-			final Map<String, UiObject<D>> collUpdates = parseUiObjectMap(jsonObject, "collUpdates", uiObjectType, context);
-			final Map<String, UiObject<D>> collDeletes = parseUiObjectMap(jsonObject, "collDeletes", uiObjectType, context);
-
-			return new UiListDelta<>(dtoClass, collCreates, collUpdates, collDeletes);
-		}
-
-		private Map<String, UiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
-			final Map<String, UiObject<D>> uiObjectMap = new HashMap<>();
-			final JsonObject jsonUiObjectMap = jsonObject.getAsJsonObject(propertyName);
-			if (jsonUiObjectMap != null) {
-				for (final Entry<String, JsonElement> entry : jsonUiObjectMap.entrySet()) {
-					final String entryName = entry.getKey();
-					final UiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
-					uiObjectMap.put(entryName, inputDto);
-				}
-			}
-			return uiObjectMap;
-		}
-	}
-
-	private static class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiList<D>> {
-		/** {@inheritDoc} */
-		@Override
-		public UiList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);
-			final JsonArray jsonArray = json.getAsJsonArray();
-
-			final UiList<D> uiList = new UiList<>(dtoClass);
-			for (final JsonElement element : jsonArray) {
-				final UiObject<D> inputDto = context.deserialize(element, uiObjectType);
-				uiList.add(inputDto);
-			}
-			return uiList;
-		}
-	}
-
-	//TODO : pas cool, il n'y a pas de controle de contrainte des domaines
-	private static class DtListDeserializer<D extends DtObject> implements JsonDeserializer<DtList<D>> {
-		/** {@inheritDoc} */
-		@Override
-		public DtList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-			final JsonArray jsonArray = json.getAsJsonArray();
-
-			final DtList<D> dtList = new DtList<>(dtoClass);
-			for (final JsonElement element : jsonArray) {
-				final D inputDto = context.deserialize(element, dtoClass);
-				dtList.add(inputDto);
-			}
-			return dtList;
 		}
 	}
 
