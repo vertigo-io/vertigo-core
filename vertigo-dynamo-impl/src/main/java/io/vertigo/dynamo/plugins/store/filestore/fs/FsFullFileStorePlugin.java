@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
@@ -26,6 +25,8 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
@@ -63,9 +64,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	private final FileManager fileManager;
@@ -96,18 +94,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.name = name.getOrElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
-		documentRoot = translatePath(path);
+		documentRoot = FileUtil.translatePath(path);
 		//-----
 		if (purgeDelayMinutes.isDefined()) {
-			daemonManager.registerDaemon("PurgeTempFileDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
+			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
 		}
-	}
-
-	private static String translatePath(final String path) {
-		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
@@ -242,40 +233,4 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	/**
-	 * Purge store directory Daemon.
-	 */
-	public static class PurgeTempFileDaemon implements Daemon {
-		private final int purgeDelayMinutes;
-		private final String documentRoot;
-
-		/**
-		 * @param purgeDelayMinutes Purge files older than this delay in minutes
-		 * @param documentRoot Purge scan root
-		 */
-		public PurgeTempFileDaemon(final int purgeDelayMinutes, final String documentRoot) {
-			this.purgeDelayMinutes = purgeDelayMinutes;
-			this.documentRoot = documentRoot;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() throws Exception {
-			final File documentRootFile = new File(documentRoot);
-			final long maxTime = System.currentTimeMillis() - purgeDelayMinutes * 60L * 1000L;
-			purgeOlderFile(documentRootFile, maxTime);
-		}
-
-		private static void purgeOlderFile(final File documentRootFile, final long maxTime) {
-			for (final File subFiles : documentRootFile.listFiles()) {
-				if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
-					purgeOlderFile(subFiles, maxTime);
-				} else if (subFiles.lastModified() < maxTime) {
-					if (!subFiles.delete()) {
-						subFiles.deleteOnExit();
-					}
-				}
-			}
-		}
-	}
 }

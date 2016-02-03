@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.file;
 
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -26,6 +27,7 @@ import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 import java.io.File;
@@ -36,6 +38,8 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
 * Implémentation du gestionnaire de la définition des fichiers.
@@ -43,6 +47,19 @@ import javax.activation.MimetypesFileTypeMap;
 * @author pchretien
 */
 public final class FileManagerImpl implements FileManager {
+
+	/**
+	 * Constructor.
+	 * @param purgeDelayMinutes Temp file purge delay.
+	 * @param daemonManager Daemon manager
+	 */
+	@Inject
+	public FileManagerImpl(@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+		Assertion.checkNotNull(daemonManager);
+		//-----
+		daemonManager.registerDaemon("PurgeTempFileDaemon", PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.getOrElse(60), TempFile.VERTIGO_TMP_DIR_PATH);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public File obtainReadOnlyFile(final VFile file) {
