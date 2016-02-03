@@ -126,10 +126,10 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 			}
 			sb.append(duration);
 			sb.append(" ms)");
-			if (measures.isEmpty()) {
+			if (!measures.isEmpty()) {
 				sb.append(" measures:").append(measures);
 			}
-			if (metaData.isEmpty()) {
+			if (!metaData.isEmpty()) {
 				sb.append(" metaData:").append(metaData);
 			}
 			logger.info(sb.toString());
