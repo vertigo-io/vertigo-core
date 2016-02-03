@@ -3,6 +3,7 @@
 	<boot locales="fr_FR"/>
 	
 	<module name="vertigo-dynamo">
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 
