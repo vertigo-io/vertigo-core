@@ -434,7 +434,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase().equals(make)) {
 				found = true;
-				//System.out.println("make" + entry.getKey().getLabel().getDisplay());
 				Assert.assertEquals(carDataBase.getByMake(make).size(), entry.getValue().intValue());
 			}
 		}
