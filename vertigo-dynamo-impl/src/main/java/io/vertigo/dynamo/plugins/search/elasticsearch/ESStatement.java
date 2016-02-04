@@ -44,16 +44,13 @@ import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -84,6 +81,7 @@ import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregationBu
 import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
@@ -318,63 +316,83 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//Récupération des noms des champs correspondant aux facettes.
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {
-			//facette par range
-			//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
-			final DataType dataType = dtField.getDomain().getDataType();
-			if (dataType == DataType.Date) {
-				final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
-						.field(dtField.getName())
-						.format(DATE_PATTERN);
-				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-					final String filterValue = facetRange.getListFilter().getFilterValue();
-					Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-					final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-					final String minValue = parsedFilter[3];
-					final String maxValue = parsedFilter[4];
-					if ("*".equals(minValue)) {
-						dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
-					} else if ("*".equals(maxValue)) {
-						dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
-					} else {
-						dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
-					}
-				}
-				return dateRangeBuilder;
-			} else if (dataType == DataType.Double || dataType == DataType.BigDecimal
-					|| dataType == DataType.Long || dataType == DataType.Integer) {
-				final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-						.field(dtField.getName());
-				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-					final String filterValue = facetRange.getListFilter().getFilterValue();
-					Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-					final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-					final Option<Double> minValue = convertToDouble(parsedFilter[3]);
-					final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
-					if (minValue.isEmpty()) {
-						rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
-					} else if (maxValue.isEmpty()) {
-						rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
-					} else {
-						rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
-					}
-				}
-				return rangeBuilder;
-			}
-
-			final FiltersAggregationBuilder filters = AggregationBuilders.filters(facetDefinition.getName());
-			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final String filterValue = facetRange.getListFilter().getFilterValue();
-				Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-				filters.filter(filterValue, FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(filterValue)));
-			}
-			return filters;
+			return rangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
 		//facette par field
+		final Order facetOrder;
+		switch (facetDefinition.getOrder()) {
+			case alpha:
+				facetOrder = Terms.Order.term(true);
+				break;
+			case count:
+				facetOrder = Terms.Order.count(false);
+				break;
+			case definition:
+				facetOrder = null; //ES accept null for no sorting
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
+
+		}
+
 		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
 				.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
 				.field(dtField.getName())
-				.order(Terms.Order.count(false));
+				.order(facetOrder);
 		return aggregationBuilder;
+	}
+
+	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+		//facette par range
+		//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
+		final DataType dataType = dtField.getDomain().getDataType();
+		if (dataType == DataType.Date) {
+			final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+					.field(dtField.getName())
+					.format(DATE_PATTERN);
+			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+				final String filterValue = facetRange.getListFilter().getFilterValue();
+				Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+				final String minValue = parsedFilter[3];
+				final String maxValue = parsedFilter[4];
+				if ("*".equals(minValue)) {
+					dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
+				} else if ("*".equals(maxValue)) {
+					dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
+				} else {
+					dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
+				}
+			}
+			return dateRangeBuilder;
+		} else if (dataType == DataType.Double || dataType == DataType.BigDecimal
+				|| dataType == DataType.Long || dataType == DataType.Integer) {
+			final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
+					.field(dtField.getName());
+			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+				final String filterValue = facetRange.getListFilter().getFilterValue();
+				Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+				final Option<Double> minValue = convertToDouble(parsedFilter[3]);
+				final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
+				if (minValue.isEmpty()) {
+					rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
+				} else if (maxValue.isEmpty()) {
+					rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
+				} else {
+					rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+				}
+			}
+			return rangeBuilder;
+		}
+
+		final FiltersAggregationBuilder filters = AggregationBuilders.filters(facetDefinition.getName());
+		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+			final String filterValue = facetRange.getListFilter().getFilterValue();
+			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			filters.filter(filterValue, FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(filterValue)));
+		}
+		return filters;
 	}
 
 	private static Option<Double> convertToDouble(final String valueToConvert) {
@@ -519,21 +537,22 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	}
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation multiBuckets) {
-		final Map<FacetValue, Long> facetValues = new HashMap<>();
+		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 		FacetValue facetValue;
 		for (final Bucket value : multiBuckets.getBuckets()) {
 			final MessageText label = new MessageText(value.getKey(), null);
 			final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
 			facetValue = new FacetValue(new ListFilter(query), label);
 			facetValues.put(facetValue, value.getDocCount());
+			System.out.println(facetDefinition.getName() + " " + value.getKey() + " : " + value.getDocCount());
 		}
 
 		//tri des facettes
-		final Comparator<FacetValue> facetComparator = new FacetComparator(facetValues);
-		final Map<FacetValue, Long> sortedFacetValues = new TreeMap<>(facetComparator);
-		sortedFacetValues.putAll(facetValues);
+		//final Comparator<FacetValue> facetComparator = new FacetComparator(facetValues);
+		//final Map<FacetValue, Long> sortedFacetValues = new TreeMap<>(facetComparator);
+		//sortedFacetValues.putAll(facetValues);
 
-		return new Facet(facetDefinition, sortedFacetValues);
+		return new Facet(facetDefinition, facetValues);
 	}
 
 	private static Facet createFacetRange(final FacetDefinition facetDefinition, final MultiBucketsAggregation rangeBuckets) {
@@ -546,20 +565,20 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		return new Facet(facetDefinition, rangeValues);
 	}
 
-	private static final class FacetComparator implements Comparator<FacetValue>, Serializable {
-		private static final long serialVersionUID = 7890908569483553289L;
-		private final Map<FacetValue, Long> facetValues;
-
-		FacetComparator(final Map<FacetValue, Long> facetValues) {
-			this.facetValues = facetValues;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final FacetValue o1, final FacetValue o2) {
-			final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
-			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
-		}
-	}
+	//	private static final class FacetComparator implements Comparator<FacetValue>, Serializable {
+	//		private static final long serialVersionUID = 7890908569483553289L;
+	//		private final Map<FacetValue, Long> facetValues;
+	//
+	//		FacetComparator(final Map<FacetValue, Long> facetValues) {
+	//			this.facetValues = facetValues;
+	//		}
+	//
+	//		/** {@inheritDoc} */
+	//		@Override
+	//		public int compare(final FacetValue o1, final FacetValue o2) {
+	//			final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
+	//			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+	//		}
+	//	}
 
 }

@@ -24,6 +24,7 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -34,6 +35,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
@@ -112,12 +114,13 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String dtFieldName = getPropertyValueAsString(xdefinition, SearchGrammar.FIELD_NAME);
 		final DtField dtField = indexDtDefinition.getField(dtFieldName);
 		final String label = getPropertyValueAsString(xdefinition, KspProperty.LABEL);
+		final FacetOrder order = getFacetOrder(xdefinition);
 
 		//Déclaration des ranges
 		final List<DynamicDefinition> rangeDefinitions = xdefinition.getChildDefinitions("range");
 		final FacetDefinition facetDefinition;
 		if (rangeDefinitions.isEmpty()) {
-			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
+			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(definitionName, dtField, new MessageText(label, null, (Serializable[]) null), order);
 		} else {
 			final FacetDefinitionByRangeBuilder facetDefinitionByRangeBuilder = new FacetDefinitionByRangeBuilder(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
 			for (final DynamicDefinition rangeDefinition : rangeDefinitions) {
@@ -127,6 +130,15 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			facetDefinition = facetDefinitionByRangeBuilder.build();
 		}
 		return facetDefinition;
+	}
+
+	private static FacetOrder getFacetOrder(final DynamicDefinition xdefinition) {
+		final String orderStr = getPropertyValueAsString(xdefinition, SearchGrammar.FACET_ORDER);
+		Assertion.checkArgument(orderStr == null
+				|| FacetOrder.alpha.name().equals(orderStr)
+				|| FacetOrder.count.name().equals(orderStr)
+				|| FacetOrder.definition.name().equals(orderStr), "Facet order must be one of {0}", FacetOrder.values().toString());
+		return orderStr != null ? FacetOrder.valueOf(orderStr) : FacetOrder.count;
 	}
 
 	private static FacetValue createFacetValue(final DynamicDefinition rangeDefinition) {

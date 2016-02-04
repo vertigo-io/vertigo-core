@@ -57,57 +57,75 @@ public final class FacetDefinition implements Definition {
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
 	private final boolean rangeFacet;
+	private final FacetOrder order;
+
+	/**
+	 * Facet order : alpha, count, definition
+	 */
+	public static enum FacetOrder {
+		/** alphabetical */
+		alpha,
+		/** count (default for term) */
+		count,
+		/** definition order (default for range) */
+		definition
+	}
 
 	/**
 	 * Constructor.
 	 * @param name the name of the facet
-	 * @param dtField the field of the facet 
-	 * @param facetValues the list of filters  
+	 * @param dtField the field of the facet
+	 * @param facetValues the list of filters
 	 * @param rangeFacet if the facet is of type 'range'
+	 * @param order Facet Order
 	 */
-	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean rangeFacet) {
+	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean rangeFacet, final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
 		Assertion.checkArgument(!rangeFacet || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkArgument(rangeFacet || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
 		this.rangeFacet = rangeFacet;
+		this.order = order;
 	}
 
 	/**
 	 * Creates a new facetDefinition of type 'range'.
-	 * 
-	 * A range facet is defined by a list of filters. 
+	 *
+	 * A range facet is defined by a list of filters.
 	 * Examples :
-	 * [0 -10[ 
+	 * [0 -10[
 	 * [0-100[
 	 * [100-*[
 	 * @param name the name of the facet
-	 * @param dtField the field of the facet 
+	 * @param dtField the field of the facet
 	 * @param label the label of the facet
-	 * @param facetValues the list of filters  
+	 * @param facetValues the list of filters
+	 * @param order Facet Order
 	 * @return new facetDefinition of type 'range'
 	 */
-	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues) {
-		return new FacetDefinition(name, dtField, label, facetValues, true);
+	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, facetValues, true, order);
 	}
 
 	/**
 	 * Creates a new facetDefinition of type 'term'.
-	 * 
+	 *
 	 * @param name the name of the facet
-	 * @param dtField the field of the facet 
+	 * @param dtField the field of the facet
 	 * @param label the label of the facet
+	 * @param order Facet Order
 	 * @return new facetDefinition of type 'term'
 	 */
-	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label) {
-		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false);
+	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label, final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false, order);
 	}
 
 	/**
@@ -139,6 +157,13 @@ public final class FacetDefinition implements Definition {
 	 */
 	public boolean isRangeFacet() {
 		return rangeFacet;
+	}
+
+	/**
+	 * @return facet order
+	 */
+	public FacetOrder getOrder() {
+		return order;
 	}
 
 	/** {@inheritDoc} */

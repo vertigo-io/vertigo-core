@@ -381,7 +381,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assert.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR" + facetSuffix);
@@ -419,7 +419,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assert.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet makeFacet = getFacetByName(result, "FCT_MAKE" + facetSuffix);
@@ -440,11 +440,27 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 		Assert.assertTrue(found);
 
+		checkOrderByCount(makeFacet);
+		checkOrderByAlpha(getFacetByName(result, "FCT_MAKE" + facetSuffix + "_ALPHA"));
+		checkOrderByCount(getFacetByName(result, "FCT_DESCRIPTION" + facetSuffix));
+	}
+
+	private void checkOrderByCount(final Facet facet) {
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;
-		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
+		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 			Assert.assertTrue("Ordre des facettes par 'count' non respecté", entry.getValue().intValue() <= lastCount);
 			lastCount = entry.getValue().intValue();
+		}
+	}
+
+	private void checkOrderByAlpha(final Facet facet) {
+		//on vérifie l'ordre
+		String lastLabel = "";
+		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
+			final String label = entry.getKey().getLabel().getDisplay();
+			Assert.assertTrue("Ordre des facettes par 'alpha' non respecté", label.compareTo(lastLabel) >= 0);
+			lastLabel = label;
 		}
 	}
 

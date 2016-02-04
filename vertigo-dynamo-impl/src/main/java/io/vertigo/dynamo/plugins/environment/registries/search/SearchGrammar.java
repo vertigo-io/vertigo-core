@@ -44,6 +44,8 @@ final class SearchGrammar {
 
 	/** Fieldname. */
 	public static final String FIELD_NAME = "FIELD_NAME";
+	/** Facet order. */
+	public static final String FACET_ORDER = "ORDER";
 	/** Facet definition. */
 	public static final Entity FACET_DEFINITION_ENTITY;
 	/** Facet range. */
@@ -97,7 +99,7 @@ final class SearchGrammar {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
 				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
-				.addFields(INDEX_COPY_TO_PROPERTY, INDEX_COPY_ENTITY, false)// facultative
+				.addFields(INDEX_COPY_TO_PROPERTY, INDEX_COPY_ENTITY, false) //facultative
 				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 
@@ -110,7 +112,8 @@ final class SearchGrammar {
 				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField(FIELD_NAME, String, true)
 				.addField(KspProperty.LABEL, String, true)
-				.addFields("range", FACET_RANGE_ENTITY, false)// facultative
+				.addField(FACET_ORDER, String, false) //facultative, default to count
+				.addFields("range", FACET_RANGE_ENTITY, false) //facultative
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")

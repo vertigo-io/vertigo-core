@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections.model;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -113,7 +114,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
-		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null));
+		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
 		clusterFacetDefinition = Option.some(facetDefinition);
 		return this;
 	}
