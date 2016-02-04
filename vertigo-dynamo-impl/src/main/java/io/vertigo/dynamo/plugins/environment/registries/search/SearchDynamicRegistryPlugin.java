@@ -42,6 +42,7 @@ import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,7 +138,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		Assertion.checkArgument(orderStr == null
 				|| FacetOrder.alpha.name().equals(orderStr)
 				|| FacetOrder.count.name().equals(orderStr)
-				|| FacetOrder.definition.name().equals(orderStr), "Facet order must be one of {0}", FacetOrder.values().toString());
+				|| FacetOrder.definition.name().equals(orderStr), "Facet order must be one of {0}", Arrays.toString(FacetOrder.values()));
 		return orderStr != null ? FacetOrder.valueOf(orderStr) : FacetOrder.count;
 	}
 
