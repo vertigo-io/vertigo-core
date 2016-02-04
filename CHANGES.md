@@ -32,6 +32,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Added error message for Search syntax
 * [Dynamo] Added escape char \ in DslListFilterBuilder
 * [Dynamo] Added escape or remove reserved word, query operation (issue #49)
+* [Dynamo] Added Search Facet order alpha or count
 * [Dynamo] Added listFilter better detection of reserved keywords
 * [Dynamo] Added support ][ and {} in DtListPatternFilterUtil for range
 * [Dynamo] Added support to elasticsearch copyTo fields
