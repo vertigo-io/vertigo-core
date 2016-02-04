@@ -25,21 +25,21 @@ final class BerkeleyCollectionConfig {
 	/**
 	 * @return collectionName
 	 */
-	final String getCollectionName() {
+	String getCollectionName() {
 		return collectionName;
 	}
 
 	/**
 	 * @return timeToLiveSeconds
 	 */
-	final long getTimeToLiveSeconds() {
+	long getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
 	}
 
 	/**
 	 * @return inMemory
 	 */
-	final boolean isInMemory() {
+	boolean isInMemory() {
 		return inMemory;
 	}
 }

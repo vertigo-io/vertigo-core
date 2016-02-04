@@ -34,7 +34,7 @@ final class RamLuceneQueryFactory {
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	final Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
 		final Query filteredQuery;
 		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, boostedField);
 		if (!listFilters.isEmpty()) {

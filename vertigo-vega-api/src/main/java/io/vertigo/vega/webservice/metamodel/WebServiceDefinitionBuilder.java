@@ -262,7 +262,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		return this;
 	}
 
-	private String computeAcceptedType() {
+	private static String computeAcceptedType() {
 		//AcceptedType is from client view : it's return type, not input type
 		return "*/*";
 	}

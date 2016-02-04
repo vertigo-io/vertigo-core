@@ -50,10 +50,10 @@ import io.vertigo.vega.webservice.WebServiceManager;
  */
 public final class VegaFeatures extends Features {
 
-	private boolean withTokens = false;
+	private boolean tokensEnabled;
 	private String tokenCollection;
-	private boolean withMisc = false;
-	private boolean securityEnabled = false;
+	private boolean miscEnabled;
+	private boolean securityEnabled;
 
 	public VegaFeatures() {
 		super("vega");
@@ -67,13 +67,13 @@ public final class VegaFeatures extends Features {
 	public VegaFeatures withTokens(final String collection) {
 		Assertion.checkArgNotEmpty(collection);
 		//-----
-		withTokens = true;
+		tokensEnabled = true;
 		tokenCollection = collection;
 		return this;
 	}
 
 	public VegaFeatures withMisc() {
-		withMisc = true;
+		miscEnabled = true;
 		return this;
 	}
 
@@ -110,14 +110,14 @@ public final class VegaFeatures extends Features {
 					.addPlugin(SessionWebServiceHandlerPlugin.class)
 					.addPlugin(SecurityWebServiceHandlerPlugin.class);
 		}
-		if (withTokens) {
+		if (tokensEnabled) {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.addParam("collection", tokenCollection)
 					.endComponent();
 		}
-		if (withMisc) {
+		if (miscEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);

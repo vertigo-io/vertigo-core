@@ -44,6 +44,7 @@ final class JobListener {
 
 	/**
 	 * Constructor.
+	 * @param the analyticsManager
 	 */
 	@Inject
 	public JobListener(final AnalyticsManager analyticsManager) {
@@ -54,8 +55,8 @@ final class JobListener {
 
 	void onStart(final JobDefinition jobDefinition) {
 		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
-		analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 0d);
-		analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 0d);
+		analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 0D);
+		analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 0D);
 		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 	}
 
@@ -71,9 +72,9 @@ final class JobListener {
 		getLogger(jobDefinition.getName()).warn(throwable.toString(), throwable);
 
 		if (isUserException(throwable)) {
-			analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 100d);
+			analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 100D);
 		} else {
-			analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 100d);
+			analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 100D);
 		}
 		analyticsManager.getAgent().addMetaData("ME_ERROR_HEADER", String.valueOf(throwable));
 	}

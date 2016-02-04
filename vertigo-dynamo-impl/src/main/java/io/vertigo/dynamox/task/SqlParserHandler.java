@@ -72,7 +72,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 	 * @param taskAttribute TaskAttribute
 	 * @param fieldName Nom du champ dont il faut vérifier l'existence
 	 */
-	private void checkFieldName(final TaskAttribute taskAttribute, final String fieldName) {
+	private static void checkFieldName(final TaskAttribute taskAttribute, final String fieldName) {
 		//Dans le cas des domaines de type DTO et DTC génériques,
 		//c'est à dire ne précisant pas un DT,
 		//il n'est pas possible d'eefectuer de vérification au niveau modèle.

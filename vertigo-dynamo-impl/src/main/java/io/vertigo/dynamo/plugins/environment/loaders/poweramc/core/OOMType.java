@@ -88,8 +88,7 @@ enum OOMType {
 	}
 
 	static boolean isNodeByRef(final String name) {
-		return false
-				|| Domain.getCode().equals(name)
+		return Domain.getCode().equals(name)
 				|| Attribute.getCode().equals(name)
 				|| Class.getCode().equals(name)
 				|| Shortcut.getCode().equals(name)
