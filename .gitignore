@@ -8,3 +8,5 @@ target/
 vertigo-release/
 mvn-release.txt
 vertigo-bundle/src
+*.iml
+*.idea
