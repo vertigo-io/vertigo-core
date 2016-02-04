@@ -1,0 +1,3 @@
+[submodule "vertigo-studio"]
+	path = vertigo-studio
+	url = https://github.com/KleeGroup/vertigo-studio.git
