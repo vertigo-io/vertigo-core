@@ -51,7 +51,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Fixed reindex task when more than 1000 uri are dirty
 * [Dynamo] Merged BerkeleyKvStore and DelayedBerkeleyKvStore
 * [Dynamo] Refactored CollectionManager sort : use DtListState
-* [Dynamo] Refactored lockForUpdate to loadForUpdate, match main usage (as #48)
+* [Dynamo] Refactored lockForUpdate to readForUpdate, match main usage (as #48)
 * [Dynamo] Removed Low Transactional resources priority
 * [Dynamo] Renamed C"R"UD, so load=>read
 * [Dynamo] Renamed PRIMARY_KEY by ID on DtDefinition (and pk to id)
@@ -63,6 +63,8 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] changed count from long to int
 * [Dynamo] refactored RAMLuceneindex
 * [Studio] Fixed #32 : Add generated route js useable by Focus
+* [Studio] Refactored lockForUpdate to readForUpdate, match main usage (as #48)
+* [Studio] Renamed PRIMARY_KEY by ID on DtDefinition (and pk to id)
 * __[Vega] Fixed Date / DateTime diff in Json ( supposed date if 00:00:00.000 )__
 * [Vega] Added ClassPathWebServiceLoaderPlugin with org.reflections
 * [Vega] Added UiSelectedFacets with toListFilters for facetted search api 
