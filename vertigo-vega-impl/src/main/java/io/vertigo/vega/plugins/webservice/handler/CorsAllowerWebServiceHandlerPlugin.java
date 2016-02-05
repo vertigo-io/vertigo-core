@@ -74,7 +74,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		putCorsResponseHeaders(request, response);
 		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
 			response.status(200);
@@ -87,9 +87,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	/**
 	 * @param request Request
 	 * @param response Response
-	 * @throws VSecurityException If Cors error
 	 */
-	public void putCorsResponseHeaders(final Request request, final Response response) throws VSecurityException {
+	public void putCorsResponseHeaders(final Request request, final Response response) {
 		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
 		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.headers(REQUEST_HEADER_ORIGIN);

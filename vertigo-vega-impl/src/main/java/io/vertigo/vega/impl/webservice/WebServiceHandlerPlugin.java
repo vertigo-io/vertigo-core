@@ -22,7 +22,6 @@ import io.vertigo.lang.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
@@ -48,8 +47,7 @@ public interface WebServiceHandlerPlugin extends Plugin {
 	 * @param chain current HandlerChain.
 	 * @return Response body
 	 * @throws SessionException Session expired exception
-	 * @throws VSecurityException Security exception
 	 */
-	Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException, VSecurityException;
+	Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException;
 
 }

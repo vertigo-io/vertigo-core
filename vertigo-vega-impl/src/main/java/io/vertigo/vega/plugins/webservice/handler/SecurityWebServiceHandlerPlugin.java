@@ -61,7 +61,7 @@ public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerP
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		// 2. Check user is authentified
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {

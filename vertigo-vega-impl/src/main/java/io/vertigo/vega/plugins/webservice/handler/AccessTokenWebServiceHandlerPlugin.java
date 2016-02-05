@@ -64,7 +64,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final String accessTokenKey;
 		if (routeContext.getWebServiceDefinition().isAccessTokenMandatory()) {
 			accessTokenKey = request.headers(HEADER_ACCESS_TOKEN);

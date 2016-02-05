@@ -23,7 +23,6 @@ import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 import javax.inject.Inject;
@@ -58,7 +57,7 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = webServiceCallContext.getWebServiceDefinition();
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
 		try (final AnalyticsTracker tracker = analyticsManager.startTracker("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath())) {

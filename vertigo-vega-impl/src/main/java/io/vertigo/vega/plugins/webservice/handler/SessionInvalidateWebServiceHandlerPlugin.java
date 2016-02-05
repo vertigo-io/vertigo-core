@@ -20,7 +20,6 @@ package io.vertigo.vega.plugins.webservice.handler;
 
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
@@ -40,7 +39,7 @@ public final class SessionInvalidateWebServiceHandlerPlugin implements WebServic
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		try {
 			return chain.handle(request, response, routeContext);
 		} finally {

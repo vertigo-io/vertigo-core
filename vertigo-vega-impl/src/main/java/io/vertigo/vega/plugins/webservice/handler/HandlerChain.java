@@ -21,7 +21,6 @@ package io.vertigo.vega.plugins.webservice.handler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,10 +65,9 @@ public final class HandlerChain {
 	 * @param response spark.Response
 	 * @param routeContext Context of this route
 	 * @return WebService result
-	 * @throws VSecurityException Security exception
 	 * @throws SessionException Session exception
 	 */
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext) throws SessionException {
 		int lookAhead = 0;
 		while (offset + lookAhead < handlers.size()) {
 			final WebServiceHandlerPlugin nextHandler = handlers.get(offset + lookAhead);

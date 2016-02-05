@@ -43,7 +43,6 @@ import io.vertigo.vega.plugins.webservice.handler.reader.PathJsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.QueryJsonReader;
 import io.vertigo.vega.plugins.webservice.handler.reader.RequestJsonReader;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
@@ -225,7 +224,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
 		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
 			readParameterValue(request, routeContext, webServiceParam);
@@ -234,7 +233,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		return convertResultToJson(result, response, routeContext);
 	}
 
-	private void readParameterValue(final Request request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) throws VSecurityException {
+	private void readParameterValue(final Request request, final WebServiceCallContext routeContext, final WebServiceParam webServiceParam) {
 		try {
 			boolean found = false;
 			JsonReader jsonReaderToApply = null;

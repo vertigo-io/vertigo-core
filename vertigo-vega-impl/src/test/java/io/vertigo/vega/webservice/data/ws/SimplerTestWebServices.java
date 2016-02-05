@@ -112,7 +112,7 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@Doc("Use passPhrase : RtFM")
 	@GET("/docTest/{passPhrase}")
-	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) throws VSecurityException {
+	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) {
 		if (!"RtFM".equals(passPhrase)) {
 			throw new VSecurityException(new MessageText("Bad passPhrase, check the doc in /catalog", null));
 		}
@@ -121,7 +121,7 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@Doc("Use passPhrase : RtFM")
 	@GET("/docTest/")
-	public List<Contact> docTestEmpty() throws VSecurityException {
+	public List<Contact> docTestEmpty() {
 		return docTest(null);
 	}
 
@@ -190,7 +190,7 @@ public final class SimplerTestWebServices implements WebServices {
 	}
 
 	@DELETE("/contact/{conId}")
-	public void delete(@PathParam("conId") final long conId) throws VSecurityException {
+	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));

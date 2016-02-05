@@ -64,7 +64,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final Session session = request.session(true); //obtain session (create if needed)
 		final UserSession user = obtainUserSession(session);
 		try {

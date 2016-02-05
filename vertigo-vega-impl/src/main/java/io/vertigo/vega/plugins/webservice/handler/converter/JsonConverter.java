@@ -19,7 +19,6 @@
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 
 /**
@@ -39,9 +38,8 @@ public interface JsonConverter {
 	 * @param source Source
 	 * @param webServiceParam Param
 	 * @param routeContext RouteContext
-	 * @throws VSecurityException Security exception
 	 */
-	void populateWebServiceCallContext(Object source, WebServiceParam webServiceParam, WebServiceCallContext routeContext) throws VSecurityException;
+	void populateWebServiceCallContext(Object source, WebServiceParam webServiceParam, WebServiceCallContext routeContext);
 
 	/**
 	 * @return Input types

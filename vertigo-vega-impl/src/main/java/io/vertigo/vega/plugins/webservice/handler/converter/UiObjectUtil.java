@@ -39,7 +39,7 @@ final class UiObjectUtil {
 		//nothing
 	}
 
-	static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
+	static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final WebServiceParam webServiceParam) {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
@@ -55,7 +55,7 @@ final class UiObjectUtil {
 		}
 	}
 
-	static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
+	static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		int index = 0;
 		for (final UiObject<DtObject> entry : uiList) {
@@ -65,12 +65,12 @@ final class UiObjectUtil {
 		}
 	}
 
-	static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final WebServiceParam webServiceParam) throws VSecurityException {
+	static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final WebServiceParam webServiceParam) {
 		uiObject.setInputKey(inputKey);
 		checkUnauthorizedFieldModifications(uiObject, webServiceParam);
 	}
 
-	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) throws VSecurityException {
+	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
 				throw new VSecurityException(new MessageText(FORBIDDEN_OPERATION_FIELD_MODIFICATION, null, excludedField));
