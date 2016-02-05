@@ -80,7 +80,6 @@ __In Bold__ : Potential compatibility problems
 * [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2			
 * [Vega] Removed nullLast and ignorecase in DtListState
 * [Vega] Renamed WebServiceIntrospector to WebServiceScanner
-* [Vega] VSecurityException is a checkedException (POJEX)
 
 
 Release 0.9.0 - 2015/11/20
