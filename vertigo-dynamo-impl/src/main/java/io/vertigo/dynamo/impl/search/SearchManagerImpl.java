@@ -74,7 +74,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param searchServicesPlugin the searchServicesPlugin
 	 * @param eventBusManager the  eventBusManager
 	 * @param transactionManager the  transactionManager
-	 * @paraam localemanager the localeManager
+	 * @param localeManager the localeManager
 	 * @param analyticsManager the analyticsManager
 	 */
 	@Inject
