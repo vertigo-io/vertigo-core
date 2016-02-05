@@ -110,7 +110,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		request.append(separator).append(" rownum <= ").append(maxRows.toString());
+		request.append(separator).append(" rownum <= ").append(maxRows);
 	}
 
 }
