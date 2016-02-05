@@ -176,7 +176,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
 				.build();
-		LOGGER.info("loadList " + searchRequestBuilder.toString());
+		LOGGER.info("loadList " + searchRequestBuilder);
 		try {
 			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
