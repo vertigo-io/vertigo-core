@@ -31,6 +31,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
@@ -90,16 +91,19 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				String lastUri = "*";
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
-				for (final Iterator<SearchChunk<S>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
-					final SearchChunk<S> searchChunk;
+
+				for (final Iterator<Option<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
+					final Option<SearchChunk<S>> searchChunk;
 					// >>> Tx start
 					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
 						searchChunk = it.next();
 					}
 					// <<< Tx end
+					if (searchChunk.isEmpty()) {
+						break;
+					}
 
-					final List<URI<S>> uris = searchChunk.getAllURIs();
-					Assertion.checkArgument(!uris.isEmpty(), "The uris list of a SearchChunk can't be empty");
+					final List<URI<S>> uris = searchChunk.get().getAllURIs();
 					//-----
 					final Collection<SearchIndex<S, DtObject>> searchIndexes;
 					// >>> Tx start
@@ -107,15 +111,16 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 						searchIndexes = searchLoader.loadData(uris);
 					}
 					// <<< Tx end
-					reindexCount += uris.size();
-					updateReindexCount(reindexCount);
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
 					final String maxUri = String.valueOf(chunkMaxUri.getId());
+					Assertion.checkState(!lastUri.equals(maxUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
 					lastUri = maxUri;
+					reindexCount += uris.size();
+					updateReindexCount(reindexCount);
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
 				reindexFuture.success(reindexCount);

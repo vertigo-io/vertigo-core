@@ -28,12 +28,12 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -47,32 +47,28 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		return new Iterable<SearchChunk<K>>() {
+	public Iterable<Option<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
+		return new Iterable<Option<SearchChunk<K>>>() {
 
-			private final Iterator<SearchChunk<K>> iterator = new Iterator<SearchChunk<K>>() {
+			private final Iterator<Option<SearchChunk<K>>> iterator = new Iterator<Option<SearchChunk<K>>>() {
 
 				private SearchChunk<K> current = null;
-				private SearchChunk<K> next = null;
 
 				/** {@inheritDoc} */
 				@Override
 				public boolean hasNext() {
-					if (next == null) {
-						next = nextChunk(keyConceptClass, current);
-					}
-					return !next.getAllURIs().isEmpty();
+					//hasNext at first call, and if current.allUri wasn't empty
+					return current == null || !current.getAllURIs().isEmpty();
 				}
 
 				/** {@inheritDoc} */
 				@Override
-				public SearchChunk<K> next() {
-					if (!hasNext()) {
-						throw new NoSuchElementException();
+				public Option<SearchChunk<K>> next() {
+					current = nextChunk(keyConceptClass, current);
+					if (current.getAllURIs().isEmpty()) {
+						return Option.none();
 					}
-					current = next;
-					next = null;
-					return current;
+					return Option.some(current);
 				}
 
 				/** {@inheritDoc} */
@@ -84,7 +80,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 			/** {@inheritDoc} */
 			@Override
-			public Iterator<SearchChunk<K>> iterator() {
+			public Iterator<Option<SearchChunk<K>>> iterator() {
 				return iterator;
 			}
 		};

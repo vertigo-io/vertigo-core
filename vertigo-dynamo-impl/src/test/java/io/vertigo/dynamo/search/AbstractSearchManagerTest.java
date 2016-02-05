@@ -38,6 +38,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
+import io.vertigo.dynamock.domain.car.CarSearchLoader;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
 import io.vertigo.lang.VUserException;
 
@@ -51,6 +52,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -90,6 +95,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
+		final CarSearchLoader carSearchLoader = getApp().getComponentSpace().resolve(CarSearchLoader.class);
+		carSearchLoader.bindDataBase(carDataBase);
+
 		facetSuffix = CarFacetInitializer.FCT_CAR_SUFFIX;
 		makeFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_MAKE_CAR, FacetDefinition.class);
 		yearFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_YEAR_CAR, FacetDefinition.class);
@@ -162,6 +170,46 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testIndexQuery() {
 		index(false);
 		final long size = query("*:*");
+		Assert.assertEquals(carDataBase.size(), size);
+	}
+
+	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndex() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), size);
+
+		//On supprime tout
+		remove("*:*");
+		size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(0L, size);
+
+		//on reindex
+		final Future<Long> nbReindexed = searchManager.reindexAll(carIndexDefinition);
+		//on attend 5s + le temps de reindexation
+		size = nbReindexed.get(10, TimeUnit.SECONDS);
+		Assert.assertEquals(carDataBase.size(), size);
+		waitIndexation();
+
+		size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), size);
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testIndexCount() {
+		index(false);
+		final long size = searchManager.count(carIndexDefinition);
 		Assert.assertEquals(carDataBase.size(), size);
 	}
 

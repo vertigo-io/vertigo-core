@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Component;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -45,5 +46,5 @@ public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends 
 	 * @param keyConceptClass keyConcept class
 	 * @return Iterator of chunk
 	 */
-	Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass);
+	Iterable<Option<SearchChunk<K>>> chunk(final Class<K> keyConceptClass);
 }
