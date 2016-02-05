@@ -26,7 +26,6 @@ import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiObject;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
@@ -57,7 +56,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {

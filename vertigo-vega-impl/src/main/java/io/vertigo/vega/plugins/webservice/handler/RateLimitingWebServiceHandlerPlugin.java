@@ -27,7 +27,6 @@ import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.TooManyRequestException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -92,7 +91,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		Assertion.checkNotNull(request);
 		Assertion.checkNotNull(response);
 		Assertion.checkNotNull(routeContext);

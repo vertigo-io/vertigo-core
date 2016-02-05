@@ -52,7 +52,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = webServiceDefinition.getMethod();

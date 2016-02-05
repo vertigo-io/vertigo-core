@@ -99,6 +99,6 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	/** {@inheritDoc} */
 	@Override
 	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		request.append(" limit ").append(maxRows.toString());
+		request.append(" limit ").append(maxRows);
 	}
 }

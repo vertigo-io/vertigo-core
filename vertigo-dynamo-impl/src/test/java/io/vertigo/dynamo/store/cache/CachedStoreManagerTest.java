@@ -52,7 +52,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 		//ce test est modifier car le cache n'est pas transactionnel : la liste n'est pas accessible sans commit
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -64,7 +64,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 
 		}

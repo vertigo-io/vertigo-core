@@ -83,7 +83,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
 			if (webServiceParam.isNeedServerSideToken()) {
 				final Object webServiceValue = routeContext.getParamValue(webServiceParam);
@@ -111,7 +111,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		return returnValue;
 	}
 
-	private void readServerSideUiObject(final UiObject<DtObject> uiObject, final boolean consumeServerSideToken) throws VSecurityException {
+	private void readServerSideUiObject(final UiObject<DtObject> uiObject, final boolean consumeServerSideToken) {
 		final String accessToken = uiObject.getServerSideToken();
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
@@ -129,13 +129,13 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		uiObject.setServerSideObject((DtObject) serverSideObject.get());
 	}
 
-	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) throws VSecurityException {
+	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) {
 		for (final UiObject<DtObject> entry : uiList) {
 			readServerSideUiObject(entry, consumeServerSideToken);
 		}
 	}
 
-	private void readServerSideUiListDelta(final UiListDelta<DtObject> uiListDelta, final boolean consumeServerSideToken) throws VSecurityException {
+	private void readServerSideUiListDelta(final UiListDelta<DtObject> uiListDelta, final boolean consumeServerSideToken) {
 		readServerSideUiList(uiListDelta.getCreatesMap().values(), consumeServerSideToken);
 		readServerSideUiList(uiListDelta.getUpdatesMap().values(), consumeServerSideToken);
 		readServerSideUiList(uiListDelta.getDeletesMap().values(), consumeServerSideToken);

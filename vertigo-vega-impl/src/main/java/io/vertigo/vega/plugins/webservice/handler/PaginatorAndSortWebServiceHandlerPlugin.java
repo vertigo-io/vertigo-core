@@ -27,7 +27,6 @@ import io.vertigo.util.StringUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.UiListState;
@@ -69,7 +68,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 	/** {@inheritDoc}  */
 	@Override
-	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		//Criteria in body
