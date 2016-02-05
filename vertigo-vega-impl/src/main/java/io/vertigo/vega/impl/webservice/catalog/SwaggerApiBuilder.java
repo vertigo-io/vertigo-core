@@ -34,7 +34,6 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
@@ -169,7 +168,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	private static void putIfNotEmpty(final Map<String, Object> entity, final String key, final Object value) {
-		if (value instanceof List && ((List) value).isEmpty()) {
+		if (value instanceof Collection && ((Collection) value).isEmpty()) {
 			return;
 		}
 		if (value != null) {
@@ -250,7 +249,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
 			return null;
-		} else if (WebServiceTypeUtil.isAssignableFrom(List.class, type)) {
+		} else if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
 			schema.put("items", createSchemaObject(itemsType));
@@ -315,7 +314,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return dataType.getJavaClass();
 	}
 
-	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
+	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {
 		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
@@ -330,7 +329,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private Map<String, Object> obtainFieldSchema(final Field field, final Class<? extends Object> parameterClass, final List<String> requireds) {
+	private Map<String, Object> obtainFieldSchema(final Field field, final Class<?> parameterClass, final List<String> requireds) {
 		final Type fieldType = field.getGenericType();
 		Type usedFieldType = fieldType;
 		if (fieldType instanceof ParameterizedType) {
@@ -367,7 +366,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		final List<Map<String, Object>> parameters = new ArrayList<>();
 		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
 			if (webServiceParam.getParamType() != WebServiceParamType.Implicit) {//if implicit : no public parameter
-				appendParameters(webServiceParam, webServiceDefinition, parameters, bodyParameter);
+				appendParameters(webServiceParam, parameters, bodyParameter);
 			}
 		}
 
@@ -395,15 +394,15 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return parameters;
 	}
 
-	private void appendParameters(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
+	private void appendParameters(final WebServiceParam webServiceParam, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
 		if (isOneInMultipleOutParams(webServiceParam)) {
 			for (final WebServiceParam pseudoWebServiceParam : createPseudoWebServiceParams(webServiceParam)) {
-				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam, webServiceDefinition);
+				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam);
 				parameter.remove(REQUIRED); //query params aren't required
 				parameters.add(parameter);
 			}
 		} else if (isMultipleInOneOutParams(webServiceParam)) {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
+			final Map<String, Object> parameter = createParameterObject(webServiceParam);
 			if (bodyParameter.isEmpty()) {
 				bodyParameter.putAll(parameter);
 			} else {
@@ -416,7 +415,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				oldSchema.putAll(newSchema);
 			}
 		} else {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam, webServiceDefinition);
+			final Map<String, Object> parameter = createParameterObject(webServiceParam);
 			parameters.add(parameter);
 		}
 	}
@@ -455,7 +454,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		return webServiceParam.getParamType() == WebServiceParamType.InnerBody;
 	}
 
-	private Map<String, Object> createParameterObject(final WebServiceParam webServiceParam, final WebServiceDefinition webServiceDefinition) {
+	private Map<String, Object> createParameterObject(final WebServiceParam webServiceParam) {
 
 		final String inValue;
 		final String nameValue;
@@ -475,7 +474,8 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 				nameValue = webServiceParam.getName();
 				break;
 			case Query:
-				inValue = webServiceDefinition.getVerb() == Verb.GET ? "query" : "formData";
+				//Never use "formData": WebServices don't use formData while XHR request
+				inValue = "query";
 				nameValue = webServiceParam.getName();
 				break;
 			case Header:
@@ -491,7 +491,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		parameter.put("name", nameValue);
 		parameter.put("in", inValue);
 		putIfNotEmpty(parameter, DESCRIPTION, description);
-		parameter.put(REQUIRED, "true");
+		parameter.put(REQUIRED, !webServiceParam.isOptional());
 		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
 			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType()));
 		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
@@ -526,7 +526,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			return new String[] { "string", "date-time" };
 		} else if (VFile.class.isAssignableFrom(paramClass)) {
 			return new String[] { "file", null };
-		} else if (List.class.isAssignableFrom(paramClass) || Collection.class.isAssignableFrom(paramClass)) {
+		} else if (Collection.class.isAssignableFrom(paramClass)) {
 			return new String[] { "array", null };
 		} else {
 			return new String[] { "object", null };

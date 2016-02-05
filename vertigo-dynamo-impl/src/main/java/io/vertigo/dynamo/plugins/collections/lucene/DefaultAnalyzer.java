@@ -18,9 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import java.io.IOException;
 import java.io.Reader;
-import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -39,9 +37,8 @@ import org.apache.lucene.util.Version;
  * Gestion des mots vides en français et en anglais.
  * @author  pchretien
  */
-final class DefaultAnalyzer extends Analyzer implements Serializable {
-	private static final long serialVersionUID = -653059693798148193L;
-	private CharArraySet stopWords;
+final class DefaultAnalyzer extends Analyzer {
+	private final CharArraySet stopWords;
 
 	/**
 	 * Constructeur.
@@ -78,15 +75,4 @@ final class DefaultAnalyzer extends Analyzer implements Serializable {
 		filter = new LowerCaseFilter(Version.LUCENE_40, filter);
 		return new TokenStreamComponents(source, filter);
 	}
-
-	private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-		final boolean useStopWord = !stopWords.isEmpty();
-		out.writeBoolean(useStopWord);
-	}
-
-	private void readObject(final java.io.ObjectInputStream in) throws IOException {
-		final boolean useStopWord = in.readBoolean();
-		stopWords = StopFilter.makeStopSet(Version.LUCENE_40, useStopWord ? LuceneConstants.OUR_STOP_WORDS : new String[0]);
-	}
-
 }

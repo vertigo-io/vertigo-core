@@ -21,43 +21,71 @@ package io.vertigo.commons.cache;
 import io.vertigo.lang.Assertion;
 
 /**
- * Config of cache.
+ * The cacheConfig class defines the configuration of cache.
+ *
+ * These 3 params define the strategy of caching
+ *  - max elements in memory
+ *  - time to live
+ *  - time to idle
  *
  * @author pchretien
  */
 public final class CacheConfig {
 	private final String cacheType;
+	private final boolean serializeElements;
 	private final int maxElementsInMemory;
 	private final long timeToLiveSeconds;
 	private final long timeToIdleSeconds;
-	private final boolean eternal;
 
-	public CacheConfig(final String cacheType, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
+	/**
+	 * Constructor.
+	 * @param cacheType Type of cache.
+	 * @param serializeElements If elements are serialized
+	 * @param maxElementsInMemory Max elements stored in memory
+	 * @param timeToLiveSeconds Time to live (in seconds)
+	 * @param timeToIdleSeconds Time to live when idle (in seconds)
+	 */
+	public CacheConfig(final String cacheType, final boolean serializeElements, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
 		Assertion.checkArgNotEmpty(cacheType);
 		//-----
 		this.cacheType = cacheType;
+		this.serializeElements = serializeElements;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
-		this.eternal = false;
 	}
 
+	/**
+	 * @return Type of cache
+	 */
 	public String getCacheType() {
 		return cacheType;
 	}
 
-	public boolean isEternal() {
-		return eternal;
+	/**
+	 * @return elements should be serialized
+	 */
+	public boolean shouldSerializeElements() {
+		return serializeElements;
 	}
 
+	/**
+	 * @return Max elements stored in memory
+	 */
 	public int getMaxElementsInMemory() {
 		return maxElementsInMemory;
 	}
 
+	/**
+	 * @return Time to live (in seconds)
+	 */
 	public long getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
 	}
 
+	/**
+	 * @return Time tio idle (in seconds)
+	 */
 	public long getTimeToIdleSeconds() {
 		return timeToIdleSeconds;
 	}

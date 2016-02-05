@@ -19,21 +19,25 @@
 package io.vertigo.commons.parser;
 
 /**
- * Règle.
- * Si elle est respectée l'index augmente sinon une erreur est déclenchée.
+ * Parser produces an object <P> or throw an exception.
+ * A parser analyzes a text, according some rules.
+ * A parser is responsible for moving the index position or throw an exception. 
  *
  * @author pchretien
+ * @param<R> Type of the product text parsing
  */
-public interface Parser<P> {
+public interface Parser<R> {
 	/**
-	 * Retourne le prochain numéro de ligne
-	 * Le pattern est OK du numéro de ligne passé en paramètre au numéro de ligne retourné.
-	 * @param text Texte à parser
-	 * @param start Début du parsing
-	 * @throws NotFoundException Si la règle n'est pas applicable.
-	 * @return Index de fin
+	 * Return the new index position.
+	 * @param text Text to parse
+	 * @param start Start of the element of text to parse
+	 * @throws NotFoundException if parsing has failed.
+	 * @return new index position
 	 */
 	int parse(String text, int start) throws NotFoundException;
 
-	P get();
+	/**
+	 * @return Product text parsing 
+	 */
+	R get();
 }

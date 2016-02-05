@@ -18,13 +18,14 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -89,9 +90,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private final boolean returnGeneratedKeys;
 
 	private final SqlStatementHandler statementHandler;
-	private final SqlDataBaseListener dataBaseListener;
-	//Début du temps d'exécution
-	private long begin;
+	private final AnalyticsManager analyticsManager;
 
 	//=========================================================================
 	//-----GESTION des paramètres types & valeurs
@@ -107,18 +106,18 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param connection Connexion
 	 * @param returnGeneratedKeys true si on récupère les clés générées.
 	 */
-	public SqlPreparedStatementImpl(final SqlStatementHandler statementHandler, final SqlDataBaseListener dataBaseListener, final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
+	public SqlPreparedStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
 		Assertion.checkNotNull(connection);
 		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(statementHandler);
-		Assertion.checkNotNull(dataBaseListener);
+		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.connection = connection;
 		this.sql = sql;
 		this.returnGeneratedKeys = returnGeneratedKeys;
 		//Initialistaion de l'état interne de l'automate
 		state = State.CREATED;
-		this.dataBaseListener = dataBaseListener;
+		this.analyticsManager = analyticsManager;
 		this.statementHandler = statementHandler;
 	}
 
@@ -240,38 +239,32 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	public final SqlQueryResult executeQuery(final Domain domain) throws SQLException {
 		Assertion.checkNotNull(domain);
 		//-----
-		boolean ok = false;
-		beginExecution();
-		Integer nbSelectedRow = null;
-		try {
+		try (AnalyticsTracker tracker = beginExecution()) {
 			// ResultSet JDBC
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				//Le Handler a la responsabilité de créer les données.
 				final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-				nbSelectedRow = result.getSQLRowCount();
-				ok = true;
+				tracker.setMeasure("nbSelectedRow", result.getSQLRowCount());
+				markAsSucceeded(tracker);
 				return result;
 			}
 		} finally {
-			endExecution(ok, null, nbSelectedRow);
+			endExecution();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final int executeUpdate() throws SQLException {
-		boolean ok = false;
-		Integer nbModifiedRow = null;
-		beginExecution();
-		try {
+		try (AnalyticsTracker tracker = beginExecution()) {
 			//execution de la Requête
 			final int res = statement.executeUpdate();
-			ok = true;
-			nbModifiedRow = res;
+			tracker.setMeasure("nbModifiedRow", res);
+			markAsSucceeded(tracker);
 			return res;
 		} finally {
-			endExecution(ok, nbModifiedRow, null);
+			endExecution();
 		}
 	}
 
@@ -284,54 +277,46 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public int executeBatch() throws SQLException {
-		boolean ok = false;
-		Integer nbModifiedRow = null;
-		beginExecution();
-		try {
+		try (AnalyticsTracker tracker = beginExecution()) {
 			final int[] res = statement.executeBatch();
-			ok = true;
-			nbModifiedRow = res.length;
 
 			//Calcul du nombre total de lignes affectées par le batch.
 			int count = 0;
 			for (final int rowCount : res) {
 				count += rowCount;
 			}
-
+			tracker.setMeasure("nbModifiedRow", res.length);
+			markAsSucceeded(tracker);
 			return count;
 		} finally {
-			endExecution(ok, nbModifiedRow, null);
+			endExecution();
 		}
 	}
 
 	/**
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private void beginExecution() {
+	private AnalyticsTracker beginExecution() {
 		Assertion.checkArgument(state == State.DEFINED, "L'exécution ne peut se faire que sur l'état STATE_DEFINED ; une fois les types enregistrés, l'enregistrement clôturé par la méthode init() et les valeurs settées");
-		dataBaseListener.onStart(toString());
-		begin = System.currentTimeMillis();
+		final AnalyticsTracker analyticsTracker = analyticsManager.startLogTracker("Sql", sql.substring(0, Math.min(50, sql.length())));
+		analyticsTracker.addMetaData("statement", toString());
+		return analyticsTracker;
+	}
+
+	private void markAsSucceeded(final AnalyticsTracker tracker) {
+		tracker.markAsSucceeded();
+		state = State.EXECUTED;
 	}
 
 	/**
 	 * Enregistre la fin d'exécution du PrepareStatement
-	 * @param ok True si l'exécution s'est effectuée sans erreur
 	 */
-
-	private void endExecution(final boolean success, final Integer nbModifiedRow, final Integer nbSelectedRow) {
-		if (success) {
-			//On passe à l'état exécuté
-			state = State.EXECUTED;
-		} else {
+	private void endExecution() {
+		if (state != State.EXECUTED) {
+			//execution was interrupted
 			state = State.ABORTED;
 		}
-		final long elapsedTime = System.currentTimeMillis() - begin;
-		dataBaseListener.onFinish(
-				toString(),
-				success,
-				elapsedTime,
-				nbModifiedRow,
-				nbSelectedRow);
+		// else execution was successfull
 	}
 
 	//=========================================================================
@@ -375,7 +360,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			}
 			s.append('=');
 			if (parameter.getValue() != null) {
-				s.append(parameter.getValue().toString());
+				s.append(parameter.getValue());
 			} else {
 				s.append("null");
 			}
@@ -422,7 +407,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final Object key = mapping.getValueForResultSet(rs, pkRsCol, domain.getDataType()); //attention le pkRsCol correspond au n° de column dans le RETURNING
+			final Object id = mapping.getValueForResultSet(rs, pkRsCol, domain.getDataType()); //attention le pkRsCol correspond au n° de column dans le RETURNING
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", -407);
 			}
@@ -430,7 +415,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			if (rs.next()) {
 				throw new SQLException("GeneratedKeys.size >1 ", "0100E", 464);
 			}
-			return key;
+			return id;
 		}
 	}
 }

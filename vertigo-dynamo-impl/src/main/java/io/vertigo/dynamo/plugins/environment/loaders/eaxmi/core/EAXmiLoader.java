@@ -25,6 +25,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 import java.net.URL;
@@ -74,15 +75,15 @@ public final class EAXmiLoader implements XmlLoader {
 	 */
 	@Override
 	public List<XmlClass> getClasses() {
-		final List<XmlClass> list = new ArrayList<>();
+		final ListBuilder<XmlClass> listBuilder = new ListBuilder<>();
 		for (final EAXmiObject obj : map.values()) {
-			LOG.debug("classe : " + obj.toString());
+			LOG.debug("classe : " + obj);
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == EAXmiType.Class) {
-				list.add(createClass(obj));
+				listBuilder.add(createClass(obj));
 			}
 		}
-		return java.util.Collections.unmodifiableList(list);
+		return listBuilder.unmodifiable().build();
 	}
 
 	/**
@@ -91,16 +92,16 @@ public final class EAXmiLoader implements XmlLoader {
 	 */
 	@Override
 	public List<XmlAssociation> getAssociations() {
-		final List<XmlAssociation> list = new ArrayList<>();
+		final ListBuilder<XmlAssociation> listBuilder = new ListBuilder<>();
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
 				final XmlAssociation associationXmi = createAssociation(obj);
 				if (associationXmi != null) {
-					list.add(associationXmi);
+					listBuilder.add(associationXmi);
 				}
 			}
 		}
-		return java.util.Collections.unmodifiableList(list);
+		return listBuilder.unmodifiable().build();
 	}
 
 	private static XmlClass createClass(final EAXmiObject obj) {
@@ -150,12 +151,6 @@ public final class EAXmiLoader implements XmlLoader {
 	 */
 	private XmlAssociation createAssociation(final EAXmiObject obj) {
 		LOG.debug("Créer association :" + obj.getName());
-		final String code = obj.getName().toUpperCase();
-		final String packageName = obj.getParent().getPackageName();
-
-		final String multiplicityA = obj.getRoleAMultiplicity();
-		final String multiplicityB = obj.getRoleBMultiplicity();
-
 		//On recherche les objets référencés par l'association.
 		final EAXmiObject objectB = map.get(obj.getClassB());
 		final EAXmiObject objectA = map.get(obj.getClassA());
@@ -163,6 +158,13 @@ public final class EAXmiLoader implements XmlLoader {
 		if (objectA == null || objectB == null) {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
+
+		final String code = obj.getName().toUpperCase();
+		final String packageName = obj.getParent().getPackageName();
+
+		final String multiplicityA = obj.getRoleAMultiplicity();
+		final String multiplicityB = obj.getRoleBMultiplicity();
+
 		//Si les roles ne sont pas renseignés ont prend le nom de la table en CamelCase.
 		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToUpperCamelCase(objectA.getName());
 		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToUpperCamelCase(objectB.getName());

@@ -39,13 +39,14 @@ import javax.inject.Named;
  */
 public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
-	 * Constructeur.
-	 * @param connectionName Connection name
-	 * @param taskManager Manager des Tasks
+	 * Constructor.
+	 * @param nameOption the name of the dataSpace (optional)
+	 * @param connectionName the name of the connection
+	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
-		super(name, connectionName, taskManager);
+	public SqlServerDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
+		super(nameOption, connectionName, taskManager);
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +79,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		String separator = "";
 
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
 				request.append(separator)
 						.append(dtField.getName());
 				separator = ", ";
@@ -89,9 +90,9 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		separator = "";
 
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
 				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+				if (dtField.getType() != DtField.FieldType.ID) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				}
 				separator = ", ";

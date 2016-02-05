@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.component.di.data;
 
-
 public final class P2 {
 	//
 }

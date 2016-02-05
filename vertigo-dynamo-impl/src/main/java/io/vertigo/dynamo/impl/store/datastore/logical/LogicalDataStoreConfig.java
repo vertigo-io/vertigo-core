@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.store.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
@@ -29,14 +29,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Configuration logique des stores physiques.
+ * This class defines how the dataSpaces are mapped to the physical stores.
+ * A dataSpace is a set of collections. 
+ * A dataSpace has a name.
+ * A dataSpace can have one dataStore.
+ * 
  * @author pchretien, npiedeloup
  */
 public final class LogicalDataStoreConfig {
-	/** Map des stores utilisés spécifiquement */
+	/**
+	 * Map (collection-dataStorePlugin). 
+	 * This map defines the dataStore for each collection */
 	private final Map<String, DataStorePlugin> dataStorePluginsMap;
 
 	/**
+	 * Constructor.
 	 * @param dataStorePlugins DataStore plugins
 	 */
 	public LogicalDataStoreConfig(final List<DataStorePlugin> dataStorePlugins) {
@@ -44,42 +51,42 @@ public final class LogicalDataStoreConfig {
 		//-----
 		final Map<String, DataStorePlugin> pluginsMap = new HashMap<>();
 		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
-			final String name = dataStorePlugin.getName();
-			final DataStorePlugin previous = pluginsMap.put(name, dataStorePlugin);
-			Assertion.checkState(previous == null, "DataStorePlugin {0}, was already registered", name);
+			final String dataSpace = dataStorePlugin.getDataSpace();
+			final DataStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
+			Assertion.checkState(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
-		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_STORE_NAME), "No " + DtDefinitionBuilder.DEFAULT_STORE_NAME + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_STORE_NAME + "'.");
+		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_DATA_SPACE), "No " + DtDefinitionBuilder.DEFAULT_DATA_SPACE + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_DATA_SPACE + "'.");
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}
 
 	/**
-	 * Fournit un store adpaté au type de l'objet.
-	 * @param definition Définition
-	 * @return Store utilisé pour cette definition
+	 * Provides a 'DataStorePlugin' for the specified 'DtDefinition'.
+	 * Each DtDefinition is mapped to a collection.
+	 * @param dtDefinition the DtDefinition 
+	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
-	public DataStorePlugin getPhysicalDataStore(final DtDefinition definition) {
-		Assertion.checkNotNull(definition);
+	public DataStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
 		//-----
-		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		return getDataStorePlugin(definition.getStoreName());
+		return getDataStorePlugin(dtDefinition.getDataSpace());
 	}
 
 	/**
-	 * Fournit le nom de la connection adpatée pour ce Store.
-	 * @param storeName Nom du store
-	 * @return Connection utilisée pour ce nom
+	 * Provides the name of the connection.
+	 * @param dataSpace the dataSpace
+	 * @return the name of the connection
 	 */
-	public String getConnectionName(final String storeName) {
-		Assertion.checkArgNotEmpty(storeName);
+	public String getConnectionName(final String dataSpace) {
+		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
-		return getDataStorePlugin(storeName).getConnectionName();
+		return getDataStorePlugin(dataSpace).getConnectionName();
 	}
 
-	private DataStorePlugin getDataStorePlugin(final String storeName) {
-		Assertion.checkArgNotEmpty(storeName);
+	private DataStorePlugin getDataStorePlugin(final String dataSpace) {
+		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
-		final DataStorePlugin dataStore = dataStorePluginsMap.get(storeName);
-		Assertion.checkNotNull(dataStore, "Aucun store ayant pour nom '{0}'", storeName);
+		final DataStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
+		Assertion.checkNotNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
 		return dataStore;
 	}
 }

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
@@ -26,11 +25,12 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
@@ -64,15 +64,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-
-	/**
-	 * Identifiant de ressource FileSystem par défaut.
-	 */
-	private final VTransactionResourceId<FsTransactionResource> fsResourceId;
 
 	private final FileManager fileManager;
 	private final String name;
@@ -102,19 +94,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.name = name.getOrElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
-		documentRoot = translatePath(path);
-		fsResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS-" + name);
+		documentRoot = FileUtil.translatePath(path);
 		//-----
 		if (purgeDelayMinutes.isDefined()) {
-			daemonManager.registerDaemon("PurgeTempFileDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
+			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
 		}
-	}
-
-	private static String translatePath(final String path) {
-		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
@@ -125,7 +109,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		// récupération des metadata.
 		try {
 			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;
@@ -158,13 +142,14 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
-		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
-			obtainFsTransactionRessource().saveFile(inputStream, obtainFullFilePath(fileInfo.getURI()));
+
+		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
+			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
 			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
-		try (InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
-			obtainFsTransactionRessource().saveFile(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()));
+		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
+			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
 			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
@@ -197,7 +182,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		saveFile(metaData, fileInfo);
 	}
 
-	private FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
+	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
 		final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + UUID.randomUUID();
 		return new FileInfoURI(fileInfoDefinition, pathToSave);
@@ -222,10 +207,10 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		//-----suppression du fichier
-		obtainFsTransactionRessource().deleteFile(obtainFullFilePath(uri));
-		obtainFsTransactionRessource().deleteFile(obtainFullMetaDataFilePath(uri));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri)));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri)));
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
@@ -248,52 +233,4 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	/** récupère la ressource FS de la transaction et la créé si nécessaire. */
-	private FsTransactionResource obtainFsTransactionRessource() {
-		FsTransactionResource resource = getCurrentTransaction().getResource(fsResourceId);
-
-		if (resource == null) {
-			// Si aucune ressource de type FS existe sur la transaction, on la créé
-			resource = new FsTransactionResource();
-			getCurrentTransaction().addResource(fsResourceId, resource);
-		}
-		return resource;
-	}
-
-	/**
-	 * Purge store directory Daemon.
-	 */
-	public static class PurgeTempFileDaemon implements Daemon {
-		private final int purgeDelayMinutes;
-		private final String documentRoot;
-
-		/**
-		 * @param purgeDelayMinutes Purge files older than this delay in minutes
-		 * @param documentRoot Purge scan root
-		 */
-		public PurgeTempFileDaemon(final int purgeDelayMinutes, final String documentRoot) {
-			this.purgeDelayMinutes = purgeDelayMinutes;
-			this.documentRoot = documentRoot;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() throws Exception {
-			final File documentRootFile = new File(documentRoot);
-			final long maxTime = System.currentTimeMillis() - purgeDelayMinutes * 60L * 1000L;
-			purgeOlderFile(documentRootFile, maxTime);
-		}
-
-		private void purgeOlderFile(final File documentRootFile, final long maxTime) {
-			for (final File subFiles : documentRootFile.listFiles()) {
-				if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
-					purgeOlderFile(subFiles, maxTime);
-				} else if (subFiles.lastModified() < maxTime) {
-					if (!subFiles.delete()) {
-						subFiles.deleteOnExit();
-					}
-				}
-			}
-		}
-	}
 }

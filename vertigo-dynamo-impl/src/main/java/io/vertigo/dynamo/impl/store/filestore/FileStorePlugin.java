@@ -23,7 +23,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.lang.Plugin;
 
 /**
- * Plugin de FileStore.
+ * File store plugin.
  *
  * @author  npiedeloup
  */
@@ -35,35 +35,36 @@ public interface FileStorePlugin extends Plugin {
 	String getName();
 
 	/**
-	 * Récupération de l'objet correspondant à l'URI fournie.
-	 * Peut-être null.
+	 * Load a file by its URI.
 	 *
-	 * @param uri FileURI du fichier à charger
-	 * @return VFileInfo correspondant à l'URI fournie.
+	 * @param uri FileURI requested
+	 * @return FileInfo for this uri (null if not found).
 	 */
-	FileInfo load(FileInfoURI uri);
+	FileInfo read(FileInfoURI uri);
 
 	//==========================================================================
-	//=============================== Ecriture =================================
+	//=============================== Write operations =========================
 	//==========================================================================
 	/**
-	 * Sauvegarde d'un fichier.
-	 * La stratégie de création ou de modification est déduite de l'état de l'objet java,
-	 * et notamment de l'état de son URI : new ou stored.
+	 * Save a file.
+	 * Input FileInfo must have an empty URI : insert mode
 	 *
-	 * Si l'objet possède une URI  : mode modification
-	 * Si l'objet ne possède pas d'URI : mode création
-	 *
-	 * @param fileInfo Fichier à sauvegarder (création ou modification)
+	 * @param fileInfo File to save (creation)
 	 */
 	void create(FileInfo fileInfo);
 
+	/**
+	 * Save a file.
+	 * Input FileInfo must have an URI : update mode
+	 *
+	 * @param fileInfo File to save  (modification)
+	 */
 	void update(FileInfo fileInfo);
 
 	/**
-	 * Suppression d'un fichier.
-	 * @param uri URI du fichier à supprimmer
+	 * Delete a file.
+	 * @param uri File's URI to remove
 	 */
-	void remove(FileInfoURI uri);
+	void delete(FileInfoURI uri);
 
 }

@@ -80,9 +80,9 @@ public final class NotFoundException extends Exception {
 	 * @return Retourne le message complet de l'erreur avec la pile inversée des causes.
 	 */
 	public String getFullMessage() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(displayPosition());
-		sb.append("\n");
+		final StringBuilder sb = new StringBuilder()
+				.append(displayPosition())
+				.append("\n");
 		final List<String> errorRuleList = new ArrayList<>();
 		Throwable cause = this;
 		while (cause instanceof NotFoundException) {
@@ -120,7 +120,7 @@ public final class NotFoundException extends Exception {
 	 * @return Chaîne de caractère pour la position de l'erreur (ligne, colonne, extrait).
 	 */
 	private String displayPosition() {
-		int start = index > 1 ? s.lastIndexOf('\n', index - 1) + 1 : 0;
+		int start = index > 1 ? (s.lastIndexOf('\n', index - 1) + 1) : 0;
 		start = Math.max(index - 150, start);
 		int end = s.indexOf('\n', index + 1);
 		if (end == -1) {

@@ -105,7 +105,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 	private static UiListState checkAndEnsureDefaultValue(final UiListState parsedUiListState) {
 		if (parsedUiListState.getListServerToken() == null && parsedUiListState.getTop() == 0) {//check if parsedUiListState is just not initalized
-			return new UiListState(DEFAULT_RESULT_PER_PAGE, parsedUiListState.getSkip(), null, true, null);
+			return new UiListState(DEFAULT_RESULT_PER_PAGE, parsedUiListState.getSkip(), parsedUiListState.getSortFieldName(), parsedUiListState.isSortDesc(), null);
 		}
 		return parsedUiListState;
 	}
@@ -129,7 +129,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
 			sortedList = collectionsManager.createDtListProcessor()
-					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc(), true, true)
+					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;

@@ -64,15 +64,15 @@ public final class DynamicDefinitionRepository {
 	}
 
 	/**
-	 * @return Grammaire
+	 * @return Grammar
 	 */
 	public EntityGrammar getGrammar() {
 		return grammar;
 	}
 
 	/**
-	 * Teste si une définition a déjà été ajoutée.
-	 * @param definitionKey Clé de la définition
+	 * Returns true if a definition to which the specified name is mapped.
+	 * @param definitionName name of the definitionClé de la définition
 	 * @return Si la définition a déjà été enregistrée
 	 */
 	public boolean containsDefinitionName(final String definitionName) {
@@ -84,8 +84,8 @@ public final class DynamicDefinitionRepository {
 	 *  -Soit la clé n'existe pas
 	 *  -Soit la clé existe mais sans aucune définition
 	 *  -Soit la clé raméne une définition.
-	 *
-	 * @param definitionKey Clé de la définition
+	 *  
+	 * @param definitionName Name of the definition
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
 	public DynamicDefinition getDefinition(final String definitionName) {
@@ -99,6 +99,7 @@ public final class DynamicDefinitionRepository {
 
 	/**
 	 * Résolution des références de définitions.
+	 * @param definitionSpace Space where all the definitions are stored 
 	 */
 	public void solve(final DefinitionSpace definitionSpace) {
 		Assertion.checkNotNull(definitionSpace);
@@ -127,7 +128,7 @@ public final class DynamicDefinitionRepository {
 	}
 
 	/**
-	 * Ajoute une définition.
+	 * Add a definition.
 	 * @param definition DynamicDefinition
 	 */
 	public void addDefinition(final DynamicDefinition definition) {
@@ -152,10 +153,11 @@ public final class DynamicDefinitionRepository {
 	}
 
 	/**
-	 * Création d'une Definition (Non enregistrée !).
+	 * Create a new definition.
+	 * This definition is not registered.
 	 * @param packageName Nom du package
-	 * @param keyName Nom de la Définition
-	 * @param entity Entité
+	 * @param definitionName Name of the definition
+	 * @param entity entity
 	 * @return Nouvelle Définition
 	 */
 	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final Entity entity, final String packageName) {

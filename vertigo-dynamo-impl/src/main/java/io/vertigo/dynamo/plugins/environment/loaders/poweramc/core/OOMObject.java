@@ -239,8 +239,6 @@ final class OOMObject {
 	}
 
 	//==========================================================================
-	//==========================================================================
-	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
@@ -253,32 +251,8 @@ final class OOMObject {
 		return s;
 	}
 
-	//	/**
-	//	 * Sortie sur la console des objets trouvés.
-	//	 */
-	//	void display() {
-	//		this.display(0);
-	//	}
-	//
-	//	private void display(final int n) {
-	//		for (final ObjectOOM child : childList) {
-	//			for (int i = 0; i < n; i++) {
-	//				System.out.print(".");
-	//			}
-	//			System.out.println(child);
-	//			child.display(n + 1);
-	//		}
-	//
-	//		for (final IdOOM ref : refList) {
-	//			for (int i = 0; i < n; i++) {
-	//				System.out.print(".");
-	//			}
-	//			System.out.println(ref);
-	//		}
-	//	}
-
 	/**
-	 * @return Nom du package
+	 * @return package name
 	 */
 	String getPackageName() {
 		//1. On vérifie que cet objet est bien un package

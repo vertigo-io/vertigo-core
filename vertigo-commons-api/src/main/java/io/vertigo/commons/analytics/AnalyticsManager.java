@@ -18,16 +18,34 @@
  */
 package io.vertigo.commons.analytics;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
- * Accès centralisé à toutes les fonctions Analytiques.
- * 
- * @author pchretien
+ * Main access to all analytics functions.
+ *
+ * @author pchretien, npiedeloup
  */
-public interface AnalyticsManager extends Component {
+public interface AnalyticsManager extends Manager {
+
 	/**
-	 * @return Agent de collecte
+	 * @return collect agent
 	 */
 	AnalyticsAgent getAgent();
+
+	/**
+	 * Start process (may be a sub-process with its own metrics).
+	 * @param processType process type
+	 * @param category process category
+	 * @return collect tracker
+	 */
+	AnalyticsTracker startTracker(final String processType, final String category);
+
+	/**
+	 * Start process logging (no subProcess, only local metrics).
+	 * @param processType process type
+	 * @param category process category
+	 * @return collect tracker
+	 */
+	AnalyticsTracker startLogTracker(final String processType, final String category);
+
 }

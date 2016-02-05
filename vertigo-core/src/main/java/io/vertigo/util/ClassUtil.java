@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche étant utilisée pour créer des liens plus souples entre des objets.
+ * The ClassUtil class provides methods to determine the structure of a class or to create instances.
  *
  * @author pchretien
  */
@@ -45,10 +45,10 @@ public final class ClassUtil {
 	private static final Class<?>[] EMPTY_CLAZZ_ARRAY = new Class[0];
 
 	/**
-	 * Constructeur privé pour classe utilitaire
+	 * Constructor
 	 */
 	private ClassUtil() {
-		// RAS
+		// private constructor
 	}
 
 	/**
@@ -177,12 +177,12 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Invocation dynamique d'une méthode sur une instance.
+	 * Dynamic invocation of a method on a specific instance.
 	 *
-	 * @param instance Objet sur lequel est invoqué la méthode
-	 * @param method Methode invoquée
-	 * @param args Arguments
-	 * @return R Valeur retournée par l'invocation
+	 * @param instance Object
+	 * @param method method which is invocated
+	 * @param args Args
+	 * @return value provided as the result by the method
 	 */
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
 		Assertion.checkNotNull(instance);
@@ -274,6 +274,25 @@ public final class ClassUtil {
 	}
 
 	/**
+	 * Retourne toutes les méthodes déclarées et annotées par la dite annotation.
+	 * @param clazz Class
+	 * @param annotation Annotation attendue
+	 * @return Tous les champs déclarés (incluant les champs parents)
+	 */
+	public static Collection<Method> getAllMethods(final Class<?> clazz, final Class<? extends Annotation> annotation) {
+		Assertion.checkNotNull(clazz);
+		Assertion.checkNotNull(annotation);
+		//-----
+		final List<Method> methods = new ArrayList<>();
+		for (final Method method : ClassUtil.getAllMethods(clazz)) {
+			if (method.isAnnotationPresent(annotation)) {
+				methods.add(method);
+			}
+		}
+		return methods;
+	}
+
+	/**
 	 * Retourne tous les champs déclarés (incluant les champs parents) pour une classe donnée.
 	 * @param clazz Class
 	 * @return Tous les champs déclarés (incluant les champs parents)
@@ -289,6 +308,24 @@ public final class ClassUtil {
 			fields.addAll(getAllFields(parent));
 		}
 		return Collections.unmodifiableCollection(fields);
+	}
+
+	/**
+	 * Retourne toutes les méthodes déclarées pour une classe donnée (incluant les méthodes des parents).
+	 * @param clazz Class
+	 * @return Toutes les méthodes déclarées (incluant les méthodes des parents)
+	 */
+	public static Collection<Method> getAllMethods(final Class<?> clazz) {
+		Assertion.checkNotNull(clazz);
+		//-----
+		final List<Method> methods = new ArrayList<>();
+		final Method[] declaredMethods = clazz.getDeclaredMethods();
+		methods.addAll(Arrays.asList(declaredMethods));
+		final Class<?> parent = clazz.getSuperclass();
+		if (parent != null) {
+			methods.addAll(getAllMethods(parent));
+		}
+		return Collections.unmodifiableCollection(methods);
 	}
 
 	/**

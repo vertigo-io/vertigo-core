@@ -25,22 +25,22 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class Home {
-	private static App CURRENT_APP = null;
+	private static App currentApp;
 
 	private Home() {
 		// Classe statique d'accès aux composants.
 	}
 
 	static synchronized void setApp(final App app) {
-		CURRENT_APP = app;
+		currentApp = app;
 	}
 
 	/**
 	 * @return Application
 	 */
 	public static App getApp() {
-		Assertion.checkNotNull(CURRENT_APP, "app has not been started");
+		Assertion.checkNotNull(currentApp, "app has not been started");
 		//no synchronized for perf purpose
-		return CURRENT_APP;
+		return currentApp;
 	}
 }

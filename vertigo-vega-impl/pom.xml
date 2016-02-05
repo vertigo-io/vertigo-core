@@ -68,24 +68,20 @@
 			</exclusions>
 		</dependency>	
 		
+		
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
+			<optional>true</optional> <!-- For ClassPathWebServiceLoaderPlugin -->	
+		</dependency>
+		
 		<!-- test -->	
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-quarto-api</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-quarto-impl</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -18,10 +18,12 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
+import io.vertigo.lang.Component;
+
 /**
  * @author prahmoune
  */
-public interface Computer {
+public interface Computer extends Component {
 	int sum(int i, int j);
 
 	int multi(int i, int j);

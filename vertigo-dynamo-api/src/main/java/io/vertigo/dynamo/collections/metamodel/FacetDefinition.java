@@ -57,39 +57,79 @@ public final class FacetDefinition implements Definition {
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
 	private final boolean rangeFacet;
+	private final FacetOrder order;
 
 	/**
-	 * Constructeur.
-	 * @param dtField Champ de l'index facetté
-	 * @param label Libellé de la facette
-	 * @param facetValues Liste des segments pour les facettes segmentées
-	 * @param hasFacetValues Si facette segmentée
+	 * Facet order : alpha, count, definition
 	 */
-	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean hasFacetValues) {
+	public static enum FacetOrder {
+		/** alphabetical */
+		alpha,
+		/** count (default for term) */
+		count,
+		/** definition order (default for range) */
+		definition
+	}
+
+	/**
+	 * Constructor.
+	 * @param name the name of the facet
+	 * @param dtField the field of the facet
+	 * @param facetValues the list of filters
+	 * @param rangeFacet if the facet is of type 'range'
+	 * @param order Facet Order
+	 */
+	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean rangeFacet, final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
-		Assertion.checkArgument(!hasFacetValues || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
-		Assertion.checkArgument(hasFacetValues || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.checkArgument(!rangeFacet || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+		Assertion.checkArgument(rangeFacet || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
-		this.rangeFacet = hasFacetValues;
-	}
-
-	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetRanges) {
-		return new FacetDefinition(name, dtField, label, facetRanges, true);
-	}
-
-	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label) {
-		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false);
+		this.rangeFacet = rangeFacet;
+		this.order = order;
 	}
 
 	/**
-	 * @return Libellé de la facette.
+	 * Creates a new facetDefinition of type 'range'.
+	 *
+	 * A range facet is defined by a list of filters.
+	 * Examples :
+	 * [0 -10[
+	 * [0-100[
+	 * [100-*[
+	 * @param name the name of the facet
+	 * @param dtField the field of the facet
+	 * @param label the label of the facet
+	 * @param facetValues the list of filters
+	 * @param order Facet Order
+	 * @return new facetDefinition of type 'range'
+	 */
+	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, facetValues, true, order);
+	}
+
+	/**
+	 * Creates a new facetDefinition of type 'term'.
+	 *
+	 * @param name the name of the facet
+	 * @param dtField the field of the facet
+	 * @param label the label of the facet
+	 * @param order Facet Order
+	 * @return new facetDefinition of type 'term'
+	 */
+	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label, final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false, order);
+	}
+
+	/**
+	 * @return the label of the facet
 	 */
 	public MessageText getLabel() {
 		return label;
@@ -113,11 +153,17 @@ public final class FacetDefinition implements Definition {
 	}
 
 	/**
-	 * Identifie le mode la facette.
-	 * @return Si la facette est de type Range.
+	 * @return if the facet is of type 'range'
 	 */
 	public boolean isRangeFacet() {
 		return rangeFacet;
+	}
+
+	/**
+	 * @return facet order
+	 */
+	public FacetOrder getOrder() {
+		return order;
 	}
 
 	/** {@inheritDoc} */

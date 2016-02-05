@@ -22,18 +22,32 @@ import io.vertigo.app.config.Features;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
+/**
+ * Defines persona features.
+ * 
+ * @author pchretien
+ */
 public final class PersonaFeatures extends Features {
 
+	/**
+	 * Constructor.
+	 */
 	public PersonaFeatures() {
 		super("persona");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void setUp() {
 		//		getModuleConfigBuilder()
 		//				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class);
 	}
 
+	/**
+	 * Activates user session.
+	 * @param userSessionClass the user session class
+	 * @return these features
+	 */
 	public PersonaFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
 		getModuleConfigBuilder()
 				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)

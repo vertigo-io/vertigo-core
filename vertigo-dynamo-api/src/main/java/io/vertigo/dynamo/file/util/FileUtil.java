@@ -31,6 +31,10 @@ import java.io.OutputStream;
  * @author npiedeloup
  */
 public final class FileUtil {
+	private static final String USER_HOME = "user.home";
+	private static final String USER_DIR = "user.dir";
+	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
+
 	/**
 	 * Constructeur privé pour classe utilitaire
 	 */
@@ -104,5 +108,17 @@ public final class FileUtil {
 			extension = fileName.substring(index + 1).toLowerCase();
 		}
 		return extension;
+	}
+
+	/**
+	 * Replace "user.home" "user.dir" and "java.io.tmpdir" by system value.
+	 * @param path PAth to translate
+	 * @return translated path
+	 */
+	public static String translatePath(final String path) {
+		return path
+				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
+				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
+				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 }

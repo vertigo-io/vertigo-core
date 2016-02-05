@@ -100,8 +100,16 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>1.7.3</version>
+			<version>1.7.5</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
+		</dependency>
+		
+		<!-- Connections Pool -->
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
 	<!-- Dépendances à des librairies spécifiques au module -->
@@ -136,15 +144,6 @@
 			<version>1.1.1</version>
 		</dependency>
 		<!-- /FileManager-->
-
-		
-		 <!-- Jedis -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.7.3</version>
-		</dependency>
-		<!-- /Jedis -->
 		
 		 <!-- dependency>
 			Waiting update from ODSExporter from 0.7 to 0.8.7 

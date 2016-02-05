@@ -33,29 +33,30 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Définition d'un type de DT.
+ * The DtDefinition class defines the definition of data.
  *
  * @author pchretien
  */
 @DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
-	/** Expression réguliére vérifiée par les noms des stores. */
-	private final Pattern REGEX_STORE_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
+	/** the dataSpace must match this pattern. */
+	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
-	/** Nom de la définition. */
+	/** name of the definition. */
 	private final String name;
 
-	/** Nom du package. */
+	/** name of the package. */
 	private final String packageName;
 
-	/** Liste des champs du DTO.  */
+	/** List of fields.  */
 	private final List<DtField> fields = new ArrayList<>();
 
-	/** Map  des champs du DTO. (Nom du champ, DtField). */
+	/** Map. (fieldName, DtField). */
 	private final Map<String, DtField> mappedFields = new HashMap<>();
 
 	private final DtStereotype stereotype;
-	/** Si la classe est persistée. */
+
+	/** If data is persisted. */
 	private final boolean persistent;
 
 	/**
@@ -69,7 +70,7 @@ public final class DtDefinition implements Definition {
 	private Option<DtField> sortField = Option.none();
 	private Option<DtField> displayField = Option.none();
 
-	private final String storeName;
+	private final String dataSpace;
 
 	/**
 	 * Constructeur.
@@ -81,12 +82,12 @@ public final class DtDefinition implements Definition {
 			final boolean persistent,
 			final List<DtField> dtFields,
 			final boolean dynamic,
-			final String storeName) {
+			final String dataSpace) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
-		Assertion.checkArgNotEmpty(storeName);
-		Assertion.checkState(REGEX_STORE_NAME.matcher(storeName).matches(), "StoreName {0} must match pattern {1}", storeName, REGEX_STORE_NAME);
+		Assertion.checkArgNotEmpty(dataSpace);
+		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
 		//-----
 		this.name = name;
 		this.stereotype = stereotype;
@@ -95,7 +96,7 @@ public final class DtDefinition implements Definition {
 		DtField id = null;
 
 		for (final DtField dtField : dtFields) {
-			if (DtField.FieldType.PRIMARY_KEY.equals(dtField.getType())) {
+			if (DtField.FieldType.ID.equals(dtField.getType())) {
 				Assertion.checkState(id == null, "Un seul champ identifiant est autorisé par objet : {0}", name);
 				id = dtField;
 			}
@@ -104,7 +105,7 @@ public final class DtDefinition implements Definition {
 		}
 		idField = Option.option(id);
 		this.dynamic = dynamic;
-		this.storeName = storeName;
+		this.dataSpace = dataSpace;
 		//-----
 		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
 	}
@@ -126,7 +127,7 @@ public final class DtDefinition implements Definition {
 	//TODO A fermer
 	void registerDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!DtField.FieldType.PRIMARY_KEY.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
+		Assertion.checkArgument(!DtField.FieldType.ID.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
 		//-----
 		doRegisterDtField(dtField);
 	}
@@ -265,10 +266,10 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return StoreName
+	 * @return the dataSpace
 	 */
-	public String getStoreName() {
-		return storeName;
+	public String getDataSpace() {
+		return dataSpace;
 	}
 
 	/** {@inheritDoc} */

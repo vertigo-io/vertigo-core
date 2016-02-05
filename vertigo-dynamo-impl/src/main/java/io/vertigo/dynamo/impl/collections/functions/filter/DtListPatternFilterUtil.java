@@ -40,7 +40,7 @@ public final class DtListPatternFilterUtil {
 
 	public enum FilterPattern {
 		/** range. */
-		Range("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])"),
+		Range("([A-Z_0-9]+):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
 		/** term. */
 		Term("([A-Z_0-9]+):\"(.*)\"");
 
@@ -56,10 +56,10 @@ public final class DtListPatternFilterUtil {
 	}
 
 	/**
-	 * Constructeur privé.
+	 * Constructor.
 	 */
 	private DtListPatternFilterUtil() {
-		//rien
+		//private constructor
 	}
 
 	static <D extends DtObject> DtListFilter<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
@@ -92,15 +92,13 @@ public final class DtListPatternFilterUtil {
 		Assertion.checkNotNull(filterString);
 		Assertion.checkNotNull(parsingPattern);
 		//-----
-		final String[] groups;
-		int nbGroup = 0;
 		final Matcher matcher = parsingPattern.matcher(filterString);
 		if (!matcher.matches()) {
 			return Option.none();
 		}
 
-		nbGroup = matcher.groupCount() + 1;
-		groups = new String[nbGroup];
+		final int nbGroup = matcher.groupCount() + 1;
+		final String[] groups = new String[nbGroup];
 		for (int i = 0; i < nbGroup; i++) {
 			groups[i] = matcher.group(i);
 		}
@@ -126,26 +124,24 @@ public final class DtListPatternFilterUtil {
 			return Option.none();//pas de test
 		}
 		//--
-		final Comparable result;
+		final Comparable result = valueOf(dataType, stringValue);
+		return Option.some(result);
+	}
+
+	private static Comparable valueOf(final DataType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
-				result = Integer.valueOf(stringValue);
-				break;
+				return Integer.valueOf(stringValue);
 			case Long:
-				result = Long.valueOf(stringValue);
-				break;
+				return Long.valueOf(stringValue);
 			case BigDecimal:
-				result = new BigDecimal(stringValue);
-				break;
+				return new BigDecimal(stringValue);
 			case Double:
-				result = Double.valueOf(stringValue);
-				break;
+				return Double.valueOf(stringValue);
 			case Date:
-				result = DateUtil.parse(stringValue, DATE_PATTERN);
-				break;
+				return DateUtil.parse(stringValue, DATE_PATTERN);
 			case String:
-				result = stringValue;
-				break;
+				return stringValue;
 			case Boolean:
 			case DataStream:
 			case DtObject:
@@ -153,6 +149,5 @@ public final class DtListPatternFilterUtil {
 			default:
 				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}
-		return Option.some(result);
 	}
 }

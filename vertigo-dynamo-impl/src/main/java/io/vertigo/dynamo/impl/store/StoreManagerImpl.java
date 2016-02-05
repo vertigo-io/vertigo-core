@@ -19,11 +19,11 @@
 package io.vertigo.dynamo.impl.store;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.commons.event.EventManager;
+import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
@@ -31,10 +31,9 @@ import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -49,7 +48,6 @@ import javax.inject.Inject;
 public final class StoreManagerImpl implements StoreManager {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
-	private final FileStoreConfig fileStoreConfig;
 
 	/** DataStore des objets métier et des listes. */
 	private final DataStore dataStore;
@@ -61,28 +59,26 @@ public final class StoreManagerImpl implements StoreManager {
 	 * @param collectionsManager Manager de gestion des collections
 	 */
 	@Inject
-	public StoreManagerImpl(final TaskManager taskManager,
+	public StoreManagerImpl(
 			final CacheManager cacheManager,
+			final VTransactionManager transactionManager,
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
-			final List<KVStorePlugin> kvDataStorePlugins,
-			final EventManager eventManager) {
-		Assertion.checkNotNull(taskManager);
+			final EventBusManager eventBusManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(fileStorePlugins);
-		Assertion.checkNotNull(kvDataStorePlugins);
-		Assertion.checkNotNull(eventManager);
+		Assertion.checkNotNull(eventBusManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
 		//---
 		//On enregistre le plugin principal du broker
-		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager, this, eventManager);
-		dataStore = new DataStoreImpl(dataStoreConfig);
+		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
+		dataStore = new DataStoreImpl(this, transactionManager, eventBusManager, dataStoreConfig);
 		//-----
-		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
+		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);
 	}
 

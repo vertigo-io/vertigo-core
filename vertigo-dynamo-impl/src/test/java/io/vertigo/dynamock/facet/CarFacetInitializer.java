@@ -20,6 +20,7 @@ package io.vertigo.dynamock.facet;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -74,13 +75,13 @@ public final class CarFacetInitializer {
 		//Facette par description
 		final DtField descriptionDtField = carDefinition.getField("DESCRIPTION");
 		FacetDefinition facetDefinition;
-		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_DESCRIPTION_CAR, descriptionDtField, new MessageText("description", null));
+		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_DESCRIPTION_CAR, descriptionDtField, new MessageText("description", null), FacetOrder.count);
 		Home.getApp().getDefinitionSpace().put(facetDefinition);
 		facetDefinitions.add(facetDefinition);
 
 		//Facette par constructeur
 		final DtField makeDtField = carDefinition.getField("MAKE");
-		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_MAKE_CAR, makeDtField, new MessageText("Par constructeur", null));
+		facetDefinition = FacetDefinition.createFacetDefinitionByTerm(FCT_MAKE_CAR, makeDtField, new MessageText("Par constructeur", null), FacetOrder.alpha);
 		Home.getApp().getDefinitionSpace().put(facetDefinition);
 		facetDefinitions.add(facetDefinition);
 

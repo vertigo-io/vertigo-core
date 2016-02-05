@@ -38,16 +38,16 @@ import org.xml.sax.SAXException;
 public final class XMLUtil {
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	private XMLUtil() {
 		//private constructor
 	}
 
 	/**
-	 * Validation XSD.
-	 * @param xsd Validateur XSD
-	 * @param xml XML à valider
+	 * Util to validate XML with a XSD.
+	 * @param xsd XSD
+	 * @param xml XML to validate
 	 */
 	public static void validateXmlByXsd(final URL xml, final URL xsd) {
 		Assertion.checkNotNull(xml);
@@ -60,7 +60,7 @@ public final class XMLUtil {
 			try {
 				validator.validate(streamSource);
 			} catch (final SAXException e) {
-				throw new WrappedException("'" + xml.toString() + "' non valide", e);
+				throw new WrappedException("'" + xml.toString() + "' is not valid", e);
 			}
 		} catch (final SAXException | IOException e) {
 			throw new WrappedException(e);

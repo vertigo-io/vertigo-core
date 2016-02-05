@@ -76,9 +76,7 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 	private final TaskManager taskManager;
 
 	/**
-	 * Construit une instance de BrokerBatchImpl.
-	 *
-	 * @param dtDefinition Définition associé à l'objet géré
+	 * Constructor.
 	 */
 	BrokerBatchImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
@@ -103,14 +101,14 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 			return dtc;
 		}
 		// On génère une DTC d'identifiant
-		final DtField pkField = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 		for (final P id : idList) {
 			Assertion.checkNotNull(id);
 			final D dto = (D) DtObjectUtil.createDtObject(dtDefinition);
-			pkField.getDataAccessor().setValue(dto, id);
+			idField.getDataAccessor().setValue(dto, id);
 			dtc.add(dto);
 		}
-		return getList(dtDefinition, pkField.getName(), dtc);
+		return getList(dtDefinition, idField.getName(), dtc);
 	}
 
 	private DtList<D> getList(final DtDefinition dtDefinition, final String fieldName, final DtList<D> dtc) {
@@ -150,7 +148,7 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withStore(dtDef.getStoreName())
+				.withDataSpace(dtDef.getDataSpace())
 				.withRequest(request)
 				.addInAttribute(inDtcName, dtcDomain, true)
 				.withOutAttribute("out", dtcDomain, true)
@@ -177,10 +175,10 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(idList);
 		//-----
-		final DtField pkField = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 		final Map<P, D> map = new HashMap<>();
 		for (final D dto : getList(dtDefinition, idList)) {
-			map.put((P) pkField.getDataAccessor().getValue(dto), dto);
+			map.put((P) idField.getDataAccessor().getValue(dto), dto);
 		}
 		return map;
 	}

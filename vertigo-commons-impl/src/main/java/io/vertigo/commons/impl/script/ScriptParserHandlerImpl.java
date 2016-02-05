@@ -46,7 +46,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	/**
 	 * Si il y a au moins un paramètre alors la requête est dynamique.
 	 */
-	private boolean isDynamic; //implicite = false;
+	private boolean isDynamic;
 
 	private final List<String> texts = new ArrayList<>();
 	private final List<ExpressionParameter> parameters;
@@ -110,7 +110,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	private String decodeText(final String text) {
 		final StringBuilder retour = new StringBuilder();
 		int textStart = 0;
-		int textEnd = -1;
+		int textEnd;
 		while ((textEnd = text.indexOf(TEXT_KEY_PREFIX, textStart)) >= 0) {
 			final int keyStart = textEnd + TEXT_KEY_PREFIX.length();
 			final int keyEnd = text.indexOf(TEXT_KEY_SUFFIX, keyStart);

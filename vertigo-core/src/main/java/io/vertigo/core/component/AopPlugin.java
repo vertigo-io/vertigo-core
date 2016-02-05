@@ -19,6 +19,7 @@
 package io.vertigo.core.component;
 
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
 
 import java.lang.reflect.Method;
@@ -40,5 +41,5 @@ public interface AopPlugin extends Plugin {
 	 * @param joinPoints List of joinPoints 
 	 * @return  Proxy-Reference
 	 */
-	Object create(final Object instance, Map<Method, List<Aspect>> joinPoints);
+	Component create(final Component instance, Map<Method, List<Aspect>> joinPoints);
 }

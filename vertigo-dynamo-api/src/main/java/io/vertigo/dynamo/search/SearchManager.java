@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.concurrent.Future;
  *
  * @author dchallas, npiedeloup
  */
-public interface SearchManager extends Component {
+public interface SearchManager extends Manager {
 
 	/**
 	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.

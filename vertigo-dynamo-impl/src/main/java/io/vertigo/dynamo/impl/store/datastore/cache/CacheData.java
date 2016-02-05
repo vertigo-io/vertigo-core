@@ -38,7 +38,8 @@ public final class CacheData {
 	private final CacheManager cacheManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
+	 * @param cacheManager Cache manager
 	 */
 	CacheData(final CacheManager cacheManager) {
 		Assertion.checkNotNull(cacheManager);
@@ -47,15 +48,16 @@ public final class CacheData {
 	}
 
 	/**
-	 * Enregistrement d'un cache propre à un type d'objet.
-	 * @param dtDefinition Définition de DT
-	 * @param timeToLiveSeconds Durée de vie des éléments mis en cache
+	 * Register a context cache dedicated to one DtDefinition.
+	 * @param dtDefinition DT definition
+	 * @param timeToLiveSeconds Time to live in cache
+	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
-	void registerContext(final DtDefinition dtDefinition, final long timeToLiveSeconds) {
+	void registerContext(final DtDefinition dtDefinition, final long timeToLiveSeconds, final boolean serializeElements) {
 		final String context = getContext(dtDefinition);
 		final int maxElementsInMemory = 1000;
-		final long timeToIdleSeconds = timeToLiveSeconds / 2; //longévité déun élément non utilisé
-		cacheManager.addCache(context, new CacheConfig("dataCache", maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		final long timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
+		cacheManager.addCache(context, new CacheConfig("dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
@@ -66,8 +68,9 @@ public final class CacheData {
 	 * Récupération d'un objet potentiellement mis en cache
 	 * @param uri URI du DTO
 	 * @return null ou DTO
+	 * @param <D> Dt type
 	 */
-	<D extends DtObject> D getDtObject(final URI uri) {
+	<D extends DtObject> D getDtObject(final URI<D> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		return (D) cacheManager.get(getContext(dtDefinition), uri);
 	}
@@ -88,11 +91,12 @@ public final class CacheData {
 	 * Récupération de la liste ratine objet potentiellement mise en cache
 	 * @param dtcUri URI de la DTC
 	 * @return null ou DTC
+	 * @param <D> Dt type
 	 */
 	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.checkNotNull(dtcUri);
 		//-----
-		return (DtList<D>) cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri);
+		return DtList.class.cast(cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri));
 	}
 
 	/**
@@ -112,12 +116,15 @@ public final class CacheData {
 		cacheManager.put(context, dtc.getURI(), dtc);
 	}
 
-	private static <D extends DtObject> URI createURI(final D dto) {
+	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		return new URI(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
+		return new URI<>(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
+	/**
+	 * @param dtDefinition Dt definition to clear
+	 */
 	void clear(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----

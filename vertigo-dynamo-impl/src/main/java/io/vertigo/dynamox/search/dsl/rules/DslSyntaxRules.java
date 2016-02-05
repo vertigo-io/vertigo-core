@@ -63,13 +63,6 @@ final class DslSyntaxRules {
 	/** field end. */
 	static final Rule<String> FIELD_END = new TermRule(":");
 
-	/** option start. */
-	static final Rule<String> OPTION_START = new TermRule("!(");
-	/** option end. */
-	static final Rule<String> OPTION_END = new TermRule(")");
-	/** option value. */
-	static final Rule<String> OPTION_VALUE = new WordRule(false, ")", WordRule.Mode.REJECT);
-
 	/** premodifier. */
 	static final Rule<String> PRE_MODIFIER_VALUE = new WordRule(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
 	/** postmodifier. */

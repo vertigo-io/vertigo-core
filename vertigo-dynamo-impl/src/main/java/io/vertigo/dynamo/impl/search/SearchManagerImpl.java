@@ -20,26 +20,31 @@ package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.event.EventManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +57,11 @@ import javax.inject.Inject;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
-	private static final String ANALYTICS_TYPE = "Search";
+	private static final String ANALYTICS_TYPE = "search";
 	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
@@ -66,29 +71,29 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/**
 	 * Constructor.
-	 * @param searchServicesPlugin Search plugin
-	 * @param eventsManager Events Manager
-	 * @param transactionManager Transaction Manager
+	 * @param searchServicesPlugin the searchServicesPlugin
+	 * @param eventBusManager the  eventBusManager
+	 * @param transactionManager the  transactionManager
+	 * @param localeManager the localeManager
+	 * @param analyticsManager the analyticsManager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager, final AnalyticsManager analyticsManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final LocaleManager localeManager, final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
-		Assertion.checkNotNull(eventsManager);
+		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
-
-		final SearchIndexDirtyEventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(this);
-		eventsManager.register(StoreManager.FiredEvent.storeCreate, searchIndexDirtyEventListener);
-		eventsManager.register(StoreManager.FiredEvent.storeUpdate, searchIndexDirtyEventListener);
-		eventsManager.register(StoreManager.FiredEvent.storeDelete, searchIndexDirtyEventListener);
+		this.analyticsManager = analyticsManager;
+		localeManager.add(io.vertigo.dynamo.impl.search.SearchRessources.class.getName(), io.vertigo.dynamo.impl.search.SearchRessources.values());
+		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		this.transactionManager = transactionManager;
-		this.analyticsManager = analyticsManager;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
@@ -96,78 +101,69 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		//nothing
+		executorService.shutdown();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll")) {
 			searchServicesPlugin.putAll(indexDefinition, indexCollection);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", indexCollection.size());
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", indexCollection.size());
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/PUT");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/put")) {
 			searchServicesPlugin.put(indexDefinition, index);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", 1);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/LOAD");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/load")) {
 			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
-			analyticsManager.getAgent().setMeasure("ME_NB_DOCUMENT", result.getCount());
+			tracker.setMeasure("nbSelectedRow", result.getCount());
+			tracker.markAsSucceeded();
 			return result;
-		} finally {
-			analyticsManager.getAgent().stopProcess();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/COUNT");
-		try {
-			return searchServicesPlugin.count(indexDefinition);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/count")) {
+			final long result = searchServicesPlugin.count(indexDefinition);
+			tracker.markAsSucceeded();
+			return result;
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/remove")) {
 			searchServicesPlugin.remove(indexDefinition, uri);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.setMeasure("nbModifiedRow", 1);
+			tracker.markAsSucceeded();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		analyticsManager.getAgent().startProcess(ANALYTICS_TYPE, indexDefinition.getName() + "/REMOVE");
-		try {
+		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/removeAll")) {
 			searchServicesPlugin.remove(indexDefinition, listFilter);
-		} finally {
-			analyticsManager.getAgent().stopProcess();
+			tracker.markAsSucceeded();
 		}
 	}
 
@@ -218,6 +214,21 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
 		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 		return reindexFuture;
+	}
+
+	/**
+	 * Receive Store event.
+	 * @param storeEvent Store event
+	 */
+	@EventSuscriber
+	public void onEvent(final StoreEvent storeEvent) {
+		final URI uri = storeEvent.getUri();
+		//On ne traite l'event que si il porte sur un KeyConcept
+		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				&& hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
+			final List<URI<? extends KeyConcept>> list = Collections.<URI<? extends KeyConcept>> singletonList(uri);
+			markAsDirty(list);
+		}
 	}
 
 }

@@ -55,5 +55,5 @@ public interface FileStore {
 	 * @param uri FileURI du fichier à charger
 	 * @return VFileInfo correspondant à l'URI fournie.
 	 */
-	FileInfo get(final FileInfoURI uri);
+	FileInfo read(final FileInfoURI uri);
 }

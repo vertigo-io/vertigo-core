@@ -23,6 +23,7 @@ import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DYNAMIC;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.EXPRESSION;
@@ -43,7 +44,6 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
@@ -60,7 +60,7 @@ public final class DomainGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	public static final String PRIMARY_KEY = "key";
+	public static final String ID = "key";
 	/**
 	 * Clé des FIELD_DEFINITION de type FIELD utilisés dans les DT_DEFINITION.
 	 */
@@ -71,20 +71,20 @@ public final class DomainGrammar {
 	public static final String COMPUTED = "computed";
 
 	/** Mot-clé des MetaDefinitions de Fields. */
-	static final String DT_FIELD_META_DEFINITION = "Field";
+	private static final String DT_FIELD_META_DEFINITION = "Field";
 	/** Mot-clé des MetaDefinitions de Fields. */
 	private static final String DT_COMPUTED_FIELD_META_DEFINITION = "ComputedField";
 	/** Mot-clé des MetaDefinitions de AssociationNN. */
-	static final String ASSOCIATION_NN_META_DEFINITION = "AssociationNN";
+	private static final String ASSOCIATION_NN_META_DEFINITION = "AssociationNN";
 	/** Mot-clé des MetaDefinitions de Association. */
 	private static final String ASSOCIATION_META_DEFINITION = "Association";
 	/** Mot-clé des MetaDefinitions de DtDefinition. */
 	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
 
 	/**Définition d'une constraint.*/
-	static final Entity CONSTRAINT_ENTITY;
+	public static final Entity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
-	static final Entity FORMATTER_ENTITY;
+	public static final Entity FORMATTER_ENTITY;
 	/**Définition d'une propriété.*/
 	private static final Entity PROPERTY_ENTITY;
 	/**Définition d'un domain.*/
@@ -145,12 +145,11 @@ public final class DomainGrammar {
 				.addField(SORT_FIELD, String, false)
 				.addFields(FIELD, DT_FIELD_ENTITY, false)
 				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
-				.addField(PRIMARY_KEY, DT_FIELD_ENTITY, false)
+				.addField(ID, DT_FIELD_ENTITY, false)
 				.addField(PERSISTENT, Boolean, false)
 				.addField(DYNAMIC, Boolean, false)
 				.addField(STEREOTYPE, String, false)
-				.addField(STORE_NAME, String, false)
-				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
+				.addField(DATA_SPACE, String, false)
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)

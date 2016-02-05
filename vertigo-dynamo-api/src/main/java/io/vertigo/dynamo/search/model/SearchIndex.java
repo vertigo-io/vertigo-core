@@ -36,14 +36,15 @@ import io.vertigo.lang.Assertion;
  *  - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
  *
  * @author dchallas
- * @param <I> Type de l'objet de l'index
+ * @param <K> keyConcept type
+ * @param <I> Index type
  */
-public final class SearchIndex<S extends KeyConcept, I extends DtObject> {
+public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
 	/** URI de l'objet indexé : par convention il s'agit de l'uri de O.*/
-	private final URI<S> uri;
+	private final URI<K> uri;
 
 	/** DtObject d'index. */
 	private final I indexDtObject;
@@ -53,7 +54,7 @@ public final class SearchIndex<S extends KeyConcept, I extends DtObject> {
 	 * @param indexDefinition definition de O, I
 	 * @param uri URI de l'objet indexé
 	 */
-	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDtObject) {
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<K> uri, final I indexDtObject) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//indexDtObject peut être null
@@ -77,7 +78,7 @@ public final class SearchIndex<S extends KeyConcept, I extends DtObject> {
 	 *  - Utilisé pour la récupération de highlight.
 	 * @return URI de la ressource indexée.
 	 */
-	public URI<S> getURI() {
+	public URI<K> getURI() {
 		return uri;
 	}
 

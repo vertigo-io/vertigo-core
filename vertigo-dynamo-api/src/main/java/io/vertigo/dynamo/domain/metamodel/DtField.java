@@ -25,22 +25,17 @@ import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.MessageText;
 
 /**
- * Définition de la structure d'un champ.
+ * This class defines the structure of a field. 
  *
- * Un champ représente une donnée nommée et typée.
- * Un champ permet de valider des données en s'appuyant sur le caractère requis et sur la validation intrinsèque au domaine.
+ * A field represents a named and typed data
  *
- * Un champ possède
- *   - un nom
- *   - un domaine métier
- *   - un label (obligatoirement renseigné)
- *   - un caractère requis ou non
- *   - un caractère persistent ou non
- *   - un index
- * *
- * Un champ référence
- * 	 - la définition qu'il enrichit (DtDefinition)
- * 	 - la définition qu'il relie (équivalent d'une Foreign Key)
+ * A field
+ *   - has a name
+ *   - has a domain
+ *   - has a label 
+ *   - can be required 
+ *   - can be persistent 
+ *   - can be dynamic
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
@@ -49,46 +44,36 @@ public final class DtField implements DtFieldName {
 	public static final String PREFIX = "FLD_";
 
 	/**
-	 * Type des champs.
+	 * This enum lists all types that can be used by a field.
+	 * The most common types are ID and DATA
 	 */
 	public enum FieldType {
 		/**
-		 * Champ désignant la clé (primaire).
+		 * identity 
 		 */
-		PRIMARY_KEY,
+		ID,
 
 		/**
-		 * Champ représentant une donnée interne (ou attribut) de l'objet.
+		 * a simple data field 
 		 */
 		DATA,
 
 		/**
-		 * Champ représentant une donnée externe i.e. une référence vers un autre objet.
+		 * a link towards an other object
 		 */
 		FOREIGN_KEY,
 
 		/**
-		 * Champ calculé.
+		 * a compute field
 		 */
 		COMPUTED
 	}
 
-	/** Nom du champ. */
 	private final String name;
-
-	/** Indicateur du type. */
 	private final FieldType type;
-
-	/** Si le champ obligatoire. */
 	private final boolean required;
-
-	/** Domain.*/
 	private final DefinitionReference<Domain> domainRef;
-
-	/** Libellé du champ. */
 	private final MessageText label;
-
-	/** Si le champ est persistant. */
 	private final boolean persistent;
 
 	/** Cas des FK ; référence à une FK. */
@@ -106,25 +91,33 @@ public final class DtField implements DtFieldName {
 	private final boolean display;
 
 	/**
-	 * Constructeur.
-	 * @param id ID du champ
-	 * @param fieldName Nom du champ
-	 * @param type Type du champ
-	 * @param domain Domaine du champ
-	 * @param label Label
-	 * @param required Si champ not null
-	 * @param persistent Si champ persistent
+	 * Constructor.
+	 * 
+	 * @param id the ID of the field 
+	 * @param fieldName the name of the field
+	 * @param type the type of the field 
+	 * @param domain the domain of the field 
+	 * @param label the label of the field 
+	 * @param required if the field is required
+	 * @param persistent if the field is persistent
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
-	 * @param dynamic Gestion des champs dynamiques
-	 * @param sort If this field is use for sorting
-	 * @param display If this field is use for display
+	 * @param dynamic if the field is dynamic
+	 * @param sort if this field is used for sorting
+	 * @param display if this field is used for display
 	 */
-	DtField(final String id, final String fieldName, final FieldType type,
-			final Domain domain, final MessageText label, final boolean required,
-			final boolean persistent, final String fkDtDefinitionName,
-			final ComputedExpression computedExpression, final boolean dynamic,
-			final boolean sort, final boolean display) {
+	DtField(final String id,
+			final String fieldName,
+			final FieldType type,
+			final Domain domain,
+			final MessageText label,
+			final boolean required,
+			final boolean persistent,
+			final String fkDtDefinitionName,
+			final ComputedExpression computedExpression,
+			final boolean dynamic,
+			final boolean sort,
+			final boolean display) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(domain);
@@ -136,14 +129,14 @@ public final class DtField implements DtFieldName {
 		this.required = required;
 		//-----
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fieldName.length() <= 30, "Le Nom du champ {0} doit être inférieur à 30", fieldName);
-		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "Le nom du champ {0} doit être en majuscules", fieldName);
+		Assertion.checkArgument(fieldName.length() <= 30, "the name of the field {0} has a limit size of 30", fieldName);
+		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
 		name = fieldName;
 		//-----
 		Assertion.checkNotNull(label);
 		this.label = label;
 		//-----
-		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "Un champ calculé n'est jamais persistant");
+		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
@@ -154,9 +147,9 @@ public final class DtField implements DtFieldName {
 		this.fkDtDefinitionName = fkDtDefinitionName;
 		//-----
 		if (getType() == DtField.FieldType.COMPUTED) {
-			Assertion.checkNotNull(computedExpression, "Le champ {0} de type Computed doit référencer une expression ", fieldName);
+			Assertion.checkNotNull(computedExpression, "the field {0}, declared as computed, must have an expression", fieldName);
 		} else {
-			Assertion.checkState(computedExpression == null, "Le champ {0} n''est pas Computed", fieldName);
+			Assertion.checkState(computedExpression == null, "the field {0}, not declared as computed, must have an empty expression", fieldName);
 		}
 		this.computedExpression = computedExpression;
 		//-----
@@ -168,7 +161,7 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * @return Clé de la resource (i18n)
+	 * @return the key of the resource (i18n)
 	 */
 	public String getResourceKey() {
 		return id;
@@ -181,41 +174,35 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * Retourne le nom du champ.
-	 * @return Nom du champ
+	 * @return the name of the field
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Retourne si la propriété est non null
-	 * (Obligatoire en entrée ou en sortie selon le paramètre inout).
-	 *
-	 * @return Si la propriété est non null
+	 * @return if the field is required
 	 */
 	public boolean isRequired() {
 		return required;
 	}
 
 	/**
-	 * @return Type du champ.
+	 * @return the type of the field
 	 */
 	public FieldType getType() {
 		return type;
 	}
 
 	/**
-	 * Renvoie le domaine associé au Champ.
-	 * Le domaine possède obligatoirement un formatter.
-	 * @return Domaine (non null)
+	 * @return the domain of the field
 	 */
 	public Domain getDomain() {
 		return domainRef.get();
 	}
 
 	/**
-	 * @return Libellé du champ.
+	 * @return the label of the field
 	 */
 	public MessageText getLabel() {
 		return label;
@@ -250,29 +237,29 @@ public final class DtField implements DtFieldName {
 	}
 
 	/**
-	 * Permet d'accéder aux données.
-	 * @return Accesseur des propriétés du dto.
+	 * Returns the way to access the data.
+	 * @return the data accessor.
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ dynamique ou statique
+	 * @return if the field is dynamic
 	 */
 	public boolean isDynamic() {
 		return dynamic;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ utilisé pour le tri
+	 * @return if this field is used for sorting
 	 */
 	public boolean isSort() {
 		return sort;
 	}
 
 	/**
-	 * @return Si il s'agit d'un champ utilisé pour l'affichage
+	 * @return if this field is used for display
 	 */
 	public boolean isDisplay() {
 		return display;

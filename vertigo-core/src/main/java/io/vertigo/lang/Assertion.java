@@ -21,19 +21,22 @@ package io.vertigo.lang;
 import io.vertigo.util.StringUtil;
 
 /**
- * Permet de gérer les Assertions.
- * C'est à dire les :
- * <ul>
- * 	<li>pré conditions : validation des arguments</li>
- * 	<li>invariants / post conditions : validation des états</li>
- * </ul>
- * Ces notions ont été introduites avec le langage Eiffel par B. Meyer. Elles sont relatives à la notion de contrat.
- * Il s'agit de vérifier
- * les contrats en entrée <b>-précondition-</b>
- * les contrats en sortie <b>-postcondition-</b>
- * les conditions obligatoirement vérifiées à l'intérieur des méthodes <b>-invariant-</b>.
- * <br>Pour aller plus loin lire articles et ouvrages autour des travaux de B. Meyer et M. Fowler concernant la programmation par contrat (design by contract).
- *
+ * Assertions have been introduced by  B.Meyer with a language called Eiffel.
+ * 
+ * An assertion allows you to design by contract. 
+ * Each time an assetion fails, an specific exception is thrown.
+ * - checkNotNull     throws NullPointerException
+ * - checkArgument    throws IllegalArgumentException
+ * - checkArgNotEmpty throws IllegalArgumentException
+ * - checkState       throws IllegalStateException   
+ * 
+ * Assertion can define a message and args.
+ * "hello {0}, an error occured on '{1}'", "foo", "bar" 
+ *  hello foo, an error occured on 'bar'
+ *  
+ * You can use ' inside the message.
+ *   
+ * 
  * @author fconstantin
  */
 public final class Assertion {
@@ -41,26 +44,24 @@ public final class Assertion {
 		//private constructor
 	}
 
-	//=========================================================================
-	//-----NullPointerException
-	//=========================================================================
-
 	/**
-	 * Permet de tester le caractère obligatoire (non null) d'un objet.
-	 * @param o Object Objet obligatoire
+	 * Check if an object is not null.
+	 * If not a generic exception is thrown.
+	 * @param o Object object  that must be not null
 	 */
 	public static void checkNotNull(final Object o) {
 		if (o == null) {
-			// Optimisé pour message sans formattage
 			throw new NullPointerException();
 		}
 	}
 
 	/**
-	 * Permet de tester le caractère obligatoire (non null) d'un objet.
-	 * @param o Object Objet obligatoire
-	 * @param msg Message d'erreur
-	 * @param params paramètres du message
+	 * Check if an object is not null.
+	 * If not an exception with a contextual message is thrown.
+	 * 
+	 * @param o Object object that must be not null
+	 * @param msg Error message 
+	 * @param params params of the message
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
 		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
@@ -69,15 +70,13 @@ public final class Assertion {
 		}
 	}
 
-	//=========================================================================
-	//-----IllegalArgumentException
-	//=========================================================================
 	/**
-	 * Permet de tester les arguments.
-	 * Utilisé comme validation des préconditions.
-	 * @param test Expression booléenne qui doit être vérifiée
-	 * @param msg Message affiché si le test <b>n'est pas</b> vérifié.
-	 * @param params paramètres du message
+	 * Check if a test is valid.
+	 * If not an exception with a contextual message is thrown.
+	 * 
+	 * @param test If the assertion succeeds
+	 * @param msg Error message 
+	 * @param params params of the message
 	 */
 	public static void checkArgument(final boolean test, final String msg, final Object... params) {
 		if (!test) {
@@ -86,8 +85,10 @@ public final class Assertion {
 	}
 
 	/**
-	 * Permet de tester le caractère renseigné (non vide) d'une chaine.
-	 * @param str String Chaine non vide
+	 * Check if a string is not empty.
+	 * If not an generic exception is thrown.
+	 * 
+	 * @param str String that must be not empty 
 	 */
 	public static void checkArgNotEmpty(final String str) {
 		checkNotNull(str);
@@ -97,10 +98,10 @@ public final class Assertion {
 	}
 
 	/**
-	 * Permet de tester le caractère renseigné (non vide) d'une chaine.
-	 * @param str String Chaine non vide
-	 * @param msg Message d'erreur
-	 * @param params paramètres du message
+	 * Check if a string is not empty.
+	 * @param str String that must be not empty 
+	 * @param msg Error message 
+	 * @param params params of the message
 	 */
 	public static void checkArgNotEmpty(final String str, final String msg, final Object... params) {
 		checkNotNull(str, msg, params);
@@ -109,17 +110,13 @@ public final class Assertion {
 		}
 	}
 
-	//=========================================================================
-	//-----IllegalStateException
-	//=========================================================================
 	/**
-	 * Vérification d'un état.
-	 * S'utilise de maniére courante dans les calculs pour vérifer les états de variables au cours du traitement.
-	 * S'utilise comme postCondition
+	 * Check if a state is valid.
+	 * This assertion should be used inside a processing to check a step.
 	 *
-	 * @param test Expression booléenne qui doit être vérifiée
-	 * @param msg Message affiché si le test <b>n'est pas</b> vérifié.
-	 * @param params paramètres du message
+	 * @param test If the assertion succeeds
+	 * @param msg Error message 
+	 * @param params params of the message
 	 */
 	public static void checkState(final boolean test, final String msg, final Object... params) {
 		if (!test) {

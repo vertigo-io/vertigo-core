@@ -27,21 +27,20 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.Transaction;
 
 /**
- * Gestion d'une connexion à une Base Berkeley.
- * Permet de créer un writer et un reader géré par la transaction porteuse de la ressource.
+ * Manages a connection to a berkeley database.
  *
  * @author pchretien
  */
 final class BerkeleyResource implements VTransactionResource {
-	private Transaction transaction;
+	private final Transaction transaction;
 
 	/***
-	 * Constructeur.
-	 * @param database Base Berkeley DB.
+	 * Constructor.
+	 * @param environment Berkeley Environment.
 	 */
 	BerkeleyResource(final Environment environment) {
 		Assertion.checkNotNull(environment);
-		//======================================================================
+		//-----
 		try {
 			transaction = environment.beginTransaction(null, null);
 		} catch (final DatabaseException e) {
@@ -49,6 +48,9 @@ final class BerkeleyResource implements VTransactionResource {
 		}
 	}
 
+	/**
+	 * @return Berkeley transaction
+	 */
 	Transaction getBerkeleyTransaction() {
 		return transaction;
 	}
@@ -56,24 +58,18 @@ final class BerkeleyResource implements VTransactionResource {
 	/** {@inheritDoc} */
 	@Override
 	public void commit() throws Exception {
-		if (transaction != null) {
-			transaction.commit();
-		}
+		transaction.commit();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void rollback() throws Exception {
-		if (transaction != null) {
-			transaction.abort();
-		}
+		transaction.abort();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void release() {
-		if (transaction != null) {
-			transaction = null;
-		}
+		//
 	}
 }

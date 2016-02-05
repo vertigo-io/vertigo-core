@@ -35,6 +35,14 @@ import org.junit.Test;
  */
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
+	/** {@inheritDoc} */
+	@Override
+	protected void doSetUp() throws Exception {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			kvStoreManager.clear("flowers");
+		}
+	}
+
 	@Test
 	public void testInsertMass() {
 
@@ -106,6 +114,70 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		final Option<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
 		Assert.assertTrue("Rollback flower id 2 failed", flower2bis.isEmpty());
 
+	}
+
+	@Test
+	public void testTimeToLive() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final int nbFlowers = kvStoreManager.count("flowers");
+			Assert.assertEquals(0, nbFlowers);
+			//put a flower a t+0s (expire a T+10s)
+			final Flower tulip1 = buildFlower("tulip", 100);
+			kvStoreManager.put("flowers", "1", tulip1);
+			sleep(2);
+
+			//put a flower a t+2s (expire a T+12s)
+			final Flower tulip2 = buildFlower("tulip", 110);
+			kvStoreManager.put("flowers", "2", tulip2);
+			sleep(2);
+
+			//put a flower a t+4s (expire a T+14s)
+			final Flower tulip3 = buildFlower("tulip", 120);
+			kvStoreManager.put("flowers", "3", tulip3);
+			sleep(2);
+
+			//count after 3 inserts and T+6s
+			final long nbFlowers2 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
+			Assert.assertEquals(3, nbFlowers2);
+
+			sleep(3);
+
+			//find unexpired element
+			final Option<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
+			Assert.assertTrue(tulip1Load.isDefined());
+
+			//count after 3 inserts and T+9s
+			final long nbFlowers3 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
+			Assert.assertEquals(3, nbFlowers3);
+
+			sleep(2);
+
+			//count after 3 inserts and T+11s
+			final long nbFlowers4 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
+			Assert.assertEquals(2, nbFlowers4);
+			sleep(2);
+
+			//count after 3 inserts and T+13s
+			final long nbFlowers5 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
+			Assert.assertEquals(1, nbFlowers5);
+			sleep(2);
+
+			//count after 3 inserts and 15s
+			final long nbFlowers6 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
+			Assert.assertEquals(0, nbFlowers6);
+
+			//find expired element
+			final Option<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
+			Assert.assertTrue(tulip1Reload.isEmpty());
+		}
+	}
+
+	private void sleep(final int timeSecond) {
+		try {
+			Thread.sleep(timeSecond * 1000);
+		} catch (final InterruptedException e) {
+			//nothing
+		}
 	}
 
 }

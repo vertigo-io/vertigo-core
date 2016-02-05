@@ -18,12 +18,12 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * WebService manager.
  * @author npiedeloup
  */
-public interface WebServiceManager extends Component {
+public interface WebServiceManager extends Manager {
 	//
 }

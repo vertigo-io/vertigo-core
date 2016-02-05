@@ -40,15 +40,15 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private final String sequencePrefix;
 
 	/**
-	 * Constructeur.
-	 * @param name Store name
-	 * @param connectionName Connection name
-	 * @param sequencePrefix Configuration du préfixe de la séquence
-	 * @param taskManager TaskManager
+	 * Constructor.
+	 * @param nameOption the name of the dataSpace (optional)
+	 * @param connectionName the name of the connection
+	 * @param sequencePrefix Prefix used for sequences
+	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public OracleDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(name, connectionName, taskManager);
+	public OracleDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;
@@ -77,7 +77,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final DtField pk = dtDefinition.getIdField().get();
+		final DtField idField = dtDefinition.getIdField().get();
 
 		final String tableName = getTableName(dtDefinition);
 		final StringBuilder request = new StringBuilder("begin insert into ").append(tableName).append(" ( ");
@@ -95,7 +95,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
 				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+				if (dtField.getType() != DtField.FieldType.ID) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
 					request.append(getSequenceName(dtDefinition)).append(".nextval ");
@@ -103,7 +103,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 				separator = ", ";
 			}
 		}
-		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;").append("end;");
+		request.append(") returning ").append(idField.getName()).append(" into %DTO.").append(idField.getName()).append("%;").append("end;");
 		return request.toString();
 	}
 

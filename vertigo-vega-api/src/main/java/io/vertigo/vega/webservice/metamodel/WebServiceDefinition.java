@@ -141,126 +141,126 @@ public final class WebServiceDefinition implements Definition {
 	 * @return name
 	 */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * @return path
 	 */
-	public final String getPath() {
+	public String getPath() {
 		return path;
 	}
 
 	/**
 	 * @return verb
 	 */
-	public final Verb getVerb() {
+	public Verb getVerb() {
 		return verb;
 	}
 
 	/**
 	 * @return acceptType
 	 */
-	public final String getAcceptType() {
+	public String getAcceptType() {
 		return acceptType;
 	}
 
 	/**
 	 * @return method
 	 */
-	public final Method getMethod() {
+	public Method getMethod() {
 		return method;
 	}
 
 	/**
 	 * @return needSession
 	 */
-	public final boolean isNeedSession() {
+	public boolean isNeedSession() {
 		return needSession;
 	}
 
 	/**
 	 * @return sessionInvalidate
 	 */
-	public final boolean isSessionInvalidate() {
+	public boolean isSessionInvalidate() {
 		return sessionInvalidate;
 	}
 
 	/**
 	 * @return needAuthentification
 	 */
-	public final boolean isNeedAuthentification() {
+	public boolean isNeedAuthentification() {
 		return needAuthentification;
 	}
 
 	/**
 	 * @return accessTokenPublish
 	 */
-	public final boolean isAccessTokenPublish() {
+	public boolean isAccessTokenPublish() {
 		return accessTokenPublish;
 	}
 
 	/**
 	 * @return accessTokenMandatory
 	 */
-	public final boolean isAccessTokenMandatory() {
+	public boolean isAccessTokenMandatory() {
 		return accessTokenMandatory;
 	}
 
 	/**
 	 * @return accessTokenConsume
 	 */
-	public final boolean isAccessTokenConsume() {
+	public boolean isAccessTokenConsume() {
 		return accessTokenConsume;
 	}
 
 	/**
 	 * @return serverSideSave
 	 */
-	public final boolean isServerSideSave() {
+	public boolean isServerSideSave() {
 		return serverSideSave;
 	}
 
 	/**
 	 * @return autoSortAndPagination
 	 */
-	public final boolean isAutoSortAndPagination() {
+	public boolean isAutoSortAndPagination() {
 		return autoSortAndPagination;
 	}
 
 	/**
 	 * @return includedFields
 	 */
-	public final Set<String> getIncludedFields() {
+	public Set<String> getIncludedFields() {
 		return includedFields;
 	}
 
 	/**
 	 * @return excludedFields
 	 */
-	public final Set<String> getExcludedFields() {
+	public Set<String> getExcludedFields() {
 		return excludedFields;
 	}
 
 	/**
 	 * @return webServiceParams
 	 */
-	public final List<WebServiceParam> getWebServiceParams() {
+	public List<WebServiceParam> getWebServiceParams() {
 		return webServiceParams;
 	}
 
 	/**
 	 * @return doc
 	 */
-	public final String getDoc() {
+	public String getDoc() {
 		return doc;
 	}
 
 	/**
 	 * @return corsProtected
 	 */
-	public final boolean isCorsProtected() {
+	public boolean isCorsProtected() {
 		return corsProtected;
 	}
 

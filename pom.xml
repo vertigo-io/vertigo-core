@@ -25,7 +25,7 @@ limitations under the License. -->
 	</parent>
 	
 	<artifactId>vertigo-reactor</artifactId>
-	<name>vertigo-reactor</name>
+	<name>vertigo</name>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -41,23 +41,11 @@ limitations under the License. -->
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
 		
-		<module>vertigo-quarto-api</module>
-		<module>vertigo-quarto-impl</module>
-		
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
 
-		<module>vertigo-studio</module>
-
 		<module>vertigo-tempo-api</module>
-		<module>vertigo-tempo-impl</module>
-
-		<module>vertigo-struts2</module>
-		
-
-		<module>vertigo-shell</module>
-		
-		<module>vertigo-bundle</module>
+		<module>vertigo-tempo-impl</module>		
 	</modules>
 
 	<scm>

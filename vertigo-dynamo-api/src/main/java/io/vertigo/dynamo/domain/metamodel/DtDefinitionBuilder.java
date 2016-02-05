@@ -28,17 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder de définition.
- * Tout DT doit avoir un nom en majuscule préfixé par DT_.
- * Pour obtenir la DtDéfinition utiliser la méthode build();
- *
- * Le DtDefinitionsBuilder doit être flushée.
+ * This class must be used to build a DtDefinition.
+ * 
+ * Each dtDefinition must have a name following this pattern DT_XXX_YYYY  
  *
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
-
-	public static final String DEFAULT_STORE_NAME = "main";
+	public static final String DEFAULT_DATA_SPACE = "main";
 
 	private static class MessageKeyImpl implements MessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
@@ -63,11 +60,11 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private boolean myPersistent;
 	private boolean myDynamic;
 	private final List<DtField> myFields = new ArrayList<>();
-	private String myStoreName;
+	private String myDataSpace;
 
 	/**
-	 * Constructeur.
-	 * @param name Definition name
+	 * Constructor.
+	 * @param name the name of the dtDefinition
 	 */
 	public DtDefinitionBuilder(final String name) {
 		Assertion.checkArgNotEmpty(name);
@@ -76,18 +73,21 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * @param packageName Definition's package (nullable)
+	 * Sets packageName 
+	 * @param packageName the name of the package (nullable)
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withPackageName(final String packageName) {
-		//packageName peut être null
+		//the packageName can be null
 		//-----
 		myPackageName = packageName;
 		return this;
 	}
 
 	/**
-	 * @param stereotype Definition's stereotype
+	 * Sets the stereotype of the dtDefinition.
+	 * 
+	 * @param stereotype the stereotype of the dtDefinition
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
@@ -98,7 +98,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * @param persistent Definition's persistence
+	 * Sets the persistent state.
+	 * 
+	 * @param persistent if the dtDefinition is persisted
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withPersistent(final boolean persistent) {
@@ -107,7 +109,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * @param dynamic If this definition is dynamic
+	 * Sets the dynamic state.
+	 * 
+	 * @param dynamic if this dtDefinition is dynamic
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withDynamic(final boolean dynamic) {
@@ -116,15 +120,16 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * Ajout d'une FK.
-	 * @param fieldName Nom du champ
-	 * @param fkDtDefinitionName Definition référencée
-	 * @param label Libellé du champ
-	 * @param domain Domain fonctionnel
-	 * @param required Si la FK est obligatoire
-	 * @param sort si champ de tri
-	 * @param display si champ de display
-	 * @return Builder
+	 * Adds a field linked to another dtDefinition (aka foreign key).
+	 * 
+	 * @param fieldName the name of the field
+	 * @param fkDtDefinitionName the name of the linked definition
+	 * @param label the label of the field
+	 * @param domain the domain of the field
+	 * @param required if the field is required
+	 * @param sort if this field is use for sorting
+	 * @param display if this field is use for display
+	 * @return this builder
 	 */
 	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
@@ -136,14 +141,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * Ajout d'un champs calculé.
-	 * @param domain Domaine associé au champ
-	 * @param fieldName Nom du champ
-	 * @param label Libellé du champ
-	 * @param computedExpression Expression du champs calculé
-	 * @param sort si champ de tri
-	 * @param display si champ de display
-	 * @return Builder
+	 * Adds a computed field.
+	 * 
+	 * @param fieldName the name of the field
+	 * @param label the label of the field
+	 * @param domain the domain of the field
+	 * @param computedExpression the expression use to compute the field
+	 * @param sort if this field is use for sorting
+	 * @param display if this field is use for display
+	 * @return this builder
 	 */
 	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
@@ -153,31 +159,34 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * Ajout d'un champ de type DATA.
-	 * @param fieldName Nom du champ
-	 * @param domain Domaine associé au champ
-	 * @param label Libellé du champ
-	 * @param required Si le champ est obligatoire
-	 * @param persistent Si le champ est persisté
-	 * @param sort If this field is use for sorting
-	 * @param display If this field is use for display
-	 * @return Builder
+	 * Adds a common data field.
+	 * 
+	 * @param fieldName the name of the field
+	 * @param domain the domain of the field
+	 * @param label the label of the field
+	 * @param required if the field is required
+	 * @param persistent if the fiels is persistent
+	 * @param sort if this field is use for sorting
+	 * @param display if this field is use for display
+	 * @return this builder
 	 */
 	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean required, final boolean persistent, final boolean sort, final boolean display) {
-		//le champ  est dynamic SSI la définition est dynamique
+		//the field is dynamic if and only if the dtDefinition is dynamic
 		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
 		return this;
 	}
 
 	/**
-	 * Ajout d'un champ de type ID.
-	 * @param fieldName Nom du champ
-	 * @param domain Domaine associé au champ
-	 * @param label Libellé du champ
-	 * @param sort If this field is use for sorting
-	 * @param display If this field is use for display
-	 * @return Builder
+	 * Adds an ID field.
+	 * This field is required.
+	 * 
+	 * @param fieldName the name of the field
+	 * @param domain the domain of the field
+	 * @param label the label of the field
+	 * @param sort if this field is use for sorting
+	 * @param display if this field is use for display
+	 * @return this builder
 	 */
 	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
 		//le champ ID est tjrs required
@@ -185,7 +194,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = myPersistent;
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(fieldName, DtField.FieldType.PRIMARY_KEY, domain, label, required, persistent, null, null, myDynamic, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
 		return this;
 	}
@@ -207,23 +216,23 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * @param storeName Definition's storeName (nullable)
+	 * Sets the dataSpace to which the dtDefinition belongs.
+	 * @param dataSpace the dataSpace to which the DtDefinition is mapped.
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder withStoreName(final String storeName) {
-		//storeName may be null
+	public DtDefinitionBuilder withDataSpace(final String dataSpace) {
+		//the dataSpace can be null, in this case the default dataSpace will be chosen.
 		//-----
-		myStoreName = storeName;
+		myDataSpace = dataSpace;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
-		Assertion.checkState(dtDefinition == null, "build already done");
+		Assertion.checkState(dtDefinition == null, "build() already executed");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myStoreName == null ? DEFAULT_STORE_NAME : myStoreName);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
 		return dtDefinition;
 	}
-
 }

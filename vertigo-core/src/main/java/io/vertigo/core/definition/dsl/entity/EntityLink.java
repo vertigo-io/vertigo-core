@@ -20,9 +20,17 @@ package io.vertigo.core.definition.dsl.entity;
 
 import io.vertigo.lang.Assertion;
 
+/**
+ * Defines a link to an entity.
+ * @author pchretien
+ */
 public final class EntityLink implements EntityType {
 	private final Entity entity;
 
+	/**
+	 * Constructor 	
+	 * @param entity the entity that is linked
+	 */
 	public EntityLink(final Entity entity) {
 		Assertion.checkNotNull(entity);
 		Assertion.checkState(!entity.isPrimitive(), "A primitive entity such as {0} can't be linked", entity);
@@ -30,6 +38,9 @@ public final class EntityLink implements EntityType {
 		this.entity = entity;
 	}
 
+	/**
+	 * @return the linked entity
+	 */
 	public Entity getEntity() {
 		return entity;
 	}

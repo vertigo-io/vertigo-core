@@ -11,7 +11,8 @@
 
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+	
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
 		</component>
@@ -20,18 +21,16 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
-
-		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	</module>
 
 	<module name="vertigo-dynamo">
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
 				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
 				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
 			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="name" value="otherBase" />
 				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
 				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
@@ -40,8 +39,8 @@
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
-		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" initClass="io.vertigo.dynamo.store.StoreManagerInitializer">
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
@@ -69,4 +68,8 @@
 			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
 		</definitions>
 	</module>
+	
+	<init>
+		<initializer class="io.vertigo.dynamo.store.StoreManagerInitializer"/>
+	</init>
 </config>

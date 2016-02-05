@@ -29,6 +29,7 @@ import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
@@ -44,6 +45,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
+ * The componentLoader class defines the way to load the components defined in the config into componentSpace.
  * @author pchretien
  */
 public final class ComponentLoader {
@@ -53,6 +55,7 @@ public final class ComponentLoader {
 
 	/**
 	 * Constructor.
+	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
 	@Inject
 	public ComponentLoader(final AopPlugin aopPlugin) {
@@ -61,6 +64,13 @@ public final class ComponentLoader {
 		this.aopPlugin = aopPlugin;
 	}
 
+	/**
+	 * Add all the components defined in the moduleConfigs into the componentSpace. 
+	 * 
+	 * @param componentSpace Space where all the components are stored
+	 * @param paramManager Manager of params
+	 * @param moduleConfigs Configs of modules to add.
+	 */
 	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
@@ -69,6 +79,11 @@ public final class ComponentLoader {
 		}
 	}
 
+	/**
+	 * Add all the components depending on the boot module.
+	 * @param componentSpace Space where all the components are stored
+	 * @param bootModuleConfig Configs of the boot module
+	 */
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
 		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
@@ -113,14 +128,11 @@ public final class ComponentLoader {
 		final ComponentProxyContainer componentContainer = new ComponentProxyContainer(componentSpace);
 
 		for (final String id : ids) {
-			//final String currentComponentId;
-			//final Option<ComponentInitializer> currentComponentInitializer;
-			//final Object currentComponent;
 			if (componentConfigById.containsKey(id)) {
 				//Si il s'agit d'un composant
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Object component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
+				final Component component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			} else {
@@ -144,9 +156,9 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+	private void doInjectAspects(final Container container, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
+		for (final Aspect aspect : findAspects(container, moduleConfig)) {
 			registerAspect(aspect);
 		}
 	}
@@ -179,9 +191,9 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private Object createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Component createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 1. An instance is created
-		final Object instance = createComponent(paramManagerOption, componentContainer, componentConfig);
+		final Component instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
@@ -191,7 +203,7 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private Object createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private static Component createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		//		if (componentConfig.isElastic()) {
 		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		//		}
@@ -199,7 +211,7 @@ public final class ComponentLoader {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
-		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
+		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
 		return component;
 	}

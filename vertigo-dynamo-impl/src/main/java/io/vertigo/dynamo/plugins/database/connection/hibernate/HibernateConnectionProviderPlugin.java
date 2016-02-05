@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -52,10 +52,15 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	 * @param name ConnectionProvider's name
 	 * @param dataBaseName Nom du type de base de données
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
+	 * @param transactionManager Transaction manager
 	 */
 	@Inject
-	public HibernateConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
-		super(name.getOrElse(SqlDataBaseManagerImpl.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+	public HibernateConnectionProviderPlugin(
+			@Named("name") final Option<String> name,
+			@Named("persistenceUnit") final String persistenceUnit,
+			@Named("dataBaseName") final String dataBaseName,
+			final VTransactionManager transactionManager) {
+		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		Assertion.checkNotNull(transactionManager);
 		//-----
@@ -64,8 +69,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 
 	/**
 	 * @param em EntityManager
-	 * @return KConnection sous jacente
-	 * @throws SQLException Exception sql
+	 * @return the sqlConnection
 	 */
 	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
@@ -80,7 +84,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 
 	/** {@inheritDoc} */
 	@Override
-	public final SqlConnection obtainConnection() throws SQLException {
+	public SqlConnection obtainConnection() throws SQLException {
 		final EntityManager em = obtainJpaResource().getEntityManager();
 		return obtainWrappedConnection(em);
 	}

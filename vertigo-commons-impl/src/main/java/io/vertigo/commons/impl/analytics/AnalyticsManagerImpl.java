@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.analytics;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -27,18 +28,22 @@ import io.vertigo.lang.Option;
 import javax.inject.Inject;
 
 /**
- * Implémentation de référence des fonctions Analytiques.
+ * Main analytics manager implementation.
  *
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
-	private final AnalyticsAgent analyticsAgent;
+	private final AnalyticsAgentPlugin analyticsAgent;
 
+	/**
+	 * Constructor.
+	 * @param agentPlugin Agent plugin used to report execution.
+	 */
 	@Inject
 	public AnalyticsManagerImpl(final Option<AnalyticsAgentPlugin> agentPlugin) {
 		Assertion.checkNotNull(agentPlugin);
 		//-----
-		this.analyticsAgent = agentPlugin.getOrElse(new DummyAgentPlugin());
+		analyticsAgent = agentPlugin.getOrElse(new DummyAgentPlugin());
 	}
 
 	/** {@inheritDoc} */
@@ -46,4 +51,17 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	public AnalyticsAgent getAgent() {
 		return analyticsAgent;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AnalyticsTracker startLogTracker(final String processType, final String category) {
+		return new AnalyticsTrackerImpl(processType, category, false, analyticsAgent);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AnalyticsTracker startTracker(final String processType, final String category) {
+		return new AnalyticsTrackerImpl(processType, category, true, analyticsAgent);
+	}
+
 }

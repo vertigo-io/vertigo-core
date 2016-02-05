@@ -24,12 +24,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation à poser sur les méthodes des implémentations des services.
+ * This annotation must be inserted on methods and classes that need a transaction.
+ * 
+ * For example, this annotation should be placed on each class that is a service.
  * 
  * @author prahmoune
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Transactional {
-	// vide
+	// 
 }

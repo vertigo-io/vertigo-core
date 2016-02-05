@@ -49,7 +49,7 @@ public interface DynamicDefinition {
 	/**
 	 * Retourne la valeur d'une (méta) propriété liée au domaine, champ, dtDéfinition...
 	 * null si cette propriété n'existe pas
-	 * @param property Propriété
+	 * @param fieldName Name of the field 
 	 * @return valeur de la propriété
 	 */
 	Object getPropertyValue(String fieldName);

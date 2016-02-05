@@ -22,6 +22,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ import java.util.List;
  * @param <I> Indexed data's type
  * @author npiedeloup, pchretien
  */
-public interface SearchLoader<K extends KeyConcept, I extends DtObject> {
+public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends Component {
 	/**
 	 * Load all data from a list of keyConcepts.
 	 * @param uris List of keyConcept uris
@@ -44,5 +46,5 @@ public interface SearchLoader<K extends KeyConcept, I extends DtObject> {
 	 * @param keyConceptClass keyConcept class
 	 * @return Iterator of chunk
 	 */
-	Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass);
+	Iterable<Option<SearchChunk<K>>> chunk(final Class<K> keyConceptClass);
 }

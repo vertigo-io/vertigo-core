@@ -134,13 +134,13 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		Collections.sort(fields, new FieldComparator());
 		for (final Field field : fields) {
 			//On regarde si il s'agit d'un champ
-			parseFieldAnnotations(dynamicModelRepository, field, dtDefinitionBuilder);
+			parseFieldAnnotations(field, dtDefinitionBuilder);
 		}
 
 		final Method[] methods = clazz.getMethods();
 		Arrays.sort(methods, new MethodComparator());
 		for (final Method method : methods) {
-			parseMethodAnnotations(dynamicModelRepository, method, dtDefinitionBuilder);
+			parseMethodAnnotations(method, dtDefinitionBuilder);
 			//On regarde si il s'agit d'une associations
 			parseAssociationDefinition(dynamicModelRepository, method, packageName);
 		}
@@ -220,22 +220,22 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static void parseFieldAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Field field, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseFieldAnnotations(final Field field, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : field.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom du champ
 				final String fieldName = createFieldName(field);
-				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
+				parseAnnotation(fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
 
-	private static void parseMethodAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Method method, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseMethodAnnotations(final Method method, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom de la méthode
 				final String fieldName = createFieldName(method);
-				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
+				parseAnnotation(fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private static void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
+	private static void parseAnnotation(final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
@@ -254,8 +254,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				.build();
 
 		switch (type) {
-			case PRIMARY_KEY:
-				dtDefinition.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			case ID:
+				dtDefinition.addDefinition(DomainGrammar.ID, dtField);
 				break;
 			case DATA:
 				dtDefinition.addDefinition("field", dtField);

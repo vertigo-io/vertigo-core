@@ -32,7 +32,8 @@ public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 	private final ResourceManager resourceManager;
 
 	/**
-	 * Constructeur
+	 * Constructor.
+	 * @param resourceManager the resourceManager
 	 */
 	@Inject
 	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {
@@ -50,7 +51,7 @@ public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository) {
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelRepository) {
 		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
 		xmlSecurityLoader.load();
 	}

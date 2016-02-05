@@ -19,51 +19,54 @@
 package io.vertigo.commons.daemon;
 
 /**
- *
+ * Some execution stats about registered daemons.
+ *  
  * @author pchretien
  */
 public interface DaemonStat {
 
-	/** Daemon execution status. */
+	/** 
+	 * Daemon execution status. 
+	 */
 	enum Status {
-		/** Waiting next execution. */
+		/** Waiting for next execution. */
 		pending,
-		/** Currently running. */
+		/** Running. */
 		running;
 	}
 
 	/**
-	 * @return Daemon name
+	 * @return the daemon name
 	 */
 	String getDaemonName();
 
 	/**
-	 * @return Daemon name
+	 * @return the daemon class
 	 */
 	Class<? extends Daemon> getDaemonClass();
 
 	/**
-	 * @return Daemon period
+	 * @return the demon period
 	 */
 	int getDaemonPeriodInSecond();
 
 	/**
-	 * @return Nb exec for daemon start
+	 * @return the number of executions since the daemon started
 	 */
 	long getCount();
 
 	/**
-	 * @return Nb successes for daemon start
+	 * @return the number of successes since the daemon started
 	 */
 	long getSuccesses();
 
 	/**
-	 * @return Nb failures for daemon start
+	 * @return the number of failures since the daemon started
 	 */
 	long getFailures();
 
 	/**
-	 * @return Current status
+	 * @return the current status
 	 */
 	Status getStatus();
 

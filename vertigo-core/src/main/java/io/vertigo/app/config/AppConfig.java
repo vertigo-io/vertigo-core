@@ -26,7 +26,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/*
+/**
+ * The AppConfig class defines the config.
+ * The app is built from this config. 
+ *  
+ * AppConfig must be created using the AppConfigBuilder. 
  * @author pchretien
  */
 public final class AppConfig {
@@ -47,27 +51,38 @@ public final class AppConfig {
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
 	}
 
+	/**
+	 * 
+	 * @return the config of the boot
+	 */
 	public BootConfig getBootConfig() {
 		return bootConfig;
 	}
 
 	/**
-	 * @return Liste des configurations de modules
+	 * @return list of the configs of the modules
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
 	}
 
-	public List<ComponentInitializerConfig> getComponentInitialzerConfigs() {
+	/**
+	 * 
+	 * @return List of the config of the initializers 
+	 */
+	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
 		return initializers;
 	}
 
 	//=========================================================================
 	//======================Gestion des affichages=============================
 	//=========================================================================
+	/**
+	 * Allows to print a short description of the config.
+	 * @param out Out
+	 */
 	public void print(final PrintStream out) {
 		Assertion.checkNotNull(out);
-		// ---Affichage du logo et des modules---
 		Logo.printCredits(out);
 		doPrint(out);
 	}
@@ -77,7 +92,6 @@ public final class AppConfig {
 	 * @param out Flux de sortie des informations
 	 */
 	private void doPrint(final PrintStream out) {
-		//	out.println("+-------------------------+------------------------+----------------------------------------------+");
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
 		printComponent(out, "modules", "components", null);
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
@@ -92,7 +106,7 @@ public final class AppConfig {
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		String moduleName = moduleConfig.getName();
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			printComponent(out, moduleName, componentConfig.getImplClass().getSimpleName(), null);
+			printComponent(out, moduleName, (componentConfig.getApiClass().isDefined() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
 			moduleName = null;
 		}
 	}

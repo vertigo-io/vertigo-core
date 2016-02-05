@@ -30,8 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Paramétrage de l'application.
- *
+ * The pluginConfigBuilder defines the configuration of a plugin.
+ * A plugin is a way to parameterize a component.
+  *
  * @author npiedeloup, pchretien
  */
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
@@ -41,6 +42,11 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final String pluginType;
 	private Integer myIndex;
 
+	/**
+	 * Constructor.
+	 * @param moduleConfigBuilder the builder of the module
+	 * @param pluginImplClass impl of the plugin
+	 */
 	PluginConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
@@ -54,12 +60,13 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		myIndex = index;
 	}
 
-	public String getPluginType() {
+	String getPluginType() {
 		return pluginType;
 	}
 
 	/*
-	 * On cherche le type du plugin qui correspond à la première interface ou classe qui hérite de Plugin.
+	 * We are looking for the type of the plugin.
+	 * This type is the first objector interface that inherits from then 'plugin' interface. 
 	 */
 	private static String getType(final Class<? extends Plugin> pluginImplClass) {
 		//We are seeking the first and unique Object that extends Plugin.
@@ -70,7 +77,8 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 				return DIAnnotationUtil.buildId(intf);
 			}
 		}
-		//On n'a pas trouvé dans les interfaces on attaque les classes en cherchant une classe qui implémente Plugin
+		//We have found nothing among the interfaces.
+		//we are drilling the classes to look for a class that inherits the plugin.
 		for (Class currentClass = pluginImplClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
 			if (Arrays.asList(currentClass.getInterfaces()).contains(Plugin.class)) {
 				return DIAnnotationUtil.buildId(currentClass);
@@ -79,6 +87,12 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + pluginImplClass);
 	}
 
+	/**
+	 * Adds a param to this plugin.
+	 * @param paramName the name of the param
+	 * @param paramValue the value of the param
+	 * @return this builder
+	 */
 	public PluginConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
 		//paramValue can be null
@@ -89,6 +103,10 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		return this;
 	}
 
+	/**
+	 * Ends this config of plugin.
+	 * @return the builder of the module 
+	 */
 	public ModuleConfigBuilder endPlugin() {
 		return myModuleConfigBuilder;
 	}
@@ -99,7 +117,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		Assertion.checkNotNull(myIndex, "an index is required to define an id");
 		//-----
 		//By Convention only the second plugin of a defined type is tagged by its index #nn
-		final String pluginId = (myIndex == 0) ? pluginType : pluginType + "#" + myIndex;
+		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
 		return new PluginConfig(pluginId, myPluginImplClass, myParams);
 	}
 }

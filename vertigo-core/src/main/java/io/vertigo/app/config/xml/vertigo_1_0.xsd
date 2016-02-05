@@ -26,6 +26,7 @@
 	    	<xs:sequence>
 	        	<xs:element name="boot" type="bootType" minOccurs="0" maxOccurs="1"/>
 	        	<xs:element name="module" type="moduleType" minOccurs="0" maxOccurs="unbounded"/>
+	        	<xs:element name="init" type="initType" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
   	</xs:element>
@@ -62,7 +63,6 @@
 		</xs:sequence>
  		<xs:attribute name="name" type="xs:string" use="required"/>
  		<xs:attribute name="api" type="xs:boolean" use="optional"/>
- 		<xs:attribute name="inheritance" type="xs:string" use="optional"/>
 	</xs:complexType>
 	
 	<xs:complexType name="componentType">
@@ -72,7 +72,6 @@
 		</xs:sequence>
 		<xs:attribute name="api" type="xs:string" use="optional"/>
 		<xs:attribute name="class" type="xs:string" use="required"/>
-		<xs:attribute name="initClass" type="xs:string" use="optional"/>
 	</xs:complexType>
 
 	<xs:complexType name="pluginType">
@@ -91,4 +90,15 @@
 	<xs:complexType name="aspectType">
 	  	<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>
+	
+	<xs:complexType name="initType">
+		<xs:sequence>
+			<xs:element name="initializer" type="initializerType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="initializerType">
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+	
 </xs:schema>

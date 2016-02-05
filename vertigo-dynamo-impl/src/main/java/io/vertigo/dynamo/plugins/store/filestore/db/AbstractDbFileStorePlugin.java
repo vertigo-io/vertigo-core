@@ -118,10 +118,10 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param dto DtObject
 	 * @param value Pk value
 	 */
-	protected static void setPkValue(final DtObject dto, final Object value) {
+	protected static void setIdValue(final DtObject dto, final Object value) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getIdField().get();
-		dtField.getDataAccessor().setValue(dto, value);
+		final DtField idField = dtDefinition.getIdField().get();
+		idField.getDataAccessor().setValue(dto, value);
 	}
 
 	/**

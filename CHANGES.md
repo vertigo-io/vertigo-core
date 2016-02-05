@@ -1,10 +1,87 @@
 Version history
 ===============
 
-Running 0.9.1-SNAPSHOT
+Running 0.9.2-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 0.9.1 - 2016/02/05
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-090-to-091)
+
+__In Bold__ : Potential compatibility problems 
+* __[All] Refactored all (injectable) components must extend Component__
+* [All] Code cleaning, refactoring and documenting
+* [All] Removed components inheritance from managers.xml (all components are component !!)
+* [All] Updated FormatterException to a checkedException
+* [Commons] Refactored Analytics, added AnalyticsTracker to replace module listeners
+* [Commons] Refactored Daemon
+* [Commons] Refactored cache to use CacheConfig instead of Modifiable interface	
+* [Commons] Renamed EventManager to EventBusManager
+* [Core] Added ListBuilder
+* [Core] Added init phase in the config files
+* [Core] Changed msg for missing params
+* [Core] Fixed #45 : Better message
+* [Core] Fixed ClassPathResourceResolver should catch exception when can't resolve ressource
+* [Core] Removed modifiable interface
+* [Dynamo] Added VFile creator from URL
+* [Dynamo] Added after and before commit functions for Transactional operations
+* [Dynamo] Added count(collection) and clear(collection) on KvStore
+* [Dynamo] Added deamon to remove old tempFiles
+* [Dynamo] Added error message for Search syntax
+* [Dynamo] Added escape char \ in DslListFilterBuilder
+* [Dynamo] Added escape or remove reserved word, query operation (issue #49)
+* [Dynamo] Added Search Facet order alpha or count
+* [Dynamo] Added listFilter better detection of reserved keywords
+* [Dynamo] Added support ][ and {} in DtListPatternFilterUtil for range
+* [Dynamo] Added support to elasticsearch copyTo fields
+* [Dynamo] Changed KvStore collection spliter to accept spaces
+* [Dynamo] Changed ListFilterBuilderTest; Test and fix #47 and #46
+* [Dynamo] Changed Tx resources to keep them ordered
+* [Dynamo] Continued #38 : better hashcode on Criteria 
+* [Dynamo] Created component interfaces StoreServices for Dao, Pao; Manager; SearchLoader
+* [Dynamo] Fixed #47 : Bad ES Request for 1 character value
+* [Dynamo] Fixed #50 : Bad ES request in case of Exact search query. Detect " " and ( ) and remove added ( )
+* [Dynamo] Fixed #53 : FilterCriteriaBuilder withPrefix(DtFieldName,...) is incoherent with withPrefix(String,...)
+* [Dynamo] Fixed Dsl syntax of multi fields
+* [Dynamo] Fixed Facets type other than String (recreate index mandatory)
+* [Dynamo] Fixed ListFilterBuilder when user query is one char
+* [Dynamo] Fixed Search Loader when no data
+* [Dynamo] Fixed reindex task when more than 1000 uri are dirty
+* [Dynamo] Merged BerkeleyKvStore and DelayedBerkeleyKvStore
+* [Dynamo] Refactored CollectionManager sort : use DtListState
+* [Dynamo] Refactored lockForUpdate to readForUpdate, match main usage (as #48)
+* [Dynamo] Removed Low Transactional resources priority
+* [Dynamo] Renamed C"R"UD, so load=>read
+* [Dynamo] Renamed PRIMARY_KEY by ID on DtDefinition (and pk to id)
+* [Dynamo] Renamed fileStorePlugin remove to delete (CRUD : D => delete)
+* [Dynamo] Renamed storeName to collection for KvStore and dataSpace for other store
+* [Dynamo] Replaced MockConnectionProvider by a C3p0 impl
+* [Dynamo] Search : Added dummy FacetDefinition when create dummy cluster
+* [Dynamo] Updated elasticSearch to 1.7.5
+* [Dynamo] changed count from long to int
+* [Dynamo] refactored RAMLuceneindex
+* [Studio] Fixed #32 : Add generated route js useable by Focus
+* [Studio] Refactored lockForUpdate to readForUpdate, match main usage (as #48)
+* [Studio] Renamed PRIMARY_KEY by ID on DtDefinition (and pk to id)
+* __[Vega] Fixed Date / DateTime diff in Json ( supposed date if 00:00:00.000 )__
+* [Vega] Added ClassPathWebServiceLoaderPlugin with org.reflections
+* [Vega] Added UiSelectedFacets with toListFilters for facetted search api 
+* [Vega] Added support optional parameters in SwaggerApi
+* [Vega] Added support to ( ) in routes (WARN : don't work in swagger yet, don't use it)
+* [Vega] Added toDtListState on UiListState
+* [Vega] Added unwrap WrappedException before return httpcode
+* [Vega] Default sort asc
+* [Vega] Fixed #52
+* [Vega] Fixed SwaggerAPI
+* [Vega] Fixed contentType while preflight Cors request
+* [Vega] Fixed requests not mark as succeeded
+* [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2			
+* [Vega] Removed nullLast and ignorecase in DtListState
+* [Vega] Renamed WebServiceIntrospector to WebServiceScanner
+* [Vega] VSecurityException is a checkedException (POJEX)
+
 
 Release 0.9.0 - 2015/11/20
 ----------------------

@@ -22,12 +22,18 @@ import io.vertigo.lang.Assertion;
 
 /**
  * LogConfile is the unique point used to configure Log.
+ * Logas are configured using log4J.
+ * So you have to define the place to read the log4j config file.
  *
  * @author pchretien
  */
 public final class LogConfig {
 	private final String fileName;
 
+	/**
+	 * Constructor.
+	 * @param fileName the log4J.xml fileName
+	 */
 	public LogConfig(final String fileName) {
 		Assertion.checkArgNotEmpty(fileName);
 		//-----
@@ -35,6 +41,9 @@ public final class LogConfig {
 
 	}
 
+	/**
+	 * @return the log4J.xml fileName
+	 */
 	public String getFileName() {
 		return fileName;
 	}

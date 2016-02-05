@@ -20,7 +20,6 @@ package io.vertigo.commons.cache;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Modifiable;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -37,7 +36,8 @@ import org.junit.Test;
  */
 public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	private static final String KEY = "ma clé";
-	private static final String CONTEXT = CacheManagerInitializer.CONTEXT;
+	private static final String CONTEXT = CacheManagerInitializer.CONTEXT_EDITABLE;
+	private static final String CONTEXT_RO = CacheManagerInitializer.CONTEXT_READONLY;
 
 	@Inject
 	private CacheManager cacheManager;
@@ -138,27 +138,27 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		final int nbRow = 10000;
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			final Serializable value = new ElementUnmodifiable();
-			cacheManager.put(CONTEXT, key, value);
+			final Serializable value = new Element();
+			cacheManager.put(CONTEXT_RO, key, value);
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
@@ -242,8 +242,8 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		public void run() {
 			while (System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
-				final Serializable value = new ElementUnmodifiable();
-				lCacheManager.put(CONTEXT, key, value);
+				final Serializable value = new Element();
+				lCacheManager.put(CONTEXT_RO, key, value);
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
@@ -270,15 +270,22 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	//		}
 	//	}
 
+	/**
+	 * Test element.
+	 */
 	static class Element implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private static long count;
 		private final long i;
 
+		/**
+		 * Constructor.
+		 */
 		Element() {
 			i = count++;
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public boolean equals(final Object obj) {
 			if (obj instanceof Element) {
@@ -287,23 +294,11 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			return false;
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public int hashCode() {
 			return String.valueOf(i).hashCode();
 		}
 
-	}
-
-	private static final class ElementUnmodifiable extends Element implements Modifiable {
-		private static final long serialVersionUID = -2196291926056658304L;
-
-		ElementUnmodifiable() {
-			super();
-		}
-
-		@Override
-		public boolean isModifiable() {
-			return false;
-		}
 	}
 }

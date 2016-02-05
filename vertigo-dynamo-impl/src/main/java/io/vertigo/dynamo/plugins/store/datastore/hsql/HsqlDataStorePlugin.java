@@ -61,15 +61,15 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private final String sequencePrefix;
 
 	/**
-	 * Constructeur.
-	 * @param name store name
-	 * @param connectionName Connection name
-	 * @param taskManager Manager des Tasks
-	 * @param sequencePrefix Configuration du préfixe de la séquence
+	 * Constructor.
+	 * @param nameOption the name of the dataSpace (optional)
+	 * @param connectionName the name of the connection
+	 * @param taskManager the taskManager
+	 * @param sequencePrefix the prefix used by the sequence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("name") final Option<String> name, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
-		super(name, connectionName, taskManager);
+	public HsqlDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;
@@ -88,7 +88,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withStore(getName())
+				.withDataSpace(getDataSpace())
 				.withRequest(request.toString())
 				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
 				.build();
@@ -113,8 +113,8 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	@Override
 	protected void preparePrimaryKey(final DtObject dto) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField pk = dtDefinition.getIdField().get();
-		pk.getDataAccessor().setValue(dto, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));
+		final DtField idField = dtDefinition.getIdField().get();
+		idField.getDataAccessor().setValue(dto, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));
 		//executeInsert(transaction, dto);
 	}
 

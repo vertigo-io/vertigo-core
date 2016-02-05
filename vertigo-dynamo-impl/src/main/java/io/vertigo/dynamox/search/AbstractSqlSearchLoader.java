@@ -73,27 +73,27 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
-		final DtField pk = dtDefinition.getIdField().get();
-		final String pkFieldName = pk.getName();
-		final String request = getNextIdsSqlQuery(tableName, pkFieldName);
+		final DtField idField = dtDefinition.getIdField().get();
+		final String idFieldName = idField.getName();
+		final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withStore(dtDefinition.getStoreName())
+				.withDataSpace(dtDefinition.getDataSpace())
 				.withRequest(request)
-				.addInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(idFieldName, idField.getDomain(), true)
 				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(pkFieldName, lastId)
+				.addValue(idFieldName, lastId)
 				.build();
 
 		final DtList<S> resultDtc = taskManager
 				.execute(task)
 				.getResult();
 
-		final List<URI<S>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+		final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
 		for (final S dto : resultDtc) {
 			uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
 		}
@@ -116,9 +116,19 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append("and (").append(sqlQueryFilter).append(")");
 		}
-		request.append(" order by " + pkFieldName + " ASC")
-				.append(" limit " + SEARCH_CHUNK_SIZE); //Attention : non compatible avec toutes les bases
+		request.append(" order by " + pkFieldName + " ASC");
+		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
+	}
+
+	/**
+	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
+	 * @param request Buffer de la requete
+	 * @param maxRows Nombre de lignes max
+	 */
+	protected void appendMaxRows(final StringBuilder request, final Integer maxRows) {
+		request.append(" limit ").append(maxRows.toString()); //Attention : non compatible avec toutes les bases
+		//sur Oracle, il faut ajouter "select * from ("+request+") where rownum <= "+mawRows
 	}
 
 	/**
@@ -129,6 +139,9 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		return "";
 	}
 
+	/**
+	 * @return TaskManager
+	 */
 	protected final TaskManager getTaskManager() {
 		return taskManager;
 	}

@@ -44,7 +44,7 @@ public final class VxFileInfo implements DtObject {
 	private io.vertigo.dynamo.domain.metamodel.DataStream fileData;
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Identifiant'.
 	 * @return Long filId <b>Obligatoire</b>
 	 */
@@ -52,13 +52,13 @@ public final class VxFileInfo implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_VX_FILE_INFO")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "FIL_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "Identifiant")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "Identifiant")
 	public Long getFilId() {
 		return filId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Identifiant'.
 	 * @param filId Long <b>Obligatoire</b>
 	 */

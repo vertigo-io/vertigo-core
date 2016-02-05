@@ -77,7 +77,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
@@ -123,7 +123,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		checkReadonly();
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
@@ -145,7 +145,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		setValue(fileInfoDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));
 
 		if (fileInfo.getURI() != null) {
-			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 		}
 		return fileInfoDto;
 	}

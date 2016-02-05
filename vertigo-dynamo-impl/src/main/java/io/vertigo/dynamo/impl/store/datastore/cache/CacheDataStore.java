@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
+import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -27,10 +29,11 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -44,25 +47,31 @@ public final class CacheDataStore {
 	private final LogicalDataStoreConfig logicalStoreConfig;
 
 	/**
-	 * Constructeur.
-	 * @param dataStoreConfig Configuration
+	 * Constructor.
+	 * @param storeManager Store manager
+	 * @param eventBusManager Event bus manager
+	 * @param dataStoreConfig Data store configuration
 	 */
-	public CacheDataStore(final DataStoreConfigImpl dataStoreConfig) {
+	public CacheDataStore(final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
-		storeManager = dataStoreConfig.getStoreManager();
+		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeCreate, cacheClearEventListener);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeUpdate, cacheClearEventListener);
-		dataStoreConfig.getEventsManager().register(StoreManager.FiredEvent.storeDelete, cacheClearEventListener);
+		eventBusManager.register(this);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 
+	/**
+	 * @param <D> Dt type
+	 * @param uri Element uri
+	 * @return Element by uri
+	 */
 	public <D extends DtObject> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
@@ -77,7 +86,7 @@ public final class CacheDataStore {
 				dto = this.<D> reload(dtDefinition, uri);
 			}
 		} else {
-			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
+			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
 		}
 		return dto;
 	}
@@ -91,7 +100,7 @@ public final class CacheDataStore {
 			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
+			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
 			cacheDataStoreConfig.getDataCache().putDtObject(dto);
 		}
 		return dto;
@@ -104,11 +113,12 @@ public final class CacheDataStore {
 		if (listUri instanceof DtListURIForMasterData) {
 			dtc = loadMDList((DtListURIForMasterData) listUri);
 		} else if (listUri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
 		} else if (listUri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) listUri);
+			final DtListURIForCriteria<D> castedListUri = DtListURIForCriteria.class.cast(listUri);
+			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, castedListUri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -127,10 +137,15 @@ public final class CacheDataStore {
 		//1.on filtre
 		//2.on trie
 		return storeManager.getMasterDataConfig().getFilter(uri)
-				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
+				.sort(uri.getDtDefinition().getSortField().get().getName(), false)
 				.apply(unFilteredDtc);
 	}
 
+	/**
+	 * @param <D> Dt type
+	 * @param uri List uri
+	 * @return List of this uri
+	 */
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
@@ -160,11 +175,21 @@ public final class CacheDataStore {
 	}
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
-	public void clearCache(final DtDefinition dtDefinition) {
+	private void clearCache(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
+	}
+
+	/**
+	 * Receive store event.
+	 * @param event Store event
+	 */
+	@EventSuscriber
+	public void onEvent(final StoreEvent event) {
+		final URI<?> uri = event.getUri();
+		clearCache(uri.getDefinition());
 	}
 }

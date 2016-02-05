@@ -21,11 +21,25 @@ package io.vertigo.core.component.aop;
 import java.lang.reflect.Method;
 
 /**
- * Abstraction de l'invocation d'une méthode.
+ * This class allows you to define the behavior of an aspect on a specific method.
+ * 
+ * You can add some code before running the method, or after.
+ * You can catch some exceptions and log them...
+ * You can ever change the result of a method.
+ *  
  * @author pchretien
  */
 public interface AspectMethodInvocation {
+	/**
+	 * @return method concerned by the advice 
+	 */
 	Method getMethod();
 
+	/**
+	 * 
+	 * @param args Args 
+	 * @return the result of the method.
+	 * @throws Exception the exception thrown by the aop method 
+	 */
 	Object proceed(Object[] args) throws Exception;
 }

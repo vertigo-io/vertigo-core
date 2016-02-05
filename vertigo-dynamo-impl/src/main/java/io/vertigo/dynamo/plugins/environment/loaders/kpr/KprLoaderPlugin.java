@@ -36,8 +36,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Parser d'un fichier KPR.
- * Un fichier KPR est un fichier qui liste l'ensemble des fichiers KSP du projet.
+ * Parses a KPR file.
+ * A KPR file is a project file that lists all the KSP files.
  *
  * @author pchretien
  */
@@ -49,9 +49,9 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	private final String charset;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
-	 * @param resourceManager manager de ressources
+	 * @param resourceManager the resourceManager
 	 * @param encoding encoding des KSP
 	 */
 	@Inject
@@ -117,9 +117,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		return kspFiles;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public String getType() {
 		return "kpr";

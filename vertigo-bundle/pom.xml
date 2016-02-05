@@ -123,10 +123,18 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>1.7.3</version>
+			<version>1.7.5</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 
+		<!-- Connections Pool -->
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
+		</dependency>
+		
 		<!-- Distributed -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -161,6 +169,13 @@
 			<version>3.1.0</version>
 			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
+			<optional>true</optional> <!-- For ClassPathWebServiceLoaderPlugin -->	
 		</dependency>
 		
 		<!--FileManager-->

@@ -22,9 +22,9 @@ import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -45,9 +45,10 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
 	private int top = 250;
-	private SortState sortState;
 
 	private final IndexPlugin indexPlugin;
+	private Boolean sortDesc;
+	private String sortFieldName;
 
 	/**
 	 * Constructor.
@@ -78,14 +79,14 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	/**
 	 * Set sort directives.
 	 * Some directives can't be realized.
-	 * @param fieldName Nom du champ concerné par le tri
-	 * @param desc Si tri descendant
-	 * @param nullLast Si les objets Null sont en derniers
+	 * @param fieldName Sort field name
+	 * @param desc if sort desc
 	 */
-	public void sort(final String fieldName, final boolean desc, final boolean nullLast) {
-		Assertion.checkState(sortState == null, "SortState was already set on this processor : {0}. Only one is supported.", sortState);
+	public void sort(final String fieldName, final boolean desc) {
+		Assertion.checkState(sortFieldName == null, "sortFieldName was already set on this processor : {0}. Only one is supported.", sortFieldName);
 		//-----
-		sortState = new SortState(fieldName, desc, nullLast, true);
+		sortFieldName = fieldName;
+		sortDesc = desc;
 	}
 
 	/**
@@ -102,7 +103,8 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	 * @param end last index
 	 */
 	public void filterSubList(final int start, final int end) {
-		Assertion.checkArgument(start >= 0 && start <= end, "IndexOutOfBoundException, le subList n''est pas possible avec les index passés (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end)); //condition tirée de la javadoc de subList sur java.util.List
+		Assertion.checkArgument(start >= 0, "IndexOutOfBoundException, le start du subList doit être positif (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end));
+		Assertion.checkArgument(start < end, "IndexOutOfBoundException, le start du subList doit être inférieur au end (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end));
 		//-----
 		skip = start;
 		top = end - start;
@@ -113,6 +115,7 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
 		//-----
-		return indexPlugin.getCollection(keywords, searchedFields, listFilters, skip, top, Option.option(sortState), Option.<DtField> none(), dtc);
+		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
+		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> none(), dtc);
 	}
 }

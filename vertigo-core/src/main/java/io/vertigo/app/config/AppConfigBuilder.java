@@ -20,8 +20,11 @@ package io.vertigo.app.config;
 
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.param.ParamManagerImpl;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Configuration.
+ * The AppConfigBuilder builder allows you to create an AppConfig using a fluent, simple style .
  *
  * @author npiedeloup, pchretien
  */
@@ -41,39 +44,56 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final ModuleConfigBuilder myBootModuleConfigBuilder;
 	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
 
+	/**
+	 * Constructor.
+	 */
 	public AppConfigBuilder() {
 		myBootConfigBuilder = new BootConfigBuilder(this);
 		myBootModuleConfigBuilder =
 				myBootConfigBuilder.beginBootModule().withNoAPI()
-						.addComponent(ResourceManager.class)
-						.addComponent(ParamManager.class)
+						.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+						.addComponent(ParamManager.class, ParamManagerImpl.class)
 						.addComponent(DefinitionLoader.class);
 	}
 
-	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
-
+	/**
+	 * Opens the boot module.
+	 * There is exactly one BootConfig per AppConfig.  
+	 * 
+	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @return this builder
+	 */
 	public ModuleConfigBuilder beginBootModule(final String locales) {
 		return myBootModuleConfigBuilder
-				.beginComponent(LocaleManager.class)
+				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 				.addParam("locales", locales)
 				.endComponent();
 	}
 
+	/**
+	 * Opens the bootConfigBuilder.
+	 * @return this builder
+	 */
 	public BootConfigBuilder beginBoot() {
 		return myBootConfigBuilder;
 	}
 
-	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitialierClass) {
-		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitialierClass));
+	/**
+	 * Adds an initializer to the current config.
+	 * @param componentInitializerClass Class of the initializer
+	 * @return this builder
+	 */
+	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitializerClass) {
+		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitializerClass));
 		return this;
 	}
 
 	/**
-	 * Permet d'externaliser le processus de chargement dans un système dédié
-	 * @param moduleConfigs Liste des modules
-	 * @return Builder
+	 * Adds a list of ModuleConfig.
+	 * @param moduleConfigs list of moduleConfig
+	 * @return this builder
 	 */
-	public AppConfigBuilder withModules(final List<ModuleConfig> moduleConfigs) {
+	public AppConfigBuilder addAllModules(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		myModuleConfigs.addAll(moduleConfigs);
@@ -81,14 +101,19 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Ajout d'un module
-	 * @param name Nom du module
-	 * @return Builder
+	 * Adds a new module.
+	 * @param name Name of the module
+	 * @return the module builder 
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
 		return new ModuleConfigBuilder(this, name);
 	}
 
+	/**
+	 * Begins a new module defined by its features.
+	 * @param featuresClass Type of features
+	 * @return the module builder 
+	 */
 	public <F extends Features> F beginModule(final Class<F> featuresClass) {
 		final F features = ClassUtil.newInstance(featuresClass);
 		features.init(this);
@@ -96,8 +121,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Update the 'already set' componentSpaceConfigBuilder and return it.
-	 * @return ComponentSpaceConfigBuilder
+	 * Builds the appConfig.
+	 * @return appConfig.
 	 */
 	@Override
 	public AppConfig build() {

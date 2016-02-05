@@ -1,3 +1,0 @@
-dependencies:
- override: 
-  - mvn source:jar install -DskipTests 

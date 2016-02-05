@@ -38,28 +38,27 @@ import io.vertigo.lang.WrappedException;
  * @author  fconstantin, pchretien
  */
 public final class TaskAttribute {
-	/** Nom de l'attribut. */
+	/** Name of the attribute. */
 	private final String name;
 
 	/**
-	 * Sens de l'attribut IN
-	 * Sens de l'attribut OUT = !IN
+	 * true : input 
+	 * false: output
 	 */
 	private final boolean in;
 
-	/** Domaine de l'attribut. */
 	private final Domain domain;
 
-	/** Attribut obligatoire (not_nul) ou non. */
+	/** if the attribute is required. */
 	private final boolean required;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 *
-	 * @param attributeName Nom de l'attribut
-	 * @param domain Domaine de l'attribut
-	 * @param required Null ?
-	 * @param in in=SET ; !in= GET
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param required if the attribute is required
+	 * @param in if the attribute is an input (else output)
 	 */
 	TaskAttribute(final String attributeName, final Domain domain, final boolean required, final boolean in) {
 		Assertion.checkNotNull(attributeName);
@@ -72,37 +71,35 @@ public final class TaskAttribute {
 	}
 
 	/**
-	 * @return Nom de l'attribut.
+	 * @return the name of the attribute.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Retourne si la propriété est non null
-	 * (Obligatoire en entrée ou en sortie selon le paramètre inout).
+	 * Returns if the attribute is required in input or in output.
 	 *
-	 * @return Si la propriété est non null
+	 * @return if the attributre is required
 	 */
 	public boolean isRequired() {
 		return required;
 	}
 
 	/**
-	 * VRAI si l'attribut est entrant
-	 * FAUX si l'attribut est créé par la tache donc sortant.
-	 * <br/>
+	 * Returns true if the attribute is an input.
+	 * 
 	 * Conformément à java, les objets complexes peuvent être modifiés par la tache.
 	 * Par exemple, tel DTO se verra doté d'une clé primaire lors de son premier
 	 * enregistrement en base de données.
-	 * @return Si l'attribut est entrant.
+	 * @return If the attribute is an input.
 	 */
 	public boolean isIn() {
 		return in;
 	}
 
 	/**
-	 * @return Domain Domaine de l'attribut
+	 * @return Domain the domain
 	 */
 	public Domain getDomain() {
 		return domain;

@@ -48,7 +48,7 @@ public final class EAXmiHandler extends DefaultHandler {
 
 	// La première phase définit les objets, les attributs, les associations
 	// La deuxième phase remplit les propriétés des objets.
-	private boolean phase2 = false;
+	private boolean phase2;
 
 	private static final Logger LOG = Logger.getLogger(EAXmiHandler.class);
 
@@ -56,7 +56,7 @@ public final class EAXmiHandler extends DefaultHandler {
 		Assertion.checkNotNull(map);
 		//-----
 		this.map = map;
-		this.currentObject = EAXmiObject.createdRoot();
+		currentObject = EAXmiObject.createdRoot();
 	}
 
 	/** {@inheritDoc} */

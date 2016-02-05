@@ -25,13 +25,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Builder des entities.
+ * This class provides a common way to build an entity.
  *
  * @author pchretien
  */
 public final class EntityBuilder implements Builder<Entity> {
 	/**
-	 * Nom de la metadefinition (Type de la définition).
+	 * Name of the entity.
 	 */
 	private final String name;
 
@@ -41,10 +41,8 @@ public final class EntityBuilder implements Builder<Entity> {
 	private final Set<EntityField> fields;
 
 	/**
-	 * Constructeur de la MetaDefinition
-	 * Une instance de MetaDefinition correspond à une classe -ou une interface- de Definition
-	 * (Exemple : Classe Service).
-	 * @param name Classe représentant l'instance métaDéfinition
+	 * Constructor.
+	 * @param name Name of the entity
 	 */
 	public EntityBuilder(final String name) {
 		Assertion.checkNotNull(name);
@@ -55,42 +53,51 @@ public final class EntityBuilder implements Builder<Entity> {
 	}
 
 	/**
-	 * Ajout d'un attribut.
-	 * @param fieldName Nom
-	 * @param type Entité référencée
-	 * @param required Si l'attribut est obligatoire
+	 * Add a new simple field.
+	 * @param fieldName Name of the field 
+	 * @param type Type of the field 
+	 * @param required If the field is required
+	 * @return this builder
 	 */
 	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean required) {
 		return addField(fieldName, type, false, required);
 	}
 
 	/**
-	 * Ajout d'un attribut multiple.
-	 * @param fieldName Nom
-	 * @param entity Entité référencée
-	 * @param required Si l'attribut est obligatoire
+	 * Add a new multi field defined by an entity.
+	 * @param fieldName Name of the field 
+	 * @param entity Type of the field 
+	 * @param required If the field is required
+	 * @return this builder
 	 */
 	public EntityBuilder addFields(final String fieldName, final Entity entity, final boolean required) {
 		//Only Entities may be multiple
 		return addField(fieldName, entity, true, required);
 	}
 
-	public EntityBuilder addFields(final String fieldName, final EntityLink entity, final boolean required) {
+	/**
+	 * Add a new multi field defined by an entity.
+	 * @param fieldName Name of the field 
+	 * @param entityLink Type of the field 
+	 * @param required If the field is required
+	 * @return this builder
+	 */
+	public EntityBuilder addFields(final String fieldName, final EntityLink entityLink, final boolean required) {
 		//Only Entities or  Link may be multiple
-		return addField(fieldName, entity, true, required);
+		return addField(fieldName, entityLink, true, required);
 	}
 
 	/**
-	 * Ajout d'un attribut.
-	 * @param fieldName Nom
-	 * @param entity Entité référencée
-	 * @param multiple Si il y a plusieurs entités référencées
-	 * @param required Si l'attribut est obligatoire
+	 * Add a new field.
+	 * @param fieldName Name of the field 
+	 * @param type Type of the field 
+	 * @param multiple If the field can have many values
+	 * @param required If the field is required
+	 * @return this builder
 	 */
 	private EntityBuilder addField(final String fieldName, final EntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(type);
-		//On vérifie que le nom du champ n'est pas déjà utilisé.
 		//-----
 		final EntityField field = new EntityField(fieldName, type, multiple, required);
 		//-----

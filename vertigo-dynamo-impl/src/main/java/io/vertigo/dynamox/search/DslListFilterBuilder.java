@@ -30,6 +30,7 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
+import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
@@ -80,8 +81,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static final String USER_QUERY_KEYWORD = "query";
 
 	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
-
-	private static final String QUERY_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s";
+	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s)(or|and)(?=\\s))";
+	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
 
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
@@ -177,19 +178,22 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static boolean mayUseBlock(final String trimedExpression) {
 		//on place des parenthèses s'il n'y a pas encore de block, ou des caractères interdits
 		return !trimedExpression.matches("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
-				&& trimedExpression.matches(".*[" + QUERY_RESERVERD_PATTERN + "].*"); //contains any reserved char +-!*?~^=>< or any spaces
+				&& trimedExpression.matches(".*" + NEED_BLOCK_PATTERN + ".*"); //contains any reserved char +-!*?~^=>< or any spaces
 
 	}
 
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
+			final boolean isAlreadyBlock = (preExpression.endsWith("\"") && postExpression.startsWith("\""))
+					|| (preExpression.endsWith("(") && postExpression.startsWith(")"));
 			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
 			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
-					.append(useBlock ? "(" : "")
+					.append(!isAlreadyBlock && useBlock ? "(" : "")
 					.append(trimedQuery[1])
-					.append(useBlock ? ")" : "")
+					.append(!isAlreadyBlock && useBlock ? ")" : "")
 					.append(postExpression);
+			subQuery.setLength(0);
 		}
 	}
 
@@ -221,7 +225,17 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private void appendQuery(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
 		if (dslQuery instanceof DslTermQuery) {
-			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
+			if (expressionDefinition.getMultiField().isDefined() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
+				//recherche compact => on boucle les fields puis les user terms
+				appendCompactFields(query, expressionDefinition, expressionQuery, dslQuery);
+			} else {
+				//recherche multifield => on boucle les users terms puis les fields
+				appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
+			}
+			if (expressionDefinition.getMultiField().isDefined()) {
+				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
+				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), false, expressionQuery);
+			}
 		} else if (dslQuery instanceof DslBlockQuery) {
 			appendMultiQuery(expressionQuery, (DslBlockQuery) dslQuery, expressionDefinition, query);
 		} else if (dslQuery instanceof DslRangeQuery) {
@@ -231,20 +245,45 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		}
 	}
 
+	private void appendCompactFields(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
+		String expressionSep = "";
+		final DslMultiField dslMultiField = expressionDefinition.getMultiField().get();
+		for (final DslField dslField : dslMultiField.getFields()) {
+			final DslField monoFieldDefinition = new DslField(
+					firstNotEmpty(dslField.getPreBody(), dslMultiField.getPreBody()),
+					dslField.getFieldName(),
+					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
+			final DslExpression monoFieldExpressionDefinition = new DslExpression(
+					concat(expressionSep, expressionDefinition.getPreBody()),
+					Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+					dslQuery,
+					expressionDefinition.getPostBody());
+			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
+			flushExpressionToQuery(query, monoFieldExpressionDefinition, expressionQuery);
+			expressionSep = " ";
+		}
+	}
+
 	private void appendTermQuery(final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition, final StringBuilder outExpressionQuery) {
 		final String fieldName = dslQuery.getTermField();
 		final Object value;
 		if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
-			value = cleanUserCriteria(myCriteria.toString());
+			value = cleanUserCriteria(myCriteria.toString(), dslQuery.getEscapeMode());
 		} else {
-			value = cleanUserCriteria(BeanUtil.getValue(myCriteria, fieldName));
+			value = cleanUserCriteria(BeanUtil.getValue(myCriteria, fieldName), dslQuery.getEscapeMode());
 		}
 		appendTermQueryWithValue(value, query, dslQuery, expressionDefinition, outExpressionQuery);
 	}
 
-	private static <O> O cleanUserCriteria(final O value) {
-		if (value instanceof String && ((String) value).trim().isEmpty()) { //so not null too
-			return (O) "*";
+	private static <O> O cleanUserCriteria(final O value, final EscapeMode escapeMode) {
+		if (value instanceof String) {
+			if (((String) value).trim().isEmpty()) { //so not null too
+				return (O) "*";
+			} else if (escapeMode == EscapeMode.escape) {
+				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, "\\\\$0");
+			} else if (escapeMode == EscapeMode.remove) {
+				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, ""); //par on retire le deuxième espace
+			}
 		}
 		return value;
 	}
@@ -352,7 +391,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 				appendMultiExpression(query, monoFieldMultiExpressionDefinition);
 				query.append(userCriteria.getPostMissingPart());
-
 			} else {
 				criteriaOnDefinitionField++;
 				query.append(userCriteria.getPreMissingPart());

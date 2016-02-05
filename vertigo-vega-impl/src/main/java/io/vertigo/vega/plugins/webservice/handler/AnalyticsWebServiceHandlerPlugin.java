@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -37,7 +37,6 @@ import spark.Response;
  */
 public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
-	private final String ANALYTICS_TYPE = "WebService";
 	private final AnalyticsManager analyticsManager;
 
 	/**
@@ -61,19 +60,16 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 	@Override
 	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final WebServiceDefinition webServiceDefinition = webServiceCallContext.getWebServiceDefinition();
-		final AnalyticsAgent analyticsAgent = analyticsManager.getAgent();
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
-		analyticsAgent.startProcess(ANALYTICS_TYPE, webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath());
-		try {
-			analyticsAgent.setMeasure("ME_ERROR_PCT", 0d);
-			return chain.handle(request, response, webServiceCallContext);
-		} catch (final VSecurityException e) {
-			analyticsAgent.setMeasure("ME_ERROR_PCT", 100d);
-			analyticsAgent.addMetaData("ME_ERROR_HEADER", String.valueOf(e));
-			throw e;
-		} finally {
-			analyticsAgent.stopProcess();
-
+		try (final AnalyticsTracker tracker = analyticsManager.startTracker("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath())) {
+			try {
+				final Object result = chain.handle(request, response, webServiceCallContext);
+				tracker.markAsSucceeded();
+				return result;
+			} catch (final RuntimeException e) {
+				tracker.addMetaData("errorHeader", String.valueOf(e));
+				throw e;
+			}
 		}
 	}
 }

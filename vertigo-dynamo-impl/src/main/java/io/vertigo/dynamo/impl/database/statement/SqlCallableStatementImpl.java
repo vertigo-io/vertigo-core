@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
 import io.vertigo.lang.Assertion;
 
 import java.sql.CallableStatement;
@@ -40,8 +40,8 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 	 * @param connection Connexion SQL
 	 * @param procName Nom de la procédure
 	 */
-	public SqlCallableStatementImpl(final SqlStatementHandler statementHandler, final SqlDataBaseListener dataBaseListener, final SqlConnection connection, final String procName) {
-		super(statementHandler, dataBaseListener, connection, procName, false);
+	public SqlCallableStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String procName) {
+		super(statementHandler, analyticsManager, connection, procName, false);
 	}
 
 	//====================================================================

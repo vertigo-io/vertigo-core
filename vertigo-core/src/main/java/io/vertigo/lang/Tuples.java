@@ -31,20 +31,20 @@ public final class Tuples {
 
 	/**
 	 * Tuple with 2 Objects.
-	 * @param <T1> Type one
-	 * @param <T2> Type two
+	 * @param <A> Type one
+	 * @param <B> Type two
 	 */
-	public static final class Tuple2<T1, T2> {
-		private final T1 val1;
-		private final T2 val2;
+	public static final class Tuple2<A, B> {
+		private final A val1;
+		private final B val2;
 
 		/**
-		* Create e new instance of Tuple2.
+		* Creates e new instance of Tuple2.
 		*
 		* @param val1 Value 1.
 		* @param val2 Value 2.
 		*/
-		public Tuple2(final T1 val1, final T2 val2) {
+		public Tuple2(final A val1, final B val2) {
 			this.val1 = val1;
 			this.val2 = val2;
 		}
@@ -52,14 +52,14 @@ public final class Tuples {
 		/**
 		* @return  Value#1.
 		*/
-		public T1 getVal1() {
+		public A getVal1() {
 			return val1;
 		}
 
 		/**
 		* @return  Value#2.
 		 */
-		public T2 getVal2() {
+		public B getVal2() {
 			return val2;
 		}
 
@@ -85,23 +85,23 @@ public final class Tuples {
 
 	/**
 	 * Tuple with 3 Objects.
-	 * @param <T1> Type one
-	 * @param <T2> Type two
-	 * @param <T3> Type three
+	 * @param <A> Type one
+	 * @param <B> Type two
+	 * @param <C> Type three
 	 */
-	public static final class Tuple3<T1, T2, T3> {
-		private final T1 val1;
-		private final T2 val2;
-		private final T3 val3;
+	public static final class Tuple3<A, B, C> {
+		private final A val1;
+		private final B val2;
+		private final C val3;
 
 		/**
-		* Create e new instance of Tuple3.
+		* Creates a new instance of Tuple3.
 		*
 		* @param val1 Value 1.
 		* @param val2 Value 2.
 		* @param val3 Value 3.
 		*/
-		public Tuple3(final T1 val1, final T2 val2, final T3 val3) {
+		public Tuple3(final A val1, final B val2, final C val3) {
 			this.val1 = val1;
 			this.val2 = val2;
 			this.val3 = val3;
@@ -110,21 +110,21 @@ public final class Tuples {
 		/**
 		* @return  Value#1.
 		*/
-		public T1 getVal1() {
+		public A getVal1() {
 			return val1;
 		}
 
 		/**
 		* @return  Value#2.
 		 */
-		public T2 getVal2() {
+		public B getVal2() {
 			return val2;
 		}
 
 		/**
 		* @return  Value#3.
 		 */
-		public T3 getVal3() {
+		public C getVal3() {
 			return val3;
 		}
 

@@ -123,58 +123,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mail);
 		//-----
 		try {
-			final Properties properties = new Properties();
-			properties.put("mail.store.protocol", mailStoreProtocol);
-			properties.put("mail.host", mailHost);
-			if (mailPort.isDefined()) {
-				properties.put("mail.port", mailPort.get());
-			}
-			properties.put("mail.debug", "false");
-			Session session;
-			if (mailLogin.isDefined()) {
-				properties.put("mail.smtp.ssl.trust", mailHost);
-				properties.put("mail.smtp.starttls.enable", true);
-				properties.put("mail.smtp.auth", "true");
-
-				final String username = mailLogin.get();
-				final String password = mailPassword.get();
-				session = Session.getInstance(properties, new javax.mail.Authenticator() {
-
-					@Override
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
-					}
-				});
-			} else {
-				session = Session.getDefaultInstance(properties);
-			}
-			session.setDebug(false);
-			final Message message = new MimeMessage(session);
-			setFromAddress(mail.getFrom(), message);
-			if (mail.getReplyTo() != null) {
-				setReplyToAddress(mail.getReplyTo(), message);
-			}
-			setToAddress(mail.getToList(), message);
-			setCcAddress(mail.getCcList(), message);
-			if (mail.getSubject() != null) {
-				message.setSubject(MimeUtility.encodeWord(mail.getSubject(), CHARSET_USED, "Q"));
-			}
-			message.setHeader("X-Mailer", "Java");
-			message.setSentDate(new Date());
-			final List<VFile> attachments = mail.getAttachments();
-			if (attachments.isEmpty()) {
-				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
-			} else {
-				final Multipart multiPart = new MimeMultipart();
-				final BodyPart bodyPart = new MimeBodyPart();
-				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
-				multiPart.addBodyPart(bodyPart);
-				for (final VFile vFile : attachments) {
-					final BodyPart bodyFile = createBodyFile(vFile);
-					multiPart.addBodyPart(bodyFile);
-				}
-				message.setContent(multiPart);
-			}
+			final Session session = createSession();
+			final Message message = createMessage(mail, session);
 			Transport.send(message);
 			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
@@ -182,6 +132,66 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final UnsupportedEncodingException e) {
 			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
+	}
+
+	private Message createMessage(final Mail mail, final Session session) throws MessagingException, UnsupportedEncodingException {
+		final Message message = new MimeMessage(session);
+		setFromAddress(mail.getFrom(), message);
+		if (mail.getReplyTo() != null) {
+			setReplyToAddress(mail.getReplyTo(), message);
+		}
+		setToAddress(mail.getToList(), message);
+		setCcAddress(mail.getCcList(), message);
+		if (mail.getSubject() != null) {
+			message.setSubject(MimeUtility.encodeWord(mail.getSubject(), CHARSET_USED, "Q"));
+		}
+		message.setHeader("X-Mailer", "Java");
+		message.setSentDate(new Date());
+		final List<VFile> attachments = mail.getAttachments();
+		if (attachments.isEmpty()) {
+			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
+		} else {
+			final Multipart multiPart = new MimeMultipart();
+			final BodyPart bodyPart = new MimeBodyPart();
+			setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
+			multiPart.addBodyPart(bodyPart);
+			for (final VFile vFile : attachments) {
+				final BodyPart bodyFile = createBodyFile(vFile);
+				multiPart.addBodyPart(bodyFile);
+			}
+			message.setContent(multiPart);
+		}
+		return message;
+	}
+
+	private Session createSession() {
+		final Properties properties = new Properties();
+		properties.put("mail.store.protocol", mailStoreProtocol);
+		properties.put("mail.host", mailHost);
+		if (mailPort.isDefined()) {
+			properties.put("mail.port", mailPort.get());
+		}
+		properties.put("mail.debug", "false");
+		final Session session;
+		if (mailLogin.isDefined()) {
+			properties.put("mail.smtp.ssl.trust", mailHost);
+			properties.put("mail.smtp.starttls.enable", true);
+			properties.put("mail.smtp.auth", "true");
+
+			final String username = mailLogin.get();
+			final String password = mailPassword.get();
+			session = Session.getInstance(properties, new javax.mail.Authenticator() {
+
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
+		} else {
+			session = Session.getDefaultInstance(properties);
+		}
+		session.setDebug(false);
+		return session;
 	}
 
 	private static void setFromAddress(final String from, final Message message) throws MessagingException {

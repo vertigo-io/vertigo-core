@@ -58,11 +58,11 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	/**
 	 * Hit counter by userKey.
 	 */
-	final ConcurrentMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
 	/**
 	 * Last window start time.
 	 */
-	long lastRateLimitResetTime = System.currentTimeMillis();
+	private long lastRateLimitResetTime = System.currentTimeMillis();
 
 	/**
 	 * Constructor.

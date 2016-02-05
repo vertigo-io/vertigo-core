@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.datasource;
 
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -52,8 +52,11 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	 * @param dataSource URL de la dataSource JNDI
 	 */
 	@Inject
-	public DataSourceConnectionProviderPlugin(@Named("name") final Option<String> name, @Named("classname") final String dataBaseName, @Named("source") final String dataSource) {
-		super(name.getOrElse(SqlDataBaseManagerImpl.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
+	public DataSourceConnectionProviderPlugin(
+			@Named("name") final Option<String> name,
+			@Named("classname") final String dataBaseName,
+			@Named("source") final String dataSource) {
+		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
 		Assertion.checkNotNull(dataSource);
 		//-----
 		// Initialisation de la source de données

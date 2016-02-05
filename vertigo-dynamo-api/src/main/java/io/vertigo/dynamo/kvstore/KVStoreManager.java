@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.kvstore;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -38,12 +38,57 @@ import java.util.List;
 *
 * @author pchretien
 */
-public interface KVStoreManager extends Component {
-	void put(String collection, String id, Object object);
+public interface KVStoreManager extends Manager {
 
+	/**
+	 * @param collection the collection
+	 * @return count of elements into collection
+	 */
+	int count(String collection);
+
+	/**
+	 * Adds an element defined by an id in a collection.
+	 *
+	 * @param collection the collection
+	 * @param id the id
+	 * @param element the element
+	 */
+	void put(String collection, String id, Object element);
+
+	/**
+	 * Removes an element defined by an id from a collection.
+	 * If the collection doesn't contain the is then a exception is thrown.
+	 *
+	 * @param collection the collection
+	 * @param id the id
+	 */
 	void remove(String collection, String id);
 
+	/**
+	 * Removes all elements from a collection.
+	 * @param collection the collection
+	 */
+	void clear(String collection);
+
+	/**
+	 * Finds the optional element to which the id is mapped inside the specified collection.
+	 * If the element is not found then an empty option is returned.
+	 * @param <C> Element type
+	 * @param collection the collection
+	 * @param id the id
+	 * @param clazz the type of the searched element
+	 * @return the option
+	 */
 	<C> Option<C> find(String collection, String id, Class<C> clazz);
 
+	/**
+	 * Finds all elements contained inside the specified collection.	 *
+	 * @param <C> Element type
+	 * @param collection the collection
+	 * @param skip the position from which the elements are returned
+	 * @param limit the limit size of elements
+	 * @param clazz the type of the searched element
+	 * @return the list of elements.
+	 */
 	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);
 }

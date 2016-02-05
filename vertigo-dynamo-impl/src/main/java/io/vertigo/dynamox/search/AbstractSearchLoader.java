@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -46,29 +47,28 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		return new Iterable<SearchChunk<K>>() {
+	public Iterable<Option<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
+		return new Iterable<Option<SearchChunk<K>>>() {
 
-			private final Iterator<SearchChunk<K>> iterator = new Iterator<SearchChunk<K>>() {
+			private final Iterator<Option<SearchChunk<K>>> iterator = new Iterator<Option<SearchChunk<K>>>() {
 
 				private SearchChunk<K> current = null;
-				private SearchChunk<K> next = null;
 
 				/** {@inheritDoc} */
 				@Override
 				public boolean hasNext() {
-					return hasNextChunk(keyConceptClass, next);
+					//hasNext at first call, and if current.allUri wasn't empty
+					return current == null || !current.getAllURIs().isEmpty();
 				}
 
 				/** {@inheritDoc} */
 				@Override
-				public SearchChunk<K> next() {
-					if (next == null) {
-						next = nextChunk(keyConceptClass, null);
+				public Option<SearchChunk<K>> next() {
+					current = nextChunk(keyConceptClass, current);
+					if (current.getAllURIs().isEmpty()) {
+						return Option.none();
 					}
-					current = next;
-					next = nextChunk(keyConceptClass, current);
-					return current;
+					return Option.some(current);
 				}
 
 				/** {@inheritDoc} */
@@ -80,7 +80,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 			/** {@inheritDoc} */
 			@Override
-			public Iterator<SearchChunk<K>> iterator() {
+			public Iterator<Option<SearchChunk<K>>> iterator() {
 				return iterator;
 			}
 		};
@@ -112,10 +112,10 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	protected abstract List<URI<K>> loadNextURI(final P lastId, final DtDefinition dtDefinition);
 
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
-		final DtField pkField = dtDefinition.getIdField().get();
-		final DataType pkDataType = pkField.getDomain().getDataType();
+		final DtField idField = dtDefinition.getIdField().get();
+		final DataType idDataType = idField.getDomain().getDataType();
 		P pkValue;
-		switch (pkDataType) {
+		switch (idDataType) {
 			case Integer:
 				pkValue = (P) Integer.valueOf(-1);
 				break;
@@ -133,15 +133,10 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case DtList:
 			case DtObject:
 			default:
-				throw new IllegalArgumentException("Type's PK " + pkDataType.name() + " of "
+				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
 		}
 		return pkValue;
-	}
-
-	private boolean hasNextChunk(final Class<K> keyConceptClass, final SearchChunk<K> currentChunck) {
-		// il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
-		return currentChunck == null || !currentChunck.getAllURIs().isEmpty();
 	}
 
 	/**

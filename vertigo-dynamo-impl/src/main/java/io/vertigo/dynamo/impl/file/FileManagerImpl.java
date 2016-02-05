@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.file;
 
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -25,14 +26,20 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
 * Implémentation du gestionnaire de la définition des fichiers.
@@ -40,6 +47,19 @@ import javax.activation.MimetypesFileTypeMap;
 * @author pchretien
 */
 public final class FileManagerImpl implements FileManager {
+
+	/**
+	 * Constructor.
+	 * @param purgeDelayMinutes Temp file purge delay.
+	 * @param daemonManager Daemon manager
+	 */
+	@Inject
+	public FileManagerImpl(@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+		Assertion.checkNotNull(daemonManager);
+		//-----
+		daemonManager.registerDaemon("PurgeTempFileDaemon", PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.getOrElse(60), TempFile.VERTIGO_TMP_DIR_PATH);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public File obtainReadOnlyFile(final VFile file) {
@@ -68,6 +88,33 @@ public final class FileManagerImpl implements FileManager {
 	@Override
 	public VFile createFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return new StreamFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl) {
+		final long length;
+		final long lastModified;
+		final URLConnection conn;
+		try {
+			conn = ressourceUrl.openConnection();
+			try {
+				length = conn.getContentLength();
+				lastModified = conn.getLastModified();
+			} finally {
+				conn.getInputStream().close();
+			}
+		} catch (final IOException e) {
+			throw new RuntimeException("Can't get file meta from url", e);
+		}
+		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
+		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
+			@Override
+			public InputStream createInputStream() throws IOException {
+				return ressourceUrl.openStream();
+			}
+		};
+		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
 	}
 
 	/**

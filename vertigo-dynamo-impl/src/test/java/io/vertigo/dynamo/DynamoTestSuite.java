@@ -46,16 +46,18 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListR
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
-import io.vertigo.dynamo.kvstore.delayedberkeley.DelayedBerkeleyKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
 import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsTest;
 import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
+import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
 import io.vertigo.dynamo.store.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
+import io.vertigo.dynamo.store.multistore.MultiStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
+import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
@@ -90,17 +92,23 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--kvdatastore
 		DelayedMemoryKVStoreManagerTest.class,
 		BerkeleyKVStoreManagerTest.class,
-		DelayedBerkeleyKVStoreManagerTest.class,
 		//--persistence
-		StoreManagerTest.class, JpaStoreManagerTest.class,
+		CachedStoreManagerTest.class,
+		StoreManagerTest.class,
+		JpaStoreManagerTest.class,
+		MultiStoreManagerTest.class,
+
 		//--task
-		TaskManagerTest.class, TaskEngineSelectDynamicTest.class,
+		TaskManagerTest.class,
+		TaskEngineSelectDynamicTest.class,
 
 		//--transaction
 		VTransactionManagerTest.class,
+		VTransactionBeforeAfterCommitTest.class,
 
 		//Rule
-		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class, DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
+		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class,
+		DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
 
 		//Search
 		SearchManagerDynaFieldsTest.class,

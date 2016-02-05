@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexTask.class);
+	private static final int DIRTY_ELEMENTS_CHUNK_SIZE = 500;
 
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final List<URI<? extends KeyConcept>> dirtyElements;
@@ -60,36 +61,41 @@ final class ReindexTask implements Runnable {
 		this.transactionManager = transactionManager;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		long dirtyElementsCount = 0;
-		final long startTime = System.currentTimeMillis();
-		try {
-			final List<URI<? extends KeyConcept>> reindexUris;
-			synchronized (dirtyElements) {
-				reindexUris = new ArrayList<>(dirtyElements);
-				dirtyElements.clear();
-			}
-			dirtyElementsCount = reindexUris.size();
-			if (!reindexUris.isEmpty()) {
-				final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-				final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
+		do {
+			final long startTime = System.currentTimeMillis();
+			try {
+				final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
+				synchronized (dirtyElements) {
+					if (!dirtyElements.isEmpty()) {
+						reindexUris.addAll(dirtyElements.subList(0, Math.min(dirtyElements.size(), DIRTY_ELEMENTS_CHUNK_SIZE)));
+						dirtyElements.removeAll(reindexUris);
+					}
+				}
+				dirtyElementsCount = reindexUris.size();
+				if (!reindexUris.isEmpty()) {
+					final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+					final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
-				// >>> Tx start
-				try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-					searchIndexes = searchLoader.loadData(reindexUris);
+					// >>> Tx start
+					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+						searchIndexes = searchLoader.loadData(reindexUris);
+					}
+					// <<< Tx end
+					removedNotFoundKeyConcept(searchIndexes, reindexUris);
+					if (!searchIndexes.isEmpty()) {
+						searchManager.putAll(searchIndexDefinition, searchIndexes);
+					}
 				}
-				// <<< Tx end
-				removedNotFoundKeyConcept(searchIndexes, reindexUris);
-				if (!searchIndexes.isEmpty()) {
-					searchManager.putAll(searchIndexDefinition, searchIndexes);
-				}
+			} catch (final Exception e) {
+				LOGGER.error("Update index error", e);
+			} finally {
+				LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
 			}
-		} catch (final Exception e) {
-			LOGGER.error("Update index error", e);
-		} finally {
-			LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
-		}
+		} while (dirtyElementsCount > 0);
 	}
 
 	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final List<URI<? extends KeyConcept>> reindexUris) {

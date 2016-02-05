@@ -44,7 +44,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 
 	/** {@inheritDoc} */
 	@Override
-	public final Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!joinPoints.containsKey(method)) {
 			//Si pas d'intercepteur sur la méthode.
 			return ClassUtil.invoke(instance, method, args);
@@ -52,7 +52,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
 	}
 
-	private static final class MyMethodInvocation implements AspectMethodInvocation {
+	private static class MyMethodInvocation implements AspectMethodInvocation {
 		private final List<Aspect> aspects;
 		private final Object instance;
 		private final Method method;

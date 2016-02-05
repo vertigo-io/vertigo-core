@@ -38,7 +38,7 @@ import java.util.List;
  * @author npiedeloup
  */
 final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choice> {
-	private final static int MAX_DEPTH = 3;
+	private static final int MAX_DEPTH = 3;
 	private final int level;
 
 	/**
@@ -82,8 +82,6 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 	@Override
 	protected DslMultiExpression handle(final Choice parsing) {
 		final String preMultiExpression;
-		final List<DslExpression> expressionDefinitions = new ArrayList<>();
-		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 		final String postMultiExpression;
 		//---
 		final boolean block = parsing.getValue() == 0;
@@ -103,6 +101,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 			default:
 				throw new IllegalArgumentException("case " + parsing.getValue() + " not implemented");
 		}
+
+		final List<DslExpression> expressionDefinitions = new ArrayList<>();
+		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
+
 		//On récupère le produit de la règle many
 		for (final Choice item : many) {
 			switch (item.getValue()) {

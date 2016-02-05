@@ -20,6 +20,7 @@ package io.vertigo.core.spaces.component;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.util.StringUtil;
 
@@ -30,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Centralisation des accès aux composants et aux plugins.
+ * ThCentralisation des accès aux composants et aux plugins.
  *
  * Les composants et leur initializers sont instanciés par injection
  *  - des paramètres déclarés sur le scope composant.
@@ -54,7 +55,7 @@ public final class ComponentSpace implements Container, Activeable {
 	/**
 	 * Components (sorted by creation)
 	 */
-	private final Map<String, Object> components = new LinkedHashMap<>();
+	private final Map<String, Component> components = new LinkedHashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -67,15 +68,14 @@ public final class ComponentSpace implements Container, Activeable {
 	public void stop() {
 		stopComponents();
 		clear();
-
 	}
 
 	/**
-	 * @param componentClass Classe type du composant(Interface)
-	 * @param <T> Type du composant
-	 * @return Gestionnaire centralisé des documents.
+	 * Resolve a component from its class.
+	 * @param componentClass Type of the component
+	 * @return Component
 	 */
-	public <T> T resolve(final Class<T> componentClass) {
+	public <C> C resolve(final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(componentClass.getSimpleName());
 		return resolve(normalizedId, componentClass);
 	}
@@ -85,7 +85,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 * @param componentId id of the component  
 	 * @param component instance of the component  
 	 */
-	public void registerComponent(final String componentId, final Object component) {
+	public void registerComponent(final String componentId, final Component component) {
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
 		//-----
@@ -139,7 +139,7 @@ public final class ComponentSpace implements Container, Activeable {
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Object> reverseComponents = new ArrayList<>(components.values());
+		final List<Component> reverseComponents = new ArrayList<>(components.values());
 		java.util.Collections.reverse(reverseComponents);
 
 		for (final Object component : reverseComponents) {

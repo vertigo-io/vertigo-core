@@ -54,7 +54,13 @@ public class FormatterNumber implements Formatter {
 	private final DecimalFormatSymbols decFormatSymbols;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
+	 * This formatter requires one arg that is a pattern.
+	 * This pattern is used 
+	 *  - to format a string into a number
+	 *  - to format a number into a string 
+	 *   
+	 * @param args args used to initialize the formatter
 	 */
 	public FormatterNumber(final String args) {
 		decFormatSymbols = new java.text.DecimalFormatSymbols();
@@ -64,14 +70,14 @@ public class FormatterNumber implements Formatter {
 	}
 
 	/**
-	 * @return Pattern utilisé
+	 * @return Pattern 
 	 */
 	public final String getPattern() {
 		return pattern;
 	}
 
 	/**
-	 * @param args Arguments
+	 * @param args args
 	 */
 	protected void initParameters(final String args) {
 		Assertion.checkNotNull(args);
@@ -148,7 +154,7 @@ public class FormatterNumber implements Formatter {
 
 	}
 
-	private static Integer toInteger(final String sValue) {
+	private static Integer toInteger(final String sValue) throws FormatterException {
 		// on commence par vérifier que c'est bien un entier (Integer ou Long)
 		Long.valueOf(sValue);
 		try {

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections.metamodel;
 
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
@@ -39,6 +40,12 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	private final MessageText label;
 	private final List<FacetValue> facetRanges = new ArrayList<>();
 
+	/**
+	 * Constructor.
+	 * @param name name
+	 * @param dtField field
+	 * @param label label
+	 */
 	public FacetDefinitionByRangeBuilder(final String name, final DtField dtField, final MessageText label) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
@@ -49,11 +56,22 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 		this.label = label;
 	}
 
+	/**
+	 * Add facet value.
+	 * @param query Query to use for filter
+	 * @param facetValueLabel facet value label
+	 * @return this builder
+	 */
 	public FacetDefinitionByRangeBuilder addFacetValue(final String query, final String facetValueLabel) {
 		final ListFilter listFilter = new ListFilter(query);
 		return addFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
 	}
 
+	/**
+	 * Add facet value.
+	 * @param facetValue Facet value
+	 * @return this builder
+	 */
 	public FacetDefinitionByRangeBuilder addFacetValue(final FacetValue facetValue) {
 		Assertion.checkNotNull(facetValue);
 		//-----
@@ -64,6 +82,6 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	/** {@inheritDoc} */
 	@Override
 	public FacetDefinition build() {
-		return FacetDefinition.createFacetDefinitionByRange(name, dtField, label, facetRanges);
+		return FacetDefinition.createFacetDefinitionByRange(name, dtField, label, facetRanges, FacetOrder.definition);
 	}
 }

@@ -27,6 +27,7 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -36,17 +37,35 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
+ * The app class is the core of vertigo.
+ * 
+ * An app has a structure and contains all the components and definitions that provides services. 
+ * 
+ * Structure 
+ * |
+ * |---DefinitionSpace
+ * |     contains all the definitions
+ * |---ComponentSpace 
+ * |     contains all the components including plugins and aspects
+ * 
+ * An app has an internal lifecycle.
+ * 
+ * 
+ * o--->[starting]--->[active]--->[stopping]--->[closed]
+ * 
+ * If an error occured during the starting process then all the started components are stopped and the app is closed
+ * 
  * @author pchretien
  */
 public final class App implements AutoCloseable {
 	private enum State {
-		/** Composants en cours de démarrage*/
+		/** Components are starting*/
 		starting,
-		/** Composants configurés et démarrés*/
+		/** Components are started*/
 		active,
-		/** Composants en cours d'arrét*/
+		/** Components are stopping*/
 		stopping,
-		/** Terminé*/
+		/** App is closed, good bye !*/
 		closed
 	}
 
@@ -172,16 +191,25 @@ public final class App implements AutoCloseable {
 		return appConfig;
 	}
 
+	/**
+	 * Returns the space where all the definitions are stored.
+	 * @return the definitionSpace
+	 */
 	public DefinitionSpace getDefinitionSpace() {
 		return definitionSpace;
 	}
 
+	/**
+	 * Returns the space where all the components are stored.
+	 * @return the componentSpace
+	 */
 	public ComponentSpace getComponentSpace() {
 		return componentSpace;
 	}
 
 	private void initializeAllComponents() {
-		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitialzerConfigs()) {
+		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
+			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()), "The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
 			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
 			componentInitializer.init();
 		}

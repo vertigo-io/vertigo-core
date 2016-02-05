@@ -20,6 +20,7 @@ package io.vertigo.app.config;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.HashMap;
@@ -33,12 +34,12 @@ import java.util.Map;
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
 	private final ModuleConfigBuilder moduleConfigBuilder;
-	private final Option<Class<?>> apiClass;
-	private final Class<?> implClass;
+	private final Option<Class<? extends Component>> apiClass;
+	private final Class<? extends Component> implClass;
 	private final boolean elastic;
 	private final Map<String, String> myParams = new HashMap<>();
 
-	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
+	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
@@ -49,6 +50,12 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.elastic = elastic;
 	}
 
+	/**
+	 * Add a param to this component config.
+	 * @param paramName Name of the param 
+	 * @param paramValue Value of the param
+	 * @return this builder
+	 */
 	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
 		//paramValue can be null
@@ -65,6 +72,10 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return new ComponentConfig(apiClass, implClass, elastic, myParams);
 	}
 
+	/**
+	 * close this component config and returns to the module config. 
+	 * @return the builder of the moduleConfig
+	 */
 	public ModuleConfigBuilder endComponent() {
 		return moduleConfigBuilder;
 	}

@@ -18,6 +18,18 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
+/**
+ * There are 3 types of entities.
+ * - property 
+ * - entity
+ * - entitylink
+ * 
+ * @author pchretien
+ *
+ */
 public interface EntityType {
+	/**
+	 * @return If the entity is a primitive (a property)
+	 */
 	boolean isPrimitive();
 }

@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Attention cette classe est générée automatiquement ! Objet de données Car
@@ -45,8 +46,8 @@ public final class Car implements KeyConcept {
 	private Long famId;
 
 	/**
-	 * Champ : PRIMARY_KEY. récupère la valeur de la propriété 'identifiant
-	 * de la voiture'.
+	 * Champ : ID.
+	 * récupère la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @return Long id <b>Obligatoire</b>
 	 */
@@ -54,14 +55,14 @@ public final class Car implements KeyConcept {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_CAR")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY. Définit la valeur de la propriété 'identifiant de
-	 * la voiture'.
+	 * Champ : ID.
+	 * Définit la valeur de la propriété 'identifiant de la voiture'.
 	 *
 	 * @param id
 	 *            Long <b>Obligatoire</b>
@@ -261,6 +262,30 @@ public final class Car implements KeyConcept {
 	// Association : Famille non navigable
 
 	// Association : Famille non navigable
+
+	/**
+	 * Champ : COMPUTED.
+	 * Récupère la valeur de la propriété calculée 'model sort'.
+	 * @return String modelSort
+	 */
+	@javax.persistence.Column(name = "MODEL_SORT")
+	@javax.persistence.Transient
+	@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
+	public String getModelSort() {
+		throw new VSystemException("Can't use index copyTo field");
+	}
+
+	/**
+	 * Champ : COMPUTED.
+	 * Récupère la valeur de la propriété calculée 'index all'.
+	 * @return String allText
+	 */
+	@javax.persistence.Column(name = "ALL_TEXT")
+	@javax.persistence.Transient
+	@Field(domain = "DO_FULL_TEXT", type = "COMPUTED", persistent = false, label = "index all")
+	public String getAllText() {
+		throw new VSystemException("Can't use index copyTo field");
+	}
 
 	/** {@inheritDoc} */
 	@Override

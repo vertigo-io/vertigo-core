@@ -11,11 +11,12 @@
 
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+	
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
 		</component>
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
@@ -35,7 +36,7 @@
 
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
-		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" initClass="io.vertigo.dynamo.store.StoreManagerInitializer">
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.jpa.JpaDataStorePlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin">
 				<param name="storeDtName" value="DT_VX_FILE_INFO"/>
@@ -53,5 +54,9 @@
 			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
 		</definitions>
 	</module>
+		
+	<init>
+		<initializer class="io.vertigo.dynamo.store.StoreManagerInitializer"/>
+	</init>
 </config>
  

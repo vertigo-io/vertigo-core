@@ -72,43 +72,42 @@ public final class DslRangeQuery implements DslQuery {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return startRange
 	 */
-	public final String getStartRange() {
+	public String getStartRange() {
 		return startRange;
 	}
 
 	/**
 	 * @return startQueryDefinitions
 	 */
-	public final DslQuery getStartQueryDefinitions() {
+	public DslQuery getStartQueryDefinitions() {
 		return startQueryDefinitions;
 	}
 
 	/**
 	 * @return endQueryDefinitions
 	 */
-	public final DslQuery getEndQueryDefinitions() {
+	public DslQuery getEndQueryDefinitions() {
 		return endQueryDefinitions;
 	}
 
 	/**
 	 * @return endRange
 	 */
-	public final String getEndRange() {
+	public String getEndRange() {
 		return endRange;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
-
 }

@@ -20,36 +20,41 @@ package io.vertigo.app.config;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Paramétrage d'un composant.
- * - nom du compposant
- * - class du composant
- * - api du composant (option)
- * - liste des Plugins
+ * The componentconfig class defines the configuration of a component.
+ * 
+ * A component is defined by 
+ *  - an id.
+ *  - a implemenation class.
+ *  - an optional api class.
+ *  - a map of params
+ * 
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfig {
 	private final String id;
-	private final Option<Class<?>> apiClass;
-	private final Class<?> implClass;
+	private final Class<? extends Component> implClass;
+	private final Option<Class<? extends Component>> apiClass;
 	private final Map<String, String> params;
 	private final boolean elastic;
 
 	/**
-	 * @param apiClass Class de l'api du composant
-	 * @param implClass Class de l'implémentation du composant
-	 * @param componentInitializerClass Class de l'initialiseur du composant
-	 * @param pluginConfigurations Liste des plugins du composant
-	 * @param params paramètres du composant
+	 * Constructor.
+	 * @param apiClass api of the component
+	 * @param implClass impl class of the component
+	 * @param params params
 	 */
-	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
+		Assertion.checkArgument(apiClass.isEmpty() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
 		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
@@ -61,28 +66,28 @@ public final class ComponentConfig {
 	}
 
 	/**
-	 * @return Classe de l'implémentation du composant
+	 * @return impl class of the component
 	 */
-	public Class<?> getImplClass() {
+	public Class<? extends Component> getImplClass() {
 		return implClass;
 	}
 
 	/**
-	 * @return API du composant
+	 * @return api of the component
 	 */
-	public Option<Class<?>> getApiClass() {
+	public Option<Class<? extends Component>> getApiClass() {
 		return apiClass;
 	}
 
 	/**
-	 * @return Identifiant du composant
+	 * @return id of the component
 	 */
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * @return Map des paramètres du composant
+	 * @return params
 	 */
 	public Map<String, String> getParams() {
 		return params;

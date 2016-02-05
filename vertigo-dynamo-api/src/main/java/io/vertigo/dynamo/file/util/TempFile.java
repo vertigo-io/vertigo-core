@@ -28,16 +28,25 @@ import java.io.IOException;
 public final class TempFile extends File {
 
 	private static final long serialVersionUID = 1947509935178818002L;
+	/**
+	 * Vertigo Temp directory path.
+	 */
+	public static final String VERTIGO_TMP_DIR_PATH;
+	static {
+		final File vertigoTmpDir = new File(System.getProperty("java.io.tmpdir"), "vertigo");
+		vertigoTmpDir.mkdirs();
+		VERTIGO_TMP_DIR_PATH = vertigoTmpDir.getAbsolutePath();
+	}
 
 	/**
 	 * Crée un fichier temporaire qui sera supprimé lorsqu'il ne sera plus référencé.
 	 * @param prefix Prefix du nom de fichier
 	 * @param suffix Suffix du nom de fichier
-	 * @param directory Répertoire des fichiers temporaires (null = répertoire temporaire de l'OS)
+	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo)
 	 * @throws IOException Exception IO
 	 */
-	public TempFile(final String prefix, final String suffix, final File directory) throws IOException {
-		super(File.createTempFile(prefix, suffix, directory).getAbsolutePath());
+	public TempFile(final String prefix, final String suffix, final String subDirectory) throws IOException {
+		super(File.createTempFile(prefix, suffix, new File(VERTIGO_TMP_DIR_PATH, subDirectory)).getAbsolutePath());
 		deleteOnExit();
 	}
 
@@ -48,7 +57,8 @@ public final class TempFile extends File {
 	 * @throws IOException Exception IO
 	 */
 	public TempFile(final String prefix, final String suffix) throws IOException {
-		this(prefix, suffix, null);
+		super(File.createTempFile(prefix, suffix, new File(VERTIGO_TMP_DIR_PATH)).getAbsolutePath());
+		deleteOnExit();
 	}
 
 	/** {@inheritDoc} */

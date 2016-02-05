@@ -15,8 +15,7 @@
 
 	<module name="vertigo-dynamo">
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
-		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
@@ -28,7 +27,7 @@
 		</component>
 	</module>
 	
-	<module name="myApp" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
+	<module name="myApp" api="false">
 		<definitions>	
 			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
 			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />

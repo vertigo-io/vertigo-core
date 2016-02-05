@@ -31,7 +31,8 @@ import java.util.Set;
  * @author pchretien
  */
 final class ComponentDualContainer implements Container {
-	private final Container container1, container2;
+	private final Container container1;
+	private final Container container2;
 	private final Set<String> ids;
 
 	ComponentDualContainer(final Container container1, final Container container2) {

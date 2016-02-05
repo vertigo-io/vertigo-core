@@ -74,7 +74,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final XmlLoader loader = createLoader(url);
 
 		for (final XmlClass clazz : loader.getClasses()) {
-			dynamicModelrepository.addDefinition(toDynamicDefinition(clazz, dynamicModelrepository));
+			dynamicModelrepository.addDefinition(toDynamicDefinition(clazz));
 		}
 
 		for (final XmlAssociation association : loader.getAssociations()) {
@@ -82,7 +82,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static DynamicDefinition toDynamicDefinition(final XmlClass clazz, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final XmlClass clazz) {
 		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
@@ -90,17 +90,17 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 				.addPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
-			final DynamicDefinition dtField = toDynamicDefinition(attribute, dynamicModelrepository);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			final DynamicDefinition dtField = toDynamicDefinition(attribute);
+			dtDefinitionBuilder.addDefinition(DomainGrammar.ID, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
-			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute, dynamicModelrepository);
+			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute);
 			dtDefinitionBuilder.addDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
-	private static DynamicDefinition toDynamicDefinition(final XmlAttribute attribute, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final XmlAttribute attribute) {
 		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
@@ -167,7 +167,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionName(association.getCodeB()));
 
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(association.getMultiplicityA(), association.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
-		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
+		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.ID);
 		if (primaryKeys.isEmpty()) {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getName() + "'");
 		}

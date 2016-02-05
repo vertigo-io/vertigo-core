@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -33,15 +34,13 @@ import java.util.List;
  * @author  fconstantin, pchretien
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
-	private static final String DEFAULT_STORE_NAME = "main";
-
 	private final List<TaskAttribute> myInTaskAttributes = new ArrayList<>();
 	private TaskAttribute myOutTaskAttribute;
 	private final String myTaskDefinitionName;
 	private Class<? extends TaskEngine> myTaskEngineClass;
 	private String myRequest;
 	private String myPackageName;
-	private String myStoreName;
+	private String myDataSpace;
 
 	/**
 	 * Constructor.
@@ -58,6 +57,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * Defines the engine, used at runtime to process the task.
 	 *
 	 * @param taskEngineClass Class running the task
+	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
 		Assertion.checkNotNull(taskEngineClass);
@@ -72,6 +72,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 
 	/**
 	 * @param request Request used to configure the task. (ldap request, sql request...)
+	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
 		Assertion.checkNotNull(request);
@@ -85,6 +86,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 
 	/**
 	 * @param packageName Name of the package
+	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
@@ -93,19 +95,25 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
-	public TaskDefinitionBuilder withStore(final String storeName) {
-		//storeName may be null
+	/**
+	 * Sets the dataSpace
+	 * @param dataSpace the dataSpace
+	 * @return this builder
+	 */
+	public TaskDefinitionBuilder withDataSpace(final String dataSpace) {
+		//dataSpace can be null
 		//-----
-		myStoreName = storeName;
+		myDataSpace = dataSpace;
 		return this;
 	}
 
 	/**
-	 * Add an input attribute.
+	 * Adds an input attribute.
 	 *
-	 * @param attributeName Name of the attribute
-	 * @param domain Domain of the attribute
-	 * @param notNull If attribute must be not null
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param notNull if attribute is not null
+	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
 		Assertion.checkNotNull(attributeName);
@@ -117,11 +125,12 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * Add an output attribute.
+	 * Adds an output attribute.
 	 *
-	 * @param attributeName Name of the attribute
-	 * @param domain Domain of the attribute
-	 * @param notNull If attribute must be not null
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param notNull if attribute is not null
+	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
 		//-----
@@ -135,7 +144,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
-				myStoreName == null ? DEFAULT_STORE_NAME : myStoreName,
+				myDataSpace == null ? DtDefinitionBuilder.DEFAULT_DATA_SPACE : myDataSpace,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,

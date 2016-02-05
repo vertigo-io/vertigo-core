@@ -49,7 +49,7 @@ public final class FormatterDefinition implements Formatter, Definition {
 		//-----
 		this.name = name;
 		//-----
-		this.formatter = createFormatter(formatterClassName, args);
+		formatter = createFormatter(formatterClassName, args);
 	}
 
 	private static Formatter createFormatter(final String formatterClassName, final String args) {
@@ -64,13 +64,13 @@ public final class FormatterDefinition implements Formatter, Definition {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return name;
 	}
 

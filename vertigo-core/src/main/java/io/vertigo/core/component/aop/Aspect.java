@@ -41,7 +41,7 @@ public interface Aspect {
 	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
 
 	/**
-	 * return Annotation that tagged any method or class concerned by this aspect
+	 * returns Annotation that tagged any method or class concerned by this aspect
 	 * @return Annotation type.
 	 */
 	Class<?> getAnnotationType();

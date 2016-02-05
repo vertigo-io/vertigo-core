@@ -21,32 +21,33 @@ package io.vertigo.lang;
 import java.util.NoSuchElementException;
 
 /**
- * Classe portant les types optionnels.
- * Inspirée de la classe Scala de même nom.
- *  - option : null ou renseignée
- *  - none : null
- *  - some : renseignée
+ * This class, inspired by scala, allows you to define optional types.
+ * An option is used to design a nullable type.
+ *  An option is empty or defined with a content. 
+ *  - none : empty
+ *  - some : defined with a content
  *
  * @author jmainaud
- * @param <T> Type de l'objet optionnel.
+ * @param <T> the type of the option.
  */
 public final class Option<T> {
-	/** Constante déclarant l'option None. */
+	/** There is only one none option. */
 	private static final Option<Object> NONE = new Option<>(null);
 
-	/** Valeur. */
+	/** Value. */
 	private final T value;
 
 	/**
-	 * Crée une nouvelle instance de <code>Option</code>.
-	 * @param value Valeur null / non null
+	 * Constructor.
+	 * Creates an option with a value that can be null.
+	 * @param value the value 
 	 */
 	private Option(final T value) {
 		this.value = value;
 	}
 
 	/**
-	 * Donne l'instance de None.
+	 * Provides an empty option.
 	 *
 	 * @param <T> Type de l'option demandé.
 	 * @return None.
@@ -56,24 +57,24 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Instance de Some.
+	 * Provides a defined option.
 	 *
-	 * @param <R> Type de l'option.
-	 * @param value Valeur de l'option.
-	 * @return Option.
+	 * @param <T> the type of the option
+	 * @param value the value of the option
+	 * @return the option.
 	 */
-	public static <R> Option<R> some(final R value) {
+	public static <T> Option<T> some(final T value) {
 		Assertion.checkNotNull(value, "Option.some requires a non null value.");
 		//-----
 		return new Option<>(value);
 	}
 
 	/**
-	 * Instance de option.
+	 * Provides an option(empty or defined) depending on the value.
 	 *
-	 * @param <T>  Type de l'option.
-	 * @param value  Valeur de l'option.
-	 * @return L'option.
+	 * @param <T> the type of the option
+	 * @param value the value of the option
+	 * @return the option.
 	 */
 	public static <T> Option<T> option(final T value) {
 		if (value == null) {
@@ -83,28 +84,30 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Indique si l'option est définie.
+	 * Returns true if the option is defined, aka not empty.
+	 * An option is defined if it has a value.
 	 *
-	 * @return <code>true</code> si définie, sinon <code>false</code>.
+	 * @return if the option is defined.
 	 */
 	public boolean isDefined() {
 		return !isEmpty();
 	}
 
 	/**
-	 * Indique si l'option n'est pas définie.
+	 * Returns true is the option is not defined, aka empty.
 	 *
-	 * @return <code>false</code> si définie, sinon <code>true</code>.
+	 * @return if the option is not defined.
 	 */
 	public boolean isEmpty() {
 		return value == null;
 	}
 
 	/**
-	 * Permet de récupérer le contenu.
-	 *
-	 * @return Contenu si la valeur est définie.
-	 * @throws NoSuchElementException Si la valeur n'est pas définie.
+	 * Returns the content of the option.
+	 * If the option is empty then an exception is thrown.
+	 * 
+	 * @return the content of the option
+	 * @throws NoSuchElementException if the option is empty.
 	 */
 	public T get() {
 		if (value == null) {
@@ -114,10 +117,10 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Si l'option est définie donne la valeur, sinon donne la valeur par défaut.
+	 * If the option is defined returns the value, ellse return the default value.
 	 *
-	 * @param defaut Valeur par défaut.
-	 * @return Contenu si la valeur est définie.
+	 * @param defaut the default value 
+	 * @return the value if defined else the default value
 	 */
 	public T getOrElse(final T defaut) {
 		return value == null ? defaut : value;

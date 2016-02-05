@@ -43,6 +43,10 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 
 	/**
 	* Append Config of a set of modules.
+	 * @param relativeRootClass Class used to access files in a relative way.
+	* @param xmlModulesParams properties used to configure the app
+	* @param xmlModulesFileNames fileNames of the different xml files 
+	* 
 	* @return this builder
 	*/
 	public XMLAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final String... xmlModulesFileNames) {

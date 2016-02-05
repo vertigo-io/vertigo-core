@@ -41,11 +41,9 @@ public interface DtListProcessor {
 	 * Création d'un tri de colonne.
 	 * @param fieldName Nom du champ concerné par le tri
 	 * @param desc Si tri descendant
-	 * @param nullLast Si les objets Null sont en derniers
-	 * @param ignoreCase Si on ignore la casse
 	 * @return Etat du tri
 	 */
-	DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase);
+	DtListProcessor sort(final String fieldName, final boolean desc);
 
 	//=======================FILTER============================================
 	/**

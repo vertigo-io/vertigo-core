@@ -101,21 +101,21 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	/**
 	 * @return Server Side Token , null if none
 	 */
-	public final String getServerSideToken() {
+	public String getServerSideToken() {
 		return serverSideToken;
 	}
 
 	/**
 	 * @param serverSideToken Server Side Token
 	 */
-	public final void setServerSideToken(final String serverSideToken) {
+	public void setServerSideToken(final String serverSideToken) {
 		this.serverSideToken = serverSideToken;
 	}
 
 	/**
 	 * @param serverSideDto Object keep server side
 	 */
-	public final void setServerSideObject(final D serverSideDto) {
+	public void setServerSideObject(final D serverSideDto) {
 		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
 		//-----
 		this.serverSideDto = serverSideDto;
@@ -124,21 +124,21 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	/**
 	 * @param inputKey Object reference keep in this request context (for error handling)
 	 */
-	public final void setInputKey(final String inputKey) {
+	public void setInputKey(final String inputKey) {
 		this.inputKey = inputKey;
 	}
 
 	/**
 	 * @return Object reference keep in this request context (for error handling)
 	 */
-	public final String getInputKey() {
+	public String getInputKey() {
 		return inputKey;
 	}
 
 	/**
 	 * @return DtDefinition de l'objet métier
 	 */
-	public final DtDefinition getDtDefinition() {
+	public DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 

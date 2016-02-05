@@ -39,7 +39,7 @@ import io.vertigo.vega.plugins.webservice.handler.ServerSideStateWebServiceHandl
 import io.vertigo.vega.plugins.webservice.handler.SessionInvalidateWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.webservice.instrospector.annotations.AnnotationsWebServiceIntrospectorPlugin;
+import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
 import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
@@ -50,9 +50,10 @@ import io.vertigo.vega.webservice.WebServiceManager;
  */
 public final class VegaFeatures extends Features {
 
-	private boolean withTokens = false;
+	private boolean tokensEnabled;
 	private String tokenCollection;
-	private boolean withMisc = false;
+	private boolean miscEnabled;
+	private boolean securityEnabled;
 
 	public VegaFeatures() {
 		super("vega");
@@ -66,13 +67,18 @@ public final class VegaFeatures extends Features {
 	public VegaFeatures withTokens(final String collection) {
 		Assertion.checkArgNotEmpty(collection);
 		//-----
-		withTokens = true;
+		tokensEnabled = true;
 		tokenCollection = collection;
 		return this;
 	}
 
 	public VegaFeatures withMisc() {
-		withMisc = true;
+		miscEnabled = true;
+		return this;
+	}
+
+	public VegaFeatures withSecurity() {
+		securityEnabled = true;
 		return this;
 	}
 
@@ -86,10 +92,10 @@ public final class VegaFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.withNoAPI().withInheritance(Object.class)
+				.withNoAPI()
 				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
-				.addPlugin(AnnotationsWebServiceIntrospectorPlugin.class)
+				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
 				.addComponent(CatalogWebServices.class)
 
@@ -97,19 +103,21 @@ public final class VegaFeatures extends Features {
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
-				.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
-				.addPlugin(SessionWebServiceHandlerPlugin.class)
-				.addPlugin(SecurityWebServiceHandlerPlugin.class)
-				//.beginPlugin(OldJsonConverterWebServiceHandlerPlugin.class).endPlugin()
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
-		if (withTokens) {
+		if (securityEnabled) {
+			getModuleConfigBuilder()
+					.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
+					.addPlugin(SessionWebServiceHandlerPlugin.class)
+					.addPlugin(SecurityWebServiceHandlerPlugin.class);
+		}
+		if (tokensEnabled) {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.addParam("collection", tokenCollection)
 					.endComponent();
 		}
-		if (withMisc) {
+		if (miscEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);

@@ -19,13 +19,10 @@
 package io.vertigo.vega.webservice;
 
 import io.vertigo.app.App;
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.data.MyAppConfig;
-import io.vertigo.vega.webservice.stereotype.POST;
-import io.vertigo.vega.webservice.stereotype.QueryParam;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -35,11 +32,9 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +45,7 @@ import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
@@ -470,12 +466,15 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testPutContactView() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
-		final List<Map<String, Object>> addresses = new ArrayList<>();
+
+		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
+				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"))
+				.build();
+
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
-		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
-		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
-		addresses.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"));
 
 		loggedAndExpect(given().body(newContactView))
 				.body("honorificCode", Matchers.notNullValue())
@@ -489,15 +488,18 @@ public final class WebServiceManagerTest {
 				.put("/contacts/contactView");
 	}
 
+	@Ignore("Not supported yet")
 	@Test
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
-		final List<Map<String, Object>> addresses = new ArrayList<>();
+		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
+				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
+				.build();
+
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
-		addresses.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"));
-		addresses.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"));
-		addresses.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
 
 		loggedAndExpect(given().body(newContactView))
 				.body("fieldErrors", Matchers.notNullValue())
@@ -629,9 +631,10 @@ public final class WebServiceManagerTest {
 				.when().get("/test/6")
 				.body().as(Map.class);
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("size()", Matchers.equalTo(2))
@@ -656,9 +659,10 @@ public final class WebServiceManagerTest {
 				.body().as(Map.class);
 		contactTo.put("firstName", "MoreThan50CharactersIsTooLongForAFirstNameInThisTestApi");
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("objectFieldErrors.contactFrom.email", Matchers.contains("Le courriel n'est pas valide"))
@@ -673,9 +677,10 @@ public final class WebServiceManagerTest {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);
 
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactFrom", contactFrom);
-		fullBody.put("contactTo", contactTo);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("objectFieldErrors.contactFrom.firstname", Matchers.contains("Process validation error"))
@@ -686,9 +691,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testPostInnerBodyLong() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("size()", Matchers.equalTo(2))
@@ -703,9 +709,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testInnerBodyLongToDtList() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("serverToken", Matchers.notNullValue())
@@ -721,9 +728,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testUiContext() {
-		final Map<String, Object> fullBody = new HashMap<>();
-		fullBody.put("contactId1", 6);
-		fullBody.put("contactId2", 7);
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactId1", 6)
+				.put("contactId2", 7)
+				.build();
 
 		loggedAndExpect(given().body(fullBody))
 				.body("contactFrom.name", Matchers.equalTo("Moreau"))
@@ -1096,9 +1104,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPagined(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		final String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1118,9 +1127,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedSortName(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
 
 		final String serverSideToken;
@@ -1143,9 +1153,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedSortDate(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		final String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1165,9 +1176,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private void doTestSearchPaginedMissing(final boolean isAuto) throws ParseException {
-		final Map<String, Object> criteriaContact = new HashMap<>();
-		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
-		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
+				.put("birthdayMin", convertDate("19/05/1978"))
+				.put("birthdayMax", convertDate("19/05/1985"))
+				.build();
 
 		String serverSideToken;
 		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
@@ -1178,7 +1190,7 @@ public final class WebServiceManagerTest {
 
 	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(sessionFilter);
-		final String wsUrl = isAuto ? "/test/searchAutoPagined" : "/test/searchQueryPagined";
+		final String wsUrl = isAuto ? "/test/searchAutoPagined()" : "/test/searchQueryPagined()";
 		if (top != null) {
 			given.queryParam("top", top);
 		}
@@ -1282,9 +1294,11 @@ public final class WebServiceManagerTest {
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collDeletes = new LinkedHashMap<>();
+
 		dtListDelta.put("collCreates", collCreates);
 		dtListDelta.put("collUpdates", collUpdates);
 		dtListDelta.put("collDeletes", collDeletes);
+
 		collCreates.put("c110", createDefaultContact(110L));
 		collCreates.put("c111", createDefaultContact(111L));
 		final Map<String, Object> newContact = createDefaultContact(100L);
@@ -1385,14 +1399,6 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
-	}
-
-	@POST("/uploadFile")
-	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
-			final @QueryParam("id") Integer id, //
-			final @QueryParam("note") String note) {
-
-		return inputFile;
 	}
 
 	@Test
@@ -1516,6 +1522,17 @@ public final class WebServiceManagerTest {
 				.get("/test/downloadNotModifiedFile");
 	}
 
+	@Test
+	public void testDatesUTC() {
+		final String inputUtc = "2016-01-18T17:21:42.026Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputUtc))
+				.body("inputAsString", Matchers.equalTo("Mon Jan 18 18:21:42 CET 2016"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/dates?date=" + inputUtc);
+	}
+
 	//=========================================================================
 
 	private static RequestSpecification given() {
@@ -1548,8 +1565,10 @@ public final class WebServiceManagerTest {
 	}
 
 	private static String convertDate(final String dateStr) throws ParseException {
-		final Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
+		final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		final Date date = dateFormat.parse(dateStr);
+		final DateFormat dateFormatUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		return dateFormatUtc.format(date);
 	}
 
 	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {

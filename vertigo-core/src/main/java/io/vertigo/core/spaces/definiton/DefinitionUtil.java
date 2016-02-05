@@ -21,7 +21,7 @@ package io.vertigo.core.spaces.definiton;
 import io.vertigo.lang.Assertion;
 
 /**
- * Utilitaire concernant les Definitions.
+ * This class provides usefull Utilitaire concernant les Definitions.
  *
  * @author  pchretien
  */
@@ -30,6 +30,11 @@ public final class DefinitionUtil {
 		super();
 	}
 
+	/**
+	 * Return the prefix concerning the type of the defintion.
+	 * @param definitionClass Type of the definition
+	 * @return the prefix concerning the type of the defintion
+	 */
 	public static String getPrefix(final Class<? extends Definition> definitionClass) {
 		Assertion.checkNotNull(definitionClass);
 		//-----
@@ -40,6 +45,12 @@ public final class DefinitionUtil {
 		return prefix.value();
 	}
 
+	/**
+	 * Returns the short name of the definition.
+	 * @param definitionName Name of the definition
+	 * @param definitionClass Type of the definition
+	 * @return the short name of the definition
+	 */
 	public static String getLocalName(final String definitionName, final Class<? extends Definition> definitionClass) {
 		Assertion.checkArgNotEmpty(definitionName);
 		Assertion.checkNotNull(definitionClass);
@@ -52,6 +63,12 @@ public final class DefinitionUtil {
 		return definitionName.substring(prefix.length() + 1);
 	}
 
+	/**
+	 * Checks if the name of a definition is valid for the specified type.
+	 * If not an exception is thrown.
+	 * @param definitionName Name of the definition
+	 * @param definitionClass Type of the definition 
+	 */
 	public static void checkName(final String definitionName, final Class<? extends Definition> definitionClass) {
 		Assertion.checkArgNotEmpty(definitionName);
 		Assertion.checkNotNull(definitionClass);

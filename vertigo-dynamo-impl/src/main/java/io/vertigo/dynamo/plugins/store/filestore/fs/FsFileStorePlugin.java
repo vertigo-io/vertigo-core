@@ -35,7 +35,6 @@ import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
@@ -63,11 +62,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
-
-	/**
-	 * Identifiant de ressource FileSystem par défaut.
-	 */
-	private final VTransactionResourceId<FsTransactionResource> fsResourceId;
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -121,7 +115,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		this.fileManager = fileManager;
 		documentRoot = translatePath(path);
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
-		fsResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS-" + name);
 	}
 
 	private static String translatePath(final String path) {
@@ -139,7 +132,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
@@ -181,7 +174,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
 		} else {
 			// cas de l'update
-			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
@@ -194,7 +187,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	private void saveFile(final FileInfo fileInfo, final String pathToSave) {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
-			obtainFsTransactionRessource().saveFile(inputStream, documentRoot + pathToSave);
+			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, documentRoot + pathToSave));
 		} catch (final IOException e) {
 			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
 		}
@@ -247,14 +240,14 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
-		obtainFsTransactionRessource().deleteFile(documentRoot + path);
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
@@ -310,7 +303,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setPkValue(final DtObject dto, final Object value) {
+	private static void setIdValue(final DtObject dto, final Object value) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, value);
 	}
@@ -337,18 +330,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	/** récupère la transaction courante. */
 	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
-	}
-
-	/** récupère la ressource FS de la transaction et la créé si nécessaire. */
-	private FsTransactionResource obtainFsTransactionRessource() {
-		FsTransactionResource resource = getCurrentTransaction().getResource(fsResourceId);
-
-		if (resource == null) {
-			// Si aucune ressource de type FS existe sur la transaction, on la créé
-			resource = new FsTransactionResource();
-			getCurrentTransaction().addResource(fsResourceId, resource);
-		}
-		return resource;
 	}
 
 	/**

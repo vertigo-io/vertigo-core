@@ -1,7 +1,6 @@
 bin/
 trash/
 target/
-docco/
 .classpath
 .gitignore
 .project
@@ -9,7 +8,5 @@ docco/
 vertigo-release/
 mvn-release.txt
 vertigo-bundle/src
-*.bak
-**/abak
-**/ubak
-vertigo-site/
+*.iml
+*.idea

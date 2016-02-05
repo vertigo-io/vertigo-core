@@ -133,8 +133,10 @@ final class ScriptParser {
 				found = separator;
 			}
 		}
-		//Si il existe un séparateur
-		//alors on retourne sa position.
+		/*
+		 * If there is a separator 
+		 * then we return its position
+		 */
 		if (found == null) {
 			currentSeparator = null;
 			currentBeginCar = -1;

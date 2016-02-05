@@ -80,7 +80,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	protected TaskManager taskManager;
 
-	private DtDefinition dtDefinitionFamille;
+	protected DtDefinition dtDefinitionFamille;
+	private DtDefinition dtDefinitionCar;
+	private DtListURI allCarsUri;
+
 	private DAOBroker<Famille, Integer> familleDAO;
 	private long initialDbCarSize = 0;
 
@@ -88,6 +91,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
+
+		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
+		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+
 		initMainStore();
 	}
 
@@ -107,15 +114,15 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> storeName) {
+	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> collection) {
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final String request : requests) {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request);
-				if (storeName.isDefined()) {
-					taskDefinitionBuilder.withStore(storeName.get());
+				if (collection.isDefined()) {
+					taskDefinitionBuilder.withDataSpace(collection.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
@@ -157,14 +164,14 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		shutDown("TK_SHUT_DOWN", Option.<String> none());
 	}
 
-	protected void shutDown(final String taskName, final Option<String> storeName) {
+	protected void shutDown(final String taskName, final Option<String> collectionOption) {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest("shutdown;");
-				if (storeName.isDefined()) {
-					taskDefinitionBuilder.withStore(storeName.get());
+				if (collectionOption.isDefined()) {
+					taskDefinitionBuilder.withDataSpace(collectionOption.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
 				taskManager.execute(task);
@@ -288,7 +295,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertNotNull(dtc);
 			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
 			transaction.commit();
@@ -302,7 +309,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			DtList<Famille> dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -311,7 +318,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
-			dtc = storeManager.getDataStore().getList(allFamilles);
+			dtc = storeManager.getDataStore().readAll(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -349,7 +356,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getFileStore().create(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().get(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().read(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 
@@ -397,9 +404,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
+			final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -446,9 +451,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
+			final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -487,146 +490,112 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testTxCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkCrudCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkCrudCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkCrudCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertNativeSelectRollback() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkNativeCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertNativeSelectRollback() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkNativeCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertRollbackCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkCrudCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertRollbackCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkCrudCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertRollbackNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertRollbackNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+			checkNativeCarsCount(0);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertCrudInsertCommit() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
-			final Car car2 = createNewCar(null);
+			final Car car = createNewCar();
+			final Car car2 = createNewCar();
 			nativeInsertCar(car2);
 			storeManager.getDataStore().create(car);
 			transaction.commit();
@@ -636,7 +605,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalStateException.class)
 	public void testTxCrudInsertTwoCommit() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 			transaction.commit();
@@ -646,93 +615,75 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkCrudCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertCommitCrudSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkCrudCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxCrudInsertCommitNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkNativeCarsCount(1);
 		}
 	}
 
 	@Test
 	public void testTxNativeInsertCommitNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar(null);
+			final Car car = createNewCar();
 			nativeInsertCar(car);
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
-			final DtList<Car> cars = nativeLoadCarList();
-			Assert.assertNotNull(cars);
-			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
+			checkNativeCarsCount(1);
 		}
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testCrudInsertNoTx() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		storeManager.getDataStore().create(car);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNativeInsertNoTx() {
-		final Car car = createNewCar(null);
+		final Car car = createNewCar();
 		nativeInsertCar(car);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testCrudSelectNoTx() {
-		final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-		final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-		final DtList<Car> cars = storeManager.getDataStore().getList(allCars);
-		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+		checkCrudCarsCount(0);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNativeSelectNoTx() {
-		final DtList<Car> cars = nativeLoadCarList();
-		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
+		checkNativeCarsCount(0);
 	}
 
 	@Test
@@ -759,9 +710,77 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		System.out.println(execCount + " exec en 1s. moy=" + time * 1000 / execCount / 1000d + "ms");
 	}
 
-	private static Car createNewCar(final Long id) {
+	@Test
+	public void testCrudCountCars() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final long count = storeManager.getDataStore().count(dtDefinitionCar);
+			//-----
+			Assert.assertEquals(9, count);
+		}
+	}
+
+	@Test
+	public void testTxCrudInsertDeleteCommit() {
+		final Car car = createNewCar();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			storeManager.getDataStore().create(car);
+			//Check cars count
+			checkCrudCarsCount(1);
+			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			storeManager.getDataStore().delete(carUri);
+			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
+			transaction.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			checkCrudCarsCount(0); //car is cacheable : must wait commit to see delete
+		}
+	}
+
+	@Test
+	public void testTxCrudInsertCommitCrudDeleteCommit() {
+		final Car car = createNewCar();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			storeManager.getDataStore().create(car);
+			checkCrudCarsCount(1);
+			transaction.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			storeManager.getDataStore().delete(carUri);
+			checkCrudCarsCount(0);
+			transaction.commit();
+		}
+	}
+
+	@Test
+	public void testTxCrudLockCommit() {
+		final Car car = createNewCar();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			storeManager.getDataStore().create(car);
+			//Check cars count
+			checkCrudCarsCount(1);
+			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			storeManager.getDataStore().readForUpdate(carUri);
+			checkCrudCarsCount(1);
+			transaction.commit();
+		}
+	}
+
+	private void checkNativeCarsCount(final int deltaCount) {
+		final DtList<Car> cars = nativeLoadCarList();
+		Assert.assertNotNull(cars);
+		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
+	}
+
+	private void checkCrudCarsCount(final int deltaCount) {
+		final DtList<Car> cars = storeManager.getDataStore().readAll(allCarsUri);
+		Assert.assertNotNull(cars);
+		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
+	}
+
+	private static Car createNewCar() {
 		final Car car = new Car();
-		car.setId(id);
+		car.setId(null);
 		car.setPrice(5600);
 		car.setMake("Peugeot");
 		car.setModel("407");

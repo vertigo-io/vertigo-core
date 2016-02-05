@@ -74,7 +74,6 @@ public abstract class TaskEngine {
 	 * Setter générique
 	 * Affecte la valeur d'un paramètre (OUTPUT)
 	 *
-	 * @param attributeName Nom du paramètre
 	 * @param o Valeur
 	 */
 	protected final void setResult(final Object o) {

@@ -88,8 +88,7 @@ public enum EAXmiType {
 	}
 
 	static boolean isNodeByRef(final String name) {
-		return false
-				|| Attribute.getCode().equals(name)
+		return Attribute.getCode().equals(name)
 				|| Class.getCode().equals(name)
 				|| ClassAttribute.getCode().equals(name)
 				|| Package.getCode().equals(name)
@@ -97,8 +96,7 @@ public enum EAXmiType {
 	}
 
 	static boolean isObjet(final String type, final String tagName) {
-		return false
-				|| Attribute.getCode().equals(type) && OwnedAttribute.getCode().equals(tagName)
+		return Attribute.getCode().equals(type) && OwnedAttribute.getCode().equals(tagName)
 				|| Class.getCode().equals(type)
 				|| Package.getCode().equals(type)
 				|| Association.getCode().equals(type);
@@ -109,8 +107,7 @@ public enum EAXmiType {
 	}
 
 	boolean isClass() {
-		return false
-				|| this == Class
+		return this == Class
 				|| this == Association;
 	}
 }

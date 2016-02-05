@@ -21,8 +21,9 @@ package io.vertigo.commons.parser;
 import io.vertigo.lang.Assertion;
 
 /**
- * A  terminal succeeds if the first character of the input string matches that terminal.
- * Sinon retourne une erreur.
+ * A  terminal rule succeeds if the first character of the input string matches that terminal.
+ * If not an exception is thrown.
+ * 
  * @author pchretien
  */
 public final class TermRule implements Rule<String>, Parser<String> {
@@ -33,7 +34,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	 * @param term Terminal
 	 */
 	public TermRule(final String term) {
-		Assertion.checkNotNull(term, "Terminal is mandatory");
+		Assertion.checkNotNull(term, "Terminal is required");
 		//-----
 		this.term = term;
 	}
@@ -55,11 +56,11 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	public int parse(final String text, final int start) throws NotFoundException {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;
-		//On recherche jusqu'ou le text match avec la règle
+		//We look how far the text matches with the rule.
 		while (match < end && text.charAt(match) == term.charAt(match - start)) {
 			match++;
 		}
-		//Si on est allé au bout de la règle, c'est bon
+		//if the rule was fully evaluated then it's ok.
 		if (match == start + term.length()) {
 			return match;
 		}

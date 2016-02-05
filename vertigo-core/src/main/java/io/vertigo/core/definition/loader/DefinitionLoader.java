@@ -52,9 +52,6 @@ public final class DefinitionLoader implements Component {
 	private final Map<String, LoaderPlugin> loaderPlugins;
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
-	/**
-	 * Constructor.
-	 */
 	@Inject
 	public DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);

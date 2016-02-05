@@ -18,11 +18,13 @@
  */
 package io.vertigo.vega.webservice;
 
+import io.vertigo.lang.Component;
+
 /**
  * WebServices.
  * Used to mark a class, which defines a set of webservices.   
  * @author npiedeloup
  */
-public interface WebServices {
+public interface WebServices extends Component {
 	//
 }

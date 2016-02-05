@@ -26,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,47 +54,40 @@ final class DateQueryParserUtil {
 	}
 
 	private static Map<String, Integer> createCalendarUnits() {
-		final Map<String, Integer> units = new HashMap<>(5);
-		units.put("y", Calendar.YEAR);
-		units.put("M", Calendar.MONTH);
-		units.put("w", Calendar.WEEK_OF_YEAR);
-		units.put("d", Calendar.DAY_OF_YEAR);
-		units.put("h", Calendar.HOUR_OF_DAY);
-		units.put("m", Calendar.MINUTE);
-		units.put("s", Calendar.SECOND);
-		return units;
+		return new MapBuilder<String, Integer>()
+				.put("y", Calendar.YEAR)
+				.put("M", Calendar.MONTH)
+				.put("w", Calendar.WEEK_OF_YEAR)
+				.put("d", Calendar.DAY_OF_YEAR)
+				.put("h", Calendar.HOUR_OF_DAY)
+				.put("m", Calendar.MINUTE)
+				.put("s", Calendar.SECOND)
+				.build();
 	}
 
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
 	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date au format dd/MM/yy
 	 *
-	 * @param dateQuery Expression
+	 * @param dateExpression Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 * @return date
 	 */
-	static Date parse(final String dateQuery, final String datePattern) {
-		Assertion.checkArgNotEmpty(dateQuery);
+	static Date parse(final String dateExpression, final String datePattern) {
+		Assertion.checkArgNotEmpty(dateExpression);
 		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
-		if (NOW.equals(dateQuery)) {
+		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
 			return new Date();
 		}
-		if (dateQuery.startsWith(NOW)) {
+		if (dateExpression.startsWith(NOW)) {
 			final int index = NOW.length();
-			final char operator = dateQuery.charAt(index);
-			final int sign;
-			if ('+' == operator) {
-				sign = 1;
-			} else if ('-' == operator) {
-				sign = -1;
-			} else {
-				throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateQuery);
-			}
+			final char operator = dateExpression.charAt(index);
+			final int sign = buildSign(dateExpression, operator);
 			//---
 			//operand = 21d
-			final String operand = dateQuery.substring(index + 1);
+			final String operand = dateExpression.substring(index + 1);
 			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
@@ -111,16 +103,30 @@ final class DateQueryParserUtil {
 			calendar.add(CALENDAR_UNITS.get(calendarUnit), unitCount);
 			return calendar.getTime();
 		}
+		return format(dateExpression, datePattern);
+	}
 
+	private static Date format(final String dateExpression, final String datePattern) {
 		//We are expecting a date respectig pattern
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 		try {
 			final Calendar calendar = new GregorianCalendar();
-			calendar.setTime(simpleDateFormat.parse(dateQuery));
+			calendar.setTime(simpleDateFormat.parse(dateExpression));
 			return calendar.getTime();
 		} catch (final ParseException e) {
-			throw new VSystemException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+			throw new VSystemException("La date " + dateExpression + " ne respecte pas le pattern : " + simpleDateFormat.toPattern());
 		}
+	}
 
+	private static int buildSign(final String dateExpression, final char operator) {
+		final int sign;
+		if ('+' == operator) {
+			sign = 1;
+		} else if ('-' == operator) {
+			sign = -1;
+		} else {
+			throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateExpression);
+		}
+		return sign;
 	}
 }

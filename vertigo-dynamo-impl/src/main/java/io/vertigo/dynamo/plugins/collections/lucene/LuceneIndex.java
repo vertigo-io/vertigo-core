@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Option;
 
 import java.io.IOException;
@@ -50,13 +50,11 @@ public interface LuceneIndex<D extends DtObject> {
 	 * @param keywords Keywords
 	 * @param searchedFields Searched field list
 	 * @param listFilters Added filters
-	 * @param skip skip elements
-	 * @param top max elements (max number of result)
-	 * @param sortState Sort information
+	 * @param listState list state
 	 * @param boostedField Field use for boosting score
 	 * @return Filtered ordered list
 	 * @throws IOException Query error
 	 */
-	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField) throws IOException;
+	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField) throws IOException;
 
 }

@@ -37,14 +37,16 @@ public final class EntityGrammar {
 	private final List<Entity> entities;
 
 	/**
-	 * Ajout d'une grammaire.
+	 * Constructor of a grammar composed of entities.
+	 * @param entities List of entities which define the grammar  
 	 */
 	public EntityGrammar(final Entity... entities) {
 		this(Arrays.asList(entities));
 	}
 
 	/**
-	 * Ajout d'une grammaire.
+	 * Constructor of a grammar composed of entities.
+	 * @param entities List of entities which define the grammar  
 	 */
 	public EntityGrammar(final List<Entity> entities) {
 		Assertion.checkNotNull(entities);
@@ -53,7 +55,8 @@ public final class EntityGrammar {
 	}
 
 	/**
-	 * @return Liste des entités.
+	 * Returns the list of entities
+	 * @return List of entities.
 	 */
 	public List<Entity> getEntities() {
 		return entities;

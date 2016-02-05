@@ -29,8 +29,9 @@ import io.vertigo.dynamo.domain.model.DtObject;
  */
 public interface DtListFunction<D extends DtObject> {
 	/**
-	 * @param input List
-	 * @return List output
+	 * Applies a transform function. 
+	 * @param input the input
+	 * @return List the output
 	 */
 	DtList<D> apply(final DtList<D> input);
 }

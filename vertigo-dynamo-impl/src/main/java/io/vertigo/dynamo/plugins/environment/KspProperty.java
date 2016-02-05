@@ -148,7 +148,7 @@ public final class KspProperty {
 	/**
 	 * Racine des éléments de cette définition.
 	 */
-	public static final String STORE_NAME = "STORE_NAME";
+	public static final String DATA_SPACE = "STORE_NAME";
 
 	//==============================
 	//----Mda

@@ -40,7 +40,7 @@ public final class FSFile extends AbstractVFile {
 	 * @param file Fichier en lui même (non null)
 	 */
 	public FSFile(final String fileName, final String mimeType, final File file) {
-		super(fileName, mimeType, new Date(file.lastModified()), Long.valueOf(file.length()));
+		super(fileName, mimeType, new Date(file.lastModified()), file.length());
 		//-----
 		this.file = file;
 	}

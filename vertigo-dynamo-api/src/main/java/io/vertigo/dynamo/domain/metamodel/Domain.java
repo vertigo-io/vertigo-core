@@ -42,9 +42,7 @@ import java.util.List;
  */
 @DefinitionPrefix("DO")
 public final class Domain implements Definition {
-	/** Nom du domaine.*/
 	private final String name;
-	/** Type primitif. */
 	private final DataType dataType;
 
 	/** Formatter. */
@@ -70,16 +68,17 @@ public final class Domain implements Definition {
 	}
 
 	/**
-	 * Constructeur.
-	 * @param dataType Type Dynamo
-	 * @param formatterDefinition Formatter du domaine
-	 * @param constraintDefinitions Liste des definitions de contraintes du domaine
+	 * Constructor.
+	 * @param name the name of the domain
+	 * @param dataType the type of the domain
+	 * @param formatterDefinition the formatter 
+	 * @param constraintDefinitions the list of constraints
 	 * @param properties Map des (DtProperty, value)
 	 */
 	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
 		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
-		//		Assertion.checkNotNull(formatterDefinition);
+		//formatterDefinition can be null
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----
@@ -120,18 +119,18 @@ public final class Domain implements Definition {
 	}
 
 	/**
-	 * Retourne le type du domaine.
+	 * Returns the type of the domain.
 	 *
-	 * @return Type du champ.
+	 * @return the type.
 	 */
 	public DataType getDataType() {
 		return dataType;
 	}
 
 	/**
-	 * Retourne le formatter du domaine.
+	 * Returns the formatter of the domain.
 	 *
-	 * @return Formatter.
+	 * @return the formatter.
 	 */
 	public FormatterDefinition getFormatter() {
 		Assertion.checkNotNull(formatterDefinitionRef, "no formatter defined on {0}", this);

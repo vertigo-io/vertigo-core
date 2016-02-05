@@ -20,6 +20,11 @@ package io.vertigo.app.config;
 
 import io.vertigo.core.spaces.definiton.Definition;
 
+/**
+ * Provides a list of definitions through an iterable.
+ * @author pchretien
+ *
+ */
 public interface DefinitionProvider extends Iterable<Definition> {
 	//
 }

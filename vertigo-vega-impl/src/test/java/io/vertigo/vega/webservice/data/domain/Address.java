@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Address implements DtObject {
 	private static final long serialVersionUID = 8922834274442256496L;
 
-	@Field(domain = "DO_ID", type = "PRIMARY_KEY", required = true, label = "address Id")
+	@Field(domain = "DO_ID", type = "ID", required = true, label = "address Id")
 	private Long adrId;
 	@Field(domain = "DO_TEXTE_50", label = "street1")
 	private String street1;

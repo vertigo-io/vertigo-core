@@ -76,7 +76,7 @@ final class DynamicSolver {
 		return orderedList;
 	}
 
-	private boolean isSolved(final DefinitionSpace definitionSpace,
+	private static boolean isSolved(final DefinitionSpace definitionSpace,
 			final DynamicDefinitionRepository definitionRepository,
 			final List<DynamicDefinition> orderedList,
 			final DynamicDefinition definition,

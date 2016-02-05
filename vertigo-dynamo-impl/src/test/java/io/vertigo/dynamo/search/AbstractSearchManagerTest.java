@@ -38,7 +38,9 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
+import io.vertigo.dynamock.domain.car.CarSearchLoader;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
+import io.vertigo.lang.VUserException;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -62,7 +68,7 @@ import org.junit.Test;
  * @author  npiedeloup
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
-	private final static List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
+	private static final List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
@@ -89,6 +95,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
+		final CarSearchLoader carSearchLoader = getApp().getComponentSpace().resolve(CarSearchLoader.class);
+		carSearchLoader.bindDataBase(carDataBase);
+
 		facetSuffix = CarFacetInitializer.FCT_CAR_SUFFIX;
 		makeFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_MAKE_CAR, FacetDefinition.class);
 		yearFacetDefinition = definitionSpace.resolve(CarFacetInitializer.FCT_YEAR_CAR, FacetDefinition.class);
@@ -165,6 +174,46 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndex() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), size);
+
+		//On supprime tout
+		remove("*:*");
+		size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(0L, size);
+
+		//on reindex
+		final Future<Long> nbReindexed = searchManager.reindexAll(carIndexDefinition);
+		//on attend 5s + le temps de reindexation
+		size = nbReindexed.get(10, TimeUnit.SECONDS);
+		Assert.assertEquals(carDataBase.size(), size);
+		waitIndexation();
+
+		size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), size);
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testIndexCount() {
+		index(false);
+		final long size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), size);
+	}
+
+	/**
 	 * Test de requétage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */
@@ -217,6 +266,73 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		size = query("DESCRIPTION:l'avenir");
 		Assert.assertEquals(carDataBase.containsDescription("l'avenir"), size);
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testCopyFieldsQuery() {
+		index(false);
+		waitIndexation();
+		long size;
+		size = query("*:*");
+		Assert.assertEquals(carDataBase.size(), size);
+
+		size = query("_all:(+peugeot +diesel)");
+		Assert.assertEquals(3L, size);
+
+		size = query("ALL_TEXT:(+peugeot +diesel)");
+		Assert.assertEquals(3L, size);
+
+		size = query("MODEL_SORT:(806)");
+		Assert.assertEquals(0L, size);
+
+		size = query("MODEL_SORT:(806*)");
+		Assert.assertEquals(1L, size);
+
+		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number
+		Assert.assertEquals(1L, size);
+
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testBadSyntaxQuery() {
+		index(false);
+		waitIndexation();
+		long size;
+		size = query("_all:(error or)");
+		Assert.assertEquals(0L, size);
+
+		size = query("_all:or");
+		Assert.assertEquals(0L, size);
+
+		try {
+			size = query(" OR ");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
+		try {
+			size = query("_all: OR ");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
+		try {
+			size = query("_all:(error");
+			Assert.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
 	}
 
 	/**
@@ -313,7 +429,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assert.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR" + facetSuffix);
@@ -351,7 +467,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assert.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet makeFacet = getFacetByName(result, "FCT_MAKE" + facetSuffix);
@@ -366,17 +482,32 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase().equals(make)) {
 				found = true;
-				//System.out.println("make" + entry.getKey().getLabel().getDisplay());
 				Assert.assertEquals(carDataBase.getByMake(make).size(), entry.getValue().intValue());
 			}
 		}
 		Assert.assertTrue(found);
 
+		checkOrderByCount(makeFacet);
+		checkOrderByAlpha(getFacetByName(result, "FCT_MAKE" + facetSuffix + "_ALPHA"));
+		checkOrderByCount(getFacetByName(result, "FCT_DESCRIPTION" + facetSuffix));
+	}
+
+	private void checkOrderByCount(final Facet facet) {
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;
-		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
+		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 			Assert.assertTrue("Ordre des facettes par 'count' non respecté", entry.getValue().intValue() <= lastCount);
 			lastCount = entry.getValue().intValue();
+		}
+	}
+
+	private void checkOrderByAlpha(final Facet facet) {
+		//on vérifie l'ordre
+		String lastLabel = "";
+		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
+			final String label = entry.getKey().getLabel().getDisplay();
+			Assert.assertTrue("Ordre des facettes par 'alpha' non respecté", label.compareTo(lastLabel) >= 0);
+			lastLabel = label;
 		}
 	}
 
@@ -822,9 +953,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private static URI createURI(final Car car) {
+	private static URI<Car> createURI(final Car car) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI(dtDefinition, DtObjectUtil.getId(car));
+		return new URI<>(dtDefinition, DtObjectUtil.getId(car));
 	}
 
 	private void doIndex(final boolean all) {
@@ -895,8 +1026,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);
 	}
 
-	private static URI createURI(final long id) {
-		return new URI(DtObjectUtil.findDtDefinition(Car.class), id);
+	private static URI<Car> createURI(final long id) {
+		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
 	}
 
 	private static void waitIndexation() {

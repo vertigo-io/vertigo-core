@@ -48,8 +48,8 @@ public final class Famille implements DtObject {
 	private DtList<Car> voituresLocation;
 
 	/**
-	 * Champ : PRIMARY_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant
-	 * de la famille'.
+	 * Champ : ID. 
+	 * rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
 	 *
 	 * @return Long famId <b>Obligatoire</b>
 	 */
@@ -57,14 +57,14 @@ public final class Famille implements DtObject {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_FAMILLE")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "FAM_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "identifiant de la famille")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la famille")
 	public final Long getFamId() {
 		return famId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de
-	 * la famille'.
+	 * Champ : ID. 
+	 * DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
 	 *
 	 * @param famId
 	 *            Long <b>Obligatoire</b>
@@ -124,7 +124,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
-			voituresFamille = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
+			voituresFamille = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().readAll(fkDtListURI);
 		}
 		return voituresFamille;
 	}
@@ -152,7 +152,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
-			voituresLocation = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
+			voituresLocation = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().readAll(fkDtListURI);
 		}
 		return voituresLocation;
 	}

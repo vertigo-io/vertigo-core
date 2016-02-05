@@ -40,7 +40,7 @@ public final class ScriptSeparator implements Serializable {
 	/**
 	 * Le paramètre est-il défini par un simple séparateur.
 	 */
-	private final boolean isCar;
+	private final boolean separatorIsChar;
 
 	/**
 	 * Si le paramètre est délimité par une String.
@@ -64,7 +64,7 @@ public final class ScriptSeparator implements Serializable {
 	 * @param separator Séparateur de début et de fin
 	 */
 	public ScriptSeparator(final char separator) {
-		isCar = true;
+		separatorIsChar = true;
 		separatorCar = separator;
 		beginSeparator = null;
 		endSeparator = null;
@@ -81,60 +81,74 @@ public final class ScriptSeparator implements Serializable {
 		Assertion.checkArgNotEmpty(beginSeparator);
 		Assertion.checkArgNotEmpty(endSeparator);
 		//-----
-		isCar = false;
+		separatorIsChar = false;
 		separatorCar = ' ';
 		this.beginSeparator = beginSeparator;
 		this.endSeparator = endSeparator;
 	}
 
 	public String getBeginSeparator() {
-		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
+		Assertion.checkArgument(!separatorIsChar, "type de séparateur inconsistant");
 		//-----
 		return beginSeparator;
 	}
 
 	public String getEndSeparator() {
-		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
+		Assertion.checkArgument(!separatorIsChar, "type de séparateur inconsistant");
 		//-----
 		return endSeparator;
 	}
 
 	/**
-	 * @return Caractère de séparation, i le paramètre est délimité par un char.
+	 * @return the separator (if this separator is defined by a simple char).
 	 */
 	public char getSeparator() {
-		Assertion.checkArgument(isCar, "type de séparateur inconsistant");
+		Assertion.checkArgument(separatorIsChar, "type de séparateur inconsistant");
 		//-----
 		return separatorCar;
 	}
 
 	/**
-	 * @return Si le séparateur est un simple caractère
+	 * @return if the separator is a simple char
 	 */
 	public boolean isCar() {
-		return isCar;
+		return separatorIsChar;
 	}
 
-	public int indexOfEndCaracter(final String script, final int start) {
-		if (isCar) {
-			return script.indexOf(separatorCar, start);
-		}
-		return script.indexOf(endSeparator, start);
-
-	}
-
+	/**
+	 * Returns the next position of the begin separator.
+	 * 
+	 * @param script text
+	 * @param start start
+	 * @return the next position of the begin separator
+	 */
 	public int indexOfBeginCaracter(final String script, final int start) {
-		if (isCar) {
+		if (separatorIsChar) {
 			return script.indexOf(separatorCar, start);
 		}
 		return script.indexOf(beginSeparator, start);
 
 	}
 
+	/**
+	 * Returns the next position of the end separator.
+	 * 
+	 * @param script text
+	 * @param start start
+	 * @return the next position of the end separator
+	 */
+	public int indexOfEndCaracter(final String script, final int start) {
+		if (separatorIsChar) {
+			return script.indexOf(separatorCar, start);
+		}
+		return script.indexOf(endSeparator, start);
+
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		if (isCar) {
+		if (separatorIsChar) {
 			return String.valueOf(separatorCar);
 		}
 		return beginSeparator + " ; " + endSeparator;

@@ -46,7 +46,7 @@ public final class DslFixedQuery implements DslQuery {
 	/**
 	 * @return fixedQuery
 	 */
-	public final String getFixedQuery() {
+	public String getFixedQuery() {
 		return fixedQuery;
 	}
 

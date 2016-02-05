@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -129,7 +130,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
-			logMappings(indexDefinition);
+			logMappings();
 			types.add(indexDefinition.getName().toLowerCase());
 		}
 
@@ -158,7 +159,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		return indexSettingsDirty;
 	}
 
-	private void logMappings(final SearchIndexDefinition indexDefinition) {
+	private void logMappings() {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
@@ -212,7 +213,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
-		createElasticStatement(indexDefinition).remove(indexDefinition, uri);
+		createElasticStatement(indexDefinition).remove(uri);
 		markToOptimize(indexDefinition);
 	}
 
@@ -240,7 +241,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(listFilter);
 		//-----
-		createElasticStatement(indexDefinition).remove(indexDefinition, listFilter);
+		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(indexDefinition);
 	}
 
@@ -265,14 +266,18 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.field("type", "binary")
 					.endObject();
 			/* 3 : Les champs du dto index */
+			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
-				if (indexType.isDefined()) {
+				if (indexType.isDefined() || copyFromFields.contains(dtField)) {
 					typeMapping.startObject(dtField.getName());
-					typeMapping
-							.field("type", indexType.get().getIndexDataType())
-							.field("analyzer", indexType.get().getIndexAnalyzer());
+					if (indexType.isDefined()) {
+						appendIndexTypeMapping(typeMapping, indexType);
+					}
+					if (copyFromFields.contains(dtField)) {
+						appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
+					}
 					typeMapping.endObject();
 				}
 			}
@@ -289,6 +294,25 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		} catch (final IOException e) {
 			throw new WrappedException("Serveur ElasticSearch indisponible", e);
 		}
+	}
+
+	private static void appendIndexCopyToMapping(final SearchIndexDefinition indexDefinition, final XContentBuilder typeMapping, final DtField dtField) throws IOException {
+		final List<DtField> copyToFields = indexDefinition.getIndexCopyToFields(dtField);
+		if (copyToFields.size() == 1) {
+			typeMapping.field("copy_to", copyToFields.get(0).getName());
+		} else {
+			final String[] copyToFieldNames = new String[copyToFields.size()];
+			for (int i = 0; i < copyToFieldNames.length; i++) {
+				copyToFieldNames[i] = copyToFields.get(i).getName();
+			}
+			typeMapping.field("copy_to", copyToFieldNames);
+		}
+	}
+
+	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Option<IndexType> indexType) throws IOException {
+		typeMapping
+				.field("type", indexType.get().getIndexDataType())
+				.field("analyzer", indexType.get().getIndexAnalyzer());
 	}
 
 	private void markToOptimize(final SearchIndexDefinition indexDefinition) {

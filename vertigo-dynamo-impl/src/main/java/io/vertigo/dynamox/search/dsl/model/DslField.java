@@ -54,21 +54,21 @@ public final class DslField {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 
 	/**
 	 * @return fieldName
 	 */
-	public final String getFieldName() {
+	public String getFieldName() {
 		return fieldName;
 	}
 
 	/**
 	 * @return postBody
 	 */
-	public final String getPostBody() {
+	public String getPostBody() {
 		return postBody;
 	}
 

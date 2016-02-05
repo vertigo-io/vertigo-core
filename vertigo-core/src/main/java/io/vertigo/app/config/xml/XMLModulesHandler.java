@@ -25,6 +25,7 @@ import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
@@ -35,12 +36,14 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author npiedeloup, pchretien
  */
 final class XMLModulesHandler extends DefaultHandler {
+	private final AppConfigBuilder appConfigBuilder;
+	//Global Params
+	private final XMLModulesParams params;
+
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
-	//Global Params
-	private final XMLModulesParams params;
-	private final AppConfigBuilder appConfigBuilder;
+	private TagName current;
 
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
 		Assertion.checkNotNull(appConfigBuilder);
@@ -54,6 +57,7 @@ final class XMLModulesHandler extends DefaultHandler {
 		config,
 		boot,
 		module,
+		init,
 		//---
 		definitions,
 		resource,
@@ -62,10 +66,10 @@ final class XMLModulesHandler extends DefaultHandler {
 		component,
 		plugin,
 		param,
-		aspect
+		aspect,
+		//-----
+		initializer
 	}
-
-	private TagName current;
 
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
@@ -85,12 +89,15 @@ final class XMLModulesHandler extends DefaultHandler {
 				pluginConfigBuilder.endPlugin();
 				pluginConfigBuilder = null;
 				break;
-			case aspect: //non géré
-			case param: //non géré
-			case definitions: //non géré
-			case provider: //non géré
-			case resource: //non géré
-			case config: //non géré
+			case aspect:
+			case param:
+			case definitions:
+			case provider:
+			case resource:
+			case config:
+			case init:
+			case initializer:
+				//non géré
 			default:
 		}
 	}
@@ -106,28 +113,24 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
-				final String superClass = attrs.getValue("inheritance");
 				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
-				if (api != null) {
-					if (!Boolean.parseBoolean(api)) {
-						moduleConfigBuilder.withNoAPI();
-					}
-				}
-				if (superClass != null) {
-					moduleConfigBuilder.withInheritance(ClassUtil.classForName(superClass));
+				if (api != null && !Boolean.parseBoolean(api)) {
+					moduleConfigBuilder.withNoAPI();
 				}
 				break;
 			case component:
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
-				final Class<?> componentImplClass = ClassUtil.classForName(attrs.getValue("class"));
+				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
 				if (componentApi != null) {
 					final Class<?> componentClass = resolveInterface(componentApi, componentImplClass);
-					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentClass, componentImplClass);
+					componentConfigBuilder = moduleConfigBuilder.beginComponent((Class<? extends Component>) componentClass, componentImplClass);
 				} else {
 					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentImplClass);
 				}
-				final String initClass = attrs.getValue("initClass");
+				break;
+			case initializer:
+				final String initClass = attrs.getValue("class");
 				if (initClass != null) {
 					final Class componentInitialierClass = ClassUtil.classForName(initClass);
 					appConfigBuilder.addInitializer(componentInitialierClass);
@@ -162,15 +165,17 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
 				break;
-			case definitions: //non géré
-			case config: //non géré
+			case definitions:
+			case config:
+			case init:
+				//non géré
 			default:
 		}
 	}
 
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
 	//Cette interface doit exister et être unique.
-	private static Class<?> resolveInterface(final String simpleName, final Class<?> clazz) {
+	private static Class<?> resolveInterface(final String simpleName, final Class<? extends Component> clazz) {
 		Class<?> found = null;
 		for (final Class<?> interfaceClazz : ClassUtil.getAllInterfaces(clazz)) {
 			if (simpleName.equals(interfaceClazz.getSimpleName())) {

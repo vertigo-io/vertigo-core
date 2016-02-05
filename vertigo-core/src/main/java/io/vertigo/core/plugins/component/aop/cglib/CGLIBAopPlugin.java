@@ -21,6 +21,7 @@ package io.vertigo.core.plugins.component.aop.cglib;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Method;
@@ -32,13 +33,14 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 
 /**
+ * This class implements the aspects using the CGLIB library.
  * @author pchretien
  */
 public final class CGLIBAopPlugin implements AopPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object create(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
+	public Component create(final Component instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
@@ -48,11 +50,11 @@ public final class CGLIBAopPlugin implements AopPlugin {
 		//-----
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setCallback(createCallBack(instance, joinPoints));
-		final Class<?> implClass = instance.getClass();
+		final Class<? extends Component> implClass = instance.getClass();
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 		enhancer.setInterfaces(intfs);
 		enhancer.setSuperclass(implClass);
-		return enhancer.create();
+		return Component.class.cast(enhancer.create());
 	}
 
 	private static Callback createCallBack(final Object instance, final Map<Method, List<Aspect>> joinPoints) {

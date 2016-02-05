@@ -22,9 +22,9 @@ import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.lang.Plugin;
 
 /**
- * Agent de collecte.
+ * Collect agent.
  * @author pchretien
  */
 public interface AnalyticsAgentPlugin extends AnalyticsAgent, Plugin {
-	//
+	// nothing more
 }

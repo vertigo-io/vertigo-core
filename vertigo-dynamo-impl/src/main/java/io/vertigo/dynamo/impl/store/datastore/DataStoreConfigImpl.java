@@ -19,13 +19,10 @@
 package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
-import io.vertigo.dynamo.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -39,66 +36,50 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	private final CacheDataStoreConfig cacheStoreConfig;
 	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
-	private final StoreManager storeManager;
-	private final EventManager eventsManager;
-
 	/**
 	 * Constructeur.
 	 * @param dataStorePlugins DataStorePlugins list
 	 * @param cacheManager Manager de gestion du cache
-	 * @param storeManager Manager de persistence
-	 * @param eventsManager Manager d'events
 	 */
-	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager, final StoreManager storeManager, final EventManager eventsManager) {
+	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager) {
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(cacheManager);
-		Assertion.checkNotNull(storeManager);
-		Assertion.checkNotNull(eventsManager);
 		//-----
-		this.storeManager = storeManager;
-		this.eventsManager = eventsManager;
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
 		logicalDataStoreConfig = new LogicalDataStoreConfig(dataStorePlugins);
 	}
 
 	/**
-	 * @return Manager de persistence
-	 */
-	public StoreManager getStoreManager() {
-		return storeManager;
-	}
-
-	/**
-	 * @return Manager d'events
-	 */
-	public EventManager getEventsManager() {
-		return eventsManager;
-	}
-
-	/**
-	 * Enregistre si un DT peut être mis en cache et la façon de charger les données.
-	 * @param dtDefinition Définition de DT
-	 * @param timeToLiveInSeconds Durée de vie du cache
-	 * @param isReloadedByList Si ce type d'objet doit être chargé de façon ensembliste ou non
+	 * Register DtDefinition as Cacheable and define cache behaviors.
+	 * @param dtDefinition Dt definition
+	 * @param timeToLiveInSeconds time to live in cache
+	 * @param isReloadedByList Set if reload should be done by full list or one by one when missing
+	 * @param serializeElements Set if elements should be serialized or not (serialization guarantee elements are cloned and not modified)
 	 */
 	@Override
-	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
+	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
+		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList, serializeElements);
 	}
 
+	/**
+	 * @return Data store config
+	 */
 	public CacheDataStoreConfig getCacheStoreConfig() {
 		return cacheStoreConfig;
 	}
 
+	/**
+	 * @return logical data store config
+	 */
 	public LogicalDataStoreConfig getLogicalStoreConfig() {
 		return logicalDataStoreConfig;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String getConnectionName(final String storeName) {
-		return logicalDataStoreConfig.getConnectionName(storeName);
+	public String getConnectionName(final String dataSpace) {
+		return logicalDataStoreConfig.getConnectionName(dataSpace);
 	}
 }

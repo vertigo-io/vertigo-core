@@ -18,32 +18,32 @@
  */
 package io.vertigo.dynamock.domain.car;
 
-import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamox.search.AbstractSearchLoader;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-public final class CarSearchLoader implements SearchLoader<Car, Car> {
+public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> {
 	private static final int SEARCH_CHUNK_SIZE = 5;
 	private final SearchIndexDefinition indexDefinition;
 	private CarDataBase carDataBase;
+	private final VTransactionManager transactionManager;
 
 	@Inject
-	public CarSearchLoader(final SearchManager searchManager) {
+	public CarSearchLoader(final SearchManager searchManager, final VTransactionManager transactionManager) {
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		this.transactionManager = transactionManager;
 	}
 
 	/**
@@ -58,6 +58,9 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final List<URI<Car>> uris) {
+		Assertion.checkNotNull(carDataBase, "carDataBase not bound");
+		Assertion.checkState(transactionManager.hasCurrentTransaction(), "SearchLoader must be use in Tx");
+		//-----
 		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>(uris.size());
 		final Map<Long, Car> carPerId = new HashMap<>();
 		for (final Car car : carDataBase) {
@@ -72,45 +75,9 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<SearchChunk<Car>> chunk(final Class<Car> keyConceptClass) {
-
-		return new Iterable<SearchChunk<Car>>() {
-			private final Iterator<SearchChunk<Car>> iterator = new Iterator<SearchChunk<Car>>() {
-				private SearchChunk<Car> current = null;
-
-				@Override
-				public boolean hasNext() {
-					return hasNextChunk(keyConceptClass, current);
-				}
-
-				@Override
-				public SearchChunk<Car> next() {
-					final SearchChunk<Car> next = nextChunk(keyConceptClass, current);
-					current = next;
-					return current;
-				}
-
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException("This list is unmodifiable");
-				}
-			};
-
-			@Override
-			public Iterator<SearchChunk<Car>> iterator() {
-				return iterator;
-			}
-
-		};
-	}
-
-	private SearchChunk<Car> nextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
-		Long lastId = -1L;
-		if (previousChunck != null) {
-			final List<URI<Car>> previousUris = previousChunck.getAllURIs();
-			Assertion.checkState(!previousUris.isEmpty(), "No more SearchChunk for keyConcept {0}, ensure you use Iterable pattern or call hasNext before next", keyConceptClass.getSimpleName());
-			lastId = (Long) previousUris.get(previousUris.size() - 1).getId();
-		}
+	protected List<URI<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+		Assertion.checkState(transactionManager.hasCurrentTransaction(), "SearchLoader must be use in Tx");
+		//-----
 		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;
@@ -123,31 +90,6 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 			}
 			i++;
 		}
-		return new SearchChunkImpl<>(uris);
-	}
-
-	private static boolean hasNextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
-		//il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
-		return previousChunck == null || !previousChunck.getAllURIs().isEmpty();
-	}
-
-	public static class SearchChunkImpl<S extends KeyConcept> implements SearchChunk<S> {
-		private final List<URI<S>> uris;
-
-		/**
-		 * @param uris Liste des uris du chunk
-		 */
-		public SearchChunkImpl(final List<URI<S>> uris) {
-			Assertion.checkNotNull(uris);
-			//----
-			this.uris = Collections.unmodifiableList(uris); //pas de clone pour l'instant
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public List<URI<S>> getAllURIs() {
-			return uris;
-		}
-
+		return uris;
 	}
 }

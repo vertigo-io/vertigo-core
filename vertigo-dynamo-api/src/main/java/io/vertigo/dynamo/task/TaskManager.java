@@ -20,13 +20,13 @@ package io.vertigo.dynamo.task;
 
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * Manages the execution of local (transactional) tasks.
  * @author pchretien
  */
-public interface TaskManager extends Component {
+public interface TaskManager extends Manager {
 	/**
 	 * Execution of a task. 
 	 * This execution is done in the current thread.

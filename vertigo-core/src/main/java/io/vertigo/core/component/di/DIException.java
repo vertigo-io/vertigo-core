@@ -19,19 +19,27 @@
 package io.vertigo.core.component.di;
 
 /**
- * Exception générique aux services relatifs à la DI.
- * Cette exception est de type runtime, elle sert à valider le bon fonctionnement du moteur dans les tests.
+ * Thrown if an exception occures during a method concerning dependency injection. 
  * 
  * @author pchretien
  */
 public final class DIException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public DIException(final String message) {
-		super(message);
+	/**
+	 * Constructor.
+	 * @param msg messagae
+	 */
+	public DIException(final String msg) {
+		super(msg);
 	}
 
-	public DIException(final String message, final Throwable t) {
-		super(message, t);
+	/**
+	 * Constructor.
+	 * @param msg message 
+	 * @param t cause exception
+	 */
+	public DIException(final String msg, final Throwable t) {
+		super(msg, t);
 	}
 }

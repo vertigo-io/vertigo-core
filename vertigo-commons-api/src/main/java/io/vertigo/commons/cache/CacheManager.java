@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 import java.io.Serializable;
 
@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * @author pchretien
  */
-public interface CacheManager extends Component {
+public interface CacheManager extends Manager {
 	/**
 	 * Configuration des caches.
 	 * Il est préférable d'appeler cette méthode une seule fois par type de cache et au démarrage.

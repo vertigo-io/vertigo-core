@@ -39,7 +39,7 @@ public final class CommandType implements DtMasterData {
 	private String label;
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long ctyId <b>Obligatoire</b>
 	 */
@@ -47,13 +47,13 @@ public final class CommandType implements DtMasterData {
 	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_TYPE")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
 	@javax.persistence.Column(name = "CTY_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", required = true, label = "id")
+	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getCtyId() {
 		return ctyId;
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY.
+	 * Champ : ID.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param ctyId Long <b>Obligatoire</b>
 	 */

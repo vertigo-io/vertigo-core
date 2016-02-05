@@ -29,11 +29,17 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 /**
+ * The Boot class is reponsible for the boot phase. 
+ * 
  * @author pchretien
  */
 final class Boot {
 	private final BootConfig bootConfig;
 
+	/**
+	 * Constructor.
+	 * @param bootConfig The config of the boot
+	 */
 	Boot(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
 		//-----

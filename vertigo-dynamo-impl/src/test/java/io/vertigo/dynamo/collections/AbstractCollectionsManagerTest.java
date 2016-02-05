@@ -54,6 +54,9 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 	}
 
+	/**
+	 * Description.
+	 */
 	@Test
 	public void testDescription() {
 		testDescription(collectionsManager);
@@ -65,7 +68,7 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testCreateSortState() {
 		final DtListProcessor sortStateAsc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, true, true);
+				.sort("LIBELLE", false);
 		Assert.assertNotNull(sortStateAsc);
 	}
 
@@ -83,7 +86,7 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 			dtc.add(mocka);
 		}
 		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, true, true);
+				.sort("LIBELLE", false);
 		final DtList<Famille> sortedDtc = sortState.apply(dtc);
 		nop(sortedDtc);
 
@@ -104,75 +107,20 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 		// ================================================ ignoreCase
 		sortDtc = collectionsManager
 				.createDtListProcessor()
-				.sort("LIBELLE", false, true, true)
+				.sort("LIBELLE", false)
 				.apply(dtc);
 
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
 
-		// ======================== Ascendant
-		// =================================== nullLast
-		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, true, false)
-				.apply(dtc);
-
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { Ba, aaa, bb, null }, indexId(sortDtc));
-
-		// ======================== Ascendant
-		// =================================== not nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, false, true)
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, aaa, Ba, bb }, indexId(sortDtc));
-
-		// ======================== Ascendant
-		// =================================== not nullLast
-		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, false, false)
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, Ba, aaa, bb }, indexId(sortDtc));
-
-		// ======================== Descendant
-		// =================================== nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", true, true, true)
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { bb, Ba, aaa, null }, indexId(sortDtc));
-
-		// ======================== Descendant
-		// =================================== nullLast
-		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", true, true, false)
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { bb, aaa, Ba, null }, indexId(sortDtc));
-
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
 		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", true, false, true)
+				.sort("LIBELLE", true)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { null, bb, Ba, aaa }, indexId(sortDtc));
-
-		// ======================== Descendant
-		// =================================== not nullLast
-		// ============================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", true, false, false)
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, bb, aaa, Ba }, indexId(sortDtc));
 	}
 
 	/**
@@ -342,41 +290,17 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 
 		// Cas de base.
 		// ======================== Ascendant
-		// =================================== nullLast
-		// ================================================ ignoreCase
 		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
-				.sort("LIBELLE", false, true)
+				.sort("LIBELLE", false)
 				.build()
 				.apply(dtc);
 
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
 
-		// ======================== Ascendant
-		// =================================== not nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
-				.sort("LIBELLE", false, false)
-				.build()
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, aaa, Ba, bb }, indexId(sortDtc));
-
 		// ======================== Descendant
-		// =================================== nullLast
-		// ================================================ ignoreCase
 		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
-				.sort("LIBELLE", true, true)
-				.build()
-				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { bb, Ba, aaa, null }, indexId(sortDtc));
-
-		// ======================== Descendant
-		// =================================== not nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
-				.sort("LIBELLE", true, false)
+				.sort("LIBELLE", true)
 				.build()
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
@@ -397,10 +321,10 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
 		Assert.assertEquals(0, list.subList(2, 2).size());
 		// on teste notre implémentation
-		Assert.assertEquals(0, subListWithIndex(createFamilles(), 0, 0).size());
+		//can't test subList(0,0) : illegal argument
 		Assert.assertEquals(2, subListWithIndex(createFamilles(), 0, 2).size());
 		Assert.assertEquals(1, subListWithIndex(createFamilles(), 1, 2).size());
-		Assert.assertEquals(0, subListWithIndex(createFamilles(), 2, 2).size());
+		//can't test subList(2,2) : illegal argument
 	}
 
 	private DtList<Famille> subListWithIndex(final DtList<Famille> dtc, final int start, final int end) {
@@ -469,7 +393,7 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filterByValue("LIBELLE", "aaa");
 		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LIBELLE", false, true, true);
+				.sort("LIBELLE", false);
 
 		final int sizeDtc = dtc.size();
 

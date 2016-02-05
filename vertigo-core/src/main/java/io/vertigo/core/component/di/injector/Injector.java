@@ -80,7 +80,9 @@ public final class Injector {
 	}
 
 	/**
-	 * Injection des propriétés dans une instance.
+	 * Inject members/properties into an instance in a contex defined by a container.
+	 * @param instance Object in which the members/propertis will be injected
+	 * @param container container of all the components that can be injected in the instance
 	 */
 	public static void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);

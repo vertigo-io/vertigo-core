@@ -18,16 +18,28 @@
  */
 package io.vertigo.dynamo.impl.transaction.listener;
 
+/**
+ * This class is used to listen events during the execution of the transaction.
+ *
+ * @author npiedeloup
+ */
 public interface VTransactionListener {
 	/**
-	 * Enregistre le début d'une transaction.
+	 * Notifies the start of the transaction.
 	 */
-	void onTransactionStart();
+	void onStart();
 
 	/**
-	 * Fin de transaction.
-	 * @param rollback Si la transaction a réussie ou rollbackée
-	 * @param elapsedTime Temps d'exécution en ms
+	 * Notifies the end of the transaction.
+	 * This method is called on commit or rollback.
+	 *
+	 * @param commitSucceeded if the transaction has been committed successfully
+	 * @param elapsedTimeMs the elapse time in ms
 	 */
-	void onTransactionFinish(boolean rollback, long elapsedTime);
+	void onFinish(boolean commitSucceeded, long elapsedTimeMs);
+
+	/**
+	 * @param th the error
+	 */
+	void logAfterCommitError(Throwable th);
 }

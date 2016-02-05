@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * WritableFuture for set result after execution.
- * @see org.apache.http.concurrent.BasicFuture
+ * @see "org.apache.http.concurrent.BasicFuture"
  * @author npiedeloup
  * @param <V> Result type
  */
@@ -65,7 +65,7 @@ public final class WritableFuture<V> implements Future<V> {
 		Assertion.checkNotNull(unit, "Time unit was null");
 		//-----
 		final long msecs = unit.toMillis(timeout);
-		final long startTime = (msecs <= 0) ? 0 : System.currentTimeMillis();
+		final long startTime = msecs <= 0 ? 0 : System.currentTimeMillis();
 		long waitTime = msecs;
 		if (this.completed) {
 			return getResult();

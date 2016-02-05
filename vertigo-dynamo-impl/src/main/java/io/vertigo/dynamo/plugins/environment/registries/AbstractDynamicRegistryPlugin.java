@@ -62,7 +62,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	/**
 	 * Raccourci vers un accesseur typé du PropertyContainer.
 	 * Cette méthode retourne la même valeur que getPropertyValue() !
-	 * @param property Propriété
+	 * @param propertyName Name of the property
 	 * @return Propriété de type Boolean uniquement
 	 */
 	protected static final Boolean getPropertyValueAsBoolean(final DynamicDefinition xdefinition, final String propertyName) {
@@ -72,7 +72,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	/**
 	 * Raccourci vers un accesseur typé du PropertyContainer.
 	 * Cette méthode retourne la même valeur que getPropertyValue() !
-	 * @param property Propriété
+	 * @param propertyName Name of the property
 	 * @return Propriété de type String uniquement
 	 */
 	protected static final String getPropertyValueAsString(final DynamicDefinition xdefinition, final String propertyName) {
