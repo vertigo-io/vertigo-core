@@ -55,7 +55,7 @@ public final class AssociationNode {
 		Assertion.checkNotNull(role);
 		Assertion.checkArgument(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
 		//-----
-		this.dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		this.role = role;
 		this.label = label;
 		navigable = isNavigable;
@@ -121,9 +121,4 @@ public final class AssociationNode {
 	public boolean isNotNull() {
 		return notNull;
 	}
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public String toString() {
-	//		return "AssociationNode[" + this.dtDefinition + ", " + this.role + ", " + this.label + ", " + this.navigable + ", " + this.notNull + ", " + this.multiple + "]";
-	//	}
 }

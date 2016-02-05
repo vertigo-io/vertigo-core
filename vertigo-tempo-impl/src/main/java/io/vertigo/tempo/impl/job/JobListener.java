@@ -44,7 +44,7 @@ final class JobListener {
 
 	/**
 	 * Constructor.
-	 * @param the analyticsManager
+	 * @param analyticsManager the analyticsManager
 	 */
 	@Inject
 	public JobListener(final AnalyticsManager analyticsManager) {

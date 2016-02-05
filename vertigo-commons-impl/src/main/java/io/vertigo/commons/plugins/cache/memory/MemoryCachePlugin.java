@@ -157,7 +157,7 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 			hits += mapCache.getHits();
 			calls += mapCache.getCalls();
 		}
-		final double ratio = 100d * (calls > 0 ? hits / calls : 1);//Par convention 100%
+		final double ratio = 100D * (calls > 0 ? (hits / calls) : 1);//Par convention 100%
 		componentInfos.add(new ComponentInfo("cache.hits", hits));
 		componentInfos.add(new ComponentInfo("cache.calls", calls));
 		componentInfos.add(new ComponentInfo("cache.ratio", ratio));

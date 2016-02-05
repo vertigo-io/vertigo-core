@@ -120,7 +120,7 @@ public final class NotFoundException extends Exception {
 	 * @return Chaîne de caractère pour la position de l'erreur (ligne, colonne, extrait).
 	 */
 	private String displayPosition() {
-		int start = index > 1 ? s.lastIndexOf('\n', index - 1) + 1 : 0;
+		int start = index > 1 ? (s.lastIndexOf('\n', index - 1) + 1) : 0;
 		start = Math.max(index - 150, start);
 		int end = s.indexOf('\n', index + 1);
 		if (end == -1) {

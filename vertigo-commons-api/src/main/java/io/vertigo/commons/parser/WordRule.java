@@ -129,7 +129,7 @@ public final class WordRule implements Rule<String> {
 				// On vérifie que le caractère n'est pas contenu dans les caractères rejetés.
 				while (index < text.length()
 						&& (mode != Mode.ACCEPT || acceptedCharacters.indexOf(text.charAt(index)) >= 0)
-						&& (mode == Mode.REJECT_ESCAPABLE && index > 0 && text.charAt(index - 1) == escapeChar || rejectedCharacters.indexOf(text.charAt(index)) < 0)) {
+						&& (mode == Mode.REJECT_ESCAPABLE && (index > 0) && text.charAt(index - 1) == escapeChar || (rejectedCharacters.indexOf(text.charAt(index)) < 0))) {
 					index++;
 				}
 				if (!emptyAccepted && index == start) {
