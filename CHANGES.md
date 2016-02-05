@@ -19,6 +19,8 @@ __In Bold__ : Potential compatibility problems
 * [Commons] Refactored Daemon
 * [Commons] Refactored cache to use CacheConfig instead of Modifiable interface	
 * [Commons] Renamed EventManager to EventBusManager
+* __[Core] Removed initClass on component in managers.xml__
+* __[Core] Removed inheritance on module in managers.xml__
 * [Core] Added ListBuilder
 * [Core] Added init phase in the config files
 * [Core] Changed msg for missing params
