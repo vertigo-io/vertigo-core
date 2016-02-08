@@ -177,12 +177,14 @@ public final class StringUtil {
 		for (int i = 0; i < length; i++) {
 			c = str.charAt(i);
 			if (Character.isDigit(c) || c == '_') {
-				if (!isDigit && !upperCase) {
+				if (!isDigit && (!upperCase || i == 1)) {
 					isDigit = true;
+					upperCase = false;
 					result.append('_');
 				}
 			} else if (Character.isUpperCase(c)) {
 				if (!upperCase || upperCase && i == 1) {
+					isDigit = false;
 					result.append('_');
 				}
 			} else {
