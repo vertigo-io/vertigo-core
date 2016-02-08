@@ -132,7 +132,9 @@ public final class StringUtil {
 		for (int i = 0; i < length; i++) {
 			c = str.charAt(i);
 			if (c == '_') {
-				if (digit != null && digit.booleanValue() && Character.isDigit(str.charAt(i + 1))) {
+				if (digit != null
+						&& digit.booleanValue()
+						&& Character.isDigit(str.charAt(i + 1))) {
 					result.append('_');
 				}
 				digit = null;
@@ -172,23 +174,20 @@ public final class StringUtil {
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
 		char c;
-		boolean upperCase = true;
 		boolean isDigit = false;
 		for (int i = 0; i < length; i++) {
 			c = str.charAt(i);
 			if (Character.isDigit(c) || c == '_') {
-				if (!isDigit && (!upperCase || i == 1)) {
-					isDigit = true;
-					upperCase = false;
+				if (i > 0 && !isDigit) {
 					result.append('_');
 				}
+				isDigit = true;
 			} else if (Character.isUpperCase(c)) {
-				if (!upperCase || upperCase && i == 1) {
-					isDigit = false;
+				if (i > 0) {
 					result.append('_');
 				}
+				isDigit = false;
 			} else {
-				upperCase = false;
 				isDigit = false;
 			}
 			result.append(Character.toUpperCase(c));
