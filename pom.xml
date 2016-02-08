@@ -47,10 +47,11 @@ limitations under the License. -->
 		<module>vertigo-tempo-api</module>
 		<module>vertigo-tempo-impl</module>		
 	</modules>
-	
+
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip> <!-- No need to deploy the reactor -->
 				</configuration>
