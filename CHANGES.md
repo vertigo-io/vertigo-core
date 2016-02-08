@@ -19,6 +19,8 @@ __In Bold__ : Potential compatibility problems
 * [Commons] Refactored Daemon
 * [Commons] Refactored cache to use CacheConfig instead of Modifiable interface	
 * [Commons] Renamed EventManager to EventBusManager
+* __[Core] Removed initClass on component in managers.xml__
+* __[Core] Removed inheritance on module in managers.xml__
 * [Core] Added ListBuilder
 * [Core] Added init phase in the config files
 * [Core] Changed msg for missing params
@@ -80,7 +82,6 @@ __In Bold__ : Potential compatibility problems
 * [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2			
 * [Vega] Removed nullLast and ignorecase in DtListState
 * [Vega] Renamed WebServiceIntrospector to WebServiceScanner
-* [Vega] VSecurityException is a checkedException (POJEX)
 
 
 Release 0.9.0 - 2015/11/20
