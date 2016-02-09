@@ -74,6 +74,8 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 			return chain.handle(request, response, routeContext);
 		} catch (final VSecurityException e) {
 			if (session.isNew()) {
+				//If a new session is badly use, we invalid it (light protection against DDOS)
+				session.invalidate();
 				//If session was just created, we translate securityException as a Session expiration.
 				throw (SessionException) new SessionException("Session has expired").initCause(e);
 			}
