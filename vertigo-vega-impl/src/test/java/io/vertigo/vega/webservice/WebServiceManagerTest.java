@@ -59,7 +59,8 @@ public final class WebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 
-	private final SessionFilter sessionFilter = new SessionFilter();
+	private final SessionFilter loggedSessionFilter = new SessionFilter();
+	private final SessionFilter anonymousSessionFilter = new SessionFilter();
 	private static App app;
 
 	static {
@@ -76,7 +77,7 @@ public final class WebServiceManagerTest {
 	public void preTestLogin() {
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.get("/test/login");
 	}
 
@@ -275,7 +276,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testLimitedAccessToken() {
 		final String headerAccessToken = given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.get("/test/grantAccess")
 				.header(HEADER_ACCESS_TOKEN);
 
@@ -289,7 +290,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testLimitedAccessToken2() {
 		final String headerAccessToken = given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.get("/test/grantAccess")
 				.header(HEADER_ACCESS_TOKEN);
 
@@ -309,7 +310,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testAccessTokenConsume() {
 		final String headerAccessToken = given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.get("/test/grantAccess")
 				.header(HEADER_ACCESS_TOKEN);
 
@@ -323,7 +324,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testAccessTokenConsume2() {
 		final String headerAccessToken = given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.get("/test/grantAccess")
 				.header(HEADER_ACCESS_TOKEN);
 
@@ -351,6 +352,116 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/filtered/1");
+	}
+
+	@Test
+	public void testAnonymousGrantAccessToken() {
+		RestAssured.given()
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.header(HEADER_ACCESS_TOKEN, Matchers.notNullValue())
+				.when()
+				.get("/anonymous/test/grantAccess");
+	}
+
+	@Test
+	public void testAnonymousNoAccessToken() {
+		RestAssured.given()
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.statusCode(HttpStatus.SC_UNAUTHORIZED)
+				.when()
+				.get("/anonymous/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testAnonymousBadAccessToken() {
+		given().header(HEADER_ACCESS_TOKEN, "badToken")
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.statusCode(HttpStatus.SC_UNAUTHORIZED)
+				.when()
+				.get("/anonymous/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testAnonymousLimitedAccessToken() {
+		final String headerAccessToken = given()
+				.filter(anonymousSessionFilter)
+				.get("/anonymous/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/anonymous/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testAnonymousLimitedAccessToken2() {
+		final String headerAccessToken = given()
+				.filter(anonymousSessionFilter)
+				.get("/anonymous/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/anonymous/test/limitedAccess/3");
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/anonymous/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testAnonymousAccessTokenConsume() {
+		final String headerAccessToken = given()
+				.filter(anonymousSessionFilter)
+				.get("/anonymous/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.body("conId", Matchers.equalTo(1))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/anonymous/test/oneTimeAccess/1");
+	}
+
+	@Test
+	public void testAnonymousAccessTokenConsume2() {
+		final String headerAccessToken = given()
+				.filter(anonymousSessionFilter)
+				.get("/anonymous/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.body("conId", Matchers.equalTo(1))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/anonymous/test/oneTimeAccess/1");
+
+		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
+				.filter(anonymousSessionFilter)
+				.expect().log().ifValidationFails()
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/anonymous/test/oneTimeAccess/1");
 	}
 
 	@Test
@@ -623,11 +734,11 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testPostInnerBodyObject() {
-		final Map<String, String> contactFrom = given().filter(sessionFilter)
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 				.when().get("/test/5")
 				.body().as(Map.class);
 
-		final Map<String, String> contactTo = given().filter(sessionFilter)
+		final Map<String, String> contactTo = given().filter(loggedSessionFilter)
 				.when().get("/test/6")
 				.body().as(Map.class);
 
@@ -649,12 +760,12 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testPostInnerBodyObjectFieldErrors() {
-		final Map<String, String> contactFrom = given().filter(sessionFilter)
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
 				.when().get("/test/5")
 				.body().as(Map.class);
 		contactFrom.put("email", "notAnEmail");
 
-		final Map<String, String> contactTo = given().filter(sessionFilter)
+		final Map<String, String> contactTo = given().filter(loggedSessionFilter)
 				.when().get("/test/6")
 				.body().as(Map.class);
 		contactTo.put("firstName", "MoreThan50CharactersIsTooLongForAFirstNameInThisTestApi");
@@ -992,7 +1103,7 @@ public final class WebServiceManagerTest {
 	public void testPostCharset() throws UnsupportedEncodingException {
 		final String testFirstName = "Gérard";
 		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=UTF-8")
 				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as UTF8
 				.expect()
@@ -1001,7 +1112,7 @@ public final class WebServiceManagerTest {
 				.when()
 				.post("/test/charset");
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=UTF-8")
 				.body(testJson.getBytes("UTF-8")) //We force the encode charset
 				.expect()
@@ -1010,7 +1121,7 @@ public final class WebServiceManagerTest {
 				.when()
 				.post("/test/charset");
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=ISO-8859-1")
 				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as ISO-8859-1
 				.expect()
@@ -1019,7 +1130,7 @@ public final class WebServiceManagerTest {
 				.when()
 				.post("/test/charset");
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=ISO-8859-1")
 				.body(testJson.getBytes("ISO-8859-1")) //We force the encode charset
 				.expect()
@@ -1033,7 +1144,7 @@ public final class WebServiceManagerTest {
 	public void testPostCharsetUtf8() throws UnsupportedEncodingException {
 		final String testFirstName = UTF8_TEST_STRING;
 		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=UTF-8")
 				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as UTF8
 				.expect()
@@ -1042,7 +1153,7 @@ public final class WebServiceManagerTest {
 				.when()
 				.post("/test/charset");
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=UTF-8")
 				.body(testJson.getBytes("UTF-8")) //We force the encode charset
 				.expect()
@@ -1057,7 +1168,7 @@ public final class WebServiceManagerTest {
 		final String testFirstName = UTF8_TEST_STRING;
 		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset") //We precise an incomplete charset otherwise Restassured add a default charset=ISO-8859-1 to contentType
 				.body(testJson.getBytes("UTF-8")) //We force the encode charset
 				.expect()
@@ -1074,7 +1185,7 @@ public final class WebServiceManagerTest {
 		final String testFirstNameIso = new String(UTF8_TEST_STRING.getBytes(testedCharset), testedCharset);
 		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=" + testedCharset)
 				.body(Collections.singletonMap("firstName", testFirstName))
 				.expect()
@@ -1083,7 +1194,7 @@ public final class WebServiceManagerTest {
 				.when()
 				.post("/test/charset");
 
-		given().filter(sessionFilter) //logged
+		given().filter(loggedSessionFilter) //logged
 				.contentType("application/json;charset=" + testedCharset)
 				.body(testJson.getBytes(testedCharset))
 				.expect()
@@ -1189,7 +1300,7 @@ public final class WebServiceManagerTest {
 	}
 
 	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
-		final RequestSpecification given = given().filter(sessionFilter);
+		final RequestSpecification given = given().filter(loggedSessionFilter);
 		final String wsUrl = isAuto ? "/test/searchAutoPagined()" : "/test/searchQueryPagined()";
 		if (top != null) {
 			given.queryParam("top", top);
@@ -1436,7 +1547,7 @@ public final class WebServiceManagerTest {
 		final File imageFile = new File(URLDecoder.decode(imageUrl.getFile(), "UTF-8"));
 
 		RestAssured.given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.given()
 				.multiPart("upFile", imageFile, "image/png")
 				.formParam("id", 12)
@@ -1448,7 +1559,7 @@ public final class WebServiceManagerTest {
 				.post("/test/uploadFile");
 
 		RestAssured.given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.given()
 				.formParam("id", 12)
 				.formParam("note", "Some very important notes about this file.")
@@ -1541,13 +1652,13 @@ public final class WebServiceManagerTest {
 
 	private ResponseSpecification loggedAndExpect() {
 		return RestAssured.given()
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.expect().log().ifValidationFails();
 	}
 
 	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		return given
-				.filter(sessionFilter)
+				.filter(loggedSessionFilter)
 				.expect().log().ifValidationFails();
 	}
 

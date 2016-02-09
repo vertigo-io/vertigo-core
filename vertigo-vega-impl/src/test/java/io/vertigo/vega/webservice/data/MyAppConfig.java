@@ -42,6 +42,7 @@ import io.vertigo.vega.webservice.data.domain.ContactDao;
 import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
+import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
@@ -106,6 +107,7 @@ public final class MyAppConfig {
 				.addComponent(ContactsWebServices.class)
 				.addComponent(SimplerTestWebServices.class)
 				.addComponent(AdvancedTestWebServices.class)
+				.addComponent(AnonymousTestWebServices.class)
 				.addComponent(FileDownloadWebServices.class)
 			.endModule()
 			.beginModule("myApp")
