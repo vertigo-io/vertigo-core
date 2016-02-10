@@ -213,17 +213,17 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	/**
-	 * ErrorMessage for json converssion.
+	 * ErrorMessage for json conversion.
 	 * @author npiedeloup
 	 */
 	static final class ErrorMessage {
-		private final List<String> globalErrorMessages = Collections.emptyList();
+		private final List<String> globalErrors = Collections.emptyList();
 
 		/**
 		 * @return Error message
 		 */
-		public List<String> getGlobalErrorMessages() {
-			return globalErrorMessages;
+		public List<String> getGlobalErrors() {
+			return globalErrors;
 		}
 	}
 
