@@ -78,6 +78,12 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
 		return sqlConnectionProvider;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public SqlConnectionProvider getConnectionProvider() {
+		return getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+	}
 
 	/** {@inheritDoc} */
 	@Override
