@@ -18,6 +18,13 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
@@ -49,13 +56,6 @@ import io.vertigo.vega.webservice.stereotype.SessionLess;
 import io.vertigo.vega.webservice.stereotype.Validate;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -344,11 +344,16 @@ public final class SimplerTestWebServices implements WebServices {
 		return result;
 	}
 
+	@POST("/string")
+	public String testString(final String bodyString) {
+		return bodyString;
+	}
+
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-
+	
 		//offset + range ?
 		//code 200
 		return result;

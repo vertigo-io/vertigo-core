@@ -18,12 +18,6 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.app.App;
-import io.vertigo.util.DateBuilder;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.MapBuilder;
-import io.vertigo.vega.webservice.data.MyAppConfig;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -54,6 +48,12 @@ import com.jayway.restassured.parsing.Parser;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
+
+import io.vertigo.app.App;
+import io.vertigo.util.DateBuilder;
+import io.vertigo.util.ListBuilder;
+import io.vertigo.util.MapBuilder;
+import io.vertigo.vega.webservice.data.MyAppConfig;
 
 public final class WebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -1520,25 +1520,25 @@ public final class WebServiceManagerTest {
 		loggedAndExpect(given().multiPart("upfile", imageFile, "image/png")
 				.formParam("id", 12)
 				.formParam("note", "Some very important notes about this file."))
-				//expect
-				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
-				.header("Content-Length", Matchers.equalTo("27039"))
-				.statusCode(HttpStatus.SC_OK)
-				.when()//.log().headers()
-				.post("/test/uploadFile");
+						//expect
+						.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+						.header("Content-Length", Matchers.equalTo("27039"))
+						.statusCode(HttpStatus.SC_OK)
+						.when()//.log().headers()
+						.post("/test/uploadFile");
 
 		loggedAndExpect(given()
 				.formParam("id", 12)
 				.formParam("note", "Some very important notes about this file.")
 				.multiPart("upfile", imageFile, "image/png"))
-				//expect
-				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
-				.header("Content-Length", Matchers.equalTo("27039"))
-				.statusCode(HttpStatus.SC_OK)
-				.when()//.log().headers()
-				.post("/test/uploadFile");
+						//expect
+						.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+						.header("Content-Length", Matchers.equalTo("27039"))
+						.statusCode(HttpStatus.SC_OK)
+						.when()//.log().headers()
+						.post("/test/uploadFile");
 	}
 
 	@Test
@@ -1642,6 +1642,14 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/dates?date=" + inputUtc);
+	}
+
+	@Test
+	public void testString() {
+		loggedAndExpect(given().body(UTF8_TEST_STRING))
+				.statusCode(HttpStatus.SC_OK).log().all()
+				.when()
+				.post("/test/string");
 	}
 
 	//=========================================================================
