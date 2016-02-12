@@ -65,7 +65,7 @@ public interface DataStore {
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D readForUpdate(URI<? extends DtObject> uri);
+	<D extends DtObject> D readForUpdate(URI<D> uri);
 
 	/**
 	* Create an object.

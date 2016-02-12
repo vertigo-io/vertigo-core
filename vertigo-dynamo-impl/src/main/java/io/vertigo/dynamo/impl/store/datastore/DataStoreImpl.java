@@ -70,7 +70,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D readForUpdate(final URI<? extends DtObject> uri) {
+	public <D extends DtObject> D readForUpdate(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
