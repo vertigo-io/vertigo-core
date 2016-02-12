@@ -134,7 +134,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case DtObject:
 			default:
 				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
-						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
+						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
 		}
 		return pkValue;
 	}

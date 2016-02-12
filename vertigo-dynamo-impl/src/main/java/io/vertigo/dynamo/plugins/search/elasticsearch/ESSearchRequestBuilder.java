@@ -246,8 +246,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		final DataType dataType = dtField.getDomain().getDataType();
 		if (dataType == DataType.Date) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
-		} else if (dataType == DataType.Double || dataType == DataType.BigDecimal
-				|| dataType == DataType.Long || dataType == DataType.Integer) {
+		} else if (dataType.isNumber()) {
 			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
 

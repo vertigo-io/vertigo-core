@@ -70,11 +70,12 @@ final class IndexType {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
 		switch (domain.getDataType()) {
-			case Boolean: // native
-			case Date: // native
-			case Double: // native
-			case Integer: // native
-			case Long: // native
+			case Boolean:
+			case Date:
+			case Double:
+			case Integer:
+			case Long:
+				// All these types are native
 				break;
 			case String:
 			case BigDecimal:
@@ -82,10 +83,10 @@ final class IndexType {
 					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}
 				break;
-			case DataStream: // IllegalArgumentException
-			case DtObject: // IllegalArgumentException
-			case DtList: // IllegalArgumentException
-			default: // IllegalArgumentException
+			case DataStream:
+			case DtObject:
+			case DtList:
+			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
 		}
 	}

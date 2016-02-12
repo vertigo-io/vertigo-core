@@ -94,6 +94,13 @@ public enum DataType {
 		}
 	}
 
+	public boolean isNumber() {
+		return this == DataType.Double
+				|| this == DataType.BigDecimal
+				|| this == DataType.Long
+				|| this == DataType.Integer;
+	}
+
 	/**
 	 * @return Classe java encapsulé/wrappée par le type
 	 */
