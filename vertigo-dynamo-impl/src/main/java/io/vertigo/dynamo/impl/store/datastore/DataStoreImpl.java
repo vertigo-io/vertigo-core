@@ -141,7 +141,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D get(final URI<D> uri) {
+	public <D extends DtObject> D read(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final D dto = cacheDataStore.<D> load(uri);
@@ -152,7 +152,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtList<D> dtc = cacheDataStore.loadList(uri);

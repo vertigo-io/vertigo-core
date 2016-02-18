@@ -113,12 +113,12 @@ public final class CacheDataStore {
 		if (listUri instanceof DtListURIForMasterData) {
 			dtc = loadMDList((DtListURIForMasterData) listUri);
 		} else if (listUri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
 		} else if (listUri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForNNAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<D> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, castedListUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, castedListUri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}

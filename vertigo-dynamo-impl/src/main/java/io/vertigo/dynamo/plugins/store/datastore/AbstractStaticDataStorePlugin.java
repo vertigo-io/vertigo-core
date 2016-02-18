@@ -36,7 +36,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return readAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
+		return findAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
 	}
 
 	/** {@inheritDoc} */
@@ -65,13 +65,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 }

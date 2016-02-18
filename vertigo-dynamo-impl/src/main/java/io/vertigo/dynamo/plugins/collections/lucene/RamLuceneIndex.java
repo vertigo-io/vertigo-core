@@ -208,7 +208,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final URI<DtObject> uri = new URI<>(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getStoreManager().getDataStore().get(uri);
+				final DtObject fkDto = getStoreManager().getDataStore().read(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
 			} else {

@@ -148,7 +148,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return dataStore.<D> get(uri);
+		return dataStore.<D> read(uri);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().addFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */

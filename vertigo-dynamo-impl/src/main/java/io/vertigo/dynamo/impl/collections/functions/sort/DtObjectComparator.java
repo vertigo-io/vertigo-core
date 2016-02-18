@@ -178,7 +178,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
-				dto = dataStore.get(uri);
+				dto = dataStore.read(uri);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
 				throw new WrappedException(e);

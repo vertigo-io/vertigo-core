@@ -135,7 +135,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -178,7 +178,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().get(dtoUri);
+			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().read(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
@@ -245,7 +245,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base

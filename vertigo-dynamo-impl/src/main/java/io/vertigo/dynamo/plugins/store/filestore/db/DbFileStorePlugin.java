@@ -82,7 +82,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
 		final URI<DtObject> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
