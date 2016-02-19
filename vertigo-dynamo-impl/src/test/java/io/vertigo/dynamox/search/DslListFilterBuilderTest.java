@@ -348,6 +348,7 @@ public final class DslListFilterBuilderTest {
 		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
 		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null);
 		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
+		final TestBean testBeanMultipleTrackIt = new TestBean(null, "item", null, null, null, null);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)", "+ALL:(Test test2)" }, //0
@@ -361,6 +362,8 @@ public final class DslListFilterBuilderTest {
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt, 
+					"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //11
 		};
 		testObjectFixedQuery(testQueries);
 	}
@@ -375,17 +378,16 @@ public final class DslListFilterBuilderTest {
 				{ "+([FIELD_1,FIELD_2]:#query*#)", "Test test2", "+(FIELD_1:(Test* test2*) FIELD_2:(Test* test2*))" }, //3
 				{ "[FIELD_1,FIELD_2]:#+query*#", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //4
 				{ "[FIELD_1,FIELD_2]:#+query*#^2", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2" }, //5
-				//error { "[+FIELD_1,FIELD2]:#query*#", "Test test2", "+((FIELD_1:(Test*) FIELD_2:(Test*)) (FIELD_1:(test2*) FIELD_2:(test2*)))" }, //4
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2) +(FIELD_1:(test2*) FIELD_2:(test2*)^2))" }, //6
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test ALL:test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2)) ALL:test2" }, //7
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "ALL:test2 Test", "ALL:test2 +(FIELD_1:(Test*) FIELD_2:(Test*)^2)" }, //8
 				{ "+[FIELD_1,FIELD_2]:(#query#^4 #+query*#^2 #query~2#)", "Test test2",
-						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //9
+						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +((+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2) +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //9
 				{ "+[FIELD_1 \n\r\t  , \n\r\t  FIELD_2]:(#query#^4 #query*#^2 #query~2#)", "Test test2",
 						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2  +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //10
 				{ "+[FIELD_1,FIELD_2]:(#query#^4 #query*#^2 #query~2#)", "Test test2",
 						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2  +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //11
-
+				{ "+[FIELD_1,FIELD_2]:#+query*#", "Test test2", "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //12
 		};
 		testStringFixedQuery(testQueries);
 	}

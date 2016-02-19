@@ -184,9 +184,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
+			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
 			final boolean isAlreadyBlock = (preExpression.endsWith("\"") && postExpression.startsWith("\""))
 					|| (preExpression.endsWith("(") && postExpression.startsWith(")"));
-			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
 			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
 					.append(!isAlreadyBlock && useBlock ? "(" : "")
@@ -234,7 +234,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			}
 			if (expressionDefinition.getMultiField().isDefined()) {
 				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
-				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), false, expressionQuery);
+				boolean useBlock = !(expressionDefinition.getPreBody().isEmpty() && expressionDefinition.getPostBody().isEmpty())
+						&& !(expressionQuery.toString().startsWith("(") && expressionQuery.toString().endsWith(")"));
+				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), useBlock, expressionQuery);
 			}
 		} else if (dslQuery instanceof DslBlockQuery) {
 			appendMultiQuery(expressionQuery, (DslBlockQuery) dslQuery, expressionDefinition, query);
