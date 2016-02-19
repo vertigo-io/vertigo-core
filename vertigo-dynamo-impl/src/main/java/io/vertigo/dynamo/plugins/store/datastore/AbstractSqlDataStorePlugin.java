@@ -552,12 +552,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
-		final String request = new StringBuilder()
-				.append(" select * from ")
-				.append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
-				.append(" for update ")
-				.toString();
+		 final String request = getSelectForUpdate(tableName, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -576,4 +571,20 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.execute(task)
 				.getResult();
 	}
+	
+    /**
+     * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
+     * spécificités de la base de données utilisée..
+     * @param tableName nom de la table
+     * @param idFieldName nom de la clé primaire
+     * @return select à exécuter.
+     */
+    protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+        return new StringBuilder()
+                .append(" select * from ")
+                .append(tableName)
+                .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+                .append(" for update ")
+                .toString();
+    }
 }
