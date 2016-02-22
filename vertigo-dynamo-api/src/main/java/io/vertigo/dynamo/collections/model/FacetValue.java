@@ -41,22 +41,33 @@ import java.io.Serializable;
  */
 public final class FacetValue implements Serializable {
 	private static final long serialVersionUID = -7077655936787603783L;
+	private final String code;
 	private final MessageText label;
 	private final ListFilter listFilter;
 
 	/**
 	 * Contructor.
+	 * @param code the code of the facet
 	 * @param listFilter the list filter 
 	 * @param label the label of the facet
 	 */
-	public FacetValue(final ListFilter listFilter, final MessageText label) {
+	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
+		Assertion.checkArgNotEmpty(code);
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkNotNull(label);
 		//-----
+		this.code = code;
 		this.listFilter = listFilter;
 		this.label = label;
 	}
 
+	/**
+	 * @return the code of the facet 
+	 */
+	public String getCode() {
+		return code;
+	}
+	
 	/**
 	 * Returns the label of the facet.
 	 * This label must be human readable.

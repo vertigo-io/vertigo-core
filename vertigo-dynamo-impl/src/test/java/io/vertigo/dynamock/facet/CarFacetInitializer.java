@@ -88,9 +88,9 @@ public final class CarFacetInitializer {
 		//Facette par range de date
 		final DtField yearDtField = carDefinition.getField("YEAR");
 		facetDefinition = new FacetDefinitionByRangeBuilder(FCT_YEAR_CAR, yearDtField, new MessageText("Par date", null))
-				.addFacetValue("YEAR:[* TO 2000]", "avant 2000")
-				.addFacetValue("YEAR:[2000 TO 2005]", "2000-2005")
-				.addFacetValue("YEAR:[2005 TO *]", "après 2005")
+				.addFacetValue("R1", "YEAR:[* TO 2000]", "avant 2000")
+				.addFacetValue("R2", "YEAR:[2000 TO 2005]", "2000-2005")
+				.addFacetValue("R3", "YEAR:[2005 TO *]", "après 2005")
 				.build();
 
 		Home.getApp().getDefinitionSpace().put(facetDefinition);

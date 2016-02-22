@@ -169,7 +169,7 @@ public final class FacetFactory {
 				final MessageText label = new MessageText(stringLabel, null);
 				//on garde la syntaxe Solr pour l'instant
 				final ListFilter listFilter = new ListFilter(dtField.getName() + ":\"" + valueAsString + "\"");
-				facetValue = new FacetValue(listFilter, label);
+				facetValue = new FacetValue(stringLabel, listFilter, label);
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}

@@ -130,9 +130,10 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
 			for (final Bucket value : multiBuckets.getBuckets()) {
-				final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
-				final MessageText label = new MessageText(value.getKey(), null);
-				facetValue = new FacetValue(new ListFilter(query), label);
+				final String term = value.getKey();
+				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+				final MessageText label = new MessageText(term, null);
+				facetValue = new FacetValue(term, new ListFilter(query), label);
 				populateCluster(value, facetValue, resultCluster, dtcIndex);
 			}
 		}
@@ -200,9 +201,10 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 		FacetValue facetValue;
 		for (final Bucket value : multiBuckets.getBuckets()) {
-			final MessageText label = new MessageText(value.getKey(), null);
-			final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
-			facetValue = new FacetValue(new ListFilter(query), label);
+			final String term = value.getKey();
+			final MessageText label = new MessageText(term, null);
+			final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+			facetValue = new FacetValue(term, new ListFilter(query), label);
 			facetValues.put(facetValue, value.getDocCount());
 		}
 

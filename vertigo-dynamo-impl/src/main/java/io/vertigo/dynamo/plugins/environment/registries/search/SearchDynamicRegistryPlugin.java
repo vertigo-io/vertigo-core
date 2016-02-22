@@ -147,7 +147,8 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final ListFilter listFilter = new ListFilter(listFilterString);
 		final String labelString = getPropertyValueAsString(rangeDefinition, KspProperty.LABEL);
 		final MessageText label = new MessageText(labelString, null, (Serializable[]) null);
-		return new FacetValue(listFilter, label);
+		final String code = rangeDefinition.getName();
+		return new FacetValue(code, listFilter, label);
 	}
 
 	private static FacetedQueryDefinition createFacetedQueryDefinition(final DynamicDefinition xdefinition) {

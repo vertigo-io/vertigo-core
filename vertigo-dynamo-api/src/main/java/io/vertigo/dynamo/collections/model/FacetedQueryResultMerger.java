@@ -61,11 +61,12 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	/**
 	 * Constructeur.
 	 * @param firstResult First facetedQueryResult used for facet, source and result list's type
+	 * @param firstResultcode Facet code for first result
 	 * @param firstResultFilter SearchQuery filter for first result
 	 * @param firstResultLabel Default string label for first result
 	 * @param firstResultLabelKey MessageKey label for first result
 	 */
-	public FacetedQueryResultMerger(final FacetedQueryResult<?, S> firstResult, final String firstResultFilter, final String firstResultLabel, final MessageKey firstResultLabelKey) {
+	public FacetedQueryResultMerger(final FacetedQueryResult<?, S> firstResult,  final String firstResultcode, final String firstResultFilter, final String firstResultLabel, final MessageKey firstResultLabelKey) {
 		Assertion.checkNotNull(firstResult);
 		Assertion.checkArgNotEmpty(firstResultFilter);
 		Assertion.checkArgument(firstResultLabelKey != null || firstResultLabel != null, "You must set a label for firstResult when merging result");
@@ -75,7 +76,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		results = new DtList(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
 		source = firstResult.getSource();
 
-		with(firstResult, firstResultFilter, firstResultLabel, firstResultLabelKey);
+		with(firstResult, firstResultcode, firstResultFilter, firstResultLabel, firstResultLabelKey);
 	}
 
 	/**
@@ -86,14 +87,15 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	public FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+	public FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultcode, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
 		Assertion.checkArgument(resultLabelKey != null || resultLabel != null, "You must set a label when merging result");
 		//-----
 		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
 		if (otherFacetValue == null) {
-			otherFacetValue = new FacetValue(new ListFilter(resultFilter), new MessageText(resultLabel, resultLabelKey));
+			otherFacetValue = new FacetValue(resultcode, new ListFilter(resultFilter), new MessageText(resultLabel, resultLabelKey));
 			facetValuePerFilter.put(resultFilter, otherFacetValue);
 		}
 

@@ -62,9 +62,9 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	 * @param facetValueLabel facet value label
 	 * @return this builder
 	 */
-	public FacetDefinitionByRangeBuilder addFacetValue(final String query, final String facetValueLabel) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final String code, final String query, final String facetValueLabel) {
 		final ListFilter listFilter = new ListFilter(query);
-		return addFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
+		return addFacetValue(new FacetValue(code, listFilter, new MessageText(facetValueLabel, null)));
 	}
 
 	/**

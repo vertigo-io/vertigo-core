@@ -35,6 +35,14 @@ import com.google.gson.JsonSerializer;
 
 /**
  * JsonSerializer of FacetedQueryResult.
+ * 
+ * Format : 
+ * {
+ *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   facets = { FCT_ONE = { term1=12, term2=10, ...}, FCT_TWO = { term20=15, term21=8, ...} },
+ *   totalCount = 10045
+ * }
+ * 
  * @author npiedeloup
  * @Deprecated Use FacetedQueryResultJsonSerializerV2 instead
  */

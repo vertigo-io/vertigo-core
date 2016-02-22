@@ -35,15 +35,20 @@ import com.google.gson.JsonSerializer;
 
 /**
  * JsonSerializer of FacetedQueryResult.
+ * 
+ * Format : 
  * {
  *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
- *   facets = [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
- *   totalCount : 10045
+ *   facets = [ { FCT_ONE = [{term1=12}, {term2=10}, ...], {FCT_TWO = [ {term20=15}, {term21=8}, ...] } ],
+ *   totalCount = 10045
  * }
  * 
+ * 
  * @author npiedeloup
+ * @deprecated Use FacetedQueryResultJsonSerializer instead.
  */
-final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
+@Deprecated
+final class FacetedQueryResultJsonSerializerV2 implements JsonSerializer<FacetedQueryResult<?, ?>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -73,9 +78,7 @@ final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQu
 			final JsonArray jsonFacetValues = new JsonArray();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				final JsonObject jsonFacetValuesElement = new JsonObject();
-				jsonFacetValuesElement.addProperty("code", entry.getKey().getCode());
-				jsonFacetValuesElement.addProperty("count", entry.getValue());
-				jsonFacetValuesElement.addProperty("label", entry.getKey().getLabel().getDisplay());
+				jsonFacetValuesElement.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
 				jsonFacetValues.add(jsonFacetValuesElement);
 			}
 			final String facetName = facet.getDefinition().getName();
