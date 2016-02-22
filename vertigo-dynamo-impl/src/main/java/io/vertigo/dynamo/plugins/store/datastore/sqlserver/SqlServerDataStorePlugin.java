@@ -107,7 +107,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
     @Override
     protected String getSelectForUpdate(final String tableName, final String idFieldName) {
         return new StringBuilder()
-                .append("select ").append(idFieldName).append(" from ").append(tableName)
+                .append("select * from ").append(tableName)
                 .append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
                 .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
                 .toString();
