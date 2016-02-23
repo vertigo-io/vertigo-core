@@ -68,14 +68,14 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures withSQL(final Class<SqlConnectionProviderPlugin> connectionProviderPluginClass) {
+	public DynamoFeatures withSQL(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class)
 				.addPlugin(connectionProviderPluginClass);
 		return this;
 	}
 
-	public DynamoFeatures withSearch(final Class<SearchServicesPlugin> searchServicesPluginClass) {
+	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
 				.addPlugin(searchServicesPluginClass);
