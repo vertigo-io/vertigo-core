@@ -1553,7 +1553,9 @@ public final class WebServiceManagerTest {
 				.formParam("id", 12)
 				.formParam("note", "Some very important notes about this file.")
 				.expect()
-				.body("globalErrors", Matchers.contains("File upfile not found. Parts sent : note, upFile, id"))
+				.body("globalErrors", Matchers.anyOf(
+						Matchers.contains("File upfile not found. Parts sent : id, upFile, note"),
+						Matchers.contains("File upfile not found. Parts sent : note, upFile, id")))
 				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
 				.when()
 				.post("/test/uploadFile");
