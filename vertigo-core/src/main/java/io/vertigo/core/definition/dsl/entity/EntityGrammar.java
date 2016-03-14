@@ -20,7 +20,6 @@ package io.vertigo.core.definition.dsl.entity;
 
 import io.vertigo.lang.Assertion;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,17 +40,9 @@ public final class EntityGrammar {
 	 * @param entities List of entities which define the grammar  
 	 */
 	public EntityGrammar(final Entity... entities) {
-		this(Arrays.asList(entities));
-	}
-
-	/**
-	 * Constructor of a grammar composed of entities.
-	 * @param entities List of entities which define the grammar  
-	 */
-	public EntityGrammar(final List<Entity> entities) {
 		Assertion.checkNotNull(entities);
 		//-----
-		this.entities = Collections.unmodifiableList(new ArrayList<>(entities));
+		this.entities = Collections.unmodifiableList(Arrays.asList(entities));
 	}
 
 	/**
