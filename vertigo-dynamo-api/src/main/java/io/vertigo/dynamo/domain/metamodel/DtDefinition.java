@@ -168,7 +168,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return Nom du package
+	 * @return the name of the package
 	 */
 	public String getPackageName() {
 		return packageName;

@@ -29,8 +29,10 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author pchretien
@@ -45,13 +47,12 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public List<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			//Seuls les taches sont gérées.
-			final Definition definition = createTaskDefinition(xdefinition);
-			return Option.some(definition);
+			//Only taskDefinitions are concerned
+			return Collections.<Definition> singletonList(createTaskDefinition(xdefinition));
 		}
-		return Option.none();
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	private static Class<? extends TaskEngine> getTaskEngineClass(final DynamicDefinition xtaskDefinition) {

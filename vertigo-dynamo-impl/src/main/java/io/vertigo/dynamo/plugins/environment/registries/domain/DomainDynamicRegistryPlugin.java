@@ -44,9 +44,9 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,25 +86,35 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public List<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
-		final Definition definition;
-		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
-			definition = createDomain(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			definition = createDtDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			definition = createAssociationSimpleDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			definition = createAssociationNNDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
-			definition = createConstraint(xdefinition);
+		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
+			final Definition definition = createConstraint(xdefinition);
+			return Collections.singletonList(definition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			definition = createFormatter(xdefinition);
+			final Definition definition = createFormatter(xdefinition);
+			return Collections.singletonList(definition);
+		} else if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
+			final Definition definition = createDomain(definitionSpace, xdefinition);
+			return Collections.singletonList(definition);
+		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
+			final List<Definition> definitions = new ArrayList<>();
+			final DtDefinition DtDefinition = createDtDefinition(definitionSpace, xdefinition);
+			final Domain dtoDomain = createDomain(definitionSpace, createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
+			final Domain dtcDomain = createDomain(definitionSpace, createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
+			definitions.add(DtDefinition);
+			definitions.add(dtoDomain);
+			definitions.add(dtcDomain);
+			return definitions;
+		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
+			final Definition definition = createAssociationSimpleDefinition(definitionSpace, xdefinition);
+			return Collections.singletonList(definition);
+		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
+			final Definition definition = createAssociationNNDefinition(definitionSpace, xdefinition);
+			return Collections.singletonList(definition);
 		} else {
-			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getName());
+			throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 		}
-		return Option.some(definition);
 	}
 
 	/**
@@ -382,42 +392,34 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return propertiesBuilder.build();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		if (xdefinition.getEntity().equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			//Dans le cas des DT on ajoute les domaines
-			registerxxxxDomain(xdefinition.getName(), xdefinition.getPackageName(), dynamicModelrepository);
-		}
-	}
-
 	/*
 	 * Construction des deux domaines relatif à un DT : DO_DT_XXX_DTO et DO_DT_XXX_DTC
 	 */
-	private static void registerxxxxDomain(final String definitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static DynamicDefinition createDTODomain(final String definitionName, final String packageName) {
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
+		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
 				.addDefinition("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
+	}
 
-		//On ajoute le domain crée au repository
-		dynamicModelRepository.addDefinition(domain);
+	private static DynamicDefinition createDTCDomain(final String definitionName, final String packageName) {
+		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
+		//Notamment la validité de la liste des contraintes et la nullité du formatter
+
+		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
 		//On fait la même chose avec DTC
 
-		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
+		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
 				.addDefinition("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
-
-		//On ajoute le domain crée au repository
-		dynamicModelRepository.addDefinition(domain2);
 	}
 }

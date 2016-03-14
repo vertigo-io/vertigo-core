@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.environment.registries;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
@@ -51,12 +50,6 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	@Override
 	public List<DynamicDefinition> getRootDynamicDefinitions() {
 		return Collections.emptyList();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		//
 	}
 
 	/**

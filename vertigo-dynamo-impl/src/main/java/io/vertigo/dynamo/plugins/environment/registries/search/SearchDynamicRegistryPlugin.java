@@ -37,12 +37,12 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,18 +61,15 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		final Definition definition;
+	public List<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createIndexDefinition(definitionSpace, xdefinition);
+			return Collections.<Definition> singletonList(createIndexDefinition(definitionSpace, xdefinition));
 		} else if (SearchGrammar.FACET_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createFacetDefinition(definitionSpace, xdefinition);
+			return Collections.<Definition> singletonList(createFacetDefinition(definitionSpace, xdefinition));
 		} else if (SearchGrammar.FACETED_QUERY_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createFacetedQueryDefinition(xdefinition);
-		} else {
-			throw new IllegalStateException("unknown definition :" + xdefinition);
+			return Collections.<Definition> singletonList(createFacetedQueryDefinition(xdefinition));
 		}
-		return Option.some(definition);
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xsearchObjet) {

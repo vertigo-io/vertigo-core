@@ -23,7 +23,6 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,9 +119,8 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
 		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
-			final Option<Definition> definitionOption = registry.createDefinition(definitionSpace, xdefinition);
-			if (definitionOption.isDefined()) {
-				definitionSpace.put(definitionOption.get());
+			for (final Definition definition : registry.createDefinition(definitionSpace, xdefinition)) {
+				definitionSpace.put(definition);
 			}
 		}
 	}
@@ -138,8 +136,6 @@ public final class DynamicDefinitionRepository {
 		final DynamicDefinition previousDefinition = definitions.put(definition.getName(), definition);
 		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
 		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", definition.getName());
-		//-----
-		registry.onNewDefinition(definition, this);
 	}
 
 	/**
