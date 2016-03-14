@@ -119,7 +119,7 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
 		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
-			for (final Definition definition : registry.createDefinition(definitionSpace, xdefinition)) {
+			for (final Definition definition : registry.createDefinitions(definitionSpace, xdefinition)) {
 				definitionSpace.put(definition);
 			}
 		}

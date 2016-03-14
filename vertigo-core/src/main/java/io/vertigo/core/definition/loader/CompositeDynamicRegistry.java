@@ -61,7 +61,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new EntityGrammar(entities);
+		return new EntityGrammar(entities.toArray(new Entity[entities.size()]));
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +78,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public List<Definition> createDefinitions(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
 		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
 			return Collections.emptyList();
@@ -86,7 +86,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
+			return dynamicRegistry.createDefinitions(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new WrappedException("An error occurred during the creation of the following definition : " + xdefinition.getName(), e);

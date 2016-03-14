@@ -47,5 +47,5 @@ public interface DynamicRegistry {
 	 * @param definition the definition
 	 * @return A list of definitions that must be registered
 	 */
-	List<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+	List<Definition> createDefinitions(final DefinitionSpace definitionSpace, DynamicDefinition definition);
 }

@@ -55,7 +55,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 
 	@Override
-	public List<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
+	public List<Definition> createDefinitions(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
 		dynamicDefinitions.add(definition);
 		return Collections.emptyList();
 	}
