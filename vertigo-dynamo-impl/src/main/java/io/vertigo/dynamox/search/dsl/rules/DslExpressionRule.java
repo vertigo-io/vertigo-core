@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -29,8 +31,6 @@ import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
  * Parsing rule for ListFilterBuidler's expression.
@@ -51,8 +51,8 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
 		final Rule<List<?>> multiFieldsRule = new SequenceRule(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				new DslMultiFieldRule(),//1
-				DslSyntaxRules.PRE_MODIFIER_VALUE); //2
+				new DslMultiFieldRule(), //1
+				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 
 		final Rule<Choice> fieldsRule = new FirstOfRule(//"single or multiple")
 				new DslFieldRule(), //0
@@ -67,7 +67,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 		return new SequenceRule(
 				new OptionRule<>(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.SPACES, //1
-				fieldsRule,//2
+				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,
 				queriesRule, //4
 				DslSyntaxRules.SPACES); //5

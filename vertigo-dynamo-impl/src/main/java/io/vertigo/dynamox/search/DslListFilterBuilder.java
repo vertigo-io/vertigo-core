@@ -18,6 +18,18 @@
  */
 package io.vertigo.dynamox.search;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
+
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -38,18 +50,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
 
 /**
  * Default builder from Criteria to ListFilter with a query pattern with DSL.
@@ -234,7 +234,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			}
 			if (expressionDefinition.getMultiField().isDefined()) {
 				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
-				boolean useBlock = !(expressionDefinition.getPreBody().isEmpty() && expressionDefinition.getPostBody().isEmpty())
+				final boolean useBlock = !(expressionDefinition.getPreBody().isEmpty() && expressionDefinition.getPostBody().isEmpty())
 						&& !(expressionQuery.toString().startsWith("(") && expressionQuery.toString().endsWith(")"));
 				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), useBlock, expressionQuery);
 			}

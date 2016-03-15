@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamox.search;
 
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
-import io.vertigo.util.DateUtil;
-
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
+import io.vertigo.util.DateUtil;
 
 /**
  * @author  npiedeloup
@@ -362,8 +362,8 @@ public final class DslListFilterBuilderTest {
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
-				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt, 
-					"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //11
+				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt,
+						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //11
 		};
 		testObjectFixedQuery(testQueries);
 	}
@@ -388,6 +388,8 @@ public final class DslListFilterBuilderTest {
 				{ "+[FIELD_1,FIELD_2]:(#query#^4 #query*#^2 #query~2#)", "Test test2",
 						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2  +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //11
 				{ "+[FIELD_1,FIELD_2]:#+query*#", "Test test2", "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //12
+				{ "+[FIELD_1,FIELD_2*]:#+query#", "Test test2", "+(+(FIELD_1:Test FIELD_2:Test*) +(FIELD_1:test2 FIELD_2:test2*))" }, //13
+
 		};
 		testStringFixedQuery(testQueries);
 	}
