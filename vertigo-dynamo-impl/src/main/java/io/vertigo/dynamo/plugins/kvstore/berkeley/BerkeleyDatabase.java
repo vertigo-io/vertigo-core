@@ -18,15 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +33,15 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.Transaction;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Objet d'accès en lecture/écriture à la base Berkeley.
@@ -230,20 +230,24 @@ final class BerkeleyDatabase {
 	public void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
-
-		try (Cursor cursor = database.openCursor(null, null)) {
-			int checked = 0;
-			//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
-			//dès qu'on en trouve un trop récent, on stop
-			while (checked < MAX_REMOVED_TOO_OLD_ELEMENTS && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-				final Serializable value = readTimedDataSafely(foundKey, foundData);
-				if (value == null) {//null si erreur de lecture, ou si trop vieux
-					database.delete(null, foundKey);
-					checked++;
-				} else {
-					break;
+		int checked = 0;
+		final Transaction transaction = database.getEnvironment().beginTransaction(null, null);
+		try {
+			try (Cursor cursor = database.openCursor(transaction, null)) {
+				//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
+				//dès qu'on en trouve un trop récent, on stop
+				while (checked < MAX_REMOVED_TOO_OLD_ELEMENTS && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+					final Serializable value = readTimedDataSafely(foundKey, foundData);
+					if (value == null) {//null si erreur de lecture, ou si trop vieux
+						cursor.delete();
+						checked++;
+					} else {
+						break;
+					}
 				}
 			}
+		} finally {
+			transaction.commit();
 			LOGGER.info("purge " + checked + " elements");
 		}
 	}
@@ -255,7 +259,6 @@ final class BerkeleyDatabase {
 			return dataBinding.entryToObject(theData);
 		} catch (final RuntimeException e) {
 			LOGGER.warn("Berkeley database read error, remove tokenKey : " + key, e);
-			database.delete(null, theKey);
 		}
 		return null;
 	}
