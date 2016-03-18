@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import java.io.Serializable;
+import java.util.regex.Pattern;
+
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
-import java.util.regex.Pattern;
 
 /**
  * URI d'une DTC.
@@ -169,10 +169,11 @@ public abstract class DtListURI implements Serializable {
 		 * @return URN
 		 */
 		private static String writeDtListURNForDtCriteria(final DtListURIForCriteria<?> uri) {
+			final String sizeUrn = (uri.getMaxRows() != null) ? D2A_SEPARATOR + String.valueOf(uri.getMaxRows()) : D2A_SEPARATOR + "ALL";
 			if (uri.getCriteria() == null) {
-				return CRITERIA_PREFIX;
+				return CRITERIA_PREFIX + sizeUrn;
 			}
-			return CRITERIA_PREFIX + D2A_SEPARATOR + +uri.getCriteria().hashCode();
+			return CRITERIA_PREFIX + sizeUrn + D2A_SEPARATOR + +uri.getCriteria().hashCode();
 		}
 	}
 }

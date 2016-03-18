@@ -18,6 +18,16 @@
  */
 package io.vertigo.dynamo.store;
 
+import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
@@ -52,16 +62,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
-
-import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
@@ -179,6 +179,19 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				//A chaque fin de test on arréte la base.
 				transaction.commit();
 			}
+		}
+	}
+
+	@Test
+	public void testSelectCarCachedRowMax() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtListURI someCars = new DtListURIForCriteria<>(dtDefinitionCar, null, 3);
+			final DtList<Car> dtc1 = storeManager.getDataStore().findAll(someCars);
+			Assert.assertEquals(3, dtc1.size());
+			//-----
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> dtc = storeManager.getDataStore().findAll(allCars);
+			Assert.assertEquals(9, dtc.size());
 		}
 	}
 
