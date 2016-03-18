@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.hsql;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -35,9 +38,6 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implémentation d'un Store HSQLDB.
@@ -149,6 +149,6 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		request.append(separator).append(" rownum <= ").append(maxRows);
+		request.append(separator).append(" rownum() <= ").append(maxRows);
 	}
 }
