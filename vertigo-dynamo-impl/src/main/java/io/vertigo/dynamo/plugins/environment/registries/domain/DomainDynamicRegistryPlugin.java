@@ -18,6 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.Entity;
@@ -44,14 +52,6 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author pchretien
@@ -99,10 +99,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			return Collections.singletonList(definition);
 		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
 			final List<Definition> definitions = new ArrayList<>();
-			final DtDefinition DtDefinition = createDtDefinition(definitionSpace, xdefinition);
+			final DtDefinition dtDefinition = createDtDefinition(definitionSpace, xdefinition);
 			final Domain dtoDomain = createDomain(definitionSpace, createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
 			final Domain dtcDomain = createDomain(definitionSpace, createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
-			definitions.add(DtDefinition);
+			definitions.add(dtDefinition);
 			definitions.add(dtoDomain);
 			definitions.add(dtcDomain);
 			return definitions;
