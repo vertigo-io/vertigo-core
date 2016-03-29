@@ -19,16 +19,17 @@
 package io.vertigo.core.definition.loader;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,15 +79,26 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Definition> createDefinitions(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
+	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
+		//Les entités du noyaux ne sont pas Ã  gérer per des managers spécifiques.
 		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return Collections.emptyList();
+			return;
+		}
+		final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
+		dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+		//Les entités du noyaux ne sont pas à  gérer par des managers spécifiques.
+		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
+			return Option.none();
 		}
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			return dynamicRegistry.createDefinitions(definitionSpace, xdefinition);
+			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new WrappedException("An error occurred during the creation of the following definition : " + xdefinition.getName(), e);

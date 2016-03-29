@@ -21,11 +21,16 @@ package io.vertigo.core.definition.dsl.dynamic;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 
 /**
- * Handler qui permet de créer des définitions statiques à partir d'une définition dynamique.
+ * This handler creates 
+ * - creates a definition from a DynamicDefinition
+ * - adds dynamicDefinition from a new DynamicDefinition
+ * 
+ * example : Each time a DtDefinition, two others definitions (domains)  are created (a domain for one object, a domain for a list).
  * @author pchretien
  */
 public interface DynamicRegistry {
@@ -41,11 +46,20 @@ public interface DynamicRegistry {
 	List<DynamicDefinition> getRootDynamicDefinitions();
 
 	/**
-	 * Create a list of definitions from a dynamic definition.
-	 * Each time a DtDefinition, two others definitions (domains)  are created (a domain for one object, a domain for a list)
-	 * @param definitionSpace the space where all the definitions are stored.
-	 * @param definition the definition
-	 * @return A list of definitions that must be registered
+	 * Create (or not) a definition from a dynamic definition.
+	 * @param definitionSpace Space where all the definitions are stored.
+	 * @param definition Definition
+	 * @return An optional definition
 	 */
-	List<Definition> createDefinitions(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+	Option<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+
+	/**
+	 * Ajout d'une définition.
+	 * Utilisé pour créer des définitions Ã  partir d'autres Definitions.
+	 * Exemple : création des domaines à partir d'un DT.
+	 * 
+	 * @param definition DynamicDefinition
+	 * @param definitionRepository DynamicModelRepository
+	 */
+	void onNewDefinition(final DynamicDefinition definition, final DynamicDefinitionRepository definitionRepository);
 }
