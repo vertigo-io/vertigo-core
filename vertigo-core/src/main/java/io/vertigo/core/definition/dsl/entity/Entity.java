@@ -47,17 +47,20 @@ public final class Entity implements EntityType {
 	 */
 	private final Map<String, EntityField> fields;
 
+	private final boolean root;
+
 	/**
 	 * Constructeur de la MetaDefinition
 	 * Une instance de MetaDefinition correspond à une classe -ou une interface- de Definition
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<EntityField> fields) {
+	Entity(final String name, final Set<EntityField> fields, final boolean root) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(fields);
 		//-----
 		this.name = name;
+		this.root = root;
 		this.fields = new HashMap<>();
 		for (final EntityField field : fields) {
 			Assertion.checkArgument(!this.fields.containsKey(field.getName()), "field {0} is already registered for {1}", field, this);
@@ -140,5 +143,9 @@ public final class Entity implements EntityType {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public boolean isRoot() {
+		return root;
 	}
 }

@@ -24,25 +24,25 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.definition.dsl.entity.EntityPropertyType;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author npiedeloup
  */
-final class FileGrammar {
+final class FileGrammar implements EntityGrammar {
 
 	/**Définition de tache.*/
 	public static final Entity FILE_INFO_DEFINITION_ENTITY;
-
-	/** File Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		FILE_INFO_DEFINITION_ENTITY = new EntityBuilder("FileInfo")
 				.addField(KspProperty.DATA_SPACE, EntityPropertyType.String, true)
 				.build();
-		GRAMMAR = new EntityGrammar(FILE_INFO_DEFINITION_ENTITY);
 	}
 
-	private FileGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return Collections.singletonList(FILE_INFO_DEFINITION_ENTITY);
 	}
 }

@@ -24,9 +24,7 @@ import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,15 +47,18 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 
 	@Override
 	public EntityGrammar getGrammar() {
-		return PersonGrammar.GRAMMAR;
+		return new PersonGrammar();
 	}
 
-	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
-
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
-		dynamicDefinitions.add(definition);
-		return Option.none();
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
+		return new Definition() {
+
+			@Override
+			public String getName() {
+				return "FAKE";
+			}
+		};
 	}
 
 	@Override

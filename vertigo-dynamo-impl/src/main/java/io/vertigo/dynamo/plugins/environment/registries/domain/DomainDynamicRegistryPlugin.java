@@ -44,7 +44,6 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * Constructeur.
 	 */
 	public DomainDynamicRegistryPlugin() {
-		super(DomainGrammar.GRAMMAR);
+		super(new DomainGrammar());
 
 	}
 
@@ -86,25 +85,22 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
-		final Definition definition;
 		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
-			definition = createConstraint(xdefinition);
+			return createConstraint(xdefinition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			definition = createFormatter(xdefinition);
+			return createFormatter(xdefinition);
 		} else if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
-			definition = createDomain(definitionSpace, xdefinition);
+			return createDomain(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			definition = createDtDefinition(definitionSpace, xdefinition);
+			return createDtDefinition(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			definition = createAssociationSimpleDefinition(definitionSpace, xdefinition);
+			return createAssociationSimpleDefinition(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			definition = createAssociationNNDefinition(definitionSpace, xdefinition);
-		} else {
-			throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
+			return createAssociationNNDefinition(definitionSpace, xdefinition);
 		}
-		return Option.some(definition);
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	/**
@@ -130,7 +126,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return new FormatterDefinition(name, className, args);
 	}
 
-	private Domain createDomain(final DefinitionSpace definitionSpace, final DynamicDefinition xdomain) {
+	private static Domain createDomain(final DefinitionSpace definitionSpace, final DynamicDefinition xdomain) {
 		//il y a deux cas
 		//avec formatter et constraint
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionName("dataType"));

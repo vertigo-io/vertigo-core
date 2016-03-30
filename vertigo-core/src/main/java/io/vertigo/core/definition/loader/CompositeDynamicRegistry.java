@@ -26,7 +26,6 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 import java.util.ArrayList;
@@ -42,12 +41,12 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/**
 	 * Constructor.
-	 * @param handlerList Grammar handlers
+	 * @param dynamicRegistryPlugins Grammar handlers
 	 */
-	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> handlerList) {
-		Assertion.checkNotNull(handlerList);
+	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
+		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//-----
-		dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
+		dynamicRegistries = new ArrayList<DynamicRegistry>(dynamicRegistryPlugins);
 		//Création de la grammaire.
 		grammar = createGrammar();
 
@@ -62,7 +61,13 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new EntityGrammar(entities.toArray(new Entity[entities.size()]));
+		return new EntityGrammar() {
+
+			@Override
+			public List<Entity> getEntities() {
+				return entities;
+			}
+		};
 	}
 
 	/** {@inheritDoc} */
@@ -80,21 +85,16 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	/** {@inheritDoc} */
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		//Les entités du noyaux ne sont pas Ã  gérer per des managers spécifiques.
-		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return;
+		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
+		if (!xdefinition.getEntity().isRoot()) {
+			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
+			dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 		}
-		final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-		dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		//Les entités du noyaux ne sont pas à  gérer par des managers spécifiques.
-		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return Option.none();
-		}
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);

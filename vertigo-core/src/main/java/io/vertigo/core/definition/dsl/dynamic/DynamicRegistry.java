@@ -21,7 +21,6 @@ package io.vertigo.core.definition.dsl.dynamic;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -46,12 +45,12 @@ public interface DynamicRegistry {
 	List<DynamicDefinition> getRootDynamicDefinitions();
 
 	/**
-	 * Create (or not) a definition from a dynamic definition.
+	 * Create a definition from a dynamic definition in a context defined by definitionSpace (preexisting definitions).
 	 * @param definitionSpace Space where all the definitions are stored.
 	 * @param definition Definition
 	 * @return An optional definition
 	 */
-	Option<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+	Definition createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
 
 	/**
 	 * Ajout d'une définition.

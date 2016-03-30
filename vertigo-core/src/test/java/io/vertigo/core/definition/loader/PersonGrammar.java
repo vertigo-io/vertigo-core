@@ -25,11 +25,14 @@ import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.util.ListBuilder;
+
+import java.util.List;
 
 /**
  * @author npiedeloup
  */
-public final class PersonGrammar {
+public final class PersonGrammar implements EntityGrammar {
 
 	static final String NAME = "name";
 	static final String FIRST_NAME = "firstName";
@@ -44,9 +47,6 @@ public final class PersonGrammar {
 	static final String POSTAL_CODE = "postalCode";
 	static final String CITY = "city";
 	static final Entity ADDRESS_ENTITY;
-
-	/** Personn Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		ADDRESS_ENTITY = new EntityBuilder("address")
@@ -63,14 +63,14 @@ public final class PersonGrammar {
 				.addField(MAIN_ADDRESS, ADDRESS_ENTITY.getLink(), true)
 				.addField("secondaryAddress", ADDRESS_ENTITY.getLink(), false)
 				.build();
-
-		GRAMMAR = new EntityGrammar(
-				ADDRESS_ENTITY,
-				PERSON_ENTITY
-				);
 	}
 
-	private PersonGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return new ListBuilder<Entity>()
+				.add(ADDRESS_ENTITY)
+				.add(PERSON_ENTITY)
+				.unmodifiable()
+				.build();
 	}
 }

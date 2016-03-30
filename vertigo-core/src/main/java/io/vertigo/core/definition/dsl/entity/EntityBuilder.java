@@ -40,6 +40,8 @@ public final class EntityBuilder implements Builder<Entity> {
 	 */
 	private final Set<EntityField> fields;
 
+	private boolean myRoot = false;
+
 	/**
 	 * Constructor.
 	 * @param name Name of the entity
@@ -50,6 +52,11 @@ public final class EntityBuilder implements Builder<Entity> {
 		this.name = name;
 		fields = new HashSet<>();
 
+	}
+
+	public EntityBuilder withRoot() {
+		myRoot = true;
+		return this;
 	}
 
 	/**
@@ -108,6 +115,6 @@ public final class EntityBuilder implements Builder<Entity> {
 	/** {@inheritDoc} */
 	@Override
 	public Entity build() {
-		return new Entity(name, fields);
+		return new Entity(name, fields, myRoot);
 	}
 }

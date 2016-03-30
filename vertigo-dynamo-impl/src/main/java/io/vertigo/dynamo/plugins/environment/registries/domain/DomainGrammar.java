@@ -52,11 +52,14 @@ import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.definition.loader.KernelGrammar;
+import io.vertigo.util.ListBuilder;
+
+import java.util.List;
 
 /**
  * @author pchretien
  */
-public final class DomainGrammar {
+public final class DomainGrammar implements EntityGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
@@ -100,9 +103,6 @@ public final class DomainGrammar {
 	public static final Entity ASSOCIATION_ENTITY;
 	/**Définition d'une association NN.*/
 	public static final Entity ASSOCIATION_NN_ENTITY;
-
-	/** Domain Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		CONSTRAINT_ENTITY = new EntityBuilder("Constraint")
@@ -178,21 +178,22 @@ public final class DomainGrammar {
 				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
-		GRAMMAR = new EntityGrammar(
-				PROPERTY_ENTITY,
-				CONSTRAINT_ENTITY,
-				FORMATTER_ENTITY,
-				//---
-				DOMAIN_ENTITY,
-				DT_FIELD_ENTITY,
-				FT_COMPUTED_FIELD_ENTITY,
-				DT_DEFINITION_ENTITY,
-				ASSOCIATION_ENTITY,
-				ASSOCIATION_NN_ENTITY
-				);
 	}
 
-	private DomainGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return new ListBuilder<Entity>()
+				.add(PROPERTY_ENTITY)
+				.add(CONSTRAINT_ENTITY)
+				.add(FORMATTER_ENTITY)
+				//---
+				.add(DOMAIN_ENTITY)
+				.add(DT_FIELD_ENTITY)
+				.add(FT_COMPUTED_FIELD_ENTITY)
+				.add(DT_DEFINITION_ENTITY)
+				.add(ASSOCIATION_ENTITY)
+				.add(ASSOCIATION_NN_ENTITY)
+				.unmodifiable()
+				.build();
 	}
 }
