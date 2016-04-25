@@ -18,13 +18,6 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
-import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +25,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
+import io.vertigo.vega.webservice.exception.SessionException;
+import io.vertigo.vega.webservice.exception.VSecurityException;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
 
@@ -101,7 +100,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Allow-Method", methodCORSFilter);
+		response.header("Access-Control-Allow-Methods", methodCORSFilter);
 		response.header("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
 		response.header("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}
