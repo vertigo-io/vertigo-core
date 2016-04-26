@@ -69,15 +69,15 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 				DslSyntaxRules.SPACES, //1
 				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,
-				queriesRule, //4
-				DslSyntaxRules.SPACES); //5
+				queriesRule //4
+		);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected DslExpression handle(final List<?> parsing) {
 		String preExpression = ((Option<String>) parsing.get(0)).getOrElse("") + (String) parsing.get(1);
-		String postExpression = (String) parsing.get(5);
+		final String postExpression;
 		final Option<DslField> field;
 		final Option<DslMultiField> multiField;
 		final Choice fields = (Choice) parsing.get(2);
@@ -85,12 +85,13 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 			case 0:
 				field = Option.some((DslField) fields.getResult());
 				multiField = Option.none();
+				postExpression = "";
 				break;
 			case 1:
 				final List<?> multiFieldParsing = (List<?>) fields.getResult();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
 				multiField = Option.some((DslMultiField) multiFieldParsing.get(1));
-				postExpression = DslUtil.concat((String) multiFieldParsing.get(2), postExpression);
+				postExpression = (String) multiFieldParsing.get(2);
 				field = Option.none();
 				break;
 			default:

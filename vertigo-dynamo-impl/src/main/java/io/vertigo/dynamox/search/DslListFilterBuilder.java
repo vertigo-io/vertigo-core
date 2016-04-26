@@ -136,7 +136,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		for (final DslMultiExpression multiExpressionDefinition : myBuildQuery) {
 			appendMultiExpression(query, multiExpressionDefinition);
 		}
-		return query.toString();
+		return query.toString()
+				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
+				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
+				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
