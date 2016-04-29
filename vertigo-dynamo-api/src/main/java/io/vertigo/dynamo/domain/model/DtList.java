@@ -221,7 +221,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	@Override
 	public boolean equals(final Object o) {
-		/* A list equals the same list */
+		/* A list equals only the same list */
 		return (o == this);
 	}
 }
