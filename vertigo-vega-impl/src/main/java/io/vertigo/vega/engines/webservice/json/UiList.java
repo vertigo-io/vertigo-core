@@ -68,4 +68,10 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 		}
 		return dtList;
 	}
+
+	@Override
+	public boolean equals(final Object o) {
+		/* A list equals only the same list */
+		return (o == this);
+	}
 }

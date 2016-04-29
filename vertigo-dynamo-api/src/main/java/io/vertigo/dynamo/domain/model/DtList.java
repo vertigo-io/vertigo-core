@@ -218,4 +218,10 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		}
 		metaDatas.put(metaDataName, value);
 	}
+
+	@Override
+	public boolean equals(final Object o) {
+		/* A list equals the same list */
+		return (o == this);
+	}
 }
