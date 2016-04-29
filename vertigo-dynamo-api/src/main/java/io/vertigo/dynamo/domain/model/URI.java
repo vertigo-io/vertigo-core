@@ -103,14 +103,14 @@ public final class URI<D extends DtObject> implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		return toURN().hashCode();
+		return urn.hashCode();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof URI) {
-			return ((URI) o).toURN().equals(this.toURN());
+			return ((URI) o).urn.equals(this.urn);
 		}
 		return false;
 	}
@@ -119,7 +119,7 @@ public final class URI<D extends DtObject> implements Serializable {
 	@Override
 	public String toString() {
 		//on surcharge le toString car il est utilisé dans les logs d'erreur. et celui par défaut utilise le hashcode.
-		return "urn[" + getClass().getName() + "]::" + toURN();
+		return "urn[" + getClass().getName() + "]::" + urn;
 	}
 
 	//=========================================================================
