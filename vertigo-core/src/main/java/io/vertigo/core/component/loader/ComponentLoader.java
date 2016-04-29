@@ -209,7 +209,7 @@ public final class ComponentLoader {
 		//		}
 		//---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
-		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
+		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());

@@ -64,7 +64,7 @@ public final class DtDefinition implements Definition {
 	 */
 	private final boolean dynamic;
 
-	/** Champ identifiant */
+	/** id Field */
 	private final Option<DtField> idField;
 
 	private Option<DtField> sortField = Option.none();

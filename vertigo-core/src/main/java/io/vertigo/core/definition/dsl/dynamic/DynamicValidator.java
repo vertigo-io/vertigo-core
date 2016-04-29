@@ -32,6 +32,10 @@ import java.util.Set;
  *
  */
 final class DynamicValidator {
+	private DynamicValidator() {
+		//utility Class
+	}
+
 	static void check(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
