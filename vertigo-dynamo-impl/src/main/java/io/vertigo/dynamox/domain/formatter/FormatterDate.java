@@ -32,7 +32,6 @@ import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Gestion des formattages de dates.
@@ -79,8 +78,6 @@ public final class FormatterDate implements Formatter {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);
 		//-----
-		final StringTokenizer st = new StringTokenizer(args, ";");
-
 		final ListBuilder<String> patternsBuilder = new ListBuilder<>();
 		for (final String token : args.split(";")) {
 			patternsBuilder.add(token.trim());
