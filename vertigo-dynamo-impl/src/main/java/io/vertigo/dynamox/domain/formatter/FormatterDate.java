@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.MessageText;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 import java.text.ParsePosition;
@@ -65,16 +65,11 @@ public final class FormatterDate implements Formatter {
 	public static final int MAX_YEAR = 2150;
 
 	/**
-	 * Format d'affichage de la date
-	 */
-	private final String pattern;
-
-	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
 	 */
 	@JsonExclude
-	private final List<MessageText> lstExFillInFormat;
+	private final List<String> patterns;
 
 	/**
 	 * Constructeur.
@@ -86,19 +81,16 @@ public final class FormatterDate implements Formatter {
 		//-----
 		final StringTokenizer st = new StringTokenizer(args, ";");
 
-		//Affichage des dates renseignées
-		assertArgs(st.hasMoreTokens());
-		pattern = st.nextToken().trim();
+		final ListBuilder<String> patternsBuilder = new ListBuilder<>();
+		for (final String token : args.split(";")) {
+			patternsBuilder.add(token.trim());
+		}
 
 		//Saisie des dates
-		lstExFillInFormat = new java.util.ArrayList<>(st.countTokens() + 1);
 		//Le format d'affichage est le premier format de saisie autorisé
-		lstExFillInFormat.add(new MessageText(pattern, null));
-
 		//Autres saisies autorisées (facultatifs)
-		while (st.hasMoreTokens()) {
-			lstExFillInFormat.add(new MessageText(st.nextToken().trim(), null));
-		}
+		patterns = patternsBuilder.unmodifiable().build();
+		assertArgs(!patterns.isEmpty());
 	}
 
 	private static void assertArgs(final boolean test) {
@@ -110,7 +102,7 @@ public final class FormatterDate implements Formatter {
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//-----
-		return dateToString((Date) objValue);
+		return dateToString((Date) objValue, patterns.get(0));
 	}
 
 	/** {@inheritDoc} */
@@ -119,7 +111,6 @@ public final class FormatterDate implements Formatter {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
-
 		return stringToDate(sValue);
 	}
 
@@ -146,8 +137,8 @@ public final class FormatterDate implements Formatter {
 
 		Date dateValue = null;
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
-		for (int i = 0; i < lstExFillInFormat.size() && dateValue == null; i++) {
-			dateValue = stringToDate(dateString, lstExFillInFormat.get(i));
+		for (int i = 0; i < patterns.size() && dateValue == null; i++) {
+			dateValue = doStringToDate(dateString, patterns.get(i));
 		}
 
 		//Si dateValue est null c'est que toutes les convertions ont échouées.
@@ -163,11 +154,11 @@ public final class FormatterDate implements Formatter {
 	 *
 	 * Cette méthode retourne null si la chaine n'a pas pu être convertie en date
 	 */
-	private static Date stringToDate(final String dateString, final MessageText dateFormat) {
+	private static Date doStringToDate(final String dateString, final String pattern) {
 		Date dateValue;
 
 		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(dateFormat.getDisplay(), getLocaleManager().getCurrentLocale());
+		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
 
 		try {
@@ -203,7 +194,7 @@ public final class FormatterDate implements Formatter {
 	 *
 	 * @return Date formattée
 	 */
-	private String dateToString(final Date dateValue) {
+	private static String dateToString(final Date dateValue, final String pattern) {
 		final String dateString;
 		if (dateValue == null) {
 			dateString = ""; //Affichage d'une date non renseignée;
