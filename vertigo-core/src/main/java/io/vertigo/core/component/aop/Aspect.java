@@ -36,9 +36,8 @@ public interface Aspect {
 	 * @param args method arguments
 	 * @param methodInvocation method invocation object
 	 * @return sub-method return
-	 * @throws Exception sub-method exception
 	 */
-	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
+	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation);
 
 	/**
 	 * returns Annotation that tagged any method or class concerned by this aspect

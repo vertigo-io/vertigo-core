@@ -39,7 +39,6 @@ public interface AspectMethodInvocation {
 	 * 
 	 * @param args Args 
 	 * @return the result of the method.
-	 * @throws Exception the exception thrown by the aop method 
 	 */
-	Object proceed(Object[] args) throws Exception;
+	Object proceed(Object[] args);
 }

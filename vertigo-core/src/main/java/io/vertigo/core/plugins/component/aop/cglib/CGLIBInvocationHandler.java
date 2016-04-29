@@ -70,7 +70,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 
 		/** {@inheritDoc} */
 		@Override
-		public Object proceed(final Object[] args) throws Exception {
+		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
 				return aspects.get(index++).invoke(args, this);
 			}
