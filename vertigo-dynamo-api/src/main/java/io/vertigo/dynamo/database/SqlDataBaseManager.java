@@ -34,11 +34,12 @@ import io.vertigo.lang.Manager;
 public interface SqlDataBaseManager extends Manager {
 	/** Main connectionProvider's name. */
 	String MAIN_CONNECTION_PROVIDER_NAME = "main";
-	
+
 	/**
 	 * Retourne la connection pour le main
 	 * @return SecondaryConnectionProvider
 	 */
+	@Deprecated
 	SqlConnectionProvider getConnectionProvider();
 
 	/**
@@ -46,7 +47,7 @@ public interface SqlDataBaseManager extends Manager {
 	 * @return SecondaryConnectionProvider
 	 */
 	SqlConnectionProvider getConnectionProvider(String name);
-	
+
 	/**
 	 * @param connection Connexion
 	 * @param procName  Nom de la procédure
