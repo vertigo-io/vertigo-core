@@ -94,15 +94,6 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Returns true is the option is not defined, aka empty.
-	 *
-	 * @return if the option is not defined.
-	 */
-	public boolean isEmpty() {
-		return !isPresent();
-	}
-
-	/**
 	 * Returns the content of the option.
 	 * If the option is empty then an exception is thrown.
 	 *

@@ -18,6 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.Entity;
@@ -44,13 +51,6 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author pchretien
@@ -191,12 +191,12 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DtDefinition dtDefinition = dtDefinitionBuilder.build();
 
 		//--Vérification du champ sort et display--
-		final boolean sortEmpty = sortFieldName == null && dtDefinition.getSortField().isEmpty();
+		final boolean sortEmpty = sortFieldName == null && !dtDefinition.getSortField().isPresent();
 		final boolean sortNotEmpty = sortFieldName != null && dtDefinition.getSortField().isPresent();
 
 		Assertion.checkState(sortEmpty || sortNotEmpty, "Champ de tri {0} inconnu", sortFieldName);
 
-		final boolean displayEmpty = displayFieldName == null && dtDefinition.getDisplayField().isEmpty();
+		final boolean displayEmpty = displayFieldName == null && !dtDefinition.getDisplayField().isPresent();
 		final boolean displayNotEmpty = displayFieldName != null && dtDefinition.getDisplayField().isPresent();
 
 		Assertion.checkState(displayEmpty || displayNotEmpty, "Champ d'affichage {0} inconnu", displayFieldName);

@@ -18,20 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -55,6 +41,20 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
 
 //vérifier
 /**
@@ -268,9 +268,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Option<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
-			if (minValue.isEmpty()) {
+			if (!minValue.isPresent()) {
 				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
-			} else if (maxValue.isEmpty()) {
+			} else if (!maxValue.isPresent()) {
 				rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
 			} else {
 				rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch

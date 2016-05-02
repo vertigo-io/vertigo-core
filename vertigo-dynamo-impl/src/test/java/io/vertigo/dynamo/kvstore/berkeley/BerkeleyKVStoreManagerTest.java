@@ -18,17 +18,17 @@
  */
 package io.vertigo.dynamo.kvstore.berkeley;
 
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
-
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author pchretien
@@ -100,7 +100,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		Assert.assertTrue("Flower id 1 not found", flower1.isPresent());
 
 		final Option<Flower> flower2 = kvStoreManager.find("flowers", "2", Flower.class);
-		Assert.assertTrue("There is already a flower id 2", flower2.isEmpty());
+		Assert.assertFalse("There is already a flower id 2", flower2.isPresent());
 		try {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final Flower tulip = buildFlower("rose", 100);
@@ -112,7 +112,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		}
 
 		final Option<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
-		Assert.assertTrue("Rollback flower id 2 failed", flower2bis.isEmpty());
+		Assert.assertFalse("Rollback flower id 2 failed", flower2bis.isPresent());
 
 	}
 
@@ -168,7 +168,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 			//find expired element
 			final Option<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
-			Assert.assertTrue(tulip1Reload.isEmpty());
+			Assert.assertFalse(tulip1Reload.isPresent());
 		}
 	}
 

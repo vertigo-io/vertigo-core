@@ -18,13 +18,6 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
-import io.vertigo.persona.impl.security.BeanResourceNameFactory;
-import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
@@ -34,6 +27,13 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Option;
+import io.vertigo.persona.impl.security.BeanResourceNameFactory;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 /**
  * @author pchretien
@@ -72,7 +72,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testNoUserSession() {
 		final Option<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertTrue(userSession.isEmpty());
+		Assert.assertFalse(userSession.isPresent());
 	}
 
 	@Test

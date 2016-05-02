@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Option;
-
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.lang.Option;
 
 public final class ParserTest {
 	private static final Rule HELLO = new TermRule("hello");
@@ -197,7 +197,7 @@ public final class ParserTest {
 		//-
 		parser.parse("hello world bla bla", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertTrue(from.isEmpty());
+		Assert.assertFalse(from.isPresent());
 		//-
 		parser.parse("hello world from mars", 0);
 		from = (Option<List<?>>) parser.get().get(3);

@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamo.kvstore;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author pchretien
@@ -85,7 +85,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testFind() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> foundFlower = kvStoreManager.find("flowers", "1", Flower.class);
-			Assert.assertTrue(foundFlower.isEmpty());
+			Assert.assertFalse(foundFlower.isPresent());
 			final Flower tulip = buildFlower("tulip", 100);
 
 			kvStoreManager.put("flowers", "1", tulip);
@@ -101,7 +101,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
-			Assert.assertTrue("There is already a flower id 10", flower.isEmpty());
+			Assert.assertFalse("There is already a flower id 10", flower.isPresent());
 
 			kvStoreManager.put("flowers", "10", buildFlower("daisy", 60));
 			kvStoreManager.put("flowers", "11", buildFlower("tulip", 100));
@@ -122,7 +122,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 			final Option<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
 			final Option<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
-			Assert.assertTrue("Remove flower id 10 failed", flower1.isEmpty());
+			Assert.assertFalse("Remove flower id 10 failed", flower1.isPresent());
 			Assert.assertTrue("Flower id 11 not found", flower2.isPresent());
 		}
 	}

@@ -18,23 +18,23 @@
  */
 package io.vertigo.app.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The componentconfig class defines the configuration of a component.
- * 
- * A component is defined by 
+ *
+ * A component is defined by
  *  - an id.
  *  - a implemenation class.
  *  - an optional api class.
  *  - a map of params
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfig {
@@ -53,7 +53,7 @@ public final class ComponentConfig {
 	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.checkArgument(apiClass.isEmpty() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.checkArgument(!apiClass.isPresent() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----

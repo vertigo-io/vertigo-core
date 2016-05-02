@@ -99,7 +99,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 						searchChunk = it.next();
 					}
 					// <<< Tx end
-					if (searchChunk.isEmpty()) {
+					if (! searchChunk.isPresent()) {
 						break;
 					}
 

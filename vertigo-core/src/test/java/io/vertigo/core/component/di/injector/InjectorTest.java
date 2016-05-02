@@ -18,6 +18,14 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
@@ -27,17 +35,8 @@ import io.vertigo.core.component.di.data.F;
 import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P2;
 import io.vertigo.core.component.di.data.P3;
-import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
@@ -153,7 +152,7 @@ public final class InjectorTest {
 		E e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
-		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertFalse(e.getB().isPresent());
 		Assert.assertEquals(0, e.getPPlugins().size());
 		Assert.assertEquals(0, e.getP2Plugins().size());
 		//-----
@@ -165,7 +164,7 @@ public final class InjectorTest {
 		e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
-		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertFalse(e.getB().isPresent());
 		Assert.assertEquals(2, e.getPPlugins().size());
 		Assert.assertEquals(3, e.getP2Plugins().size());
 	}
@@ -184,6 +183,6 @@ public final class InjectorTest {
 		Assert.assertEquals(f.getParam2(), "test2");
 		Assert.assertTrue(f.getParam3().isPresent());
 		Assert.assertEquals(f.getParam3().get(), "test3");
-		Assert.assertTrue(f.getParam4().isEmpty());
+		Assert.assertFalse(f.getParam4().isPresent());
 	}
 }

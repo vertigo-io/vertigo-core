@@ -18,6 +18,15 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
@@ -30,15 +39,6 @@ import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ClassUtil;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -154,7 +154,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		// réalisée pour valider le modèle
 		final Option<UserSession> userSessionOption = getCurrentUserSession();
 
-		if (userSessionOption.isEmpty()) {
+		if (!userSessionOption.isPresent()) {
 			//Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}

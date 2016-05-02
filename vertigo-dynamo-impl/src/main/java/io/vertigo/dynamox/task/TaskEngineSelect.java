@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -27,10 +31,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.VSystemException;
-
-import java.sql.SQLException;
-
-import javax.inject.Inject;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>
@@ -66,10 +66,10 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Récupération de l'attribut OUT. Il doit être unique.
 	 */
 	private TaskAttribute getOutTaskAttribute() {
-		if (getTaskDefinition().getOutAttributeOption().isEmpty()) {
-			throw new VSystemException("TaskEngineSelect must have at least on DtObject or one DtList!");
+		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
+			return getTaskDefinition().getOutAttributeOption().get();
 		}
-		return getTaskDefinition().getOutAttributeOption().get();
+		throw new VSystemException("TaskEngineSelect must have at least on DtObject or one DtList!");
 
 	}
 

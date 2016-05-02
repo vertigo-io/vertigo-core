@@ -31,7 +31,6 @@ public final class OptionTest {
 	@Test
 	public void testNone() {
 		final Option<String> none = Option.empty();
-		Assert.assertTrue(none.isEmpty());
 		Assert.assertFalse(none.isPresent());
 		Assert.assertEquals("movie", none.orElse("movie"));
 	}
@@ -49,7 +48,6 @@ public final class OptionTest {
 	@Test
 	public void testSome() {
 		final Option<String> some = Option.of("music");
-		Assert.assertFalse(some.isEmpty());
 		Assert.assertTrue(some.isPresent());
 		Assert.assertEquals("music", some.get());
 		Assert.assertEquals("music", some.orElse("movie"));
