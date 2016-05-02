@@ -307,7 +307,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@GET("/downloadNotModifiedFile")
 	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Option<Date> ifModifiedSince, final HttpServletResponse response) {
 		final VFile imageFile = testDownloadFile(id);
-		if (ifModifiedSince.isDefined() && DateUtil.compareDateTime(imageFile.getLastModified(), ifModifiedSince.get()) <= 0) {
+		if (ifModifiedSince.isPresent() && DateUtil.compareDateTime(imageFile.getLastModified(), ifModifiedSince.get()) <= 0) {
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 			return null;
 			//this service must declared VFile as return type because it should return VFile when file was modified
@@ -403,7 +403,7 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
 						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
 						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
-						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Option.<Comparable> option(minValue), Option.<Comparable> option(maxValue), true, false));
+						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Option.<Comparable> ofNullable(minValue), Option.<Comparable> ofNullable(maxValue), true, false));
 					} else {
 						filters.add(new DtListValueFilter<O>(field.getName(), (String) value));
 					}

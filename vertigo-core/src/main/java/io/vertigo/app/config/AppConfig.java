@@ -106,7 +106,7 @@ public final class AppConfig {
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		String moduleName = moduleConfig.getName();
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			printComponent(out, moduleName, (componentConfig.getApiClass().isDefined() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
+			printComponent(out, moduleName, (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
 			moduleName = null;
 		}
 	}

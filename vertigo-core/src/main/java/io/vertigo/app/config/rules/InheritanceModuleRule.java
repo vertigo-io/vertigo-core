@@ -47,7 +47,7 @@ public final class InheritanceModuleRule implements ModuleRule {
 	public void check(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			Class<?> clazz;
-			if (componentConfig.getApiClass().isDefined()) {
+			if (componentConfig.getApiClass().isPresent()) {
 				//if component is defined by an api, then we check that api respects the rule.
 				clazz = componentConfig.getApiClass().get();
 			} else {

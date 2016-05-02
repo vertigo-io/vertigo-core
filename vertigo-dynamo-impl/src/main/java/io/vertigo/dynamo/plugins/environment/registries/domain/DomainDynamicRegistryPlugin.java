@@ -192,12 +192,12 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//--Vérification du champ sort et display--
 		final boolean sortEmpty = sortFieldName == null && dtDefinition.getSortField().isEmpty();
-		final boolean sortNotEmpty = sortFieldName != null && dtDefinition.getSortField().isDefined();
+		final boolean sortNotEmpty = sortFieldName != null && dtDefinition.getSortField().isPresent();
 
 		Assertion.checkState(sortEmpty || sortNotEmpty, "Champ de tri {0} inconnu", sortFieldName);
 
 		final boolean displayEmpty = displayFieldName == null && dtDefinition.getDisplayField().isEmpty();
-		final boolean displayNotEmpty = displayFieldName != null && dtDefinition.getDisplayField().isDefined();
+		final boolean displayNotEmpty = displayFieldName != null && dtDefinition.getDisplayField().isPresent();
 
 		Assertion.checkState(displayEmpty || displayNotEmpty, "Champ d'affichage {0} inconnu", displayFieldName);
 		//--Vérification OK

@@ -48,13 +48,13 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	protected void initOtherStore() {
 		//A chaque test on recrée la table famille dans l'autre base
-		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Option.<String> some("otherStore"));
+		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Option.<String> of("otherStore"));
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		super.doTearDown();
-		shutDown("TK_SHUT_DOWN_OTHER", Option.<String> some("otherStore"));
+		shutDown("TK_SHUT_DOWN_OTHER", Option.<String> of("otherStore"));
 	}
 
 	@Override

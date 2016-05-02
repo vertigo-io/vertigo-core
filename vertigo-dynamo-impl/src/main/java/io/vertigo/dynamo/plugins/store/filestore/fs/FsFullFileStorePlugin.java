@@ -91,12 +91,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager != null, "DeamonManager is mandatory when using a purgeDelay");
 		//-----
-		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = FileUtil.translatePath(path);
 		//-----
-		if (purgeDelayMinutes.isDefined()) {
+		if (purgeDelayMinutes.isPresent()) {
 			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
 		}
 	}

@@ -148,7 +148,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
-				Option.option(myOutTaskAttribute));
+				Option.ofNullable(myOutTaskAttribute));
 	}
 
 }

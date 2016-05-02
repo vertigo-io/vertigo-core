@@ -88,7 +88,7 @@ final class ComponentParamsContainer implements Container {
 		//-----
 		final String paramValue = params.get(paramName);
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
-			Assertion.checkArgument(paramManagerOption.isDefined(), "config is not allowed here");
+			Assertion.checkArgument(paramManagerOption.isPresent(), "config is not allowed here");
 			//-----
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
 			return paramManagerOption.get().getValue(property, paramType);

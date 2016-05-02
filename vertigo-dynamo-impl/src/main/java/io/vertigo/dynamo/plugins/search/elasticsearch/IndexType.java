@@ -37,9 +37,9 @@ final class IndexType {
 	static Option<IndexType> readIndexType(final Domain domain) {
 		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
-			return Option.none();
+			return Option.empty();
 		}
-		return Option.some(new IndexType(indexType, domain));
+		return Option.of(new IndexType(indexType, domain));
 	}
 
 	private IndexType(final String indexType, final Domain domain) {

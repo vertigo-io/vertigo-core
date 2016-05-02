@@ -68,6 +68,6 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	public Option<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Option.<String> option(params.getProperty(paramName)) : Option.<String> none();
+		return params.containsKey(paramName) ? Option.<String> ofNullable(params.getProperty(paramName)) : Option.<String> empty();
 	}
 }

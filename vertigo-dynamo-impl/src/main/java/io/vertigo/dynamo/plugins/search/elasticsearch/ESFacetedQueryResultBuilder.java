@@ -175,7 +175,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 
 	private static List<Facet> createFacetList(final SearchQuery searchQuery, final SearchResponse queryResponse) {
 		final List<Facet> facets = new ArrayList<>();
-		if (searchQuery.getFacetedQuery().isDefined() && queryResponse.getAggregations() != null) {
+		if (searchQuery.getFacetedQuery().isPresent() && queryResponse.getAggregations() != null) {
 			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
 				final Aggregation aggregation = queryResponse.getAggregations().get(facetDefinition.getName());

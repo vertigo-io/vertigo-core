@@ -59,7 +59,7 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 		//On test les patterns dans l'ordre
 		for (final FilterPattern filterPatternTemp : FilterPattern.values()) {
 			final Option<String[]> parsedFilterOption = DtListPatternFilterUtil.parseFilter(filterString, filterPatternTemp.getPattern());
-			if (parsedFilterOption.isDefined()) {
+			if (parsedFilterOption.isPresent()) {
 				foundFilterPattern = filterPatternTemp;
 				foundParsedFilter = parsedFilterOption.get();
 				break;

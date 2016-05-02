@@ -184,7 +184,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().getOutAttributeOption().isDefined()) {
+		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
 			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
 			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
 				setResult(sqlRowcount);
@@ -367,7 +367,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
 		if (param.isPrimitive()) {
-			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isDefined(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
+			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isPresent(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
 			setResult(value);
 		} else if (param.isObject()) {
 			//DtObject

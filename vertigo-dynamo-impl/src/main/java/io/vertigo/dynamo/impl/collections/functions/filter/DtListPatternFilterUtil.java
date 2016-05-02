@@ -94,7 +94,7 @@ public final class DtListPatternFilterUtil {
 		//-----
 		final Matcher matcher = parsingPattern.matcher(filterString);
 		if (!matcher.matches()) {
-			return Option.none();
+			return Option.empty();
 		}
 
 		final int nbGroup = matcher.groupCount() + 1;
@@ -102,12 +102,12 @@ public final class DtListPatternFilterUtil {
 		for (int i = 0; i < nbGroup; i++) {
 			groups[i] = matcher.group(i);
 		}
-		return Option.some(groups);
+		return Option.of(groups);
 	}
 
 	private static <D extends DtObject> DtListFilter<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final Option<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
-		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.getOrElse(null));
+		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.orElse(null));
 	}
 
 	private static <D extends DtObject> DtListFilter<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
@@ -121,11 +121,11 @@ public final class DtListPatternFilterUtil {
 	private static Option<Comparable> convertToComparable(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
 		final String stringValue = valueToConvert.trim();
 		if (acceptJoker && "*".equals(stringValue) || "".equals(stringValue)) {
-			return Option.none();//pas de test
+			return Option.empty();//pas de test
 		}
 		//--
 		final Comparable result = valueOf(dataType, stringValue);
-		return Option.some(result);
+		return Option.of(result);
 	}
 
 	private static Comparable valueOf(final DataType dataType, final String stringValue) {

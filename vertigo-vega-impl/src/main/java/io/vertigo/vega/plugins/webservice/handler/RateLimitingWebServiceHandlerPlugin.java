@@ -77,8 +77,8 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		Assertion.checkNotNull(windowSeconds);
 		//-----
 		this.securityManager = securityManager;
-		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
-		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
+		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
+		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
 		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds, this);
 	}
@@ -110,7 +110,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	}
 
 	private static String obtainUserKey(final Request request, final Option<UserSession> userSession) {
-		if (userSession.isDefined()) {
+		if (userSession.isPresent()) {
 			return userSession.get().getSessionUUID().toString();
 		}
 		return request.ip() + ":" + request.headers("user-agent");

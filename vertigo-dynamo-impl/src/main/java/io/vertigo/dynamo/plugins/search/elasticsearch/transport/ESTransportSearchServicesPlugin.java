@@ -78,7 +78,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isDefined() ? nodeName.get() : "es-transport-client-" + System.currentTimeMillis();
+		this.nodeName = nodeName.isPresent() ? nodeName.get() : "es-transport-client-" + System.currentTimeMillis();
 	}
 
 	/** {@inheritDoc} */

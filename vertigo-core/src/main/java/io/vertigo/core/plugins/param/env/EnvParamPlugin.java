@@ -33,6 +33,6 @@ public final class EnvParamPlugin implements ParamPlugin {
 	public Option<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return System.getenv().containsKey(paramName) ? Option.<String> option(System.getenv().get(paramName)) : Option.<String> none();
+		return System.getenv().containsKey(paramName) ? Option.<String> ofNullable(System.getenv().get(paramName)) : Option.<String> empty();
 	}
 }

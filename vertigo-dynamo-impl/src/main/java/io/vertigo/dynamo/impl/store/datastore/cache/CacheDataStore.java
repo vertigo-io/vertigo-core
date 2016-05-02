@@ -128,7 +128,7 @@ public final class CacheDataStore {
 
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
+		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
 		final DtList<D> unFilteredDtc = loadList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));

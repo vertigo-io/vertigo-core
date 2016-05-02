@@ -151,7 +151,7 @@ public final class InjectorTest {
 		container.put("a", a);
 		container.put("p3", new P3());
 		E e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
 		Assert.assertTrue(e.getB().isEmpty());
 		Assert.assertEquals(0, e.getPPlugins().size());
@@ -163,7 +163,7 @@ public final class InjectorTest {
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
 		e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
 		Assert.assertTrue(e.getB().isEmpty());
 		Assert.assertEquals(2, e.getPPlugins().size());
@@ -182,7 +182,7 @@ public final class InjectorTest {
 		Assert.assertEquals(f.getA(), a);
 		Assert.assertEquals(f.getParam1(), "test1");
 		Assert.assertEquals(f.getParam2(), "test2");
-		Assert.assertTrue(f.getParam3().isDefined());
+		Assert.assertTrue(f.getParam3().isPresent());
 		Assert.assertEquals(f.getParam3().get(), "test3");
 		Assert.assertTrue(f.getParam4().isEmpty());
 	}

@@ -139,10 +139,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
-			return Option.some(clazz.cast(cacheValue.getValue()));
+			return Option.of(clazz.cast(cacheValue.getValue()));
 		}
 		getCollectionData(collection).remove(key);
-		return Option.none(); //key expired : return null
+		return Option.empty(); //key expired : return null
 	}
 
 	/** {@inheritDoc} */

@@ -75,7 +75,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isDefined() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
+		this.nodeName = nodeName.isPresent() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
 
 	}
 

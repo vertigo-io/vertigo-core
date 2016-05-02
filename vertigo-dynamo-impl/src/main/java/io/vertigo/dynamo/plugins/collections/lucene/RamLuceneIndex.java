@@ -224,7 +224,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
-		Assertion.checkNotNull(dtListState.getMaxRows().isDefined(), "MaxRows is mandatory, can't get all data :(");
+		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
 		final Sort sortQuery = createSortQuery(dtListState);
@@ -240,7 +240,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	}
 
 	private static Sort createSortQuery(final DtListState dtListState) {
-		if (dtListState.getSortFieldName().isDefined()) {
+		if (dtListState.getSortFieldName().isPresent()) {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary

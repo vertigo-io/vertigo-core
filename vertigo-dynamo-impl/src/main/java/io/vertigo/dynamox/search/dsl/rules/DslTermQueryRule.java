@@ -84,7 +84,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		final String postTerm = (String) term.get(3);
 		final Option<Choice> escapeRule = (Option<Choice>) term.get(5);
 		final EscapeMode escapeMode;
-		if (escapeRule.isDefined()) {
+		if (escapeRule.isPresent()) {
 			switch (escapeRule.get().getValue()) {
 				case 0:
 					escapeMode = EscapeMode.remove;
@@ -100,10 +100,10 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		}
 		final Option<List<?>> defaultRule = (Option<List<?>>) term.get(6);
 		final Option<String> defaultValue;
-		if (defaultRule.isDefined()) {
-			defaultValue = Option.option((String) defaultRule.get().get(1));
+		if (defaultRule.isPresent()) {
+			defaultValue = Option.ofNullable((String) defaultRule.get().get(1));
 		} else {
-			defaultValue = Option.none();
+			defaultValue = Option.empty();
 		}
 
 		final String postQuery = (String) parsing.get(3);

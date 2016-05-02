@@ -60,7 +60,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 			@Named("persistenceUnit") final String persistenceUnit,
 			@Named("dataBaseName") final String dataBaseName,
 			final VTransactionManager transactionManager) {
-		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		Assertion.checkNotNull(transactionManager);
 		//-----

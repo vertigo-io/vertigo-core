@@ -117,7 +117,7 @@ public final class ParamManagerImpl implements ParamManager {
 		//-----
 		for (final ParamPlugin paramPlugin : paramPlugins) {
 			final Option<String> value = paramPlugin.getValue(paramName);
-			if (value.isDefined()) {
+			if (value.isPresent()) {
 				return value.get();
 			}
 		}

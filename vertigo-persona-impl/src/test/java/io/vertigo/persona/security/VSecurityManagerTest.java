@@ -55,7 +55,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			Assert.assertEquals(userSession, securityManager.getCurrentUserSession().get());
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -80,12 +80,12 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			//
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
-		Assert.assertFalse(securityManager.getCurrentUserSession().isDefined());
+		Assert.assertFalse(securityManager.getCurrentUserSession().isPresent());
 	}
 
 	@Test(expected = NullPointerException.class)

@@ -90,7 +90,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 			kvStoreManager.put("flowers", "1", tulip);
 			final Option<Flower> foundFlower2 = kvStoreManager.find("flowers", "1", Flower.class);
-			Assert.assertTrue(foundFlower2.isDefined());
+			Assert.assertTrue(foundFlower2.isPresent());
 			Assert.assertEquals("tulip", foundFlower2.get().getName());
 			Assert.assertEquals(100d, foundFlower2.get().getPrice(), 0); //"Price must be excatly 100",
 		}
@@ -108,22 +108,22 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 
 			final Option<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
 			final Option<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
-			Assert.assertTrue("Flower id 10 not found", flower1.isDefined());
-			Assert.assertTrue("Flower id 11 not found", flower2.isDefined());
+			Assert.assertTrue("Flower id 10 not found", flower1.isPresent());
+			Assert.assertTrue("Flower id 11 not found", flower2.isPresent());
 
 			transaction.commit();
 		}
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
-			Assert.assertTrue("Flower id 10 not found", flower.isDefined());
+			Assert.assertTrue("Flower id 10 not found", flower.isPresent());
 
 			kvStoreManager.remove("flowers", "10");
 
 			final Option<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
 			final Option<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
 			Assert.assertTrue("Remove flower id 10 failed", flower1.isEmpty());
-			Assert.assertTrue("Flower id 11 not found", flower2.isDefined());
+			Assert.assertTrue("Flower id 11 not found", flower2.isPresent());
 		}
 	}
 

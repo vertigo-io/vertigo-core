@@ -474,7 +474,7 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testCreateFilterByRange() {
 		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByRange("LIBELLE", Option.option("a"), Option.option("b"));
+				.filterByRange("LIBELLE", Option.ofNullable("a"), Option.ofNullable("b"));
 		Assert.assertNotNull(filter);
 	}
 

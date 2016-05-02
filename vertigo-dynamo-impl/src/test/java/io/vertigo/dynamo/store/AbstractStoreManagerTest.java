@@ -100,7 +100,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	protected void initMainStore() {
 		//A chaque test on recrée la table famille
-		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> none());
+		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -121,7 +121,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request);
-				if (collection.isDefined()) {
+				if (collection.isPresent()) {
 					taskDefinitionBuilder.withDataSpace(collection.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
@@ -161,7 +161,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Option.<String> none());
+		shutDown("TK_SHUT_DOWN", Option.<String> empty());
 	}
 
 	protected void shutDown(final String taskName, final Option<String> collectionOption) {
@@ -170,7 +170,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest("shutdown;");
-				if (collectionOption.isDefined()) {
+				if (collectionOption.isPresent()) {
 					taskDefinitionBuilder.withDataSpace(collectionOption.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();

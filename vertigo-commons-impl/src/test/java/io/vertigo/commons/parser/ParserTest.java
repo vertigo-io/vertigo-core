@@ -201,7 +201,7 @@ public final class ParserTest {
 		//-
 		parser.parse("hello world from mars", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertTrue(from.isDefined());
+		Assert.assertTrue(from.isPresent());
 		Assert.assertEquals("mars", from.get().get(3));
 	}
 
@@ -214,7 +214,7 @@ public final class ParserTest {
 		//-
 		parser.parse("hello world from ", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertFalse(from.isDefined()); //pas d'exception NotFound
+		Assert.assertFalse(from.isPresent()); //pas d'exception NotFound
 	}
 
 	@Test

@@ -104,8 +104,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
 		//-----
-		dataSpace = dataSpaceOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
-		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
+		dataSpace = dataSpaceOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
+		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer);
 	}

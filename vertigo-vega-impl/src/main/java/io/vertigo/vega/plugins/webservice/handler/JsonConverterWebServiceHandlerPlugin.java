@@ -263,7 +263,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 			if (webServiceParam.isOptional()) {
 				final Object paramValue = routeContext.getParamValue(webServiceParam);
-				routeContext.setParamValue(webServiceParam, Option.option(paramValue));
+				routeContext.setParamValue(webServiceParam, Option.ofNullable(paramValue));
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {

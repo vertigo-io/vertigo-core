@@ -165,7 +165,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String[] trimedExpression = splitTrimedSubQueryToQuery(expressionQuery.toString());
 			query.append(trimedExpression[0]);
 			query.append(expressionDefinition.getPreBody());
-			if (expressionDefinition.getField().isDefined()) {
+			if (expressionDefinition.getField().isPresent()) {
 				appendField(query, expressionDefinition.getField().get());
 			}
 			final boolean useBlock = mayUseBlock(trimedExpression[1]);
@@ -228,14 +228,14 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private void appendQuery(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
 		if (dslQuery instanceof DslTermQuery) {
-			if (expressionDefinition.getMultiField().isDefined() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
+			if (expressionDefinition.getMultiField().isPresent() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
 				//recherche compact => on boucle les fields puis les user terms
 				appendCompactFields(query, expressionDefinition, expressionQuery, dslQuery);
 			} else {
 				//recherche multifield => on boucle les users terms puis les fields
 				appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
 			}
-			if (expressionDefinition.getMultiField().isDefined()) {
+			if (expressionDefinition.getMultiField().isPresent()) {
 				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
 				final boolean useBlock = !(expressionDefinition.getPreBody().isEmpty() && expressionDefinition.getPostBody().isEmpty())
 						&& !(expressionQuery.toString().startsWith("(") && expressionQuery.toString().endsWith(")"));
@@ -260,7 +260,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					concat(expressionSep, expressionDefinition.getPreBody()),
-					Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+					Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
 					dslQuery,
 					expressionDefinition.getPostBody());
 			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
@@ -302,7 +302,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((Date) value));
 		} else if (value != null) {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, value.toString());
-		} else if (dslQuery.getDefaultValue().isDefined()) { //if value null => defaultValue
+		} else if (dslQuery.getDefaultValue().isPresent()) { //if value null => defaultValue
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, dslQuery.getDefaultValue().get());
 		} else {
 			useBlock = false;
@@ -372,7 +372,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 						.append(expressionDefinition.getPostBody())
 						.append(userCriteria.getPostMissingPart());
 
-			} else if (expressionDefinition.getMultiField().isDefined()) {
+			} else if (expressionDefinition.getMultiField().isPresent()) {
 				criteriaOnDefinitionField++;
 				final DslMultiField dslMultiField = expressionDefinition.getMultiField().get();
 				query.append(userCriteria.getPreMissingPart());
@@ -384,7 +384,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 							"");
 					final DslExpression monoFieldExpressionDefinition = new DslExpression(
 							monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-							Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+							Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
 							new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 							firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 					monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);

@@ -39,9 +39,9 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 		Assertion.checkNotNull(resource);
 		//-----
 		try {
-			return Option.option(new File(resource).toURI().toURL());
+			return Option.ofNullable(new File(resource).toURI().toURL());
 		} catch (final MalformedURLException e) {
-			return Option.none();
+			return Option.empty();
 		}
 	}
 }

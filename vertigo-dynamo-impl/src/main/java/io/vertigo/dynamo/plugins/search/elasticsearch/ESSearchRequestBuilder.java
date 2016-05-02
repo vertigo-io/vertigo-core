@@ -143,8 +143,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private void appendListState() {
 		searchRequestBuilder.setFrom(myListState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
-				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().getOrElse(myDefaultMaxRows));
-		if (myListState.getSortFieldName().isDefined()) {
+				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
+		if (myListState.getSortFieldName().isPresent()) {
 			final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
 					.ignoreUnmapped(true)
@@ -155,7 +155,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
-		if (searchQuery.getSecurityListFilter().isDefined()) {
+		if (searchQuery.getSecurityListFilter().isPresent()) {
 			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
 			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
@@ -164,7 +164,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
-		if (searchQuery.getFacetedQuery().isDefined() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
+		if (searchQuery.getFacetedQuery().isPresent() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
 				filterBuilder.add(translateToFilterBuilder(facetQuery));
@@ -198,7 +198,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
 		//Puis les facettes liées à la query, si présent
-		if (searchQuery.getFacetedQuery().isDefined()) {
+		if (searchQuery.getFacetedQuery().isPresent()) {
 			final FacetedQueryDefinition facetedQueryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			final Collection<FacetDefinition> facetDefinitions = new ArrayList<>(facetedQueryDefinition.getFacetDefinitions());
 			if (searchQuery.isClusteringFacet() && facetDefinitions.contains(searchQuery.getClusteringFacetDefinition())) {
@@ -303,11 +303,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static Option<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
-			return Option.none();//pas de test
+			return Option.empty();//pas de test
 		}
 		//--
 		final Double result = Double.valueOf(stringValue);
-		return Option.some(result);
+		return Option.of(result);
 	}
 
 	/**

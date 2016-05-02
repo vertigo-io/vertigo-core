@@ -92,8 +92,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
-		dataSpace = nameOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
-		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
+		dataSpace = nameOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
+		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		this.analyticsManager = analyticsManager;

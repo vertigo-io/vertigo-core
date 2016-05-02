@@ -43,7 +43,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	public AnalyticsManagerImpl(final Option<AnalyticsAgentPlugin> agentPlugin) {
 		Assertion.checkNotNull(agentPlugin);
 		//-----
-		analyticsAgent = agentPlugin.getOrElse(new DummyAgentPlugin());
+		analyticsAgent = agentPlugin.orElse(new DummyAgentPlugin());
 	}
 
 	/** {@inheritDoc} */

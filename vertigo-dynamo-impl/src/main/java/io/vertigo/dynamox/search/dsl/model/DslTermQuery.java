@@ -79,7 +79,7 @@ public final class DslTermQuery implements DslQuery {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return preBody + "#" + preTerm + termField + postTerm + "#" + (escapeMode != EscapeMode.none ? "?(" + escapeMode + "Reserved)" : "") + (defaultValue.isDefined() ? "!(" + defaultValue.get() + ")" : "") + postBody;
+		return preBody + "#" + preTerm + termField + postTerm + "#" + (escapeMode != EscapeMode.none ? "?(" + escapeMode + "Reserved)" : "") + (defaultValue.isPresent() ? "!(" + defaultValue.get() + ")" : "") + postBody;
 	}
 
 	/**

@@ -197,9 +197,9 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
-			return Option.none();
+			return Option.empty();
 		}
-		return Option.some(metaDataClass.cast(value));
+		return Option.of(metaDataClass.cast(value));
 	}
 
 	/**

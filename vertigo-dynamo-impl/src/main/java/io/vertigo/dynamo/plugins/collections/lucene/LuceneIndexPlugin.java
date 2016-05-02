@@ -105,7 +105,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc) {
-		Assertion.checkArgument(listState.getMaxRows().isDefined(), "Can't return all results, you must define maxRows");
+		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);

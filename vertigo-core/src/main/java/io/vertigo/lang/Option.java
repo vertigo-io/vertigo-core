@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 /**
  * This class, inspired by scala, allows you to define optional types.
  * An option is used to design a nullable type.
- *  An option is empty or defined with a content. 
+ *  An option is empty or defined with a content.
  *  - none : empty
  *  - some : defined with a content
  *
@@ -40,7 +40,7 @@ public final class Option<T> {
 	/**
 	 * Constructor.
 	 * Creates an option with a value that can be null.
-	 * @param value the value 
+	 * @param value the value
 	 */
 	private Option(final T value) {
 		this.value = value;
@@ -52,7 +52,7 @@ public final class Option<T> {
 	 * @param <T> Type de l'option demandé.
 	 * @return None.
 	 */
-	public static <T> Option<T> none() {
+	public static <T> Option<T> empty() {
 		return (Option<T>) NONE;
 	}
 
@@ -63,7 +63,7 @@ public final class Option<T> {
 	 * @param value the value of the option
 	 * @return the option.
 	 */
-	public static <T> Option<T> some(final T value) {
+	public static <T> Option<T> of(final T value) {
 		Assertion.checkNotNull(value, "Option.some requires a non null value.");
 		//-----
 		return new Option<>(value);
@@ -76,11 +76,11 @@ public final class Option<T> {
 	 * @param value the value of the option
 	 * @return the option.
 	 */
-	public static <T> Option<T> option(final T value) {
+	public static <T> Option<T> ofNullable(final T value) {
 		if (value == null) {
-			return none();
+			return empty();
 		}
-		return some(value);
+		return of(value);
 	}
 
 	/**
@@ -89,8 +89,8 @@ public final class Option<T> {
 	 *
 	 * @return if the option is defined.
 	 */
-	public boolean isDefined() {
-		return !isEmpty();
+	public boolean isPresent() {
+		return value != null;
 	}
 
 	/**
@@ -99,13 +99,13 @@ public final class Option<T> {
 	 * @return if the option is not defined.
 	 */
 	public boolean isEmpty() {
-		return value == null;
+		return !isPresent();
 	}
 
 	/**
 	 * Returns the content of the option.
 	 * If the option is empty then an exception is thrown.
-	 * 
+	 *
 	 * @return the content of the option
 	 * @throws NoSuchElementException if the option is empty.
 	 */
@@ -119,10 +119,10 @@ public final class Option<T> {
 	/**
 	 * If the option is defined returns the value, ellse return the default value.
 	 *
-	 * @param defaut the default value 
+	 * @param defaut the default value
 	 * @return the value if defined else the default value
 	 */
-	public T getOrElse(final T defaut) {
+	public T orElse(final T defaut) {
 		return value == null ? defaut : value;
 	}
 

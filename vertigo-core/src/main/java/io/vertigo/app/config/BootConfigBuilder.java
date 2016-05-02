@@ -30,7 +30,7 @@ import io.vertigo.lang.Option;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
+	private Option<LogConfig> myLogConfigOption = Option.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
@@ -53,7 +53,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		myLogConfigOption = Option.some(logConfig);
+		myLogConfigOption = Option.of(logConfig);
 		return this;
 	}
 

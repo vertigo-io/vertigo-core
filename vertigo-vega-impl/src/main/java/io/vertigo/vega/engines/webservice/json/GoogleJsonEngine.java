@@ -219,7 +219,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isDefined()) {
+			if (src.isPresent()) {
 				return context.serialize(src.get());
 			}
 			return null; //rien

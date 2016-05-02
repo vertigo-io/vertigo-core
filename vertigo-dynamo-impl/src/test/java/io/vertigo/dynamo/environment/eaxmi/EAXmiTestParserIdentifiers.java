@@ -42,6 +42,6 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 	@Test
 	public void testIdentifiersVsPrimaryKey() {
 		final DtDefinition loginDefinition = getDtDefinition("DT_LOGIN");
-		Assert.assertTrue(loginDefinition.getIdField().isDefined());
+		Assert.assertTrue(loginDefinition.getIdField().isPresent());
 	}
 }

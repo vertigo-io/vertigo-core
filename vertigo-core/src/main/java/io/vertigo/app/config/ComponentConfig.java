@@ -57,7 +57,7 @@ public final class ComponentConfig {
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
-		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
 		this.elastic = elastic;
 		//-----
 		this.apiClass = apiClass;

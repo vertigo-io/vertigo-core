@@ -94,7 +94,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			@Override
 			public Locale getCurrentLocale() {
 				final Option<UserSession> userSession = getCurrentUserSession();
-				return userSession.isDefined() ? userSession.get().getLocale() : null;
+				return userSession.isPresent() ? userSession.get().getLocale() : null;
 			}
 		};
 	}
@@ -121,7 +121,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	@Override
 	public <U extends UserSession> Option<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
-		return Option.option(userSession);
+		return Option.ofNullable(userSession);
 	}
 
 	/** {@inheritDoc} */

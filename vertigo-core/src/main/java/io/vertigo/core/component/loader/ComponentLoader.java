@@ -75,7 +75,7 @@ public final class ComponentLoader {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, Option.some(paramManager), moduleConfig);
+			injectComponent(componentSpace, Option.of(paramManager), moduleConfig);
 		}
 	}
 
@@ -85,7 +85,7 @@ public final class ComponentLoader {
 	 * @param bootModuleConfig Configs of the boot module
 	 */
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
-		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
+		doInjectComponents(componentSpace, Option.<ParamManager> empty(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");

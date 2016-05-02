@@ -91,7 +91,7 @@ public final class TokenManagerImpl implements TokenManager {
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		final Option<Serializable> result = kvStoreManager.find(collection, tokenKey, Serializable.class);
-		if (result.isDefined()) {
+		if (result.isPresent()) {
 			kvStoreManager.remove(collection, tokenKey);
 		}
 		return result;
@@ -99,7 +99,7 @@ public final class TokenManagerImpl implements TokenManager {
 
 	private String makeTokenKey(final String objectUUID) {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
+		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return new StringBuilder(36 + 1 + 36)
 				.append(getUserTokenPart()).append(":").append(objectUUID)
@@ -108,7 +108,7 @@ public final class TokenManagerImpl implements TokenManager {
 
 	private String getUserTokenPart() {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
+		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return userSessionOption.get().getSessionUUID().toString();
 	}

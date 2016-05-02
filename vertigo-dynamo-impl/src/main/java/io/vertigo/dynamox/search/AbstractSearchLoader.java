@@ -66,9 +66,9 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				public Option<SearchChunk<K>> next() {
 					current = nextChunk(keyConceptClass, current);
 					if (current.getAllURIs().isEmpty()) {
-						return Option.none();
+						return Option.empty();
 					}
-					return Option.some(current);
+					return Option.of(current);
 				}
 
 				/** {@inheritDoc} */

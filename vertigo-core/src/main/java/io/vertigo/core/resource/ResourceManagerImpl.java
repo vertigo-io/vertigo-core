@@ -54,7 +54,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	public URL resolve(final String resource) {
 		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
 			final Option<URL> url = resourceResolver.resolve(resource);
-			if (url.isDefined()) {
+			if (url.isPresent()) {
 				return url.get();
 			}
 		}

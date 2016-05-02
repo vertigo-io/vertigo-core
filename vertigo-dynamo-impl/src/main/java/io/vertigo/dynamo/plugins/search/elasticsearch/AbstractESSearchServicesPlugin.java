@@ -96,7 +96,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
 		this.indexName = indexName.toLowerCase().trim();
-		if (configFile.isDefined()) {
+		if (configFile.isPresent()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
 			this.configFile = null;
@@ -270,9 +270,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
-				if (indexType.isDefined() || copyFromFields.contains(dtField)) {
+				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
 					typeMapping.startObject(dtField.getName());
-					if (indexType.isDefined()) {
+					if (indexType.isPresent()) {
 						appendIndexTypeMapping(typeMapping, indexType);
 					}
 					if (copyFromFields.contains(dtField)) {

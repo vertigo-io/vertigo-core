@@ -114,12 +114,12 @@ final class BerkeleyDatabase {
 		}
 		if (status == OperationStatus.NOTFOUND) {
 			//Si on n'a rien trouvé
-			return Option.none();
+			return Option.empty();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("find has failed");
 		}
-		return Option.option(clazz.cast(dataBinding.entryToObject(dataEntry)));
+		return Option.ofNullable(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
 
 	/**

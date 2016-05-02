@@ -76,23 +76,23 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected DslExpression handle(final List<?> parsing) {
-		String preExpression = ((Option<String>) parsing.get(0)).getOrElse("") + (String) parsing.get(1);
+		String preExpression = ((Option<String>) parsing.get(0)).orElse("") + (String) parsing.get(1);
 		final String postExpression;
 		final Option<DslField> field;
 		final Option<DslMultiField> multiField;
 		final Choice fields = (Choice) parsing.get(2);
 		switch (fields.getValue()) {
 			case 0:
-				field = Option.some((DslField) fields.getResult());
-				multiField = Option.none();
+				field = Option.of((DslField) fields.getResult());
+				multiField = Option.empty();
 				postExpression = "";
 				break;
 			case 1:
 				final List<?> multiFieldParsing = (List<?>) fields.getResult();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
-				multiField = Option.some((DslMultiField) multiFieldParsing.get(1));
+				multiField = Option.of((DslMultiField) multiFieldParsing.get(1));
 				postExpression = (String) multiFieldParsing.get(2);
-				field = Option.none();
+				field = Option.empty();
 				break;
 			default:
 				throw new IllegalArgumentException("case " + fields.getValue() + " not implemented");

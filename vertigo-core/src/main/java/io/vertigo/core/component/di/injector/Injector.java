@@ -113,10 +113,10 @@ public final class Injector {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(dependency.getName(), dependency.getType()));
+				return Option.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
-			return Option.none();
+			return Option.empty();
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();

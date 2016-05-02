@@ -116,6 +116,6 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 		Assertion.checkNotNull(dtc);
 		//-----
 		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
-		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> none(), dtc);
+		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> empty(), dtc);
 	}
 }

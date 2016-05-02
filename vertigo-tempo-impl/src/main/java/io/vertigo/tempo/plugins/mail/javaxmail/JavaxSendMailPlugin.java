@@ -104,7 +104,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mailPassword);
 		Assertion.checkArgument(mailLogin.isEmpty() || !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
 				"When defined Login can't be empty");
-		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isDefined(), // login and password must be null or not null both
+		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isPresent(), // login and password must be null or not null both
 				"Password is required when login is defined");
 		//-----
 		this.fileManager = fileManager;
@@ -128,7 +128,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			Transport.send(message);
 			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
-			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isDefined() ? mailPort.get() : "default");
+			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isPresent() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
 			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
@@ -168,12 +168,12 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		final Properties properties = new Properties();
 		properties.put("mail.store.protocol", mailStoreProtocol);
 		properties.put("mail.host", mailHost);
-		if (mailPort.isDefined()) {
+		if (mailPort.isPresent()) {
 			properties.put("mail.port", mailPort.get());
 		}
 		properties.put("mail.debug", "false");
 		final Session session;
-		if (mailLogin.isDefined()) {
+		if (mailLogin.isPresent()) {
 			properties.put("mail.smtp.ssl.trust", mailHost);
 			properties.put("mail.smtp.starttls.enable", true);
 			properties.put("mail.smtp.auth", "true");

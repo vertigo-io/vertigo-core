@@ -134,7 +134,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), Component.class, true);
+		return doBeginComponent(Option.<Class<? extends Component>> of(apiClass), Component.class, true);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> none(), implClass, false);
+		return doBeginComponent(Option.<Class<? extends Component>> empty(), implClass, false);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> some(apiClass), implClass, false);
+		return doBeginComponent(Option.<Class<? extends Component>> of(apiClass), implClass, false);
 	}
 
 	/**

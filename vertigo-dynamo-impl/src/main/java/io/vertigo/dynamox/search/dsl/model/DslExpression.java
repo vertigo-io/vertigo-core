@@ -63,11 +63,11 @@ public final class DslExpression {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
 				.append(preBody);
-		if (field.isDefined()) {
+		if (field.isPresent()) {
 			sb.append(field.get())
 					.append(":");
 		}
-		if (multiField.isDefined()) {
+		if (multiField.isPresent()) {
 			sb.append(multiField.get())
 					.append(":");
 		}

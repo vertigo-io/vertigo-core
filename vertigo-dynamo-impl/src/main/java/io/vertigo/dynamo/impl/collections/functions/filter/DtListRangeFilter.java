@@ -61,8 +61,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		Assertion.checkNotNull(maxValue);
 		//-----
 		this.fieldName = fieldName;
-		this.minValue = minValue.getOrElse(null); //On remet a null (car Option non serializable)
-		this.maxValue = maxValue.getOrElse(null); //On remet a null (car Option non serializable)
+		this.minValue = minValue.orElse(null); //On remet a null (car Option non serializable)
+		this.maxValue = maxValue.orElse(null); //On remet a null (car Option non serializable)
 		this.isMinInclude = isMinInclude;
 		this.isMaxInclude = isMaxInclude;
 

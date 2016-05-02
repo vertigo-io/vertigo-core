@@ -66,7 +66,7 @@ final class Boot {
 	}
 
 	void init() {
-		if (bootConfig.getLogConfig().isDefined()) {
+		if (bootConfig.getLogConfig().isPresent()) {
 			initLog(bootConfig.getLogConfig().get());
 		}
 	}

@@ -109,7 +109,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
-		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(DEFAULT_STORE_NAME);
 		readOnly = false;
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;

@@ -202,7 +202,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	private static boolean hasComplexTypeMeta(final DtList<?> dtList) {
 		for (final String entry : dtList.getMetaDataNames()) {
 			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-			if (value.isDefined()) {
+			if (value.isPresent()) {
 				final Class<?> metaClass = value.get().getClass();
 				if (!(metaClass.isPrimitive()
 						|| String.class.isAssignableFrom(metaClass)
@@ -253,7 +253,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			final DtList<?> dtList = (DtList<?>) list;
 			for (final String entry : dtList.getMetaDataNames()) {
 				final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-				if (value.isDefined()) {
+				if (value.isPresent()) {
 					if (value.get() instanceof String) {
 						response.header(entry, (String) value.get()); //TODO escape somethings ?
 					} else {
@@ -268,7 +268,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		final Map<String, Serializable> metaDatas = new HashMap<>();
 		for (final String entry : dtList.getMetaDataNames()) {
 			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-			if (value.isDefined()) {
+			if (value.isPresent()) {
 				metaDatas.put(entry, value.get());
 			}
 		}

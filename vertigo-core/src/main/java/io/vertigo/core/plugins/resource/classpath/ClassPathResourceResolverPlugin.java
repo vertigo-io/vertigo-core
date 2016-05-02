@@ -40,9 +40,9 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 		try {
 			//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
 			final URL url = getClassLoader().getResource(resource);
-			return Option.option(url);
+			return Option.ofNullable(url);
 		} catch (final RuntimeException e) { //if Ressource name is invalid it should throw exception
-			return Option.none();
+			return Option.empty();
 		}
 	}
 

@@ -67,8 +67,8 @@ public final class DtDefinition implements Definition {
 	/** id Field */
 	private final Option<DtField> idField;
 
-	private Option<DtField> sortField = Option.none();
-	private Option<DtField> displayField = Option.none();
+	private Option<DtField> sortField = Option.empty();
+	private Option<DtField> displayField = Option.empty();
 
 	private final String dataSpace;
 
@@ -103,25 +103,25 @@ public final class DtDefinition implements Definition {
 			doRegisterDtField(dtField);
 
 		}
-		idField = Option.option(id);
+		idField = Option.ofNullable(id);
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
+		Assertion.checkState(!persistent || idField.isPresent(), "Si un DT est persistant il doit posséder un ID");
 	}
 
 	private void registerSort(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(sortField.isEmpty(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		sortField = Option.some(dtField);
+		sortField = Option.of(dtField);
 	}
 
 	private void registerDisplay(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(displayField.isEmpty(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		displayField = Option.some(dtField);
+		displayField = Option.of(dtField);
 	}
 
 	//TODO A fermer

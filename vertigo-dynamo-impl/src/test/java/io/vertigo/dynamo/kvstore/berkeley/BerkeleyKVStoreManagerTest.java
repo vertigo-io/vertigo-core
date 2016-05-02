@@ -97,7 +97,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			transaction.commit();
 		}
 		final Option<Flower> flower1 = kvStoreManager.find("flowers", "1", Flower.class);
-		Assert.assertTrue("Flower id 1 not found", flower1.isDefined());
+		Assert.assertTrue("Flower id 1 not found", flower1.isPresent());
 
 		final Option<Flower> flower2 = kvStoreManager.find("flowers", "2", Flower.class);
 		Assert.assertTrue("There is already a flower id 2", flower2.isEmpty());
@@ -144,7 +144,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 			//find unexpired element
 			final Option<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
-			Assert.assertTrue(tulip1Load.isDefined());
+			Assert.assertTrue(tulip1Load.isPresent());
 
 			//count after 3 inserts and T+9s
 			final long nbFlowers3 = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();

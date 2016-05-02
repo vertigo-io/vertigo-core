@@ -86,7 +86,7 @@ public final class AnnotationsWebServiceScannerUtil {
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
 		for (final Method method : webServicesClass.getMethods()) {
 			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
-			if (webServiceDefinition.isDefined()) {
+			if (webServiceDefinition.isPresent()) {
 				webServiceDefinitions.add(webServiceDefinition.get());
 			}
 		}
@@ -144,9 +144,9 @@ public final class AnnotationsWebServiceScannerUtil {
 				builder.addWebServiceParam(webServiceParam);
 			}
 			//---
-			return Option.some(builder.build());
+			return Option.of(builder.build());
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {

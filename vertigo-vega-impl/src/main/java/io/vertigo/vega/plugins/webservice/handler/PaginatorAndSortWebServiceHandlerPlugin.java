@@ -82,12 +82,12 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String listServerToken = uiListState.getListServerToken();
-		Option<DtList<?>> fullListOption = Option.none();
+		Option<DtList<?>> fullListOption = Option.empty();
 		if (listServerToken != null) {
 			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
 		final DtList<?> fullList;
-		if (fullListOption.isDefined()) {
+		if (fullListOption.isPresent()) {
 			fullList = fullListOption.get();
 		} else {
 			final Object result = chain.handle(request, response, routeContext);

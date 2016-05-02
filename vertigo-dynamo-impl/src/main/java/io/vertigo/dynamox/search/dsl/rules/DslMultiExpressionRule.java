@@ -89,7 +89,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		switch (parsing.getValue()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getResult();
-				preMultiExpression = ((Option<String>) blockExpression.get(0)).getOrElse("") + (String) blockExpression.get(1);
+				preMultiExpression = ((Option<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
 				many = (List<Choice>) blockExpression.get(3);
 				postMultiExpression = (String) blockExpression.get(5);
 				break;

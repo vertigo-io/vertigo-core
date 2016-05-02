@@ -44,10 +44,10 @@ public final class DtListState {
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);
 		Assertion.checkArgument(sortFieldName == null || sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----
-		this.maxRows = Option.option(maxRows);
+		this.maxRows = Option.ofNullable(maxRows);
 		this.skipRows = skipRows;
-		this.sortFieldName = Option.option(sortFieldName);
-		this.sortDesc = Option.option(sortDesc);
+		this.sortFieldName = Option.ofNullable(sortFieldName);
+		this.sortDesc = Option.ofNullable(sortDesc);
 	}
 
 	/**

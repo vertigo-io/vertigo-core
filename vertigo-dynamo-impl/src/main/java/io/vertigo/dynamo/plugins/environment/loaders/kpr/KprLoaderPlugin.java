@@ -60,7 +60,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = encoding.getOrElse("ISO-8859-1");
+		charset = encoding.orElse("ISO-8859-1");
 	}
 
 	/** {@inheritDoc} */

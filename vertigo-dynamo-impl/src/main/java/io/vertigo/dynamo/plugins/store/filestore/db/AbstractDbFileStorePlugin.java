@@ -62,7 +62,7 @@ abstract class AbstractDbFileStorePlugin {
 		Assertion.checkNotNull(name);
 		//-----
 		readOnly = false;
-		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(DEFAULT_STORE_NAME);
 	}
 
 	/**

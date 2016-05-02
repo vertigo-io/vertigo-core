@@ -30,28 +30,28 @@ import org.junit.Test;
 public final class OptionTest {
 	@Test
 	public void testNone() {
-		final Option<String> none = Option.none();
+		final Option<String> none = Option.empty();
 		Assert.assertTrue(none.isEmpty());
-		Assert.assertFalse(none.isDefined());
-		Assert.assertEquals("movie", none.getOrElse("movie"));
+		Assert.assertFalse(none.isPresent());
+		Assert.assertEquals("movie", none.orElse("movie"));
 	}
 
 	@Test(expected = NoSuchElementException.class)
 	public void testNoneFail() {
-		Option.none().get();
+		Option.empty().get();
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSomeFail() {
-		Option.some(null);
+		Option.of(null);
 	}
 
 	@Test
 	public void testSome() {
-		final Option<String> some = Option.some("music");
+		final Option<String> some = Option.of("music");
 		Assert.assertFalse(some.isEmpty());
-		Assert.assertTrue(some.isDefined());
+		Assert.assertTrue(some.isPresent());
 		Assert.assertEquals("music", some.get());
-		Assert.assertEquals("music", some.getOrElse("movie"));
+		Assert.assertEquals("music", some.orElse("movie"));
 	}
 }

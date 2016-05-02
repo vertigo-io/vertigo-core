@@ -53,7 +53,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new HashMap<>();
 
-	private Option<FacetDefinition> clusterFacetDefinition = Option.<FacetDefinition> none();
+	private Option<FacetDefinition> clusterFacetDefinition = Option.<FacetDefinition> empty();
 	private final Option<FacetedQuery> facetedQuery;
 	private final DtList<R> results;
 	private final S source;
@@ -117,7 +117,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
 		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
-		clusterFacetDefinition = Option.some(facetDefinition);
+		clusterFacetDefinition = Option.of(facetDefinition);
 		return this;
 	}
 
@@ -155,7 +155,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			//TODO merge highlights
 		}
 
-		if (clusterFacetDefinition.isDefined()) {
+		if (clusterFacetDefinition.isPresent()) {
 			final Facet clusterFacet = new Facet(clusterFacetDefinition.get(), clustersCount);
 			facets.add(clusterFacet);
 		}
