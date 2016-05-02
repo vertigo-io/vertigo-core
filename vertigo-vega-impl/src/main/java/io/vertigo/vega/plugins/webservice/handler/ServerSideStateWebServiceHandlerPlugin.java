@@ -18,6 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -35,14 +42,6 @@ import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 
@@ -123,7 +122,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		} else {
 			serverSideObject = tokenManager.get(accessToken);
 		}
-		if (serverSideObject.isEmpty()) {
+		if (!serverSideObject.isPresent()) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 		}
 		uiObject.setServerSideObject((DtObject) serverSideObject.get());
@@ -172,8 +171,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 			savedObject = ((ExtendedObject<Object>) returnValue).getInnerObject();
 			Assertion.checkArgument(DtObject.class.isInstance(savedObject)
 					|| DtList.class.isInstance(savedObject)
-					|| UiContext.class.isInstance(savedObject)
-					, "Return type can't be saved ServerSide : {0}", savedObject.getClass().getSimpleName());
+					|| UiContext.class.isInstance(savedObject), "Return type can't be saved ServerSide : {0}", savedObject.getClass().getSimpleName());
 		} else {
 			overridedReturnValue = new ExtendedObject<>(returnValue);
 			savedObject = returnValue;
