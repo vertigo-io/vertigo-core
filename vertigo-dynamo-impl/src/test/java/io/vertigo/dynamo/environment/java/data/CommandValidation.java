@@ -132,7 +132,7 @@ public final class CommandValidation implements DtObject {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> uri;
 			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(command), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(command));
-			if (!fkURI.toURN().equals(uri.toURN())) {
+			if (!fkURI.urn().equals(uri.urn())) {
 				command = null;
 			}
 		}

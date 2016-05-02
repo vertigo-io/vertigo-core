@@ -96,7 +96,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					bulkRequest.add(esClient.prepareIndex()
 							.setIndex(indexName)
 							.setType(typeName)
-							.setId(index.getURI().toURN())
+							.setId(index.getURI().urn())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -122,7 +122,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			esClient.prepareIndex()
 					.setIndex(indexName)
 					.setType(typeName)
-					.setId(index.getURI().toURN())
+					.setId(index.getURI().urn())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -156,7 +156,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		esClient.prepareDelete()
 				.setIndex(indexName)
 				.setType(typeName)
-				.setId(uri.toURN())
+				.setId(uri.urn())
 				.execute()
 				.actionGet();
 	}

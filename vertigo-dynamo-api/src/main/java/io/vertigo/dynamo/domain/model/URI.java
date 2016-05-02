@@ -88,7 +88,7 @@ public final class URI<D extends DtObject> implements Serializable {
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
 	 */
-	public String toURN() {
+	public String urn() {
 		return urn;
 	}
 

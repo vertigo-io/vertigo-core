@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
@@ -27,9 +30,6 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author pchretien
@@ -46,7 +46,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//-----
-		dynamicRegistries = new ArrayList<DynamicRegistry>(dynamicRegistryPlugins);
+		dynamicRegistries = new ArrayList<>(dynamicRegistryPlugins);
 		//Création de la grammaire.
 		grammar = createGrammar();
 

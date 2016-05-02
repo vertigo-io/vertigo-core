@@ -136,7 +136,7 @@ public final class Command implements KeyConcept {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> uri;
 			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(commandType), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(commandType));
-			if (!fkURI.toURN().equals(uri.toURN())) {
+			if (!fkURI.urn().equals(uri.urn())) {
 				commandType = null;
 			}
 		}
@@ -198,7 +198,7 @@ public final class Command implements KeyConcept {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> uri;
 			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(city), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(city));
-			if (!fkURI.toURN().equals(uri.toURN())) {
+			if (!fkURI.urn().equals(uri.urn())) {
 				city = null;
 			}
 		}

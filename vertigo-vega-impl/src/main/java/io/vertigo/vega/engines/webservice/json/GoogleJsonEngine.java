@@ -273,7 +273,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final URI uri, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(uri.toURN());
+			return new JsonPrimitive(uri.urn());
 		}
 
 		/** {@inheritDoc} */

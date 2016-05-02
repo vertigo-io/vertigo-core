@@ -75,7 +75,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		final boolean useCache = dtcUri != null; //no cache if no URI
 		LuceneIndex<D> index;
 		if (useCache) {
-			final String indexName = "INDEX_" + dtcUri.toURN();
+			final String indexName = "INDEX_" + dtcUri.urn();
 			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
 			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 1800, 3600));
