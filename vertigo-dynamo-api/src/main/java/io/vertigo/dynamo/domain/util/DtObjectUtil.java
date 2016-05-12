@@ -36,7 +36,7 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
- * The DtObjectUtil class is a set of utils about the DtObject. 
+ * The DtObjectUtil class is a set of utils about the DtObject.
  *
  * @author pchretien
  */
@@ -154,7 +154,12 @@ public final class DtObjectUtil {
 		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
-	private static URI createURI(final DtObject dto) {
+	/**
+	 * Obtain this object URI.
+	 * @param dto Object
+	 * @return this object URI
+	 */
+	public static URI createURI(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
@@ -188,7 +193,7 @@ public final class DtObjectUtil {
 	/**
 	 * Finds the definition to which the specified 'DtObject' is mapped.
 	 * @param dto DtObject
-	 * @return the id 
+	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final DtObject dto) {
 		Assertion.checkNotNull(dto);
@@ -202,7 +207,7 @@ public final class DtObjectUtil {
 	/**
 	 * Finds the definition from a type of 'DtObject'
 	 * @param dtObjectClass  the type of the 'DtObject'
-	 * @return the id 
+	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
