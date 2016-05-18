@@ -60,8 +60,8 @@ limitations under the License. -->
 
 	<build>
 		<plugins>
-
 			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
 					<skip>true</skip> <!-- No need to deploy the reactor -->
 				</configuration>
