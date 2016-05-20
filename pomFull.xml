@@ -55,6 +55,8 @@ limitations under the License. -->
 		
 		<module>../vertigo-shell</module>
 		
+		<module>../vertigo-stella</module>
+		
 		<module>vertigo-bundle</module>
 	</modules>
 
