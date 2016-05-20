@@ -143,22 +143,16 @@
 		</dependency>
 		<!-- REST distributed impl dependency-->
 		<dependency>
-			<groupId>com.sun.jersey</groupId>
+			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.18.1</version>
+			<version>2.22.2</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.18.1</version>
-			<optional>true</optional> <!-- REST DistributedWork impl  -->
 		</dependency>
 		<!-- REST DistributedWork test  -->
 		<dependency>
 		    <groupId>redis.clients</groupId>
 		    <artifactId>jedis</artifactId>
-   			 <version>2.7.3</version>
+   			 <version>2.8.1</version>
 		    <optional>true</optional><!-- REDIS DistributedWork impl  -->
 		</dependency>
 		<!-- /Distributed -->
@@ -208,12 +202,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!-- 
+		 xml-apis est déjà tiré en 1.0.b2 par hibernate 5, donc on laisse la version de base.
+		 <dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
-			<version>1.3.04</version> <!-- com.lowagie 4.2.0 contient la 1.0.b2 qui est incompatible avec le jdk 7 (sur Node) -->
-			<optional>true</optional>			
-		</dependency>
+			<version>1.3.04</version> com.lowagie 2.1.7 contient la 1.0.b2 qui est incompatible avec le jdk 7 (sur Node)
+			<optional>true</optional>	
+		</dependency> -->
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext-rtf</artifactId>
@@ -237,32 +233,32 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.13</version>
+			<version>3.14</version>
 			<optional>true</optional>
 		</dependency>
 <!--Open Office dependencies-->
 		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>juh</artifactId>
-			<version>3.2.1</version>
+			<version>4.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>jurt</artifactId>
-			<version>3.2.1</version>
+			<version>4.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>ridl</artifactId>
-			<version>3.2.1</version>
+			<version>4.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>unoil</artifactId>
-			<version>3.2.1</version>
+			<version>4.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		
