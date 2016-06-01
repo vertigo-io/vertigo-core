@@ -18,15 +18,17 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-
-import java.util.Collections;
-import java.util.List;
+import io.vertigo.lang.Assertion;
 
 /**
  * Mock pour les tests de regles sur les Definitions.
@@ -52,13 +54,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 
 	@Override
 	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
-		return new Definition() {
-
-			@Override
-			public String getName() {
-				return "FAKE";
-			}
-		};
+		return new FakeDefinition(definition.getName());
 	}
 
 	@Override
@@ -69,5 +65,21 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//
+	}
+
+	@DefinitionPrefix("MOCK_")
+	public final static class FakeDefinition implements Definition {
+		private final String name;
+
+		FakeDefinition(final String name) {
+			Assertion.checkArgNotEmpty(name);
+			//-----
+			this.name = name;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
 	}
 }
