@@ -18,19 +18,19 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.StringUtil;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.model.UiListState;
 
 /**
  * WebServiceDefinition Builder.
@@ -95,8 +95,16 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private static String normalizePath(final String servicePath) {
-		return servicePath.replaceAll("\\{.*?\\}", "_")//.*? : reluctant quantifier;
-				.replaceAll("[//\\*\\(\\)]", "_");
+		//On calcule la taille du path sans le nom des paramètres, c'est util pour trier les routes dans l'ordre d'interception.
+		final String argsRemovedPath = servicePath.replaceAll("\\{.*?\\}", "_");//.*? : reluctant quantifier;
+		final int argsRemovedPathSize = argsRemovedPath.length();
+
+		//On rend le path plus lisible et compatible DefinitionName
+		final String normalizedString = argsRemovedPath.replaceAll("[//\\*\\(\\)]", "_")
+				.replaceAll("_+", "_");
+		final String hashcodeAsHex = "$" + Integer.toHexString(argsRemovedPath.hashCode());
+		//On limite sa taille pour avec un nom de définition acceptable
+		return normalizedString.substring(0, Math.min(40, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
 	}
 
 	/**
