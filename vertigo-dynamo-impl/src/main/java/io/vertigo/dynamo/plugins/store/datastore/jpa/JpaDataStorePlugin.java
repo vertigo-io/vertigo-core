@@ -18,6 +18,20 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import org.hibernate.exception.ConstraintViolationException;
+
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
@@ -48,16 +62,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 /**
  * Implémentation d'un Store Jpa.
@@ -335,29 +339,33 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		put("Jpa:update", dto, false);
 	}
 
+	@Override
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+		put("Jpa:merge", dto, false);
+	}
+
 	private void put(final String prefixServiceName, final DtObject dto, final boolean persist) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
+			final EntityManager entityManager = getEntityManager();
 			if (persist) { //si pas de PK exception
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 				//sinon on ferait persist aussi si em.contains(dto)).
-				getEntityManager().persist(dto);
+				entityManager.persist(dto);
 			} else {
-				getEntityManager().merge(dto);
+				entityManager.merge(dto);
 			}
-			getEntityManager().flush();
-			getEntityManager().clear();
+			entityManager.flush();
+			entityManager.clear();
 			tracker.setMeasure("nbModifiedRow", 1);
 			tracker.markAsSucceeded();
+		} catch (final PersistenceException pse) {
+			//Gère les erreurs d'exécution JDBC.
+			handlePersistenceException(pse);
 		}
-	}
-
-	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
-		put("Jpa:merge", dto, false);
 	}
 
 	/** {@inheritDoc} */
@@ -375,6 +383,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			getEntityManager().clear();
 			tracker.setMeasure("nbModifiedRow", 1);
 			tracker.markAsSucceeded();
+		} catch (final PersistenceException pse) {
+			//Gère les erreurs d'exécution JDBC.
+			handlePersistenceException(pse);
 		}
 	}
 
@@ -390,6 +401,29 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			tracker.markAsSucceeded();
 			return result;
 		}
+	}
+
+	/**
+	 * Gestion centralisée des exceptions SQL.
+	 * @param connection Connexion
+	 * @param sqle Exception SQL
+	 * @param statement Statement
+	 */
+	private void handlePersistenceException(final PersistenceException pse) {
+		Throwable t = pse.getCause();
+		// On ne traite que les violations de contraintes
+		if (!(t instanceof ConstraintViolationException)) {
+			throw pse;
+		}
+		final ConstraintViolationException cve = (ConstraintViolationException) t;
+		// On récupère l'erreur SQL associé
+		t = cve.getCause();
+		if (!(t instanceof SQLException)) {
+			throw pse;
+		}
+		final SQLException sqle = (SQLException) t;
+		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
+		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
 }
