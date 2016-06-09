@@ -182,7 +182,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
 					.build();
 		} catch (final SearchPhaseExecutionException e) {
-			throw new VUserException(new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			final VUserException vue = new VUserException(
+					new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			vue.initCause(e);
+			throw vue;
 		}
 	}
 
