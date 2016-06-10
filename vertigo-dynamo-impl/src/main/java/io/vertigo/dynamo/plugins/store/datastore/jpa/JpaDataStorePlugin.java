@@ -405,9 +405,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Gestion centralisée des exceptions SQL.
-	 * @param connection Connexion
-	 * @param sqle Exception SQL
-	 * @param statement Statement
+	 * @param pse Exception SQL
 	 */
 	private void handlePersistenceException(final PersistenceException pse) {
 		Throwable t = pse.getCause();
