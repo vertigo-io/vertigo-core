@@ -155,15 +155,15 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Obtain this object URI.
+	 * Creates an URI from an existing object.
 	 * @param dto Object
 	 * @return this object URI
 	 */
-	public static URI createURI(final DtObject dto) {
+	public static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
-		return new URI(dtDefinition, DtObjectUtil.getId(dto));
+		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**
