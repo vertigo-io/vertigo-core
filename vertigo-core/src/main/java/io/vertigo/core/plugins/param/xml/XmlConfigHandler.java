@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.plugins.param.xml;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * @author  pchretien
@@ -64,11 +64,10 @@ final class XmlConfigHandler extends DefaultHandler {
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
 			case config:
+			case param:
 				break;
 			case path:
 				currentPath = null;
-				break;
-			case param:
 				break;
 			default:
 		}
