@@ -74,12 +74,11 @@ public enum EAXmiType {
 			type = Class;
 		} else if (Attribute.getCode().equals(name)) {
 			type = Attribute;
-		} else if (Association.getCode().equals(name)) {
+		} else if (Association.getCode().equals(name)
+				|| Connector.getCode().equals(name)) {
 			type = Association;
 		} else if (ClassAttribute.getCode().equals(name)) {
 			type = ClassAttribute;
-		} else if (Connector.getCode().equals(name)) {
-			type = Association;
 		} else {
 			//rien trouvé
 			type = null;

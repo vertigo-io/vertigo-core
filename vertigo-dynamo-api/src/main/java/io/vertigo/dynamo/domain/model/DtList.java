@@ -18,12 +18,6 @@
  */
 package io.vertigo.dynamo.domain.model;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -32,6 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Classe de stockage des listes.
@@ -223,5 +223,11 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	public boolean equals(final Object o) {
 		/* A list equals only the same list */
 		return (o == this);
+	}
+
+	@Override
+	public int hashCode() {
+		/* A list equals only the same list, so hashCode is simpler */
+		return System.identityHashCode(this);
 	}
 }
