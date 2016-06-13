@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * This class parses a text and tries all the rules until a rule matches.
- *   
+ *
  * @author pchretien
  */
 final class FirstOfRuleParser implements Parser<Choice> {
@@ -55,6 +55,7 @@ final class FirstOfRuleParser implements Parser<Choice> {
 				final int end = parser.parse(text, start);
 				result = new Choice(i, parser.get());
 				if (end < bestIndex) {
+					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
 				return end;
