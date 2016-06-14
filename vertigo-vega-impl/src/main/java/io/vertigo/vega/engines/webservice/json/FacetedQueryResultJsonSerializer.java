@@ -18,11 +18,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.model.DtList;
-
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map.Entry;
@@ -33,6 +28,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtList;
+
 /**
  * JsonSerializer of FacetedQueryResult.
  * {
@@ -40,7 +40,7 @@ import com.google.gson.JsonSerializer;
  *   facets = [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
  *   totalCount : 10045
  * }
- * 
+ *
  * @author npiedeloup
  */
 final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
@@ -60,7 +60,9 @@ final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQu
 			for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
 				final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
 				final JsonObject jsonClusterElement = new JsonObject();
-				jsonClusterElement.add(cluster.getKey().getLabel().getDisplay(), jsonList);
+				jsonClusterElement.addProperty("code", cluster.getKey().getCode());
+				jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
+				jsonClusterElement.add("list", jsonList);
 				jsonCluster.add(jsonClusterElement);
 			}
 			jsonObject.add("groups", jsonCluster);
