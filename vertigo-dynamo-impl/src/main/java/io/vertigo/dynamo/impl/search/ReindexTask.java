@@ -18,14 +18,6 @@
  */
 package io.vertigo.dynamo.impl.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -38,6 +30,14 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexTask.class);
@@ -67,8 +67,8 @@ final class ReindexTask implements Runnable {
 		long dirtyElementsCount = 0;
 		do {
 			final long startTime = System.currentTimeMillis();
-			final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
 			try {
+				final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
 				synchronized (dirtyElements) {
 					if (!dirtyElements.isEmpty()) {
 						reindexUris.addAll(dirtyElements.subList(0, Math.min(dirtyElements.size(), DIRTY_ELEMENTS_CHUNK_SIZE)));
@@ -92,11 +92,6 @@ final class ReindexTask implements Runnable {
 				}
 			} catch (final Exception e) {
 				LOGGER.error("Update index error", e);
-				//En cas d'erreur on remet les uris à réindexer
-				//On préfère ce mode de retrait/remise si error, pour eviter les doubles indexations si exec en parallèlle.
-				synchronized (dirtyElements) {
-					dirtyElements.addAll(reindexUris);
-				}
 			} finally {
 				LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
 			}
