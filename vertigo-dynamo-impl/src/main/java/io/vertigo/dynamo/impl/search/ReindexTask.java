@@ -18,6 +18,14 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -31,17 +39,11 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexTask.class);
 	private static final int DIRTY_ELEMENTS_CHUNK_SIZE = 500;
+	private static final int REINDEX_ERROR_WAIT = 1000; // attend 1s avant de recommencer
+	private static final int REINDEX_ERROR_MAX_RETRY = 5; //il y a 5 + 1 essais au total (le premier + 5 retry)
 
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final List<URI<? extends KeyConcept>> dirtyElements;
@@ -56,7 +58,7 @@ final class ReindexTask implements Runnable {
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
-		this.dirtyElements = dirtyElements;//On ne fait pas la copie ici
+		this.dirtyElements = dirtyElements; //On ne fait pas la copie ici
 		this.searchManager = searchManager;
 		this.transactionManager = transactionManager;
 	}
@@ -67,8 +69,8 @@ final class ReindexTask implements Runnable {
 		long dirtyElementsCount = 0;
 		do {
 			final long startTime = System.currentTimeMillis();
+			final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
 			try {
-				final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
 				synchronized (dirtyElements) {
 					if (!dirtyElements.isEmpty()) {
 						reindexUris.addAll(dirtyElements.subList(0, Math.min(dirtyElements.size(), DIRTY_ELEMENTS_CHUNK_SIZE)));
@@ -77,25 +79,49 @@ final class ReindexTask implements Runnable {
 				}
 				dirtyElementsCount = reindexUris.size();
 				if (!reindexUris.isEmpty()) {
-					final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-					final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
-
-					// >>> Tx start
-					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-						searchIndexes = searchLoader.loadData(reindexUris);
-					}
-					// <<< Tx end
-					removedNotFoundKeyConcept(searchIndexes, reindexUris);
-					if (!searchIndexes.isEmpty()) {
-						searchManager.putAll(searchIndexDefinition, searchIndexes);
-					}
+					loadAndIndexAndRetry(reindexUris, 0);
 				}
 			} catch (final Exception e) {
-				LOGGER.error("Update index error", e);
+				LOGGER.error("Update index error, skip " + dirtyElementsCount + " elements (" + reindexUris + ")", e);
 			} finally {
 				LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
 			}
 		} while (dirtyElementsCount > 0);
+
+	}
+
+	private void loadAndIndexAndRetry(final List<URI<? extends KeyConcept>> reindexUris, final int tryNumber) {
+		try {
+			loadAndIndex(reindexUris);
+		} catch (final Exception e) {
+			if (tryNumber >= REINDEX_ERROR_MAX_RETRY) {
+				LOGGER.error("Update index error after " + tryNumber + " retry", e);
+				throw e;
+			}
+			//Sinon on attend et on retry
+			LOGGER.warn("Update index error, will retry " + (REINDEX_ERROR_MAX_RETRY - tryNumber) + " time, in " + REINDEX_ERROR_WAIT + " ms", e);
+			try {
+				Thread.sleep(REINDEX_ERROR_WAIT);
+			} catch (final InterruptedException ie) {
+				//rien
+			}
+			loadAndIndexAndRetry(reindexUris, tryNumber + 1); //on retry
+		}
+	}
+
+	private void loadAndIndex(final List<URI<? extends KeyConcept>> reindexUris) {
+		final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
+
+		// >>> Tx start
+		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+			searchIndexes = searchLoader.loadData(reindexUris);
+		}
+		// <<< Tx end
+		removedNotFoundKeyConcept(searchIndexes, reindexUris);
+		if (!searchIndexes.isEmpty()) {
+			searchManager.putAll(searchIndexDefinition, searchIndexes);
+		}
 	}
 
 	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final List<URI<? extends KeyConcept>> reindexUris) {
