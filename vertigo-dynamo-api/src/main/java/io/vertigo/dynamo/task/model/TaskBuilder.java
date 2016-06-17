@@ -18,32 +18,26 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Builder permettant de créer une tache.
+ * Builder to build a task.
  * @author  pchretien
  */
 public final class TaskBuilder implements Builder<Task> {
-	/**
-	 * Conteneur des données et de l'état du service
-	 */
 	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
 	private final TaskDefinition taskDefinition;
 
 	/**
-	 * Initialise la tache.
-	 * Le constructeur est invoqué par la Factory.
-	 * Cette méthode ne doit pas être appelée directement.
+	 * Constructor.
 	 *
-	 * @param taskDefinition Définition de la tache
-	 * param workListener Listener enregistrant les événements produits par l'exécution  des taches
+	 * @param taskDefinition the definition of the task
 	 */
 	public TaskBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
@@ -52,10 +46,10 @@ public final class TaskBuilder implements Builder<Task> {
 	}
 
 	/**
-	 * Affecte la valeur d'un paramètre.
+	 * adds a value to an attribute.
 	 *
-	 * @param attributeName Nom du paramètre
-	 * @param value Valeur
+	 * @param attributeName the name of the attribute
+	 * @param value the values
 	 */
 	public TaskBuilder addValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
