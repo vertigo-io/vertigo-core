@@ -33,13 +33,6 @@ public interface SqlDataBaseManager extends Manager {
 	String MAIN_CONNECTION_PROVIDER_NAME = "main";
 
 	/**
-	 * Retourne la connection pour le main
-	 * @return SecondaryConnectionProvider
-	 */
-	@Deprecated
-	SqlConnectionProvider getConnectionProvider();
-
-	/**
 	 * @param name ConnectionProvider name
 	 * @return SecondaryConnectionProvider
 	 */
