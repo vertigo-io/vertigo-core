@@ -29,7 +29,7 @@ public interface AnalyticsTracker extends AutoCloseable {
 	 * @param measureType Type de mesure
 	 * @param value Incrément de la mesure
 	 */
-	void incMeasure(final String measureType, final double value);
+	AnalyticsTracker incMeasure(final String measureType, final double value);
 
 	/**
 	* Affecte une valeur fixe à la mesure.
@@ -37,7 +37,7 @@ public interface AnalyticsTracker extends AutoCloseable {
 	* @param measureType Type de mesure
 	* @param value valeur de la mesure
 	*/
-	void setMeasure(final String measureType, final double value);
+	AnalyticsTracker setMeasure(final String measureType, final double value);
 
 	/**
 	 * Affecte une valeur fixe à une meta-donnée.
@@ -45,12 +45,12 @@ public interface AnalyticsTracker extends AutoCloseable {
 	 * @param metaDataName Nom de la meta-donnée
 	 * @param value Valeur de la meta-donnée
 	 */
-	void addMetaData(final String metaDataName, final String value);
+	AnalyticsTracker addMetaData(final String metaDataName, final String value);
 
 	/**
 	 * Mark this tracker as succeeded.
 	 */
-	void markAsSucceeded();
+	AnalyticsTracker markAsSucceeded();
 
 	/** {@inheritDoc} */
 	@Override

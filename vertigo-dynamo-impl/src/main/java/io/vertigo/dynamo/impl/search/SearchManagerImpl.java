@@ -18,6 +18,19 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
@@ -41,19 +54,6 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.
@@ -112,8 +112,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll")) {
 			searchServicesPlugin.putAll(indexDefinition, indexCollection);
-			tracker.setMeasure("nbModifiedRow", indexCollection.size());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", indexCollection.size())
+					.markAsSucceeded();
 		}
 	}
 
@@ -122,8 +122,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/put")) {
 			searchServicesPlugin.put(indexDefinition, index);
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
 		}
 	}
 
@@ -132,8 +132,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/load")) {
 			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
-			tracker.setMeasure("nbSelectedRow", result.getCount());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", result.getCount())
+					.markAsSucceeded();
 			return result;
 		}
 	}
@@ -153,8 +153,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/remove")) {
 			searchServicesPlugin.remove(indexDefinition, uri);
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
 		}
 	}
 

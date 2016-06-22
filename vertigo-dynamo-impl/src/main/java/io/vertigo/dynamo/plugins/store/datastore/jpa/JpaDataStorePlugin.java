@@ -135,8 +135,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = getEntityManager().find(objectClass, uri.getId());
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
+					.markAsSucceeded();
 			return result;
 			//Objet null géré par le dataStore
 		}
@@ -203,8 +203,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", dtc.size())
+					.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -323,8 +323,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", dtc.size())
+					.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -360,8 +360,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			}
 			entityManager.flush();
 			entityManager.clear();
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
@@ -381,8 +381,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			getEntityManager().remove(dto);
 			getEntityManager().flush();
 			getEntityManager().clear();
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
@@ -397,8 +397,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = (D) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
+					.markAsSucceeded();
 			return result;
 		}
 	}
