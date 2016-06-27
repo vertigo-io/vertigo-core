@@ -85,15 +85,15 @@ final class SqlRetrieveUtil {
 		return dtc;
 	}
 
-	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultset, final SqlResultMetaData resultMetaData) throws SQLException {
-		final DtField[] fields = findFields(resultMetaData, resultset.getMetaData());
+	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
+		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
-		if (resultset.next()) {
+		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
 			final DtObject dto = resultMetaData.createDtObject();
-			readDtObject(mapping, resultset, dto, fields);
-			if (resultset.next()) {
+			readDtObject(mapping, resultSet, dto, fields);
+			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
 			return dto;

@@ -46,7 +46,6 @@ import io.vertigo.lang.Option;
  * @author  pchretien
  */
 public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
-	private static final String DTO_SEQUENCE = "DTO_SEQUENCE";
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 	/**
 	 * Prefix de la tache : SELECT
@@ -57,7 +56,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", DataType.DtObject);
+	private final Domain resultDomain = new Domain("DO_HSQL", DataType.Long);
 	private final String sequencePrefix;
 
 	/**
@@ -90,18 +89,14 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(getDataSpace())
 				.withRequest(request.toString())
-				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
+				.withOutAttribute(SEQUENCE_FIELD, resultDomain, true)// OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition).build();
 
-		final DtObject dto = getTaskManager()
+		return getTaskManager()
 				.execute(task)
 				.getResult();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getField(SEQUENCE_FIELD);
-
-		return Long.valueOf((Integer) dtField.getDataAccessor().getValue(dto));
 	}
 
 	private static StringBuilder chooseDataBaseStyle(final String sequenceName) {
