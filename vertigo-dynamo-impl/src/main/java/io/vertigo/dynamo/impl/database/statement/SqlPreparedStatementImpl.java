@@ -283,6 +283,8 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public void addBatch() throws SQLException {
+		state.assertDefinedState();
+		//---
 		statement.addBatch();
 	}
 

@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.h2;
 
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
-
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import io.vertigo.dynamo.database.vendor.SqlMapping;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 /**
  * Implémentation spécifique à H2.
@@ -66,12 +66,12 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
+	public Object getValueForResultSet(final ResultSet resultSet, final int col, final DataType dataType) throws SQLException {
 		if (dataType == DataType.Boolean) {
-			final boolean vb = rs.getBoolean(col);
-			return rs.wasNull() ? null : vb;
+			final boolean vb = resultSet.getBoolean(col);
+			return resultSet.wasNull() ? null : vb;
 		}
-		return defaultSQLMapping.getValueForResultSet(rs, col, dataType);
+		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 
 	/** {@inheritDoc} */

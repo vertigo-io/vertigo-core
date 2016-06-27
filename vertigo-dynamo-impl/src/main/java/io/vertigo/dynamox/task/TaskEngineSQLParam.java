@@ -114,7 +114,7 @@ final class TaskEngineSQLParam {
 		rowNumber = dtcRowNumber;
 	}
 
-	private static Integer parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
+	private static int parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
 		final Integer dtcRowNumber;
 		try {
 			dtcRowNumber = Integer.valueOf(betweenPoints);
@@ -124,7 +124,7 @@ final class TaskEngineSQLParam {
 		if (dtcRowNumber == null || dtcRowNumber.intValue() < 0) {
 			throw new VSystemException("Paramètre {0} incohérent : {1} doit être positif ou null.", betweenCar, betweenPoints);
 		}
-		return dtcRowNumber;
+		return dtcRowNumber.intValue();
 	}
 
 	void setIndex(final int index) {

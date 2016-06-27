@@ -131,10 +131,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected List<String> getCreateMainStoreRequests() {
-		final List<String> requests = getCreateFamilleRequests();
-		requests.addAll(getCreateCarRequests());
-		requests.addAll(getCreateFileInfoRequests());
-		return requests;
+		return new ListBuilder<String>()
+				.addAll(getCreateFamilleRequests())
+				.addAll(getCreateCarRequests())
+				.addAll(getCreateFileInfoRequests())
+				.build();
 	}
 
 	protected final List<String> getCreateFamilleRequests() {
