@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Builder of taskDefinition.
@@ -112,14 +112,14 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param notNull if attribute is not null
+	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
+	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----
-		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, notNull, true);
+		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, required);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
 	}
@@ -129,12 +129,12 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param notNull if attribute is not null
+	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
+	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
 		//-----
-		myOutTaskAttribute = new TaskAttribute(attributeName, domain, notNull, false);
+		myOutTaskAttribute = new TaskAttribute(attributeName, domain, required);
 		return this;
 	}
 

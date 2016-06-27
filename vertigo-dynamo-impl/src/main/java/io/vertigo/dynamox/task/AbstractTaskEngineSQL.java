@@ -223,14 +223,14 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 **/
 	protected final String preProcessQuery(final String sqlQuery) {
 		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
-		final Map<TaskAttribute, Object> parameterValuesMap = new HashMap<>(inAttributes.size());
+		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>(inAttributes.size());
 		for (final TaskAttribute taskAttribute : inAttributes) {
-			parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
+			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
-		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, parameterValuesMap, SeparatorType.CLASSIC);
+		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, SeparatorType.CLASSIC);
 		final TrimPreProcessor trimPreProcessor = new TrimPreProcessor(SeparatorType.BEGIN_SEPARATOR_CLASSIC, SeparatorType.END_SEPARATOR_CLASSIC);
-		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(parameterValuesMap);
+		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(inTaskAttributes);
 		//--
 		String sql = sqlQuery;
 		sql = scriptPreProcessor.evaluate(sql);

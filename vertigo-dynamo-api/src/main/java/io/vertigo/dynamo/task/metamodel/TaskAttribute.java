@@ -41,12 +41,6 @@ public final class TaskAttribute {
 	/** Name of the attribute. */
 	private final String name;
 
-	/**
-	 * true : input 
-	 * false: output
-	 */
-	private final boolean in;
-
 	private final Domain domain;
 
 	/** if the attribute is required. */
@@ -58,16 +52,14 @@ public final class TaskAttribute {
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
 	 * @param required if the attribute is required
-	 * @param in if the attribute is an input (else output)
 	 */
-	TaskAttribute(final String attributeName, final Domain domain, final boolean required, final boolean in) {
+	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----
 		name = attributeName;
 		this.domain = domain;
 		this.required = required;
-		this.in = in;
 	}
 
 	/**
@@ -87,18 +79,6 @@ public final class TaskAttribute {
 	}
 
 	/**
-	 * Returns true if the attribute is an input.
-	 * 
-	 * Conformément à java, les objets complexes peuvent être modifiés par la tache.
-	 * Par exemple, tel DTO se verra doté d'une clé primaire lors de son premier
-	 * enregistrement en base de données.
-	 * @return If the attribute is an input.
-	 */
-	public boolean isIn() {
-		return in;
-	}
-
-	/**
 	 * @return Domain the domain
 	 */
 	public Domain getDomain() {
@@ -108,7 +88,7 @@ public final class TaskAttribute {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{ name : " + name + ", domain :" + domain + ", in :" + in + ", required :" + required + "]";
+		return "{ name : " + name + ", domain :" + domain + ", required :" + required + "]";
 	}
 
 	/**

@@ -18,14 +18,11 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import java.util.Map;
+
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Gestion des taches.
@@ -50,7 +47,7 @@ public final class Task {
 	/**
 	 * Map conservant les paramètres d'entrée et de sortie de la tache.
 	 */
-	private final Map<TaskAttribute, Object> taskAttributes;
+	private final Map<TaskAttribute, Object> inTaskAttributes;
 	/**
 	 * Définition de la tache.
 	 */
@@ -60,16 +57,13 @@ public final class Task {
 	 * Constructeur.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
-	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
+	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {
 		Assertion.checkNotNull(taskDefinition);
-		Assertion.checkNotNull(taskAttributes);
+		Assertion.checkNotNull(inTaskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
-		for (final Entry<TaskAttribute, Object> entry : taskAttributes.entrySet()) {
-			Assertion.checkArgument(entry.getKey().isIn(), "only 'in' taskAttributes are allowed");
-		}
 		//---
-		this.taskAttributes = Collections.unmodifiableMap(new HashMap<>(taskAttributes));
+		this.inTaskAttributes = inTaskAttributes;
 		checkValues();
 	}
 
@@ -77,7 +71,7 @@ public final class Task {
 		for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 			//on ne prend que les attributes correspondant au mode.
 			//We check all attributes
-			final Object value = taskAttributes.get(taskAttribute);
+			final Object value = inTaskAttributes.get(taskAttribute);
 			taskAttribute.checkAttribute(value);
 		}
 	}
@@ -92,9 +86,8 @@ public final class Task {
 	 */
 	public <V> V getValue(final String attributeName) {
 		// on préfère centraliser le cast ici plutot que dans les classes générées.
-		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
-		Assertion.checkArgument(taskAttribute.isIn(), "only 'in' taskAttributes are allowed");
-		return (V) taskAttributes.get(taskAttribute);
+		final TaskAttribute inTaskAttribute = taskDefinition.getInAttribute(attributeName);
+		return (V) inTaskAttributes.get(inTaskAttribute);
 	}
 
 	/**

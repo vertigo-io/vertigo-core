@@ -18,20 +18,18 @@
  */
 package io.vertigo.dynamo.task.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.MapBuilder;
 
 /**
  * Builder to build a task.
  * @author  pchretien
  */
 public final class TaskBuilder implements Builder<Task> {
-	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
+	private final MapBuilder<TaskAttribute, Object> taskAttributesBuilder = new MapBuilder<>();
 	private final TaskDefinition taskDefinition;
 
 	/**
@@ -53,13 +51,13 @@ public final class TaskBuilder implements Builder<Task> {
 	 */
 	public TaskBuilder addValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
-		taskAttributes.put(taskAttribute, value);
+		taskAttributesBuilder.put(taskAttribute, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Task build() {
-		return new Task(taskDefinition, taskAttributes);
+		return new Task(taskDefinition, taskAttributesBuilder.unmodifiable().build());
 	}
 }

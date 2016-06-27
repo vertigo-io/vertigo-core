@@ -47,33 +47,33 @@ import java.util.Map.Entry;
  */
 final class ScriptPreProcessor {
 	private final ScriptManager scriptManager;
-	private final Map<TaskAttribute, Object> parameterValuesMap;
+	private final Map<TaskAttribute, Object> inTaskAttributes;
 	private final SeparatorType separatorType;
 
 	/**
 	 * Constructeur.
-	 * @param parameterValuesMap Map des paramètres
+	 * @param inTaskAttributes Map des paramètres
 	 * @param separatorType Type de preprocessing CLASSIC ou HTML
 	 */
-	ScriptPreProcessor(final ScriptManager scriptManager, final Map<TaskAttribute, Object> parameterValuesMap, final SeparatorType separatorType) {
+	ScriptPreProcessor(final ScriptManager scriptManager, final Map<TaskAttribute, Object> inTaskAttributes, final SeparatorType separatorType) {
 		Assertion.checkNotNull(scriptManager);
-		Assertion.checkNotNull(parameterValuesMap);
+		Assertion.checkNotNull(inTaskAttributes);
 		Assertion.checkNotNull(separatorType);
 		//-----
 		this.scriptManager = scriptManager;
-		this.parameterValuesMap = parameterValuesMap;
+		this.inTaskAttributes = inTaskAttributes;
 		this.separatorType = separatorType;
 	}
 
-	private static List<ExpressionParameter> createParameters(final ScriptManager scriptManager, final Map<TaskAttribute, Object> parameterValuesMap) {
+	private static List<ExpressionParameter> createParameters(final ScriptManager scriptManager, final Map<TaskAttribute, Object> inTaskAttributes) {
 		Assertion.checkNotNull(scriptManager);
-		Assertion.checkNotNull(parameterValuesMap);
+		Assertion.checkNotNull(inTaskAttributes);
 		//-----
-		final List<ExpressionParameter> tmpParameters = new ArrayList<>(parameterValuesMap.size());
+		final List<ExpressionParameter> tmpParameters = new ArrayList<>(inTaskAttributes.size());
 
 		//==========Initialisation des types et noms de paramètre==============
 		ExpressionParameter scriptEvaluatorParameter;
-		for (final Entry<TaskAttribute, Object> entry : parameterValuesMap.entrySet()) {
+		for (final Entry<TaskAttribute, Object> entry : inTaskAttributes.entrySet()) {
 			final Class<?> clazz;
 			final TaskAttribute taskAttribute = entry.getKey();
 			final Domain domain = taskAttribute.getDomain();
@@ -104,7 +104,7 @@ final class ScriptPreProcessor {
 		//On commence par vérifier si le preprocessor s'applique.
 		if (containsSeparator(query, separatorType.getSeparators())) {
 			//Evaluation de la query à la mode JSP avec les paramètres passés au démarrage.
-			return scriptManager.evaluateScript(query, separatorType, createParameters(scriptManager, parameterValuesMap));
+			return scriptManager.evaluateScript(query, separatorType, createParameters(scriptManager, inTaskAttributes));
 		}
 		return query;
 	}
