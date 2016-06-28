@@ -87,7 +87,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 				jsonClusterElement.addProperty("code", cluster.getKey().getCode());
 				jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
 				jsonClusterElement.add("list", jsonList);
-				jsonObject.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
+				jsonClusterElement.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
 				jsonCluster.add(jsonClusterElement);
 			}
 			jsonObject.add("groups", jsonCluster);

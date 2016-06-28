@@ -18,23 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.lang.MessageText;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +34,23 @@ import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
+
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.lang.MessageText;
 
 //vérifier
 /**
@@ -95,7 +95,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		final DtList<I> dtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		if (searchQuery.isClusteringFacet()) {
 			final Map<String, I> dtcIndex = new LinkedHashMap<>();
-			resultCluster = createCluster(dtcIndex);
+			resultCluster = createCluster(dtcIndex, resultHighlights);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
@@ -114,7 +114,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 
 	}
 
-	private Map<FacetValue, DtList<I>> createCluster(final Map<String, I> dtcIndex) {
+	private Map<FacetValue, DtList<I>> createCluster(final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
 		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
 		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
@@ -123,7 +123,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final Bucket value = multiBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
-				populateCluster(value, facetRange, resultCluster, dtcIndex);
+				populateCluster(value, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
 			//Cas des facettes par 'term'
@@ -134,13 +134,13 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
 				facetValue = new FacetValue(term, new ListFilter(query), label);
-				populateCluster(value, facetValue, resultCluster, dtcIndex);
+				populateCluster(value, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
 		return resultCluster;
 	}
 
-	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex) {
+	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
 		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		for (final SearchHit searchHit : facetSearchHits) {
@@ -149,6 +149,8 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 				final SearchIndex<?, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 				result = index.getIndexDtObject();
 				dtcIndex.put(searchHit.getId(), result);
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
+				resultHighlights.put(result, highlights);
 			}
 			facetDtc.add(result);
 		}

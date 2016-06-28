@@ -174,7 +174,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 		searchRequestBuilder
 				.setQuery(queryBuilder)
-				.setHighlighterFilter(true)
+				//.setHighlighterFilter(true) //We don't highlight the security filter
 				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
 	}
@@ -193,7 +193,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
 			aggregationBuilder.subAggregation(
 					AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-							.setSize(TOPHITS_SUBAGGREGATION_SIZE));
+							.setSize(TOPHITS_SUBAGGREGATION_SIZE)
+							.setHighlighterNumOfFragments(3)
+							.addHighlightedField("*"));
 			//We fetch source, because it's our only source to create result list
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
