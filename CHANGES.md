@@ -38,7 +38,7 @@ __In Bold__ : Potential compatibility problems
 *	[Vega] Added test for String in body
 * [Vega] Fixed preflight Options (misspelled header name)
 *	[Vega] Fixed #64 : concat hashcode to truncated name
-*	[Vega] Added global prefix for Spark route
+*	[Vega] Added global prefix for Spark route (param `apiPrefix` of `SparkJavaServletFilterWebServerPlugin`)
 * [Vega] Added Highlight for search results in FacetedQueryResult json v4
 
 Release 0.9.1 - 2016/02/05
