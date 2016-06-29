@@ -28,10 +28,10 @@ public final class EntityLink implements EntityType {
 	private final Entity entity;
 
 	/**
-	 * Constructor 	
+	 * Constructor
 	 * @param entity the entity that is linked
 	 */
-	public EntityLink(final Entity entity) {
+	EntityLink(final Entity entity) {
 		Assertion.checkNotNull(entity);
 		Assertion.checkState(!entity.isPrimitive(), "A primitive entity such as {0} can't be linked", entity);
 		//-----

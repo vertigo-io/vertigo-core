@@ -46,10 +46,14 @@ final class TaskEngineSQLParam {
 		 */
 		SQL_OUT('%');
 
-		final char separator;
+		private final char separator;
 
 		InOutType(final char separator) {
 			this.separator = separator;
+		}
+
+		char getSeparator() {
+			return separator;
 		}
 
 		/**
@@ -61,9 +65,11 @@ final class TaskEngineSQLParam {
 		static boolean isIn(final char separator) {
 			switch (separator) {
 				case '#':
-					return true;//IN;
+					//IN
+					return true;
 				case '%':
-					return false; //OUT;
+					//OUT
+					return false;
 				default:
 					throw new IllegalArgumentException(separator + " non reconnu");
 			}

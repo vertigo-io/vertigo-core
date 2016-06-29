@@ -32,7 +32,6 @@ import io.vertigo.lang.WrappedException;
  *
  * Le paramètre peut être :
  *
- *  - en entrée, ou en sortie
  *  - obligatoire ou facultatif
  *
  * @author  fconstantin, pchretien

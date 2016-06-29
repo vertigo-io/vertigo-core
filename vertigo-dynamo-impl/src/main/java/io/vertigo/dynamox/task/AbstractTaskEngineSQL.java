@@ -18,6 +18,14 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.sql.BatchUpdateException;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
@@ -44,14 +52,6 @@ import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
-
-import java.sql.BatchUpdateException;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -144,8 +144,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private static List<ScriptSeparator> createSqlSeparators() {
 		return new ListBuilder<ScriptSeparator>()
-				.add(new ScriptSeparator(InOutType.SQL_IN.separator))
-				.add(new ScriptSeparator(InOutType.SQL_OUT.separator))
+				.add(new ScriptSeparator(InOutType.SQL_IN.getSeparator()))
+				.add(new ScriptSeparator(InOutType.SQL_OUT.getSeparator()))
 				.unmodifiable().build();
 	}
 

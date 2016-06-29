@@ -19,36 +19,42 @@
 package io.vertigo.commons.analytics;
 
 /**
- * Collect tracker.
+ * This interface defines a collect tracker.
+ * This tracker must be used to collect data during a process.
+ *
  * @author pchretien, npiedeloup
  */
 public interface AnalyticsTracker extends AutoCloseable {
 
 	/**
-	 * Incrémente une mesure (set si pas présente).
-	 * @param measureType Type de mesure
-	 * @param value Incrément de la mesure
+	 * Increments a measure (creates if not exists).
+	 * @param measureType the type of the measure
+	 * @param value the increment of the measure
+	 * @return this tracker
 	 */
 	AnalyticsTracker incMeasure(final String measureType, final double value);
 
 	/**
-	* Affecte une valeur fixe à la mesure.
-	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas).
-	* @param measureType Type de mesure
-	* @param value valeur de la mesure
+	* Sets a value to the measure. (cleans if exists)
+	* You should use it when you have an exception. so you define explicitly one single value.
+	* @param measureType the type of the measure
+	* @param value the value of the measure
+	 * @return this tracker
 	*/
 	AnalyticsTracker setMeasure(final String measureType, final double value);
 
 	/**
-	 * Affecte une valeur fixe à une meta-donnée.
+	 * Sets a value to a specific metadata. (cleans if exists)
 	 *
-	 * @param metaDataName Nom de la meta-donnée
-	 * @param value Valeur de la meta-donnée
+	 * @param metaDataName the name of the metadata
+	 * @param value the value of the metadataValeur de la meta-donnée
+	 * @return this tracker
 	 */
 	AnalyticsTracker addMetaData(final String metaDataName, final String value);
 
 	/**
-	 * Mark this tracker as succeeded.
+	 * Marks this tracker as succeeded.
+	 * @return this tracker
 	 */
 	AnalyticsTracker markAsSucceeded();
 

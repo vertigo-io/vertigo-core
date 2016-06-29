@@ -37,7 +37,7 @@ import io.vertigo.lang.Option;
  */
 public abstract class AbstractFilter implements Filter {
 	/** Filter parameter name for exclude some url. */
-	static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
+	protected static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
 	private FilterConfig config;
 	private Option<Pattern> pattern;
 
