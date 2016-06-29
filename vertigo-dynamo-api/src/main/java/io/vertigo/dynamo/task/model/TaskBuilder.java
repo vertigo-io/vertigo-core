@@ -51,7 +51,7 @@ public final class TaskBuilder implements Builder<Task> {
 	 */
 	public TaskBuilder addValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
-		taskAttributesBuilder.put(taskAttribute, value);
+		taskAttributesBuilder.putNullable(taskAttribute, value);
 		return this;
 	}
 
