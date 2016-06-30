@@ -51,7 +51,7 @@ public final class AssociationUtil {
 		private final boolean notNull;
 		private final String multiplicity;
 
-		private Cardinality(final String multiplicity, final boolean notNull, final boolean multiple) {
+		Cardinality(final String multiplicity, final boolean notNull, final boolean multiple) {
 			this.multiple = multiple;
 			this.notNull = notNull;
 			this.multiplicity = multiplicity;

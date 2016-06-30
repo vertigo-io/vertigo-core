@@ -18,16 +18,16 @@
  */
 package io.vertigo.commons.script;
 
-import io.vertigo.commons.script.parser.ScriptSeparator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.commons.script.parser.ScriptSeparator;
+
 /**
  * Type de séparateur.
  * Permet de définir les types de séparateurs utilisés dans les fichiers.
- * 
+ *
  * @author  pchretien
  */
 public enum SeparatorType {
@@ -56,7 +56,7 @@ public enum SeparatorType {
 	public static final String END_SEPARATOR_CLASSIC = "%>";
 	private final List<ScriptSeparator> separators;
 
-	private SeparatorType(final String startExpression, final String endExpression) {
+	SeparatorType(final String startExpression, final String endExpression) {
 		separators = new ArrayList<>(1);
 		separators.add(new ScriptSeparator(startExpression, endExpression));
 	}

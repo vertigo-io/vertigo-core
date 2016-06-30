@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.plugins.component.aop.cglib;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author pchretien
@@ -56,7 +56,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		private final List<Aspect> aspects;
 		private final Object instance;
 		private final Method method;
-		private int index = 0;
+		private int index;
 
 		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> aspects) {
 			Assertion.checkNotNull(instance);

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.Date;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-
-import java.util.Date;
 
 /**
  * Types.
@@ -73,7 +73,7 @@ public enum DataType {
 	 * @param javaClass Classe java encapsulée
 	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
 	 */
-	private DataType(final Class<?> javaClass, final boolean primitive) {
+	DataType(final Class<?> javaClass, final boolean primitive) {
 		Assertion.checkNotNull(javaClass);
 		//-----
 		//Le nom est égal au type sous forme de String

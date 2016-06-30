@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.impl.codec.hash;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Implémentation des hachages.
@@ -53,7 +53,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		//-----
 		private final String algoName;
 
-		private Hash(final String algoName) {
+		Hash(final String algoName) {
 			this.algoName = algoName;
 		}
 

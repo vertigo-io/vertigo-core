@@ -18,18 +18,18 @@
  */
 package io.vertigo.commons.impl.codec.crypto;
 
+import java.security.Key;
+import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
-
-import java.security.Key;
-import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 
 /**
  * Implémentation du cryptage
@@ -56,7 +56,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		private final String algoName;
 		private final int keySize;
 
-		private Crypto(final String algoName, final int keySize) {
+		Crypto(final String algoName, final int keySize) {
 			this.algoName = algoName;
 			this.keySize = keySize;
 		}

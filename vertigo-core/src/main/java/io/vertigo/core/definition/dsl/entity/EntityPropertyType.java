@@ -43,7 +43,7 @@ public enum EntityPropertyType implements EntityType {
 	 *
 	 * @param javaClass Classe java encapsulée
 	 */
-	private EntityPropertyType(final Class<?> javaClass) {
+	EntityPropertyType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
 		//-----
 		this.javaClass = javaClass;
