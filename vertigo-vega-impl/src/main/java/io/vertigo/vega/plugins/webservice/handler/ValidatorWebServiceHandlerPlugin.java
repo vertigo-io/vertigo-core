@@ -18,6 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.util.ClassUtil;
@@ -33,12 +38,6 @@ import io.vertigo.vega.webservice.model.ExtendedObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import spark.Request;
 import spark.Response;
 
@@ -69,7 +68,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 		return chain.handle(request, response, routeContext);
 	}
 
-	private void validateParam(final Object value, final UiMessageStack uiMessageStack, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+	private static void validateParam(final Object value, final UiMessageStack uiMessageStack, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		if (value instanceof UiObject) {
 			final UiObject<DtObject> uiObject = (UiObject<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);

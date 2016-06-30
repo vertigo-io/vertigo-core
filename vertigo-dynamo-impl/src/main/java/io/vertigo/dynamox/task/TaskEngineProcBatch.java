@@ -52,7 +52,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallable
 
 	/** {@inheritDoc} */
 	@Override
-	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
+	protected SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
 		return getDataBaseManager().createCallableStatement(connection, procName);
 	}
 

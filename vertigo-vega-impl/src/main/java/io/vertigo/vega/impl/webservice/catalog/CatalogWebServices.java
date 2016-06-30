@@ -18,6 +18,12 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -25,12 +31,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Default RestService to list services published.
@@ -79,12 +79,11 @@ public final class CatalogWebServices implements WebServices {
 		return result;
 	}
 
-	private void appendTypeToString(final StringBuilder sb, final Type returnType) {
-		String sep;
+	private static void appendTypeToString(final StringBuilder sb, final Type returnType) {
 		if (returnType instanceof ParameterizedType) {
 			sb.append(((ParameterizedType) returnType).getRawType())
 					.append("<");
-			sep = "";
+			String sep = "";
 			for (final Type typeArgument : ((ParameterizedType) returnType).getActualTypeArguments()) {
 				sb.append(sep);
 				appendTypeToString(sb, typeArgument);

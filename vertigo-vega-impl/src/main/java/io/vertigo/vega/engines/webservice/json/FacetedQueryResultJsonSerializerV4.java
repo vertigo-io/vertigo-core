@@ -117,7 +117,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		return jsonObject;
 	}
 
-	private JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {
+	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {
 		final JsonArray jsonHighlightList = new JsonArray();
 		final Map<DtField, String> ccFieldNames = new HashMap<>();
 		for (final DtObject document : dtList) {
@@ -132,7 +132,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		return jsonHighlightList;
 	}
 
-	private String obtainCcFieldName(final DtField dtField, final Map<DtField, String> ccFieldNames) {
+	private static String obtainCcFieldName(final DtField dtField, final Map<DtField, String> ccFieldNames) {
 		String ccFieldName = ccFieldNames.get(dtField);
 		if (ccFieldName == null) {
 			ccFieldName = StringUtil.constToLowerCamelCase(dtField.getName());

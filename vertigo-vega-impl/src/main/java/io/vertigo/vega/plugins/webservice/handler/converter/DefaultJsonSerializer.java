@@ -18,16 +18,6 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.vega.engines.webservice.json.JsonEngine;
-import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.model.ExtendedObject;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +29,15 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
+import io.vertigo.vega.engines.webservice.json.UiContext;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.model.ExtendedObject;
 import spark.Response;
 
 /**
@@ -82,7 +81,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		/** Type JSON entity */
 		JSON_ENTITY("json+entity=%s");
 
-		private final String HAS_META_MARKER = "+meta";
+		private static final String HAS_META_MARKER = "+meta";
 		private final Pattern contentTypePattern;
 		private final String contentType;
 
@@ -112,7 +111,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	/**
 	 * EncodedType : encoderType + hasMeta + entityName.
 	 */
-	static class EncodedType {
+	static final class EncodedType {
 		private final EncoderType encoderType;
 		private final boolean meta;
 		private final String entityName;
@@ -188,7 +187,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			//si le type interne n'as pas de meta, et que le ExtendedObject contient d'autres metas que le seul serverSideToken, on change le type mime
 			if (!innerEncodedType.hasMeta()
 					&& !(((ExtendedObject) value).isEmpty()
-					|| (((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)))) {
+							|| (((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)))) {
 				encodedType = new EncodedType(innerEncodedType.getEncoderType(), true, innerEncodedType.getEntityName());
 			} else {
 				encodedType = innerEncodedType;

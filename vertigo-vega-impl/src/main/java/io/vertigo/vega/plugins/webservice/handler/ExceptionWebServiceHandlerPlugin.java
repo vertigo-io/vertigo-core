@@ -18,6 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import com.google.gson.JsonSyntaxException;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
@@ -29,16 +36,8 @@ import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-
 import spark.Request;
 import spark.Response;
-
-import com.google.gson.JsonSyntaxException;
 
 /**
  * Exceptions handler. Convert exception to response.
@@ -100,7 +99,7 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 		}
 	}
 
-	private Throwable unwrap(final WrappedException e) {
+	private static Throwable unwrap(final WrappedException e) {
 		final Throwable cause = e.getCause();
 		LOGGER.info("Unwrap '" + e.getMessage() + "' as '" + cause.getClass().getSimpleName() + "'", cause);
 		return cause;
