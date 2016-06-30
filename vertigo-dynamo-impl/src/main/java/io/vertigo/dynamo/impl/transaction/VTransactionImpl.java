@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionResource;
@@ -27,17 +32,12 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Implémentation standard d'une transaction Dynamo.
  *
  * @author  pchretien
  */
-public final class VTransactionImpl implements VTransactionWritable {
+final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * The current transaction is bound to the current thread.
 	 */
@@ -400,6 +400,10 @@ public final class VTransactionImpl implements VTransactionWritable {
 		public void close() throws Exception {
 			innerResource.release();
 		}
+	}
+
+	static boolean hasLocalCurrentTransaction() {
+		return getLocalCurrentTransaction() != null;
 	}
 
 	/**

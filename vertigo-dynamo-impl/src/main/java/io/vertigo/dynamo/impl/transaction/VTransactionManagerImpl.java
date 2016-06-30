@@ -42,7 +42,7 @@ public final class VTransactionManagerImpl implements VTransactionManager {
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasCurrentTransaction() {
-		return VTransactionImpl.getLocalCurrentTransaction() != null;
+		return VTransactionImpl.hasLocalCurrentTransaction();
 	}
 
 	/** {@inheritDoc} */
