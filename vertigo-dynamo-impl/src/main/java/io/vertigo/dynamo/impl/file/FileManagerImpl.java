@@ -18,6 +18,17 @@
  */
 package io.vertigo.dynamo.impl.file;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
@@ -29,17 +40,6 @@ import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-
-import javax.activation.MimetypesFileTypeMap;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
 * Implémentation du gestionnaire de la définition des fichiers.
@@ -95,17 +95,16 @@ public final class FileManagerImpl implements FileManager {
 	public VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl) {
 		final long length;
 		final long lastModified;
-		final URLConnection conn;
 		try {
-			conn = ressourceUrl.openConnection();
+			final URLConnection connection = ressourceUrl.openConnection();
 			try {
-				length = conn.getContentLength();
-				lastModified = conn.getLastModified();
+				length = connection.getContentLength();
+				lastModified = connection.getLastModified();
 			} finally {
-				conn.getInputStream().close();
+				connection.getInputStream().close();
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException("Can't get file meta from url", e);
+			throw new WrappedException("Can't get file meta from url", e);
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
 		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
