@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.search.dsl.model;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Multi expressions definition.
@@ -76,7 +76,7 @@ public final class DslMultiExpression {
 	/**
 	 * @return preBody
 	 */
-	public final String getPreBody() {
+	public String getPreBody() {
 		return preBody;
 	}
 

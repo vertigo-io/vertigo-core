@@ -56,7 +56,7 @@ enum OOMType {
 
 	private final String code;
 
-	private OOMType(final String code) {
+	OOMType(final String code) {
 		this.code = code;
 	}
 
