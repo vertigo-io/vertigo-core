@@ -49,7 +49,7 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 
-import io.vertigo.app.App;
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
@@ -61,7 +61,7 @@ public final class WebServiceManagerTest {
 
 	private final SessionFilter loggedSessionFilter = new SessionFilter();
 	private final SessionFilter anonymousSessionFilter = new SessionFilter();
-	private static App app;
+	private static AutoCloseableApp app;
 
 	static {
 		//RestAsssured init
@@ -70,7 +70,7 @@ public final class WebServiceManagerTest {
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyAppConfig.config());
+		app = new AutoCloseableApp(MyAppConfig.config());
 	}
 
 	@Before

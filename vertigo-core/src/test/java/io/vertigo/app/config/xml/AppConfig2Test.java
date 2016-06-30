@@ -18,15 +18,14 @@
  */
 package io.vertigo.app.config.xml;
 
-import io.vertigo.app.App;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.core.spaces.component.data.BioManager;
-
 import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.core.spaces.component.data.BioManager;
 
 public final class AppConfig2Test {
 	@Test
@@ -36,7 +35,7 @@ public final class AppConfig2Test {
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
-		try (App app = new App(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			Assert.assertEquals(app, app);
 			Assert.assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

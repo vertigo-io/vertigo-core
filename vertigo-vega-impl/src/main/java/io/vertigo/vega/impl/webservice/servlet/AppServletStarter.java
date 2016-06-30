@@ -18,14 +18,6 @@
  */
 package io.vertigo.vega.impl.webservice.servlet;
 
-import io.vertigo.app.App;
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
-import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +29,14 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
+import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
 
 /**
  * @author npiedeloup
@@ -52,7 +52,7 @@ final class AppServletStarter {
 
 	/** Servlet listener */
 	private final AppServletListener appServletListener = new AppServletListener();
-	private App app = null;
+	private AutoCloseableApp app = null;
 
 	/**
 	 * Initialize and start Vertigo Home.
@@ -89,7 +89,7 @@ final class AppServletStarter {
 			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
-			app = new App(appConfigBuilder.build());
+			app = new AutoCloseableApp(appConfigBuilder.build());
 
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
