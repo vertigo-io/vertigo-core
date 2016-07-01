@@ -64,7 +64,7 @@ public final class Option<T> {
 	 * @return the option.
 	 */
 	public static <T> Option<T> of(final T value) {
-		Assertion.checkNotNull(value, "Option.some requires a non null value.");
+		Assertion.checkNotNull(value, "Option.of requires a non null value.");
 		//-----
 		return new Option<>(value);
 	}
@@ -101,7 +101,7 @@ public final class Option<T> {
 	 * @deprecated Should use !isPresent() like Jdk8, may be remove in next release
 	 */
 	@Deprecated
-	public boolean iEmpty() {
+	public boolean isEmpty() {
 		return !isPresent();
 	}
 
