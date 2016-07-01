@@ -17,6 +17,8 @@ __In Bold__ : Potential compatibility problems
 * [All] Updated 3rd party libs versions (hsqldb, rest assured, gson, janino, ehcache, cglib, mail, slf4j, hibernate, dom4j, jersey, jedis, poi, openoffice)
 * __[Core] Aligned vertigo Option api to JDK api__ (`isPresent`, `ofNullable`, `orElse`, `of`)
 * [Core] Fixed #56
+* [Core] Splitted App and autoCloseable (should use new AutoCloseableApp in unit tests
+* __[Dynamo] Renamed DAOBroker to DAO__
 * [Dynamo] Fixed #57 in DslListFilterBuilder, and other pb
 *	[Dynamo] isNumber() on dataType
 * __[Dynamo] Renamed CRUD methods__ (get => read , getList => findAll)
