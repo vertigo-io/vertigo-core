@@ -94,6 +94,18 @@ public final class Option<T> {
 	}
 
 	/**
+	 * Returns true if the option is undefined, aka empty.
+	 * An option is defined if it has a value.
+	 *
+	 * @return if the option is undefined.
+	 * @deprecated Should use !isPresent() like Jdk8, may be remove in next release
+	 */
+	@Deprecated
+	public boolean iEmpty() {
+		return !isPresent();
+	}
+
+	/**
 	 * Returns the content of the option.
 	 * If the option is empty then an exception is thrown.
 	 *
