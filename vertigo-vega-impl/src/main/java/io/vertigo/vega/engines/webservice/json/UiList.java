@@ -20,7 +20,6 @@ package io.vertigo.vega.engines.webservice.json;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -36,7 +35,6 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 	private static final long serialVersionUID = -8008715790791553036L;
 	private final Class<D> objectType;
-	private final UUID uuid = UUID.randomUUID();
 
 	/**
 	 * @param objectType Object type
@@ -78,6 +76,6 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 
 	@Override
 	public int hashCode() {
-		return uuid.hashCode();
+		return System.identityHashCode(this);
 	}
 }
