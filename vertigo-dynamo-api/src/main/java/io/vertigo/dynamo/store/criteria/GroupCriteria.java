@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.store.criteria;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Groupement de Critères de type union, intersection et exclusion de groupe.

@@ -18,13 +18,13 @@
  */
 package io.vertigo.lang;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.util.StringUtil;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.util.StringUtil;
 
 /**
  * Texte pouvant être externalisé dans un fichier de ressources,

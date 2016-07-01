@@ -18,6 +18,10 @@
  */
 package io.vertigo.commons.impl.codec;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
@@ -32,10 +36,6 @@ import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Describable;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implémentation standard de CodecManager.

@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.UiList;
@@ -28,9 +30,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
-
-import java.util.Map;
-
 import spark.Request;
 import spark.Response;
 

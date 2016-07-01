@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.lang.reflect.Field;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-
-import java.lang.reflect.Field;
 
 /**
  * Métadonnée liée à un champ.

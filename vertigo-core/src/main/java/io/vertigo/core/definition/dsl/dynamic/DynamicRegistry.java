@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-
-import java.util.List;
 
 /**
  * This handler creates 

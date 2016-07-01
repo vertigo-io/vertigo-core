@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.kvstore;
 
+import java.util.List;
+
 import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
 * Key Value Store.

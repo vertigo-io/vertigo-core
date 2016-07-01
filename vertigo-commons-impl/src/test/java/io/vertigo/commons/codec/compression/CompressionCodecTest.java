@@ -18,13 +18,13 @@
  */
 package io.vertigo.commons.codec.compression;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.compression.CompressionCodec;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test du codec de compresion.

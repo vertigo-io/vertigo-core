@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class must be used to build a DtDefinition.

@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.component.di.data;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 public final class F {
 	@Inject

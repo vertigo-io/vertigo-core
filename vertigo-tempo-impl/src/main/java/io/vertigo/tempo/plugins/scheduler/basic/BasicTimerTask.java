@@ -18,11 +18,11 @@
  */
 package io.vertigo.tempo.plugins.scheduler.basic;
 
+import java.util.TimerTask;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
-
-import java.util.TimerTask;
 
 /**
  * Timer permettant l'exécution d'un Job.

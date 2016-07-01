@@ -25,13 +25,14 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
-
-import java.util.List;
 
 /**
  * @author pchretien

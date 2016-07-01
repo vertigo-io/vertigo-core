@@ -18,13 +18,13 @@
  */
 package io.vertigo.tempo;
 
-import io.vertigo.tempo.job.JobManagerTest;
-import io.vertigo.tempo.mail.MailManagerTest;
-import io.vertigo.tempo.scheduler.SchedulerManagerTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import io.vertigo.tempo.job.JobManagerTest;
+import io.vertigo.tempo.mail.MailManagerTest;
+import io.vertigo.tempo.scheduler.SchedulerManagerTest;
 
 /**
  * Test de l'implementation standard.

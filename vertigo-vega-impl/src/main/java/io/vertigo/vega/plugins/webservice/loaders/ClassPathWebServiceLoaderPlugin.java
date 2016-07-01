@@ -18,6 +18,12 @@
  */
 package io.vertigo.vega.plugins.webservice.loaders;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.reflections.Reflections;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
@@ -26,12 +32,6 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import org.reflections.Reflections;
 
 /**
  * Lecture des webServices par annotations présentes sur les objets du classPath.

@@ -18,6 +18,14 @@
  */
 package io.vertigo.vega.impl.webservice;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.component.ComponentSpace;
@@ -38,14 +46,6 @@ import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlug
 import io.vertigo.vega.webservice.WebServiceManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Webservice manager.

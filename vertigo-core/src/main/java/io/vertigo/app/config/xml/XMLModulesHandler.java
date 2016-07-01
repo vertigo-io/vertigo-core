@@ -18,6 +18,9 @@
  */
 package io.vertigo.app.config.xml;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
+
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.DefinitionProvider;
@@ -28,9 +31,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author npiedeloup, pchretien

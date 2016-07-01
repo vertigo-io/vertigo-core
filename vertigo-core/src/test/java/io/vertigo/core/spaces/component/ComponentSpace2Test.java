@@ -18,6 +18,11 @@
  */
 package io.vertigo.core.spaces.component;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
@@ -26,11 +31,6 @@ import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Inject

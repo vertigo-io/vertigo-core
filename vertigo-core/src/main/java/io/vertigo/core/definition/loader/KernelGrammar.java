@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author pchretien

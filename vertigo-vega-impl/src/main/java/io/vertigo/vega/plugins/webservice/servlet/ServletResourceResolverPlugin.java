@@ -18,15 +18,15 @@
  */
 package io.vertigo.vega.plugins.webservice.servlet;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletContext;
+
+import io.vertigo.core.resource.ResourceResolverPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL liées à la servlet.

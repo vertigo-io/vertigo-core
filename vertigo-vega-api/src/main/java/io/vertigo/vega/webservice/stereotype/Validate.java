@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega.webservice.stereotype;
 
-import io.vertigo.vega.webservice.validation.DtObjectValidator;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
 
 /**
  * Define some specific validators, on this annotated parameter.

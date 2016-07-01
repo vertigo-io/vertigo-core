@@ -18,16 +18,16 @@
  */
 package io.vertigo.tempo.mail;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.

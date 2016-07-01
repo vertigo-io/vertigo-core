@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
+import javax.inject.Named;
+
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Component;
-
-import javax.inject.Named;
 
 /**
  * @author prahmoune

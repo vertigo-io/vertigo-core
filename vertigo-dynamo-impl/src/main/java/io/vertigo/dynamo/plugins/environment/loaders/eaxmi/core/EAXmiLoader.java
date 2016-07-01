@@ -18,16 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.StringUtil;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -39,6 +29,16 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
+import io.vertigo.util.StringUtil;
 
 /**
  * Loader de fichier XMI version Enterprise Architect.

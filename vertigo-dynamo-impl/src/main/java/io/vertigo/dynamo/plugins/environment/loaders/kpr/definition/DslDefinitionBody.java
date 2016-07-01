@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 public final class DslDefinitionBody {
 	private final List<DslDefinitionEntry> definitionEntries;

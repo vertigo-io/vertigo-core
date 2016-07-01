@@ -18,10 +18,10 @@
  */
 package io.vertigo.tempo.scheduler;
 
+import java.util.Date;
+
 import io.vertigo.lang.Manager;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
-
-import java.util.Date;
 
 /**
  * Scheduler.

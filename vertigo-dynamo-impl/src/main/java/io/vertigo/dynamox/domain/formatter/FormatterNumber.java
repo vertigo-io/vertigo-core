@@ -18,17 +18,17 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.util.StringUtil;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 
 /**
  * Gestion des formatages de nombres.

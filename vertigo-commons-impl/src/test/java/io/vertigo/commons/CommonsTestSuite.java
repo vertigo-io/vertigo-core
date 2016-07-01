@@ -18,6 +18,10 @@
  */
 package io.vertigo.commons;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 import io.vertigo.commons.analytics.AnalyticsManagerTest;
 import io.vertigo.commons.cache.CacheManagerTest;
 import io.vertigo.commons.codec.base64.Base64CodecTest;
@@ -36,10 +40,6 @@ import io.vertigo.commons.eventbus.EventBusManagerTest;
 import io.vertigo.commons.parser.CalculatorTest;
 import io.vertigo.commons.parser.ParserTest;
 import io.vertigo.commons.script.ScriptManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test de l'implémentation standard.

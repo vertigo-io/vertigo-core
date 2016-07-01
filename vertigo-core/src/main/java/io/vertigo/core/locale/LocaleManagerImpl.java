@@ -18,13 +18,6 @@
  */
 package io.vertigo.core.locale;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,6 +33,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Describable;
+import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien

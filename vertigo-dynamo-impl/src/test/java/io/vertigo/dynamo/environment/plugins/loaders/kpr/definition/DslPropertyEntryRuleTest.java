@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.parser.Parser;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
 
 public final class DslPropertyEntryRuleTest {
 	private static final String LABEL = "LABEL";

@@ -18,13 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -38,6 +31,13 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 //Vérifier
 /**

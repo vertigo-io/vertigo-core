@@ -18,17 +18,17 @@
  */
 package io.vertigo.core.resource;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-
 import java.net.URL;
 
 import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 /**
  * @author pchretien

@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamock.facet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
@@ -30,9 +33,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamox.search.DslListFilterBuilder;
 import io.vertigo.lang.MessageText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Configuration des facettes de l'objet de test Car.

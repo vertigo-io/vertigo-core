@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.search.model;
 
+import java.util.List;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -26,8 +28,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
  * @author pchretien

@@ -18,13 +18,13 @@
  */
 package io.vertigo.commons.impl.script;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Simule le mécanisme JSP sur un fichier texte quelconque.

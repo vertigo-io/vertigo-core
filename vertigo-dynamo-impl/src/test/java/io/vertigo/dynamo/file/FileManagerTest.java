@@ -18,12 +18,6 @@
  */
 package io.vertigo.dynamo.file;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.WrappedException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +28,12 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.TestUtil;
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Test de l'implémentation standard.

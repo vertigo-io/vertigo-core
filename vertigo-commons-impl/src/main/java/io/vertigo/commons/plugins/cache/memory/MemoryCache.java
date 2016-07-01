@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.plugins.cache.memory;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Implementation d'un cache memoire.

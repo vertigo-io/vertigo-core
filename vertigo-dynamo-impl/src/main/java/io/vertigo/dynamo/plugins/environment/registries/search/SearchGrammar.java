@@ -19,14 +19,15 @@
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
-
-import java.util.List;
 
 /**
  * @author pchretien

@@ -18,8 +18,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -27,6 +25,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * ParameterizedType use for UiList.

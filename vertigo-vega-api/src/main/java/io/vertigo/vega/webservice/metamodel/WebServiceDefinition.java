@@ -18,11 +18,6 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +27,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 
 /**
  * Web service definition.

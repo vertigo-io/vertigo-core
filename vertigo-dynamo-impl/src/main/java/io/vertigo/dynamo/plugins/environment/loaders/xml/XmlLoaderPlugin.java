@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -32,12 +38,6 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
-
-import java.net.URL;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
 
 /**
  * Parser d'un fichier powerAMC/OOM ou EA/XMI.

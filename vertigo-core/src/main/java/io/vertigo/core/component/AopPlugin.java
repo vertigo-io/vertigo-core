@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.component;
 
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
-
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Plugin;
 
 /**
  * Create proxy-reference from component's instance.

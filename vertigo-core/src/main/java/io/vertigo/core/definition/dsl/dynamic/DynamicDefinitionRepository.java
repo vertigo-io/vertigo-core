@@ -18,12 +18,6 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Assertion;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +25,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Assertion;
 
 /**
  * Espace de nommage.

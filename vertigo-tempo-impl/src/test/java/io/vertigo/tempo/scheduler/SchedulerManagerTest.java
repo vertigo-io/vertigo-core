@@ -18,16 +18,16 @@
  */
 package io.vertigo.tempo.scheduler;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.tempo.job.metamodel.JobDefinition;
-import io.vertigo.util.DateBuilder;
-
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.tempo.job.metamodel.JobDefinition;
+import io.vertigo.util.DateBuilder;
 
 /**
  * Test de l'implémentation standard.

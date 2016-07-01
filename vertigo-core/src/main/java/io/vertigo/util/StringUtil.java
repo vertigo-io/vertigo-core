@@ -18,9 +18,9 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-
 import java.text.MessageFormat;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * The StringUtil class provides usefull methods to manipulate strings.

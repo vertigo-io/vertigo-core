@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.codec.hash;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.commons.codec.AbstractEncoderTest;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test l'encodeur de Hash.

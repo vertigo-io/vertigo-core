@@ -18,6 +18,12 @@
  */
 package io.vertigo.vega.plugins.webservice.scanner.annotations;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -56,12 +62,6 @@ import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 import io.vertigo.vega.webservice.stereotype.Validate;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author npiedeloup

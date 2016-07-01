@@ -18,11 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.scanner.annotations;
 
+import java.util.List;
+
 import io.vertigo.vega.impl.webservice.WebServiceScannerPlugin;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.util.List;
 
 /**
  * @author npiedeloup

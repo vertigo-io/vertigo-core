@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.lang.reflect.Constructor;
+
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.reflect.Constructor;
 
 /**
  * Par nature une contrainte est une ressource partagée et non modifiable.

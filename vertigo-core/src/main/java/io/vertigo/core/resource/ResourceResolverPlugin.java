@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.resource;
 
+import java.net.URL;
+
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
-
-import java.net.URL;
 
 /**
  * Résout une ressource en fournissant son URL.

@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.core.definition.dsl.entity.Entity;
 
 /**
  * Classe permettant de créer dynamiquement une structure grammaticale.

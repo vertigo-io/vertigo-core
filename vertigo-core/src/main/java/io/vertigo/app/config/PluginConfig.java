@@ -18,11 +18,11 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Plugin;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Plugin;
 
 /**
  * Paramétrage d'un plugin :

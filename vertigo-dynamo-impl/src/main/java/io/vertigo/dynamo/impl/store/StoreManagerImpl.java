@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
@@ -35,10 +39,6 @@ import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.

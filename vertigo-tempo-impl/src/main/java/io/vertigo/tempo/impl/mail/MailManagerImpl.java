@@ -18,12 +18,12 @@
  */
 package io.vertigo.tempo.impl.mail;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.mail.Mail;
 import io.vertigo.tempo.mail.MailManager;
-
-import javax.inject.Inject;
 
 /**
  * This class is the standard impl of the mailManager.

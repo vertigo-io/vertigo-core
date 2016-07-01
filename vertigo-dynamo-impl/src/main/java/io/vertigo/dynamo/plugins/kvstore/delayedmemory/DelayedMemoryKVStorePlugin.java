@@ -18,13 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ListBuilder;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +28,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.

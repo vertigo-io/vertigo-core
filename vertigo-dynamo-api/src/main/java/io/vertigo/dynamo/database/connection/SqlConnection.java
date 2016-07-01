@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.database.connection;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Connexion à une base de données JDBC.

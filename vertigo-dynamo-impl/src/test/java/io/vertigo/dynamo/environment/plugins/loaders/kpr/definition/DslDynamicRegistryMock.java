@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
@@ -25,9 +28,6 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Mock pour les tests de regles sur les Definitions.

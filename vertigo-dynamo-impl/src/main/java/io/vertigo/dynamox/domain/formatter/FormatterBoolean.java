@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
+import java.util.StringTokenizer;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
-
-import java.util.StringTokenizer;
 
 /**
  * Gestion des formattages de booléens.

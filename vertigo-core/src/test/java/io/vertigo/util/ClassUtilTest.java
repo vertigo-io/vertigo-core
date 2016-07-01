@@ -18,10 +18,6 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VUserException;
-
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -37,6 +33,10 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
 
 /**
  * Test de l'utilitaire de manipulation des classes.

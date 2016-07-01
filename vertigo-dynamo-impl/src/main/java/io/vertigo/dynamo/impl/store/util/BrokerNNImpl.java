@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -34,10 +38,6 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Gestion des tables de relations NN.

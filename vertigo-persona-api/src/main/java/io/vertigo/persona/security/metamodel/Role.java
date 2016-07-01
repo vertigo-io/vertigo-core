@@ -18,11 +18,11 @@
  */
 package io.vertigo.persona.security.metamodel;
 
+import java.util.List;
+
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
 
 /**
  * Un rôle est la réunion d'un ensemble de permissions.

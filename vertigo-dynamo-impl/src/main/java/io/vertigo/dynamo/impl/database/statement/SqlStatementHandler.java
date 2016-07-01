@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Plugin permettant de créer les résultats issus d'une requête SQL de type select.

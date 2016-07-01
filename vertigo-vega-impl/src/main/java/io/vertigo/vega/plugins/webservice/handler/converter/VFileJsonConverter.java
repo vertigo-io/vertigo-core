@@ -18,14 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import java.util.Arrays;
+
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-
-import java.util.Arrays;
-
 import spark.Request;
 import spark.Response;
 

@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.Charset;
+
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -25,12 +31,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * Parser d'un fichier KSP.

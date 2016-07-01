@@ -18,6 +18,9 @@
  */
 package io.vertigo.vega.webservice.data;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
@@ -47,9 +50,6 @@ import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
-
-import java.util.Arrays;
-import java.util.Iterator;
 
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;

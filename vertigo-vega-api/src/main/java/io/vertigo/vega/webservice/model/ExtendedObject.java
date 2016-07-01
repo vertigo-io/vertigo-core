@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.model;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.HashMap;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * ExtendedObject to extends an object with meta data.

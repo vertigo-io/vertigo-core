@@ -18,9 +18,6 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +26,9 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.lang.Assertion;
 
 /**
  *

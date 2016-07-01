@@ -18,13 +18,6 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.reader;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.vega.engines.webservice.json.JsonEngine;
-import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +26,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.vertigo.lang.Assertion;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
+import io.vertigo.vega.engines.webservice.json.UiContext;
+import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import spark.Request;
 
 public final class InnerBodyJsonReader implements JsonReader<UiContext> {

@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.definition.dsl.entity.EntityPropertyType;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author npiedeloup

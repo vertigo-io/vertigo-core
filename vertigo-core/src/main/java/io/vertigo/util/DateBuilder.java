@@ -18,11 +18,11 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-
 import java.util.Calendar;
 import java.util.Date;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * Utilitaire concernant les dates.

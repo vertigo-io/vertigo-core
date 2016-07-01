@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.impl.kvstore;
 
-import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.MapBuilder;
-
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.MapBuilder;
 
 /**
 * Standard implementation of the Key-Value DataBase.

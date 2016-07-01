@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.plugins.resource.local;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import io.vertigo.core.resource.ResourceResolverPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL liées à l'emplacement local.

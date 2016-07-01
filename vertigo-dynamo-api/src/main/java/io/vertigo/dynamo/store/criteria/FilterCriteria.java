@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.store.criteria;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-
 import java.util.Collections;
 import java.util.Map;
+
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Critère de recherche par champs.

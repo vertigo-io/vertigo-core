@@ -18,11 +18,6 @@
  */
 package io.vertigo.dynamo.environment.oom;
 
-import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
-
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,6 +28,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import io.vertigo.dynamo.TestUtil;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 
 /**
  * Test de lecture d'un OOM AutoAssociation.

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.store.criteria;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-
 import java.io.Serializable;
+
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * Critère générique.

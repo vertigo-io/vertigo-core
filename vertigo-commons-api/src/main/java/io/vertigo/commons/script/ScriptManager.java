@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.script;
 
+import java.util.List;
+
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Manager;
-
-import java.util.List;
 
 /** 
  * Gestion des manipulations sur des scripts.

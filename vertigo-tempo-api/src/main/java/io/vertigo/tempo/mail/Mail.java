@@ -18,11 +18,11 @@
  */
 package io.vertigo.tempo.mail;
 
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
 
 /**
  * Message à envoyer par mail.

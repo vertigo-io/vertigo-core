@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.search.withstore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -36,11 +41,6 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * SearchLoader of Car keyconcept, load uses StoreManager.

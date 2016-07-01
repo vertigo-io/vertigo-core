@@ -18,15 +18,15 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.model.FacetValue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.model.FacetValue;
 
 /**
  * Selected facets.

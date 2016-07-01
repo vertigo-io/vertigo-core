@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-
-import java.util.List;
 
 /**
  * Chunk of keyConcept uris.

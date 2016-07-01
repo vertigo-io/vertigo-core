@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 import io.vertigo.lang.WrappedException;
-
-import java.sql.SQLException;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.

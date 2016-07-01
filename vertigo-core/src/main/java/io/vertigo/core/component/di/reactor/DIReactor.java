@@ -18,15 +18,15 @@
  */
 package io.vertigo.core.component.di.reactor;
 
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.core.component.di.DIException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.core.component.di.DIException;
 
 /**
  * Reactor.

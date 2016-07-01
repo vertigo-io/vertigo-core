@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.search;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Future;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -29,10 +33,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Manager;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Gestionnaire des indexes de recherche.

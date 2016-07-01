@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
 
 /**
  * Classe interne décrivant les champs d'une définition.

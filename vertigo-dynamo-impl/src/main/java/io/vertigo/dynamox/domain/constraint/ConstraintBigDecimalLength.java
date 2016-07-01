@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
-import io.vertigo.lang.MessageText;
-
 import java.math.BigDecimal;
+
+import io.vertigo.lang.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est : <ul>

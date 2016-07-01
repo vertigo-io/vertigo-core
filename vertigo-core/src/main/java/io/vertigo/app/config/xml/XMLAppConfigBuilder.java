@@ -18,18 +18,18 @@
  */
 package io.vertigo.app.config.xml;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * @author npiedeloup, pchretien

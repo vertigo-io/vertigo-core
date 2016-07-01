@@ -18,9 +18,6 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-
 import java.io.IOException;
 import java.net.URL;
 
@@ -30,6 +27,9 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * XSD Validation.

@@ -18,9 +18,9 @@
  */
 package io.vertigo.lang;
 
-import io.vertigo.util.StringUtil;
-
 import java.lang.reflect.InvocationTargetException;
+
+import io.vertigo.util.StringUtil;
 
 /**
  * Encapsulates some Exception inside a RuntimeException.

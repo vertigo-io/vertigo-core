@@ -18,13 +18,6 @@
  */
 package io.vertigo.core.locale;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.core.locale.data.CityGuide;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
-
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -32,6 +25,13 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.core.locale.data.CityGuide;
+import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.MessageText;
 
 /**
  * @author pchretien

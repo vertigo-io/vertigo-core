@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamox.search;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -29,11 +34,6 @@ import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Abstract SearchLoader with default chunk implementation.

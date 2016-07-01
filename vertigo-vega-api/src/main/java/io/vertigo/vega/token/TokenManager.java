@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.token;
 
+import java.io.Serializable;
+
 import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
 
 /**
  * Manager of Security Access Token.

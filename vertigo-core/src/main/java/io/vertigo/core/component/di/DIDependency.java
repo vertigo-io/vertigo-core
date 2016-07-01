@@ -18,16 +18,16 @@
  */
 package io.vertigo.core.component.di;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.inject.Named;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Un composant possède une liste de dépendances.

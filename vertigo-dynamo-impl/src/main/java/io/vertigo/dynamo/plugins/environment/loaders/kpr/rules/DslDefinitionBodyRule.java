@@ -21,6 +21,10 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.OBJECT_END;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.OBJECT_START;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -35,9 +39,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitio
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Règle définissant le corps d'une définition dynamo.

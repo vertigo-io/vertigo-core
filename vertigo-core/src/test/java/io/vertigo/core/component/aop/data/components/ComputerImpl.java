@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
+import javax.inject.Named;
+
 import io.vertigo.core.component.aop.data.aspects.OneMore;
 import io.vertigo.core.component.aop.data.aspects.TenMore;
-
-import javax.inject.Named;
 
 /**
  * @author prahmoune

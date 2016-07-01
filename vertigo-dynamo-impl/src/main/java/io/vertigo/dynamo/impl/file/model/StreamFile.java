@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
 
 /**
  *

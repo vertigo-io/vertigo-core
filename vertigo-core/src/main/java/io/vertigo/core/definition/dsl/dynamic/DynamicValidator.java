@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.lang.Assertion;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.lang.Assertion;
 
 /**
  * 

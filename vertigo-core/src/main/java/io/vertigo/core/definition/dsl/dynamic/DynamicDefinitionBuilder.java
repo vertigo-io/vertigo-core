@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.lang.Builder;
-
-import java.util.List;
 
 /**
  * Interface de création des définitions.

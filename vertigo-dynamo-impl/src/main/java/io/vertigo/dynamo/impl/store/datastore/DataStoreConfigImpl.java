@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import java.util.List;
+
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
 
 /**
  * Implémentation Standard du StoreProvider.

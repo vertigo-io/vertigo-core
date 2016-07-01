@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
-import io.vertigo.core.component.aop.data.MyException;
-
 import javax.inject.Named;
+
+import io.vertigo.core.component.aop.data.MyException;
 
 /**
  * @author prahmoune

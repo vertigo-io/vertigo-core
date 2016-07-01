@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
@@ -30,8 +32,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitio
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
 
 final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;

@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
+import java.util.Date;
+
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-
-import java.util.Date;
 
 /**
  * Class générique de définition d'un fichier.

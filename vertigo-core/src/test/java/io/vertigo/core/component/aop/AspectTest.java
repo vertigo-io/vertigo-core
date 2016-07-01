@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.component.aop;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.core.component.aop.data.components.A;
@@ -25,9 +28,6 @@ import io.vertigo.core.component.aop.data.components.B;
 import io.vertigo.core.component.aop.data.components.C;
 import io.vertigo.core.component.aop.data.components.Computer;
 import io.vertigo.core.component.aop.data.components.F;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public final class AspectTest extends AbstractTestCaseJU4 {
 	private A a;

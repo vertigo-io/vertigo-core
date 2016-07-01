@@ -18,10 +18,6 @@
  */
 package io.vertigo.dynamo.environment.eaxmi;
 
-import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
-
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -32,6 +28,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import io.vertigo.dynamo.TestUtil;
+import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 
 /**
  * Test de lecture d'un xmi.

@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore;
 
+import java.util.Map;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -52,8 +54,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
-
-import java.util.Map;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.

@@ -18,24 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
-import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
-import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.DateUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +35,24 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.dynamo.file.model.FileInfo;
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
+import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
+import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.DateUtil;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/

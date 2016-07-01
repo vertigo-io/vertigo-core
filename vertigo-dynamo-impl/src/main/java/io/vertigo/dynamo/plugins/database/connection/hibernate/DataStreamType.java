@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlDataStreamMappingUtil;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -31,6 +28,9 @@ import java.util.Objects;
 
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
+
+import io.vertigo.dynamo.domain.metamodel.DataStream;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlDataStreamMappingUtil;
 
 /**
  * Custom hibernate UserType for DataStream.

@@ -18,6 +18,12 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import io.vertigo.app.config.rules.APIModuleRule;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
@@ -25,12 +31,6 @@ import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.

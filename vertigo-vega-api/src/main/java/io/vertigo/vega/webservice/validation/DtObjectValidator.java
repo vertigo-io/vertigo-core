@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-
 import java.util.Set;
+
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * Validator of DtObject.

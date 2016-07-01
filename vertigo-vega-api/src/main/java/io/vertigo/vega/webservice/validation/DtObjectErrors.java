@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 
 /**
  * Liste des erreurs d'un objet métier.

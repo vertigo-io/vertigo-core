@@ -18,14 +18,6 @@
  */
 package io.vertigo.core.plugins.param.xml;
 
-import io.vertigo.core.param.ParamPlugin;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
-import io.vertigo.util.XMLUtil;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -40,6 +32,14 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
+
+import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
+import io.vertigo.util.XMLUtil;
 
 /**
  * Parser XML du paramétrage de la config.

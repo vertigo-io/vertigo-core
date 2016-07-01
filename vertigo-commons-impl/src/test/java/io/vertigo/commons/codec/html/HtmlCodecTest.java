@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.codec.html;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test l'encodeur HTML.

@@ -18,10 +18,6 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.commons.parser.Rule;
-
 import org.junit.Assert;
 import org.junit.Test;
 

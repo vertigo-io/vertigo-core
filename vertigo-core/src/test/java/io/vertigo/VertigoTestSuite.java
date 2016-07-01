@@ -18,6 +18,10 @@
  */
 package io.vertigo;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
 import io.vertigo.core.component.aop.AspectTest;
@@ -42,10 +46,6 @@ import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
 import io.vertigo.util.MapBuilderTest;
 import io.vertigo.util.StringUtilTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test de l'implémentation standard.

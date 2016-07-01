@@ -18,14 +18,14 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.JsonExclude;
 
 /**
  * Class d'enregistrement des messages.

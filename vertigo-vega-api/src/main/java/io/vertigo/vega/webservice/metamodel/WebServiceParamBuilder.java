@@ -18,13 +18,6 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
-import io.vertigo.vega.webservice.WebServiceTypeUtil;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.validation.DtObjectValidator;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -32,6 +25,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
+import io.vertigo.vega.webservice.WebServiceTypeUtil;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
 
 /**
  * WebServiceParam Builder.

@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.component.di;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
-
 import java.lang.reflect.Constructor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * @author prahmoune

@@ -18,10 +18,6 @@
  */
 package io.vertigo.core.component.loader;
 
-import io.vertigo.app.config.ComponentConfig;
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.lang.Assertion;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,6 +25,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.app.config.ComponentConfig;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.lang.Assertion;
 
 /**
  * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.

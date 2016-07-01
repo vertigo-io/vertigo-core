@@ -21,12 +21,12 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.util.Collection;
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Interface pour permettre des opérations avec des collections.

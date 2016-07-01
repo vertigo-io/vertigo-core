@@ -18,10 +18,10 @@
  */
 package io.vertigo.commons.impl.cache;
 
+import java.io.Serializable;
+
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.lang.Plugin;
-
-import java.io.Serializable;
 
 /**
  * Plugin de gestion de cache.

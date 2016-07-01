@@ -18,19 +18,19 @@
  */
 package io.vertigo.dynamo.plugins.database.connection;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Describable;
 
 /**
  * Classe de base des fournisseurs de connexions dynamo.

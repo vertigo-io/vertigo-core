@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.store.cache;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamock.domain.famille.Famille;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation avec cache.

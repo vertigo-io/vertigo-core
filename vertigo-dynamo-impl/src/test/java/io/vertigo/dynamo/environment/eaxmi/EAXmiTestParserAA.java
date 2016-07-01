@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.environment.eaxmi;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de lecture d'un OOM.

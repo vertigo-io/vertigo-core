@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
+import java.math.BigDecimal;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
@@ -25,11 +30,6 @@ import io.vertigo.dynamox.domain.formatter.FormatterBoolean;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.domain.formatter.FormatterNumberLocalized;
 import io.vertigo.dynamox.domain.formatter.FormatterString;
-
-import java.math.BigDecimal;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.

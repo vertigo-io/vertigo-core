@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.util.Collection;
+
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -25,8 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.functions.index.IndexFilterFunction;
 import io.vertigo.lang.Assertion;
-
-import java.util.Collection;
 
 /**
  * Builder for DtListFunction powered by index engine. *

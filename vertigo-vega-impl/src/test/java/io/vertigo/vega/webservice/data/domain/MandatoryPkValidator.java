@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
+import java.util.Set;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -25,8 +27,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
-
-import java.util.Set;
 
 /**
  * Check that PK was set in this object.

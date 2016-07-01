@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.search;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * WritableFuture for set result after execution.

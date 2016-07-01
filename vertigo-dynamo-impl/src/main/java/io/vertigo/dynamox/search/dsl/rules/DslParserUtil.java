@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
-
-import java.util.List;
 
 /**
  * Util for parsing search patterns and queries.

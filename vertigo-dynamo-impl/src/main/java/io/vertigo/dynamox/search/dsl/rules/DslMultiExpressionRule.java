@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -28,9 +31,6 @@ import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.lang.Option;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Parsing rule for query.

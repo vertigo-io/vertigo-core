@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamock.domain.car;
 
-import io.vertigo.dynamo.domain.model.DtList;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * Base de données des voitures.

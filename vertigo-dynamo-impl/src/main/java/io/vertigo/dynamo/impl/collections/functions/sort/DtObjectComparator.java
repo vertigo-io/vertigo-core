@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.Locale;
+
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -29,10 +33,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * Comparateur des DtObject.

@@ -18,11 +18,11 @@
  */
 package io.vertigo.persona.security;
 
+import java.util.Set;
+
 import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.metamodel.Role;
-
-import java.util.Set;
 
 /**
  * Gestion centralisee des droits d'acces.

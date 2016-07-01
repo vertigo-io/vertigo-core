@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.search.model;
 
+import java.io.Serializable;
+
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -25,8 +27,6 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
 
 /**
  * Critères de recherche.

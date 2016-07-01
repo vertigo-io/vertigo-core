@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.file.model;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-
-import java.io.Serializable;
 
 /**
  * Représentation d'un Fichier logique persistant.

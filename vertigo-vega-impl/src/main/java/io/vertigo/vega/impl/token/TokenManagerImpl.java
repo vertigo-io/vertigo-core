@@ -18,18 +18,18 @@
  */
 package io.vertigo.vega.impl.token;
 
+import java.io.Serializable;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
-
-import java.io.Serializable;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Ui data security token.

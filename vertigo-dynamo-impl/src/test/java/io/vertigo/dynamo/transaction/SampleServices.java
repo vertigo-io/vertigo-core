@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.transaction;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+
 import io.vertigo.dynamo.transaction.data.SampleDataBase;
 import io.vertigo.dynamo.transaction.data.SampleDataBaseConnection;
 import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 import io.vertigo.lang.Component;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
 
 public class SampleServices implements Component {
 	private static int count;

@@ -18,6 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.datasource;
 
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
@@ -26,13 +33,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
-
-import java.sql.SQLException;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 /**
  * ConnectionProvider permettant la connexion à une datasource Java.

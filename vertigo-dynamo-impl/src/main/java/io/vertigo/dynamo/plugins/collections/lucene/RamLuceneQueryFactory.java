@@ -18,13 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -42,6 +35,13 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;

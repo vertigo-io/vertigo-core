@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.resource;
 
-import io.vertigo.lang.Manager;
-
 import java.net.URL;
+
+import io.vertigo.lang.Manager;
 
 /**
  * Selecteurs de ressources.

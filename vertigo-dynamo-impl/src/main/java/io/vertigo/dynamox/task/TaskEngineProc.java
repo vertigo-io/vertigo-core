@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-
-import java.sql.SQLException;
-
-import javax.inject.Inject;
 
 /**
  * Permet l'appel de requête de manipulation de données (insert, update, delete)

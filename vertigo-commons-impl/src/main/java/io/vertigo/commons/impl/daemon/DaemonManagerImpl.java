@@ -18,6 +18,12 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
@@ -27,12 +33,6 @@ import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Manager of all the daemons.

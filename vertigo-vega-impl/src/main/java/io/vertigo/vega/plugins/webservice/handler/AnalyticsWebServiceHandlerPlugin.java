@@ -18,15 +18,14 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import javax.inject.Inject;
+
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 

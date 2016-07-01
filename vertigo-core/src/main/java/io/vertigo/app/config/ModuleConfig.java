@@ -18,12 +18,12 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.JsonExclude;
 
 /**
  * Configuration of a module.

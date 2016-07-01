@@ -18,9 +18,6 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -35,6 +32,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * The ClassUtil class provides methods to determine the structure of a class or to create instances.

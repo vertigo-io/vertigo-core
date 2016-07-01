@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.file;
 
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Manager;
-
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
+
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Manager;
 
 /**
  * Gestionnaire de la notion de fichier.

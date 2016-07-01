@@ -18,12 +18,12 @@
  */
 package io.vertigo.tempo.mail;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * EMail Builder.

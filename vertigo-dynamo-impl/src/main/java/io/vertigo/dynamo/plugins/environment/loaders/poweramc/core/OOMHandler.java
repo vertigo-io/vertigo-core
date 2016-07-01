@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
-
 import java.util.Map;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.lang.Assertion;
 
 /**
  * Handler SAX, permettant de parser le OOM.

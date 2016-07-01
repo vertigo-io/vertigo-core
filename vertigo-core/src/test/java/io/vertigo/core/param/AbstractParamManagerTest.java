@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.param;
 
-import io.vertigo.AbstractTestCaseJU4;
-
 import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
 
 /**
  * @author pchretien

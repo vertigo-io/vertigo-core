@@ -18,14 +18,14 @@
  */
 package io.vertigo.commons.codec;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
 
 /**
  * @author dchallas

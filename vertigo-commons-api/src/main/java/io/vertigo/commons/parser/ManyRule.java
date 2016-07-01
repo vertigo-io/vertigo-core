@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * The manyRule.

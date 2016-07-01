@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
-
-import javax.inject.Inject;
 
 /**
  * Aspect pour la gestion des transactions au niveau

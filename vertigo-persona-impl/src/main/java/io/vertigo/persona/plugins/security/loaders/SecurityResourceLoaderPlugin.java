@@ -18,12 +18,12 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien

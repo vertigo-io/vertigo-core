@@ -18,10 +18,10 @@
  */
 package io.vertigo.commons.impl.script;
 
+import java.util.List;
+
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.lang.Plugin;
-
-import java.util.List;
 
 /**
  * Evaluation d'une expression.

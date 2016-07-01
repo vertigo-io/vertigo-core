@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -30,9 +32,6 @@ import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.UiListState;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 

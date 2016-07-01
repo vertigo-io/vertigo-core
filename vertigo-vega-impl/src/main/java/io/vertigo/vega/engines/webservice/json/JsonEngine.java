@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Component;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Component;
 
 /**
  * Convert Object to Json, and json to Object.

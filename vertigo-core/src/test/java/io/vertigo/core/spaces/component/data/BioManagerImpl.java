@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.spaces.component.data;
 
-import io.vertigo.lang.Activeable;
-
 import javax.inject.Inject;
+
+import io.vertigo.lang.Activeable;
 
 public final class BioManagerImpl implements BioManager, Activeable {
 	private boolean active = false;

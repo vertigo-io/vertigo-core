@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.lang.Manager;
-
 import java.io.Serializable;
+
+import io.vertigo.lang.Manager;
 
 /**
  * Manager des caches.

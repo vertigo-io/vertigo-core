@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.environment.eaxmi;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
  * Test de lecture d'un OOM.

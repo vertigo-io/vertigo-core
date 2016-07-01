@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.component.loader;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.VSystemException;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Super Conteneur.

@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Solver permet de résoudre les références.

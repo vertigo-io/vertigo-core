@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -25,11 +30,6 @@ import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionBodyRule;
 import io.vertigo.lang.VSystemException;
-
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class DslDefinitionBodyRuleTest {
 	private final DynamicDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();

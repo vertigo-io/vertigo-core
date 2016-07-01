@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.store.filestore;
 
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.lang.Assertion;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation Standard du StoreProvider.

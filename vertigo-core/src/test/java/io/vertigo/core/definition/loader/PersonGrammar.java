@@ -22,12 +22,13 @@ import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Double;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.util.ListBuilder;
-
-import java.util.List;
 
 /**
  * @author npiedeloup

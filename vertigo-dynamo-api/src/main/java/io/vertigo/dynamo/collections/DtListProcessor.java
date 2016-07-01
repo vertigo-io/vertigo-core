@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
 
 /**
  * Processor that can be composed of filters or sorters

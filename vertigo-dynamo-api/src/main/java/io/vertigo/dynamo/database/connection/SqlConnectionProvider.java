@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.database.connection;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-
 import java.sql.SQLException;
+
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 
 /**
  * Provides a sql connections.

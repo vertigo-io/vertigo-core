@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.collections.model;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedMap;
+
+import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.lang.Assertion;
 
 /**
  * Facette.

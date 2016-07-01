@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
+import java.util.Locale;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
-
-import java.util.Locale;
 
 /**
  * Gestion des formattages de String.

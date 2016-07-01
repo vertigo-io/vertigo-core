@@ -18,11 +18,11 @@
  */
 package io.vertigo.vega.impl.webservice;
 
+import java.util.List;
+
 import io.vertigo.lang.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.util.List;
 
 /**
  * Register an handlerchain as a route for this webService.

@@ -22,6 +22,13 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.PROPERTY_VALUE;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.QUOTATION_MARK;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -32,12 +39,6 @@ import io.vertigo.commons.parser.TermRule;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * règle de déclaration d'une affectation de propriété.

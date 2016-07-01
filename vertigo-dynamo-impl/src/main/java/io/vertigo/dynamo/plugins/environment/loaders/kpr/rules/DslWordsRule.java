@@ -23,15 +23,16 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.ARRAY_START;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * règle de composition d'une déclaration de liste de mots.

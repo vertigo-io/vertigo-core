@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.app.Home;
-import io.vertigo.lang.Assertion;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
+import io.vertigo.app.Home;
+import io.vertigo.lang.Assertion;
 
 /**
  * Référence SERIALIZABLE vers les definitions.

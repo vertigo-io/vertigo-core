@@ -48,13 +48,14 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.util.ListBuilder;
-
-import java.util.List;
 
 /**
  * @author pchretien

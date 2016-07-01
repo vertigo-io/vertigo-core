@@ -18,17 +18,17 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Container;
-import io.vertigo.util.StringUtil;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Container;
+import io.vertigo.util.StringUtil;
 
 /**
  * ThCentralisation des accès aux composants et aux plugins.

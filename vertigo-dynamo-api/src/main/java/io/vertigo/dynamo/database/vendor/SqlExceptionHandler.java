@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-
 import java.sql.SQLException;
+
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir lors de l'exécution d'une requête.

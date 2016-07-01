@@ -18,12 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,6 +26,12 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP.

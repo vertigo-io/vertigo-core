@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Une entité permet de décrire un modèle, une classe.

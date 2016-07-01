@@ -18,11 +18,6 @@
  */
 package io.vertigo.commons.script;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.script.parser.ScriptParserHandler;
-import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.util.ListBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +25,11 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.script.parser.ScriptParserHandler;
+import io.vertigo.commons.script.parser.ScriptSeparator;
+import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien

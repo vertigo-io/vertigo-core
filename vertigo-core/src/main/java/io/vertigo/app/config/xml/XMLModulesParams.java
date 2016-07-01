@@ -18,11 +18,11 @@
  */
 package io.vertigo.app.config.xml;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien

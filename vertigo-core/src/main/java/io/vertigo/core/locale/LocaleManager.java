@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.locale;
 
+import java.util.Locale;
+
 import io.vertigo.lang.Manager;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-
-import java.util.Locale;
 
 /**
  * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.

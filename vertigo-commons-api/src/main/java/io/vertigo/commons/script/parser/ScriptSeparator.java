@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.script.parser;
 
-import io.vertigo.lang.Assertion;
-
 import java.io.Serializable;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des Séparateurs utilisés par le parser.

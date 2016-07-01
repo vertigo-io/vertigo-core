@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.io.Serializable;
+
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-
-import java.io.Serializable;
 
 /**
  * Exception lancée en cas d'échec de formattage.

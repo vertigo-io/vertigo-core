@@ -18,10 +18,6 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.metamodel.Role;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +26,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.lang.Assertion;
+import io.vertigo.persona.security.metamodel.Role;
 
 /**
  * Session d'un utilisateur.

@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
-
-import java.util.List;
 
 /**
  * Parsing rule for fixedQuery.

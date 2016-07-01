@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
-
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 
 /**
  * Formatteur multi-lingue.

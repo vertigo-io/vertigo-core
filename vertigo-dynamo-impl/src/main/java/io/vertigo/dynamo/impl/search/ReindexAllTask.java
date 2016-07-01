@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -34,12 +40,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * Reindex all data taks.

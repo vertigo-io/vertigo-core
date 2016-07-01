@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
 
 /**
  * Chainage de filtre de liste.

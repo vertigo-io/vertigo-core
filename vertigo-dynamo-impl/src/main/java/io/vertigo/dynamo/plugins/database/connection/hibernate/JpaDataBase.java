@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
+import javax.persistence.EntityManagerFactory;
+
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
-
-import javax.persistence.EntityManagerFactory;
 
 /**
  * Gestion de la base de données Hibernate.

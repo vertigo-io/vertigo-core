@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.environment.java;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -28,9 +31,6 @@ import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.

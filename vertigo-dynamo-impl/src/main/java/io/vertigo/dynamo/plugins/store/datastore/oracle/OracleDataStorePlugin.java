@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.oracle;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractSqlDataStorePlugin;
@@ -26,9 +29,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implémentation d'un Store Oracle.

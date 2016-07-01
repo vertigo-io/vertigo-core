@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.impl.script;
 
+import java.util.List;
+
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
 
 /**
  * Evaluation d'un script

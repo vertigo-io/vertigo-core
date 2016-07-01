@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.logical;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
-import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
-import io.vertigo.lang.Assertion;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
+import io.vertigo.lang.Assertion;
 
 /**
  * This class defines how the dataSpaces are mapped to the physical stores.

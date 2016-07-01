@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
@@ -36,12 +42,6 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.

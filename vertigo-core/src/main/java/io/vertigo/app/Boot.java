@@ -18,15 +18,15 @@
  */
 package io.vertigo.app;
 
-import io.vertigo.app.config.BootConfig;
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.lang.Assertion;
-
 import java.io.File;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+
+import io.vertigo.app.config.BootConfig;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.lang.Assertion;
 
 /**
  * The Boot class is reponsible for the boot phase. 

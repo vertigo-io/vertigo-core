@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.file;
 
-import io.vertigo.commons.daemon.Daemon;
-
 import java.io.File;
+
+import io.vertigo.commons.daemon.Daemon;
 
 /**
  * Purge store directory Daemon.

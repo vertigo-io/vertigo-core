@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
 * @author npiedeloup 

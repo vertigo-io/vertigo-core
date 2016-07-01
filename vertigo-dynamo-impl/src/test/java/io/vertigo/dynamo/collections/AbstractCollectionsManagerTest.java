@@ -18,14 +18,6 @@
  */
 package io.vertigo.dynamo.collections;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamock.domain.famille.Famille;
-import io.vertigo.lang.Option;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +27,14 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamock.domain.famille.Famille;
+import io.vertigo.lang.Option;
 
 /**
  *

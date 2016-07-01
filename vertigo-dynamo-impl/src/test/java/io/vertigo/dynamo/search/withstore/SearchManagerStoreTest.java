@@ -18,6 +18,15 @@
  */
 package io.vertigo.dynamo.search.withstore;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -38,15 +47,6 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.SQLException;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard couplé au store.

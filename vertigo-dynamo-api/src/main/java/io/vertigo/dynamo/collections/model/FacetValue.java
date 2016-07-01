@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.collections.model;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-
-import java.io.Serializable;
 
 /**
  * Valeur de facette relatif à une définition.

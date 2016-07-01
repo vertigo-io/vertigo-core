@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.component.di.data;
 
-import io.vertigo.lang.Option;
-
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.lang.Option;
 
 public final class E {
 	private final List<P2> p2Plugins;

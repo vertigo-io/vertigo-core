@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.util.StringUtil;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.vertigo.util.StringUtil;
 
 /**
  * Exception levée lorsque la règle n'est pas respectée.

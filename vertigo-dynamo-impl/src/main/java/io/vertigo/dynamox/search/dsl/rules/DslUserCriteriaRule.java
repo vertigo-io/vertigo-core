@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
-import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
 /**
  * One user criteria.

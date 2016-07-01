@@ -18,6 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
@@ -38,10 +42,6 @@ import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 import io.vertigo.vega.webservice.stereotype.Validate;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 

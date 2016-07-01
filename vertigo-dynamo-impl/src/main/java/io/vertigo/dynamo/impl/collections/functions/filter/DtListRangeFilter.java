@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
 
 /**
  * Filtre sur champ=valeur.

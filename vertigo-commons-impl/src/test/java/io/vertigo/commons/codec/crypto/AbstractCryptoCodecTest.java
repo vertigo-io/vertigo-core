@@ -18,10 +18,10 @@
  */
 package io.vertigo.commons.codec.crypto;
 
-import io.vertigo.commons.codec.AbstractCodecTest;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.commons.codec.AbstractCodecTest;
 
 /**
  * Test des codesc de cryptographie.

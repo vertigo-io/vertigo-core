@@ -18,16 +18,16 @@
  */
 package io.vertigo.commons.impl.eventbus;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventListener;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author pchretien, npiedeloup

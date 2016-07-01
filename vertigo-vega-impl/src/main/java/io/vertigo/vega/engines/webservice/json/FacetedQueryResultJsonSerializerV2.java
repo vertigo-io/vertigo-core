@@ -18,11 +18,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.model.DtList;
-
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map.Entry;
@@ -32,6 +27,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * JsonSerializer of FacetedQueryResult.

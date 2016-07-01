@@ -18,17 +18,17 @@
  */
 package io.vertigo.dynamo.transaction;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.transaction.data.SampleDataBase;
-import io.vertigo.dynamo.transaction.data.SampleDataBaseConnection;
-import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.transaction.data.SampleDataBase;
+import io.vertigo.dynamo.transaction.data.SampleDataBaseConnection;
+import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 
 /**
  * @author npiedeloup

@@ -18,14 +18,6 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
-import io.vertigo.app.Home;
-import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
-import io.vertigo.vega.webservice.stereotype.GET;
-import io.vertigo.vega.webservice.stereotype.PathParam;
-import io.vertigo.vega.webservice.stereotype.SessionLess;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +28,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import io.vertigo.app.Home;
+import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
+import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.webservice.stereotype.GET;
+import io.vertigo.vega.webservice.stereotype.PathParam;
+import io.vertigo.vega.webservice.stereotype.SessionLess;
 
 /**
  * Swagger WebService to list services published.

@@ -18,6 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -26,11 +31,6 @@ import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiObject;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-
-import javax.inject.Inject;
 
 public final class DtObjectJsonConverter implements JsonConverter {
 	private final JsonEngine jsonReaderEngine;

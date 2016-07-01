@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.DtListProcessor;
@@ -34,9 +37,6 @@ import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Standard implementation of DtListProcessor.

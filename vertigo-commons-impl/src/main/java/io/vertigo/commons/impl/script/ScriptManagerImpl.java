@@ -18,16 +18,16 @@
  */
 package io.vertigo.commons.impl.script;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Assertion;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * This manager allows you to script a text.

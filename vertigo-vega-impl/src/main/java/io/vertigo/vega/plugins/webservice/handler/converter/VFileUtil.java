@@ -18,14 +18,6 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,6 +29,13 @@ import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import spark.Request;
 import spark.Response;
 

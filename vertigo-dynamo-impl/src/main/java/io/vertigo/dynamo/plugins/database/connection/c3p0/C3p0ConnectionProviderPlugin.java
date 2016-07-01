@@ -18,15 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.c3p0;
 
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ClassUtil;
-
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
@@ -36,6 +27,15 @@ import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.PooledDataSource;
+
+import io.vertigo.dynamo.database.SqlDataBaseManager;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * If there is no datasource, you have to use a simple connection provider.

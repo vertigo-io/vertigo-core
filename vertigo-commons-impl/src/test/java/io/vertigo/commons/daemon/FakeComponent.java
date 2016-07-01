@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.daemon;
 
-import io.vertigo.lang.Component;
-
 import javax.inject.Inject;
+
+import io.vertigo.lang.Component;
 
 public class FakeComponent implements Component {
 	int executions = 0;

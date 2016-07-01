@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
+import java.sql.SQLException;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
@@ -27,10 +31,6 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
-
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
 
 /**
  * Handler abstrait des exceptions SQL qui peuvent survenir dans un service.

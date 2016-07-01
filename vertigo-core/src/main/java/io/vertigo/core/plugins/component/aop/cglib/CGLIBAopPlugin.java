@@ -18,17 +18,16 @@
  */
 package io.vertigo.core.plugins.component.aop.cglib;
 
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.util.ClassUtil;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
+import io.vertigo.util.ClassUtil;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 

@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import java.io.Serializable;
+import java.util.EnumMap;
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * DtDefinition serializable.

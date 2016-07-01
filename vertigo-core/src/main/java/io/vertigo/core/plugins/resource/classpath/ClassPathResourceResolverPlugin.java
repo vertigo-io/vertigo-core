@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.plugins.resource.classpath;
 
+import java.net.URL;
+
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.net.URL;
 
 /**
  * Résolution des URL liées au classPath.

@@ -18,13 +18,13 @@
  */
 package io.vertigo.tempo.job;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.tempo.job.metamodel.JobDefinition;
-
 import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 /**
  * Test de l'implémentation standard.

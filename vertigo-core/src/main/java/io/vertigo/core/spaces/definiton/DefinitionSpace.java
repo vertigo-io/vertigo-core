@@ -18,16 +18,16 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.JsonExclude;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.JsonExclude;
 
 /**
  * Espace de définitions (non threadSafe).

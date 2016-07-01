@@ -18,26 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -61,6 +41,26 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import io.vertigo.app.Home;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.

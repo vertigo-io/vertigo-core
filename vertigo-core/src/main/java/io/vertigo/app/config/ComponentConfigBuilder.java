@@ -18,13 +18,13 @@
  */
 package io.vertigo.app.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Paramétrage de l'application.

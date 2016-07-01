@@ -18,15 +18,6 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
-import io.vertigo.commons.parser.WhiteSpaceRule;
-import io.vertigo.commons.parser.WordRule;
-
 import java.util.List;
 
 final class CalculatorRule extends AbstractRule<Integer, List<?>> {

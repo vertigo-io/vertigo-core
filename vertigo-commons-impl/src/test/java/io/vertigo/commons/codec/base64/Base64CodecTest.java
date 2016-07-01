@@ -18,14 +18,14 @@
  */
 package io.vertigo.commons.codec.base64;
 
-import io.vertigo.commons.codec.AbstractCodecTest;
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.commons.codec.CodecManager;
-
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.commons.codec.AbstractCodecTest;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
 
 /**
  * Test du codec de base64.

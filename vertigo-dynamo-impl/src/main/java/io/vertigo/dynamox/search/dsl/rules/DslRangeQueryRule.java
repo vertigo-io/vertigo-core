@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -26,8 +28,6 @@ import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
-
-import java.util.List;
 
 /**
  * Parsing rule for query.

@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.store;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;
-
-import javax.inject.Inject;
 
 /**
  * Initialisation des listes de références.

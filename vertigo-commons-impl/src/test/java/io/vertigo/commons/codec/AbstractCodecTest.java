@@ -18,8 +18,6 @@
  */
 package io.vertigo.commons.codec;
 
-import io.vertigo.commons.codec.Codec;
-
 /**
  * @author dchallas
  * @param <S> Type Source à encoder

@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.model;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
 
 /**
  * List state : page and sort infos.

@@ -18,6 +18,15 @@
  */
 package io.vertigo.core.component.loader;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -34,15 +43,6 @@ import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.

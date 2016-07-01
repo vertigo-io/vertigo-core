@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.database.statement;
 
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-
-import java.sql.SQLException;
 
 /**
  * PreparedStatement.

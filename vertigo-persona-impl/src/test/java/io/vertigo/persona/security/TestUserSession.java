@@ -18,8 +18,6 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.persona.security.UserSession;
-
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;

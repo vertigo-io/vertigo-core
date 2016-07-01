@@ -18,12 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.transport;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,6 +26,12 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP. Utilisation du client Transport simple, sans

@@ -18,14 +18,14 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import javax.inject.Inject;
+
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import javax.inject.Inject;
 
 /**
  * Main analytics manager implementation.

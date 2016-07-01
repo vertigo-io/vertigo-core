@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.util.Collection;
+import java.util.List;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.

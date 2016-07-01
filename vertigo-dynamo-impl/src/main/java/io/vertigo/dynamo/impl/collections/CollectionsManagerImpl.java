@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
@@ -32,12 +38,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.

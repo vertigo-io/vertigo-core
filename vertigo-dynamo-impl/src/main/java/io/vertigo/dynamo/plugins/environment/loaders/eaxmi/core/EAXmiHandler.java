@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
-
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.lang.Assertion;
 
 /**
  * Handler de lecture du fichier XMI généré par Enterprise Architect.

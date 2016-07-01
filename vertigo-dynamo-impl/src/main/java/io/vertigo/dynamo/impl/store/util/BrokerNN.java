@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.URI;
-
-import java.util.List;
 
 /**
  * Gestion des relations NN.

@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.Date;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * The ComponentInfo class defines an info and its associated value.

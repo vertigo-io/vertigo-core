@@ -18,11 +18,11 @@
  */
 package io.vertigo.vega;
 
-import io.vertigo.vega.webservice.WebServiceManagerTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import io.vertigo.vega.webservice.WebServiceManagerTest;
 
 /**
  * Test de l'implementation standard.

@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.codec.csv;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.commons.codec.AbstractEncoderTest;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test du codec de validation pour un fichier CVS.

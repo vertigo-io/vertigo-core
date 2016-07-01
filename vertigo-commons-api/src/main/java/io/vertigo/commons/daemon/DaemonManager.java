@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.daemon;
 
-import io.vertigo.lang.Manager;
-
 import java.util.List;
+
+import io.vertigo.lang.Manager;
 
 /**
  * Manages daemons.

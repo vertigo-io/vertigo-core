@@ -18,12 +18,12 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.util.BeanUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ResourceNameFactory standard des beans securisees.

@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Builder des Facettes par Range.

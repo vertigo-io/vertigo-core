@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.resource;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
-
 import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Standard implementation for the resourceManager.

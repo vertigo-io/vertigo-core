@@ -18,14 +18,6 @@
  */
 package io.vertigo.core.component.di.injector;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.core.component.di.DIException;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,6 +26,14 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.core.component.di.DIException;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Injector.

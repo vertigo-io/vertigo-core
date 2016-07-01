@@ -18,12 +18,12 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * The MapBuilder class allows to build a map.

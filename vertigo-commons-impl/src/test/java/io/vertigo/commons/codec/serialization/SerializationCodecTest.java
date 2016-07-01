@@ -18,16 +18,16 @@
  */
 package io.vertigo.commons.codec.serialization;
 
-import io.vertigo.commons.codec.AbstractCodecTest;
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.commons.codec.CodecManager;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.commons.codec.AbstractCodecTest;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
 
 /**
  * Test du codec de sérialisation.

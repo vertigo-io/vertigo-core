@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.spaces.component.data;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.vertigo.lang.Assertion;
 
 public final class FunctionManager2Impl implements FunctionManager {
 	private final List<FunctionPlugin> functionPlugins;

@@ -18,11 +18,11 @@
  */
 package io.vertigo.persona;
 
-import io.vertigo.persona.security.VSecurityManagerTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import io.vertigo.persona.security.VSecurityManagerTest;
 
 /**
  * Test de l'implementation standard.

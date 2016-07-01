@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.environment.java.data;
 
-import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-
 import java.util.Arrays;
 import java.util.Iterator;
+
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 /**
  * Attention cette classe est générée automatiquement !

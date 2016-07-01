@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.store.criteria;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Critère de recherche par champs.

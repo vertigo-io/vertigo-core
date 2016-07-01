@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * The first rule that matches is taken.

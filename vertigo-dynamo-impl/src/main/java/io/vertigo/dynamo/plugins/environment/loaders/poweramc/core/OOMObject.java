@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.lang.Assertion;
 
 /**
  * Objets de la grammaire powerAMC.

@@ -18,6 +18,13 @@
  */
 package io.vertigo.dynamock.domain.car;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
@@ -26,13 +33,6 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.search.AbstractSearchLoader;
 import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> {
 	private static final int SEARCH_CHUNK_SIZE = 5;

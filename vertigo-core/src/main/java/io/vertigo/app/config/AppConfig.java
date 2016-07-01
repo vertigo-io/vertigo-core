@@ -18,13 +18,13 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.app.Logo;
-import io.vertigo.lang.Assertion;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.app.Logo;
+import io.vertigo.lang.Assertion;
 
 /**
  * The AppConfig class defines the config.

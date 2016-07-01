@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.task;
 
+import javax.inject.Inject;
+
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
@@ -27,8 +29,6 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.lang.Assertion;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien

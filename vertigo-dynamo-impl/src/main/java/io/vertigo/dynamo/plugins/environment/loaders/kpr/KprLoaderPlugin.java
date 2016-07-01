@@ -18,14 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.loader.LoaderPlugin;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -34,6 +26,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Parses a KPR file.

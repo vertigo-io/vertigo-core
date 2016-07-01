@@ -20,12 +20,13 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
+
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
-
-import java.util.List;
 
 /**
  * règle de déclaration d'un package.

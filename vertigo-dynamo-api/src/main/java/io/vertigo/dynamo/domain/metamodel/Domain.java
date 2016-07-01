@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
 * Un domaine permet d'enrichir les types primitifs

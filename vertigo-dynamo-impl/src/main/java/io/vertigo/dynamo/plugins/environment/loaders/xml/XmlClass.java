@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Classe ou entité.

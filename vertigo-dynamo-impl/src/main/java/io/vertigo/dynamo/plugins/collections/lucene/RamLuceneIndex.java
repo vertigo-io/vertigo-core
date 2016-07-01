@@ -18,21 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VUserException;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -61,6 +46,21 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
 
 /**
  * Implémentation Ram de l'index Lucene.

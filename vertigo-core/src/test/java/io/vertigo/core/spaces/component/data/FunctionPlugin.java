@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.spaces.component.data;
 
-import io.vertigo.lang.Plugin;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.lang.Plugin;
 
 public class FunctionPlugin implements Plugin {
 	@Inject

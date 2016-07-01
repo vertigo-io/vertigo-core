@@ -18,13 +18,13 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * The ListBuilder class allows to build a list.

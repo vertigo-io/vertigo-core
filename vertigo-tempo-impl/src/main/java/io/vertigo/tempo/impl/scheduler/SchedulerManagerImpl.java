@@ -18,13 +18,13 @@
  */
 package io.vertigo.tempo.impl.scheduler;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.tempo.job.metamodel.JobDefinition;
-import io.vertigo.tempo.scheduler.SchedulerManager;
-
 import java.util.Date;
 
 import javax.inject.Inject;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.tempo.job.metamodel.JobDefinition;
+import io.vertigo.tempo.scheduler.SchedulerManager;
 
 /**
  * Impl of SchedulerManager.

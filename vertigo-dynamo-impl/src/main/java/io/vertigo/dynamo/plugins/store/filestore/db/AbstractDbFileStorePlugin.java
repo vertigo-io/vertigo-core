@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.inject.Named;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -32,11 +37,6 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.inject.Named;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/

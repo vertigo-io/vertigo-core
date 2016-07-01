@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.store.datastore;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-
-import java.io.Serializable;
 
 /**
  * Configuration des données de référence.

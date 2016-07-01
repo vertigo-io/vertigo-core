@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Configuration des données mises en cache.

@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
  * Specific SearchIndex loader.
