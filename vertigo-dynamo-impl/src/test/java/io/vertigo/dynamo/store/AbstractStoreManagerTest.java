@@ -44,7 +44,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.store.util.DAOBroker;
+import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -84,13 +84,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	private DtDefinition dtDefinitionCar;
 	private DtListURI allCarsUri;
 
-	private DAOBroker<Famille, Integer> familleDAO;
+	private DAO<Famille, Integer> familleDAO;
 	private long initialDbCarSize = 0;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
-		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
+		familleDAO = new DAO<>(dtDefinitionFamille, storeManager, taskManager);
 
 		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
