@@ -47,19 +47,19 @@ limitations under the License. -->
 		<module>vertigo-tempo-api</module>
 		<module>vertigo-tempo-impl</module>
 		
-		<module>../vertigo-quarto</module>
+		<module>vertigo-quarto</module>
 		
-		<module>../vertigo-studio</module>
+		<module>vertigo-studio</module>
 
-		<module>../vertigo-struts2</module>
+		<module>vertigo-struts2</module>
 		
-		<module>../vertigo-shell</module>
+		<module>vertigo-shell</module>
 		
-		<module>../vertigo-stella</module>
+		<module>vertigo-stella</module>
 		
 		<module>vertigo-bundle</module>
 
-		<module>../vertigo-addons</module>
+		<module>vertigo-extensions</module>
 	</modules>
 
 	<build>
