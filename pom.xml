@@ -48,6 +48,13 @@ limitations under the License. -->
 		<module>vertigo-tempo-impl</module>		
 	</modules>
 
+	<scm>
+		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
+		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
+		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
+		<tag>vertigo-0.9.1</tag>
+	</scm>
+	
 	<build>
 		<plugins>
 			<plugin>
