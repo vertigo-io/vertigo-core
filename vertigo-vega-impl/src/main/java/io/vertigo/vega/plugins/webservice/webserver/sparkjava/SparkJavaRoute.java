@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import org.apache.log4j.Logger;
+
+import io.vertigo.lang.Option;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import org.apache.log4j.Logger;
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -41,12 +41,13 @@ final class SparkJavaRoute extends Route {
 	private final String defaultContentCharset;
 
 	/**
+	 * @param apiPrefix General prefix for all api
 	 * @param webServiceDefinition webServiceDefinition
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	SparkJavaRoute(final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
-		super(convertJaxRsPathToSpark(webServiceDefinition.getPath()), webServiceDefinition.getAcceptType());
+	SparkJavaRoute(final Option<String> apiPrefix, final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
+		super(convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath()), webServiceDefinition.getAcceptType());
 		this.webServiceDefinition = webServiceDefinition;
 		this.handlerChain = handlerChain;
 		this.defaultContentCharset = defaultContentCharset;

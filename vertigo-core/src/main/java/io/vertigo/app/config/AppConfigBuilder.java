@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
@@ -29,9 +32,6 @@ import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.ClassUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The AppConfigBuilder builder allows you to create an AppConfig using a fluent, simple style .

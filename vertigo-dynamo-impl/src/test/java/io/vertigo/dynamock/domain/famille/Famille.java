@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,7 +124,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
-			voituresFamille = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
+			voituresFamille = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(fkDtListURI);
 		}
 		return voituresFamille;
 	}
@@ -152,7 +152,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
-			voituresLocation = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
+			voituresLocation = io.vertigo.app.Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(fkDtListURI);
 		}
 		return voituresLocation;
 	}

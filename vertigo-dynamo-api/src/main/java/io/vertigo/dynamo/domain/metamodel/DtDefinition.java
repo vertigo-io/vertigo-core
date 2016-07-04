@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,19 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.StringUtil;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.StringUtil;
 
 /**
  * The DtDefinition class defines the definition of data.
@@ -64,11 +64,11 @@ public final class DtDefinition implements Definition {
 	 */
 	private final boolean dynamic;
 
-	/** Champ identifiant */
+	/** id Field */
 	private final Option<DtField> idField;
 
-	private Option<DtField> sortField = Option.none();
-	private Option<DtField> displayField = Option.none();
+	private Option<DtField> sortField = Option.empty();
+	private Option<DtField> displayField = Option.empty();
 
 	private final String dataSpace;
 
@@ -103,25 +103,25 @@ public final class DtDefinition implements Definition {
 			doRegisterDtField(dtField);
 
 		}
-		idField = Option.option(id);
+		idField = Option.ofNullable(id);
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
+		Assertion.checkState(!persistent || idField.isPresent(), "Si un DT est persistant il doit posséder un ID");
 	}
 
 	private void registerSort(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(sortField.isEmpty(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
+		Assertion.checkArgument(!sortField.isPresent(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		sortField = Option.some(dtField);
+		sortField = Option.of(dtField);
 	}
 
 	private void registerDisplay(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(displayField.isEmpty(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
+		Assertion.checkArgument(!displayField.isPresent(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		displayField = Option.some(dtField);
+		displayField = Option.of(dtField);
 	}
 
 	//TODO A fermer
@@ -168,7 +168,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return Nom du package
+	 * @return the name of the package
 	 */
 	public String getPackageName() {
 		return packageName;

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,6 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +25,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Assertion;
 
 /**
  * Espace de nommage.
@@ -120,9 +119,10 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
 		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
-			final Option<Definition> definitionOption = registry.createDefinition(definitionSpace, xdefinition);
-			if (definitionOption.isDefined()) {
-				definitionSpace.put(definitionOption.get());
+			if (!xdefinition.getEntity().isRoot()) {
+				//The definition identified as root are not registered.
+				final Definition definition = registry.createDefinition(definitionSpace, xdefinition);
+				definitionSpace.put(definition);
 			}
 		}
 	}
@@ -178,7 +178,7 @@ public final class DynamicDefinitionRepository {
 	}
 
 	/**
-	 * @return Liste des définitions complétes
+	 * @return Liste des définitions complètes
 	 */
 	Collection<DynamicDefinition> getDefinitions() {
 		return Collections.unmodifiableCollection(definitions.values());

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,15 @@
  * limitations under the License.
  */
 package io.vertigo.core.component.loader;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
@@ -34,15 +43,6 @@ import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
@@ -75,7 +75,7 @@ public final class ComponentLoader {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, Option.some(paramManager), moduleConfig);
+			injectComponent(componentSpace, Option.of(paramManager), moduleConfig);
 		}
 	}
 
@@ -85,7 +85,7 @@ public final class ComponentLoader {
 	 * @param bootModuleConfig Configs of the boot module
 	 */
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
-		doInjectComponents(componentSpace, Option.<ParamManager> none(), bootModuleConfig);
+		doInjectComponents(componentSpace, Option.<ParamManager> empty(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");
@@ -209,7 +209,7 @@ public final class ComponentLoader {
 		//		}
 		//---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
-		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
+		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());

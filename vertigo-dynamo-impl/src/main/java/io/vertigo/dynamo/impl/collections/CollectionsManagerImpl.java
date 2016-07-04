@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
@@ -32,12 +38,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
@@ -81,7 +81,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Option.some(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
+		return new FacetedQueryResult<>(Option.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
 	}
 
 	//=========================================================================
@@ -105,7 +105,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
-		Assertion.checkNotNull(indexPlugin.isDefined(), "An IndexPlugin is required to use this function");
+		Assertion.checkNotNull(indexPlugin.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPlugin.get());
 	}

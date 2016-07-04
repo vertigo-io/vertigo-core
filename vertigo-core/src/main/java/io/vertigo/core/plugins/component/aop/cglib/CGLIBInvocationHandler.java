@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.plugins.component.aop.cglib;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author pchretien
@@ -56,7 +56,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		private final List<Aspect> aspects;
 		private final Object instance;
 		private final Method method;
-		private int index = 0;
+		private int index;
 
 		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> aspects) {
 			Assertion.checkNotNull(instance);
@@ -70,7 +70,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 
 		/** {@inheritDoc} */
 		@Override
-		public Object proceed(final Object[] args) throws Exception {
+		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
 				return aspects.get(index++).invoke(args, this);
 			}

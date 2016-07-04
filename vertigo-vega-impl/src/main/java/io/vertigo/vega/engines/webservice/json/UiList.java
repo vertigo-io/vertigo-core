@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Delta operations on List.
@@ -33,7 +33,6 @@ import java.util.List;
  * @param <D> Object type
  */
 public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
-
 	private static final long serialVersionUID = -8008715790791553036L;
 	private final Class<D> objectType;
 
@@ -67,5 +66,16 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 			dtList.add(dto);
 		}
 		return dtList;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		/* A list equals only the same list */
+		return (o == this);
+	}
+
+	@Override
+	public int hashCode() {
+		return System.identityHashCode(this);
 	}
 }

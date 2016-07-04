@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,6 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import io.vertigo.dynamo.store.StoreServices;
-import io.vertigo.lang.Assertion;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.lang.Assertion;
 
 public class ContactDao implements StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();

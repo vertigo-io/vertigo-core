@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -29,8 +31,6 @@ import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
  * Parsing rule for query.
@@ -84,7 +84,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		final String postTerm = (String) term.get(3);
 		final Option<Choice> escapeRule = (Option<Choice>) term.get(5);
 		final EscapeMode escapeMode;
-		if (escapeRule.isDefined()) {
+		if (escapeRule.isPresent()) {
 			switch (escapeRule.get().getValue()) {
 				case 0:
 					escapeMode = EscapeMode.remove;
@@ -100,10 +100,10 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		}
 		final Option<List<?>> defaultRule = (Option<List<?>>) term.get(6);
 		final Option<String> defaultValue;
-		if (defaultRule.isDefined()) {
-			defaultValue = Option.option((String) defaultRule.get().get(1));
+		if (defaultRule.isPresent()) {
+			defaultValue = Option.ofNullable((String) defaultRule.get().get(1));
 		} else {
-			defaultValue = Option.none();
+			defaultValue = Option.empty();
 		}
 
 		final String postQuery = (String) parsing.get(3);

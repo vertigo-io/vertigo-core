@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,13 @@
  */
 package io.vertigo.core.component.di.reactor;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
@@ -27,14 +34,6 @@ import io.vertigo.core.component.di.data.E;
 import io.vertigo.core.component.di.data.F;
 import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P3;
-import io.vertigo.core.component.di.reactor.DIReactor;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * A ne dépend de personne.

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,24 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
-
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
-import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
-import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.DateUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -53,6 +35,24 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.dynamo.file.model.FileInfo;
+import io.vertigo.dynamo.file.model.InputStreamBuilder;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
+import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
+import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.DateUtil;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -91,12 +91,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager != null, "DeamonManager is mandatory when using a purgeDelay");
 		//-----
-		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = FileUtil.translatePath(path);
 		//-----
-		if (purgeDelayMinutes.isDefined()) {
+		if (purgeDelayMinutes.isPresent()) {
 			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
 		}
 	}

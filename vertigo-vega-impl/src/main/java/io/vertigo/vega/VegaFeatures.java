@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -54,6 +55,7 @@ public final class VegaFeatures extends Features {
 	private String tokenCollection;
 	private boolean miscEnabled;
 	private boolean securityEnabled;
+	private String apiPrefix;
 
 	public VegaFeatures() {
 		super("vega");
@@ -82,10 +84,18 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
+	public VegaFeatures withApiPrefix(final String prefix) {
+		apiPrefix = prefix;
+		return this;
+	}
+
 	public VegaFeatures withEmbeddedServer(final int port) {
-		getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-				.addParam("port", Integer.toString(port))
-				.endPlugin();
+		final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
+				.addParam("port", Integer.toString(port));
+		if (apiPrefix != null) {
+			pluginConfigBuilder.addParam("apiPrefix", apiPrefix);
+		}
+		pluginConfigBuilder.endPlugin();
 		return this;
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.plugins.resource.url;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import io.vertigo.core.resource.ResourceResolverPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL par le standard java.net.URL.
@@ -41,9 +41,9 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 		//-----
 		try {
 			final URL url = new URL(resource);
-			return checkUrlAvailable(url) ? Option.some(url) : Option.<URL> none();
+			return checkUrlAvailable(url) ? Option.of(url) : Option.<URL> empty();
 		} catch (final MalformedURLException e) {
-			return Option.none();
+			return Option.empty();
 		}
 	}
 

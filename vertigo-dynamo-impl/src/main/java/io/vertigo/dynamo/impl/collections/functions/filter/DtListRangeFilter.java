@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
 
 /**
  * Filtre sur champ=valeur.
@@ -61,8 +61,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		Assertion.checkNotNull(maxValue);
 		//-----
 		this.fieldName = fieldName;
-		this.minValue = minValue.getOrElse(null); //On remet a null (car Option non serializable)
-		this.maxValue = maxValue.getOrElse(null); //On remet a null (car Option non serializable)
+		this.minValue = minValue.orElse(null); //On remet a null (car Option non serializable)
+		this.maxValue = maxValue.orElse(null); //On remet a null (car Option non serializable)
 		this.isMinInclude = isMinInclude;
 		this.isMaxInclude = isMaxInclude;
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.commons.impl.analytics;
 
-import io.vertigo.commons.analytics.AnalyticsTracker;
-import io.vertigo.lang.Assertion;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.lang.Assertion;
 
 /**
  * Collect tracker.
@@ -77,30 +77,34 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void incMeasure(final String measureType, final double value) {
+	public AnalyticsTracker incMeasure(final String measureType, final double value) {
 		final Double prevValue = measures.get(measureType);
 		measures.put(measureType, prevValue != null ? (prevValue + value) : value);
 		analyticsAgent.incMeasure(analyticsMeasurePrefix + measureType, value);
+		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setMeasure(final String measureType, final double value) {
+	public AnalyticsTracker setMeasure(final String measureType, final double value) {
 		measures.put(measureType, value);
 		analyticsAgent.setMeasure(analyticsMeasurePrefix + measureType, value);
+		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void addMetaData(final String metaDataName, final String value) {
+	public AnalyticsTracker addMetaData(final String metaDataName, final String value) {
 		metaData.put(metaDataName, value);
 		analyticsAgent.addMetaData(analyticsMeasurePrefix + metaDataName, value);
+		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void markAsSucceeded() {
+	public AnalyticsTracker markAsSucceeded() {
 		success = true;
+		return this;
 	}
 
 	/** {@inheritDoc} */

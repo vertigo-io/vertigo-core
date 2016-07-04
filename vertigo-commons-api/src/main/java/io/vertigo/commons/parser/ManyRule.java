@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +18,22 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.List;
 
+import io.vertigo.lang.Assertion;
+
 /**
- * Règle ET.
- * Toutes les règles ajoutées avant l'évaluation doivent être vérifiées.
- * On remonte une erreur dés qu'une seule des règles n'est pas suivie.
- * L'erreur précise le début du bloc ET et précise la cause. (C'est à dire l clause et qui n'est pas suivie).
+ * The manyRule.
+ * If the pattern AB is searched and 
+ * the text is 
+ *  - empty : an empty list is returned only if emptyAccepted.
+ *  - ABAB : a list with a size of 2 is returned 
+ *  - ABABC : a list with a size of 2 is returned only if repeat is false.
+ *  
+ *  if repeat is true then all the text must be consumed during the evaluation.	
+ *   
  * @author pchretien
- * @param<R> Type of the product text parsing
+ * @param <R> Type of the product text parsing
  */
 public final class ManyRule<R> implements Rule<List<R>> {
 	private final Rule<R> rule;
@@ -37,8 +42,10 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	private final boolean repeat;
 
 	/**
-	 * Constructeur.
-	 * @param emptyAccepted Si liste vide autorisée
+	 * Constructor.
+	 * @param rule the rule that's will be evaluated
+	 * @param emptyAccepted If an empty list is accepted
+	 * @param repeat if the evaluation must be repeated  
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
 		Assertion.checkNotNull(rule);
@@ -49,8 +56,9 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	}
 
 	/**
-	 * Constructeur.
-	 * @param emptyAccepted Si liste vide autorisée
+	 * Constructor.
+	 * @param rule the rule that's will be evaluated
+	 * @param emptyAccepted If an empty list is accepted
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted) {
 		this(rule, emptyAccepted, false);

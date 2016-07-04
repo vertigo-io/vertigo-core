@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,20 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
@@ -48,16 +62,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 /**
  * Implémentation d'un Store Jpa.
@@ -92,8 +96,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
-		dataSpace = nameOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
-		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
+		dataSpace = nameOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
+		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		this.analyticsManager = analyticsManager;
@@ -131,8 +135,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = getEntityManager().find(objectClass, uri.getId());
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
+					.markAsSucceeded();
 			return result;
 			//Objet null géré par le dataStore
 		}
@@ -150,7 +154,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -199,8 +203,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", dtc.size())
+					.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -265,7 +269,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -280,7 +284,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -319,8 +323,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size());
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", dtc.size())
+					.markAsSucceeded();
 			return dtc;
 		}
 	}
@@ -335,29 +339,33 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		put("Jpa:update", dto, false);
 	}
 
+	@Override
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+		put("Jpa:merge", dto, false);
+	}
+
 	private void put(final String prefixServiceName, final DtObject dto, final boolean persist) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
+			final EntityManager entityManager = getEntityManager();
 			if (persist) { //si pas de PK exception
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 				//sinon on ferait persist aussi si em.contains(dto)).
-				getEntityManager().persist(dto);
+				entityManager.persist(dto);
 			} else {
-				getEntityManager().merge(dto);
+				entityManager.merge(dto);
 			}
-			getEntityManager().flush();
-			getEntityManager().clear();
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			entityManager.flush();
+			entityManager.clear();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
+		} catch (final PersistenceException pse) {
+			//Gère les erreurs d'exécution JDBC.
+			handlePersistenceException(pse);
 		}
-	}
-
-	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
-		put("Jpa:merge", dto, false);
 	}
 
 	/** {@inheritDoc} */
@@ -373,8 +381,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			getEntityManager().remove(dto);
 			getEntityManager().flush();
 			getEntityManager().clear();
-			tracker.setMeasure("nbModifiedRow", 1);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbModifiedRow", 1)
+					.markAsSucceeded();
+		} catch (final PersistenceException pse) {
+			//Gère les erreurs d'exécution JDBC.
+			handlePersistenceException(pse);
 		}
 	}
 
@@ -386,10 +397,31 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final D result = (D) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
-			tracker.markAsSucceeded();
+			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
+					.markAsSucceeded();
 			return result;
 		}
+	}
+
+	/**
+	 * Gestion centralisée des exceptions SQL.
+	 * @param pse Exception SQL
+	 */
+	private void handlePersistenceException(final PersistenceException pse) {
+		Throwable t = pse.getCause();
+		// On ne traite que les violations de contraintes
+		if (!(t instanceof ConstraintViolationException)) {
+			throw pse;
+		}
+		final ConstraintViolationException cve = (ConstraintViolationException) t;
+		// On récupère l'erreur SQL associé
+		t = cve.getCause();
+		if (!(t instanceof SQLException)) {
+			throw pse;
+		}
+		final SQLException sqle = (SQLException) t;
+		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
+		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
 }

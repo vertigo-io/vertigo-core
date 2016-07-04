@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,6 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
-import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +25,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
+import io.vertigo.vega.webservice.exception.SessionException;
+import io.vertigo.vega.webservice.exception.VSecurityException;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
 
@@ -60,8 +59,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
-		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
-		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
+		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
+		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
 		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
 	}
@@ -101,7 +100,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Allow-Method", methodCORSFilter);
+		response.header("Access-Control-Allow-Methods", methodCORSFilter);
 		response.header("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
 		response.header("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamock.facet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
@@ -30,9 +33,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamox.search.DslListFilterBuilder;
 import io.vertigo.lang.MessageText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Configuration des facettes de l'objet de test Car.
@@ -88,9 +88,9 @@ public final class CarFacetInitializer {
 		//Facette par range de date
 		final DtField yearDtField = carDefinition.getField("YEAR");
 		facetDefinition = new FacetDefinitionByRangeBuilder(FCT_YEAR_CAR, yearDtField, new MessageText("Par date", null))
-				.addFacetValue("YEAR:[* TO 2000]", "avant 2000")
-				.addFacetValue("YEAR:[2000 TO 2005]", "2000-2005")
-				.addFacetValue("YEAR:[2005 TO *]", "après 2005")
+				.addFacetValue("R1", "YEAR:[* TO 2000]", "avant 2000")
+				.addFacetValue("R2", "YEAR:[2000 TO 2005]", "2000-2005")
+				.addFacetValue("R3", "YEAR:[2005 TO *]", "après 2005")
 				.build();
 
 		Home.getApp().getDefinitionSpace().put(facetDefinition);

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,6 @@
  */
 package io.vertigo;
 
-import io.vertigo.app.App;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Describable;
-
 import java.util.List;
 import java.util.Properties;
 
@@ -33,13 +25,22 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import io.vertigo.app.App;
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Describable;
+
 /**
  * Classe parente de tous les TNR associés à vertigo.
  *
  * @author jmforhan
  */
 public abstract class AbstractTestCaseJU4 {
-	private App app;
+	private AutoCloseableApp app;
 
 	/**
 	 * Set up de l'environnement de test.
@@ -48,7 +49,7 @@ public abstract class AbstractTestCaseJU4 {
 	 */
 	@Before
 	public final void setUp() throws Exception {
-		app = new App(buildAppConfig());
+		app = new AutoCloseableApp(buildAppConfig());
 		// On injecte les comosants sur la classe de test.
 		Injector.injectMembers(this, app.getComponentSpace());
 		doSetUp();

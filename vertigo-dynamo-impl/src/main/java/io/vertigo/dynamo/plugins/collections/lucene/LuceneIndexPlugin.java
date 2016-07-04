@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,12 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
@@ -36,12 +42,6 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.
@@ -75,7 +75,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		final boolean useCache = dtcUri != null; //no cache if no URI
 		LuceneIndex<D> index;
 		if (useCache) {
-			final String indexName = "INDEX_" + dtcUri.toURN();
+			final String indexName = "INDEX_" + dtcUri.urn();
 			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
 			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 1800, 3600));
@@ -105,7 +105,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc) {
-		Assertion.checkArgument(listState.getMaxRows().isDefined(), "Can't return all results, you must define maxRows");
+		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);

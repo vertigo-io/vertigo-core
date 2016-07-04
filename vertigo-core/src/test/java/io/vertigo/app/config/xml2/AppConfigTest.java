@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,10 @@
  */
 package io.vertigo.app.config.xml2;
 
-import io.vertigo.app.App;
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
@@ -28,9 +31,6 @@ import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public final class AppConfigTest {
 	@Test
@@ -58,7 +58,7 @@ public final class AppConfigTest {
 			.build();
 		//@formatter:on
 
-		try (App app = new App(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			Assert.assertEquals(app, app);
 			Assert.assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

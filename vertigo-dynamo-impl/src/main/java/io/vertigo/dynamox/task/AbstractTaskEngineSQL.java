@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,14 @@
  * limitations under the License.
  */
 package io.vertigo.dynamox.task;
+
+import java.sql.BatchUpdateException;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
@@ -44,14 +52,6 @@ import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
-
-import java.sql.BatchUpdateException;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -144,8 +144,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private static List<ScriptSeparator> createSqlSeparators() {
 		return new ListBuilder<ScriptSeparator>()
-				.add(new ScriptSeparator(InOutType.SQL_IN.separator))
-				.add(new ScriptSeparator(InOutType.SQL_OUT.separator))
+				.add(new ScriptSeparator(InOutType.SQL_IN.getSeparator()))
+				.add(new ScriptSeparator(InOutType.SQL_OUT.getSeparator()))
 				.unmodifiable().build();
 	}
 
@@ -184,7 +184,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().getOutAttributeOption().isDefined()) {
+		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
 			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
 			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
 				setResult(sqlRowcount);
@@ -223,14 +223,14 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 **/
 	protected final String preProcessQuery(final String sqlQuery) {
 		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
-		final Map<TaskAttribute, Object> parameterValuesMap = new HashMap<>(inAttributes.size());
+		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>(inAttributes.size());
 		for (final TaskAttribute taskAttribute : inAttributes) {
-			parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
+			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}
 		//-----
-		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, parameterValuesMap, SeparatorType.CLASSIC);
+		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, inTaskAttributes, SeparatorType.CLASSIC);
 		final TrimPreProcessor trimPreProcessor = new TrimPreProcessor(SeparatorType.BEGIN_SEPARATOR_CLASSIC, SeparatorType.END_SEPARATOR_CLASSIC);
-		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(parameterValuesMap);
+		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(inTaskAttributes);
 		//--
 		String sql = sqlQuery;
 		sql = scriptPreProcessor.evaluate(sql);
@@ -367,7 +367,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
 		if (param.isPrimitive()) {
-			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isDefined(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
+			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isPresent(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
 			setResult(value);
 		} else if (param.isObject()) {
 			//DtObject

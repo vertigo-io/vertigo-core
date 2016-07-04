@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.StringUtil;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -39,6 +29,16 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
+import io.vertigo.util.StringUtil;
 
 /**
  * Loader de fichier XMI version Enterprise Architect.

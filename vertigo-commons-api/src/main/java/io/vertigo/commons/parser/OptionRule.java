@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,11 +60,11 @@ public final class OptionRule<R> implements Rule<Option<R>> {
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				//-----
-				option = Option.none();
+				option = Option.empty();
 				try {
 					final Parser<R> parser = rule.createParser();
 					index = parser.parse(text, index);
-					option = Option.option(parser.get());
+					option = Option.ofNullable(parser.get());
 				} catch (final NotFoundException e) {
 					//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
 				}

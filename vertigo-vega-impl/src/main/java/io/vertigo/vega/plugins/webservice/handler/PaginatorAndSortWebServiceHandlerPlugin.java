@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -30,9 +32,6 @@ import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.UiListState;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 
@@ -82,12 +81,12 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String listServerToken = uiListState.getListServerToken();
-		Option<DtList<?>> fullListOption = Option.none();
+		Option<DtList<?>> fullListOption = Option.empty();
 		if (listServerToken != null) {
 			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
 		final DtList<?> fullList;
-		if (fullListOption.isDefined()) {
+		if (fullListOption.isPresent()) {
 			fullList = fullListOption.get();
 		} else {
 			final Object result = chain.handle(request, response, routeContext);

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,7 @@ public interface DataStore {
 	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<D extends DtObject> D get(final URI<D> uri);
+	<D extends DtObject> D read(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -57,7 +57,7 @@ public interface DataStore {
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> getList(final DtListURI uri);
+	<D extends DtObject> DtList<D> findAll(final DtListURI uri);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
@@ -65,7 +65,7 @@ public interface DataStore {
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D readForUpdate(URI<? extends DtObject> uri);
+	<D extends DtObject> D readForUpdate(URI<D> uri);
 
 	/**
 	* Create an object.

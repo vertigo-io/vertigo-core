@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.commons.impl.codec.html;
 
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * Encodeur/décodeur.
@@ -57,12 +57,11 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	 * Elles doivent commencer par LE caractère d'échappement et finir par le caractère de terminaison.
 	 * @param startEscape Caractère d'échappement
 	 * @param endEscape Caractère de terminaison
+	 * @param characters table des caracteres HTML
 	 */
-	protected AbstractCodec(final char startEscape, final char endEscape) {
+	protected AbstractCodec(final char startEscape, final char endEscape, final String[] characters) {
 		this.startEscape = startEscape;
 		this.endEscape = endEscape;
-		// tri de la table des caracteres HTML
-		final String[] characters = getCharacters();
 		Arrays.sort(characters);
 		toReplace = new char[characters.length];
 		replaceBy = new String[characters.length];
@@ -208,10 +207,4 @@ public abstract class AbstractCodec implements Codec<String, String> {
 		decodeString(sb, s);
 		return sb.toString();
 	}
-
-	/**
-	 * Permet de remplacer des caractères par des mots.
-	 * @return Tableau des éléments à remplacer
-	 */
-	protected abstract String[] getCharacters();
 }

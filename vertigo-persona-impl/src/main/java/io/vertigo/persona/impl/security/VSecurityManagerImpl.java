@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,15 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
@@ -30,15 +39,6 @@ import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ClassUtil;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -94,7 +94,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			@Override
 			public Locale getCurrentLocale() {
 				final Option<UserSession> userSession = getCurrentUserSession();
-				return userSession.isDefined() ? userSession.get().getLocale() : null;
+				return userSession.isPresent() ? userSession.get().getLocale() : null;
 			}
 		};
 	}
@@ -121,7 +121,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	@Override
 	public <U extends UserSession> Option<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
-		return Option.option(userSession);
+		return Option.ofNullable(userSession);
 	}
 
 	/** {@inheritDoc} */
@@ -154,7 +154,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		// réalisée pour valider le modèle
 		final Option<UserSession> userSessionOption = getCurrentUserSession();
 
-		if (userSessionOption.isEmpty()) {
+		if (!userSessionOption.isPresent()) {
 			//Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}

@@ -10,3 +10,4 @@ mvn-release.txt
 vertigo-bundle/src
 *.iml
 *.idea
+createSymLink.bat

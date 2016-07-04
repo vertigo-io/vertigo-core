@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@
  */
 package io.vertigo.vega.webservice.data.user;
 
-import io.vertigo.persona.security.UserSession;
-
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+
+import io.vertigo.persona.security.UserSession;
 
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;

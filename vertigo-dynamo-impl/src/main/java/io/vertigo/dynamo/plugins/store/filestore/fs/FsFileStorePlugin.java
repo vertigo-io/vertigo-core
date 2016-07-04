@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,17 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -38,17 +49,6 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -109,7 +109,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
-		this.name = name.getOrElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(DEFAULT_STORE_NAME);
 		readOnly = false;
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
@@ -135,7 +135,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -178,7 +178,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().get(dtoUri);
+			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().read(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
@@ -245,7 +245,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base

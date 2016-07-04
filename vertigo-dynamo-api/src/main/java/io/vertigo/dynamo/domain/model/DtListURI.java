@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import java.io.Serializable;
+import java.util.regex.Pattern;
+
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.lang.Assertion;
-
-import java.io.Serializable;
-import java.util.regex.Pattern;
 
 /**
  * URI d'une DTC.
@@ -39,6 +39,8 @@ public abstract class DtListURI implements Serializable {
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 	private static final long serialVersionUID = -1L;
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	private static final char D2A_SEPARATOR = '@';
+	private static final String CRITERIA_PREFIX = "CRITERIA";
 
 	/**
 	 * URN de la ressource (Nom complet)
@@ -63,14 +65,14 @@ public abstract class DtListURI implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public final int hashCode() {
-		return toURN().hashCode();
+		return urn().hashCode();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final boolean equals(final Object o) {
 		if (o instanceof DtListURI) {
-			return ((DtListURI) o).toURN().equals(toURN());
+			return ((DtListURI) o).urn().equals(urn());
 		}
 		return false;
 	}
@@ -82,13 +84,11 @@ public abstract class DtListURI implements Serializable {
 	 * et ne contient donc aucun caractère spécial.
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
-	 * @deprecated cette URN n'est pas déserializable, ne plus utiliser.
 	 */
-	@Deprecated
-	public final synchronized String toURN() {
+	public final synchronized String urn() {
 		//synchronized car appellée par des traitements métiers (notament le dataStore)
 		if (urn == null) {
-			urn = DtListURICodec.writeURN(this);
+			urn = writeURN(this);
 			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
 		}
 		return urn;
@@ -98,81 +98,70 @@ public abstract class DtListURI implements Serializable {
 	@Override
 	public final String toString() {
 		//on surcharge le toString car il est utilisé dans les logs d'erreur. et celui par défaut utilise le hashcode.
-		return "urn[" + getClass().getName() + "]::" + toURN();
+		return "urn[" + getClass().getName() + "]::" + urn();
 	}
 
 	/**
-	 * Codec de l'URI en URN.
+	 * @param uri Uri to encode
+	 * @return Urn
 	 */
-	static final class DtListURICodec {
-		private static final char D2A_SEPARATOR = '@';
-		private static final String CRITERIA_PREFIX = "CRITERIA";
-
-		private DtListURICodec() {
-			//private
+	private static String writeURN(final DtListURI uri) {
+		if (uri instanceof DtListURIForNNAssociation) {
+			return writeDtListURNForNNAssociation(DtListURIForNNAssociation.class.cast(uri));
+		} else if (uri instanceof DtListURIForSimpleAssociation) {
+			return writeDtListURNForSimpleAssociation(DtListURIForSimpleAssociation.class.cast(uri));
+		} else if (uri instanceof DtListURIForMasterData) {
+			return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
+		} else if (uri instanceof DtListURIForCriteria) {
+			return writeDtListURNForDtCriteria(DtListURIForCriteria.class.cast(uri));
 		}
+		throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
+	}
 
-		/**
-		 * @param uri Uri to encode
-		 * @return Urn
-		 */
-		static String writeURN(final DtListURI uri) {
-			if (uri instanceof DtListURIForNNAssociation) {
-				return writeDtListURNForNNAssociation(DtListURIForNNAssociation.class.cast(uri));
-			} else if (uri instanceof DtListURIForSimpleAssociation) {
-				return writeDtListURNForSimpleAssociation(DtListURIForSimpleAssociation.class.cast(uri));
-			} else if (uri instanceof DtListURIForMasterData) {
-				return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
-			} else if (uri instanceof DtListURIForCriteria) {
-				return writeDtListURNForDtCriteria(DtListURIForCriteria.class.cast(uri));
-			}
-			throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
-		}
+	/**
+	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
+	 *
+	 * @param uri URI à transcrire
+	 * @return URN
+	 */
+	private static String writeDtListURNForNNAssociation(final DtListURIForNNAssociation uri) {
+		return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().urn();
+	}
 
-		/**
-		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 *
-		 * @param uri URI à transcrire
-		 * @return URN
-		 */
-		private static String writeDtListURNForNNAssociation(final DtListURIForNNAssociation uri) {
-			return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().toURN();
-		}
+	/**
+	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
+	 *
+	 * @param uri URI à transcrire
+	 * @return URN
+	 */
+	private static String writeDtListURNForSimpleAssociation(final DtListURIForSimpleAssociation uri) {
+		return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().urn();
+	}
 
-		/**
-		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 *
-		 * @param uri URI à transcrire
-		 * @return URN
-		 */
-		private static String writeDtListURNForSimpleAssociation(final DtListURIForSimpleAssociation uri) {
-			return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().toURN();
+	/**
+	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
+	 *
+	 * @param uri URI à transcrire
+	 * @return URN
+	 */
+	private static String writeDtListURNForMasterData(final DtListURIForMasterData uri) {
+		if (uri.getCode() == null) {
+			return uri.getDtDefinition().getName();
 		}
+		return uri.getDtDefinition().getName() + D2A_SEPARATOR + uri.getCode();
+	}
 
-		/**
-		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 *
-		 * @param uri URI à transcrire
-		 * @return URN
-		 */
-		private static String writeDtListURNForMasterData(final DtListURIForMasterData uri) {
-			if (uri.getCode() == null) {
-				return uri.getDtDefinition().getName();
-			}
-			return uri.getDtDefinition().getName() + D2A_SEPARATOR + uri.getCode();
+	/**
+	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
+	 *
+	 * @param uri URI à transcrire
+	 * @return URN
+	 */
+	private static String writeDtListURNForDtCriteria(final DtListURIForCriteria<?> uri) {
+		final String sizeUrn = (uri.getMaxRows() != null) ? D2A_SEPARATOR + String.valueOf(uri.getMaxRows()) : D2A_SEPARATOR + "ALL";
+		if (uri.getCriteria() == null) {
+			return CRITERIA_PREFIX + sizeUrn;
 		}
-
-		/**
-		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 *
-		 * @param uri URI à transcrire
-		 * @return URN
-		 */
-		private static String writeDtListURNForDtCriteria(final DtListURIForCriteria<?> uri) {
-			if (uri.getCriteria() == null) {
-				return CRITERIA_PREFIX;
-			}
-			return CRITERIA_PREFIX + D2A_SEPARATOR + +uri.getCriteria().hashCode();
-		}
+		return CRITERIA_PREFIX + sizeUrn + D2A_SEPARATOR + +uri.getCriteria().hashCode();
 	}
 }

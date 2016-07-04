@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.Date;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-
-import java.util.Date;
 
 /**
  * Types.
@@ -73,7 +73,7 @@ public enum DataType {
 	 * @param javaClass Classe java encapsulée
 	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
 	 */
-	private DataType(final Class<?> javaClass, final boolean primitive) {
+	DataType(final Class<?> javaClass, final boolean primitive) {
 		Assertion.checkNotNull(javaClass);
 		//-----
 		//Le nom est égal au type sous forme de String
@@ -92,6 +92,13 @@ public enum DataType {
 		if (value != null && !javaClass.isInstance(value)) {
 			throw new ClassCastException("Valeur " + value + " ne correspond pas au type :" + this);
 		}
+	}
+
+	public boolean isNumber() {
+		return this == DataType.Double
+				|| this == DataType.BigDecimal
+				|| this == DataType.Long
+				|| this == DataType.Integer;
 	}
 
 	/**

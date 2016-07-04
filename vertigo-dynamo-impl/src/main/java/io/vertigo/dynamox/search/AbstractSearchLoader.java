@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamox.search;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -29,11 +34,6 @@ import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -66,9 +66,9 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				public Option<SearchChunk<K>> next() {
 					current = nextChunk(keyConceptClass, current);
 					if (current.getAllURIs().isEmpty()) {
-						return Option.none();
+						return Option.empty();
 					}
-					return Option.some(current);
+					return Option.of(current);
 				}
 
 				/** {@inheritDoc} */
@@ -134,7 +134,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case DtObject:
 			default:
 				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
-						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String PK.");
+						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
 		}
 		return pkValue;
 	}

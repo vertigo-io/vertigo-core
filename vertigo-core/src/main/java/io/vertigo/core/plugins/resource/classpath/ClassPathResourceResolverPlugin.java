@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.plugins.resource.classpath;
 
+import java.net.URL;
+
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.net.URL;
 
 /**
  * Résolution des URL liées au classPath.
@@ -40,9 +40,9 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 		try {
 			//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
 			final URL url = getClassLoader().getResource(resource);
-			return Option.option(url);
+			return Option.ofNullable(url);
 		} catch (final RuntimeException e) { //if Ressource name is invalid it should throw exception
-			return Option.none();
+			return Option.empty();
 		}
 	}
 

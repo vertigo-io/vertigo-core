@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.Locale;
+
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -29,10 +33,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * Comparateur des DtObject.
@@ -178,7 +178,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
-				dto = dataStore.get(uri);
+				dto = dataStore.read(uri);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
 				throw new WrappedException(e);

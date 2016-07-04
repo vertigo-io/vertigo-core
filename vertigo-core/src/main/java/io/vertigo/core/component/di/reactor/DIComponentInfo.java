@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,18 @@
  */
 package io.vertigo.core.component.di.reactor;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.ListBuilder;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Modèle d'un composant.

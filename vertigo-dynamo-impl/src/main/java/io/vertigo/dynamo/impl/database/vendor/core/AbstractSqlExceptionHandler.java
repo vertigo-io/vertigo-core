@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
+import java.sql.SQLException;
+
+import org.apache.log4j.Logger;
+
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
@@ -27,10 +31,6 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
-
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
 
 /**
  * Handler abstrait des exceptions SQL qui peuvent survenir dans un service.

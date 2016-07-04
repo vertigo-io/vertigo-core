@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,15 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.search.SearchHit;
+
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -31,15 +40,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.search.SearchHit;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
@@ -181,7 +181,7 @@ final class ESDocumentCodec {
 
 	private static boolean isIndexStoredDomain(final Domain domain) {
 		final Option<IndexType> indexType = IndexType.readIndexType(domain);
-		return indexType.isEmpty() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
+		return !indexType.isPresent() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {

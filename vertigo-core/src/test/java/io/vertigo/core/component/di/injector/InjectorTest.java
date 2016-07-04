@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,14 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
@@ -27,17 +35,8 @@ import io.vertigo.core.component.di.data.F;
 import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P2;
 import io.vertigo.core.component.di.data.P3;
-import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
@@ -151,9 +150,9 @@ public final class InjectorTest {
 		container.put("a", a);
 		container.put("p3", new P3());
 		E e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
-		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertFalse(e.getB().isPresent());
 		Assert.assertEquals(0, e.getPPlugins().size());
 		Assert.assertEquals(0, e.getP2Plugins().size());
 		//-----
@@ -163,9 +162,9 @@ public final class InjectorTest {
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
 		e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertTrue(e.getA().isPresent());
 		Assert.assertEquals(a, e.getA().get());
-		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertFalse(e.getB().isPresent());
 		Assert.assertEquals(2, e.getPPlugins().size());
 		Assert.assertEquals(3, e.getP2Plugins().size());
 	}
@@ -182,8 +181,8 @@ public final class InjectorTest {
 		Assert.assertEquals(f.getA(), a);
 		Assert.assertEquals(f.getParam1(), "test1");
 		Assert.assertEquals(f.getParam2(), "test2");
-		Assert.assertTrue(f.getParam3().isDefined());
+		Assert.assertTrue(f.getParam3().isPresent());
 		Assert.assertEquals(f.getParam3().get(), "test3");
-		Assert.assertTrue(f.getParam4().isEmpty());
+		Assert.assertFalse(f.getParam4().isPresent());
 	}
 }

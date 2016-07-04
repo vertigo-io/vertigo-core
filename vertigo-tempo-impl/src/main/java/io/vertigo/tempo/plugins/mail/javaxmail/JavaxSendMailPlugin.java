@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.tempo.plugins.mail.javaxmail;
-
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.tempo.impl.mail.Resources;
-import io.vertigo.tempo.impl.mail.SendMailPlugin;
-import io.vertigo.tempo.mail.Mail;
-import io.vertigo.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +43,21 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
+
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Describable;
+import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.tempo.impl.mail.Resources;
+import io.vertigo.tempo.impl.mail.SendMailPlugin;
+import io.vertigo.tempo.mail.Mail;
+import io.vertigo.util.StringUtil;
 
 /**
  * Plugin de gestion des mails, pour l'implémentation du jdk.
@@ -102,9 +102,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mailPort);
 		Assertion.checkNotNull(mailLogin);
 		Assertion.checkNotNull(mailPassword);
-		Assertion.checkArgument(mailLogin.isEmpty() || !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
+		Assertion.checkArgument(!mailLogin.isPresent() || !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
 				"When defined Login can't be empty");
-		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isDefined(), // login and password must be null or not null both
+		Assertion.checkArgument(!mailLogin.isPresent() ^ mailPassword.isPresent(), // login and password must be null or not null both
 				"Password is required when login is defined");
 		//-----
 		this.fileManager = fileManager;
@@ -128,7 +128,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			Transport.send(message);
 			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
-			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isDefined() ? mailPort.get() : "default");
+			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isPresent() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
 			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
@@ -168,12 +168,12 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		final Properties properties = new Properties();
 		properties.put("mail.store.protocol", mailStoreProtocol);
 		properties.put("mail.host", mailHost);
-		if (mailPort.isDefined()) {
+		if (mailPort.isPresent()) {
 			properties.put("mail.port", mailPort.get());
 		}
 		properties.put("mail.debug", "false");
 		final Session session;
-		if (mailLogin.isDefined()) {
+		if (mailLogin.isPresent()) {
 			properties.put("mail.smtp.ssl.trust", mailHost);
 			properties.put("mail.smtp.starttls.enable", true);
 			properties.put("mail.smtp.auth", "true");

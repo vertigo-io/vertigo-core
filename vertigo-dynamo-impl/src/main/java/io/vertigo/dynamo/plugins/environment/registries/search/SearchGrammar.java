@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,16 +19,20 @@
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-final class SearchGrammar {
+final class SearchGrammar implements EntityGrammar {
 
 	/** Index definition. */
 	public static final Entity INDEX_DEFINITION_ENTITY;
@@ -59,9 +63,6 @@ final class SearchGrammar {
 	public static final String INDEX_COPY_TO_PROPERTY = "indexCopyTo";
 	/** indexCopy from. */
 	public static final String INDEX_COPY_FROM_PROPERTY = "FROM";
-
-	/** Search Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -123,11 +124,15 @@ final class SearchGrammar {
 				.addField(LIST_FILTER_BUILDER_QUERY, String, true)
 				.addFields("facets", FACET_DEFINITION_ENTITY.getLink(), true)
 				.build();
-
-		GRAMMAR = new EntityGrammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
 	}
 
-	private SearchGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return new ListBuilder<Entity>()
+				.add(INDEX_DEFINITION_ENTITY)
+				.add(FACET_DEFINITION_ENTITY)
+				.add(FACETED_QUERY_DEFINITION_ENTITY)
+				.unmodifiable()
+				.build();
 	}
 }

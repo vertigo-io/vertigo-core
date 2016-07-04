@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.model.DtList;
-
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map.Entry;
@@ -33,11 +28,35 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtList;
+
 /**
  * JsonSerializer of FacetedQueryResult.
+ * {
+ *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   facets = [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
+ *   totalCount : 10045
+ * }
+ * Or if cluster :
+ * {
+ * 	 groups : [
+ * 			{ code:term1, label:term1,
+ *   			list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   		},
+ *   		{ code:term2, label:term2,
+ *   			list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   		},
+ *   ],
+ *   facets = [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
+ *   totalCount : 10045
+ * }
+ *
  * @author npiedeloup
  */
-final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQueryResult<?, ?>> {
+final class FacetedQueryResultJsonSerializerV3 implements JsonSerializer<FacetedQueryResult<?, ?>> {
 
 	/** {@inheritDoc} */
 	@Override
@@ -54,7 +73,9 @@ final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQu
 			for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
 				final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
 				final JsonObject jsonClusterElement = new JsonObject();
-				jsonClusterElement.add(cluster.getKey().getLabel().getDisplay(), jsonList);
+				jsonClusterElement.addProperty("code", cluster.getKey().getCode());
+				jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
+				jsonClusterElement.add("list", jsonList);
 				jsonCluster.add(jsonClusterElement);
 			}
 			jsonObject.add("groups", jsonCluster);
@@ -67,7 +88,9 @@ final class FacetedQueryResultJsonSerializer implements JsonSerializer<FacetedQu
 			final JsonArray jsonFacetValues = new JsonArray();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 				final JsonObject jsonFacetValuesElement = new JsonObject();
-				jsonFacetValuesElement.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
+				jsonFacetValuesElement.addProperty("code", entry.getKey().getCode());
+				jsonFacetValuesElement.addProperty("count", entry.getValue());
+				jsonFacetValuesElement.addProperty("label", entry.getKey().getLabel().getDisplay());
 				jsonFacetValues.add(jsonFacetValuesElement);
 			}
 			final String facetName = facet.getDefinition().getName();

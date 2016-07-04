@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -29,8 +31,6 @@ import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
  * Parsing rule for ListFilterBuidler's expression.
@@ -51,8 +51,8 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
 		final Rule<List<?>> multiFieldsRule = new SequenceRule(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				new DslMultiFieldRule(),//1
-				DslSyntaxRules.PRE_MODIFIER_VALUE); //2
+				new DslMultiFieldRule(), //1
+				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 
 		final Rule<Choice> fieldsRule = new FirstOfRule(//"single or multiple")
 				new DslFieldRule(), //0
@@ -67,31 +67,32 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 		return new SequenceRule(
 				new OptionRule<>(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.SPACES, //1
-				fieldsRule,//2
+				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,
-				queriesRule, //4
-				DslSyntaxRules.SPACES); //5
+				queriesRule //4
+		);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected DslExpression handle(final List<?> parsing) {
-		String preExpression = ((Option<String>) parsing.get(0)).getOrElse("") + (String) parsing.get(1);
-		String postExpression = (String) parsing.get(5);
+		String preExpression = ((Option<String>) parsing.get(0)).orElse("") + (String) parsing.get(1);
+		final String postExpression;
 		final Option<DslField> field;
 		final Option<DslMultiField> multiField;
 		final Choice fields = (Choice) parsing.get(2);
 		switch (fields.getValue()) {
 			case 0:
-				field = Option.some((DslField) fields.getResult());
-				multiField = Option.none();
+				field = Option.of((DslField) fields.getResult());
+				multiField = Option.empty();
+				postExpression = "";
 				break;
 			case 1:
 				final List<?> multiFieldParsing = (List<?>) fields.getResult();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
-				multiField = Option.some((DslMultiField) multiFieldParsing.get(1));
-				postExpression = DslUtil.concat((String) multiFieldParsing.get(2), postExpression);
-				field = Option.none();
+				multiField = Option.of((DslMultiField) multiFieldParsing.get(1));
+				postExpression = (String) multiFieldParsing.get(2);
+				field = Option.empty();
 				break;
 			default:
 				throw new IllegalArgumentException("case " + fields.getValue() + " not implemented");

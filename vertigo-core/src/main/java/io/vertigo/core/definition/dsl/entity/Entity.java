@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Une entité permet de décrire un modèle, une classe.
@@ -47,17 +47,20 @@ public final class Entity implements EntityType {
 	 */
 	private final Map<String, EntityField> fields;
 
+	private final boolean root;
+
 	/**
 	 * Constructeur de la MetaDefinition
 	 * Une instance de MetaDefinition correspond à une classe -ou une interface- de Definition
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<EntityField> fields) {
+	Entity(final String name, final Set<EntityField> fields, final boolean root) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(fields);
 		//-----
 		this.name = name;
+		this.root = root;
 		this.fields = new HashMap<>();
 		for (final EntityField field : fields) {
 			Assertion.checkArgument(!this.fields.containsKey(field.getName()), "field {0} is already registered for {1}", field, this);
@@ -140,5 +143,9 @@ public final class Entity implements EntityType {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public boolean isRoot() {
+		return root;
 	}
 }

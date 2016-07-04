@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,13 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
@@ -37,15 +44,7 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author pchretien
@@ -56,23 +55,20 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * Constructor.
 	 */
 	public SearchDynamicRegistryPlugin() {
-		super(SearchGrammar.GRAMMAR);
+		super(new SearchGrammar());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		final Definition definition;
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createIndexDefinition(definitionSpace, xdefinition);
+			return createIndexDefinition(definitionSpace, xdefinition);
 		} else if (SearchGrammar.FACET_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createFacetDefinition(definitionSpace, xdefinition);
+			return createFacetDefinition(definitionSpace, xdefinition);
 		} else if (SearchGrammar.FACETED_QUERY_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			definition = createFacetedQueryDefinition(xdefinition);
-		} else {
-			throw new IllegalStateException("unknown definition :" + xdefinition);
+			return createFacetedQueryDefinition(xdefinition);
 		}
-		return Option.some(definition);
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xsearchObjet) {
@@ -147,7 +143,8 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final ListFilter listFilter = new ListFilter(listFilterString);
 		final String labelString = getPropertyValueAsString(rangeDefinition, KspProperty.LABEL);
 		final MessageText label = new MessageText(labelString, null, (Serializable[]) null);
-		return new FacetValue(listFilter, label);
+		final String code = rangeDefinition.getName();
+		return new FacetValue(code, listFilter, label);
 	}
 
 	private static FacetedQueryDefinition createFacetedQueryDefinition(final DynamicDefinition xdefinition) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,18 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
-
-import java.util.List;
 
 /**
- * Handler qui permet de créer des définitions statiques à partir d'une définition dynamique.
+ * This handler creates 
+ * - creates a definition from a DynamicDefinition
+ * - adds dynamicDefinition from a new DynamicDefinition
+ * 
+ * example : Each time a DtDefinition, two others definitions (domains)  are created (a domain for one object, a domain for a list).
  * @author pchretien
  */
 public interface DynamicRegistry {
@@ -42,16 +45,16 @@ public interface DynamicRegistry {
 	List<DynamicDefinition> getRootDynamicDefinitions();
 
 	/**
-	 * Create (or not) a definition from a dynamic definition.
+	 * Create a definition from a dynamic definition in a context defined by definitionSpace (preexisting definitions).
 	 * @param definitionSpace Space where all the definitions are stored.
 	 * @param definition Definition
 	 * @return An optional definition
 	 */
-	Option<Definition> createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+	Definition createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
 
 	/**
 	 * Ajout d'une définition.
-	 * Utilisé pour créer des définitions à partir d'autres Definitions.
+	 * Utilisé pour créer des définitions Ã  partir d'autres Definitions.
 	 * Exemple : création des domaines à partir d'un DT.
 	 * 
 	 * @param definition DynamicDefinition

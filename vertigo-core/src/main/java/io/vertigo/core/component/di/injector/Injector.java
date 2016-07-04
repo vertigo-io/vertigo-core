@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,6 @@
  */
 package io.vertigo.core.component.di.injector;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.core.component.di.DIException;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,6 +26,14 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.core.component.di.DIException;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Injector.
@@ -113,10 +113,10 @@ public final class Injector {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(dependency.getName(), dependency.getType()));
+				return Option.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
-			return Option.none();
+			return Option.empty();
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();

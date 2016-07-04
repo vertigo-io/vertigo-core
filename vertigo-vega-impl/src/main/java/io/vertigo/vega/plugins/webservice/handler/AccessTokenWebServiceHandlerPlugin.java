@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,10 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.io.Serializable;
+
+import javax.inject.Inject;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
@@ -26,11 +30,6 @@ import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.io.Serializable;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 
@@ -72,7 +71,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
 			final Option<Serializable> tokenData = tokenManager.get(accessTokenKey);
-			if (tokenData.isEmpty()) {
+			if (!tokenData.isPresent()) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
 		} else {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,10 @@
  * limitations under the License.
  */
 package io.vertigo.commons;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.commons.analytics.AnalyticsManagerTest;
 import io.vertigo.commons.cache.CacheManagerTest;
@@ -36,10 +40,6 @@ import io.vertigo.commons.eventbus.EventBusManagerTest;
 import io.vertigo.commons.parser.CalculatorTest;
 import io.vertigo.commons.parser.ParserTest;
 import io.vertigo.commons.script.ScriptManagerTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test de l'implémentation standard.

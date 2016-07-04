@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Option;
-
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.lang.Option;
 
 public final class ParserTest {
 	private static final Rule HELLO = new TermRule("hello");
@@ -197,11 +197,11 @@ public final class ParserTest {
 		//-
 		parser.parse("hello world bla bla", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertTrue(from.isEmpty());
+		Assert.assertFalse(from.isPresent());
 		//-
 		parser.parse("hello world from mars", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertTrue(from.isDefined());
+		Assert.assertTrue(from.isPresent());
 		Assert.assertEquals("mars", from.get().get(3));
 	}
 
@@ -214,7 +214,7 @@ public final class ParserTest {
 		//-
 		parser.parse("hello world from ", 0);
 		from = (Option<List<?>>) parser.get().get(3);
-		Assert.assertFalse(from.isDefined()); //pas d'exception NotFound
+		Assert.assertFalse(from.isPresent()); //pas d'exception NotFound
 	}
 
 	@Test

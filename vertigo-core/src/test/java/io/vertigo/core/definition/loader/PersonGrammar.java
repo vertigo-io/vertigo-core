@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,18 @@ import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Double;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.util.ListBuilder;
 
 /**
  * @author npiedeloup
  */
-public final class PersonGrammar {
+public final class PersonGrammar implements EntityGrammar {
 
 	static final String NAME = "name";
 	static final String FIRST_NAME = "firstName";
@@ -44,9 +48,6 @@ public final class PersonGrammar {
 	static final String POSTAL_CODE = "postalCode";
 	static final String CITY = "city";
 	static final Entity ADDRESS_ENTITY;
-
-	/** Personn Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		ADDRESS_ENTITY = new EntityBuilder("address")
@@ -63,14 +64,14 @@ public final class PersonGrammar {
 				.addField(MAIN_ADDRESS, ADDRESS_ENTITY.getLink(), true)
 				.addField("secondaryAddress", ADDRESS_ENTITY.getLink(), false)
 				.build();
-
-		GRAMMAR = new EntityGrammar(
-				ADDRESS_ENTITY,
-				PERSON_ENTITY
-				);
 	}
 
-	private PersonGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return new ListBuilder<Entity>()
+				.add(ADDRESS_ENTITY)
+				.add(PERSON_ENTITY)
+				.unmodifiable()
+				.build();
 	}
 }

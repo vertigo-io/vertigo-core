@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,10 @@
  */
 package io.vertigo.dynamo.environment.splittedmodules;
 
-import io.vertigo.app.App;
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
@@ -29,9 +32,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamock.domain.DtDefinitions;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
@@ -51,7 +51,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
 				.build();
 
-		try (final App app = new App(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 		}
@@ -68,7 +68,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 			.build();
 		// @formatter:on
 
-		try (final App app = new App(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
@@ -87,7 +87,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 			.build();
 		// @formatter:on
 
-		try (final App app = new App(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
 			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);

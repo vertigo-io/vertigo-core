@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.c3p0;
 
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ClassUtil;
-
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
@@ -36,6 +27,15 @@ import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.PooledDataSource;
+
+import io.vertigo.dynamo.database.SqlDataBaseManager;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * If there is no datasource, you have to use a simple connection provider.
@@ -58,7 +58,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			@Named("dataBaseClass") final String dataBaseClass,
 			@Named("jdbcDriver") final String jdbcDriver,
 			@Named("jdbcUrl") final String jdbcUrl) {
-		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
+		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
 		//-----

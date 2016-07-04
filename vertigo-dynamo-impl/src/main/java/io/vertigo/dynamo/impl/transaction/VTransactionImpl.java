@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionResource;
@@ -27,17 +32,12 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Implémentation standard d'une transaction Dynamo.
  *
  * @author  pchretien
  */
-public final class VTransactionImpl implements VTransactionWritable {
+final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * The current transaction is bound to the current thread.
 	 */
@@ -400,6 +400,10 @@ public final class VTransactionImpl implements VTransactionWritable {
 		public void close() throws Exception {
 			innerResource.release();
 		}
+	}
+
+	static boolean hasLocalCurrentTransaction() {
+		return getLocalCurrentTransaction() != null;
 	}
 
 	/**

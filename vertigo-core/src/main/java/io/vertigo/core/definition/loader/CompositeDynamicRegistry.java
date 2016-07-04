@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
@@ -26,11 +29,7 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author pchretien
@@ -42,12 +41,12 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/**
 	 * Constructor.
-	 * @param handlerList Grammar handlers
+	 * @param dynamicRegistryPlugins Grammar handlers
 	 */
-	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> handlerList) {
-		Assertion.checkNotNull(handlerList);
+	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
+		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//-----
-		dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
+		dynamicRegistries = new ArrayList<DynamicRegistry>(dynamicRegistryPlugins);
 		//Création de la grammaire.
 		grammar = createGrammar();
 
@@ -62,7 +61,13 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new EntityGrammar(entities);
+		return new EntityGrammar() {
+
+			@Override
+			public List<Entity> getEntities() {
+				return entities;
+			}
+		};
 	}
 
 	/** {@inheritDoc} */
@@ -80,28 +85,23 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	/** {@inheritDoc} */
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return;
+		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
+		if (!xdefinition.getEntity().isRoot()) {
+			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
+			dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 		}
-		final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-		dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return Option.none();
-		}
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
 			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new WrappedException("Erreur dans le traitement de " + xdefinition.getName(), e);
+			throw new WrappedException("An error occurred during the creation of the following definition : " + xdefinition.getName(), e);
 		}
 	}
 

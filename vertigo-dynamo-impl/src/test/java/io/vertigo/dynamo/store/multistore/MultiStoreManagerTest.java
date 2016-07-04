@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.store.multistore;
 
+import java.io.OutputStream;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
@@ -26,12 +32,6 @@ import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamock.fileinfo.FileInfoTemp;
 import io.vertigo.lang.Option;
-
-import java.io.OutputStream;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
@@ -48,13 +48,13 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	protected void initOtherStore() {
 		//A chaque test on recrée la table famille dans l'autre base
-		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Option.<String> some("otherStore"));
+		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Option.<String> of("otherStore"));
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		super.doTearDown();
-		shutDown("TK_SHUT_DOWN_OTHER", Option.<String> some("otherStore"));
+		shutDown("TK_SHUT_DOWN_OTHER", Option.<String> of("otherStore"));
 	}
 
 	@Override

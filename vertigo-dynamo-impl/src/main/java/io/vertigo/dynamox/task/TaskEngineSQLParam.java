@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,10 +46,14 @@ final class TaskEngineSQLParam {
 		 */
 		SQL_OUT('%');
 
-		final char separator;
+		private final char separator;
 
 		InOutType(final char separator) {
 			this.separator = separator;
+		}
+
+		char getSeparator() {
+			return separator;
 		}
 
 		/**
@@ -61,9 +65,11 @@ final class TaskEngineSQLParam {
 		static boolean isIn(final char separator) {
 			switch (separator) {
 				case '#':
-					return true;//IN;
+					//IN
+					return true;
 				case '%':
-					return false; //OUT;
+					//OUT
+					return false;
 				default:
 					throw new IllegalArgumentException(separator + " non reconnu");
 			}
@@ -114,7 +120,7 @@ final class TaskEngineSQLParam {
 		rowNumber = dtcRowNumber;
 	}
 
-	private static Integer parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
+	private static int parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
 		final Integer dtcRowNumber;
 		try {
 			dtcRowNumber = Integer.valueOf(betweenPoints);
@@ -124,7 +130,7 @@ final class TaskEngineSQLParam {
 		if (dtcRowNumber == null || dtcRowNumber.intValue() < 0) {
 			throw new VSystemException("Paramètre {0} incohérent : {1} doit être positif ou null.", betweenCar, betweenPoints);
 		}
-		return dtcRowNumber;
+		return dtcRowNumber.intValue();
 	}
 
 	void setIndex(final int index) {

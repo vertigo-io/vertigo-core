@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamox.search;
 
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
-import io.vertigo.util.DateUtil;
-
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
+import io.vertigo.util.DateUtil;
 
 /**
  * @author  npiedeloup
@@ -113,12 +113,12 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:#query#?(escapeReserved)", "Test And test2", "ALL:(Test \\And test2)" }, //9
 				{ "ALL:#query#?(escapeReserved)", "Test OR test2", "ALL:(Test \\OR test2)" }, //10
 				{ "ALL:#query#?(escapeReserved)", "Test AND test2", "ALL:(Test \\AND test2)" }, //11
-				{ "ALL:#query#?(removeReserved)", "Test or test2", "ALL:(Test  test2)" }, //12
-				{ "ALL:#query#?(removeReserved)", "Test and test2", "ALL:(Test  test2)" }, //13
-				{ "ALL:#query#?(removeReserved)", "Test OR test2", "ALL:(Test  test2)" }, //14
-				{ "ALL:#query#?(removeReserved)", "Test AND test2", "ALL:(Test  test2)" }, //15
-				{ "ALL:#query#?(removeReserved)", "Test Or test2", "ALL:(Test  test2)" }, //16
-				{ "ALL:#query#?(removeReserved)", "Test And test2", "ALL:(Test  test2)" }, //17
+				{ "ALL:#query#?(removeReserved)", "Test or test2", "ALL:(Test test2)" }, //12
+				{ "ALL:#query#?(removeReserved)", "Test and test2", "ALL:(Test test2)" }, //13
+				{ "ALL:#query#?(removeReserved)", "Test OR test2", "ALL:(Test test2)" }, //14
+				{ "ALL:#query#?(removeReserved)", "Test AND test2", "ALL:(Test test2)" }, //15
+				{ "ALL:#query#?(removeReserved)", "Test Or test2", "ALL:(Test test2)" }, //16
+				{ "ALL:#query#?(removeReserved)", "Test And test2", "ALL:(Test test2)" }, //17
 
 				{ "ALL:#query#", "test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2", "ALL:(test +1 -2 =3 &&4 ||5 >6 <7 !8 (9 )a {b }c test2)" }, //18
 				{ "ALL:#query#", "test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2", "ALL:(test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2)" }, //19
@@ -134,6 +134,10 @@ public final class DslListFilterBuilderTest {
 
 				{ "ALL:#query#?(escapeReserved)", "Test meteor test2", "ALL:(Test meteor test2)" }, //26
 				{ "ALL:#query#?(escapeReserved)", "Test nand test2", "ALL:(Test nand test2)" }, //27
+
+				{ "ALL:#query*#?(escapeReserved)^2", "Test meteor test2", "ALL:(Test* meteor* test2*)^2" }, //28
+				{ "ALL:#query*#?(escapeReserved)^2", "and", "ALL:(\\and*^2)" }, //29
+				{ "ALL:#query*#?(escapeReserved)^2", "or", "ALL:(\\or*^2)" }, //30
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -344,6 +348,7 @@ public final class DslListFilterBuilderTest {
 		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
 		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null);
 		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
+		final TestBean testBeanMultipleTrackIt = new TestBean(null, "item", null, null, null, null);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)", "+ALL:(Test test2)" }, //0
@@ -353,11 +358,17 @@ public final class DslListFilterBuilderTest {
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultiple, "+PRO_ID:(+12 +13) +ALL:(Test test2)" }, //4
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
-				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, " +ALL:(Test test2)" }, //7
+				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, "+ALL:(Test test2)" }, //7
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt,
+						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //11
+				{ "+COM_ID:#str1# +INC_AGENTS_ACTIFS:#str1# +QUA_ID:#str1# +COR_ID:#str1# +COG_ID:#str1# +STR_ID:#str1# +MCL_ID_1:#str1# +MCL_ID_2:#str1# +MCL_ID_3:#str1# +MCL_ID_4:#str1# +MCL_ID_5:#str1# +(LISTE_MCL_ID:#str2#) +MOT_CLE_SUP:#str2# +(DATE_SEANCE:[#date1#!(*) to #date1#!(*)] INC_SEANCES_NULL:#booTrue#)",
+						testBeanNull, "+MOT_CLE_SUP:(Test test2) +(LISTE_MCL_ID:(Test test2)) +(INC_SEANCES_NULL:true)"
+				}
 		};
+		//testObjectFixedQuery(testQueries[12]);
 		testObjectFixedQuery(testQueries);
 	}
 
@@ -371,16 +382,17 @@ public final class DslListFilterBuilderTest {
 				{ "+([FIELD_1,FIELD_2]:#query*#)", "Test test2", "+(FIELD_1:(Test* test2*) FIELD_2:(Test* test2*))" }, //3
 				{ "[FIELD_1,FIELD_2]:#+query*#", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //4
 				{ "[FIELD_1,FIELD_2]:#+query*#^2", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2" }, //5
-				//error { "[+FIELD_1,FIELD2]:#query*#", "Test test2", "+((FIELD_1:(Test*) FIELD_2:(Test*)) (FIELD_1:(test2*) FIELD_2:(test2*)))" }, //4
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2) +(FIELD_1:(test2*) FIELD_2:(test2*)^2))" }, //6
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "Test ALL:test2", "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2)) ALL:test2" }, //7
 				{ "[FIELD_1,FIELD_2^2]:#+query*#", "ALL:test2 Test", "ALL:test2 +(FIELD_1:(Test*) FIELD_2:(Test*)^2)" }, //8
 				{ "+[FIELD_1,FIELD_2]:(#query#^4 #+query*#^2 #query~2#)", "Test test2",
-						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //9
+						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +((+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2) +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)" }, //9
 				{ "+[FIELD_1 \n\r\t  , \n\r\t  FIELD_2]:(#query#^4 #query*#^2 #query~2#)", "Test test2",
-						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2  +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //10
+						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)" }, //10
 				{ "+[FIELD_1,FIELD_2]:(#query#^4 #query*#^2 #query~2#)", "Test test2",
-						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2  +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2)  +FIELD_2:(Test~2 test2~2)" }, //11
+						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)" }, //11
+				{ "+[FIELD_1,FIELD_2]:#+query*#", "Test test2", "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //12
+				{ "+[FIELD_1,FIELD_2*]:#+query#", "Test test2", "+(+(FIELD_1:Test FIELD_2:Test*) +(FIELD_1:test2 FIELD_2:test2*))" }, //13
 
 		};
 		testStringFixedQuery(testQueries);
@@ -462,6 +474,14 @@ public final class DslListFilterBuilderTest {
 
 		public Integer getInt2() {
 			return int2;
+		}
+
+		public Boolean getBooNull() {
+			return null;
+		}
+
+		public boolean getBooTrue() {
+			return true;
 		}
 
 		public Object getNull() {

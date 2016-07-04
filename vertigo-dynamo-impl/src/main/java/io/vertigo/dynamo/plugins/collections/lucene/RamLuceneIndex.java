@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
-
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VUserException;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -61,6 +46,21 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
 
 /**
  * Implémentation Ram de l'index Lucene.
@@ -208,7 +208,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final URI<DtObject> uri = new URI<>(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getStoreManager().getDataStore().get(uri);
+				final DtObject fkDto = getStoreManager().getDataStore().read(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
 			} else {
@@ -224,7 +224,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
-		Assertion.checkNotNull(dtListState.getMaxRows().isDefined(), "MaxRows is mandatory, can't get all data :(");
+		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
 		final Sort sortQuery = createSortQuery(dtListState);
@@ -240,7 +240,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	}
 
 	private static Sort createSortQuery(final DtListState dtListState) {
-		if (dtListState.getSortFieldName().isDefined()) {
+		if (dtListState.getSortFieldName().isPresent()) {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary

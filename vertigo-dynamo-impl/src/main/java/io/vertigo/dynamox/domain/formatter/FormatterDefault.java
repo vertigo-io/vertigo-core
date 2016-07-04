@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
@@ -54,6 +55,10 @@ public final class FormatterDefault implements Formatter {
 		numberformatter = obtainFormatterNumber();
 		dateFormater = obtainFormatterDate();
 		stringFormatter = obtainFormatterString();
+	}
+
+	private static DefinitionSpace getDefinitionSpace() {
+		return Home.getApp().getDefinitionSpace();
 	}
 
 	/**
@@ -95,29 +100,29 @@ public final class FormatterDefault implements Formatter {
 	}
 
 	private static Formatter obtainFormatterBoolean() {
-		if (Home.getApp().getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
-			return Home.getApp().getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, FormatterDefinition.class);
+		if (getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterBoolean("Oui; Non");
 	}
 
 	private static Formatter obtainFormatterNumber() {
-		if (Home.getApp().getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
-			return Home.getApp().getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, FormatterDefinition.class);
+		if (getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterNumber("#,###.##");
 	}
 
 	private static Formatter obtainFormatterDate() {
-		if (Home.getApp().getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
-			return Home.getApp().getDefinitionSpace().resolve(FMT_DATE_DEFAULT, FormatterDefinition.class);
+		if (getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_DATE_DEFAULT, FormatterDefinition.class);
 		}
 		return new FormatterDate("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
 	}
 
 	private static Formatter obtainFormatterString() {
-		if (Home.getApp().getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
-			return Home.getApp().getDefinitionSpace().resolve(FMT_STRING_DEFAULT, FormatterDefinition.class);
+		if (getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_STRING_DEFAULT, FormatterDefinition.class);
 		}
 		//Fonctionnement de base (pas de formatage)
 		return new FormatterString(null);

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
- * The DtObjectUtil class is a set of utils about the DtObject. 
+ * The DtObjectUtil class is a set of utils about the DtObject.
  *
  * @author pchretien
  */
@@ -154,11 +154,16 @@ public final class DtObjectUtil {
 		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
-	private static URI createURI(final DtObject dto) {
+	/**
+	 * Creates an URI from an existing object.
+	 * @param dto Object
+	 * @return this object URI
+	 */
+	public static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
-		return new URI(dtDefinition, DtObjectUtil.getId(dto));
+		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**
@@ -188,7 +193,7 @@ public final class DtObjectUtil {
 	/**
 	 * Finds the definition to which the specified 'DtObject' is mapped.
 	 * @param dto DtObject
-	 * @return the id 
+	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final DtObject dto) {
 		Assertion.checkNotNull(dto);
@@ -202,7 +207,7 @@ public final class DtObjectUtil {
 	/**
 	 * Finds the definition from a type of 'DtObject'
 	 * @param dtObjectClass  the type of the 'DtObject'
-	 * @return the id 
+	 * @return the id
 	 */
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);

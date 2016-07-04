@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,20 @@
  * limitations under the License.
  */
 package io.vertigo.vega.impl.webservice.catalog;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -39,20 +53,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Swagger WebService to list services published.
@@ -213,17 +213,17 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	}
 
 	/**
-	 * ErrorMessage for json converssion.
+	 * ErrorMessage for json conversion.
 	 * @author npiedeloup
 	 */
 	static final class ErrorMessage {
-		private final List<String> globalErrorMessages = Collections.emptyList();
+		private final List<String> globalErrors = Collections.emptyList();
 
 		/**
 		 * @return Error message
 		 */
-		public List<String> getGlobalErrorMessages() {
-			return globalErrorMessages;
+		public List<String> getGlobalErrors() {
+			return globalErrors;
 		}
 	}
 
@@ -380,7 +380,8 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
-			final String bodyName = StringUtil.constToUpperCamelCase(webServiceDefinition.getName().replaceAll("__", "_").replaceAll("__", "_")) + "Body";
+			final String[] splittedDefinitionName = webServiceDefinition.getName().split("\\$");
+			final String bodyName = StringUtil.constToUpperCamelCase(splittedDefinitionName[0].replaceAll("_+", "_")) + "$" + splittedDefinitionName[1] + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();

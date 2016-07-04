@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ListBuilder;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +32,16 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation d'un store BerkeleyDB.
@@ -60,7 +60,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private final CodecManager codecManager;
 	private final DaemonManager daemonManager;
 	private final VTransactionManager transactionManager;
-	final String dbFilePathTranslated;
+	private final String dbFilePathTranslated;
 
 	private Environment fsEnvironment;
 	private Environment ramEnvironment;

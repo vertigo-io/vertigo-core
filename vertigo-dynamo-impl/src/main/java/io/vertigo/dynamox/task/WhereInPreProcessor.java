@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
-
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#).
@@ -49,16 +49,16 @@ final class WhereInPreProcessor {
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
 	private static final char IN_CHAR = '#';
 
-	private final Map<TaskAttribute, Object> parameterValuesMap;
+	private final Map<TaskAttribute, Object> inTaskAttributes;
 
 	/**
 	 * Contructeur.
-	 * @param parameterValuesMap Valeur des paramètres
+	 * @param inTaskAttributes Valeur des paramètres
 	 */
-	WhereInPreProcessor(final Map<TaskAttribute, Object> parameterValuesMap) {
-		Assertion.checkNotNull(parameterValuesMap);
+	WhereInPreProcessor(final Map<TaskAttribute, Object> inTaskAttributes) {
+		Assertion.checkNotNull(inTaskAttributes);
 		//-----
-		this.parameterValuesMap = parameterValuesMap;
+		this.inTaskAttributes = inTaskAttributes;
 	}
 
 	/**
@@ -78,8 +78,8 @@ final class WhereInPreProcessor {
 		return JAVA_CHECK_PATTERN.matcher(sqlQuery).find(); //fast check
 	}
 
-	private TaskAttribute obtainTaskAttribute(final String attributeName) {
-		for (final TaskAttribute attribute : parameterValuesMap.keySet()) {
+	private TaskAttribute obtainInTaskAttribute(final String attributeName) {
+		for (final TaskAttribute attribute : inTaskAttributes.keySet()) {
 			if (attribute.getName().equals(attributeName)) {
 				return attribute;
 			}
@@ -99,11 +99,11 @@ final class WhereInPreProcessor {
 			final String pkFieldName = matcher.group(DTC_INPUT_PK_GROUP);
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
-			final TaskAttribute attribute = obtainTaskAttribute(inputParamName);
-			Assertion.checkState(attribute.isIn() && attribute.getDomain().getDataType() == DataType.DtList, "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
+			Assertion.checkState(attribute.getDomain().getDataType() == DataType.DtList, "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
-			final DtList<?> listObject = (DtList<?>) parameterValuesMap.get(attribute);
+			final DtList<?> listObject = (DtList<?>) inTaskAttributes.get(attribute);
 			if (listObject.isEmpty()) {
 				//where XX not in <<empty>> => always true
 				//where XX in <<empty>> => always false

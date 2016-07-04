@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.index;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -27,11 +32,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * List Function powered with index engine.
@@ -116,6 +116,6 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 		Assertion.checkNotNull(dtc);
 		//-----
 		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
-		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> none(), dtc);
+		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> empty(), dtc);
 	}
 }

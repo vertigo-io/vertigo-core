@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,6 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
-import io.vertigo.lang.Assertion;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,32 +28,10 @@ import java.util.List;
  *
  * @author pchretien
  */
-public final class EntityGrammar {
-	private final List<Entity> entities;
-
-	/**
-	 * Constructor of a grammar composed of entities.
-	 * @param entities List of entities which define the grammar  
-	 */
-	public EntityGrammar(final Entity... entities) {
-		this(Arrays.asList(entities));
-	}
-
-	/**
-	 * Constructor of a grammar composed of entities.
-	 * @param entities List of entities which define the grammar  
-	 */
-	public EntityGrammar(final List<Entity> entities) {
-		Assertion.checkNotNull(entities);
-		//-----
-		this.entities = Collections.unmodifiableList(new ArrayList<>(entities));
-	}
-
+public interface EntityGrammar {
 	/**
 	 * Returns the list of entities
 	 * @return List of entities.
 	 */
-	public List<Entity> getEntities() {
-		return entities;
-	}
+	List<Entity> getEntities();
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,19 +21,23 @@ package io.vertigo.dynamo.plugins.environment.registries.task;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
+
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-final class TaskGrammar {
+final class TaskGrammar implements EntityGrammar {
 	/** Attribute name. */
 	public static final String TASK_ATTRIBUTE = "attribute";
 
@@ -41,8 +45,6 @@ final class TaskGrammar {
 	private static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
 	/**Définition de tache.*/
 	public static final Entity TASK_DEFINITION_ENTITY;
-	/** Task Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
@@ -57,11 +59,14 @@ final class TaskGrammar {
 				.addField(CLASS_NAME, String, true)
 				.addFields(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
 				.build();
-
-		GRAMMAR = new EntityGrammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
 	}
 
-	private TaskGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return new ListBuilder<Entity>()
+				.add(TASK_DEFINITION_ENTITY)
+				.add(TASK_ATTRIBUTE_DEFINITION_ENTITY)
+				.unmodifiable()
+				.build();
 	}
 }

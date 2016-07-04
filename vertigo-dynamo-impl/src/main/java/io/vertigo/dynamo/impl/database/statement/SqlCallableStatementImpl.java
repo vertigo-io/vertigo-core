@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.lang.Assertion;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 /**
  * Implémentation standard de la gestion des procédure stockées.
@@ -86,7 +86,7 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 	/** {@inheritDoc} */
 	@Override
 	public Object getValue(final int index) throws SQLException {
-		Assertion.checkArgument(getState() == State.EXECUTED, "L'exécution n'a pas été effectuée !");
+		getState().assertExecutedState();
 		final SqlParameter parameter = getParameter(index);
 		Assertion.checkArgument(parameter.isOut(), "Les Getters ne peuvent se faire que sur des paramètres OUT");
 		//-----

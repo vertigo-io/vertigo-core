@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ClassUtil;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -38,6 +28,16 @@ import javax.persistence.Persistence;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.ReturningWork;
+
+import io.vertigo.dynamo.database.SqlDataBaseManager;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 /**
  * ConnectionProvider permettant la connexion à une datasource Java.
@@ -60,7 +60,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 			@Named("persistenceUnit") final String persistenceUnit,
 			@Named("dataBaseName") final String dataBaseName,
 			final VTransactionManager transactionManager) {
-		super(name.getOrElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		Assertion.checkNotNull(transactionManager);
 		//-----

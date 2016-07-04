@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,10 +28,10 @@ public final class EntityLink implements EntityType {
 	private final Entity entity;
 
 	/**
-	 * Constructor 	
+	 * Constructor
 	 * @param entity the entity that is linked
 	 */
-	public EntityLink(final Entity entity) {
+	EntityLink(final Entity entity) {
 		Assertion.checkNotNull(entity);
 		Assertion.checkState(!entity.isPrimitive(), "A primitive entity such as {0} can't be linked", entity);
 		//-----

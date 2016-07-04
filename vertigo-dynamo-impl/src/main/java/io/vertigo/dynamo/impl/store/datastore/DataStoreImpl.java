@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,7 +70,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D readForUpdate(final URI<? extends DtObject> uri) {
+	public <D extends DtObject> D readForUpdate(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -141,7 +141,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D get(final URI<D> uri) {
+	public <D extends DtObject> D read(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final D dto = cacheDataStore.<D> load(uri);
@@ -152,7 +152,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtList<D> dtc = cacheDataStore.loadList(uri);

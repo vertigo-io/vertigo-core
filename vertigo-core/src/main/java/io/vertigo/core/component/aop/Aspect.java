@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,9 +36,8 @@ public interface Aspect {
 	 * @param args method arguments
 	 * @param methodInvocation method invocation object
 	 * @return sub-method return
-	 * @throws Exception sub-method exception
 	 */
-	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
+	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation);
 
 	/**
 	 * returns Annotation that tagged any method or class concerned by this aspect

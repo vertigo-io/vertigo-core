@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,12 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.impl.search;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -34,12 +40,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * Reindex all data taks.
@@ -99,7 +99,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 						searchChunk = it.next();
 					}
 					// <<< Tx end
-					if (searchChunk.isEmpty()) {
+					if (! searchChunk.isPresent()) {
 						break;
 					}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.datastore;
+
+import java.util.Map;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -52,8 +54,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
-
-import java.util.Map;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.
@@ -104,8 +104,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
 		//-----
-		dataSpace = dataSpaceOption.getOrElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
-		this.connectionName = connectionName.getOrElse(DEFAULT_CONNECTION_NAME);
+		dataSpace = dataSpaceOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
+		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer);
 	}
@@ -170,7 +170,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -221,7 +221,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -244,7 +244,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -552,12 +552,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
-		final String request = new StringBuilder()
-				.append(" select * from ")
-				.append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
-				.append(" for update ")
-				.toString();
+		 final String request = getSelectForUpdate(tableName, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -576,4 +571,20 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.execute(task)
 				.getResult();
 	}
+	
+    /**
+     * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
+     * spécificités de la base de données utilisée..
+     * @param tableName nom de la table
+     * @param idFieldName nom de la clé primaire
+     * @return select à exécuter.
+     */
+    protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+        return new StringBuilder()
+                .append(" select * from ")
+                .append(tableName)
+                .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+                .append(" for update ")
+                .toString();
+    }
 }

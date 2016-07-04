@@ -1,10 +1,47 @@
 Version history
 ===============
 
-Running 0.9.2-SNAPSHOT
+Running 0.9.3-SNAPSHOT
 ----------------------
 
 more to come :)
+
+
+
+Release 0.9.2 - 2016/06/28
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-091-to-092)
+
+__In Bold__ : Potential compatibility problems 
+* [All] Code cleaning, refactoring and documenting
+* [All] Updated 3rd party libs versions (hsqldb, rest assured, gson, janino, ehcache, cglib, mail, slf4j, hibernate, dom4j, jersey, jedis, poi, openoffice)
+* __[Core] Aligned vertigo Option api to JDK api__ (`isPresent`, `ofNullable`, `orElse`, `of`)
+* [Core] Fixed #56
+* [Core] Splitted App and autoCloseable (should use new AutoCloseableApp in unit tests
+* __[Dynamo] Renamed DAOBroker to DAO__
+* [Dynamo] Fixed #57 in DslListFilterBuilder, and other pb
+*	[Dynamo] isNumber() on dataType
+* __[Dynamo] Renamed CRUD methods__ (get => read , getList => findAll)
+* [Dynamo] Made selectForUpdate overridable, and specialized selectForUpdate for Ms SqlServer
+* [Dynamo] Fixed missing parenthesis in result with DslListFilterBuilder for some multi fields syntax
+* __[Dynamo] Search FacetedQueryResult json v3 (#59)__ (use `searchApiVersion` param on `GoogleJsonEngine` component to select api version)
+* [Dynamo] Fixed Berkeley remove too old elements
+*	[Dynamo] Fixed HsqlDb rownum
+* [Dynamo] Fixed bad cached list size, when rowmax was used
+* __[Dynamo] Removed deprecated getConnectionProvider__
+* [Dynamo] Renamed methods : `toUrn` to `urn`
+* [Dynamo] Create URI public on `DtObjectUtil`
+* [Dynamo] Preserve stacktrace if Search Exception
+* [Dynamo] Fixed #63 - Errors in JpaDataStore
+*	[Dynamo] Fixed #66 Retry indexation 5 times of dirty elements in case of error
+* [Vega] Invalidate session when newly created session throws VSecurityException
+* [Vega] Added token tests for anonymous users
+* [Vega] Fixed Swagger Api for errors
+*	[Vega] Added test for String in body
+* [Vega] Fixed preflight Options (misspelled header name)
+*	[Vega] Fixed #64 : concat hashcode to truncated name
+*	[Vega] Added global prefix for Spark route (param `apiPrefix` of `SparkJavaServletFilterWebServerPlugin`)
+* [Vega] Added Highlight for search results in FacetedQueryResult json v4
 
 Release 0.9.1 - 2016/02/05
 ----------------------

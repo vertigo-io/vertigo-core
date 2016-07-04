@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.commons.analytics;
 
-import io.vertigo.AbstractTestCaseJU4;
-
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -50,8 +50,8 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	public void test1000Articles() {
 		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
 			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure("POIDS", 25);
-				tracker.incMeasure("MONTANT", 10);
+				tracker.incMeasure("POIDS", 25)
+						.incMeasure("MONTANT", 10);
 			}
 			tracker.markAsSucceeded();
 		}

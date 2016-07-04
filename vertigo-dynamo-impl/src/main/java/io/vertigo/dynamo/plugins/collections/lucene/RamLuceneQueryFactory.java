@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
-
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -42,6 +35,13 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 final class RamLuceneQueryFactory {
 	private final Analyzer queryAnalyzer;
@@ -71,7 +71,7 @@ final class RamLuceneQueryFactory {
 		final BooleanQuery query = new BooleanQuery();
 		for (final DtField dtField : searchedFieldList) {
 			final Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
-			if (boostedField.isDefined() && dtField.equals(boostedField.get())) {
+			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord.setBoost(4);
 			}
 			query.add(queryWord, BooleanClause.Occur.SHOULD);

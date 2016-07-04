@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,16 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.store;
+
+import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -34,7 +44,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.store.util.DAOBroker;
+import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -52,16 +62,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
-
-import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
@@ -84,13 +84,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	private DtDefinition dtDefinitionCar;
 	private DtListURI allCarsUri;
 
-	private DAOBroker<Famille, Integer> familleDAO;
+	private DAO<Famille, Integer> familleDAO;
 	private long initialDbCarSize = 0;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
-		familleDAO = new DAOBroker<>(dtDefinitionFamille, storeManager, taskManager);
+		familleDAO = new DAO<>(dtDefinitionFamille, storeManager, taskManager);
 
 		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
@@ -100,7 +100,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	protected void initMainStore() {
 		//A chaque test on recrée la table famille
-		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> none());
+		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -121,7 +121,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request);
-				if (collection.isDefined()) {
+				if (collection.isPresent()) {
 					taskDefinitionBuilder.withDataSpace(collection.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
@@ -131,10 +131,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	protected List<String> getCreateMainStoreRequests() {
-		final List<String> requests = getCreateFamilleRequests();
-		requests.addAll(getCreateCarRequests());
-		requests.addAll(getCreateFileInfoRequests());
-		return requests;
+		return new ListBuilder<String>()
+				.addAll(getCreateFamilleRequests())
+				.addAll(getCreateCarRequests())
+				.addAll(getCreateFileInfoRequests())
+				.build();
 	}
 
 	protected final List<String> getCreateFamilleRequests() {
@@ -161,7 +162,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Option.<String> none());
+		shutDown("TK_SHUT_DOWN", Option.<String> empty());
 	}
 
 	protected void shutDown(final String taskName, final Option<String> collectionOption) {
@@ -170,7 +171,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 						.withEngine(TaskEngineProc.class)
 						.withRequest("shutdown;");
-				if (collectionOption.isDefined()) {
+				if (collectionOption.isPresent()) {
 					taskDefinitionBuilder.withDataSpace(collectionOption.get());
 				}
 				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
@@ -179,6 +180,19 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				//A chaque fin de test on arréte la base.
 				transaction.commit();
 			}
+		}
+	}
+
+	@Test
+	public void testSelectCarCachedRowMax() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtListURI someCars = new DtListURIForCriteria<>(dtDefinitionCar, null, 3);
+			final DtList<Car> dtc1 = storeManager.getDataStore().findAll(someCars);
+			Assert.assertEquals(3, dtc1.size());
+			//-----
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> dtc = storeManager.getDataStore().findAll(allCars);
+			Assert.assertEquals(9, dtc.size());
 		}
 	}
 
@@ -295,7 +309,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertNotNull(dtc);
 			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
 			transaction.commit();
@@ -309,7 +323,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -318,7 +332,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
-			dtc = storeManager.getDataStore().getList(allFamilles);
+			dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -404,7 +418,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -429,7 +443,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().<Famille> get(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().<Famille> read(new URI<Famille>(dtFamille, famille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -451,7 +465,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -479,7 +493,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().<Famille> get(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().<Famille> read(new URI<Famille>(dtFamille, famille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -773,7 +787,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
-		final DtList<Car> cars = storeManager.getDataStore().getList(allCarsUri);
+		final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
 		Assert.assertNotNull(cars);
 		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return readAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
+		return findAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
 	}
 
 	/** {@inheritDoc} */
@@ -65,13 +65,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 }

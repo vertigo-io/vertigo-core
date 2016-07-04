@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 package io.vertigo.vega.webservice.data;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
@@ -42,13 +45,11 @@ import io.vertigo.vega.webservice.data.domain.ContactDao;
 import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
+import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
-
-import java.util.Arrays;
-import java.util.Iterator;
 
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
@@ -106,6 +107,7 @@ public final class MyAppConfig {
 				.addComponent(ContactsWebServices.class)
 				.addComponent(SimplerTestWebServices.class)
 				.addComponent(AdvancedTestWebServices.class)
+				.addComponent(AnonymousTestWebServices.class)
 				.addComponent(FileDownloadWebServices.class)
 			.endModule()
 			.beginModule("myApp")

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import javax.inject.Inject;
+
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
+import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
-
-import javax.inject.Inject;
 
 /**
  * Aspect pour la gestion des transactions au niveau
@@ -43,7 +43,7 @@ public final class VTransactionAspect implements Aspect {
 	}
 
 	@Override
-	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception {
+	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
 		//La transaction est REQUIRED : si elle existe on l'utilise, sinon on la crée.
 		if (transactionManager.hasCurrentTransaction()) {
 			return methodInvocation.proceed(args);

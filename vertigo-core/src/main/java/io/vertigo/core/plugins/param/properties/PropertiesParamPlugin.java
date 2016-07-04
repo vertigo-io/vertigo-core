@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,6 @@
  */
 package io.vertigo.core.plugins.param.properties;
 
-import io.vertigo.core.param.ParamPlugin;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -30,6 +25,11 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Plugin de gestion de configuration de fichiers properties.
@@ -68,6 +68,6 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	public Option<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Option.<String> option(params.getProperty(paramName)) : Option.<String> none();
+		return params.containsKey(paramName) ? Option.<String> ofNullable(params.getProperty(paramName)) : Option.<String> empty();
 	}
 }

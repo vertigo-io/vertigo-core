@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Assertion;
@@ -28,14 +35,6 @@ import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.TooManyRequestException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import spark.Request;
 import spark.Response;
 
@@ -77,8 +76,8 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		Assertion.checkNotNull(windowSeconds);
 		//-----
 		this.securityManager = securityManager;
-		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
-		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);
+		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
+		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
 		daemonManager.registerDaemon("rateLimitWindowReset", RateLimitWindowResetDaemon.class, this.windowSeconds, this);
 	}
@@ -110,7 +109,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	}
 
 	private static String obtainUserKey(final Request request, final Option<UserSession> userSession) {
-		if (userSession.isDefined()) {
+		if (userSession.isPresent()) {
 			return userSession.get().getSessionUUID().toString();
 		}
 		return request.ip() + ":" + request.headers("user-agent");

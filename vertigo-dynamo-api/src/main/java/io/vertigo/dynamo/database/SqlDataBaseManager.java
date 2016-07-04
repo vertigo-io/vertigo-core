@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,22 +25,12 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.lang.Manager;
 
 /**
-* Manages connections to database.
-* 
-*   
-*
-* @author pchretien
-*/
+ * Manages connections to database.
+ * @author pchretien
+ */
 public interface SqlDataBaseManager extends Manager {
 	/** Main connectionProvider's name. */
 	String MAIN_CONNECTION_PROVIDER_NAME = "main";
-
-	/**
-	 * Retourne la connection pour le main
-	 * @return SecondaryConnectionProvider
-	 */
-	@Deprecated
-	SqlConnectionProvider getConnectionProvider();
 
 	/**
 	 * @param name ConnectionProvider name

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.loader.LoaderPlugin;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -34,6 +26,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Parses a KPR file.
@@ -60,7 +60,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = encoding.getOrElse("ISO-8859-1");
+		charset = encoding.orElse("ISO-8859-1");
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,28 +22,20 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.vertigo.util.MapBuilder;
 
 /**
- * Builder permettant de créer une tache.
+ * Builder to build a task.
  * @author  pchretien
  */
 public final class TaskBuilder implements Builder<Task> {
-	/**
-	 * Conteneur des données et de l'état du service
-	 */
-	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
+	private final MapBuilder<TaskAttribute, Object> taskAttributesBuilder = new MapBuilder<>();
 	private final TaskDefinition taskDefinition;
 
 	/**
-	 * Initialise la tache.
-	 * Le constructeur est invoqué par la Factory.
-	 * Cette méthode ne doit pas être appelée directement.
+	 * Constructor.
 	 *
-	 * @param taskDefinition Définition de la tache
-	 * param workListener Listener enregistrant les événements produits par l'exécution  des taches
+	 * @param taskDefinition the definition of the task
 	 */
 	public TaskBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
@@ -52,20 +44,20 @@ public final class TaskBuilder implements Builder<Task> {
 	}
 
 	/**
-	 * Affecte la valeur d'un paramètre.
+	 * adds a value to an attribute.
 	 *
-	 * @param attributeName Nom du paramètre
-	 * @param value Valeur
+	 * @param attributeName the name of the attribute
+	 * @param value the values
 	 */
 	public TaskBuilder addValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);
-		taskAttributes.put(taskAttribute, value);
+		taskAttributesBuilder.putNullable(taskAttribute, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Task build() {
-		return new Task(taskDefinition, taskAttributes);
+		return new Task(taskDefinition, taskAttributesBuilder.unmodifiable().build());
 	}
 }

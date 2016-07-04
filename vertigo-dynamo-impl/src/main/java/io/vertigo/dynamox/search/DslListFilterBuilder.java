@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,18 @@
  * limitations under the License.
  */
 package io.vertigo.dynamox.search;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -38,18 +50,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
 
 /**
  * Default builder from Criteria to ListFilter with a query pattern with DSL.
@@ -81,7 +81,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static final String USER_QUERY_KEYWORD = "query";
 
 	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
-	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s)(or|and)(?=\\s))";
+	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(or|and)(?=\\s|$))";
 	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
 
 	private List<DslMultiExpression> myBuildQuery;
@@ -136,7 +136,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		for (final DslMultiExpression multiExpressionDefinition : myBuildQuery) {
 			appendMultiExpression(query, multiExpressionDefinition);
 		}
-		return query.toString();
+		return query.toString()
+				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
+				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
+				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
@@ -162,7 +165,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String[] trimedExpression = splitTrimedSubQueryToQuery(expressionQuery.toString());
 			query.append(trimedExpression[0]);
 			query.append(expressionDefinition.getPreBody());
-			if (expressionDefinition.getField().isDefined()) {
+			if (expressionDefinition.getField().isPresent()) {
 				appendField(query, expressionDefinition.getField().get());
 			}
 			final boolean useBlock = mayUseBlock(trimedExpression[1]);
@@ -184,9 +187,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
+			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
 			final boolean isAlreadyBlock = (preExpression.endsWith("\"") && postExpression.startsWith("\""))
 					|| (preExpression.endsWith("(") && postExpression.startsWith(")"));
-			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
 			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
 					.append(!isAlreadyBlock && useBlock ? "(" : "")
@@ -225,16 +228,18 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private void appendQuery(final StringBuilder query, final DslExpression expressionDefinition, final StringBuilder expressionQuery, final DslQuery dslQuery) {
 		if (dslQuery instanceof DslTermQuery) {
-			if (expressionDefinition.getMultiField().isDefined() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
+			if (expressionDefinition.getMultiField().isPresent() && ((DslTermQuery) dslQuery).getPreTerm().isEmpty()) {
 				//recherche compact => on boucle les fields puis les user terms
 				appendCompactFields(query, expressionDefinition, expressionQuery, dslQuery);
 			} else {
 				//recherche multifield => on boucle les users terms puis les fields
 				appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, expressionDefinition, query);
 			}
-			if (expressionDefinition.getMultiField().isDefined()) {
+			if (expressionDefinition.getMultiField().isPresent()) {
 				//si multiFields on a déjà appliqué le field: , donc on flush a ce niveau
-				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), false, expressionQuery);
+				final boolean useBlock = !(expressionDefinition.getPreBody().isEmpty() && expressionDefinition.getPostBody().isEmpty())
+						&& !(expressionQuery.toString().startsWith("(") && expressionQuery.toString().endsWith(")"));
+				flushSubQueryToQuery(query, expressionDefinition.getPreBody(), expressionDefinition.getPostBody(), useBlock, expressionQuery);
 			}
 		} else if (dslQuery instanceof DslBlockQuery) {
 			appendMultiQuery(expressionQuery, (DslBlockQuery) dslQuery, expressionDefinition, query);
@@ -255,7 +260,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					concat(expressionSep, expressionDefinition.getPreBody()),
-					Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+					Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
 					dslQuery,
 					expressionDefinition.getPostBody());
 			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
@@ -297,7 +302,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((Date) value));
 		} else if (value != null) {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, value.toString());
-		} else if (dslQuery.getDefaultValue().isDefined()) { //if value null => defaultValue
+		} else if (dslQuery.getDefaultValue().isPresent()) { //if value null => defaultValue
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, dslQuery.getDefaultValue().get());
 		} else {
 			useBlock = false;
@@ -367,7 +372,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 						.append(expressionDefinition.getPostBody())
 						.append(userCriteria.getPostMissingPart());
 
-			} else if (expressionDefinition.getMultiField().isDefined()) {
+			} else if (expressionDefinition.getMultiField().isPresent()) {
 				criteriaOnDefinitionField++;
 				final DslMultiField dslMultiField = expressionDefinition.getMultiField().get();
 				query.append(userCriteria.getPreMissingPart());
@@ -379,7 +384,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 							"");
 					final DslExpression monoFieldExpressionDefinition = new DslExpression(
 							monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-							Option.some(monoFieldDefinition), Option.<DslMultiField> none(),
+							Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
 							new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 							firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 					monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);

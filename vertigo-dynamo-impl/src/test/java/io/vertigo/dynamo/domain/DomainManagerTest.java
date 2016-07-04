@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,10 @@
  */
 package io.vertigo.dynamo.domain;
 
-import io.vertigo.app.App;
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -27,14 +30,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 public class DomainManagerTest {
 
 	@Test
 	public void testCreateDtDefinition() {
-		try (App app = new App(new AppConfigBuilder().build())) {
+		try (AutoCloseableApp app = new AutoCloseableApp(new AppConfigBuilder().build())) {
 			final Domain domain = new Domain("DO_NAME", DataType.String);
 
 			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")

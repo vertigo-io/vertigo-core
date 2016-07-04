@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
-
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import io.vertigo.dynamo.database.vendor.SqlMapping;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 /**
  * Implémentation spécifique à Postgresql.
@@ -64,12 +64,12 @@ final class PostgresqlMapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
+	public Object getValueForResultSet(final ResultSet resultSet, final int col, final DataType dataType) throws SQLException {
 		if (dataType == DataType.Boolean) {
-			final boolean vb = rs.getBoolean(col);
-			return rs.wasNull() ? null : vb;
+			final boolean vb = resultSet.getBoolean(col);
+			return resultSet.wasNull() ? null : vb;
 		}
-		return defaultSQLMapping.getValueForResultSet(rs, col, dataType);
+		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
-
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +41,20 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
 
 //vérifier
 /**
@@ -143,8 +143,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private void appendListState() {
 		searchRequestBuilder.setFrom(myListState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
-				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().getOrElse(myDefaultMaxRows));
-		if (myListState.getSortFieldName().isDefined()) {
+				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
+		if (myListState.getSortFieldName().isPresent()) {
 			final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
 					.ignoreUnmapped(true)
@@ -155,7 +155,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
-		if (searchQuery.getSecurityListFilter().isDefined()) {
+		if (searchQuery.getSecurityListFilter().isPresent()) {
 			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
 			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
@@ -164,7 +164,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
-		if (searchQuery.getFacetedQuery().isDefined() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
+		if (searchQuery.getFacetedQuery().isPresent() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
 				filterBuilder.add(translateToFilterBuilder(facetQuery));
@@ -174,7 +174,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 		searchRequestBuilder
 				.setQuery(queryBuilder)
-				.setHighlighterFilter(true)
+				//.setHighlighterFilter(true) //We don't highlight the security filter
 				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
 	}
@@ -193,12 +193,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
 			aggregationBuilder.subAggregation(
 					AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-							.setSize(TOPHITS_SUBAGGREGATION_SIZE));
+							.setSize(TOPHITS_SUBAGGREGATION_SIZE)
+							.setHighlighterNumOfFragments(3)
+							.addHighlightedField("*"));
 			//We fetch source, because it's our only source to create result list
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
 		//Puis les facettes liées à la query, si présent
-		if (searchQuery.getFacetedQuery().isDefined()) {
+		if (searchQuery.getFacetedQuery().isPresent()) {
 			final FacetedQueryDefinition facetedQueryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			final Collection<FacetDefinition> facetDefinitions = new ArrayList<>(facetedQueryDefinition.getFacetDefinitions());
 			if (searchQuery.isClusteringFacet() && facetDefinitions.contains(searchQuery.getClusteringFacetDefinition())) {
@@ -246,8 +248,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		final DataType dataType = dtField.getDomain().getDataType();
 		if (dataType == DataType.Date) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
-		} else if (dataType == DataType.Double || dataType == DataType.BigDecimal
-				|| dataType == DataType.Long || dataType == DataType.Integer) {
+		} else if (dataType.isNumber()) {
 			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
 
@@ -269,9 +270,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Option<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
-			if (minValue.isEmpty()) {
+			if (!minValue.isPresent()) {
 				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
-			} else if (maxValue.isEmpty()) {
+			} else if (!maxValue.isPresent()) {
 				rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
 			} else {
 				rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
@@ -304,11 +305,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static Option<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
-			return Option.none();//pas de test
+			return Option.empty();//pas de test
 		}
 		//--
 		final Double result = Double.valueOf(stringValue);
-		return Option.some(result);
+		return Option.of(result);
 	}
 
 	/**

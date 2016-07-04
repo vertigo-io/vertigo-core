@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -30,6 +26,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+
+import io.vertigo.dynamo.database.vendor.SqlMapping;
+import io.vertigo.dynamo.domain.metamodel.DataStream;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Implémentation par défaut du mapping à la BDD.
@@ -214,12 +214,12 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
+	public Object getValueForResultSet(final ResultSet resultSet, final int col, final DataType dataType) throws SQLException {
 		final Object value;
 		switch (dataType) {
 			case String:
-				if (rs.getMetaData().getColumnType(col) == Types.CLOB) {
-					final Clob clob = rs.getClob(col);
+				if (resultSet.getMetaData().getColumnType(col) == Types.CLOB) {
+					final Clob clob = resultSet.getClob(col);
 					//Si la valeur est null rs renvoie bien null
 					if (clob != null) {
 						final Long len = clob.length();
@@ -229,34 +229,34 @@ public final class SqlMappingImpl implements SqlMapping {
 					}
 				} else {
 					//Si la valeur est null rs renvoie bien null
-					value = rs.getString(col);
+					value = resultSet.getString(col);
 				}
 				break;
 			case Integer:
-				final int vi = rs.getInt(col);
-				value = rs.wasNull() ? null : vi;
+				final int vi = resultSet.getInt(col);
+				value = resultSet.wasNull() ? null : vi;
 				break;
 			case Long:
-				final long vl = rs.getLong(col);
-				value = rs.wasNull() ? null : vl;
+				final long vl = resultSet.getLong(col);
+				value = resultSet.wasNull() ? null : vl;
 				break;
 			case Boolean:
-				final int vb = rs.getInt(col);
-				value = rs.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
+				final int vb = resultSet.getInt(col);
+				value = resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
 				break;
 			case Double:
-				final double vd = rs.getDouble(col);
-				value = rs.wasNull() ? null : vd;
+				final double vd = resultSet.getDouble(col);
+				value = resultSet.wasNull() ? null : vd;
 				break;
 			case BigDecimal:
 
 				//Si la valeur est null rs renvoie bien null
-				value = rs.getBigDecimal(col);
+				value = resultSet.getBigDecimal(col);
 				break;
 			case Date:
 
 				//Si la valeur est null rs renvoie bien null
-				final Timestamp timestamp = rs.getTimestamp(col);
+				final Timestamp timestamp = resultSet.getTimestamp(col);
 
 				//Pour avoir une date avec les heures (Sens Java !)
 				//il faut récupérer le timeStamp
@@ -264,7 +264,7 @@ public final class SqlMappingImpl implements SqlMapping {
 				value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
 				break;
 			case DataStream:
-				value = SqlDataStreamMappingUtil.getDataStream(rs, col);
+				value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
 				break;
 			case DtList:
 			case DtObject:

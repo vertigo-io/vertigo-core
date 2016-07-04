@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.app.Logo;
-import io.vertigo.lang.Assertion;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.vertigo.app.Logo;
+import io.vertigo.lang.Assertion;
 
 /**
  * The AppConfig class defines the config.
@@ -106,7 +106,7 @@ public final class AppConfig {
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		String moduleName = moduleConfig.getName();
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			printComponent(out, moduleName, (componentConfig.getApiClass().isDefined() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
+			printComponent(out, moduleName, (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
 			moduleName = null;
 		}
 	}

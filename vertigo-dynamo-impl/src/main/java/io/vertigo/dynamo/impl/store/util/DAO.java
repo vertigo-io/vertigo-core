@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -33,9 +36,6 @@ import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Classe utilitaire pour accéder au Broker.
  *
@@ -43,7 +43,7 @@ import java.util.List;
  * @param <D> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  */
-public class DAOBroker<D extends DtObject, P> implements BrokerNN {
+public class DAO<D extends DtObject, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
@@ -55,22 +55,22 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	/**
 	 * Contructeur.
 	 *
-	 * @param dtObjectClass Définition du DtObject associé à ce DAOBroker
+	 * @param dtObjectClass Définition du DtObject associé à ce DAO
 	 * @param storeManager Manager de gestion de la persistance
 	 * @param taskManager Manager de gestion des tâches
 	 */
-	public DAOBroker(final Class<? extends DtObject> dtObjectClass, final StoreManager storeManager, final TaskManager taskManager) {
+	public DAO(final Class<? extends DtObject> dtObjectClass, final StoreManager storeManager, final TaskManager taskManager) {
 		this(DtObjectUtil.findDtDefinition(dtObjectClass), storeManager, taskManager);
 	}
 
 	/**
 	 * Contructeur.
 	 *
-	 * @param dtDefinition Définition du DtObject associé à ce DAOBroker
+	 * @param dtDefinition Définition du DtObject associé à ce DAO
 	 * @param storeManager Manager de gestion de la persistance
 	 * @param taskManager Manager de gestion des tâches
 	 */
-	public DAOBroker(final DtDefinition dtDefinition, final StoreManager storeManager, final TaskManager taskManager) {
+	public DAO(final DtDefinition dtDefinition, final StoreManager storeManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(taskManager);
@@ -148,7 +148,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return dataStore.<D> get(uri);
+		return dataStore.<D> read(uri);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().addFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return dataStore.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */

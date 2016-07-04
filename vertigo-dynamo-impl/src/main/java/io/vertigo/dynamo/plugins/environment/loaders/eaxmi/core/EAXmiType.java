@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,12 +74,11 @@ public enum EAXmiType {
 			type = Class;
 		} else if (Attribute.getCode().equals(name)) {
 			type = Attribute;
-		} else if (Association.getCode().equals(name)) {
+		} else if (Association.getCode().equals(name)
+				|| Connector.getCode().equals(name)) {
 			type = Association;
 		} else if (ClassAttribute.getCode().equals(name)) {
 			type = ClassAttribute;
-		} else if (Connector.getCode().equals(name)) {
-			type = Association;
 		} else {
 			//rien trouvé
 			type = null;

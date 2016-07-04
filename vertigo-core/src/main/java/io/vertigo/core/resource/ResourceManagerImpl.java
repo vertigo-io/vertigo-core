@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.core.resource;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.VSystemException;
-
 import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Standard implementation for the resourceManager.
@@ -54,7 +54,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	public URL resolve(final String resource) {
 		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
 			final Option<URL> url = resourceResolver.resolve(resource);
-			if (url.isDefined()) {
+			if (url.isPresent()) {
 				return url.get();
 			}
 		}

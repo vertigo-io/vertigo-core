@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import java.util.List;
+
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-
-import java.util.List;
-
 import spark.Spark;
 
 /**
@@ -33,6 +33,14 @@ import spark.Spark;
  */
 abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
+	private final Option<String> apiPrefix;
+
+	public AbstractSparkJavaWebServerPlugin(final Option<String> apiPrefix) {
+		Assertion.checkNotNull(apiPrefix);
+		Assertion.checkArgument(!apiPrefix.isPresent() || apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
+		//-----
+		this.apiPrefix = apiPrefix;
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -42,7 +50,7 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(apiPrefix, webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
 				case GET:
 					Spark.get(sparkJavaRoute);

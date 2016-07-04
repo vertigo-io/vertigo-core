@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.sqlserver;
 
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
-
-import java.sql.SQLException;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -75,10 +75,8 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 		} else if (codeErreur == 547) {
 			// Violation de contrainte d'intégrité référentielle (#547)
 			handleForeignConstraintSQLException(sqle);
-		} else if (codeErreur == 2627) {
+		} else if (codeErreur == 2601 || codeErreur == 2627) {
 			// Violation de contrainte d'unicité (#2627)
-			handleUniqueConstraintSQLException(sqle);
-		} else if (codeErreur == 2601) {
 			// Violation de contrainte d'unicité sur index (#2601) (attention message différent)
 			handleUniqueConstraintSQLException(sqle);
 		} else {

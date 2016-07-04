@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.store.cache;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamock.domain.famille.Famille;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test de l'implémentation avec cache.
@@ -52,7 +52,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 		//ce test est modifier car le cache n'est pas transactionnel : la liste n'est pas accessible sans commit
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -64,7 +64,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().getList(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.tempo;
 
-import io.vertigo.tempo.job.JobManagerTest;
-import io.vertigo.tempo.mail.MailManagerTest;
-import io.vertigo.tempo.scheduler.SchedulerManagerTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import io.vertigo.tempo.job.JobManagerTest;
+import io.vertigo.tempo.mail.MailManagerTest;
+import io.vertigo.tempo.scheduler.SchedulerManagerTest;
 
 /**
  * Test de l'implementation standard.

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,7 +51,7 @@ public final class AssociationUtil {
 		private final boolean notNull;
 		private final String multiplicity;
 
-		private Cardinality(final String multiplicity, final boolean notNull, final boolean multiple) {
+		Cardinality(final String multiplicity, final boolean notNull, final boolean multiple) {
 			this.multiple = multiple;
 			this.notNull = notNull;
 			this.multiplicity = multiplicity;
@@ -64,7 +64,7 @@ public final class AssociationUtil {
 				}
 			}
 
-			final StringBuilder msg = new StringBuilder("Multiplicité '" + multiplicity + "' non reconnue parmi : ");
+			final StringBuilder msg = new StringBuilder("Multiplicité '").append(multiplicity).append("' non reconnue parmi : ");
 			for (final Cardinality cardinality : values()) {
 				msg.append(cardinality.multiplicity).append(" ");
 			}

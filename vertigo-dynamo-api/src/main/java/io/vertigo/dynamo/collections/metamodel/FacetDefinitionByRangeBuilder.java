@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Builder des Facettes par Range.
@@ -62,9 +62,9 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	 * @param facetValueLabel facet value label
 	 * @return this builder
 	 */
-	public FacetDefinitionByRangeBuilder addFacetValue(final String query, final String facetValueLabel) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final String code, final String query, final String facetValueLabel) {
 		final ListFilter listFilter = new ListFilter(query);
-		return addFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
+		return addFacetValue(new FacetValue(code, listFilter, new MessageText(facetValueLabel, null)));
 	}
 
 	/**

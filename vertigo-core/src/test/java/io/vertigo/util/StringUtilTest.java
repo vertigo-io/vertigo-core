@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,6 +82,8 @@ public final class StringUtilTest {
 		Assert.assertEquals("xxxYyy1", StringUtil.constToLowerCamelCase("XXX_YYY_1"));
 		Assert.assertEquals("xxxYyy12_3", StringUtil.constToLowerCamelCase("XXX_YYY_12_3"));
 		Assert.assertEquals("TAdresseAdr", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR"));
+		Assert.assertEquals("x2Yyy", StringUtil.constToLowerCamelCase("X_2_YYY"));
+		Assert.assertEquals("X2Yyy", StringUtil.constToUpperCamelCase("X_2_YYY"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -96,6 +98,8 @@ public final class StringUtilTest {
 
 	@Test
 	public void testCaseUnTransform() {
+		Assert.assertEquals("X_Z_YYY", StringUtil.camelToConstCase("xZYyy"));
+		Assert.assertEquals("X_Z_YYY", StringUtil.camelToConstCase("XZYyy"));
 		Assert.assertEquals(XXX_YYY_ZZZ, StringUtil.camelToConstCase("XxxYyyZzz"));
 		Assert.assertEquals(XXX_YYY_ZZZ, StringUtil.camelToConstCase("xxxYyyZzz"));
 		Assert.assertEquals("XXX_Y_ZZZ", StringUtil.camelToConstCase("xxxYZzz"));
@@ -109,7 +113,7 @@ public final class StringUtilTest {
 
 	@Test
 	public void testCaseTransformBijection() {
-		final String[] values = { XXX_YYY_ZZZ, "XXX_YYY_12", "XXX_YYY_12_PPP", "XXX_YYY_12_3", "RESTE_A_PAYER", "T_ADRESSE_ADR" };
+		final String[] values = { XXX_YYY_ZZZ, "XXX_YYY_12", "XXX_YYY_12_PPP", "XXX_YYY_1", "XXX_YYY_12_3", "RESTE_A_PAYER", "T_ADRESSE_ADR", "XXX_2_Y", "X_2_YYY", "XXX_Z_Y", "X_Z_YYY", "2_YYY", "12_YYY", };
 
 		for (final String value : values) {
 			Assert.assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToLowerCamelCase(value)));

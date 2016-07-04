@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.sqlserver;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractSqlDataStorePlugin;
@@ -27,9 +30,6 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Implémentation d'un Store MS Sql Server.
@@ -103,4 +103,13 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		return request.toString();
 	}
 
+    /** {@inheritDoc} */
+    @Override
+    protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+        return new StringBuilder()
+                .append("select * from ").append(tableName)
+                .append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
+                .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+                .toString();
+    }
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.util.ListBuilder;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +28,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.
@@ -139,10 +139,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
-			return Option.some(clazz.cast(cacheValue.getValue()));
+			return Option.of(clazz.cast(cacheValue.getValue()));
 		}
 		getCollectionData(collection).remove(key);
-		return Option.none(); //key expired : return null
+		return Option.empty(); //key expired : return null
 	}
 
 	/** {@inheritDoc} */

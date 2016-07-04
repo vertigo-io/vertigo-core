@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.datastore.hsql;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -36,9 +39,6 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 /**
  * Implémentation d'un Store HSQLDB.
  * Dans le cas de HSQLDB, la gestion des clés est assurée par des séquences.
@@ -46,7 +46,6 @@ import javax.inject.Named;
  * @author  pchretien
  */
 public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
-	private static final String DTO_SEQUENCE = "DTO_SEQUENCE";
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 	/**
 	 * Prefix de la tache : SELECT
@@ -57,7 +56,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", DataType.DtObject);
+	private final Domain resultDomain = new Domain("DO_HSQL", DataType.Long);
 	private final String sequencePrefix;
 
 	/**
@@ -90,18 +89,14 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(getDataSpace())
 				.withRequest(request.toString())
-				.withOutAttribute(DTO_SEQUENCE, resultDomain, true)// OUT, obligatoire
+				.withOutAttribute(SEQUENCE_FIELD, resultDomain, true)// OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition).build();
 
-		final DtObject dto = getTaskManager()
+		return getTaskManager()
 				.execute(task)
 				.getResult();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final DtField dtField = dtDefinition.getField(SEQUENCE_FIELD);
-
-		return Long.valueOf((Integer) dtField.getDataAccessor().getValue(dto));
 	}
 
 	private static StringBuilder chooseDataBaseStyle(final String sequenceName) {
@@ -149,6 +144,6 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		request.append(separator).append(" rownum <= ").append(maxRows);
+		request.append(separator).append(" rownum() <= ").append(maxRows);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,9 +37,9 @@ final class IndexType {
 	static Option<IndexType> readIndexType(final Domain domain) {
 		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
-			return Option.none();
+			return Option.empty();
 		}
-		return Option.some(new IndexType(indexType, domain));
+		return Option.of(new IndexType(indexType, domain));
 	}
 
 	private IndexType(final String indexType, final Domain domain) {
@@ -70,11 +70,12 @@ final class IndexType {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
 		switch (domain.getDataType()) {
-			case Boolean: // native
-			case Date: // native
-			case Double: // native
-			case Integer: // native
-			case Long: // native
+			case Boolean:
+			case Date:
+			case Double:
+			case Integer:
+			case Long:
+				// All these types are native
 				break;
 			case String:
 			case BigDecimal:
@@ -82,10 +83,10 @@ final class IndexType {
 					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}
 				break;
-			case DataStream: // IllegalArgumentException
-			case DtObject: // IllegalArgumentException
-			case DtList: // IllegalArgumentException
-			default: // IllegalArgumentException
+			case DataStream:
+			case DtObject:
+			case DtList:
+			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
 		}
 	}

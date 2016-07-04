@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionEntryRule;
-
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.parser.Parser;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionEntryRule;
 
 public final class DslDefinitionEntryRuleTest {
 	private static final DslDefinitionEntryRule MAIN = new DslDefinitionEntryRule(Arrays.asList(new String[] { "myFirstProperty", "myLastProperty" }));

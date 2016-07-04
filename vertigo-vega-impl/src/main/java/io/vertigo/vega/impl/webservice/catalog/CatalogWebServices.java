@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.vega.impl.webservice.catalog;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -25,12 +31,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Default RestService to list services published.
@@ -79,12 +79,11 @@ public final class CatalogWebServices implements WebServices {
 		return result;
 	}
 
-	private void appendTypeToString(final StringBuilder sb, final Type returnType) {
-		String sep;
+	private static void appendTypeToString(final StringBuilder sb, final Type returnType) {
 		if (returnType instanceof ParameterizedType) {
 			sb.append(((ParameterizedType) returnType).getRawType())
 					.append("<");
-			sep = "";
+			String sep = "";
 			for (final Type typeArgument : ((ParameterizedType) returnType).getActualTypeArguments()) {
 				sb.append(sep);
 				appendTypeToString(sb, typeArgument);

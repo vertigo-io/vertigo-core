@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.database.connection;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Connexion à une base de données JDBC.

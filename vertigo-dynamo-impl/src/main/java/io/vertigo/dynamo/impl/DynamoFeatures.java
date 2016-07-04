@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,14 +68,14 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures withSQL(final Class<SqlConnectionProviderPlugin> connectionProviderPluginClass) {
+	public DynamoFeatures withSQL(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class)
 				.addPlugin(connectionProviderPluginClass);
 		return this;
 	}
 
-	public DynamoFeatures withSearch(final Class<SearchServicesPlugin> searchServicesPluginClass) {
+	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
 				.addPlugin(searchServicesPluginClass);

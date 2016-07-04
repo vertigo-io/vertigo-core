@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +42,7 @@ public final class TaskResult {
 		//		Assertion.checkNotNull(taskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
-		if (taskDefinition.getOutAttributeOption().isDefined()) {
+		if (taskDefinition.getOutAttributeOption().isPresent()) {
 			taskDefinition.getOutAttributeOption().get().checkAttribute(result);
 		}
 		this.result = result;
@@ -56,7 +56,7 @@ public final class TaskResult {
 	 * @return Result
 	 */
 	public <V> V getResult() {
-		Assertion.checkArgument(taskDefinition.getOutAttributeOption().isDefined(), "this task does not provide any result");
+		Assertion.checkArgument(taskDefinition.getOutAttributeOption().isPresent(), "this task does not provide any result");
 		return (V) result;
 	}
 }

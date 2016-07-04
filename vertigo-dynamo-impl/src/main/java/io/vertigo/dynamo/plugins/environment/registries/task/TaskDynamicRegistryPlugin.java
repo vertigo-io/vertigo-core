@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -40,18 +39,17 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	 * Constructeur.
 	 */
 	public TaskDynamicRegistryPlugin() {
-		super(TaskGrammar.GRAMMAR);
+		super(new TaskGrammar());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			//Seuls les taches sont gérées.
-			final Definition definition = createTaskDefinition(xdefinition);
-			return Option.some(definition);
+			//Only taskDefinitions are concerned
+			return createTaskDefinition(xdefinition);
 		}
-		return Option.none();
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	private static Class<? extends TaskEngine> getTaskEngineClass(final DynamicDefinition xtaskDefinition) {
@@ -76,11 +74,11 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			final String domainName = xtaskAttribute.getDefinitionName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
+			final Boolean required = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
-				taskDefinitionBuilder.addInAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.addInAttribute(attributeName, domain, required.booleanValue());
 			} else {
-				taskDefinitionBuilder.withOutAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.withOutAttribute(attributeName, domain, required.booleanValue());
 			}
 		}
 		return taskDefinitionBuilder.build();

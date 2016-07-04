@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
-import io.vertigo.lang.Option;
 
 /**
  * @author pchretien
@@ -35,18 +34,17 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	 * Constructeur.
 	 */
 	public FileDynamicRegistryPlugin() {
-		super(FileGrammar.GRAMMAR);
+		super(new FileGrammar());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Definition> createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
-			final Definition definition = createFileDefinition(xdefinition);
-			return Option.some(definition);
+			return createFileDefinition(xdefinition);
 		}
-		return Option.none();
+		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
 	private static FileInfoDefinition createFileDefinition(final DynamicDefinition xFileDefinition) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,11 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
@@ -34,11 +39,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).
@@ -82,13 +82,13 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
 		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
-		final DtObject fileMetadataDto = getStoreManager().getDataStore().get(dtoMetaDataUri);
+		final DtObject fileMetadataDto = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.FDT_ID, Object.class);
 
 		// Ramène FileData
 		final URI<DtObject> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 
-		final DtObject fileDataDto = getStoreManager().getDataStore().get(dtoDataUri);
+		final DtObject fileDataDto = getStoreManager().getDataStore().read(dtoDataUri);
 		// Construction du vFile.
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileMetadataDto, DtoFields.FILE_NAME, String.class);
@@ -133,7 +133,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
 		// Chargement du FDT_ID
 		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
-		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().get(dtoMetaDataUri);
+		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
 		setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
@@ -152,7 +152,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
 		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
-		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().get(dtoMetaDataUri);
+		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		final URI<DtObject> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,7 +79,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -90,7 +90,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -101,7 +101,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> readAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
+	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================

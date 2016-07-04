@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 
-import io.vertigo.lang.Assertion;
-
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Delayed key of SecurityToken.

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
 import io.vertigo.lang.Assertion;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Plugin intégrant la stratégie de création des objets issus d'un Select.
@@ -55,11 +55,12 @@ public final class SqlStatementHandlerImpl implements SqlStatementHandler {
 		//Il y a deux cas
 		//Soit le DT est précisé alors le DTO ou DTC est typé de façon déclarative
 		//Soit le DT n'est pas précisé alors le DTO ou DTC est typé de façon dynamique
+		final boolean isDtObject = DataType.DtObject.equals(domain.getDataType());
 		if (domain.hasDtDefinition()) {
 			//Création des DTO, DTC typés de façon déclarative.
-			return new SqlResultMetaDataStatic(domain.getDtDefinition(), DataType.DtObject.equals(domain.getDataType()));
+			return new SqlResultMetaDataStatic(domain.getDtDefinition(), isDtObject);
 		}
 		//Création des DTO, DTC typés de façon dynamique.
-		return new SqlResultMetaDataDynamic(DataType.DtObject.equals(domain.getDataType()), mapping, resultSet);
+		return new SqlResultMetaDataDynamic(isDtObject, mapping, resultSet);
 	}
 }

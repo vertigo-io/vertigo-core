@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * This class provides a common way to build an entity.
@@ -40,9 +40,11 @@ public final class EntityBuilder implements Builder<Entity> {
 	 */
 	private final Set<EntityField> fields;
 
+	private boolean myRoot;
+
 	/**
 	 * Constructor.
-	 * @param name Name of the entity
+	 * @param name the name of the entity
 	 */
 	public EntityBuilder(final String name) {
 		Assertion.checkNotNull(name);
@@ -52,10 +54,15 @@ public final class EntityBuilder implements Builder<Entity> {
 
 	}
 
+	public EntityBuilder withRoot() {
+		myRoot = true;
+		return this;
+	}
+
 	/**
-	 * Add a new simple field.
-	 * @param fieldName Name of the field 
-	 * @param type Type of the field 
+	 * Adds a new simple field.
+	 * @param fieldName Name of the field
+	 * @param type Type of the field
 	 * @param required If the field is required
 	 * @return this builder
 	 */
@@ -64,9 +71,9 @@ public final class EntityBuilder implements Builder<Entity> {
 	}
 
 	/**
-	 * Add a new multi field defined by an entity.
-	 * @param fieldName Name of the field 
-	 * @param entity Type of the field 
+	 * Adds a new multi field defined by an entity.
+	 * @param fieldName Name of the field
+	 * @param entity Type of the field
 	 * @param required If the field is required
 	 * @return this builder
 	 */
@@ -76,9 +83,9 @@ public final class EntityBuilder implements Builder<Entity> {
 	}
 
 	/**
-	 * Add a new multi field defined by an entity.
-	 * @param fieldName Name of the field 
-	 * @param entityLink Type of the field 
+	 * Adds a new multi field defined by an entity.
+	 * @param fieldName Name of the field
+	 * @param entityLink Type of the field
 	 * @param required If the field is required
 	 * @return this builder
 	 */
@@ -88,9 +95,9 @@ public final class EntityBuilder implements Builder<Entity> {
 	}
 
 	/**
-	 * Add a new field.
-	 * @param fieldName Name of the field 
-	 * @param type Type of the field 
+	 * Adds a new field.
+	 * @param fieldName Name of the field
+	 * @param type Type of the field
 	 * @param multiple If the field can have many values
 	 * @param required If the field is required
 	 * @return this builder
@@ -108,6 +115,6 @@ public final class EntityBuilder implements Builder<Entity> {
 	/** {@inheritDoc} */
 	@Override
 	public Entity build() {
-		return new Entity(name, fields);
+		return new Entity(name, fields, myRoot);
 	}
 }

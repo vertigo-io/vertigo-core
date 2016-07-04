@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.component.aop;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.core.component.aop.data.components.A;
@@ -25,9 +28,6 @@ import io.vertigo.core.component.aop.data.components.B;
 import io.vertigo.core.component.aop.data.components.C;
 import io.vertigo.core.component.aop.data.components.Computer;
 import io.vertigo.core.component.aop.data.components.F;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public final class AspectTest extends AbstractTestCaseJU4 {
 	private A a;

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,6 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,12 +25,19 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 /**
  * Plugin XML chargeant la registry à partir d'un fichier XML
@@ -93,13 +93,13 @@ final class XmlSecurityLoader {
 		final Element root = XmlSecurityLoader.create(authURL, "/io/vertigo/persona/security/authorisation-config_1_0.dtd");
 
 		// Permission
-		final List<Element> permissions = root.getChildren(PERMISSION_KEY);
+		final List<Element> permissions = root.elements(PERMISSION_KEY);
 		for (final Element permissionElement : permissions) {
 			final Permission permission = createPermission(permissionElement);
 			Home.getApp().getDefinitionSpace().put(permission);
 		}
 		// Role
-		final List<Element> roleKeys = root.getChildren(ROLE_KEY);
+		final List<Element> roleKeys = root.elements(ROLE_KEY);
 		for (final Element roleElement : roleKeys) {
 			final Role role = createRole(roleElement);
 			Home.getApp().getDefinitionSpace().put(role);
@@ -124,10 +124,9 @@ final class XmlSecurityLoader {
 		Assertion.checkNotNull(url);
 		//-----
 		try {
-			final SAXBuilder builder = new SAXBuilder(true);
-			builder.setExpandEntities(true);
+			final SAXReader builder = new SAXReader(true);
 			builder.setEntityResolver(entityResolver);
-			return builder.build(url.openStream());
+			return builder.read(url.openStream());
 		} catch (final Exception e) {
 			throw new WrappedException("Erreur durant la lecture du fichier XML " + url, e);
 		}
@@ -136,9 +135,9 @@ final class XmlSecurityLoader {
 	private static Permission createPermission(final Element permissionElement) {
 		Assertion.checkNotNull(permissionElement);
 		//-----
-		final String id = permissionElement.getAttributeValue(ID_KEY);
-		final String operation = permissionElement.getAttributeValue(OPERATION_KEY);
-		final String filter = permissionElement.getAttributeValue(FILTER_KEY);
+		final String id = permissionElement.attributeValue(ID_KEY);
+		final String operation = permissionElement.attributeValue(OPERATION_KEY);
+		final String filter = permissionElement.attributeValue(FILTER_KEY);
 		//-----
 		return new Permission(id, operation, filter);
 	}
@@ -146,14 +145,14 @@ final class XmlSecurityLoader {
 	private static Role createRole(final Element roleElement) {
 		Assertion.checkNotNull(roleElement);
 		//-----
-		final String name = roleElement.getAttributeValue(NAME_KEY);
+		final String name = roleElement.attributeValue(NAME_KEY);
 		//-----
-		final String description = roleElement.getAttributeValue(DESCRIPTION_KEY);
+		final String description = roleElement.attributeValue(DESCRIPTION_KEY);
 		//-----
 		final List<Permission> permissions = new ArrayList<>();
-		final List<Element> xps = roleElement.getChildren(PERMISSION_KEY);
+		final List<Element> xps = roleElement.elements(PERMISSION_KEY);
 		for (final Element element : xps) {
-			final String permissionRef = element.getAttributeValue(REF_KEY);
+			final String permissionRef = element.attributeValue(REF_KEY);
 			//-----
 			final Permission permission = Home.getApp().getDefinitionSpace().resolve(permissionRef, Permission.class);
 			//-----

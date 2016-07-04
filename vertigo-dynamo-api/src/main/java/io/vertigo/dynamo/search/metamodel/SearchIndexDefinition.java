@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,19 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.lang.Assertion;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.lang.Assertion;
 
 /**
  * Définition de l'index de recherche.
@@ -84,7 +84,7 @@ public final class SearchIndexDefinition implements Definition {
 		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkState(indexDtDefinition.getIdField().isDefined(), "Index Object {0} must have a field declared as id", indexDtDefinition.getClassSimpleName());
+		Assertion.checkState(indexDtDefinition.getIdField().isPresent(), "Index Object {0} must have a field declared as id", indexDtDefinition.getClassSimpleName());
 		Assertion.checkNotNull(indexCopyToFieldsMap);
 		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----

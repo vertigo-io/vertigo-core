@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
+import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -33,11 +38,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -82,7 +82,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
 		final URI<DtObject> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
-		final DtObject fileInfoDto = getStoreManager().getDataStore().get(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);

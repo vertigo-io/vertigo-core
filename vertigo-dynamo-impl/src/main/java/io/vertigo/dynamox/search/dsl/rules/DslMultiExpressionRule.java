@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -28,9 +31,6 @@ import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.lang.Option;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Parsing rule for query.
@@ -89,7 +89,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		switch (parsing.getValue()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getResult();
-				preMultiExpression = ((Option<String>) blockExpression.get(0)).getOrElse("") + (String) blockExpression.get(1);
+				preMultiExpression = ((Option<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
 				many = (List<Choice>) blockExpression.get(3);
 				postMultiExpression = (String) blockExpression.get(5);
 				break;

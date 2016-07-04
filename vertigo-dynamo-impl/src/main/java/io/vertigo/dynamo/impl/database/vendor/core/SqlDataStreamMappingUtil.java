@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
-import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.lang.Assertion;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,6 +28,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import io.vertigo.dynamo.domain.metamodel.DataStream;
+import io.vertigo.dynamo.file.util.TempFile;
+import io.vertigo.lang.Assertion;
 
 /**
  * Gestion native des blobs.

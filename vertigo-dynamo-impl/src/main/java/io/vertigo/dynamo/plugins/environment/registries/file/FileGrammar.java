@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
@@ -27,22 +30,19 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 /**
  * @author npiedeloup
  */
-final class FileGrammar {
+final class FileGrammar implements EntityGrammar {
 
 	/**Définition de tache.*/
 	public static final Entity FILE_INFO_DEFINITION_ENTITY;
-
-	/** File Grammar instance. */
-	public static final EntityGrammar GRAMMAR;
 
 	static {
 		FILE_INFO_DEFINITION_ENTITY = new EntityBuilder("FileInfo")
 				.addField(KspProperty.DATA_SPACE, EntityPropertyType.String, true)
 				.build();
-		GRAMMAR = new EntityGrammar(FILE_INFO_DEFINITION_ENTITY);
 	}
 
-	private FileGrammar() {
-		//private
+	@Override
+	public List<Entity> getEntities() {
+		return Collections.singletonList(FILE_INFO_DEFINITION_ENTITY);
 	}
 }

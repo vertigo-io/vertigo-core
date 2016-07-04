@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.dynamo.impl.database;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
@@ -30,12 +36,6 @@ import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
 import io.vertigo.dynamo.impl.database.statementhandler.SqlStatementHandlerImpl;
 import io.vertigo.lang.Assertion;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.
@@ -77,13 +77,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		final SqlConnectionProvider sqlConnectionProvider = connectionProviderPluginMap.get(name);
 		Assertion.checkNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
 		return sqlConnectionProvider;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	@Deprecated
-	public SqlConnectionProvider getConnectionProvider() {
-		return getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 	}
 
 	/** {@inheritDoc} */

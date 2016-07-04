@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -25,10 +29,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 /**
  * Centralisation du peuplement des beans.
@@ -85,15 +85,15 @@ final class SqlRetrieveUtil {
 		return dtc;
 	}
 
-	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultset, final SqlResultMetaData resultMetaData) throws SQLException {
-		final DtField[] fields = findFields(resultMetaData, resultset.getMetaData());
+	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
+		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
-		if (resultset.next()) {
+		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
 			final DtObject dto = resultMetaData.createDtObject();
-			readDtObject(mapping, resultset, dto, fields);
-			if (resultset.next()) {
+			readDtObject(mapping, resultSet, dto, fields);
+			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
 			return dto;

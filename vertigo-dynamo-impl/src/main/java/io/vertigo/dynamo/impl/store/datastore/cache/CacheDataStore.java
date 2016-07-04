@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -113,12 +113,12 @@ public final class CacheDataStore {
 		if (listUri instanceof DtListURIForMasterData) {
 			dtc = loadMDList((DtListURIForMasterData) listUri);
 		} else if (listUri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForSimpleAssociation) listUri);
 		} else if (listUri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, (DtListURIForNNAssociation) listUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<D> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			dtc = getPhysicalStore(dtDefinition).readAll(dtDefinition, castedListUri);
+			dtc = getPhysicalStore(dtDefinition).findAll(dtDefinition, castedListUri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -128,7 +128,7 @@ public final class CacheDataStore {
 
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
+		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
 		final DtList<D> unFilteredDtc = loadList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));

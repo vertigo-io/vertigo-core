@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,18 @@
  */
 package io.vertigo.vega.impl.token;
 
+import java.io.Serializable;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
-
-import java.io.Serializable;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Ui data security token.
@@ -91,7 +91,7 @@ public final class TokenManagerImpl implements TokenManager {
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		final Option<Serializable> result = kvStoreManager.find(collection, tokenKey, Serializable.class);
-		if (result.isDefined()) {
+		if (result.isPresent()) {
 			kvStoreManager.remove(collection, tokenKey);
 		}
 		return result;
@@ -99,7 +99,7 @@ public final class TokenManagerImpl implements TokenManager {
 
 	private String makeTokenKey(final String objectUUID) {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
+		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return new StringBuilder(36 + 1 + 36)
 				.append(getUserTokenPart()).append(":").append(objectUUID)
@@ -108,7 +108,7 @@ public final class TokenManagerImpl implements TokenManager {
 
 	private String getUserTokenPart() {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
+		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return userSessionOption.get().getSessionUUID().toString();
 	}

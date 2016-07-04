@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.lang.Assertion;
-
 import java.text.MessageFormat;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * The StringUtil class provides usefull methods to manipulate strings.
@@ -132,7 +132,9 @@ public final class StringUtil {
 		for (int i = 0; i < length; i++) {
 			c = str.charAt(i);
 			if (c == '_') {
-				if (digit != null && digit.booleanValue() && Character.isDigit(str.charAt(i + 1))) {
+				if (digit != null
+						&& digit.booleanValue()
+						&& Character.isDigit(str.charAt(i + 1))) {
 					result.append('_');
 				}
 				digit = null;
@@ -172,21 +174,20 @@ public final class StringUtil {
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
 		char c;
-		boolean upperCase = true;
 		boolean isDigit = false;
 		for (int i = 0; i < length; i++) {
 			c = str.charAt(i);
 			if (Character.isDigit(c) || c == '_') {
-				if (!isDigit && !upperCase) {
-					isDigit = true;
+				if (i > 0 && !isDigit) {
 					result.append('_');
 				}
+				isDigit = true;
 			} else if (Character.isUpperCase(c)) {
-				if (!upperCase || upperCase && i == 1) {
+				if (i > 0) {
 					result.append('_');
 				}
+				isDigit = false;
 			} else {
-				upperCase = false;
 				isDigit = false;
 			}
 			result.append(Character.toUpperCase(c));

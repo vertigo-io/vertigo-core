@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.app;
 
-import io.vertigo.app.config.BootConfig;
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.lang.Assertion;
-
 import java.io.File;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+
+import io.vertigo.app.config.BootConfig;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.lang.Assertion;
 
 /**
  * The Boot class is reponsible for the boot phase. 
@@ -66,7 +66,7 @@ final class Boot {
 	}
 
 	void init() {
-		if (bootConfig.getLogConfig().isDefined()) {
+		if (bootConfig.getLogConfig().isPresent()) {
 			initLog(bootConfig.getLogConfig().get());
 		}
 	}

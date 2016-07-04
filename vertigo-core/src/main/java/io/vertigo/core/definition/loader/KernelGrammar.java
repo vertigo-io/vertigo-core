@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.Entity;
 import io.vertigo.core.definition.dsl.entity.EntityBuilder;
 import io.vertigo.core.definition.dsl.entity.EntityGrammar;
@@ -25,24 +28,22 @@ import io.vertigo.core.definition.dsl.entity.EntityGrammar;
 /**
  * @author pchretien
  */
-public final class KernelGrammar {
+public final class KernelGrammar implements EntityGrammar {
 	/** Mot-clé des MetaDefinitions de DataType. */
 	private static final String DATA_TYPE_META_DEFINITION = "DataType";
 
 	/**Type Primitif.*/
-	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
-
-	/** Kernel Grammar instance. */
-	public static final EntityGrammar GRAMMAR = new EntityGrammar(DATA_TYPE_ENTITY);
-
-	private KernelGrammar() {
-		//private
-	}
+	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).withRoot().build();
 
 	/**
 	 * @return Type primitif.
 	 */
 	public static Entity getDataTypeEntity() {
 		return DATA_TYPE_ENTITY;
+	}
+
+	@Override
+	public List<Entity> getEntities() {
+		return Collections.singletonList(DATA_TYPE_ENTITY);
 	}
 }

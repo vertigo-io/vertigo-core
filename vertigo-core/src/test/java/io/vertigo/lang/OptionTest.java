@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,28 +30,26 @@ import org.junit.Test;
 public final class OptionTest {
 	@Test
 	public void testNone() {
-		final Option<String> none = Option.none();
-		Assert.assertTrue(none.isEmpty());
-		Assert.assertFalse(none.isDefined());
-		Assert.assertEquals("movie", none.getOrElse("movie"));
+		final Option<String> none = Option.empty();
+		Assert.assertFalse(none.isPresent());
+		Assert.assertEquals("movie", none.orElse("movie"));
 	}
 
 	@Test(expected = NoSuchElementException.class)
 	public void testNoneFail() {
-		Option.none().get();
+		Option.empty().get();
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSomeFail() {
-		Option.some(null);
+		Option.of(null);
 	}
 
 	@Test
 	public void testSome() {
-		final Option<String> some = Option.some("music");
-		Assert.assertFalse(some.isEmpty());
-		Assert.assertTrue(some.isDefined());
+		final Option<String> some = Option.of("music");
+		Assert.assertTrue(some.isPresent());
 		Assert.assertEquals("music", some.get());
-		Assert.assertEquals("music", some.getOrElse("movie"));
+		Assert.assertEquals("music", some.orElse("movie"));
 	}
 }

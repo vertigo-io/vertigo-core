@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,6 +26,12 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP.
@@ -75,7 +75,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isDefined() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
+		this.nodeName = nodeName.isPresent() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
 
 	}
 

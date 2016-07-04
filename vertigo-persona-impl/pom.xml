@@ -49,9 +49,9 @@
 
 		<!--persona-security -->
 		<dependency>
-			<groupId>jdom</groupId>
-			<artifactId>jdom</artifactId> <!-- XmlSecurityLoader -->
-			<version>1.0</version>
+		    <groupId>dom4j</groupId>
+		    <artifactId>dom4j</artifactId> <!-- XmlSecurityLoader -->
+		    <version>1.6.1</version>
 		</dependency>
 		<!--/persona-security -->
 	</dependencies>

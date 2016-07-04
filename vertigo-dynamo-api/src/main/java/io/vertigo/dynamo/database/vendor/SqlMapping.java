@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
-
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Interface centralisant les mappings à la BDD.
@@ -72,11 +72,11 @@ public interface SqlMapping {
 	/**
 	 * Retourne la valeur typée vertigo d'un resultSet.
 	 *
-	 * @param rs ResultSet
+	 * @param resultSet ResultSet
 	 * @param col Indexe de la colonne
 	 * @param dataType Type primitif
 	 * @return Valeur typée d'un resultSet
 	 * @throws SQLException Exception sql
 	 */
-	Object getValueForResultSet(ResultSet rs, int col, DataType dataType) throws SQLException;
+	Object getValueForResultSet(ResultSet resultSet, int col, DataType dataType) throws SQLException;
 }

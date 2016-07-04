@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,10 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.sql.SQLException;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -33,14 +37,10 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
-import java.sql.SQLException;
-
-import javax.inject.Inject;
-
 /**
  * @author jmforhan
  */
-public class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatement> {
+public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatement> {
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
@@ -52,7 +52,7 @@ public class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatem
 
 	/** {@inheritDoc} */
 	@Override
-	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
+	protected SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
 		return getDataBaseManager().createCallableStatement(connection, procName);
 	}
 
@@ -97,9 +97,7 @@ public class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatem
 				batchSize = dtc.size();
 			}
 		}
-		if (batchSize == null) {
-			throw new IllegalArgumentException("Pour un traitement Batch, il doit y avoir une (et une seule) liste en entrée.");
-		}
+		Assertion.checkNotNull(batchSize, "Pour un traitement Batch, il doit y avoir une (et une seule) liste en entrée.");
 		return batchSize;
 	}
 }

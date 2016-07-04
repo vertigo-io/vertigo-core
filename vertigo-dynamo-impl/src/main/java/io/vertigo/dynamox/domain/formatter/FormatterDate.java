@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
+import java.text.ParsePosition;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -25,14 +30,8 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.MessageText;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
-
-import java.text.ParsePosition;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Gestion des formattages de dates.
@@ -65,16 +64,11 @@ public final class FormatterDate implements Formatter {
 	public static final int MAX_YEAR = 2150;
 
 	/**
-	 * Format d'affichage de la date
-	 */
-	private final String pattern;
-
-	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
 	 */
 	@JsonExclude
-	private final List<MessageText> lstExFillInFormat;
+	private final List<String> patterns;
 
 	/**
 	 * Constructeur.
@@ -84,21 +78,16 @@ public final class FormatterDate implements Formatter {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);
 		//-----
-		final StringTokenizer st = new StringTokenizer(args, ";");
-
-		//Affichage des dates renseignées
-		assertArgs(st.hasMoreTokens());
-		pattern = st.nextToken().trim();
+		final ListBuilder<String> patternsBuilder = new ListBuilder<>();
+		for (final String token : args.split(";")) {
+			patternsBuilder.add(token.trim());
+		}
 
 		//Saisie des dates
-		lstExFillInFormat = new java.util.ArrayList<>(st.countTokens() + 1);
 		//Le format d'affichage est le premier format de saisie autorisé
-		lstExFillInFormat.add(new MessageText(pattern, null));
-
 		//Autres saisies autorisées (facultatifs)
-		while (st.hasMoreTokens()) {
-			lstExFillInFormat.add(new MessageText(st.nextToken().trim(), null));
-		}
+		patterns = patternsBuilder.unmodifiable().build();
+		assertArgs(!patterns.isEmpty());
 	}
 
 	private static void assertArgs(final boolean test) {
@@ -110,7 +99,7 @@ public final class FormatterDate implements Formatter {
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//-----
-		return dateToString((Date) objValue);
+		return dateToString((Date) objValue, patterns.get(0));
 	}
 
 	/** {@inheritDoc} */
@@ -119,7 +108,6 @@ public final class FormatterDate implements Formatter {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
-
 		return stringToDate(sValue);
 	}
 
@@ -146,8 +134,8 @@ public final class FormatterDate implements Formatter {
 
 		Date dateValue = null;
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
-		for (int i = 0; i < lstExFillInFormat.size() && dateValue == null; i++) {
-			dateValue = stringToDate(dateString, lstExFillInFormat.get(i));
+		for (int i = 0; i < patterns.size() && dateValue == null; i++) {
+			dateValue = doStringToDate(dateString, patterns.get(i));
 		}
 
 		//Si dateValue est null c'est que toutes les convertions ont échouées.
@@ -163,11 +151,11 @@ public final class FormatterDate implements Formatter {
 	 *
 	 * Cette méthode retourne null si la chaine n'a pas pu être convertie en date
 	 */
-	private static Date stringToDate(final String dateString, final MessageText dateFormat) {
+	private static Date doStringToDate(final String dateString, final String pattern) {
 		Date dateValue;
 
 		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(dateFormat.getDisplay(), getLocaleManager().getCurrentLocale());
+		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
 
 		try {
@@ -203,7 +191,7 @@ public final class FormatterDate implements Formatter {
 	 *
 	 * @return Date formattée
 	 */
-	private String dateToString(final Date dateValue) {
+	private static String dateToString(final Date dateValue, final String pattern) {
 		final String dateString;
 		if (dateValue == null) {
 			dateString = ""; //Affichage d'une date non renseignée;

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,10 +44,10 @@ public final class DtListState {
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);
 		Assertion.checkArgument(sortFieldName == null || sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----
-		this.maxRows = Option.option(maxRows);
+		this.maxRows = Option.ofNullable(maxRows);
 		this.skipRows = skipRows;
-		this.sortFieldName = Option.option(sortFieldName);
-		this.sortDesc = Option.option(sortDesc);
+		this.sortFieldName = Option.ofNullable(sortFieldName);
+		this.sortDesc = Option.ofNullable(sortDesc);
 	}
 
 	/**

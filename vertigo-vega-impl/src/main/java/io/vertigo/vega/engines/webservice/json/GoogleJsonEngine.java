@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +18,6 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Option;
-import io.vertigo.vega.webservice.WebServiceTypeUtil;
-import io.vertigo.vega.webservice.model.DtListDelta;
-
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -39,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -55,11 +47,46 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.JsonExclude;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.vega.webservice.WebServiceTypeUtil;
+import io.vertigo.vega.webservice.model.DtListDelta;
+
 /**
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
-	private final Gson gson = createGson();
+	private final Gson gson;
+
+	private static enum SearchApiVersion {
+		V1(FacetedQueryResultJsonSerializerV1.class), //first api
+		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
+		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
+		V4Beta(FacetedQueryResultJsonSerializerV4.class); //with highlights
+
+		private Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
+
+		<C extends JsonSerializer<FacetedQueryResult<?, ?>>> SearchApiVersion(final Class<C> jsonSerializerClass) {
+			this.jsonSerializerClass = jsonSerializerClass;
+		}
+
+		Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> getJsonSerializerClass() {
+			return jsonSerializerClass;
+		}
+	}
+
+	@Inject
+	public GoogleJsonEngine(@Named("searchApiVersion") final Option<String> searchApiVersionStr) {
+		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V3.name()));
+		gson = createGson(searchApiVersion);
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -219,7 +246,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isDefined()) {
+			if (src.isPresent()) {
 				return context.serialize(src.get());
 			}
 			return null; //rien
@@ -273,7 +300,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final URI uri, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(uri.toURN());
+			return new JsonPrimitive(uri.urn());
 		}
 
 		/** {@inheritDoc} */
@@ -299,25 +326,29 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static Gson createGson() {
-		return new GsonBuilder()
-				.setPrettyPrinting()
-				//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-				.registerTypeAdapter(Date.class, new UTCDateAdapter())
-				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
-				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
-				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
-				.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
-				.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
-				.registerTypeAdapter(FacetedQueryResult.class, new FacetedQueryResultJsonSerializer())
-				.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
-				.registerTypeAdapter(List.class, new ListJsonSerializer())
-				.registerTypeAdapter(Map.class, new MapJsonSerializer())
-				.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
-				.registerTypeAdapter(Option.class, new OptionJsonSerializer())
-				.registerTypeAdapter(Class.class, new ClassJsonSerializer())
-				.registerTypeAdapter(URI.class, new URIJsonAdapter())
-				.addSerializationExclusionStrategy(new JsonExclusionStrategy())
-				.create();
+	private static Gson createGson(final SearchApiVersion searchApiVersion) {
+		try {
+			return new GsonBuilder()
+					.setPrettyPrinting()
+					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+					.registerTypeAdapter(Date.class, new UTCDateAdapter())
+					//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
+					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
+					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
+					.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
+					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
+					.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
+					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
+					.registerTypeAdapter(List.class, new ListJsonSerializer())
+					.registerTypeAdapter(Map.class, new MapJsonSerializer())
+					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
+					.registerTypeAdapter(Option.class, new OptionJsonSerializer())
+					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
+					.registerTypeAdapter(URI.class, new URIJsonAdapter())
+					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
+					.create();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw WrappedException.wrapIfNeeded(e, "Can't create Gson");
+		}
 	}
 }

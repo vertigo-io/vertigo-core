@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,19 @@
  */
 package io.vertigo.vega.webservice.metamodel;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.StringUtil;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
+import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.model.UiListState;
 
 /**
  * WebServiceDefinition Builder.
@@ -95,8 +95,16 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private static String normalizePath(final String servicePath) {
-		return servicePath.replaceAll("\\{.*?\\}", "_")//.*? : reluctant quantifier;
-				.replaceAll("[//\\*\\(\\)]", "_");
+		//On calcule la taille du path sans le nom des paramètres, c'est util pour trier les routes dans l'ordre d'interception.
+		final String argsRemovedPath = servicePath.replaceAll("\\{.*?\\}", "_");//.*? : reluctant quantifier;
+		final int argsRemovedPathSize = argsRemovedPath.length();
+
+		//On rend le path plus lisible et compatible DefinitionName
+		final String normalizedString = argsRemovedPath.replaceAll("[//\\*\\(\\)]", "_")
+				.replaceAll("_+", "_");
+		final String hashcodeAsHex = "$" + Integer.toHexString(argsRemovedPath.hashCode());
+		//On limite sa taille pour avec un nom de définition acceptable
+		return normalizedString.substring(0, Math.min(40, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
 	}
 
 	/**
@@ -119,6 +127,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
 		Assertion.checkArgument(!StringUtil.isEmpty(myPathPrefix) || !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+		Assertion.checkArgument(StringUtil.isEmpty(path) || path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myVerb = verb;
 		myPath = path;

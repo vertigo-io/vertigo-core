@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,6 @@
  */
 package io.vertigo.tempo.plugins.scheduler.basic;
 
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.tempo.impl.scheduler.SchedulerPlugin;
-import io.vertigo.tempo.job.JobManager;
-import io.vertigo.tempo.job.metamodel.JobDefinition;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +30,12 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.tempo.impl.scheduler.SchedulerPlugin;
+import io.vertigo.tempo.job.JobManager;
+import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 /**
  * Implémentation de JobManager prévue pour un serveur sans cluster (une seule JVM).

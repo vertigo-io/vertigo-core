@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,20 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
+import java.io.IOException;
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -32,20 +46,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
-
-import java.io.IOException;
-import java.util.Collection;
-
-import org.apache.log4j.Logger;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.count.CountResponse;
-import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 
 //vérifier
 /**
@@ -96,7 +96,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					bulkRequest.add(esClient.prepareIndex()
 							.setIndex(indexName)
 							.setType(typeName)
-							.setId(index.getURI().toURN())
+							.setId(index.getURI().urn())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -122,7 +122,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			esClient.prepareIndex()
 					.setIndex(indexName)
 					.setType(typeName)
-					.setId(index.getURI().toURN())
+					.setId(index.getURI().urn())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -156,7 +156,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		esClient.prepareDelete()
 				.setIndex(indexName)
 				.setType(typeName)
-				.setId(uri.toURN())
+				.setId(uri.urn())
 				.execute()
 				.actionGet();
 	}
@@ -182,7 +182,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
 					.build();
 		} catch (final SearchPhaseExecutionException e) {
-			throw new VUserException(new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			final VUserException vue = new VUserException(
+					new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			vue.initCause(e);
+			throw vue;
 		}
 	}
 

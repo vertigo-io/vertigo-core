@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,6 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
-import io.vertigo.persona.impl.security.BeanResourceNameFactory;
-import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
@@ -34,6 +27,13 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.lang.Option;
+import io.vertigo.persona.impl.security.BeanResourceNameFactory;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 /**
  * @author pchretien
@@ -55,7 +55,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			Assert.assertEquals(userSession, securityManager.getCurrentUserSession().get());
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -72,7 +72,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testNoUserSession() {
 		final Option<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertTrue(userSession.isEmpty());
+		Assert.assertFalse(userSession.isPresent());
 	}
 
 	@Test
@@ -80,12 +80,12 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isDefined());
+			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			//
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
-		Assert.assertFalse(securityManager.getCurrentUserSession().isDefined());
+		Assert.assertFalse(securityManager.getCurrentUserSession().isPresent());
 	}
 
 	@Test(expected = NullPointerException.class)

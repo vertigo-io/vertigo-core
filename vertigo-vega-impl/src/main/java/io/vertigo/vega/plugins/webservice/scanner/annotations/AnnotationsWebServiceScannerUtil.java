@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,12 @@
  * limitations under the License.
  */
 package io.vertigo.vega.plugins.webservice.scanner.annotations;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -57,12 +63,6 @@ import io.vertigo.vega.webservice.stereotype.SessionLess;
 import io.vertigo.vega.webservice.stereotype.Validate;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author npiedeloup
  */
@@ -86,7 +86,7 @@ public final class AnnotationsWebServiceScannerUtil {
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
 		for (final Method method : webServicesClass.getMethods()) {
 			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
-			if (webServiceDefinition.isDefined()) {
+			if (webServiceDefinition.isPresent()) {
 				webServiceDefinitions.add(webServiceDefinition.get());
 			}
 		}
@@ -144,9 +144,9 @@ public final class AnnotationsWebServiceScannerUtil {
 				builder.addWebServiceParam(webServiceParam);
 			}
 			//---
-			return Option.some(builder.build());
+			return Option.of(builder.build());
 		}
-		return Option.none();
+		return Option.empty();
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {

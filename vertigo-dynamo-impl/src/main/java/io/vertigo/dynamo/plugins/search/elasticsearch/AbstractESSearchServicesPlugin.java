@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
-
-import io.vertigo.app.Home;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.WrappedException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -61,6 +41,26 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import io.vertigo.app.Home;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -96,7 +96,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
 		this.indexName = indexName.toLowerCase().trim();
-		if (configFile.isDefined()) {
+		if (configFile.isPresent()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
 			this.configFile = null;
@@ -270,9 +270,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
-				if (indexType.isDefined() || copyFromFields.contains(dtField)) {
+				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
 					typeMapping.startObject(dtField.getName());
-					if (indexType.isDefined()) {
+					if (indexType.isPresent()) {
 						appendIndexTypeMapping(typeMapping, indexType);
 					}
 					if (copyFromFields.contains(dtField)) {
