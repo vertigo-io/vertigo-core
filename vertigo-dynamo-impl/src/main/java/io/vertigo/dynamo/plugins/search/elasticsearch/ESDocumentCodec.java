@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -39,7 +40,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
@@ -180,7 +180,7 @@ final class ESDocumentCodec {
 	}
 
 	private static boolean isIndexStoredDomain(final Domain domain) {
-		final Option<IndexType> indexType = IndexType.readIndexType(domain);
+		final Optional<IndexType> indexType = IndexType.readIndexType(domain);
 		return !indexType.isPresent() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
 	}
 

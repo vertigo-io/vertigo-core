@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.transport;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,7 +33,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP. Utilisation du client Transport simple, sans
@@ -65,7 +66,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	@Inject
 	public ESTransportSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("envIndex") final String envIndex,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
-			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager,
+			@Named("config.file") final Optional<String> configFile, @Named("node.name") final Optional<String> nodeName, final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,

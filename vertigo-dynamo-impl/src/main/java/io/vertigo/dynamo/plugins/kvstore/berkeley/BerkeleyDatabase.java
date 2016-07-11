@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.kvstore.berkeley;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,6 @@ import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
@@ -97,7 +97,7 @@ final class BerkeleyDatabase {
 	 * @param clazz Type des objets à récupérer
 	 * @return Objet correspondant à la clé
 	 */
-	<C> Option<C> find(final String id, final Class<C> clazz) {
+	<C> Optional<C> find(final String id, final Class<C> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
 		//-----
@@ -114,12 +114,12 @@ final class BerkeleyDatabase {
 		}
 		if (status == OperationStatus.NOTFOUND) {
 			//Si on n'a rien trouvé
-			return Option.empty();
+			return Optional.empty();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("find has failed");
 		}
-		return Option.ofNullable(clazz.cast(dataBinding.entryToObject(dataEntry)));
+		return Optional.ofNullable(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
 
 	/**

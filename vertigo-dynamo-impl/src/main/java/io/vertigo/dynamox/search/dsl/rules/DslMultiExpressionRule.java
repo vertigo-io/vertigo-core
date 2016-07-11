@@ -20,17 +20,17 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.OptionRule;
+import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
-import io.vertigo.lang.Option;
 
 /**
  * Parsing rule for query.
@@ -65,8 +65,8 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		);
 		final Rule<List<Choice>> manyExpressionRule = new ManyRule<>(expressionsRule, false);
 		final Rule<List<?>> blockExpressionRule = new SequenceRule(
-				new OptionRule<>(new DslBooleanOperatorRule()), //0
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				new OptionalRule<>(new DslBooleanOperatorRule()), //0
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.BLOCK_START, //2
 				manyExpressionRule, //3
 				DslSyntaxRules.BLOCK_END, //4
@@ -89,7 +89,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		switch (parsing.getValue()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getResult();
-				preMultiExpression = ((Option<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
+				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
 				many = (List<Choice>) blockExpression.get(3);
 				postMultiExpression = (String) blockExpression.get(5);
 				break;

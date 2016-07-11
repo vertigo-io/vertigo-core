@@ -18,10 +18,10 @@
  */
 package io.vertigo.persona.security;
 
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.lang.Manager;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.metamodel.Role;
 
 /**
@@ -50,7 +50,7 @@ public interface VSecurityManager extends Manager {
 	 * @param <U> Session utilisateur
 	 * @return Session utilisateur courante.
 	 */
-	<U extends UserSession> Option<U> getCurrentUserSession();
+	<U extends UserSession> Optional<U> getCurrentUserSession();
 
 	/**
 	 * Creation de nouveaux utilisateurs.

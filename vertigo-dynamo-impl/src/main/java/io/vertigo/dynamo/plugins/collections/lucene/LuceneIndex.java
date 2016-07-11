@@ -21,13 +21,13 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Option;
 
 /**
  * Interface réprésentant un IndexLucene.
@@ -55,6 +55,6 @@ public interface LuceneIndex<D extends DtObject> {
 	 * @return Filtered ordered list
 	 * @throws IOException Query error
 	 */
-	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField) throws IOException;
+	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Optional<DtField> boostedField) throws IOException;
 
 }

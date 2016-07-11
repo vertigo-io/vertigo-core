@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Classe de stockage des listes.
@@ -192,14 +192,14 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param <O> MetaData value type
 	 * @return MetaData value
 	 */
-	public <O extends Serializable> Option<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
+	public <O extends Serializable> Optional<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
 		Assertion.checkArgNotEmpty(metaDataName);
 		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
-			return Option.empty();
+			return Optional.empty();
 		}
-		return Option.of(metaDataClass.cast(value));
+		return Optional.of(metaDataClass.cast(value));
 	}
 
 	/**

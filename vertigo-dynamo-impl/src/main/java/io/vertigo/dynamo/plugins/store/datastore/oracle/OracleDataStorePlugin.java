@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.oracle;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -28,7 +30,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation d'un Store Oracle.
@@ -47,7 +48,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public OracleDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public OracleDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

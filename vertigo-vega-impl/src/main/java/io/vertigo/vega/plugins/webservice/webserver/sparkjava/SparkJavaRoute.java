@@ -18,9 +18,10 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import java.util.Optional;
+
 import org.apache.log4j.Logger;
 
-import io.vertigo.lang.Option;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -46,7 +47,7 @@ final class SparkJavaRoute extends Route {
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	SparkJavaRoute(final Option<String> apiPrefix, final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
+	SparkJavaRoute(final Optional<String> apiPrefix, final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
 		super(convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath()), webServiceDefinition.getAcceptType());
 		this.webServiceDefinition = webServiceDefinition;
 		this.handlerChain = handlerChain;

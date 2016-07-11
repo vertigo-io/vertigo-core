@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -46,7 +47,6 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
@@ -260,7 +260,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					concat(expressionSep, expressionDefinition.getPreBody()),
-					Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
+					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
 					dslQuery,
 					expressionDefinition.getPostBody());
 			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
@@ -384,7 +384,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 							"");
 					final DslExpression monoFieldExpressionDefinition = new DslExpression(
 							monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-							Option.of(monoFieldDefinition), Option.<DslMultiField> empty(),
+							Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
 							new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 							firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 					monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);

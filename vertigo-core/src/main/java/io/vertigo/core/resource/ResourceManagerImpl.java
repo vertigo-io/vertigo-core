@@ -20,19 +20,19 @@ package io.vertigo.core.resource;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 
 /**
  * Standard implementation for the resourceManager.
  * The strategy to access resources is defined by plugins.
- * 
- * So, you can extend the capabilities and define your own plugin to be able to access your own resources wherever they are.  
- * 
+ *
+ * So, you can extend the capabilities and define your own plugin to be able to access your own resources wherever they are.
+ *
  * @author pchretien
  */
 public final class ResourceManagerImpl implements ResourceManager {
@@ -53,7 +53,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	@Override
 	public URL resolve(final String resource) {
 		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
-			final Option<URL> url = resourceResolver.resolve(resource);
+			final Optional<URL> url = resourceResolver.resolve(resource);
 			if (url.isPresent()) {
 				return url.get();
 			}

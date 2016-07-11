@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.datastore;
 
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -52,7 +53,6 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 
 /**
@@ -99,7 +99,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param connectionName the name of the connection
 	 * @param taskManager the taskManager
 	 */
-	protected AbstractSqlDataStorePlugin(final Option<String> dataSpaceOption, final Option<String> connectionName, final TaskManager taskManager) {
+	protected AbstractSqlDataStorePlugin(final Optional<String> dataSpaceOption, final Optional<String> connectionName, final TaskManager taskManager) {
 		Assertion.checkNotNull(dataSpaceOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
@@ -552,7 +552,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
-		 final String request = getSelectForUpdate(tableName, idFieldName);
+		final String request = getSelectForUpdate(tableName, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -571,20 +571,20 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.execute(task)
 				.getResult();
 	}
-	
-    /**
-     * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
-     * spécificités de la base de données utilisée..
-     * @param tableName nom de la table
-     * @param idFieldName nom de la clé primaire
-     * @return select à exécuter.
-     */
-    protected String getSelectForUpdate(final String tableName, final String idFieldName) {
-        return new StringBuilder()
-                .append(" select * from ")
-                .append(tableName)
-                .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
-                .append(" for update ")
-                .toString();
-    }
+
+	/**
+	 * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
+	 * spécificités de la base de données utilisée..
+	 * @param tableName nom de la table
+	 * @param idFieldName nom de la clé primaire
+	 * @return select à exécuter.
+	 */
+	protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+		return new StringBuilder()
+				.append(" select * from ")
+				.append(tableName)
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" for update ")
+				.toString();
+	}
 }

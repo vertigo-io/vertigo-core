@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.hsql;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,7 +39,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation d'un Store HSQLDB.
@@ -67,7 +68,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param sequencePrefix the prefix used by the sequence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public HsqlDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

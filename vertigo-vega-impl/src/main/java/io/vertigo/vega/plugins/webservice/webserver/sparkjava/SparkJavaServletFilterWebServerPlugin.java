@@ -18,10 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Option;
 import spark.Access;
 
 /**
@@ -34,7 +35,7 @@ public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJa
 	 * Constructor.
 	 */
 	@Inject
-	public SparkJavaServletFilterWebServerPlugin(@Named("apiPrefix") final Option<String> apiPrefix) {
+	public SparkJavaServletFilterWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix) {
 		super(apiPrefix);
 		//-----
 		Access.runFromServlet();

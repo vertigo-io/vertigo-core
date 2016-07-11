@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.collections;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Optional;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.DtListFunction;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Standard implementation of DtListProcessor.
@@ -102,7 +102,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Option<C> min, final Option<C> max) {
+	public <C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
 		final DtListFilter filter = new DtListRangeFilter(fieldName, min, max, true, true);
 		return add(new FilterFunction<>(filter));
 	}

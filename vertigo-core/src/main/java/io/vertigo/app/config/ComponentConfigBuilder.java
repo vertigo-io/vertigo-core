@@ -20,11 +20,11 @@ package io.vertigo.app.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Option;
 
 /**
  * Paramétrage de l'application.
@@ -34,12 +34,12 @@ import io.vertigo.lang.Option;
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
 	private final ModuleConfigBuilder moduleConfigBuilder;
-	private final Option<Class<? extends Component>> apiClass;
+	private final Optional<Class<? extends Component>> apiClass;
 	private final Class<? extends Component> implClass;
 	private final boolean elastic;
 	private final Map<String, String> myParams = new HashMap<>();
 
-	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
+	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
@@ -52,7 +52,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 	/**
 	 * Add a param to this component config.
-	 * @param paramName Name of the param 
+	 * @param paramName Name of the param
 	 * @param paramValue Value of the param
 	 * @return this builder
 	 */
@@ -73,7 +73,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	}
 
 	/**
-	 * close this component config and returns to the module config. 
+	 * close this component config and returns to the module config.
 	 * @return the builder of the moduleConfig
 	 */
 	public ModuleConfigBuilder endComponent() {

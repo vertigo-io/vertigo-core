@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,6 @@ import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -113,10 +113,10 @@ public final class Injector {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
+				return Optional.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
-			return Option.empty();
+			return Optional.empty();
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();

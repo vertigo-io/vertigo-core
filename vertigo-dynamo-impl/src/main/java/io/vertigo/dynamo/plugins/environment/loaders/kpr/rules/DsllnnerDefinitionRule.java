@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.OptionRule;
+import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
@@ -59,7 +59,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 				DslSyntaxRules.SPACES,
 				definitionBodyRule,//4
 				DslSyntaxRules.SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

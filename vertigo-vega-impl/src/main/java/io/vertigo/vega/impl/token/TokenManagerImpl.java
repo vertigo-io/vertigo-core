@@ -19,6 +19,7 @@
 package io.vertigo.vega.impl.token;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -26,7 +27,6 @@ import javax.inject.Named;
 
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
@@ -77,7 +77,7 @@ public final class TokenManagerImpl implements TokenManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Serializable> get(final String objectUUID) {
+	public Optional<Serializable> get(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
@@ -86,11 +86,11 @@ public final class TokenManagerImpl implements TokenManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<Serializable> getAndRemove(final String objectUUID) {
+	public Optional<Serializable> getAndRemove(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
-		final Option<Serializable> result = kvStoreManager.find(collection, tokenKey, Serializable.class);
+		final Optional<Serializable> result = kvStoreManager.find(collection, tokenKey, Serializable.class);
 		if (result.isPresent()) {
 			kvStoreManager.remove(collection, tokenKey);
 		}
@@ -98,7 +98,7 @@ public final class TokenManagerImpl implements TokenManager {
 	}
 
 	private String makeTokenKey(final String objectUUID) {
-		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
+		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return new StringBuilder(36 + 1 + 36)
@@ -107,7 +107,7 @@ public final class TokenManagerImpl implements TokenManager {
 	}
 
 	private String getUserTokenPart() {
-		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
+		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return userSessionOption.get().getSessionUUID().toString();

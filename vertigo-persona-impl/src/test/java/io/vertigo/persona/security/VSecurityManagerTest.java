@@ -21,6 +21,7 @@ package io.vertigo.persona.security;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -30,7 +31,6 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
@@ -71,7 +71,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testNoUserSession() {
-		final Option<UserSession> userSession = securityManager.getCurrentUserSession();
+		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
 		Assert.assertFalse(userSession.isPresent());
 	}
 

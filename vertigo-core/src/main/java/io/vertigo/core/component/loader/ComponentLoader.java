@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,6 @@ import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
 
@@ -65,8 +65,8 @@ public final class ComponentLoader {
 	}
 
 	/**
-	 * Add all the components defined in the moduleConfigs into the componentSpace. 
-	 * 
+	 * Add all the components defined in the moduleConfigs into the componentSpace.
+	 *
 	 * @param componentSpace Space where all the components are stored
 	 * @param paramManager Manager of params
 	 * @param moduleConfigs Configs of modules to add.
@@ -75,7 +75,7 @@ public final class ComponentLoader {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, Option.of(paramManager), moduleConfig);
+			injectComponent(componentSpace, Optional.of(paramManager), moduleConfig);
 		}
 	}
 
@@ -85,21 +85,21 @@ public final class ComponentLoader {
 	 * @param bootModuleConfig Configs of the boot module
 	 */
 	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
-		doInjectComponents(componentSpace, Option.<ParamManager> empty(), bootModuleConfig);
+		doInjectComponents(componentSpace, Optional.<ParamManager> empty(), bootModuleConfig);
 		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
 		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");
 		//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 	}
 
-	private void injectComponent(final ComponentSpace componentSpace, final Option<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
+	private void injectComponent(final ComponentSpace componentSpace, final Optional<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		doInjectComponents(componentSpace, paramManagerOption, moduleConfig);
 		doInjectAspects(componentSpace, moduleConfig);
 	}
 
-	private void doInjectComponents(final ComponentSpace componentSpace, final Option<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
+	private void doInjectComponents(final ComponentSpace componentSpace, final Optional<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
@@ -191,7 +191,7 @@ public final class ComponentLoader {
 		aspects.put(aspect.getClass(), aspect);
 	}
 
-	private Component createComponentWithOptions(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private Component createComponentWithOptions(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 1. An instance is created
 		final Component instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
@@ -203,7 +203,7 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static Component createComponent(final Option<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	private static Component createComponent(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		//		if (componentConfig.isElastic()) {
 		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
 		//		}
@@ -216,7 +216,7 @@ public final class ComponentLoader {
 		return component;
 	}
 
-	private static Plugin createPlugin(final Container componentContainer, final Option<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
+	private static Plugin createPlugin(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---

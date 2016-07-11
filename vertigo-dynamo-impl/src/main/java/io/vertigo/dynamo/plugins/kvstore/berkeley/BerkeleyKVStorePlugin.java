@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +41,6 @@ import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -227,7 +227,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(final String collection, final String id, final Class<C> clazz) {
+	public <C> Optional<C> find(final String collection, final String id, final Class<C> clazz) {
 		return getDatabase(collection).find(id, clazz);
 	}
 

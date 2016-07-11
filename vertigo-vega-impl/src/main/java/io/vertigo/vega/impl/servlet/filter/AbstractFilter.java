@@ -19,6 +19,7 @@
 package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,8 +31,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import io.vertigo.lang.Option;
-
 /**
  * @author npiedeloup
  */
@@ -39,7 +38,7 @@ public abstract class AbstractFilter implements Filter {
 	/** Filter parameter name for exclude some url. */
 	protected static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
 	private FilterConfig config;
-	private Option<Pattern> pattern;
+	private Optional<Pattern> pattern;
 
 	/** {@inheritDoc} */
 	@Override
@@ -63,16 +62,16 @@ public abstract class AbstractFilter implements Filter {
 	 * @param urlExcludePattern Chaine d'exclusion du filtre à traduire en regExp.
 	 * @return Pattern compilé
 	 */
-	protected static final Option<Pattern> parsePattern(final String urlExcludePattern) {
+	protected static final Optional<Pattern> parsePattern(final String urlExcludePattern) {
 		if (urlExcludePattern != null) {
 			String urlExcludePatternParamNormalized = urlExcludePattern.replaceAll("\\.", "\\\\."); // . devient \\. (pour matcher un .)
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*([^;])", "[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*(;|$)", ".*$1"); //* en fin de pattern devient tous char
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
-			return Option.of(Pattern.compile(urlExcludePatternParamNormalized));
+			return Optional.of(Pattern.compile(urlExcludePatternParamNormalized));
 		}
-		return Option.empty();
+		return Optional.empty();
 	}
 
 	/**
@@ -81,7 +80,7 @@ public abstract class AbstractFilter implements Filter {
 	 * @param pattern Pattern de test
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
 	 */
-	protected static final boolean isUrlMatch(final ServletRequest req, final Option<Pattern> pattern) {
+	protected static final boolean isUrlMatch(final ServletRequest req, final Optional<Pattern> pattern) {
 		if (pattern.isPresent() && req instanceof HttpServletRequest) {
 			final HttpServletRequest httpRequest = (HttpServletRequest) req;
 			return isUrlMatch(httpRequest.getContextPath(), httpRequest.getRequestURI(), pattern.get());

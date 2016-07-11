@@ -18,17 +18,18 @@
  */
 package io.vertigo.commons.parser;
 
+import java.util.Optional;
+
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * An optional rule.
  * This rule is usefull each time there is an optional part inside a more global expression.
- * 
+ *
  * @author pchretien
  * @param<R> Type of the product text parsing
  */
-public final class OptionRule<R> implements Rule<Option<R>> {
+public final class OptionalRule<R> implements Rule<Optional<R>> {
 	private final String expression;
 	private final Rule<R> rule;
 
@@ -36,7 +37,7 @@ public final class OptionRule<R> implements Rule<Option<R>> {
 	 * Constructor.
 	 * @param rule Optional rule
 	 */
-	public OptionRule(final Rule<R> rule) {
+	public OptionalRule(final Rule<R> rule) {
 		super();
 		Assertion.checkNotNull(rule);
 		//-----
@@ -51,20 +52,20 @@ public final class OptionRule<R> implements Rule<Option<R>> {
 	}
 
 	@Override
-	public Parser<Option<R>> createParser() {
-		return new Parser<Option<R>>() {
-			private Option<R> option;
+	public Parser<Optional<R>> createParser() {
+		return new Parser<Optional<R>>() {
+			private Optional<R> option;
 
 			/** {@inheritDoc} */
 			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				//-----
-				option = Option.empty();
+				option = Optional.empty();
 				try {
 					final Parser<R> parser = rule.createParser();
 					index = parser.parse(text, index);
-					option = Option.ofNullable(parser.get());
+					option = Optional.ofNullable(parser.get());
 				} catch (final NotFoundException e) {
 					//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
 				}
@@ -72,7 +73,7 @@ public final class OptionRule<R> implements Rule<Option<R>> {
 			}
 
 			@Override
-			public Option<R> get() {
+			public Optional<R> get() {
 				return option;
 			}
 		};

@@ -21,6 +21,7 @@ package io.vertigo.persona.impl.security;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -32,7 +33,6 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -93,7 +93,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		return new LocaleProvider() {
 			@Override
 			public Locale getCurrentLocale() {
-				final Option<UserSession> userSession = getCurrentUserSession();
+				final Optional<UserSession> userSession = getCurrentUserSession();
 				return userSession.isPresent() ? userSession.get().getLocale() : null;
 			}
 		};
@@ -119,9 +119,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	@Override
-	public <U extends UserSession> Option<U> getCurrentUserSession() {
+	public <U extends UserSession> Optional<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
-		return Option.ofNullable(userSession);
+		return Optional.ofNullable(userSession);
 	}
 
 	/** {@inheritDoc} */
@@ -152,7 +152,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	public boolean isAuthorized(final String resource, final String operation) {
 		// Note: il s'agit d'une implementation naïve non optimisee,
 		// réalisée pour valider le modèle
-		final Option<UserSession> userSessionOption = getCurrentUserSession();
+		final Optional<UserSession> userSessionOption = getCurrentUserSession();
 
 		if (!userSessionOption.isPresent()) {
 			//Si il n'y a pas de session alors pas d'autorisation.

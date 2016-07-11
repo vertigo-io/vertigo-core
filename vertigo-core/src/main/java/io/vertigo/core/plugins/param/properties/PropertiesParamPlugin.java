@@ -21,6 +21,7 @@ package io.vertigo.core.plugins.param.properties;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -29,7 +30,6 @@ import javax.inject.Named;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Plugin de gestion de configuration de fichiers properties.
@@ -65,9 +65,9 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String paramName) {
+	public Optional<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Option.<String> ofNullable(params.getProperty(paramName)) : Option.<String> empty();
+		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.getProperty(paramName)) : Optional.<String> empty();
 	}
 }

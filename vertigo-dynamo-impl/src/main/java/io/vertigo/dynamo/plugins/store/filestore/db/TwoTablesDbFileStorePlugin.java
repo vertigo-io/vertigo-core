@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,7 +39,6 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).
@@ -67,7 +67,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 * @param fileManager Files manager
 	 */
 	@Inject
-	public TwoTablesDbFileStorePlugin(@Named("name") final Option<String> name, @Named("storeMetaDataDtName") final String storeMetaDataDtDefinitionName, @Named("storeFileDtName") final String storeFileDtDefinitionName, final FileManager fileManager) {
+	public TwoTablesDbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeMetaDataDtName") final String storeMetaDataDtDefinitionName, @Named("storeFileDtName") final String storeFileDtDefinitionName, final FileManager fileManager) {
 		super(name);
 		Assertion.checkNotNull(fileManager);
 		//-----

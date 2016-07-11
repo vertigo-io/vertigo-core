@@ -18,10 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.util.Optional;
+
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Option;
 
 /**
  * This Class defines the properties of ComponentSpace and DefinitionSpace.
@@ -29,7 +30,7 @@ import io.vertigo.lang.Option;
  * @author pchretien
  */
 public final class BootConfig {
-	private final Option<LogConfig> logConfigOption;
+	private final Optional<LogConfig> logConfigOption;
 	private final boolean silence;
 	@JsonExclude
 	private final AopPlugin aopPlugin;
@@ -42,7 +43,7 @@ public final class BootConfig {
 	 * @param silence is no logs
 	 */
 	BootConfig(
-			final Option<LogConfig> logConfigOption,
+			final Optional<LogConfig> logConfigOption,
 			final ModuleConfig bootModuleConfig,
 			final AopPlugin aopPlugin,
 			final boolean silence) {
@@ -59,12 +60,12 @@ public final class BootConfig {
 	/**
 	 * @return the logconfig
 	 */
-	public Option<LogConfig> getLogConfig() {
+	public Optional<LogConfig> getLogConfig() {
 		return logConfigOption;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the config of the boot consireded as a module
 	 */
 	public ModuleConfig getBootModuleConfig() {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -34,7 +35,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
-import io.vertigo.lang.Option;
 
 /**
  *
@@ -474,7 +474,7 @@ public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testCreateFilterByRange() {
 		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByRange("LIBELLE", Option.ofNullable("a"), Option.ofNullable("b"));
+				.filterByRange("LIBELLE", Optional.ofNullable("a"), Optional.ofNullable("b"));
 		Assert.assertNotNull(filter);
 	}
 

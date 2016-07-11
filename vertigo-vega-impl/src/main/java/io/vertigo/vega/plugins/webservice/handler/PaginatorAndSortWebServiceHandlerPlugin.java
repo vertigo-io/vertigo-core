@@ -18,13 +18,14 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
@@ -81,7 +82,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String listServerToken = uiListState.getListServerToken();
-		Option<DtList<?>> fullListOption = Option.empty();
+		Optional<DtList<?>> fullListOption = Optional.empty();
 		if (listServerToken != null) {
 			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}

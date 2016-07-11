@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -59,7 +60,6 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -86,7 +86,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Option<String> configFile,
+	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Optional<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(codecManager);
@@ -269,7 +269,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
+				final Optional<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
 				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
 					typeMapping.startObject(dtField.getName());
 					if (indexType.isPresent()) {
@@ -309,7 +309,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Option<IndexType> indexType) throws IOException {
+	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Optional<IndexType> indexType) throws IOException {
 		typeMapping
 				.field("type", indexType.get().getIndexDataType())
 				.field("analyzer", indexType.get().getIndexAnalyzer());

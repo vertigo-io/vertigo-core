@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Option;
 
 /**
  * Processor that can be composed of filters or sorters
@@ -62,7 +62,7 @@ public interface DtListProcessor {
 	 * @return Filtre
 	 * @param <C> Type des bornes
 	 */
-	<C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Option<C> min, final Option<C> max);
+	<C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.

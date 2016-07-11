@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
@@ -38,7 +39,6 @@ import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -54,7 +54,7 @@ public final class FileManagerImpl implements FileManager {
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
-	public FileManagerImpl(@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
 		daemonManager.registerDaemon("PurgeTempFileDaemon", PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH);

@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.postgresql;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,7 +31,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation d'un Store PostgreSQL.
@@ -43,10 +44,10 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	 * Constructor.
 	 * @param nameOption the name of the dataSpace (optional)
 	 * @param connectionName the name of the connection
-	 * @param taskManager the taskManager	 
+	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public PostgreSqlDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public PostgreSqlDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

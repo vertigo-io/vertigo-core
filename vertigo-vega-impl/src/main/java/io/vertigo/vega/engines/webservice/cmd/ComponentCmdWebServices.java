@@ -19,6 +19,7 @@
 package io.vertigo.vega.engines.webservice.cmd;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -29,7 +30,6 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 
 public final class ComponentCmdWebServices implements WebServices {
-	private final JsonEngine jsonEngine = new GoogleJsonEngine(Option.<String> empty());
+	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.<String> empty());
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")

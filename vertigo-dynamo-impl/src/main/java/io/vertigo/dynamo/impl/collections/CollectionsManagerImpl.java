@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.collections;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
@@ -45,7 +45,7 @@ import io.vertigo.lang.Option;
  * @author  pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
-	private final Option<IndexPlugin> indexPlugin;
+	private final Optional<IndexPlugin> indexPlugin;
 
 	private final FacetFactory facetFactory;
 	private final DtListProcessor listProcessor;
@@ -55,7 +55,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	 * @param indexPlugin Plugin optionnel d'index
 	 */
 	@Inject
-	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
+	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPlugin) {
 		Assertion.checkNotNull(indexPlugin);
 		//-----
 		this.indexPlugin = indexPlugin;
@@ -81,7 +81,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Option.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
+		return new FacetedQueryResult<>(Optional.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
 	}
 
 	//=========================================================================

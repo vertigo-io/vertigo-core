@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -60,7 +61,6 @@ import io.vertigo.dynamock.fileinfo.FileInfoStd;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -100,7 +100,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	protected void initMainStore() {
 		//A chaque test on recrée la table famille
-		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Option.<String> empty());
+		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Optional.<String> empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -114,7 +114,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	protected void createDataBase(final List<String> requests, final String taskName, final Option<String> collection) {
+	protected void createDataBase(final List<String> requests, final String taskName, final Optional<String> collection) {
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final String request : requests) {
@@ -162,10 +162,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Option.<String> empty());
+		shutDown("TK_SHUT_DOWN", Optional.<String> empty());
 	}
 
-	protected void shutDown(final String taskName, final Option<String> collectionOption) {
+	protected void shutDown(final String taskName, final Optional<String> collectionOption) {
 		if (dataBaseManager != null) {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)

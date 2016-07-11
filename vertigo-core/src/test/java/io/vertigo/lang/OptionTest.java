@@ -19,6 +19,7 @@
 package io.vertigo.lang;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,24 +31,24 @@ import org.junit.Test;
 public final class OptionTest {
 	@Test
 	public void testNone() {
-		final Option<String> none = Option.empty();
+		final Optional<String> none = Optional.empty();
 		Assert.assertFalse(none.isPresent());
 		Assert.assertEquals("movie", none.orElse("movie"));
 	}
 
 	@Test(expected = NoSuchElementException.class)
 	public void testNoneFail() {
-		Option.empty().get();
+		Optional.empty().get();
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSomeFail() {
-		Option.of(null);
+		Optional.of(null);
 	}
 
 	@Test
 	public void testSome() {
-		final Option<String> some = Option.of("music");
+		final Optional<String> some = Optional.of("music");
 		Assert.assertTrue(some.isPresent());
 		Assert.assertEquals("music", some.get());
 		Assert.assertEquals("music", some.orElse("movie"));

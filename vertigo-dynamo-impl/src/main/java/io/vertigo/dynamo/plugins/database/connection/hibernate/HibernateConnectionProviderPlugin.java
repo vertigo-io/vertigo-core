@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProvid
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -56,7 +56,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	 */
 	@Inject
 	public HibernateConnectionProviderPlugin(
-			@Named("name") final Option<String> name,
+			@Named("name") final Optional<String> name,
 			@Named("persistenceUnit") final String persistenceUnit,
 			@Named("dataBaseName") final String dataBaseName,
 			final VTransactionManager transactionManager) {

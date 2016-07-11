@@ -19,18 +19,18 @@
 package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionRule;
+import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
-import io.vertigo.lang.Option;
 
 /**
  * Parsing rule for query.
@@ -53,21 +53,21 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 
 		final Rule<List<?>> defaultValueRule = new SequenceRule(
 				new TermRule("!("),
-				new WordRule(false, ")", WordRule.Mode.REJECT),//1
+				new WordRule(false, ")", WordRule.Mode.REJECT), //1
 				new TermRule(")"));
 
 		final Rule<List<?>> termRule = new SequenceRule(
 				DslSyntaxRules.TERM_MARK,
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE, //3
 				DslSyntaxRules.TERM_MARK,
-				new OptionRule<>(escapeModeRule), //5
-				new OptionRule<>(defaultValueRule)); //6
+				new OptionalRule<>(escapeModeRule), //5
+				new OptionalRule<>(defaultValueRule)); //6
 
 		return new SequenceRule(
-				DslSyntaxRules.SPACES,//0
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				DslSyntaxRules.SPACES, //0
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				termRule, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE); //3);
 	}
@@ -82,7 +82,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		final String preTerm = (String) term.get(1);
 		final String termField = (String) term.get(2);
 		final String postTerm = (String) term.get(3);
-		final Option<Choice> escapeRule = (Option<Choice>) term.get(5);
+		final Optional<Choice> escapeRule = (Optional<Choice>) term.get(5);
 		final EscapeMode escapeMode;
 		if (escapeRule.isPresent()) {
 			switch (escapeRule.get().getValue()) {
@@ -98,12 +98,12 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		} else {
 			escapeMode = EscapeMode.none;
 		}
-		final Option<List<?>> defaultRule = (Option<List<?>>) term.get(6);
-		final Option<String> defaultValue;
+		final Optional<List<?>> defaultRule = (Optional<List<?>>) term.get(6);
+		final Optional<String> defaultValue;
 		if (defaultRule.isPresent()) {
-			defaultValue = Option.ofNullable((String) defaultRule.get().get(1));
+			defaultValue = Optional.ofNullable((String) defaultRule.get().get(1));
 		} else {
-			defaultValue = Option.empty();
+			defaultValue = Optional.empty();
 		}
 
 		final String postQuery = (String) parsing.get(3);

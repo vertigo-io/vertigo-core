@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.search;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -37,7 +38,6 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
@@ -92,14 +92,14 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				String lastUri = "*";
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
 
-				for (final Iterator<Option<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
-					final Option<SearchChunk<S>> searchChunk;
+				for (final Iterator<Optional<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
+					final Optional<SearchChunk<S>> searchChunk;
 					// >>> Tx start
 					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
 						searchChunk = it.next();
 					}
 					// <<< Tx end
-					if (! searchChunk.isPresent()) {
+					if (!searchChunk.isPresent()) {
 						break;
 					}
 

@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +32,6 @@ import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
@@ -55,7 +55,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param encoding encoding des KSP
 	 */
 	@Inject
-	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Option<String> encoding) {
+	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
 		//-----

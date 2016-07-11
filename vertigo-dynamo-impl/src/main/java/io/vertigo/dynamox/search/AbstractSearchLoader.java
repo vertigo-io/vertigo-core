@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -47,10 +47,10 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<Option<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
-		return new Iterable<Option<SearchChunk<K>>>() {
+	public Iterable<Optional<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
+		return new Iterable<Optional<SearchChunk<K>>>() {
 
-			private final Iterator<Option<SearchChunk<K>>> iterator = new Iterator<Option<SearchChunk<K>>>() {
+			private final Iterator<Optional<SearchChunk<K>>> iterator = new Iterator<Optional<SearchChunk<K>>>() {
 
 				private SearchChunk<K> current = null;
 
@@ -63,12 +63,12 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 				/** {@inheritDoc} */
 				@Override
-				public Option<SearchChunk<K>> next() {
+				public Optional<SearchChunk<K>> next() {
 					current = nextChunk(keyConceptClass, current);
 					if (current.getAllURIs().isEmpty()) {
-						return Option.empty();
+						return Optional.empty();
 					}
-					return Option.of(current);
+					return Optional.of(current);
 				}
 
 				/** {@inheritDoc} */
@@ -80,7 +80,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 			/** {@inheritDoc} */
 			@Override
-			public Iterator<Option<SearchChunk<K>>> iterator() {
+			public Iterator<Optional<SearchChunk<K>>> iterator() {
 				return iterator;
 			}
 		};

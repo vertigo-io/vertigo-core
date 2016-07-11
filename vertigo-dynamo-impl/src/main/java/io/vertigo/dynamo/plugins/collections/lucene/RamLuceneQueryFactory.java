@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -39,7 +40,6 @@ import org.apache.lucene.search.Query;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
@@ -52,7 +52,7 @@ final class RamLuceneQueryFactory {
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Optional<DtField> boostedField) throws IOException {
 		final Query filteredQuery;
 		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, boostedField);
 		if (!listFilters.isEmpty()) {
@@ -63,7 +63,7 @@ final class RamLuceneQueryFactory {
 		return filteredQuery;
 	}
 
-	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Option<DtField> boostedField) throws IOException {
+	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> boostedField) throws IOException {
 		if (StringUtil.isEmpty(keywords)) {
 			return new MatchAllDocsQuery();
 		}

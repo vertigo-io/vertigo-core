@@ -19,13 +19,13 @@
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Filtre sur champ=valeur.
@@ -55,7 +55,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 	 * @param isMaxInclude Si valeur max incluse
 	 *
 	 */
-	public DtListRangeFilter(final String fieldName, final Option<C> minValue, final Option<C> maxValue, final boolean isMinInclude, final boolean isMaxInclude) {
+	public DtListRangeFilter(final String fieldName, final Optional<C> minValue, final Optional<C> maxValue, final boolean isMinInclude, final boolean isMaxInclude) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(minValue);
 		Assertion.checkNotNull(maxValue);

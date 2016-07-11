@@ -18,9 +18,10 @@
  */
 package io.vertigo.core.plugins.param.env;
 
+import java.util.Optional;
+
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Plugin de gestion de configuration des variables d'environnement.
@@ -30,9 +31,9 @@ import io.vertigo.lang.Option;
 public final class EnvParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String paramName) {
+	public Optional<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return System.getenv().containsKey(paramName) ? Option.<String> ofNullable(System.getenv().get(paramName)) : Option.<String> empty();
+		return System.getenv().containsKey(paramName) ? Optional.<String> ofNullable(System.getenv().get(paramName)) : Optional.<String> empty();
 	}
 }

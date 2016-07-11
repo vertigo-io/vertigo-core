@@ -19,9 +19,9 @@
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -33,9 +33,9 @@ import spark.Spark;
  */
 abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
-	private final Option<String> apiPrefix;
+	private final Optional<String> apiPrefix;
 
-	public AbstractSparkJavaWebServerPlugin(final Option<String> apiPrefix) {
+	public AbstractSparkJavaWebServerPlugin(final Optional<String> apiPrefix) {
 		Assertion.checkNotNull(apiPrefix);
 		Assertion.checkArgument(!apiPrefix.isPresent() || apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
 		//-----

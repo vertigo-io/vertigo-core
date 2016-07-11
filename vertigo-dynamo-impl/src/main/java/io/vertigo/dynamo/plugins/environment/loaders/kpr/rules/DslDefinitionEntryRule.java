@@ -29,7 +29,7 @@ import java.util.List;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionRule;
+import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
@@ -67,7 +67,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 				SPACES,
 				new FirstOfRule(WORD, WORDS),//4
 				SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

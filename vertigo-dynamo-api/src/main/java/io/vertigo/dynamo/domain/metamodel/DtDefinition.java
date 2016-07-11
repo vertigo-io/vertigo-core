@@ -23,13 +23,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -65,10 +65,10 @@ public final class DtDefinition implements Definition {
 	private final boolean dynamic;
 
 	/** id Field */
-	private final Option<DtField> idField;
+	private final Optional<DtField> idField;
 
-	private Option<DtField> sortField = Option.empty();
-	private Option<DtField> displayField = Option.empty();
+	private Optional<DtField> sortField = Optional.empty();
+	private Optional<DtField> displayField = Optional.empty();
 
 	private final String dataSpace;
 
@@ -103,7 +103,7 @@ public final class DtDefinition implements Definition {
 			doRegisterDtField(dtField);
 
 		}
-		idField = Option.ofNullable(id);
+		idField = Optional.ofNullable(id);
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
@@ -114,14 +114,14 @@ public final class DtDefinition implements Definition {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!sortField.isPresent(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		sortField = Option.of(dtField);
+		sortField = Optional.of(dtField);
 	}
 
 	private void registerDisplay(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!displayField.isPresent(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		displayField = Option.of(dtField);
+		displayField = Optional.of(dtField);
 	}
 
 	//TODO A fermer
@@ -219,7 +219,7 @@ public final class DtDefinition implements Definition {
 	/**
 	 * @return Champ identifiant l'identifiant
 	 */
-	public Option<DtField> getIdField() {
+	public Optional<DtField> getIdField() {
 		return idField;
 	}
 
@@ -254,14 +254,14 @@ public final class DtDefinition implements Definition {
 	/**
 	 * @return Champ représentant l'affichage
 	 */
-	public Option<DtField> getDisplayField() {
+	public Optional<DtField> getDisplayField() {
 		return displayField;
 	}
 
 	/**
 	 * @return Champ représentant le tri
 	 */
-	public Option<DtField> getSortField() {
+	public Optional<DtField> getSortField() {
 		return sortField;
 	}
 

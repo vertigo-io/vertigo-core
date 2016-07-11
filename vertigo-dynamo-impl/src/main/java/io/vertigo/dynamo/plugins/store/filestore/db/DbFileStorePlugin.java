@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,7 +38,6 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -66,7 +66,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
-	public DbFileStorePlugin(@Named("name") final Option<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
+	public DbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);

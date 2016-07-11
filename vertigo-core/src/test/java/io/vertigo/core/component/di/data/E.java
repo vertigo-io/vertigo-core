@@ -19,35 +19,34 @@
 package io.vertigo.core.component.di.data;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Option;
-
 public final class E {
 	private final List<P2> p2Plugins;
-	private final Option<A> a;
+	private final Optional<A> a;
 
 	@Inject
 	private P3 p3;
 
 	@Inject
-	private Option<B> b;
+	private Optional<B> b;
 	@Inject
 	private List<P> pPlugins;
 
 	@Inject
-	public E(final Option<A> a, final @Named("pen") List<P2> p2Plugins) {
+	public E(final Optional<A> a, final @Named("pen") List<P2> p2Plugins) {
 		this.a = a;
 		this.p2Plugins = p2Plugins;
 	}
 
-	public Option<A> getA() {
+	public Optional<A> getA() {
 		return a;
 	}
 
-	public Option<B> getB() {
+	public Optional<B> getB() {
 		return b;
 	}
 

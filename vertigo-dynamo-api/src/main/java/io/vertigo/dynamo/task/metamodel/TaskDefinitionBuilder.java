@@ -20,13 +20,13 @@ package io.vertigo.dynamo.task.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 /**
  * Builder of taskDefinition.
@@ -148,7 +148,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
-				Option.ofNullable(myOutTaskAttribute));
+				Optional.ofNullable(myOutTaskAttribute));
 	}
 
 }

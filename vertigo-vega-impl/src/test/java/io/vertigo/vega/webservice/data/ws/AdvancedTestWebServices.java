@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -47,7 +48,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
@@ -174,8 +174,8 @@ public final class AdvancedTestWebServices implements WebServices {
 	@PUT("/filteredInclude/*")
 	@ServerSideSave
 	public Contact filteredUpdateByInclude(//
-			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
-			@ServerSideRead//
+			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) //
+			@ServerSideRead //
 			@IncludedFields({ "firstName", "email" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -305,7 +305,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	@GET("/downloadNotModifiedFile")
-	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Option<Date> ifModifiedSince, final HttpServletResponse response) {
+	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Optional<Date> ifModifiedSince, final HttpServletResponse response) {
 		final VFile imageFile = testDownloadFile(id);
 		if (ifModifiedSince.isPresent() && DateUtil.compareDateTime(imageFile.getLastModified(), ifModifiedSince.get()) <= 0) {
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -403,7 +403,7 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
 						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
 						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
-						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Option.<Comparable> ofNullable(minValue), Option.<Comparable> ofNullable(maxValue), true, false));
+						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
 					} else {
 						filters.add(new DtListValueFilter<O>(field.getName(), (String) value));
 					}

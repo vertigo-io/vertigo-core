@@ -19,9 +19,9 @@
 package io.vertigo.vega.token;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import io.vertigo.lang.Manager;
-import io.vertigo.lang.Option;
 
 /**
  * Manager of Security Access Token.
@@ -42,13 +42,13 @@ public interface TokenManager extends Manager {
 	 * @param key key of this object
 	 * @return Object store
 	 */
-	<D extends Serializable> Option<D> get(String key);
+	<D extends Serializable> Optional<D> get(String key);
 
 	/**
 	 * Get and remove object by key.
 	 * @param key key of this object
 	 * @return Object store or null if unknown
 	 */
-	<D extends Serializable> Option<D> getAndRemove(String key);
+	<D extends Serializable> Optional<D> getAndRemove(String key);
 
 }

@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -104,7 +104,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc) {
+	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Optional<DtField> boostedField, final DtList<D> dtc) {
 		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);

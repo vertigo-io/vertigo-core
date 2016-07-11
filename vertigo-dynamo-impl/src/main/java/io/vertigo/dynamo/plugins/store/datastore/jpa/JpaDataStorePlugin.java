@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.store.datastore.jpa;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,7 +59,6 @@ import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -90,7 +90,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 * @param analyticsManager  Analytics manager
 	 */
 	@Inject
-	public JpaDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(nameOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(transactionManager);

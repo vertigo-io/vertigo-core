@@ -21,12 +21,12 @@ package io.vertigo.core.component.loader;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -36,11 +36,11 @@ import io.vertigo.util.ClassUtil;
  * @author pchretien
  */
 final class ComponentParamsContainer implements Container {
-	private final Option<ParamManager> paramManagerOption;
+	private final Optional<ParamManager> paramManagerOption;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;
 
-	ComponentParamsContainer(final Option<ParamManager> paramManagerOption, final Map<String, String> params) {
+	ComponentParamsContainer(final Optional<ParamManager> paramManagerOption, final Map<String, String> params) {
 		Assertion.checkNotNull(paramManagerOption);
 		Assertion.checkNotNull(params);
 		//-----

@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -54,7 +55,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 //vérifier
 /**
@@ -268,8 +268,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-			final Option<Double> minValue = convertToDouble(parsedFilter[3]);
-			final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
+			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
+			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
 			if (!minValue.isPresent()) {
 				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
 			} else if (!maxValue.isPresent()) {
@@ -302,14 +302,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return dateRangeBuilder;
 	}
 
-	private static Option<Double> convertToDouble(final String valueToConvert) {
+	private static Optional<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
-			return Option.empty();//pas de test
+			return Optional.empty();//pas de test
 		}
 		//--
 		final Double result = Double.valueOf(stringValue);
-		return Option.of(result);
+		return Optional.of(result);
 	}
 
 	/**

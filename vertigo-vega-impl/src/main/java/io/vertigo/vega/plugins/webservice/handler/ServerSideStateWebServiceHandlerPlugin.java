@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -29,7 +30,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiList;
@@ -115,7 +115,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 		}
-		final Option<Serializable> serverSideObject;
+		final Optional<Serializable> serverSideObject;
 		if (consumeServerSideToken) {
 			//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
 			serverSideObject = tokenManager.getAndRemove(accessToken);

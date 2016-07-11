@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
@@ -29,7 +30,6 @@ import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * This class defines a task and its attributes.
@@ -53,7 +53,7 @@ public final class TaskDefinition implements Definition {
 	/** Map des (Nom, TaskAttribute) définissant les attributs de tache. */
 	private final Map<String, TaskAttribute> inTaskAttributes;
 
-	private final Option<TaskAttribute> outTaskAttributeOption;
+	private final Optional<TaskAttribute> outTaskAttributeOption;
 
 	/**
 	 * Moyen de réaliser la tache.
@@ -72,7 +72,7 @@ public final class TaskDefinition implements Definition {
 			final Class<? extends TaskEngine> taskEngineClass,
 			final String request,
 			final List<TaskAttribute> inTaskAttributes,
-			final Option<TaskAttribute> outTaskAttributeOption) {
+			final Optional<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
 		Assertion.checkArgNotEmpty(dataSpace);
 		Assertion.checkState(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE);
@@ -152,7 +152,7 @@ public final class TaskDefinition implements Definition {
 	 *
 	 * @return Attribut OUT
 	 */
-	public Option<TaskAttribute> getOutAttributeOption() {
+	public Optional<TaskAttribute> getOutAttributeOption() {
 		return outTaskAttributeOption;
 	}
 

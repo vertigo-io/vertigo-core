@@ -22,12 +22,12 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Résultat de la recherche.
@@ -46,7 +46,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
 	private final S source;
-	private final Option<FacetedQuery> query;
+	private final Optional<FacetedQuery> query;
 
 	/**
 	 * Constructeur.
@@ -58,7 +58,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param highlights Liste des extraits avec mise en valeur par objet et par champs
 	 * @param source Object source permettant rerentrer dans le mechanisme de filtrage
 	 */
-	public FacetedQueryResult(final Option<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
+	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
 		Assertion.checkNotNull(query);
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(facets);
@@ -86,7 +86,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * Rappel des facettes de la requête initiale.
 	 * @return Facettes de requète
 	 */
-	public Option<FacetedQuery> getFacetedQuery() {
+	public Optional<FacetedQuery> getFacetedQuery() {
 		return query;
 	}
 

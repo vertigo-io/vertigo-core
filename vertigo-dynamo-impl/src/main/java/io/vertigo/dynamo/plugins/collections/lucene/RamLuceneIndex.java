@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
@@ -59,7 +60,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -221,7 +221,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Option<DtField> boostedField) throws IOException {
+	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Optional<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
 		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");

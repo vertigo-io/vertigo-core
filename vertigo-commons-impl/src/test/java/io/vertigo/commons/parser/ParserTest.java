@@ -19,11 +19,10 @@
 package io.vertigo.commons.parser;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import io.vertigo.lang.Option;
 
 public final class ParserTest {
 	private static final Rule HELLO = new TermRule("hello");
@@ -57,7 +56,7 @@ public final class ParserTest {
 			HELLO,
 			SPACE,
 			WORLD,
-			new OptionRule<>(new SequenceRule(
+			new OptionalRule<>(new SequenceRule(
 					SPACE,
 					FROM,
 					SPACE,
@@ -192,15 +191,15 @@ public final class ParserTest {
 	public void testOption() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
 		//---
-		Option<List<?>> from;
+		Optional<List<?>> from;
 
 		//-
 		parser.parse("hello world bla bla", 0);
-		from = (Option<List<?>>) parser.get().get(3);
+		from = (Optional<List<?>>) parser.get().get(3);
 		Assert.assertFalse(from.isPresent());
 		//-
 		parser.parse("hello world from mars", 0);
-		from = (Option<List<?>>) parser.get().get(3);
+		from = (Optional<List<?>>) parser.get().get(3);
 		Assert.assertTrue(from.isPresent());
 		Assert.assertEquals("mars", from.get().get(3));
 	}
@@ -209,11 +208,11 @@ public final class ParserTest {
 	public void testOptionFail() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
 		//---
-		Option<List<?>> from;
+		Optional<List<?>> from;
 
 		//-
 		parser.parse("hello world from ", 0);
-		from = (Option<List<?>>) parser.get().get(3);
+		from = (Optional<List<?>>) parser.get().get(3);
 		Assert.assertFalse(from.isPresent()); //pas d'exception NotFound
 	}
 

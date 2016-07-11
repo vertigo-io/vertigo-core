@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +48,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -101,7 +101,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public FsFileStorePlugin(@Named("name") final Option<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
+	public FsFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);

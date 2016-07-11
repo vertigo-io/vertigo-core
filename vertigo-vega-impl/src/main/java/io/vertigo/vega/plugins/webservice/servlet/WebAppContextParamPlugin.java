@@ -19,10 +19,10 @@
 package io.vertigo.vega.plugins.webservice.servlet;
 
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Plugin d'accès à la configuration de la WebApp.
@@ -39,9 +39,9 @@ public final class WebAppContextParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String paramName) {
+	public Optional<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Option.<String> ofNullable(params.get(paramName)) : Option.<String> empty();
+		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.get(paramName)) : Optional.<String> empty();
 	}
 }

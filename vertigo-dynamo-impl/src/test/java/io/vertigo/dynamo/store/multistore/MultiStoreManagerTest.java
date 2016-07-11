@@ -20,6 +20,7 @@ package io.vertigo.dynamo.store.multistore;
 
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamock.fileinfo.FileInfoTemp;
-import io.vertigo.lang.Option;
 
 /**
  * Test de l'implémentation standard.
@@ -48,13 +48,13 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	protected void initOtherStore() {
 		//A chaque test on recrée la table famille dans l'autre base
-		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Option.<String> of("otherStore"));
+		createDataBase(getCreateOtherStoreRequests(), "TK_INIT_OTHER", Optional.<String> of("otherStore"));
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		super.doTearDown();
-		shutDown("TK_SHUT_DOWN_OTHER", Option.<String> of("otherStore"));
+		shutDown("TK_SHUT_DOWN_OTHER", Optional.<String> of("otherStore"));
 	}
 
 	@Override

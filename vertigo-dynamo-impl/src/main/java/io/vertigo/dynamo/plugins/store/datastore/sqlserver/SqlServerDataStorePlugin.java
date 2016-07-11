@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.sqlserver;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,7 +31,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation d'un Store MS Sql Server.
@@ -45,7 +46,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, final TaskManager taskManager) {
+	public SqlServerDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 	}
 
@@ -103,13 +104,13 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		return request.toString();
 	}
 
-    /** {@inheritDoc} */
-    @Override
-    protected String getSelectForUpdate(final String tableName, final String idFieldName) {
-        return new StringBuilder()
-                .append("select * from ").append(tableName)
-                .append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
-                .append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
-                .toString();
-    }
+	/** {@inheritDoc} */
+	@Override
+	protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+		return new StringBuilder()
+				.append("select * from ").append(tableName)
+				.append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.toString();
+	}
 }

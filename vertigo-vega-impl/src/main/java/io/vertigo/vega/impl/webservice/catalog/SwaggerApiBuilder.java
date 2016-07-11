@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -42,7 +43,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -342,7 +342,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
 		if ((field.getModifiers() & Modifier.FINAL) != 0
-				&& !Option.class.isAssignableFrom(field.getType())) {
+				&& !Optional.class.isAssignableFrom(field.getType())) {
 			requireds.add(field.getName());
 		}
 		return fieldSchema;

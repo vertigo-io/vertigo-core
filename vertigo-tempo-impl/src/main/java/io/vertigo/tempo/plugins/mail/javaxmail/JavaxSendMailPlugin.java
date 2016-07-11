@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -51,7 +52,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.tempo.impl.mail.Resources;
@@ -72,9 +72,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private final String mailHost;
 	private final boolean developmentMode;
 	private final String developmentMailTo;
-	private final Option<Integer> mailPort;
-	private final Option<String> mailLogin;
-	private final Option<String> mailPassword;
+	private final Optional<Integer> mailPort;
+	private final Optional<String> mailLogin;
+	private final Optional<String> mailPassword;
 	/** Compteur de mails envoyés. */
 	private int mailSent = 0;
 
@@ -93,8 +93,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	@Inject
 	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol,
 			@Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode,
-			@Named("developmentMailTo") final String developmentMailTo, @Named("port") final Option<Integer> mailPort,
-			@Named("login") final Option<String> mailLogin, @Named("pwd") final Option<String> mailPassword) {
+			@Named("developmentMailTo") final String developmentMailTo, @Named("port") final Optional<Integer> mailPort,
+			@Named("login") final Optional<String> mailLogin, @Named("pwd") final Optional<String> mailPassword) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);

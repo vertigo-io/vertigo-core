@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,7 +29,6 @@ import javax.inject.Named;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -70,7 +70,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	 * @param daemonManager Manager des daemons
 	 */
 	@Inject
-	public RateLimitingWebServiceHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Option<Integer> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
+	public RateLimitingWebServiceHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Optional<Integer> windowSeconds, @Named("limitValue") final Optional<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
@@ -108,7 +108,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		return chain.handle(request, response, routeContext);
 	}
 
-	private static String obtainUserKey(final Request request, final Option<UserSession> userSession) {
+	private static String obtainUserKey(final Request request, final Optional<UserSession> userSession) {
 		if (userSession.isPresent()) {
 			return userSession.get().getSessionUUID().toString();
 		}

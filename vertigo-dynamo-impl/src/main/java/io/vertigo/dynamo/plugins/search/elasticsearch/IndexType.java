@@ -18,10 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
+import java.util.Optional;
+
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 final class IndexType {
 	private static final String INDEX_STORED = "stored";
@@ -34,12 +35,12 @@ final class IndexType {
 	// par convention l'indexType du domain => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 
-	static Option<IndexType> readIndexType(final Domain domain) {
+	static Optional<IndexType> readIndexType(final Domain domain) {
 		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
-			return Option.empty();
+			return Optional.empty();
 		}
-		return Option.of(new IndexType(indexType, domain));
+		return Optional.of(new IndexType(indexType, domain));
 	}
 
 	private IndexType(final String indexType, final Domain domain) {

@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;
@@ -263,7 +263,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 			if (webServiceParam.isOptional()) {
 				final Object paramValue = routeContext.getParamValue(webServiceParam);
-				routeContext.setParamValue(webServiceParam, Option.ofNullable(paramValue));
+				routeContext.setParamValue(webServiceParam, Optional.ofNullable(paramValue));
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {

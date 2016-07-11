@@ -19,10 +19,10 @@
 package io.vertigo.core.plugins.resource.classpath;
 
 import java.net.URL;
+import java.util.Optional;
 
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL liées au classPath.
@@ -34,15 +34,15 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<URL> resolve(final String resource) {
+	public Optional<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		//-----
 		try {
 			//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
 			final URL url = getClassLoader().getResource(resource);
-			return Option.ofNullable(url);
+			return Optional.ofNullable(url);
 		} catch (final RuntimeException e) { //if Ressource name is invalid it should throw exception
-			return Option.empty();
+			return Optional.empty();
 		}
 	}
 
