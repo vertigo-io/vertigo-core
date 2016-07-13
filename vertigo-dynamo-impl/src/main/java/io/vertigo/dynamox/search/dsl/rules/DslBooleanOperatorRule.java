@@ -42,7 +42,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		final Rule<List<?>> booleanOperatorRule = new SequenceRule(
+		return new SequenceRule(
 				DslSyntaxRules.SPACES, //0
 				new FirstOfRule(//"single or multiple") //1
 						new TermRule("AND"), //0
@@ -56,7 +56,6 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 				),
 				DslSyntaxRules.SPACES //2
 		);
-		return booleanOperatorRule;
 	}
 
 	/** {@inheritDoc} */

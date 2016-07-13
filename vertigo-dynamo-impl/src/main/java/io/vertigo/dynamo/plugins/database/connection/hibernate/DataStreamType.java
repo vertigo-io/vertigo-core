@@ -74,8 +74,7 @@ public final class DataStreamType implements UserType {
 		//Cf io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl
 		final String columnName = names[0];
 		final int index = rs.findColumn(columnName);
-		final DataStream value = SqlDataStreamMappingUtil.getDataStream(rs, index);
-		return value;
+		return SqlDataStreamMappingUtil.getDataStream(rs, index);
 	}
 
 	/** {@inheritDoc} */

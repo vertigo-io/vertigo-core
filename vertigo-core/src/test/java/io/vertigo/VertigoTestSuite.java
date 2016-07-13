@@ -38,7 +38,6 @@ import io.vertigo.core.spaces.component.ComponentSpace3Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;
 import io.vertigo.core.spaces.definition.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
-import io.vertigo.lang.OptionTest;
 import io.vertigo.lang.TuplesTest;
 import io.vertigo.util.BeanUtilTest;
 import io.vertigo.util.ClassUtilTest;
@@ -67,7 +66,6 @@ import io.vertigo.util.StringUtilTest;
 		AspectTest.class,
 		//Lang
 		AssertionTest.class,
-		OptionTest.class,
 		TuplesTest.class,
 		//Util
 		BeanUtilTest.class,

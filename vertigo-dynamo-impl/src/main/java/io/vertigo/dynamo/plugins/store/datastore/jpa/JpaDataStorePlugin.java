@@ -145,7 +145,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		//Add the where condition to the end of the query
+		//Adds the where condition to the end of the query
 		final String tableName = getTableName(dtDefinition);
 		final Query query = getEntityManager().createQuery("select count(*) from " + tableName + " t");
 		final Long count = (Long) query.getSingleResult();
@@ -210,7 +210,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static String getTableName(final DtDefinition dtDefinition) {
-		// Attention jSQL est "almost case-insensitive" il faut garder la case des objects java :);
+		// Warning jSQL is "almost case-insensitive"; that's why we have to keep the case of java objects
 		return dtDefinition.getClassSimpleName();
 	}
 

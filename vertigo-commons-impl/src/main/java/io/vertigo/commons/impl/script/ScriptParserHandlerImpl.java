@@ -108,7 +108,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	}
 
 	private String decodeText(final String text) {
-		final StringBuilder retour = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		int textStart = 0;
 		int textEnd;
 		while ((textEnd = text.indexOf(TEXT_KEY_PREFIX, textStart)) >= 0) {
@@ -116,14 +116,14 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 			final int keyEnd = text.indexOf(TEXT_KEY_SUFFIX, keyStart);
 			final String key = text.substring(keyStart, keyEnd);
 
-			retour.append(text.substring(textStart, textEnd));
-			retour.append(texts.get(Integer.parseInt(key)));
+			result.append(text.substring(textStart, textEnd));
+			result.append(texts.get(Integer.parseInt(key)));
 			textStart = keyEnd + TEXT_KEY_SUFFIX.length();
 		}
 		// Dernier morceau
-		retour.append(text.substring(textStart));
+		result.append(text.substring(textStart));
 
-		return retour.toString();
+		return result.toString();
 	}
 
 	private String scriptEvaluate(final String script) {

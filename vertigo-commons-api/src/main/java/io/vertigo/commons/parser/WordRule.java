@@ -91,9 +91,9 @@ public final class WordRule implements Rule<String> {
 			expression.append(readableCheckedChar);
 		} else if (!rejectedCharacters.isEmpty()) {
 			if (mode == Mode.REJECT_ESCAPABLE) {
-				expression.append("(!");
-				expression.append(readableCheckedChar);
-				expression.append("|\\.)");
+				expression.append("(!")
+						.append(readableCheckedChar)
+						.append("|\\.)");
 			} else {
 				expression.append("!");
 				expression.append(readableCheckedChar);

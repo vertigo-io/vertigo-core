@@ -80,8 +80,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final Map<DtField, List<DtField>> copyFields = populateCopyFields(xsearchObjet, indexDtDefinition);
 
 		final String searchLoaderId = getPropertyValueAsString(xsearchObjet, SearchGrammar.SEARCH_LOADER_PROPERTY);
-		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, keyConceptDtDefinition, indexDtDefinition, copyFields, searchLoaderId);
-		return indexDefinition;
+		return new SearchIndexDefinition(definitionName, keyConceptDtDefinition, indexDtDefinition, copyFields, searchLoaderId);
 	}
 
 	private static Map<DtField, List<DtField>> populateCopyFields(final DynamicDefinition xsearchObjet, final DtDefinition indexDtDefinition) {
@@ -161,8 +160,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String criteriaDomainName = xdefinition.getDefinitionName("domainCriteria");
 		final Domain criteriaDomain = Home.getApp().getDefinitionSpace().resolve(criteriaDomainName, Domain.class);
 
-		final FacetedQueryDefinition facetedQueryDefinition = new FacetedQueryDefinition(definitionName, keyConceptDtDefinition, facetDefinitions, criteriaDomain, listFilterBuilderClass, listFilterBuilderQuery);
-		return facetedQueryDefinition;
+		return new FacetedQueryDefinition(definitionName, keyConceptDtDefinition, facetDefinitions, criteriaDomain, listFilterBuilderClass, listFilterBuilderQuery);
 	}
 
 	private static Class<? extends ListFilterBuilder> getListFilterBuilderClass(final DynamicDefinition xtaskDefinition) {

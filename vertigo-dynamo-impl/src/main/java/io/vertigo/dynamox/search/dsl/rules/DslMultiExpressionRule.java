@@ -71,11 +71,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 				manyExpressionRule, //3
 				DslSyntaxRules.BLOCK_END, //4
 				DslSyntaxRules.POST_MODIFIER_VALUE); //5
-		final Rule<Choice> blockRule = new FirstOfRule(//"single or multiple")
+		return new FirstOfRule(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
 		);
-		return blockRule;
 	}
 
 	/** {@inheritDoc} */

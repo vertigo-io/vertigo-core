@@ -40,8 +40,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 
 	private final C minValue;
 	private final C maxValue;
-	private final boolean isMinInclude;
-	private final boolean isMaxInclude;
+	private final boolean isMinIncluded;
+	private final boolean isMaxIncluded;
 
 	/** Champ concerné. */
 	private transient DtField dtField;
@@ -63,8 +63,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		this.fieldName = fieldName;
 		this.minValue = minValue.orElse(null); //On remet a null (car Option non serializable)
 		this.maxValue = maxValue.orElse(null); //On remet a null (car Option non serializable)
-		this.isMinInclude = isMinInclude;
-		this.isMaxInclude = isMaxInclude;
+		this.isMinIncluded = isMinInclude;
+		this.isMaxIncluded = isMaxInclude;
 
 		//-----
 		// On vérifie le caractère serializable, car il est difficile de gérer cette propriété par les generics de bout en bout
@@ -98,7 +98,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		final Comparable comparableValue = Comparable.class.cast(value);
 		final int minValueCompare = minValue != null ? comparableValue.compareTo(minValue) : 1; //si empty=>* : toujours ok
 		final int maxValueCompare = maxValue != null ? comparableValue.compareTo(maxValue) : -1; //si empty=>* : toujours ok
-		return (isMinInclude ? minValueCompare >= 0 : minValueCompare > 0) //supérieur (ou egale) au min
-				&& (isMaxInclude ? maxValueCompare <= 0 : maxValueCompare < 0); //inférieur (ou egale) au max
+		return (isMinIncluded ? (minValueCompare >= 0) : (minValueCompare > 0)) //supérieur (ou egale) au min
+				&&
+				(isMaxIncluded ? (maxValueCompare <= 0) : (maxValueCompare < 0)); //inférieur (ou egale) au max
 	}
 }
