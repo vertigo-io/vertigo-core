@@ -42,7 +42,7 @@ final class XmlUtil {
 		final StringBuilder suffix = new StringBuilder();
 		int i = 1;
 		char c;
-		c = replaceAccent(str.charAt(0));
+		c = stripAccents(str.charAt(0));
 		suffix.append(Character.toUpperCase(c));
 
 		final int length = str.length();
@@ -51,7 +51,7 @@ final class XmlUtil {
 			//On considère blanc, et ' comme des séparateurs de mots.
 			if (c == ' ' || c == '\'') {
 				if (i + 1 < length) {
-					c = replaceAccent(str.charAt(i + 1));
+					c = stripAccents(str.charAt(i + 1));
 					if (Character.isLetterOrDigit(c)) {
 						suffix.append(Character.toUpperCase(c));
 					}
@@ -60,7 +60,7 @@ final class XmlUtil {
 					i++; // évitons boucle infinie
 				}
 			} else {
-				c = replaceAccent(c);
+				c = stripAccents(c);
 				if (Character.isLetterOrDigit(c)) {
 					suffix.append(c);
 				}
@@ -76,40 +76,31 @@ final class XmlUtil {
 	 * @param c caractère accentué à traiter
 	 * @return caractère traité (sans accent)
 	 */
-	private static char replaceAccent(final char c) {
-		char result;
+	private static char stripAccents(final char c) {
 		switch (c) {
 			case '\u00e0':
 			case '\u00e2':
 			case '\u00e4':
-				result = 'a';
-				break;
+				return 'a';
 			case '\u00e7':
-				result = 'c';
-				break;
+				return 'c';
 			case '\u00e8':
 			case '\u00e9':
 			case '\u00ea':
 			case '\u00eb':
-				result = 'e';
-				break;
+				return 'e';
 			case '\u00ee':
 			case '\u00ef':
-				result = 'i';
-				break;
+				return 'i';
 			case '\u00f4':
 			case '\u00f6':
-				result = 'o';
-				break;
+				return 'o';
 			case '\u00f9':
 			case '\u00fb':
 			case '\u00fc':
-				result = 'u';
-				break;
+				return 'u';
 			default:
-				result = c;
-				break;
+				return c;
 		}
-		return result;
 	}
 }

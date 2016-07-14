@@ -98,10 +98,8 @@ final class SqlRetrieveUtil {
 			}
 			return dto;
 		}
+		//no result
 		return null;
-		//On est dans le cas de récupération d'un objet, pas de résultat
-		//throw new NoObjectFoundException();
-
 	}
 
 	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
