@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
 import io.vertigo.dynamo.domain.formatter.NumberFormatterTest;
+import io.vertigo.dynamo.domain.formatter.StringFormatterTest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiAATest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTest;
