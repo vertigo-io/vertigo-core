@@ -39,9 +39,15 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	private final FormatterDate formatterDate = new FormatterDate("yyyy-MM-dd");
 
 	@Test
-	public void testFormatterDate() throws FormatterException {
+	public void testFormatter() throws FormatterException {
 		final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
 		Assert.assertEquals("2003-09-15", formatterDate.valueToString(date, DataType.Date));
 		Assert.assertEquals(date, formatterDate.stringToValue("2003-09-15", DataType.Date));
+	}
+
+	@Test(expected = FormatterException.class)
+	public void testFormatter1() throws FormatterException {
+		final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
+		Assert.assertEquals(date, formatterDate.stringToValue("2003/09/15", DataType.Date));
 	}
 }
