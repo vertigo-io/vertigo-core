@@ -25,16 +25,17 @@ import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.MessageText;
 
 /**
- * This class defines the structure of a field. 
+ * This class defines the structure of a field.
  *
  * A field represents a named and typed data
  *
  * A field
  *   - has a name
  *   - has a domain
- *   - has a label 
- *   - can be required 
- *   - can be persistent 
+ *   - has a fieldType
+ *   - has a label
+ *   - can be required
+ *   - can be persistent
  *   - can be dynamic
  *
  * @author  fconstantin, pchretien , npiedeloup
@@ -49,12 +50,12 @@ public final class DtField implements DtFieldName {
 	 */
 	public enum FieldType {
 		/**
-		 * identity 
+		 * identity
 		 */
 		ID,
 
 		/**
-		 * a simple data field 
+		 * a simple data field
 		 */
 		DATA,
 
@@ -92,12 +93,12 @@ public final class DtField implements DtFieldName {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id the ID of the field 
+	 *
+	 * @param id the ID of the field
 	 * @param fieldName the name of the field
-	 * @param type the type of the field 
-	 * @param domain the domain of the field 
-	 * @param label the label of the field 
+	 * @param type the type of the field
+	 * @param domain the domain of the field
+	 * @param label the label of the field
 	 * @param required if the field is required
 	 * @param persistent if the field is persistent
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
