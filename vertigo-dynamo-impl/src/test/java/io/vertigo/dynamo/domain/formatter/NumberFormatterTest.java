@@ -25,41 +25,17 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamox.domain.formatter.FormatterBoolean;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.domain.formatter.FormatterNumberLocalized;
-import io.vertigo.dynamox.domain.formatter.FormatterString;
 
 /**
  * Test de l'implémentation standard.
  *
  * @author pchretien
  */
-public class FormatterTest extends AbstractTestCaseJU4 {
-	private FormatterBoolean formatterBoolean;
-	/*	private FormatterDate formatterDate;*/
-	private FormatterNumber formatterNumber;
-	private FormatterString formatterString;
-
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	protected String getPropertiesFileName() {
-	//		return "/dynamo/default-test.properties";
-	//	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public void doSetUp() {
-		formatterBoolean = new FormatterBoolean("OUI;NON");
-		/*
-		formatterDate = new FormatterDate();
-		formatterDate.initParameters("OUI;NON");
-		*/
-		formatterNumber = new FormatterNumber("#,###,##0.00");
-
-		formatterString = new FormatterString("UPPER");
-	}
+public class NumberFormatterTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test du formatter de nombre.
@@ -67,6 +43,8 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFormatterNumber() throws FormatterException {
+		final Formatter formatterNumber = new FormatterNumber("#,###,##0.00");
+
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
 		Assert.assertEquals(pi, formatterNumber.stringToValue("3.14", DataType.BigDecimal));
@@ -83,11 +61,11 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(1492L, formatterNumber.stringToValue("1 492", DataType.Long));
 		Assert.assertEquals(1492L, formatterNumber.stringToValue("1492  ", DataType.Long));
 		Assert.assertEquals(1492L, formatterNumber.stringToValue("01492  ", DataType.Long));
-	}
-
-	@Test
-	public void testUpper() {
-		Assert.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
+		//Double
+		Assert.assertEquals(3.14D, formatterNumber.stringToValue("3.14", DataType.Double));
+		Assert.assertEquals(3.14D, formatterNumber.stringToValue("3,14", DataType.Double));
+		Assert.assertEquals(.14D, formatterNumber.stringToValue("0.14", DataType.Double));
+		Assert.assertEquals("3,14", formatterNumber.valueToString(3.14D, DataType.Double));
 	}
 
 	/**
@@ -112,7 +90,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("1\u00A0495,52", formatterNumberLocalized.valueToString(1495.52, DataType.BigDecimal));
 
 		//Integer
-		Assert.assertEquals(1492, formatterNumber.stringToValue("1492", DataType.Integer));
+		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", DataType.Integer));
@@ -133,7 +111,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFormatterNumberMLNoDecimal() throws FormatterException {
 		//séparateur décimal . et accepte ,
-		//séparateur milliers non précisé => par défaut sep \u00A0
+		//séparateur milliers NO précisé => par défaut sep \u00A0
 		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|");
 
 		//séparateur milliers ' '
@@ -150,7 +128,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("1 495.52", formatterNumberLocalizedSpace.valueToString(1495.52, DataType.BigDecimal));
 
 		//Integer
-		Assert.assertEquals(1492, formatterNumber.stringToValue("1492", DataType.Integer));
+		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1\u00A0492", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", DataType.Integer));
 		Assert.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", DataType.Integer));
@@ -174,42 +152,5 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|.");
 		formatterNumberLocalized.stringToValue("3.14", DataType.BigDecimal);
 		//Détection du conflit entre séparateur décimal et de millier
-	}
-
-	/**
-	 * Test du formatter de booléen.
-	 * @throws FormatterException 
-	*/
-	@Test
-	public void testFormatterBoolean() throws FormatterException {
-		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("OUI", DataType.Boolean));
-		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("OUI ", DataType.Boolean));
-		Assert.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NON", DataType.Boolean));
-		Assert.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NON ", DataType.Boolean));
-		Assert.assertEquals(null, formatterBoolean.stringToValue(null, DataType.Boolean));
-		Assert.assertEquals(null, formatterBoolean.stringToValue("", DataType.Boolean));
-		Assert.assertEquals(null, formatterBoolean.stringToValue(" ", DataType.Boolean));
-
-		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue(" OUI", DataType.Boolean));
-		Assert.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("OUI ", DataType.Boolean));
-
-		Assert.assertEquals("OUI", formatterBoolean.valueToString(Boolean.TRUE, DataType.Boolean));
-		Assert.assertEquals("NON", formatterBoolean.valueToString(Boolean.FALSE, DataType.Boolean));
-		Assert.assertEquals(null, formatterBoolean.valueToString(null, DataType.Boolean));
-	}
-
-	@Test(expected = FormatterException.class)
-	public void testFormatterBoolean1() throws FormatterException {
-		formatterBoolean.stringToValue("abc ", DataType.Boolean);
-	}
-
-	@Test(expected = Exception.class)
-	public void testFormatterBoolean2() {
-		formatterBoolean.valueToString("", DataType.Boolean);
-	}
-
-	@Test(expected = Exception.class)
-	public void testFormatterBoolean3() {
-		formatterBoolean.valueToString(" ", DataType.Boolean);
 	}
 }

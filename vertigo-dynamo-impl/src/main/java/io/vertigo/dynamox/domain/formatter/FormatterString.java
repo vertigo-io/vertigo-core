@@ -73,7 +73,7 @@ public final class FormatterString implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) {
+	public String stringToValue(final String strValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
 		//-----
 		return apply(strValue);

@@ -26,7 +26,9 @@ import io.vertigo.dynamo.collections.facet.FacetManagerTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
-import io.vertigo.dynamo.domain.formatter.FormatterTest;
+import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
+import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
+import io.vertigo.dynamo.domain.formatter.NumberFormatterTest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiAATest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTest;
@@ -86,7 +88,12 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//--database
 		DataBaseManagerTest.class,
 		//--domain
-		ConstraintTest.class, FormatterTest.class, DomainManagerTest.class,
+		ConstraintTest.class,
+		DateFormatterTest.class,
+		BooleanFormatterTest.class,
+		NumberFormatterTest.class,
+		StringFormatterTest.class,
+		DomainManagerTest.class,
 		//--file
 		FileManagerTest.class,
 		//--kvdatastore
