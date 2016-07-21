@@ -26,6 +26,7 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -107,7 +108,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		dataSpace = dataSpaceOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
 		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
 		this.taskManager = taskManager;
-		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer);
+		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
 	}
 
 	/**
@@ -523,7 +524,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_COUNT + "_" + tableName;
-		final Domain countDomain = new Domain("DO_COUNT", DataType.Long);
+		final Domain countDomain = new DomainBuilder("DO_COUNT", DataType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
 

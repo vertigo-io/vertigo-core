@@ -24,6 +24,7 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
@@ -81,7 +82,7 @@ final class BrokerNNImpl implements BrokerNN {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer);
+		integerDomain = new DomainBuilder("DO_INTEGER_BROKER", DataType.Integer).build();
 	}
 
 	/** {@inheritDoc} */

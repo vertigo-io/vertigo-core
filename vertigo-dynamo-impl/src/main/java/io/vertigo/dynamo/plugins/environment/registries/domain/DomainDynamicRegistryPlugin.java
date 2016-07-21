@@ -36,6 +36,7 @@ import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
@@ -134,14 +135,19 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final boolean hasFormatter = xdomain.containsDefinitionName("formatter");
 		final List<String> constraintNames = xdomain.getDefinitionNames("constraint");
 
-		final FormatterDefinition formatter;
+		final FormatterDefinition formatterDefinition;
 		if (hasFormatter) {
 			final String formatterName = xdomain.getDefinitionName("formatter");
-			formatter = definitionSpace.resolve(formatterName, FormatterDefinition.class);
+			formatterDefinition = definitionSpace.resolve(formatterName, FormatterDefinition.class);
 		} else {
-			formatter = null;
+			formatterDefinition = null;
 		}
-		return new Domain(domainName, dataType, formatter, createConstraints(definitionSpace, constraintNames), extractProperties(xdomain));
+
+		return new DomainBuilder(domainName, dataType)
+				.withFormatter(formatterDefinition)
+				.withConstraints(createConstraints(definitionSpace, constraintNames))
+				.withProperties(extractProperties(xdomain))
+				.build();
 	}
 
 	/**

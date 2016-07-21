@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.app.Home;
@@ -28,6 +26,7 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ListBuilder;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -68,15 +67,6 @@ public final class Domain implements Definition {
 	private final String dtDefinitionName;
 
 	/**
-	 * Constructorr.
-	 * @param name the name of the domain
-	 * @param dataType the dataType lof the domain
-	 */
-	public Domain(final String name, final DataType dataType) {
-		this(name, dataType, null, Collections.<ConstraintDefinition> emptyList(), new PropertiesBuilder().build());
-	}
-
-	/**
 	 * Constructor.
 	 * @param name the name of the domain
 	 * @param dataType the type of the domain
@@ -84,8 +74,9 @@ public final class Domain implements Definition {
 	 * @param constraintDefinitions the list of constraints
 	 * @param properties List of property-value tuples
 	 */
-	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
+	Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(dataType);
 		//formatterDefinition can be null
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
@@ -94,11 +85,7 @@ public final class Domain implements Definition {
 		this.dataType = dataType;
 		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
 		//---Constraints
-		final List<DefinitionReference<ConstraintDefinition>> myConstraintDefinitionRefs = new ArrayList<>();
-		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
-			myConstraintDefinitionRefs.add(new DefinitionReference<>(constraintDefinition));
-		}
-		constraintDefinitionRefs = Collections.unmodifiableList(myConstraintDefinitionRefs);
+		constraintDefinitionRefs = buildConstraintDefinitionRefs(constraintDefinitions);
 		//---Properties
 		this.properties = buildProperties(constraintDefinitions, properties);
 
@@ -110,6 +97,14 @@ public final class Domain implements Definition {
 		} else {
 			dtDefinitionName = null;
 		}
+	}
+
+	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
+		final ListBuilder<DefinitionReference<ConstraintDefinition>> listBuilder = new ListBuilder();
+		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
+			listBuilder.add(new DefinitionReference<>(constraintDefinition));
+		}
+		return listBuilder.unmodifiable().build();
 	}
 
 	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {

@@ -25,6 +25,7 @@ import javax.inject.Named;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -57,7 +58,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", DataType.Long);
+	private final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
 	private final String sequencePrefix;
 
 	/**
