@@ -180,14 +180,14 @@ public final class Domain implements Definition {
 	 * @returns the dtDefinition for the domains DtList or DtObject.
 	 */
 	public DtDefinition getDtDefinition() {
-		if (dtDefinitionName == null) {
-			//We are building an explicit error
-			if (getDataType().isPrimitive()) {
-				throw new VSystemException("the domain {0} is not a DtList/DtObject", getName());
-			}
-			throw new VSystemException("The domain is a dynamic DtList/DtObject, so there is no DtDefinition", getName());
+		if (dtDefinitionName != null) {
+			return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 		}
-		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
+		//No DtDefinition, so we are building the more explicit error message
+		if (getDataType().isPrimitive()) {
+			throw new VSystemException("the domain {0} is not a DtList/DtObject", getName());
+		}
+		throw new VSystemException("The domain is a dynamic DtList/DtObject, so there is no DtDefinition", getName());
 	}
 
 	/** {@inheritDoc} */
