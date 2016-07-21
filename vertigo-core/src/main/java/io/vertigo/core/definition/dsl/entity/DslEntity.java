@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class Entity implements EntityType {
+public final class DslEntity implements DslEntityType {
 	/**
 	 * Nom de la metadefinition (Type de la définition).
 	 */
@@ -45,7 +45,7 @@ public final class Entity implements EntityType {
 	/**
 	 * Map : Field by names
 	 */
-	private final Map<String, EntityField> fields;
+	private final Map<String, DslEntityField> fields;
 
 	private final boolean root;
 
@@ -55,14 +55,14 @@ public final class Entity implements EntityType {
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<EntityField> fields, final boolean root) {
+	DslEntity(final String name, final Set<DslEntityField> fields, final boolean root) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(fields);
 		//-----
 		this.name = name;
 		this.root = root;
 		this.fields = new HashMap<>();
-		for (final EntityField field : fields) {
+		for (final DslEntityField field : fields) {
 			Assertion.checkArgument(!this.fields.containsKey(field.getName()), "field {0} is already registered for {1}", field, this);
 			//Une propriété est unique pour une définition donnée.
 			//Il n'y a jamais de multiplicité
@@ -82,7 +82,7 @@ public final class Entity implements EntityType {
 	 */
 	public Set<String> getPropertyNames() {
 		final Set<String> names = new HashSet<>();
-		for (final EntityField field : fields.values()) {
+		for (final DslEntityField field : fields.values()) {
 			if (field.getType().isPrimitive()) {
 				names.add(field.getName());
 			}
@@ -90,11 +90,11 @@ public final class Entity implements EntityType {
 		return names;
 	}
 
-	public EntityPropertyType getPrimitiveType(final String fieldName) {
-		final EntityType type = getAttribute(fieldName).getType();
+	public DslEntityPropertyType getPrimitiveType(final String fieldName) {
+		final DslEntityType type = getAttribute(fieldName).getType();
 		Assertion.checkArgument(type.isPrimitive(), "property {0} not found on {1}", fieldName, this);
 		//-----
-		return (EntityPropertyType) type;
+		return (DslEntityPropertyType) type;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public final class Entity implements EntityType {
 	 * @param fieldName Name of the field
 	 * @return Field 
 	 */
-	public EntityField getAttribute(final String fieldName) {
+	public DslEntityField getAttribute(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fields.containsKey(fieldName), "la propriete {0} n'est pas declaree pour {1}", fieldName, this);
 		//-----
@@ -121,9 +121,9 @@ public final class Entity implements EntityType {
 	/**
 	 * @return List of the entity's fields 
 	 */
-	public Set<EntityField> getAttributes() {
-		final Set<EntityField> attributes = new HashSet<>();
-		for (final EntityField field : fields.values()) {
+	public Set<DslEntityField> getAttributes() {
+		final Set<DslEntityField> attributes = new HashSet<>();
+		for (final DslEntityField field : fields.values()) {
 			if (!field.getType().isPrimitive()) {
 				attributes.add(field);
 			}
@@ -136,8 +136,8 @@ public final class Entity implements EntityType {
 		return false;
 	}
 
-	public EntityLink getLink() {
-		return new EntityLink(this);
+	public DslEntityLink getLink() {
+		return new DslEntityLink(this);
 	}
 
 	@Override

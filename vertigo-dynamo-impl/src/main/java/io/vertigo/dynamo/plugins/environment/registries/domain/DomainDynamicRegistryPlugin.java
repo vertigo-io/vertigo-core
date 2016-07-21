@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -77,7 +77,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	public List<DynamicDefinition> getRootDynamicDefinitions() {
 		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 		//On liste les types primitifs
-		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
+		final DslEntity dataTypeEntity = KernelGrammar.getDataTypeEntity();
 		for (final DataType type : DataType.values()) {
 			dynamicDefinitions.add(DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
 		}
@@ -87,7 +87,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/** {@inheritDoc} */
 	@Override
 	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
-		final Entity entity = xdefinition.getEntity();
+		final DslEntity entity = xdefinition.getEntity();
 		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
 			return createConstraint(xdefinition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
@@ -400,7 +400,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
-		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
+		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
 				.addDefinition("dataType", "DtObject")
@@ -413,7 +413,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
-		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
+		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
 		//On fait la même chose avec DTC
 

@@ -24,8 +24,8 @@ import java.util.List;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -36,7 +36,7 @@ import io.vertigo.lang.WrappedException;
  */
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
-	private final EntityGrammar grammar;
+	private final DslEntityGrammar grammar;
 	private final List<DynamicDefinition> rootDynamicDefinitions;
 
 	/**
@@ -56,15 +56,15 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		}
 	}
 
-	private EntityGrammar createGrammar() {
-		final List<Entity> entities = new ArrayList<>();
+	private DslEntityGrammar createGrammar() {
+		final List<DslEntity> entities = new ArrayList<>();
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new EntityGrammar() {
+		return new DslEntityGrammar() {
 
 			@Override
-			public List<Entity> getEntities() {
+			public List<DslEntity> getEntities() {
 				return entities;
 			}
 		};
@@ -72,7 +72,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public EntityGrammar getGrammar() {
+	public DslEntityGrammar getGrammar() {
 		return grammar;
 	}
 

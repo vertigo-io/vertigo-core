@@ -20,7 +20,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
@@ -36,7 +36,7 @@ public interface DynamicRegistry {
 	/**
 	 * @return Grammar
 	 */
-	EntityGrammar getGrammar();
+	DslEntityGrammar getGrammar();
 
 	/**
 	 * 

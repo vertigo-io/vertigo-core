@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityLink;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityLink;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -40,7 +40,7 @@ import io.vertigo.lang.Assertion;
  */
 final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDefinition {
 	/** Type. */
-	private final Entity entity;
+	private final DslEntity entity;
 
 	/** Name of the package. */
 	private String packageName;
@@ -69,7 +69,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	 * @param dynamicDefinitionName name of the dynamicDefinition
 	 * @param entity Entité
 	 */
-	DynamicDefinitionImpl(final String dynamicDefinitionName, final Entity entity) {
+	DynamicDefinitionImpl(final String dynamicDefinitionName, final DslEntity entity) {
 		Assertion.checkNotNull(dynamicDefinitionName);
 		Assertion.checkNotNull(entity);
 		//-----
@@ -85,7 +85,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public Entity getEntity() {
+	public DslEntity getEntity() {
 		return entity;
 	}
 
@@ -205,7 +205,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
-		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof Entity,
+		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof DslEntity,
 				"expected a pure entity on {0}", fieldName);
 		//-----
 		obtainList(definitionsByFieldName, fieldName).addAll(definitions);
@@ -216,7 +216,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	public DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionNames);
-		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof EntityLink,
+		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof DslEntityLink,
 				"expected a link on {0}", fieldName);
 		//-----
 		obtainList(definitionNamesByFieldName, fieldName).addAll(definitionNames);

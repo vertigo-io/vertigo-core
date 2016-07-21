@@ -32,9 +32,9 @@ import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityField;
-import io.vertigo.core.definition.dsl.entity.EntityLink;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
+import io.vertigo.core.definition.dsl.entity.DslEntityLink;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
@@ -51,13 +51,13 @@ import io.vertigo.lang.Assertion;
  */
 public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;
-	private final Entity entity;
+	private final DslEntity entity;
 
 	/**
 	 * Constructeur.
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final Entity entity) {
+	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final DslEntity entity) {
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkNotNull(entity);
 		//-----
@@ -77,10 +77,10 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
 
-		for (final EntityField attribute : entity.getAttributes()) {
+		for (final DslEntityField attribute : entity.getAttributes()) {
 			final String attributeName = attribute.getName();
 			attributeNames.add(attributeName);
-			Entity entityAttribute = attribute.getType() instanceof Entity ? Entity.class.cast(attribute.getType()) : EntityLink.class.cast(attribute.getType()).getEntity();
+			DslEntity entityAttribute = attribute.getType() instanceof DslEntity ? DslEntity.class.cast(attribute.getType()) : DslEntityLink.class.cast(attribute.getType()).getEntity();
 			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, entityAttribute));
 		}
 

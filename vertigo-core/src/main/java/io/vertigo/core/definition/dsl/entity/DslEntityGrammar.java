@@ -28,10 +28,10 @@ import java.util.List;
  *
  * @author pchretien
  */
-public interface EntityGrammar {
+public interface DslEntityGrammar {
 	/**
 	 * Returns the list of entities
 	 * @return List of entities.
 	 */
-	List<Entity> getEntities();
+	List<DslEntity> getEntities();
 }

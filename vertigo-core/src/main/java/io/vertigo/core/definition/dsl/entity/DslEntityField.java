@@ -25,11 +25,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class EntityField {
+public final class DslEntityField {
 	private final String name;
 	private final boolean multiple;
 	private final boolean required;
-	private final EntityType type;
+	private final DslEntityType type;
 
 	/**
 	 * Constructor.
@@ -38,7 +38,7 @@ public final class EntityField {
 	 * @param multiple If multiple
 	 * @param required If not null
 	 */
-	EntityField(final String name, final EntityType type, final boolean multiple, final boolean required) {
+	DslEntityField(final String name, final DslEntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(type);
 		//-----
@@ -72,7 +72,7 @@ public final class EntityField {
 	/**
 	 * @return the type of the entity
 	 */
-	public EntityType getType() {
+	public DslEntityType getType() {
 		return type;
 	}
 }

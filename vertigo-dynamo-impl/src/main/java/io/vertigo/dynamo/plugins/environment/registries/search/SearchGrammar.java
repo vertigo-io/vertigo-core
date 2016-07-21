@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
@@ -32,10 +32,10 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-final class SearchGrammar implements EntityGrammar {
+final class SearchGrammar implements DslEntityGrammar {
 
 	/** Index definition. */
-	public static final Entity INDEX_DEFINITION_ENTITY;
+	public static final DslEntity INDEX_DEFINITION_ENTITY;
 	/** Search loader id. */
 	public static final String SEARCH_LOADER_PROPERTY = "LOADER_ID";
 	/** List filter class. */
@@ -44,20 +44,20 @@ final class SearchGrammar implements EntityGrammar {
 	public static final String LIST_FILTER_BUILDER_QUERY = "LIST_FILTER_BUILDER_QUERY";
 
 	/** Index copy fields. */
-	public static final Entity INDEX_COPY_ENTITY;
+	public static final DslEntity INDEX_COPY_ENTITY;
 
 	/** Fieldname. */
 	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet order. */
 	public static final String FACET_ORDER = "ORDER";
 	/** Facet definition. */
-	public static final Entity FACET_DEFINITION_ENTITY;
+	public static final DslEntity FACET_DEFINITION_ENTITY;
 	/** Facet range. */
-	private static final Entity FACET_RANGE_ENTITY;
+	private static final DslEntity FACET_RANGE_ENTITY;
 	/** Range filter. */
 	public static final String RANGE_FILTER_PROPERTY = "FILTER";
 	/** Faceted query definition. */
-	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
+	public static final DslEntity FACETED_QUERY_DEFINITION_ENTITY;
 
 	/** indexCopy to. */
 	public static final String INDEX_COPY_TO_PROPERTY = "indexCopyTo";
@@ -93,23 +93,23 @@ final class SearchGrammar implements EntityGrammar {
 	*/
 
 	static {
-		INDEX_COPY_ENTITY = new EntityBuilder("indexCopyTo")
+		INDEX_COPY_ENTITY = new DslEntityBuilder("indexCopyTo")
 				.addField(INDEX_COPY_FROM_PROPERTY, String, true)
 				.build();
 
-		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
+		INDEX_DEFINITION_ENTITY = new DslEntityBuilder("IndexDefinition")
 				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addFields(INDEX_COPY_TO_PROPERTY, INDEX_COPY_ENTITY, false) //facultative
 				.addField(SEARCH_LOADER_PROPERTY, String, true)
 				.build();
 
-		FACET_RANGE_ENTITY = new EntityBuilder("range")
+		FACET_RANGE_ENTITY = new DslEntityBuilder("range")
 				.addField(RANGE_FILTER_PROPERTY, String, true)
 				.addField(KspProperty.LABEL, String, true)
 				.build();
 
-		FACET_DEFINITION_ENTITY = new EntityBuilder("FacetDefinition")
+		FACET_DEFINITION_ENTITY = new DslEntityBuilder("FacetDefinition")
 				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField(FIELD_NAME, String, true)
 				.addField(KspProperty.LABEL, String, true)
@@ -117,7 +117,7 @@ final class SearchGrammar implements EntityGrammar {
 				.addFields("range", FACET_RANGE_ENTITY, false) //facultative
 				.build();
 
-		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
+		FACETED_QUERY_DEFINITION_ENTITY = new DslEntityBuilder("FacetedQueryDefinition")
 				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
 				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
 				.addField(LIST_FILTER_BUILDER_CLASS, String, true)
@@ -127,8 +127,8 @@ final class SearchGrammar implements EntityGrammar {
 	}
 
 	@Override
-	public List<Entity> getEntities() {
-		return new ListBuilder<Entity>()
+	public List<DslEntity> getEntities() {
+		return new ListBuilder<DslEntity>()
 				.add(INDEX_DEFINITION_ENTITY)
 				.add(FACET_DEFINITION_ENTITY)
 				.add(FACETED_QUERY_DEFINITION_ENTITY)

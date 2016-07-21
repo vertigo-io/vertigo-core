@@ -21,7 +21,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,7 +39,7 @@ final class DynamicValidator {
 	static void check(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		final Entity myEntity = definition.getEntity();
+		final DslEntity myEntity = definition.getEntity();
 		// 1.On vérifie la définition par rapport à la métadéfinition
 		// 1.1 on vérifie les propriétés.
 		final Set<String> propertyNames = definition.getPropertyNames();
@@ -85,7 +85,7 @@ final class DynamicValidator {
 
 	private static void checkMandatoryProperties(
 			final DynamicDefinition dynamicDefinition,
-			final Entity myEntity,
+			final DslEntity myEntity,
 			final Set<String> propertyNames,
 			final Set<String> entityPropertyNames) {
 		// Vérification des propriétés obligatoires

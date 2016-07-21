@@ -27,7 +27,7 @@ import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
@@ -36,9 +36,9 @@ import io.vertigo.lang.Assertion;
 final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final String entityName;
-	private final Entity entity;
+	private final DslEntity entity;
 
-	DslInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final Entity entity) {
+	DslInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final DslEntity entity) {
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
@@ -113,7 +113,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	 * Cette méthode n'a pas besoin d'être optimisée elle est appelée au démarrage uniquement.
 	 * @return J Valeur typée de la propriété
 	 */
-	private static Object readProperty(final Entity entity, final DslPropertyEntry dslPropertyEntry) {
+	private static Object readProperty(final DslEntity entity, final DslPropertyEntry dslPropertyEntry) {
 		Assertion.checkNotNull(entity);
 		Assertion.checkNotNull(dslPropertyEntry);
 		//-----

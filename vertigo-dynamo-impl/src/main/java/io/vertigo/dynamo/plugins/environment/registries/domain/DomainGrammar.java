@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -51,16 +51,16 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-public final class DomainGrammar implements EntityGrammar {
+public final class DomainGrammar implements DslEntityGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
@@ -86,38 +86,38 @@ public final class DomainGrammar implements EntityGrammar {
 	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
 
 	/**Définition d'une constraint.*/
-	public static final Entity CONSTRAINT_ENTITY;
+	public static final DslEntity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
-	public static final Entity FORMATTER_ENTITY;
+	public static final DslEntity FORMATTER_ENTITY;
 	/**Définition d'une propriété.*/
-	private static final Entity PROPERTY_ENTITY;
+	private static final DslEntity PROPERTY_ENTITY;
 	/**Définition d'un domain.*/
-	public static final Entity DOMAIN_ENTITY;
+	public static final DslEntity DOMAIN_ENTITY;
 
 	/**Définition d'un champ de DT.*/
-	public static final Entity DT_FIELD_ENTITY;
+	public static final DslEntity DT_FIELD_ENTITY;
 	/**Définition d'un champ computed de DT.*/
-	private static final Entity FT_COMPUTED_FIELD_ENTITY;
+	private static final DslEntity FT_COMPUTED_FIELD_ENTITY;
 	/**Définition d'un DT.*/
-	public static final Entity DT_DEFINITION_ENTITY;
+	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
-	public static final Entity ASSOCIATION_ENTITY;
+	public static final DslEntity ASSOCIATION_ENTITY;
 	/**Définition d'une association NN.*/
-	public static final Entity ASSOCIATION_NN_ENTITY;
+	public static final DslEntity ASSOCIATION_NN_ENTITY;
 
 	static {
-		CONSTRAINT_ENTITY = new EntityBuilder("Constraint")
+		CONSTRAINT_ENTITY = new DslEntityBuilder("Constraint")
 				.addField(CLASS_NAME, String, true)
 				.addField(ARGS, String, false)
 				.addField(MSG, String, false)
 				.build();
-		FORMATTER_ENTITY = new EntityBuilder("Formatter")
+		FORMATTER_ENTITY = new DslEntityBuilder("Formatter")
 				.addField(CLASS_NAME, String, true)
 				.addField(ARGS, String, false)
 				.build();
-		PROPERTY_ENTITY = new EntityBuilder("Property").build();
+		PROPERTY_ENTITY = new DslEntityBuilder("Property").build();
 
-		DOMAIN_ENTITY = new EntityBuilder("Domain")
+		DOMAIN_ENTITY = new DslEntityBuilder("Domain")
 				.addField(MAX_LENGTH, Integer, false)
 				.addField(TYPE, String, false)
 				.addField(UNIT, String, false)
@@ -128,20 +128,20 @@ public final class DomainGrammar implements EntityGrammar {
 				.addFields("constraint", CONSTRAINT_ENTITY.getLink(), false)
 				.build();
 
-		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
+		DT_FIELD_ENTITY = new DslEntityBuilder(DT_FIELD_META_DEFINITION)
 				.addField(LABEL, String, true)
 				.addField(NOT_NULL, Boolean, true)
 				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(PERSISTENT, Boolean, false)
 				.build();
 
-		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
+		FT_COMPUTED_FIELD_ENTITY = new DslEntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
 				.addField(LABEL, String, true)
 				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(EXPRESSION, String, true)
 				.build();
 
-		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
+		DT_DEFINITION_ENTITY = new DslEntityBuilder(DT_DEFINITION_META_DEFINITION)
 				.addField(DISPLAY_FIELD, String, false)
 				.addField(SORT_FIELD, String, false)
 				.addFields(FIELD, DT_FIELD_ENTITY, false)
@@ -153,7 +153,7 @@ public final class DomainGrammar implements EntityGrammar {
 				.addField(DATA_SPACE, String, false)
 				.build();
 
-		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
+		ASSOCIATION_ENTITY = new DslEntityBuilder(ASSOCIATION_META_DEFINITION)
 				.addField(FK_FIELD_NAME, String, false)
 				.addField(MULTIPLICITY_A, String, true)
 				.addField(NAVIGABILITY_A, Boolean, true)
@@ -167,7 +167,7 @@ public final class DomainGrammar implements EntityGrammar {
 				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
-		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
+		ASSOCIATION_NN_ENTITY = new DslEntityBuilder(ASSOCIATION_NN_META_DEFINITION)
 				.addField(TABLE_NAME, String, true)
 				.addField(NAVIGABILITY_A, Boolean, true)
 				.addField(ROLE_A, String, true)
@@ -182,8 +182,8 @@ public final class DomainGrammar implements EntityGrammar {
 	}
 
 	@Override
-	public List<Entity> getEntities() {
-		return new ListBuilder<Entity>()
+	public List<DslEntity> getEntities() {
+		return new ListBuilder<DslEntity>()
 				.add(PROPERTY_ENTITY)
 				.add(CONSTRAINT_ENTITY)
 				.add(FORMATTER_ENTITY)

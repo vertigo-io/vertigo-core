@@ -31,7 +31,7 @@ import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
 
@@ -68,7 +68,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	@Override
 	protected Rule<Choice> createMainRule() {
 		final List<Rule<?>> rules = new ArrayList<>();//"Definition")
-		for (final Entity entity : dynamicModelRepository.getGrammar().getEntities()) {
+		for (final DslEntity entity : dynamicModelRepository.getGrammar().getEntities()) {
 			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
 			rules.add(createRule(definitionRule));
 		}

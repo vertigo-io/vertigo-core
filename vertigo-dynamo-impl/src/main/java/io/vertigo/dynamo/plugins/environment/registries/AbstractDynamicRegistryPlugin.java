@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
 
@@ -31,20 +31,20 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPlugin {
-	private final EntityGrammar grammar;
+	private final DslEntityGrammar grammar;
 
 	/**
 	 * Constructeur.
 	 * @param grammar Grammaire
 	 */
-	protected AbstractDynamicRegistryPlugin(final EntityGrammar grammar) {
+	protected AbstractDynamicRegistryPlugin(final DslEntityGrammar grammar) {
 		Assertion.checkNotNull(grammar);
 		//-----
 		this.grammar = grammar;
 	}
 
 	@Override
-	public EntityGrammar getGrammar() {
+	public DslEntityGrammar getGrammar() {
 		return grammar;
 	}
 

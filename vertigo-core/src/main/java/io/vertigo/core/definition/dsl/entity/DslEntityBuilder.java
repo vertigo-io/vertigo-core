@@ -29,7 +29,7 @@ import io.vertigo.lang.Builder;
  *
  * @author pchretien
  */
-public final class EntityBuilder implements Builder<Entity> {
+public final class DslEntityBuilder implements Builder<DslEntity> {
 	/**
 	 * Name of the entity.
 	 */
@@ -38,7 +38,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	/**
 	 * Fields of the entity.
 	 */
-	private final Set<EntityField> fields;
+	private final Set<DslEntityField> fields;
 
 	private boolean myRoot;
 
@@ -46,7 +46,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * Constructor.
 	 * @param name the name of the entity
 	 */
-	public EntityBuilder(final String name) {
+	public DslEntityBuilder(final String name) {
 		Assertion.checkNotNull(name);
 		//-----
 		this.name = name;
@@ -54,7 +54,7 @@ public final class EntityBuilder implements Builder<Entity> {
 
 	}
 
-	public EntityBuilder withRoot() {
+	public DslEntityBuilder withRoot() {
 		myRoot = true;
 		return this;
 	}
@@ -66,7 +66,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public EntityBuilder addField(final String fieldName, final EntityType type, final boolean required) {
+	public DslEntityBuilder addField(final String fieldName, final DslEntityType type, final boolean required) {
 		return addField(fieldName, type, false, required);
 	}
 
@@ -77,7 +77,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public EntityBuilder addFields(final String fieldName, final Entity entity, final boolean required) {
+	public DslEntityBuilder addFields(final String fieldName, final DslEntity entity, final boolean required) {
 		//Only Entities may be multiple
 		return addField(fieldName, entity, true, required);
 	}
@@ -89,7 +89,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public EntityBuilder addFields(final String fieldName, final EntityLink entityLink, final boolean required) {
+	public DslEntityBuilder addFields(final String fieldName, final DslEntityLink entityLink, final boolean required) {
 		//Only Entities or  Link may be multiple
 		return addField(fieldName, entityLink, true, required);
 	}
@@ -102,11 +102,11 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	private EntityBuilder addField(final String fieldName, final EntityType type, final boolean multiple, final boolean required) {
+	private DslEntityBuilder addField(final String fieldName, final DslEntityType type, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(type);
 		//-----
-		final EntityField field = new EntityField(fieldName, type, multiple, required);
+		final DslEntityField field = new DslEntityField(fieldName, type, multiple, required);
 		//-----
 		fields.add(field);
 		return this;
@@ -114,7 +114,7 @@ public final class EntityBuilder implements Builder<Entity> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Entity build() {
-		return new Entity(name, fields, myRoot);
+	public DslEntity build() {
+		return new DslEntity(name, fields, myRoot);
 	}
 }

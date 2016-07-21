@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
@@ -28,32 +28,32 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-final class TaskGrammar implements EntityGrammar {
+final class TaskGrammar implements DslEntityGrammar {
 	/** Attribute name. */
 	public static final String TASK_ATTRIBUTE = "attribute";
 
 	/**Définition d'un attribut de tache.*/
-	private static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
+	private static final DslEntity TASK_ATTRIBUTE_DEFINITION_ENTITY;
 	/**Définition de tache.*/
-	public static final Entity TASK_DEFINITION_ENTITY;
+	public static final DslEntity TASK_DEFINITION_ENTITY;
 
 	static {
-		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
+		TASK_ATTRIBUTE_DEFINITION_ENTITY = new DslEntityBuilder("Attribute")
 				.addField(NOT_NULL, Boolean, true)
 				.addField(IN_OUT, String, true)
 				.addField("domain", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
 				.build();
 
-		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")
+		TASK_DEFINITION_ENTITY = new DslEntityBuilder("Task")
 				.addField(REQUEST, String, true)
 				.addField(DATA_SPACE, String, false)
 				.addField(CLASS_NAME, String, true)
@@ -62,8 +62,8 @@ final class TaskGrammar implements EntityGrammar {
 	}
 
 	@Override
-	public List<Entity> getEntities() {
-		return new ListBuilder<Entity>()
+	public List<DslEntity> getEntities() {
+		return new ListBuilder<DslEntity>()
 				.add(TASK_DEFINITION_ENTITY)
 				.add(TASK_ATTRIBUTE_DEFINITION_ENTITY)
 				.unmodifiable()

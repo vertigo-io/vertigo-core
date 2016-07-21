@@ -21,7 +21,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 import java.util.List;
 import java.util.Set;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 
 /**
  * Classe permettant de créer dynamiquement une structure grammaticale.
@@ -44,7 +44,7 @@ public interface DynamicDefinition {
 	/**
 	 * @return Entité
 	 */
-	Entity getEntity();
+	DslEntity getEntity();
 
 	/**
 	 * Retourne la valeur d'une (méta) propriété liée au domaine, champ, dtDéfinition...

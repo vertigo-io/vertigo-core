@@ -26,7 +26,7 @@ import org.junit.Test;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionBodyRule;
 import io.vertigo.lang.VSystemException;
@@ -34,8 +34,8 @@ import io.vertigo.lang.VSystemException;
 public class DslDefinitionBodyRuleTest {
 	private final DynamicDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
-	private static Entity find(final List<Entity> entities, final String entityName) {
-		for (final Entity entity : entities) {
+	private static DslEntity find(final List<DslEntity> entities, final String entityName) {
+		for (final DslEntity entity : entities) {
 			if (entity.getName().equals(entityName)) {
 				return entity;
 			}
@@ -45,9 +45,9 @@ public class DslDefinitionBodyRuleTest {
 
 	@Test
 	public void test1() throws NotFoundException {
-		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
 
-		final Entity entity = find(entities, "Formatter");
+		final DslEntity entity = find(entities, "Formatter");
 
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<DslDefinitionBody> parser = definitionBodyRule.createParser();
@@ -64,8 +64,8 @@ public class DslDefinitionBodyRuleTest {
 	//		)
 	@Test
 	public void test2() throws NotFoundException {
-		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
-		final Entity entity = find(entities, "Domain");
+		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+		final DslEntity entity = find(entities, "Domain");
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<DslDefinitionBody> parser = definitionBodyRule.createParser();
 		parser.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0);
@@ -73,8 +73,8 @@ public class DslDefinitionBodyRuleTest {
 
 	@Test
 	public void testError() {
-		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
-		final Entity entity = find(entities, "Domain");
+		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+		final DslEntity entity = find(entities, "Domain");
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<DslDefinitionBody> parser = definitionBodyRule.createParser();
 		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";

@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -83,7 +83,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlClass clazz) {
-		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
+		final DslEntity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
 				.addPropertyValue(KspProperty.PERSISTENT, true)
@@ -101,7 +101,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlAttribute attribute) {
-		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
+		final DslEntity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
@@ -112,14 +112,14 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlAssociation association, final DynamicDefinitionRepository dynamicModelrepository) {
-		final Entity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
-		final Entity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
+		final DslEntity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
+		final DslEntity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
 
 		final String name = association.getCode().toUpperCase();
 
 		//On regarde si on est dans le cas d'une association simple ou multiple
 		final boolean isAssociationNN = AssociationUtil.isMultiple(association.getMultiplicityA()) && AssociationUtil.isMultiple(association.getMultiplicityB());
-		final Entity dynamicMetaDefinition;
+		final DslEntity dynamicMetaDefinition;
 		if (isAssociationNN) {
 			dynamicMetaDefinition = associationNNEntity;
 		} else {

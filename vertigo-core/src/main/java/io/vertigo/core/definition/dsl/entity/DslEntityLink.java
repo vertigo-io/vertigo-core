@@ -18,18 +18,35 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
+import io.vertigo.lang.Assertion;
+
 /**
- * There are 3 types of entities.
- * - property 
- * - entity
- * - entitylink
- * 
+ * Defines a link to an entity.
  * @author pchretien
- *
  */
-public interface EntityType {
+public final class DslEntityLink implements DslEntityType {
+	private final DslEntity entity;
+
 	/**
-	 * @return If the entity is a primitive (a property)
+	 * Constructor
+	 * @param entity the entity that is linked
 	 */
-	boolean isPrimitive();
+	DslEntityLink(final DslEntity entity) {
+		Assertion.checkNotNull(entity);
+		Assertion.checkState(!entity.isPrimitive(), "A primitive entity such as {0} can't be linked", entity);
+		//-----
+		this.entity = entity;
+	}
+
+	/**
+	 * @return the linked entity
+	 */
+	public DslEntity getEntity() {
+		return entity;
+	}
+
+	@Override
+	public boolean isPrimitive() {
+		return false;
+	}
 }

@@ -20,7 +20,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.lang.Builder;
 
 /**
@@ -28,7 +28,7 @@ import io.vertigo.lang.Builder;
  * @author  pchretien
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
-	Entity getEntity();
+	DslEntity getEntity();
 
 	/**
 	 * @param packageName Package name
