@@ -30,13 +30,21 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
 /**
-* Un domaine permet d'enrichir les types primitifs
- * en les dotant en les  d'un fort sens métier.
- * Un domaine enrichit la notion de type primitif Dynamo.
- * Un domaine intègre une méthode de validation par contraintes.
- * Il intègre aussi un formatter.
+ * A domain exists to enrich the primitive datatypes, giving them super powers.
  *
- * Un Domaine est un objet partagé par nature il est non modifiable.
+ * A domain has
+ *  - a validator (executed by a list of constraints)
+ *  - a formatter
+ *
+ * A domain is a shared object ; by nature it is immutable.
+ *
+ * A domain is a definition, its prefix is "DO_"
+ *
+ * Examples :
+ *  A mail is not defined by a simple "String", but by a domain called 'Mail'.
+ *  Weights, currencies, codes, labels...
+ *
+ *  An application is built with some dozens of domains.
  *
  * @author pchretien
  */
@@ -48,20 +56,21 @@ public final class Domain implements Definition {
 	/** Formatter. */
 	private final DefinitionReference<FormatterDefinition> formatterDefinitionRef;
 
-	/** Contraintes du domaine. */
+	/** Validator composed by a list of constraints. */
 	private final List<DefinitionReference<ConstraintDefinition>> constraintDefinitionRefs;
 
-	/** Conteneur des couples (propriétés, valeur) */
+	/** List of property-value tuples */
 	private final Properties properties;
 
 	/**
-	 * Nom de la Définition dans le cas de DtObject ou DtList
+	 * Name of the DtDefinition (for the DtObject or DtList)
 	 */
 	private final String dtDefinitionName;
 
 	/**
-	 * Constructeur.
-	 * @param dataType Type Dynamo
+	 * Constructorr.
+	 * @param name the name of the domain
+	 * @param dataType the dataType lof the domain
 	 */
 	public Domain(final String name, final DataType dataType) {
 		this(name, dataType, null, Collections.<ConstraintDefinition> emptyList(), new PropertiesBuilder().build());
@@ -71,12 +80,11 @@ public final class Domain implements Definition {
 	 * Constructor.
 	 * @param name the name of the domain
 	 * @param dataType the type of the domain
-	 * @param formatterDefinition the formatter 
+	 * @param formatterDefinition the formatter
 	 * @param constraintDefinitions the list of constraints
-	 * @param properties Map des (DtProperty, value)
+	 * @param properties List of property-value tuples
 	 */
 	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
-		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
 		//formatterDefinition can be null
 		Assertion.checkNotNull(constraintDefinitions);
@@ -85,20 +93,19 @@ public final class Domain implements Definition {
 		this.name = name;
 		this.dataType = dataType;
 		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
-		//On rend la liste des contraintes non modifiable
+		//---Constraints
 		final List<DefinitionReference<ConstraintDefinition>> myConstraintDefinitionRefs = new ArrayList<>();
 		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
 			myConstraintDefinitionRefs.add(new DefinitionReference<>(constraintDefinition));
 		}
 		constraintDefinitionRefs = Collections.unmodifiableList(myConstraintDefinitionRefs);
-		//========================MISE A JOUR DE LA MAP DES PROPRIETES==========
+		//---Properties
 		this.properties = buildProperties(constraintDefinitions, properties);
 
-		//Mise à jour de la FK.
+		//---FK
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
-			Assertion.checkArgument(!getDataType().isPrimitive(), "Le type ne peut être renseigné que pour des types non primitifs");
+			Assertion.checkArgument(!getDataType().isPrimitive(), "The type can only be used for DtObject or DtList");
 			//-----
-			//On ne s'intéresse qu'au type de DTO et DTC dont le type de DT est déclaré
 			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
 		} else {
 			dtDefinitionName = null;
@@ -111,7 +118,7 @@ public final class Domain implements Definition {
 			propertiesBuilder.addValue(property, inputProperties.getValue(property));
 		}
 
-		//On récupère les propriétés d'après les contraintes
+		//Properties are inferred from constraints
 		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
 			propertiesBuilder.addValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
 		}
@@ -119,9 +126,9 @@ public final class Domain implements Definition {
 	}
 
 	/**
-	 * Returns the type of the domain.
+	 * Returns the dataType of the domain.
 	 *
-	 * @return the type.
+	 * @return the dataType.
 	 */
 	public DataType getDataType() {
 		return dataType;
@@ -139,26 +146,25 @@ public final class Domain implements Definition {
 	}
 
 	/**
-	 * @return propriétés
+	 * @return the properties
 	 */
 	public Properties getProperties() {
 		return properties;
 	}
 
 	/**
-	 * Teste si la valeur passée en paramètre est valide pour le champ.
-	 * Lance une exception transapente(RunTime) avec message adequat si pb.
+	 * Chechs if the value is valid.
 	 *
-	 * @param value Valeur à valider
-	 * @throws ConstraintException Erreur de vérification des contraintes
+	 * @param value the value to check
+	 * @throws ConstraintException if a constraint has failed
 	 */
 	public void checkValue(final Object value) throws ConstraintException {
-		//1. On vérifie la conformité de la valeur par rapport au type du champ.
+		//1. We are checking the type .
 		getDataType().checkValue(value);
 
-		//2. Dans le cas de l'implémentation standard on vérifie les contraintes
+		//2. we are checking all the constraints
 		for (final DefinitionReference<ConstraintDefinition> constraintDefinitionRef : constraintDefinitionRefs) {
-			//Il suffit d'une contrainte non respectée pour qu'il y ait non validation
+			//when a constraint fails, there is no validation
 			if (!constraintDefinitionRef.get().checkConstraint(value)) {
 				throw new ConstraintException(constraintDefinitionRef.get().getErrorMessage());
 			}
@@ -166,29 +172,25 @@ public final class Domain implements Definition {
 	}
 
 	//==========================================================================
-	//Pour les domaines complexes (DTO & DTC) permet d'accéder à la définition des DTO et DTC
+	//for these domains : DtList or DtObject
 	//==========================================================================
 	/**
-	 * @return si il existe un DT identifié pour ce domain.
+	 * @return if there is a DtDefinition for this domain.
 	 */
 	public boolean hasDtDefinition() {
 		return dtDefinitionName != null;
 	}
 
 	/**
-	 * Permet pour les types composites (Beans et collections de beans)
-	 * de connaitre leur définition.
-	 * Ne peut pas être appelé pour des types primitifs. (ex : BigDecimal, String....)
-	 * Fonctionne uniquement avec les domaines de type DtList et DtObject.
-	 * @return dtDefinition des domaines de type DtList et DtObject.
+	 * @returns the dtDefinition for the domains DtList or DtObject.
 	 */
 	public DtDefinition getDtDefinition() {
 		if (dtDefinitionName == null) {
-			//On fournit un message d'erreur explicite
+			//We are building an explicit error
 			if (getDataType().isPrimitive()) {
-				throw new VSystemException("Le domain {0} n'est ni un DTO ni une DTC", getName());
+				throw new VSystemException("the domain {0} is not a DtList/DtObject", getName());
 			}
-			throw new VSystemException("Le domain {0} est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.", getName());
+			throw new VSystemException("The domain is a dynamic DtList/DtObject, so there is no DtDefinition", getName());
 		}
 		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}
