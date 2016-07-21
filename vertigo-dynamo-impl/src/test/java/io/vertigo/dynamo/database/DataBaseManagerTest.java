@@ -35,6 +35,7 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -182,7 +183,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
+		final Domain domain = new DomainBuilder("DO_INTEGER", DataType.Integer).build();
 		final SqlQueryResult result = executeQuery(domain, "select count(*) from movie");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
@@ -194,7 +195,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_LIB", DataType.String);
+		final Domain domain = new DomainBuilder("DO_LIB", DataType.String).build();
 		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
@@ -222,7 +223,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 				connection.commit();
 			}
 			//----
-			final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
+			final Domain domain = new DomainBuilder("DO_INTEGER", DataType.Integer).build();
 			final Domain movieDomain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
 
 			final SqlQueryResult result2 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
@@ -258,7 +259,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_TEST", DataType.DtList);
+		final Domain domain = new DomainBuilder("DO_TEST", DataType.DtList).build();
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
