@@ -81,6 +81,18 @@ public final class DtObjectUtil {
 	}
 
 	/**
+	 * Creates the uri of the entity
+	 * @param entityClass the class of the entity
+	 * @param uriValue key value
+	 * @param <E> the type of entity
+	 * @return URI du DTO
+	 */
+	public static <E extends Entity> URI<E> createURI(final Class<E> entityClass, final Object uriValue) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		return new URI<>(dtDefinition, uriValue);
+	}
+
+	/**
 	 * Récupération d'une URI de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
@@ -89,7 +101,7 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-	
+
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param entity the entity
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
