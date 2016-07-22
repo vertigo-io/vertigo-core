@@ -72,10 +72,10 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	public void testStereotypeData() {
 		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
 		Assert.assertNotNull(dtDefinitionAttachment);
-		Assert.assertEquals(DtStereotype.Data, dtDefinitionAttachment.getStereotype());
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
 
 		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
 		Assert.assertNotNull(dtDefinitionCommandValidation);
-		Assert.assertEquals(DtStereotype.Data, dtDefinitionCommandValidation.getStereotype());
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
 	}
 }
