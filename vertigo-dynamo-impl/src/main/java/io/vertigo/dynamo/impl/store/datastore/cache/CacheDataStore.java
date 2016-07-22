@@ -92,18 +92,18 @@ public final class CacheDataStore {
 	}
 
 	private synchronized <E extends Entity> E reload(final DtDefinition dtDefinition, final URI<E> uri) {
-		final E dto;
+		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
 			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, null, null);
 			reloadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
-			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
-			cacheDataStoreConfig.getDataCache().putDtObject(dto);
+			entity = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
+			cacheDataStoreConfig.getDataCache().putDtObject(entity);
 		}
-		return dto;
+		return entity;
 	}
 
 	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {

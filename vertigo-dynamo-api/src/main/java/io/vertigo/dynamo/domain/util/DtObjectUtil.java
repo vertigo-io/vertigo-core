@@ -148,14 +148,14 @@ public final class DtObjectUtil {
 
 	/**
 	 * Creates an URI from an existing object.
-	 * @param dto Object
+	 * @param entity Object
 	 * @return this object URI
 	 */
-	public static <E extends Entity> URI<E> createURI(final E dto) {
-		Assertion.checkNotNull(dto);
+	public static <E extends Entity> URI<E> createURI(final E entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = findDtDefinition(dto);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
+		final DtDefinition dtDefinition = findDtDefinition(entity);
+		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
 	}
 
 	/**

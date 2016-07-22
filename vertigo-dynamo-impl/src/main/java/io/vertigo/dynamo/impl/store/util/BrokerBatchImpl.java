@@ -104,9 +104,9 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final DtField idField = dtDefinition.getIdField().get();
 		for (final P id : idList) {
 			Assertion.checkNotNull(id);
-			final E dto = (E) DtObjectUtil.createDtObject(dtDefinition);
-			idField.getDataAccessor().setValue(dto, id);
-			dtc.add(dto);
+			final E entity = (E) DtObjectUtil.createDtObject(dtDefinition);
+			idField.getDataAccessor().setValue(entity, id);
+			dtc.add(entity);
 		}
 		return getList(dtDefinition, idField.getName(), dtc);
 	}
@@ -177,8 +177,8 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		//-----
 		final DtField idField = dtDefinition.getIdField().get();
 		final Map<P, E> map = new HashMap<>();
-		for (final E dto : getList(dtDefinition, idList)) {
-			map.put((P) idField.getDataAccessor().getValue(dto), dto);
+		for (final E entity : getList(dtDefinition, idList)) {
+			map.put((P) idField.getDataAccessor().getValue(entity), entity);
 		}
 		return map;
 	}
@@ -200,9 +200,9 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final DtField field = dtDefinition.getField(fieldName);
 		for (final O sel : value) {
 			Assertion.checkNotNull(sel);
-			final E dto = (E) DtObjectUtil.createDtObject(dtDefinition);
-			field.getDataAccessor().setValue(dto, sel);
-			dtc.add(dto);
+			final E entity = (E) DtObjectUtil.createDtObject(dtDefinition);
+			field.getDataAccessor().setValue(entity, sel);
+			dtc.add(entity);
 		}
 		return getList(dtDefinition, field.getName(), dtc);
 	}
@@ -215,13 +215,13 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		//-----
 		final DtField field = dtDefinition.getField(fieldName);
 		final Map<O, DtList<E>> map = new HashMap<>();
-		for (final E dto : getListByField(dtDefinition, fieldName, value)) {
-			final O key = (O) field.getDataAccessor().getValue(dto);
+		for (final E entity : getListByField(dtDefinition, fieldName, value)) {
+			final O key = (O) field.getDataAccessor().getValue(entity);
 			if (!map.containsKey(key)) {
 				final DtList<E> dtc = new DtList<>(dtDefinition);
 				map.put(key, dtc);
 			}
-			map.get(key).add(dto);
+			map.get(key).add(entity);
 		}
 		return map;
 	}

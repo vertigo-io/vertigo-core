@@ -43,12 +43,12 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkMultiFieldConstraints(final E dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObject);
+	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String camelCaseFieldName = getCamelCaseFieldName(idField);
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DtObjectUtil.getId(dtObject) == null) {
+			if (DtObjectUtil.getId(entity) == null) {
 				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
 			}
 		}

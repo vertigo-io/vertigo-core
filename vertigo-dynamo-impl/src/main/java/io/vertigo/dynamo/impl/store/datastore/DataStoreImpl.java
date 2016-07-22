@@ -144,10 +144,10 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> E read(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E dto = cacheDataStore.<E> load(uri);
+		final E entity = cacheDataStore.<E> load(uri);
 		//-----
-		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
-		return dto;
+		Assertion.checkNotNull(entity, "L''objet {0} n''a pas été trouvé", uri);
+		return entity;
 	}
 
 	/** {@inheritDoc} */
