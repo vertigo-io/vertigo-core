@@ -23,6 +23,6 @@ package io.vertigo.dynamo.domain.model;
  *
  * @author npiedeloup, pchretien
  */
-public interface DtMasterData extends DtObject {
+public interface DtMasterData extends Entity {
 	//
 }

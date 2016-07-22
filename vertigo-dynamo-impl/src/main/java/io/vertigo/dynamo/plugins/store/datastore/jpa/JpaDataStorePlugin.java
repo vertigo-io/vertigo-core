@@ -47,6 +47,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -130,7 +131,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private <D extends DtObject> D loadWithoutClear(final URI<D> uri) {
+	private <D extends Entity> D loadWithoutClear(final URI<D> uri) {
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
@@ -154,7 +155,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -163,12 +164,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
-		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
+		return doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D read(final DtDefinition dtDefinition, final URI<D> uri) {
+	public <D extends Entity> D read(final DtDefinition dtDefinition, final URI<D> uri) {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
@@ -269,7 +270,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -284,7 +285,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -330,21 +331,21 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void create(final DtDefinition dtDefinition, final DtObject dto) {
+	public void create(final DtDefinition dtDefinition, final Entity dto) {
 		put("Jpa:create", dto, true);
 	}
 
 	@Override
-	public void update(final DtDefinition dtDefinition, final DtObject dto) {
+	public void update(final DtDefinition dtDefinition, final Entity dto) {
 		put("Jpa:update", dto, false);
 	}
 
 	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+	public void merge(final DtDefinition dtDefinition, final Entity dto) {
 		put("Jpa:merge", dto, false);
 	}
 
-	private void put(final String prefixServiceName, final DtObject dto, final boolean persist) {
+	private void put(final String prefixServiceName, final Entity dto, final boolean persist) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
@@ -391,7 +392,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <D extends Entity> D readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {

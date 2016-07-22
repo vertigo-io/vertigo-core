@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.datastore;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 
 /**
@@ -48,7 +48,7 @@ public interface DataStore {
 	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<D extends DtObject> D read(final URI<D> uri);
+	<D extends Entity> D read(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -57,7 +57,7 @@ public interface DataStore {
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtListURI uri);
+	<D extends Entity> DtList<D> findAll(final DtListURI uri);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
@@ -65,7 +65,7 @@ public interface DataStore {
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D readForUpdate(URI<D> uri);
+	<D extends Entity> D readForUpdate(URI<D> uri);
 
 	/**
 	* Create an object.
@@ -73,14 +73,14 @@ public interface DataStore {
 	*
 	* @param dto Object to create
 	*/
-	void create(DtObject dto);
+	void create(Entity dto);
 
 	/**
 	* Update an object.
 	* This object must have an id.
 	* @param dto Object to update
 	*/
-	void update(DtObject dto);
+	void update(Entity dto);
 
 	/**
 	* Merge an object.
@@ -91,13 +91,13 @@ public interface DataStore {
 	*
 	* @param dto Object to merge
 	*/
-	void merge(DtObject dto);
+	void merge(Entity dto);
 
 	/**
 	 * Destruction d'un objet persistant par son URI.
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(URI<? extends DtObject> uri);
+	void delete(URI<? extends Entity> uri);
 
 }

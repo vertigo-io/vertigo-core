@@ -34,6 +34,7 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -134,7 +135,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI<Entity> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 
 		// récupération du fichier
@@ -161,8 +162,8 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		}
 	}
 
-	private DtObject createFileInfoDto(final FileInfo fileInfo) {
-		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
+	private Entity createFileInfoEntity(final FileInfo fileInfo) {
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
@@ -177,7 +178,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
+			final URI<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().read(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
@@ -199,7 +200,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getStoreManager().getDataStore().create(fileInfoDto);
 
@@ -225,7 +226,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 
@@ -243,7 +244,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
@@ -258,7 +259,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private URI<DtObject> createDtObjectURI(final FileInfoURI uri) {
+	private URI<Entity> createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
@@ -271,11 +272,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param fileInfoDefinition Definition de FileInfo
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
-	private DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
+	private Entity createFileInfoEntity(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return DtObjectUtil.createDtObject(storeDtDefinition);
+		return DtObjectUtil.createEntity(storeDtDefinition);
 	}
 
 	/**

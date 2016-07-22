@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -81,12 +82,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	public FileInfo read(final FileInfoURI fileInfoUri) {
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
-		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
 		final DtObject fileMetadataDto = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.FDT_ID, Object.class);
 
 		// Ramène FileData
-		final URI<DtObject> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
+		final URI<Entity> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 
 		final DtObject fileDataDto = getStoreManager().getDataStore().read(dtoDataUri);
 		// Construction du vFile.
@@ -110,11 +111,11 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created");
 		//-----
-		final DtObject fileMetadataDto = createMetaDataDtObject(fileInfo);
-		final DtObject fileDataDto = createFileDtObject(fileInfo);
+		final Entity fileMetadataDto = createMetaDataEntity(fileInfo);
+		final Entity fileEntity = createFileEntity(fileInfo);
 		//-----
-		getStoreManager().getDataStore().create(fileDataDto);
-		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
+		getStoreManager().getDataStore().create(fileEntity);
+		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileEntity));
 		getStoreManager().getDataStore().create(fileMetadataDto);
 		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
@@ -127,12 +128,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		Assertion.checkArgument(fileInfo.getURI() != null, "Only file with id can be updated");
 		//-----
-		final DtObject fileMetadataDto = createMetaDataDtObject(fileInfo);
-		final DtObject fileDataDto = createFileDtObject(fileInfo);
+		final Entity fileMetadataDto = createMetaDataEntity(fileInfo);
+		final Entity fileDataDto = createFileEntity(fileInfo);
 		//-----
 		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
 		// Chargement du FDT_ID
-		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
@@ -151,17 +152,17 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
-		final URI<DtObject> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().read(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
-		final URI<DtObject> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
+		final URI<Entity> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 
 		getStoreManager().getDataStore().delete(dtoMetaDataUri);
 		getStoreManager().getDataStore().delete(dtoDataUri);
 	}
 
-	private DtObject createMetaDataDtObject(final FileInfo fileInfo) {
-		final DtObject fileMetadataDto = DtObjectUtil.createDtObject(storeMetaDataDtDefinition);
+	private Entity createMetaDataEntity(final FileInfo fileInfo) {
+		final Entity fileMetadataDto = DtObjectUtil.createEntity(storeMetaDataDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileMetadataDto, DtoFields.FILE_NAME, vFile.getFileName());
 		setValue(fileMetadataDto, DtoFields.MIME_TYPE, vFile.getMimeType());
@@ -170,8 +171,8 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		return fileMetadataDto;
 	}
 
-	private DtObject createFileDtObject(final FileInfo fileInfo) {
-		final DtObject fileDataDto = DtObjectUtil.createDtObject(storeFileDtDefinition);
+	private Entity createFileEntity(final FileInfo fileInfo) {
+		final Entity fileDataDto = DtObjectUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileDataDto, DtoFields.FILE_NAME, vFile.getFileName());
 		setValue(fileDataDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));

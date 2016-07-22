@@ -49,7 +49,6 @@ import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
@@ -802,9 +801,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private enum YearCluster {
-		before2000("avant 2000"),
-		between2000and2005("2000-2005"),
-		after2005("apres 2005");
+		before2000("avant 2000"), between2000and2005("2000-2005"), after2005("apres 2005");
 
 		private final String label;
 
@@ -953,23 +950,18 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private static URI<Car> createURI(final Car car) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(car));
-	}
-
 	private void doIndex(final boolean all) {
 		if (all) {
 			final List<SearchIndex<Car, Car>> indexes = new ArrayList<>();
 			for (final Car car : carDataBase) {
-				indexes.add(SearchIndex.createIndex(carIndexDefinition, createURI(car), car));
+				indexes.add(SearchIndex.createIndex(carIndexDefinition, DtObjectUtil.createURI(car), car));
 			}
 			searchManager.putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
-				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car);
+				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, DtObjectUtil.createURI(car), car);
 				searchManager.put(carIndexDefinition, index);
 			}
 		}

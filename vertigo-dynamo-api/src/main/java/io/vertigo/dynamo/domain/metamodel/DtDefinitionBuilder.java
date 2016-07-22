@@ -29,8 +29,8 @@ import io.vertigo.lang.MessageText;
 
 /**
  * This class must be used to build a DtDefinition.
- * 
- * Each dtDefinition must have a name following this pattern DT_XXX_YYYY  
+ *
+ * Each dtDefinition must have a name following this pattern DT_XXX_YYYY
  *
  * @author pchretien
  */
@@ -56,9 +56,10 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DtDefinition dtDefinition;
 	private final String myName;
 	private String myPackageName;
-	private DtStereotype myStereotype = DtStereotype.Data;
+	private DtStereotype myStereotype;
 	private boolean myPersistent;
 	private boolean myDynamic;
+	private DtField myIdField;
 	private final List<DtField> myFields = new ArrayList<>();
 	private String myDataSpace;
 
@@ -73,7 +74,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * Sets packageName 
+	 * Sets packageName
 	 * @param packageName the name of the package (nullable)
 	 * @return this builder
 	 */
@@ -86,7 +87,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Sets the stereotype of the dtDefinition.
-	 * 
+	 *
 	 * @param stereotype the stereotype of the dtDefinition
 	 * @return this builder
 	 */
@@ -99,7 +100,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Sets the persistent state.
-	 * 
+	 *
 	 * @param persistent if the dtDefinition is persisted
 	 * @return this builder
 	 */
@@ -110,7 +111,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Sets the dynamic state.
-	 * 
+	 *
 	 * @param dynamic if this dtDefinition is dynamic
 	 * @return this builder
 	 */
@@ -121,7 +122,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Adds a field linked to another dtDefinition (aka foreign key).
-	 * 
+	 *
 	 * @param fieldName the name of the field
 	 * @param fkDtDefinitionName the name of the linked definition
 	 * @param label the label of the field
@@ -142,7 +143,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Adds a computed field.
-	 * 
+	 *
 	 * @param fieldName the name of the field
 	 * @param label the label of the field
 	 * @param domain the domain of the field
@@ -160,7 +161,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Adds a common data field.
-	 * 
+	 *
 	 * @param fieldName the name of the field
 	 * @param domain the domain of the field
 	 * @param label the label of the field
@@ -180,7 +181,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	/**
 	 * Adds an ID field.
 	 * This field is required.
-	 * 
+	 *
 	 * @param fieldName the name of the field
 	 * @param domain the domain of the field
 	 * @param label the label of the field
@@ -189,12 +190,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
+		Assertion.checkArgument(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
+		//---
 		//le champ ID est tjrs required
 		final boolean required = true;
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = myPersistent;
 		//le champ  est dynamic SSI la définition est dynamique
 		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null, myDynamic, sort, display);
+		myIdField = dtField;
 		myFields.add(dtField);
 		return this;
 	}
@@ -206,7 +210,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		// Le DtField vérifie ses propres règles et gère ses propres optimisations
 		final String id = DtField.PREFIX + shortName + '$' + fieldName;
 
-		Assertion.checkArgNotEmpty(strLabel, "Label doit être non vide");
+		Assertion.checkArgNotEmpty(strLabel, "Label must not be empty");
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
 		final MessageText label = new MessageText(strLabel, new MessageKeyImpl(id));
@@ -232,6 +236,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build() already executed");
 		//-----
+		if (myStereotype == null) {
+			myStereotype = (myIdField == null) ? DtStereotype.Data : DtStereotype.Entity;
+		}
 		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
 		return dtDefinition;
 	}

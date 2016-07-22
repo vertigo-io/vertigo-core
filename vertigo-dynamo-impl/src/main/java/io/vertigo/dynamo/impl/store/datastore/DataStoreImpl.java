@@ -22,7 +22,7 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.StoreEvent;
@@ -70,7 +70,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D readForUpdate(final URI<D> uri) {
+	public <D extends Entity> D readForUpdate(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -95,7 +95,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtObject dto) {
+	public void create(final Entity dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
@@ -107,7 +107,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtObject dto) {
+	public void update(final Entity dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
@@ -119,7 +119,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtObject dto) {
+	public void merge(final Entity dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
@@ -130,7 +130,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI<? extends Entity> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -141,7 +141,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D read(final URI<D> uri) {
+	public <D extends Entity> D read(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final D dto = cacheDataStore.<D> load(uri);
@@ -152,7 +152,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtListURI uri) {
+	public <D extends Entity> DtList<D> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtList<D> dtc = cacheDataStore.loadList(uri);

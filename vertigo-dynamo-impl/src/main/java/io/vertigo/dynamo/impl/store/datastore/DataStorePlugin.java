@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 
@@ -68,7 +68,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<D extends DtObject> D read(DtDefinition dtDefinition, URI<D> uri);
+	<D extends Entity> D read(DtDefinition dtDefinition, URI<D> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -79,7 +79,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -90,7 +90,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -101,7 +101,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
+	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -113,7 +113,7 @@ public interface DataStorePlugin extends Plugin {
 	* @param dtDefinition Definition
 	* @param dto Object to create
 	*/
-	void create(DtDefinition dtDefinition, DtObject dto);
+	void create(DtDefinition dtDefinition, Entity dto);
 
 	/**
 	* Updates an object.
@@ -121,7 +121,7 @@ public interface DataStorePlugin extends Plugin {
 	* @param dtDefinition Definition
 	* @param dto Object to update
 	*/
-	void update(DtDefinition dtDefinition, DtObject dto);
+	void update(DtDefinition dtDefinition, Entity dto);
 
 	/**
 	* Merges an object.
@@ -133,7 +133,7 @@ public interface DataStorePlugin extends Plugin {
 	* @param dtDefinition Definition
 	* @param dto Object to merge
 	*/
-	void merge(DtDefinition dtDefinition, DtObject dto);
+	void merge(DtDefinition dtDefinition, Entity dto);
 
 	/**
 	 * Deletes an object identified by an uri.
@@ -151,5 +151,5 @@ public interface DataStorePlugin extends Plugin {
 	 * @param <D> Object type
 	 * @return D Object value.
 	 */
-	<D extends DtObject> D readForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<D extends Entity> D readForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }

@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  * @param <D> Type de DtObject
  */
-public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
+public final class DtListURIForCriteria<D extends Entity> extends DtListURI {
 	private static final long serialVersionUID = 7926630153187124165L;
 	private final Integer maxRows;
 	private final Criteria<D> criteria;

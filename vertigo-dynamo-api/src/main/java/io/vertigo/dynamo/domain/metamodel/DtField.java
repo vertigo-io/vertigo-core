@@ -60,12 +60,12 @@ public final class DtField implements DtFieldName {
 		DATA,
 
 		/**
-		 * a link towards an other object
+		 * a link towards an other entity
 		 */
 		FOREIGN_KEY,
 
 		/**
-		 * a compute field
+		 * a computed field
 		 */
 		COMPUTED
 	}

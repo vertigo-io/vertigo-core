@@ -38,7 +38,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author  pchretien
  */
-public final class URI<D extends DtObject> implements Serializable {
+public final class URI<D extends Entity> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 

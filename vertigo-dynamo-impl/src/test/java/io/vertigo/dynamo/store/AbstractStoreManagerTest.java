@@ -741,7 +741,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			final URI<Car> carUri = DtObjectUtil.createURI(car);
 			storeManager.getDataStore().delete(carUri);
 			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
 			transaction.commit();
@@ -760,7 +760,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			final URI<Car> carUri = DtObjectUtil.createURI(car);
 			storeManager.getDataStore().delete(carUri);
 			checkCrudCarsCount(0);
 			transaction.commit();
@@ -774,7 +774,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			final URI<Car> carUri = DtObjectUtil.createURI(Car.class, car.getId());
+			final URI<Car> carUri = DtObjectUtil.createURI(car);
 			storeManager.getDataStore().readForUpdate(carUri);
 			checkCrudCarsCount(1);
 			transaction.commit();

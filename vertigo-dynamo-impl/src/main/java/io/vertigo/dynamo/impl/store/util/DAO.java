@@ -26,6 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
@@ -43,7 +44,7 @@ import io.vertigo.lang.Assertion;
  * @param <D> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  */
-public class DAO<D extends DtObject, P> implements BrokerNN {
+public class DAO<D extends Entity, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
@@ -214,12 +215,12 @@ public class DAO<D extends DtObject, P> implements BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param newDtc DtList modifiée
 	 */
-	public final <FK extends DtObject> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
+	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
 		final List<URI> objectURIs = new ArrayList<>();
 		for (final FK dto : newDtc) {
-			objectURIs.add(createURI(dto));
+			objectURIs.add(DtObjectUtil.createURI(dto));
 		}
 		updateNN(dtListURI, objectURIs);
 	}
@@ -242,14 +243,7 @@ public class DAO<D extends DtObject, P> implements BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param dtoToAppend Objet à ajout à la NN
 	 */
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final DtObject dtoToAppend) {
-		brokerNN.appendNN(dtListURI, createURI(dtoToAppend));
-	}
-
-	private static <D extends DtObject> URI<D> createURI(final D dto) {
-		Assertion.checkNotNull(dto);
-		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity dtoToAppend) {
+		brokerNN.appendNN(dtListURI, DtObjectUtil.createURI(dtoToAppend));
 	}
 }

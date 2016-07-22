@@ -159,7 +159,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//-----
 		final String tmpStereotype = (String) xdtDefinition.getPropertyValue(KspProperty.STEREOTYPE);
 		//Si Stereotype est non renseigné on suppose que la définition est DtStereotype.Data.
-		final DtStereotype stereotype = tmpStereotype != null ? DtStereotype.valueOf(tmpStereotype) : DtStereotype.Data;
+		final DtStereotype stereotype = tmpStereotype != null ? DtStereotype.valueOf(tmpStereotype) : null;
 		//-----
 		final String dataSpace = (String) xdtDefinition.getPropertyValue(KspProperty.DATA_SPACE);
 		//-----
@@ -173,12 +173,15 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String dtDefinitionName = xdtDefinition.getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
-				.withStereoType(stereotype)
 				.withPersistent(persistent)
 				.withDynamic(dynamic)
 				.withDataSpace(dataSpace);
+		if (stereotype != null) {
+			dtDefinitionBuilder.withStereoType(stereotype);
+		}
+
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
-		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' déjà enregistrée", dtDefinitionName);
+		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' already registered", dtDefinitionName);
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
 
 		//Déclaration de la clé primaire

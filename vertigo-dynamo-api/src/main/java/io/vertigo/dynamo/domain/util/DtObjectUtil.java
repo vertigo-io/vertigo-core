@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -63,6 +64,10 @@ public final class DtObjectUtil {
 		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
 	}
 
+	public static Entity createEntity(final DtDefinition dtDefinition) {
+		return Entity.class.cast(createDtObject(dtDefinition));
+	}
+
 	/**
 	 * Returns the 'id' of a 'DtObject'.
 	 * @return the id of the specified 'DtObject'
@@ -77,19 +82,6 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une URI de DTO.
-	 * On récupère l'URI d'un DTO à partir de sa classe et sa clée.
-	 * @param dtObjectClass Class du DTO
-	 * @param uriValue key value
-	 * @param <D> DtObject type
-	 * @return URI du DTO
-	 */
-	public static <D extends DtObject> URI<D> createURI(final Class<D> dtObjectClass, final Object uriValue) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
-		return new URI<>(dtDefinition, uriValue);
-	}
-
-	/**
-	 * Récupération d'une URI de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
 	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.
@@ -97,12 +89,12 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto DtObject
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <D extends DtObject> URI<D> createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
+	public static <D extends Entity> URI<D> createURI(final Entity dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -129,7 +121,7 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
@@ -145,7 +137,7 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
@@ -159,7 +151,7 @@ public final class DtObjectUtil {
 	 * @param dto Object
 	 * @return this object URI
 	 */
-	public static <D extends DtObject> URI<D> createURI(final D dto) {
+	public static <D extends Entity> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);

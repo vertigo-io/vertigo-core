@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
@@ -38,7 +38,7 @@ import io.vertigo.dynamock.domain.car.Car;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "FAMILLE")
 @DtDefinition
-public final class Famille implements DtObject {
+public final class Famille implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public final class Famille implements DtObject {
 	private DtList<Car> voituresLocation;
 
 	/**
-	 * Champ : ID. 
+	 * Champ : ID.
 	 * rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
 	 *
 	 * @return Long famId <b>Obligatoire</b>
@@ -63,7 +63,7 @@ public final class Famille implements DtObject {
 	}
 
 	/**
-	 * Champ : ID. 
+	 * Champ : ID.
 	 * DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
 	 *
 	 * @param famId

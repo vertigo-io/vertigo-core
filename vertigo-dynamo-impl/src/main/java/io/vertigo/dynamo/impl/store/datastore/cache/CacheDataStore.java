@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
@@ -72,7 +72,7 @@ public final class CacheDataStore {
 	 * @param uri Element uri
 	 * @return Element by uri
 	 */
-	public <D extends DtObject> D load(final URI<D> uri) {
+	public <D extends Entity> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -91,7 +91,7 @@ public final class CacheDataStore {
 		return dto;
 	}
 
-	private synchronized <D extends DtObject> D reload(final DtDefinition dtDefinition, final URI<D> uri) {
+	private synchronized <D extends Entity> D reload(final DtDefinition dtDefinition, final URI<D> uri) {
 		final D dto;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
@@ -106,7 +106,7 @@ public final class CacheDataStore {
 		return dto;
 	}
 
-	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
+	private <D extends Entity> DtList<D> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
 		Assertion.checkNotNull(listUri);
 		//-----
 		final DtList<D> dtc;
@@ -126,7 +126,7 @@ public final class CacheDataStore {
 		return dtc;
 	}
 
-	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
+	private <D extends Entity> DtList<D> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
@@ -146,7 +146,7 @@ public final class CacheDataStore {
 	 * @param uri List uri
 	 * @return List of this uri
 	 */
-	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
+	public <D extends Entity> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		//- Prise en compte du cache
@@ -166,7 +166,7 @@ public final class CacheDataStore {
 		return uri instanceof DtListURIForNNAssociation;
 	}
 
-	private synchronized <D extends DtObject> DtList<D> reloadList(final DtListURI uri) {
+	private synchronized <D extends Entity> DtList<D> reloadList(final DtListURI uri) {
 		// On charge la liste initiale avec les critéres définis en amont
 		final DtList<D> dtc = doLoadList(uri.getDtDefinition(), uri);
 		// Mise en cache de la liste et des éléments.
