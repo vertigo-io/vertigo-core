@@ -124,9 +124,8 @@ public final class Command implements KeyConcept {
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.environment.java.data.CommandType getCommandType() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.environment.java.data.CommandType getCommandType() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> fkURI = getCommandTypeURI();
 		if (fkURI == null) {
 			return null;
@@ -135,7 +134,7 @@ public final class Command implements KeyConcept {
 		if (commandType != null) {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> uri;
-			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(commandType), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(commandType));
+			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(commandType);
 			if (!fkURI.urn().equals(uri.urn())) {
 				commandType = null;
 			}
@@ -163,9 +162,8 @@ public final class Command implements KeyConcept {
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> getCommandTypeURI() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> getCommandTypeURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CTY_CMD", io.vertigo.dynamo.environment.java.data.CommandType.class);
 	}
 
@@ -186,9 +184,8 @@ public final class Command implements KeyConcept {
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.environment.java.data.City getCity() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.environment.java.data.City getCity() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> fkURI = getCityURI();
 		if (fkURI == null) {
 			return null;
@@ -197,7 +194,7 @@ public final class Command implements KeyConcept {
 		if (city != null) {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> uri;
-			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(city), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(city));
+			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(city);
 			if (!fkURI.urn().equals(uri.urn())) {
 				city = null;
 			}
@@ -225,9 +222,8 @@ public final class Command implements KeyConcept {
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> getCityURI() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> getCityURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CIT_CMD", io.vertigo.dynamo.environment.java.data.City.class);
 	}
 

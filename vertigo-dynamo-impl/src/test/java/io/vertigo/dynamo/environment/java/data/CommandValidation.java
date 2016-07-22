@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.environment.java.data;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "COMMAND_VALIDATION")
 @DtDefinition
-public final class CommandValidation implements DtObject {
+public final class CommandValidation implements Entity {
 
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -120,9 +120,8 @@ public final class CommandValidation implements DtObject {
 			foreignIsNavigable = false,
 			foreignRole = "CommandValidation",
 			foreignLabel = "Command validation",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.environment.java.data.Command getCommand() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.environment.java.data.Command getCommand() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> fkURI = getCommandURI();
 		if (fkURI == null) {
 			return null;
@@ -131,7 +130,7 @@ public final class CommandValidation implements DtObject {
 		if (command != null) {
 			// On s'assure que l'objet correspond à la bonne clé
 			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> uri;
-			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(command), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(command));
+			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(command);
 			if (!fkURI.urn().equals(uri.urn())) {
 				command = null;
 			}
@@ -159,9 +158,8 @@ public final class CommandValidation implements DtObject {
 			foreignIsNavigable = false,
 			foreignRole = "CommandValidation",
 			foreignLabel = "Command validation",
-			foreignMultiplicity = "0..*"
-			)
-			public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> getCommandURI() {
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> getCommandURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CMD_CVA", io.vertigo.dynamo.environment.java.data.Command.class);
 	}
 
