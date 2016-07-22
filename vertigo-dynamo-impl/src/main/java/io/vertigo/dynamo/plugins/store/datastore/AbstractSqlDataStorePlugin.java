@@ -358,11 +358,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final void create(final DtDefinition dtDefinition, final Entity dto) {
-		Assertion.checkArgument(DtObjectUtil.getId(dto) == null, "Only object without any id can be created");
+	public final void create(final DtDefinition dtDefinition, final Entity entity) {
+		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
-		final boolean saved = put(dto, insert);
+		final boolean saved = put(entity, insert);
 		if (!saved) {
 			throw new VSystemException("no data created");
 		}
@@ -370,11 +370,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void update(final DtDefinition dtDefinition, final Entity dto) {
-		Assertion.checkNotNull(DtObjectUtil.getId(dto), "Need an id to update an object ");
+	public final void update(final DtDefinition dtDefinition, final Entity entity) {
+		Assertion.checkNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
-		final boolean saved = put(dto, insert);
+		final boolean saved = put(entity, insert);
 		if (!saved) {
 			throw new VSystemException("no data updated");
 		}
@@ -382,12 +382,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtDefinition dtDefinition, final Entity dto) {
+	public void merge(final DtDefinition dtDefinition, final Entity entity) {
 		//On fait un update
-		boolean saved = put(dto, false);
+		boolean saved = put(entity, false);
 		if (!saved) {
 			//Si l'update ne marche pas on fait un insert
-			saved = put(dto, true);
+			saved = put(entity, true);
 		}
 		if (!saved) {
 			throw new VSystemException("no data merged");
@@ -433,16 +433,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	protected abstract Class<? extends TaskEngine> getTaskEngineClass(final boolean insert);
 
 	/**
-	 * @param dto Objet à persiter
+	 * @param entity Objet à persiter
 	 * @param insert Si opération de type insert (update sinon)
 	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
-	private boolean put(final Entity dto, final boolean insert) {
+	private boolean put(final Entity entity, final boolean insert) {
 		if (insert) {
 			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
-			preparePrimaryKey(dto);
+			preparePrimaryKey(entity);
 		}
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
@@ -458,7 +458,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue("DTO", dto)
+				.addValue("DTO", entity)
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -473,9 +473,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Prépare la PK si il n'y a pas de système de sequence.
-	 * @param dto Objet à sauvegarder (création ou modification)
+	 * @param entity Objet à sauvegarder (création ou modification)
 	 */
-	protected void preparePrimaryKey(final Entity dto) {
+	protected void preparePrimaryKey(final Entity entity) {
 		// rien par default
 	}
 

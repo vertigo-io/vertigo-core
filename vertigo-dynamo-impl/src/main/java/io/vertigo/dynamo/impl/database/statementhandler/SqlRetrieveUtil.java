@@ -61,8 +61,8 @@ final class SqlRetrieveUtil {
 	}
 
 	private static SqlQueryResult retrieveEntity(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final Entity dto = doRetrieveEntity(mapping, resultSet, resultMetaData);
-		return new SqlQueryResult(dto, dto != null ? 1 : 0);
+		final Entity entity = doRetrieveEntity(mapping, resultSet, resultMetaData);
+		return new SqlQueryResult(entity, entity != null ? 1 : 0);
 	}
 
 	private static SqlQueryResult retrieveEntityList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
@@ -73,14 +73,14 @@ final class SqlRetrieveUtil {
 	private static DtList<Entity> doRetrieveEntityList(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
 		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
-		Entity dto;
+		Entity entity;
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
 		final DtList<Entity> dtc = new DtList<>(resultMetaData.getDtDefinition());
 		while (resultSet.next()) {
-			dto = resultMetaData.createEntity();
-			readDtObject(mapping, resultSet, dto, fields);
-			dtc.add(dto);
+			entity = resultMetaData.createEntity();
+			readEntity(mapping, resultSet, entity, fields);
+			dtc.add(entity);
 		}
 		return dtc;
 	}
@@ -91,22 +91,22 @@ final class SqlRetrieveUtil {
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
-			final Entity dto = resultMetaData.createEntity();
-			readDtObject(mapping, resultSet, dto, fields);
+			final Entity entity = resultMetaData.createEntity();
+			readEntity(mapping, resultSet, entity, fields);
 			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
-			return dto;
+			return entity;
 		}
 		//no result
 		return null;
 	}
 
-	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Entity dto, final DtField[] fields) throws SQLException {
+	private static void readEntity(final SqlMapping mapping, final ResultSet resultSet, final Entity entity, final DtField[] fields) throws SQLException {
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getDomain().getDataType());
-			fields[i].getDataAccessor().setValue(dto, value);
+			fields[i].getDataAccessor().setValue(entity, value);
 		}
 	}
 

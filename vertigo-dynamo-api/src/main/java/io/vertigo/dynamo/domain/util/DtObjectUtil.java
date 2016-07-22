@@ -89,14 +89,14 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> URI<E> createURI(final Entity dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> URI<E> createURI(final Entity entity, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
@@ -107,7 +107,7 @@ public final class DtObjectUtil {
 		final DtField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
-		final Object id = fkField.getDataAccessor().getValue(dto);
+		final Object id = fkField.getDataAccessor().getValue(entity);
 		if (id == null) {
 			return null;
 		}
@@ -116,34 +116,34 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une URI de Collection à partir d'un dto
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
-		return new DtListURIForSimpleAssociation(associationDefinition, createURI(dto), roleName);
+		return new DtListURIForSimpleAssociation(associationDefinition, createURI(entity), roleName);
 	}
 
 	/**
 	 * Récupération d'une URI de Collection à partir d'un dto
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
-		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
+		return new DtListURIForNNAssociation(associationDefinition, createURI(entity), roleName);
 	}
 
 	/**

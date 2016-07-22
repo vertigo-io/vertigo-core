@@ -41,13 +41,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity dto) {
+	public void create(final DtDefinition dtDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtDefinition dtDefinition, final Entity dto) {
+	public void update(final DtDefinition dtDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -59,7 +59,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtDefinition dtDefinition, final Entity dto) {
+	public void merge(final DtDefinition dtDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 

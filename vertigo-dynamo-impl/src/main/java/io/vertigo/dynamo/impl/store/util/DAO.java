@@ -240,9 +240,9 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * Ajout un objet à la collection existante.
 	 *
 	 * @param dtListURI DtList de référence
-	 * @param dtoToAppend Objet à ajout à la NN
+	 * @param entity the entity to append
 	 */
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity dtoToAppend) {
-		brokerNN.appendNN(dtListURI, DtObjectUtil.createURI(dtoToAppend));
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity entity) {
+		brokerNN.appendNN(dtListURI, DtObjectUtil.createURI(entity));
 	}
 }

@@ -95,37 +95,37 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final Entity dto) {
-		Assertion.checkNotNull(dto);
+	public void create(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final Entity dto) {
-		Assertion.checkNotNull(dto);
+	public void update(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final Entity dto) {
-		Assertion.checkNotNull(dto);
+	public void merge(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dtDefinition).merge(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 	}
 
 	/** {@inheritDoc} */

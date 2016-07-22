@@ -111,17 +111,17 @@ public interface DataStorePlugin extends Plugin {
 	* No object with the same id must have been created previously.
 	*
 	* @param dtDefinition Definition
-	* @param dto Object to create
+	* @param entity Object to create
 	*/
-	void create(DtDefinition dtDefinition, Entity dto);
+	void create(DtDefinition dtDefinition, Entity entity);
 
 	/**
 	* Updates an object.
 	* This object must have an id.
 	* @param dtDefinition Definition
-	* @param dto Object to update
+	* @param entity Object to update
 	*/
-	void update(DtDefinition dtDefinition, Entity dto);
+	void update(DtDefinition dtDefinition, Entity entity);
 
 	/**
 	* Merges an object.
@@ -131,9 +131,9 @@ public interface DataStorePlugin extends Plugin {
 	*  - If  this object is not found : create
 	*
 	* @param dtDefinition Definition
-	* @param dto Object to merge
+	* @param entity Object to merge
 	*/
-	void merge(DtDefinition dtDefinition, Entity dto);
+	void merge(DtDefinition dtDefinition, Entity entity);
 
 	/**
 	 * Deletes an object identified by an uri.

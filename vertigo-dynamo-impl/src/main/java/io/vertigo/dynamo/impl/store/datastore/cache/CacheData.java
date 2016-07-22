@@ -78,14 +78,14 @@ public final class CacheData {
 
 	/**
 	 * Mise à jour du cache pour un type d'objet.
-	 * @param dto DTO
+	 * @param entity entity
 	 */
-	void putDtObject(final Entity dto) {
-		Assertion.checkNotNull(dto);
+	void putDtObject(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final String context = getContext(DtObjectUtil.findDtDefinition(dto));
+		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
-		cacheManager.put(context, DtObjectUtil.createURI(dto), dto);
+		cacheManager.put(context, DtObjectUtil.createURI(entity), entity);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public final class CacheData {
 		final String context = getContext(dtc.getDefinition());
 
 		//1.On met à jour les objets
-		for (final Entity dto : dtc) {
-			cacheManager.put(context, DtObjectUtil.createURI(dto), dto);
+		for (final Entity entity : dtc) {
+			cacheManager.put(context, DtObjectUtil.createURI(entity), entity);
 		}
 		//2.Puis on met à jour la liste racine : pour que la liste ne soit pas evincée par les objets
 		cacheManager.put(context, dtc.getURI(), dtc);

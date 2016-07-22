@@ -67,10 +67,10 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <D extends DtObject> Criteria<D> createCriteria(final DtObject dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
 		Assertion.checkNotNull(dtoCriteria);
 		//-----
-		final FilterCriteriaBuilder<D> filterCriteriaBuilder = new FilterCriteriaBuilder<>();
+		final FilterCriteriaBuilder<E> filterCriteriaBuilder = new FilterCriteriaBuilder<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
 		for (final DtField field : dtDefinition.getFields()) {

@@ -21,16 +21,16 @@ package io.vertigo.dynamo.store.criteria;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
 /**
  * Groupement de Critères de type union, intersection et exclusion de groupe.
  * TODO : vérifier la profondeur des groupes et mettre une limite (genre 3)
  * @author npiedeloup
- * @param <D> Type de l'objet
+ * @param <E> the type of entity
  */
-public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
+public final class GroupCriteria<E extends Entity> implements Criteria<E> {
 	private static final long serialVersionUID = -5842091616664522090L;
 
 	/**
@@ -51,10 +51,10 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 		EXCLUDE
 	}
 
-	private final GroupCriteria<D> firstGroupCriteria;//Pour l'exclude (on prend forcément un group, pour simplifier l'API)
+	private final GroupCriteria<E> firstGroupCriteria;//Pour l'exclude (on prend forcément un group, pour simplifier l'API)
 
-	private final List<FilterCriteria<D>> filterCriterias = new ArrayList<>();
-	private final List<GroupCriteria<D>> groupCriterias = new ArrayList<>();
+	private final List<FilterCriteria<E>> filterCriterias = new ArrayList<>();
+	private final List<GroupCriteria<E>> groupCriterias = new ArrayList<>();
 	private final JoinType joinType;
 
 	/**
@@ -74,7 +74,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 * @param joinType type de jointure des éléments du groupe (EXCLUDE uniquement)
 	 * @param firstGroup Premier group
 	 */
-	public GroupCriteria(final JoinType joinType, final GroupCriteria<D> firstGroup) {
+	public GroupCriteria(final JoinType joinType, final GroupCriteria<E> firstGroup) {
 		Assertion.checkNotNull(joinType);
 		Assertion.checkNotNull(firstGroup);
 		Assertion.checkArgument(JoinType.EXCLUDE == joinType, "Préciser le group dans le constructeur, n'est permis que pour l'EXCLUDE");
@@ -86,7 +86,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	/**
 	 * @param group GroupCriteria à ajouter
 	 */
-	public void add(final GroupCriteria<D> group) {
+	public void add(final GroupCriteria<E> group) {
 		Assertion.checkNotNull(group);
 		//-----
 		groupCriterias.add(group);
@@ -96,7 +96,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 * Ajout un BooleanCriteria en intersection.
 	 * @param filterCriteria FilterCriteria filtre à ajouter
 	 */
-	public void add(final FilterCriteria<D> filterCriteria) {
+	public void add(final FilterCriteria<E> filterCriteria) {
 		Assertion.checkNotNull(filterCriteria);
 		//-----
 		filterCriterias.add(filterCriteria);
@@ -113,7 +113,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	* Critère de recherche de type filtre.
 	* @return Liste des filtres.
 	*/
-	public List<FilterCriteria<D>> getFilterCriterias() {
+	public List<FilterCriteria<E>> getFilterCriterias() {
 		return filterCriterias;
 	}
 
@@ -121,7 +121,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	* Critère de prefix par champs.
 	* @return Map des prefixes existant.
 	*/
-	public List<GroupCriteria<D>> getGroupCriterias() {
+	public List<GroupCriteria<E>> getGroupCriterias() {
 		return groupCriterias;
 	}
 
@@ -130,7 +130,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 * Retourne le groupe définissant l'ensemble de départ pour les exclusions.
 	 * @return Premier groupe avec lequel sera fait les EXCLUDE
 	 */
-	public GroupCriteria<D> getFirstGroup() {
+	public GroupCriteria<E> getFirstGroup() {
 		Assertion.checkArgument(JoinType.EXCLUDE == joinType, "La notion de premier groupe n'est définit que pour l'EXCLUDE");
 		//-----
 		return firstGroupCriteria;

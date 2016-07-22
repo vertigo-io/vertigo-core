@@ -330,22 +330,22 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity dto) {
-		put("Jpa:create", dto, true);
+	public void create(final DtDefinition dtDefinition, final Entity entity) {
+		put("Jpa:create", entity, true);
 	}
 
 	@Override
-	public void update(final DtDefinition dtDefinition, final Entity dto) {
-		put("Jpa:update", dto, false);
+	public void update(final DtDefinition dtDefinition, final Entity entity) {
+		put("Jpa:update", entity, false);
 	}
 
 	@Override
-	public void merge(final DtDefinition dtDefinition, final Entity dto) {
-		put("Jpa:merge", dto, false);
+	public void merge(final DtDefinition dtDefinition, final Entity entity) {
+		put("Jpa:merge", entity, false);
 	}
 
-	private void put(final String prefixServiceName, final Entity dto, final boolean persist) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+	private void put(final String prefixServiceName, final Entity entity, final boolean persist) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
@@ -354,9 +354,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 				//sinon on ferait persist aussi si em.contains(dto)).
-				entityManager.persist(dto);
+				entityManager.persist(entity);
 			} else {
-				entityManager.merge(dto);
+				entityManager.merge(entity);
 			}
 			entityManager.flush();
 			entityManager.clear();

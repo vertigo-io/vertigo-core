@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.criteria;
 import java.util.Collections;
 import java.util.Map;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,9 +31,9 @@ import io.vertigo.lang.Assertion;
  * - Soit de type préfixe (Commence par).
  *
  * @author npiedeloup
- * @param <D> Type de l'objet
+ * @param <E> the type of entity
  */
-public final class FilterCriteria<D extends DtObject> implements Criteria<D> {
+public final class FilterCriteria<E extends Entity> implements Criteria<E> {
 	private static final long serialVersionUID = -4980252957531667077L;
 	private final Map<String, Object> mapFilter;
 	private final Map<String, String> mapPrefix;
