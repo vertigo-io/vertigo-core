@@ -94,7 +94,7 @@ public final class DtObjectUtil {
 	 * @param dto DtObject
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <D extends Entity> URI<D> createURI(final Entity dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
+	public static <E extends Entity> URI<E> createURI(final Entity dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -151,7 +151,7 @@ public final class DtObjectUtil {
 	 * @param dto Object
 	 * @return this object URI
 	 */
-	public static <D extends Entity> URI<D> createURI(final D dto) {
+	public static <E extends Entity> URI<E> createURI(final E dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);

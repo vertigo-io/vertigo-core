@@ -70,11 +70,11 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> D readForUpdate(final URI<D> uri) {
+	public <E extends Entity> E readForUpdate(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final D value = getPhysicalStore(dtDefinition).<D> readForUpdate(dtDefinition, uri);
+		final E value = getPhysicalStore(dtDefinition).<E> readForUpdate(dtDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.Update, uri);
 		return value;
@@ -141,10 +141,10 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> D read(final URI<D> uri) {
+	public <E extends Entity> E read(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = cacheDataStore.<D> load(uri);
+		final E dto = cacheDataStore.<E> load(uri);
 		//-----
 		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
 		return dto;
@@ -152,10 +152,10 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtListURI uri) {
+	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<D> dtc = cacheDataStore.loadList(uri);
+		final DtList<E> dtc = cacheDataStore.loadList(uri);
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

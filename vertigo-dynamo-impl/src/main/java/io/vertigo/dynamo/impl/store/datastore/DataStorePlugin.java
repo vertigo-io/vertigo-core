@@ -64,11 +64,11 @@ public interface DataStorePlugin extends Plugin {
 	 * Peut-être null.
 	 *
 	 * @param uri URI de l'objet à charger
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<D extends Entity> D read(DtDefinition dtDefinition, URI<D> uri);
+	<E extends Entity> E read(DtDefinition dtDefinition, URI<E> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -77,9 +77,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -88,9 +88,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -99,9 +99,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -148,8 +148,8 @@ public interface DataStorePlugin extends Plugin {
 	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
-	 * @param <D> Object type
+	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<D extends Entity> D readForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<E extends Entity> E readForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }

@@ -41,16 +41,16 @@ import io.vertigo.lang.Assertion;
  * Classe utilitaire pour accéder au Broker.
  *
  * @author cgodard
- * @param <D> Type d'objet métier.
+ * @param <E> the type of entity
  * @param <P> Type de la clef primaire.
  */
-public class DAO<D extends Entity, P> implements BrokerNN {
+public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
 	protected final DataStore dataStore;
 	private final BrokerNN brokerNN;
-	private final BrokerBatch<D, P> brokerBatch;
+	private final BrokerBatch<E, P> brokerBatch;
 	private final TaskManager taskManager;
 
 	/**
@@ -87,7 +87,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 		return taskManager;
 	}
 
-	public BrokerBatch<D, P> getBatch() {
+	public BrokerBatch<E, P> getBatch() {
 		return brokerBatch;
 	}
 
@@ -96,7 +96,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 *
 	 * @param dto Object to save
 	 */
-	public final void save(final D dto) {
+	public final void save(final E dto) {
 		if (DtObjectUtil.getId(dto) == null) {
 			dataStore.create(dto);
 		} else {
@@ -109,7 +109,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 *
 	 * @param dto Object to create
 	 */
-	public final void create(final D dto) {
+	public final void create(final E dto) {
 		dataStore.create(dto);
 	}
 
@@ -118,7 +118,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 *
 	 * @param dto Object to update
 	 */
-	public final void update(final D dto) {
+	public final void update(final E dto) {
 		dataStore.update(dto);
 	}
 
@@ -127,7 +127,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	public final void delete(final URI<D> uri) {
+	public final void delete(final URI<E> uri) {
 		dataStore.delete(uri);
 	}
 
@@ -148,8 +148,8 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 * @param uri URI de l'objet à récupérer
 	 * @return D Object recherché
 	 */
-	public final D get(final URI<D> uri) {
-		return dataStore.<D> read(uri);
+	public final E get(final URI<E> uri) {
+		return dataStore.<E> read(uri);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return D Object objet recherché
 	 */
-	public final D get(final P id) {
+	public final E get(final P id) {
 		return get(createDtObjectURI(id));
 	}
 
@@ -170,7 +170,7 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	protected final URI<D> createDtObjectURI(final P id) {
+	protected final URI<E> createDtObjectURI(final P id) {
 		return new URI<>(dtDefinition, id);
 	}
 
@@ -180,11 +180,11 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 * @param maxRows Nombre maximum de ligne
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<D> getListByDtField(final String fieldName, final Object value, final int maxRows) {
-		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().addFilter(fieldName, value).build();
+	public final DtList<E> getListByDtField(final String fieldName, final Object value, final int maxRows) {
+		final FilterCriteria<E> criteria = new FilterCriteriaBuilder<E>().addFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -192,8 +192,8 @@ public class DAO<D extends Entity, P> implements BrokerNN {
 	 * @param maxRows Nombre maximum de ligne
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return dataStore.<D> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+	public final DtList<E> getList(final Criteria<E> criteria, final int maxRows) {
+		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */

@@ -65,13 +65,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 }

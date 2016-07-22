@@ -131,11 +131,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private <D extends Entity> D loadWithoutClear(final URI<D> uri) {
+	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final D result = getEntityManager().find(objectClass, uri.getId());
+			final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+			final E result = getEntityManager().find(objectClass, uri.getId());
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
 					.markAsSucceeded();
 			return result;
@@ -155,22 +155,22 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria<D> criteria = uri.getCriteria();
+		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
-		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
+		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
 		return doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> D read(final DtDefinition dtDefinition, final URI<D> uri) {
-		final D dto = this.<D> loadWithoutClear(uri);
+	public <E extends Entity> E read(final DtDefinition dtDefinition, final URI<E> uri) {
+		final E dto = this.<E> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
 		getEntityManager().clear();
@@ -270,14 +270,14 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getId();
 
-		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
+		final FilterCriteria<E> filterCriteria = new FilterCriteriaBuilder<E>()
 				.addFilter(fkField.getName(), value)
 				.build();
 		return doLoadList(dtDefinition, filterCriteria, null);
@@ -285,7 +285,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -294,7 +294,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
 		final String serviceName = "Jpa:find " + taskName;
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<D> resultClass = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			//PK de la DtList recherchée
 			final String idFieldName = dtDefinition.getIdField().get().getName();
 			//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
@@ -321,8 +321,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final Query q = getEntityManager().createNativeQuery(request.toString(), resultClass);
 			q.setParameter(fkFieldName, uri.getId());
 
-			final List<D> results = q.getResultList();
-			final DtList<D> dtc = new DtList<>(dtDefinition);
+			final List<E> results = q.getResultList();
+			final DtList<E> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
 			tracker.setMeasure("nbSelectedRow", dtc.size())
 					.markAsSucceeded();
@@ -392,12 +392,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> D readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final D result = (D) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
+			final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
 					.markAsSucceeded();
 			return result;

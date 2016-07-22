@@ -21,13 +21,13 @@ package io.vertigo.commons.eventbus;
 /**
  * EventListener.
  * @author npiedeloup
- * @param <E> Type of event
+ * @param <E> the type of event
  */
 public interface EventListener<E extends Event> {
 
 	/**
 	 * This method is called by the engine when an event (with the right type) is published.
-	 * 
+	 *
 	 * @param event the received event
 	 */
 	void onEvent(E event);

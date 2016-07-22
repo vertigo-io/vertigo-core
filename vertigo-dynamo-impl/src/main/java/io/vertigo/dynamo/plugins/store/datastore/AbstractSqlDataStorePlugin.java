@@ -140,7 +140,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends Entity> D read(final DtDefinition dtDefinition, final URI<D> uri) {
+	public final <E extends Entity> E read(final DtDefinition dtDefinition, final URI<E> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + tableName + "_BY_URI";
 
@@ -172,7 +172,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
@@ -223,14 +223,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getId();
 
-		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
+		final FilterCriteria<E> filterCriteria = new FilterCriteriaBuilder<E>()
 				.addFilter(fkField.getName(), value)
 				.build();
 		return doLoadList(dtDefinition, filterCriteria, null);
@@ -246,15 +246,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria<D> criteria = uri.getCriteria();
+		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
-		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
+		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
 		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
 
@@ -548,7 +548,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends Entity> D readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public final <E extends Entity> E readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 

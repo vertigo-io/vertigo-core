@@ -44,43 +44,43 @@ public interface DataStore {
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * L'objet doit exister.
 	 *
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<D extends Entity> D read(final URI<D> uri);
+	<E extends Entity> E read(final URI<E> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
 	 *
-	 * @param <D> Type des objets de la collection
+	 * @param <E> the type of entity
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends Entity> DtList<D> findAll(final DtListURI uri);
+	<E extends Entity> DtList<E> findAll(final DtListURI uri);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
-	 * @param <D> Object type
+	 * @param <E> the type of entity
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends Entity> D readForUpdate(URI<D> uri);
+	<E extends Entity> E readForUpdate(URI<E> uri);
 
 	/**
 	* Create an object.
 	* No object with the same id must have been created previously.
 	*
-	* @param dto Object to create
+	* @param entity the entity to create
 	*/
-	void create(Entity dto);
+	void create(Entity entity);
 
 	/**
 	* Update an object.
 	* This object must have an id.
-	* @param dto Object to update
+	* @param entity the entity to update
 	*/
-	void update(Entity dto);
+	void update(Entity entity);
 
 	/**
 	* Merge an object.
@@ -89,9 +89,9 @@ public interface DataStore {
 	*  - If  this object is already created : update
 	*  - If  this object is not found : create
 	*
-	* @param dto Object to merge
+	* @param entity the entity to merge
 	*/
-	void merge(Entity dto);
+	void merge(Entity entity);
 
 	/**
 	 * Destruction d'un objet persistant par son URI.

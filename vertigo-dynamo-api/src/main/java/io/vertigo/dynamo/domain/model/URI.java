@@ -37,8 +37,9 @@ import io.vertigo.util.StringUtil;
  * Cela permet de créer des URI plus intuitive comme URI<Personne> qui est un identifiant de personne.
  *
  * @author  pchretien
+ * @param <E> the type of entity
  */
-public final class URI<D extends Entity> implements Serializable {
+public final class URI<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 

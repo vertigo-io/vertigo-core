@@ -69,11 +69,11 @@ public final class CacheData {
 	 * Récupération d'un objet potentiellement mis en cache
 	 * @param uri URI du DTO
 	 * @return null ou DTO
-	 * @param <D> Dt type
+	 * @param <E> the type of entity
 	 */
-	<D extends Entity> D getDtObject(final URI<D> uri) {
+	<E extends Entity> E getDtObject(final URI<E> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
-		return (D) cacheManager.get(getContext(dtDefinition), uri);
+		return (E) cacheManager.get(getContext(dtDefinition), uri);
 	}
 
 	/**
