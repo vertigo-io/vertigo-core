@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -52,8 +52,8 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 
 	/** {@inheritDoc} */
 	@Override
-	public DtObject createDtObject() {
-		return new SqlDynamicDtObject(serializableDefinition);
+	public Entity createEntity() {
+		return new SqlDynamicEntity(serializableDefinition);
 	}
 
 	/** {@inheritDoc} */

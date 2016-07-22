@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
@@ -108,7 +108,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void preparePrimaryKey(final DtObject dto) {
+	protected void preparePrimaryKey(final Entity dto) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField idField = dtDefinition.getIdField().get();
 		idField.getDataAccessor().setValue(dto, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));

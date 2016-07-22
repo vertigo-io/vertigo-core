@@ -36,7 +36,6 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -258,7 +257,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
 
-	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
+	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
 		//-----
@@ -295,7 +294,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
+	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
 		final StringBuilder request = new StringBuilder("select * from ").append(tableName);
 		String sep = " where ";
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
@@ -325,7 +324,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return " || ";
 	}
 
-	private static <D extends DtObject> String getListTaskName(final String tableName, final FilterCriteria<D> filter) {
+	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
 		final StringBuilder sb = new StringBuilder(TASK.TK_SELECT.toString())
 				.append("_LIST_")
 				.append(tableName);
@@ -438,7 +437,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param insert Si opération de type insert (update sinon)
 	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
-	private boolean put(final DtObject dto, final boolean insert) {
+	private boolean put(final Entity dto, final boolean insert) {
 		if (insert) {
 			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
 			preparePrimaryKey(dto);
@@ -476,7 +475,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * Prépare la PK si il n'y a pas de système de sequence.
 	 * @param dto Objet à sauvegarder (création ou modification)
 	 */
-	protected void preparePrimaryKey(final DtObject dto) {
+	protected void preparePrimaryKey(final Entity dto) {
 		// rien par default
 	}
 

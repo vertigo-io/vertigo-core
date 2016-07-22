@@ -24,7 +24,7 @@ import java.util.Map;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-final class SqlDynamicDtObject implements DtObject, Dynamic {
+final class SqlDynamicEntity implements Entity, Dynamic {
 	private static final long serialVersionUID = 1L;
 
 	/** Définition Sérializable de l'objet. */
@@ -45,7 +45,7 @@ final class SqlDynamicDtObject implements DtObject, Dynamic {
 	 * Constructeur
 	 * @param serializableDefinition DT serializable
 	 */
-	SqlDynamicDtObject(final SerializableDtDefinition serializableDefinition) {
+	SqlDynamicEntity(final SerializableDtDefinition serializableDefinition) {
 		Assertion.checkNotNull(serializableDefinition);
 		//-----
 		this.serializableDefinition = serializableDefinition;

@@ -46,7 +46,6 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -177,7 +176,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return dto;
 	}
 
-	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
+	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
 		//-----
@@ -185,11 +184,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<D> resultClass = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, filterCriteria);
 
-			final TypedQuery<D> q = getEntityManager().createQuery(request, resultClass);
+			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
 			//IN, obligatoire
 			for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
 				q.setParameter(filterEntry.getKey(), filterEntry.getValue());
@@ -201,8 +200,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				q.setMaxResults(maxRows);
 			}
 
-			final List<D> results = q.getResultList();
-			final DtList<D> dtc = new DtList<>(dtDefinition);
+			final List<E> results = q.getResultList();
+			final DtList<E> dtc = new DtList<>(dtDefinition);
 			dtc.addAll(results);
 			tracker.setMeasure("nbSelectedRow", dtc.size())
 					.markAsSucceeded();
@@ -215,7 +214,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getClassSimpleName();
 	}
 
-	private static <D extends DtObject> String getListTaskName(final String tableName, final FilterCriteria<D> filter) {
+	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
 		final StringBuilder sb = new StringBuilder()
 				.append("LIST_")
 				.append(tableName);
@@ -244,7 +243,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return result;
 	}
 
-	private static <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria) {
+	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria) {
 		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
 		String sep = " where ";
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
@@ -396,7 +395,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+			final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
 					.markAsSucceeded();

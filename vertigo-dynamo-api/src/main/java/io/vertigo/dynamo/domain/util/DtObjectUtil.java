@@ -72,12 +72,12 @@ public final class DtObjectUtil {
 	 * Returns the 'id' of a 'DtObject'.
 	 * @return the id of the specified 'DtObject'
 	 */
-	public static Object getId(final DtObject dto) {
-		Assertion.checkNotNull(dto);
+	public static Object getId(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = findDtDefinition(dto);
+		final DtDefinition dtDefinition = findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
-		return idField.getDataAccessor().getValue(dto);
+		return idField.getDataAccessor().getValue(entity);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-	
+
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto DtObject
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)

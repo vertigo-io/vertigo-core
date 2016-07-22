@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -56,12 +55,12 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	/**
 	 * Contructeur.
 	 *
-	 * @param dtObjectClass Définition du DtObject associé à ce DAO
+	 * @param entityClass Définition du DtObject associé à ce DAO
 	 * @param storeManager Manager de gestion de la persistance
 	 * @param taskManager Manager de gestion des tâches
 	 */
-	public DAO(final Class<? extends DtObject> dtObjectClass, final StoreManager storeManager, final TaskManager taskManager) {
-		this(DtObjectUtil.findDtDefinition(dtObjectClass), storeManager, taskManager);
+	public DAO(final Class<? extends Entity> entityClass, final StoreManager storeManager, final TaskManager taskManager) {
+		this(DtObjectUtil.findDtDefinition(entityClass), storeManager, taskManager);
 	}
 
 	/**

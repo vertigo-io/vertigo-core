@@ -39,7 +39,7 @@ import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -263,20 +263,20 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
-		final DtList<DtObject> dynMovies = (DtList<DtObject>) result.getValue();
+		final DtList<Entity> dynMovies = (DtList<Entity>) result.getValue();
 		Assert.assertEquals(3, dynMovies.size());
 
-		for (final DtObject dynMovie : dynMovies) {
+		for (final Entity dynMovie : dynMovies) {
 			final long id = (Long) getValue(dynMovie, "ID");
 			final String title = (String) getValue(dynMovie, "TITLE");
 			checkTitle(id, title);
 		}
 	}
 
-	private static Object getValue(final DtObject dto, final String fieldName) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+	private static Object getValue(final Entity entity, final String fieldName) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField dtField = dtDefinition.getField(fieldName);
-		return dtField.getDataAccessor().getValue(dto);
+		return dtField.getDataAccessor().getValue(entity);
 	}
 
 }

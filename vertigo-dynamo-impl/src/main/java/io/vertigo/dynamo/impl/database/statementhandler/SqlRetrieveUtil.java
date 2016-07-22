@@ -27,7 +27,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -55,43 +55,43 @@ final class SqlRetrieveUtil {
 
 	static SqlQueryResult retrieveData(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultMetaData.isDtObject()) {
-			return retrieveDtObject(resultMetaData, mapping, resultSet);
+			return retrieveEntity(resultMetaData, mapping, resultSet);
 		}
-		return retrieveDtList(resultMetaData, mapping, resultSet);
+		return retrieveEntityList(resultMetaData, mapping, resultSet);
 	}
 
-	private static SqlQueryResult retrieveDtObject(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final DtObject dto = doRetrieveDtObject(mapping, resultSet, resultMetaData);
+	private static SqlQueryResult retrieveEntity(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		final Entity dto = doRetrieveEntity(mapping, resultSet, resultMetaData);
 		return new SqlQueryResult(dto, dto != null ? 1 : 0);
 	}
 
-	private static SqlQueryResult retrieveDtList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, resultMetaData);
+	private static SqlQueryResult retrieveEntityList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		final DtList<Entity> dtc = doRetrieveEntityList(mapping, resultSet, resultMetaData);
 		return new SqlQueryResult(dtc, dtc.size());
 	}
 
-	private static DtList<DtObject> doRetrieveDtList(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
+	private static DtList<Entity> doRetrieveEntityList(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
 		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
-		DtObject dto;
+		Entity dto;
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
-		final DtList<DtObject> dtc = new DtList<>(resultMetaData.getDtDefinition());
+		final DtList<Entity> dtc = new DtList<>(resultMetaData.getDtDefinition());
 		while (resultSet.next()) {
-			dto = resultMetaData.createDtObject();
+			dto = resultMetaData.createEntity();
 			readDtObject(mapping, resultSet, dto, fields);
 			dtc.add(dto);
 		}
 		return dtc;
 	}
 
-	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
+	private static Entity doRetrieveEntity(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
 		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
-			final DtObject dto = resultMetaData.createDtObject();
+			final Entity dto = resultMetaData.createEntity();
 			readDtObject(mapping, resultSet, dto, fields);
 			if (resultSet.next()) {
 				throw createTooManyRowsException();
@@ -102,7 +102,7 @@ final class SqlRetrieveUtil {
 		return null;
 	}
 
-	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
+	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Entity dto, final DtField[] fields) throws SQLException {
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getDomain().getDataType());
