@@ -74,17 +74,6 @@ public final class DomainGrammar implements DslGrammar {
 	 */
 	public static final String COMPUTED = "computed";
 
-	/** Mot-clé des MetaDefinitions de Fields. */
-	private static final String DT_FIELD_META_DEFINITION = "Field";
-	/** Mot-clé des MetaDefinitions de Fields. */
-	private static final String DT_COMPUTED_FIELD_META_DEFINITION = "ComputedField";
-	/** Mot-clé des MetaDefinitions de AssociationNN. */
-	private static final String ASSOCIATION_NN_META_DEFINITION = "AssociationNN";
-	/** Mot-clé des MetaDefinitions de Association. */
-	private static final String ASSOCIATION_META_DEFINITION = "Association";
-	/** Mot-clé des MetaDefinitions de DtDefinition. */
-	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
-
 	/**Définition d'une constraint.*/
 	public static final DslEntity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
@@ -128,20 +117,20 @@ public final class DomainGrammar implements DslGrammar {
 				.addFields("constraint", CONSTRAINT_ENTITY.getLink(), false)
 				.build();
 
-		DT_FIELD_ENTITY = new DslEntityBuilder(DT_FIELD_META_DEFINITION)
+		DT_FIELD_ENTITY = new DslEntityBuilder("Field")
 				.addField(LABEL, String, true)
 				.addField(NOT_NULL, Boolean, true)
 				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(PERSISTENT, Boolean, false)
 				.build();
 
-		FT_COMPUTED_FIELD_ENTITY = new DslEntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
+		FT_COMPUTED_FIELD_ENTITY = new DslEntityBuilder("ComputedField")
 				.addField(LABEL, String, true)
 				.addField("domain", DOMAIN_ENTITY.getLink(), true)
 				.addField(EXPRESSION, String, true)
 				.build();
 
-		DT_DEFINITION_ENTITY = new DslEntityBuilder(DT_DEFINITION_META_DEFINITION)
+		DT_DEFINITION_ENTITY = new DslEntityBuilder("DtDefinition")
 				.addField(DISPLAY_FIELD, String, false)
 				.addField(SORT_FIELD, String, false)
 				.addFields(FIELD, DT_FIELD_ENTITY, false)
@@ -153,7 +142,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addField(DATA_SPACE, String, false)
 				.build();
 
-		ASSOCIATION_ENTITY = new DslEntityBuilder(ASSOCIATION_META_DEFINITION)
+		ASSOCIATION_ENTITY = new DslEntityBuilder("Association")
 				.addField(FK_FIELD_NAME, String, false)
 				.addField(MULTIPLICITY_A, String, true)
 				.addField(NAVIGABILITY_A, Boolean, true)
@@ -167,7 +156,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
 				.build();
 
-		ASSOCIATION_NN_ENTITY = new DslEntityBuilder(ASSOCIATION_NN_META_DEFINITION)
+		ASSOCIATION_NN_ENTITY = new DslEntityBuilder("AssociationNN")
 				.addField(TABLE_NAME, String, true)
 				.addField(NAVIGABILITY_A, Boolean, true)
 				.addField(ROLE_A, String, true)

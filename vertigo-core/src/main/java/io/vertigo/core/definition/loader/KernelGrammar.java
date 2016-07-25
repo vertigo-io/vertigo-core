@@ -29,11 +29,8 @@ import io.vertigo.core.definition.dsl.entity.DslGrammar;
  * @author pchretien
  */
 public final class KernelGrammar implements DslGrammar {
-	/** Mot-clé des MetaDefinitions de DataType. */
-	private static final String DATA_TYPE_META_DEFINITION = "DataType";
-
 	/**Type Primitif.*/
-	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder(DATA_TYPE_META_DEFINITION).withRoot().build();
+	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType").withRoot().build();
 
 	/**
 	 * @return Type primitif.
