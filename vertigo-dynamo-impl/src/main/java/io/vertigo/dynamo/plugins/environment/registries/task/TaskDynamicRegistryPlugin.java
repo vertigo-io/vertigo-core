@@ -71,7 +71,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
-			final String domainName = xtaskAttribute.getDefinitionName("domain");
+			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
 			final Boolean required = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);

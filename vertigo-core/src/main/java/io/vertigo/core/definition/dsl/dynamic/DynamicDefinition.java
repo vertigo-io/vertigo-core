@@ -49,7 +49,7 @@ public interface DynamicDefinition {
 	/**
 	 * Retourne la valeur d'une (méta) propriété liée au domaine, champ, dtDéfinition...
 	 * null si cette propriété n'existe pas
-	 * @param fieldName Name of the field 
+	 * @param fieldName Name of the field
 	 * @return valeur de la propriété
 	 */
 	Object getPropertyValue(String fieldName);
@@ -66,26 +66,26 @@ public interface DynamicDefinition {
 	 * @param fieldName Nom du champ.
 	 * @return List
 	 */
-	List<String> getDefinitionNames(final String fieldName);
+	List<String> getDefinitionLinkNames(final String fieldName);
 
 	/**
 	 * Uniquement si il y a une et une seule référence pour ce champ.
 	 * @param fieldName Nom du champ.
 	 * @return Clé de la définition
 	 */
-	String getDefinitionName(final String fieldName);
+	String getDefinitionLinkName(final String fieldName);
 
 	/**
 	 * @param fieldName Nom du champ.
 	 * @return Si la définition contient le champ
 	 */
-	boolean containsDefinitionName(final String fieldName);
+	boolean containsDefinitionLinkName(final String fieldName);
 
 	/**
 	 * Permet de récupérer la collection de toutes les liste de définitions utilisées par référence.
 	 * @return Collection de toutes les liste de définitions référencées.
 	 */
-	List<String> getAllDefinitionNames();
+	List<String> getAllDefinitionLinkNames();
 
 	/**
 	 * Récupération de la liste des definitions dont est composée la définition principale.

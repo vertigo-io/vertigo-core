@@ -52,17 +52,17 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private final Map<String, Object> propertyValueByFieldName = new HashMap<>();
 
 	/**
-	 * Links.  
+	 * Links.
 	 * Map (fieldName, definitions identified by its name)
 	 */
 
-	private final Map<String, List<String>> definitionNamesByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<String>> DefinitionLinkNamesByFieldName = new LinkedHashMap<>();
 
-	/** 
+	/**
 	 * Children.
 	 * Map (fieldName, definitions
 	 */
-	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName = new LinkedHashMap<>();
 
 	/**
 	 * Constructeur.
@@ -120,21 +120,21 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public List<String> getDefinitionNames(final String fieldName) {
-		return obtainList(definitionNamesByFieldName, fieldName);
+	public List<String> getDefinitionLinkNames(final String fieldName) {
+		return obtainList(DefinitionLinkNamesByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<DynamicDefinition> getChildDefinitions(final String fieldName) {
-		return obtainList(definitionsByFieldName, fieldName);
+		return obtainList(childDefinitionsByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<DynamicDefinition> getAllChildDefinitions() {
 		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
-		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
+		for (final List<DynamicDefinition> dynamicDefinitionList : childDefinitionsByFieldName.values()) {
 			dynamicDefinitions.addAll(dynamicDefinitionList);
 		}
 		return dynamicDefinitions;
@@ -142,15 +142,15 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean containsDefinitionName(final String fieldName) {
-		return definitionNamesByFieldName.containsKey(fieldName);
+	public boolean containsDefinitionLinkName(final String fieldName) {
+		return DefinitionLinkNamesByFieldName.containsKey(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String getDefinitionName(final String fieldName) {
-		Assertion.checkArgument(containsDefinitionName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
-		final List<String> list = definitionNamesByFieldName.get(fieldName);
+	public String getDefinitionLinkName(final String fieldName) {
+		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
+		final List<String> list = DefinitionLinkNamesByFieldName.get(fieldName);
 		final String definitionName = list.get(0);
 		//-----
 		// On vérifie qu'il y a une définition pour le champ demandé
@@ -160,9 +160,9 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public List<String> getAllDefinitionNames() {
+	public List<String> getAllDefinitionLinkNames() {
 		final List<String> allDefinitionNames = new ArrayList<>();
-		for (final List<String> dynamicDefinitionNames : definitionNamesByFieldName.values()) {
+		for (final List<String> dynamicDefinitionNames : DefinitionLinkNamesByFieldName.values()) {
 			allDefinitionNames.addAll(dynamicDefinitionNames);
 		}
 		return allDefinitionNames;
@@ -197,36 +197,36 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition) {
-		addAllChildrenDefinition(fieldName, Collections.singletonList(definition));
+	public DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition) {
+		addAllChildDefinitions(fieldName, Collections.singletonList(definition));
 		return this;
 	}
 
-	private void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
+	private void addAllChildDefinitions(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
 		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntity,
 				"expected a pure entity on {0}", fieldName);
 		//-----
-		obtainList(definitionsByFieldName, fieldName).addAll(definitions);
+		obtainList(childDefinitionsByFieldName, fieldName).addAll(definitions);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
+	public DynamicDefinitionBuilder addAllDefinitionLinks(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionNames);
 		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntityLink,
 				"expected a link on {0}", fieldName);
 		//-----
-		obtainList(definitionNamesByFieldName, fieldName).addAll(definitionNames);
+		obtainList(DefinitionLinkNamesByFieldName, fieldName).addAll(definitionNames);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName) {
-		return addAllDefinitions(fieldName, Collections.singletonList(definitionName));
+	public DynamicDefinitionBuilder addDefinitionLink(final String fieldName, final String definitionName) {
+		return addAllDefinitionLinks(fieldName, Collections.singletonList(definitionName));
 	}
 
 	/** {@inheritDoc} */
@@ -240,19 +240,19 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// 2. maj fieldNameDefinitionKeyListMap
 		final DynamicDefinitionImpl other = (DynamicDefinitionImpl) dynamicDefinition;
 
-		for (final Entry<String, List<String>> entry : other.definitionNamesByFieldName.entrySet()) {
+		for (final Entry<String, List<String>> entry : other.DefinitionLinkNamesByFieldName.entrySet()) {
 			final String fieldName = entry.getKey();
 			final List<String> definitionNames = entry.getValue();
 			//-----
-			addAllDefinitions(fieldName, definitionNames);
+			addAllDefinitionLinks(fieldName, definitionNames);
 		}
 
 		// 3.
-		for (final Entry<String, List<DynamicDefinition>> entry : other.definitionsByFieldName.entrySet()) {
+		for (final Entry<String, List<DynamicDefinition>> entry : other.childDefinitionsByFieldName.entrySet()) {
 			final String fieldName = entry.getKey();
 			final List<DynamicDefinition> definitions = entry.getValue();
 			//-----
-			addAllChildrenDefinition(fieldName, definitions);
+			addAllChildDefinitions(fieldName, definitions);
 		}
 		return this;
 	}

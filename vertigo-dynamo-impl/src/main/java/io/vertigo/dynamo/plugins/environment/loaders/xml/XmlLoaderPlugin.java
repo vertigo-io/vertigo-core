@@ -91,11 +91,11 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.ID, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.ID, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
@@ -107,7 +107,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
 				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
-				.addDefinition("domain", attribute.getDomain())
+				.addDefinitionLink("domain", attribute.getDomain())
 				.build();
 	}
 
@@ -137,8 +137,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 				.addPropertyValue(KspProperty.LABEL_B, association.getRoleLabelB())
 				.addPropertyValue(KspProperty.ROLE_B, XmlUtil.french2Java(association.getRoleLabelB()))
 				//---
-				.addDefinition("dtDefinitionA", getDtDefinitionName(association.getCodeA()))
-				.addDefinition("dtDefinitionB", getDtDefinitionName(association.getCodeB()));
+				.addDefinitionLink("dtDefinitionA", getDtDefinitionName(association.getCodeA()))
+				.addDefinitionLink("dtDefinitionB", getDtDefinitionName(association.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations

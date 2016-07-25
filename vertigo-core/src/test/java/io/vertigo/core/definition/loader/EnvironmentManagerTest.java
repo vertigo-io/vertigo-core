@@ -73,8 +73,8 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addPropertyValue(AGE, 42)
 				.addPropertyValue(HEIGHT, 175.0d)
 				.addPropertyValue(MALE, Boolean.TRUE)
-				.addDefinition(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
-				.addDefinition(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
+				.addDefinitionLink(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
+				.addDefinitionLink(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
 				.build();
 		dynamicDefinitionRepository.addDefinition(personDefinition);
 

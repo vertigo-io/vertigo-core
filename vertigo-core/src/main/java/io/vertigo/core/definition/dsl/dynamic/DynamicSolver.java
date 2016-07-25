@@ -84,7 +84,7 @@ final class DynamicSolver {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final String definitionName : definition.getAllDefinitionNames()) {
+		for (final String definitionName : definition.getAllDefinitionLinkNames()) {
 			//reference should be already solved in a previous resources module : then continue
 			if (!definitionSpace.containsDefinitionName(definitionName)) {
 				//or references should be in currently parsed resources

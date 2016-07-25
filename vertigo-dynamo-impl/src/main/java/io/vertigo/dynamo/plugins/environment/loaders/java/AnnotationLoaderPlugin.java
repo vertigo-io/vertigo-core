@@ -179,8 +179,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(ROLE_B, association.foreignRole())
 						.addPropertyValue(LABEL_B, association.foreignRole())
 						//---
-						.addDefinition("dtDefinitionA", association.primaryDtDefinitionName())
-						.addDefinition("dtDefinitionB", association.foreignDtDefinitionName())
+						.addDefinitionLink("dtDefinitionA", association.primaryDtDefinitionName())
+						.addDefinitionLink("dtDefinitionB", association.foreignDtDefinitionName())
 						//---
 						.addPropertyValue(FK_FIELD_NAME, association.fkFieldName())
 						.build();
@@ -209,8 +209,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(ROLE_B, association.roleB())
 						.addPropertyValue(LABEL_B, association.labelB())
 
-						.addDefinition("dtDefinitionA", association.dtDefinitionA())
-						.addDefinition("dtDefinitionB", association.dtDefinitionB())
+						.addDefinitionLink("dtDefinitionA", association.dtDefinitionA())
+						.addDefinitionLink("dtDefinitionB", association.dtDefinitionB())
 						.build();
 
 				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
@@ -248,7 +248,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
-				.addDefinition("domain", field.domain())
+				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
 				.addPropertyValue(NOT_NULL, field.required())
 				.addPropertyValue(PERSISTENT, field.persistent())
@@ -256,14 +256,14 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		switch (type) {
 			case ID:
-				dtDefinition.addDefinition(DomainGrammar.ID, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.ID, dtField);
 				break;
 			case DATA:
-				dtDefinition.addDefinition("field", dtField);
+				dtDefinition.addChildDefinition("field", dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addDefinition("computed", dtField);
+				dtDefinition.addChildDefinition("computed", dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

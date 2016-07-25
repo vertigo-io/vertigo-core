@@ -55,9 +55,9 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		return new SequenceRule(//"InnerDefinition"
 				new TermRule(entityName),
 				DslSyntaxRules.SPACES,
-				DslSyntaxRules.WORD,//2
+				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.SPACES,
-				definitionBodyRule,//4
+				definitionBodyRule, //4
 				DslSyntaxRules.SPACES,
 				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
@@ -87,10 +87,10 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addAllDefinitions(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
+				dynamicDefinitionBuilder.addAllDefinitionLinks(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
 			}
 		}
 		for (final DslPropertyEntry dslPropertyEntry : definitionBody.getPropertyEntries()) {
