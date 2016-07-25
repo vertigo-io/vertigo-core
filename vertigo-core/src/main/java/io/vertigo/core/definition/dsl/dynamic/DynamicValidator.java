@@ -22,12 +22,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
 import io.vertigo.lang.Assertion;
 
 /**
- * 
+ *
  * Validate a definition considering its own entity.
- * 
+ *
  * @author pchretien
  *
  */
@@ -91,7 +92,8 @@ final class DynamicValidator {
 		// Vérification des propriétés obligatoires
 		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
 		for (final String propertyName : entityPropertyNames) {
-			if (myEntity.isRequired(propertyName) && (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
+			final DslEntityField entityField = myEntity.getField(propertyName);
+			if (entityField.isRequired() && (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
 				// est nulle alors erreur !

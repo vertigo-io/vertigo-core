@@ -98,15 +98,6 @@ public final class DslEntity implements DslEntityFieldType {
 	}
 
 	/**
-	 * Returns true if the field is required.
-	 * @param fieldName Name of the field
-	 * @return true if the specified field is required
-	 */
-	public boolean isRequired(final String fieldName) {
-		return getField(fieldName).isRequired();
-	}
-
-	/**
 	 * Returns the value to which the specified name is mapped.
 	 * @param fieldName Name of the field
 	 * @return Field

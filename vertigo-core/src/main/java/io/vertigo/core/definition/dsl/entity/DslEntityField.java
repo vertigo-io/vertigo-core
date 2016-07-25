@@ -65,7 +65,7 @@ public final class DslEntityField {
 	/**
 	 * @return If required
 	 */
-	boolean isRequired() {
+	public boolean isRequired() {
 		return required;
 	}
 
