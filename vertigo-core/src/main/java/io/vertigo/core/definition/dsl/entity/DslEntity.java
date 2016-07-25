@@ -90,8 +90,8 @@ public final class DslEntity implements DslEntityFieldType {
 		return names;
 	}
 
-	public DslPropertyType getPrimitiveType(final String fieldName) {
-		final DslEntityFieldType type = getAttribute(fieldName).getType();
+	public DslPropertyType getPropertyType(final String fieldName) {
+		final DslEntityFieldType type = getField(fieldName).getType();
 		Assertion.checkArgument(type.isProperty(), "property {0} not found on {1}", fieldName, this);
 		//-----
 		return (DslPropertyType) type;
@@ -103,7 +103,7 @@ public final class DslEntity implements DslEntityFieldType {
 	 * @return true if the specified field is required
 	 */
 	public boolean isRequired(final String fieldName) {
-		return getAttribute(fieldName).isRequired();
+		return getField(fieldName).isRequired();
 	}
 
 	/**
@@ -111,7 +111,7 @@ public final class DslEntity implements DslEntityFieldType {
 	 * @param fieldName Name of the field
 	 * @return Field
 	 */
-	public DslEntityField getAttribute(final String fieldName) {
+	public DslEntityField getField(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fields.containsKey(fieldName), "la propriete {0} n'est pas declaree pour {1}", fieldName, this);
 		//-----

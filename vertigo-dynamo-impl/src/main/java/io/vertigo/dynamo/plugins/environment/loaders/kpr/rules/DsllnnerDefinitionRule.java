@@ -117,7 +117,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		Assertion.checkNotNull(entity);
 		Assertion.checkNotNull(dslPropertyEntry);
 		//-----
-		return entity.getPrimitiveType(dslPropertyEntry.getPropertyName()).cast(dslPropertyEntry.getPropertyValueAsString());
+		return entity.getPropertyType(dslPropertyEntry.getPropertyName()).cast(dslPropertyEntry.getPropertyValueAsString());
 	}
 
 }

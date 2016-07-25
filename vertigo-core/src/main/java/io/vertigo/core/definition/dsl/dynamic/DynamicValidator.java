@@ -53,7 +53,7 @@ final class DynamicValidator {
 
 		// 1.1.3 on vérifie les types des propriétés déclarées
 		for (final String propertyName : propertyNames) {
-			myEntity.getPrimitiveType(propertyName).checkValue(definition.getPropertyValue(propertyName));
+			myEntity.getPropertyType(propertyName).checkValue(definition.getPropertyValue(propertyName));
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).

@@ -178,7 +178,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
-		getEntity().getPrimitiveType(propertyName).checkValue(value);
+		getEntity().getPropertyType(propertyName).checkValue(value);
 		propertyValueByFieldName.put(propertyName, value);
 		return this;
 	}
@@ -205,7 +205,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private void addAllChildrenDefinition(final String fieldName, final List<DynamicDefinition> definitions) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitions);
-		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof DslEntity,
+		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntity,
 				"expected a pure entity on {0}", fieldName);
 		//-----
 		obtainList(definitionsByFieldName, fieldName).addAll(definitions);
@@ -216,7 +216,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	public DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionNames);
-		Assertion.checkState(entity.getAttribute(fieldName).getType() instanceof DslEntityLink,
+		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntityLink,
 				"expected a link on {0}", fieldName);
 		//-----
 		obtainList(definitionNamesByFieldName, fieldName).addAll(definitionNames);
