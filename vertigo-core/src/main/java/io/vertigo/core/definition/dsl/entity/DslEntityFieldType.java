@@ -18,20 +18,28 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
-import java.util.List;
-
 /**
- * Une grammaire est composée d'entités et de propriétés.
- * Les entités sont une composition d'entités et de propriétés.
- *
- * Il est possible de composer une grammaire à partir de grammaires.
+ * There are 3 types of field :
+ * - property
+ * - entity
+ * - entity Link
  *
  * @author pchretien
+ *
  */
-public interface DslEntityGrammar {
+public interface DslEntityFieldType {
 	/**
-	 * Returns the list of entities
-	 * @return List of entities.
+	 * @return If the field is a property
 	 */
-	List<DslEntity> getEntities();
+	boolean isProperty();
+
+	/**
+	 * @return If the field is a link towards an entity
+	 */
+	boolean isEntityLink();
+
+	/**
+	 * @return If the field is a child entity
+	 */
+	boolean isEntity();
 }

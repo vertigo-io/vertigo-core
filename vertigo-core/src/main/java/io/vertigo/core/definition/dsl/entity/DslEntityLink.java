@@ -24,7 +24,7 @@ import io.vertigo.lang.Assertion;
  * Defines a link to an entity.
  * @author pchretien
  */
-public final class DslEntityLink implements DslEntityType {
+public final class DslEntityLink implements DslEntityFieldType {
 	private final DslEntity entity;
 
 	/**
@@ -33,7 +33,6 @@ public final class DslEntityLink implements DslEntityType {
 	 */
 	DslEntityLink(final DslEntity entity) {
 		Assertion.checkNotNull(entity);
-		Assertion.checkState(!entity.isPrimitive(), "A primitive entity such as {0} can't be linked", entity);
 		//-----
 		this.entity = entity;
 	}
@@ -46,7 +45,17 @@ public final class DslEntityLink implements DslEntityType {
 	}
 
 	@Override
-	public boolean isPrimitive() {
+	public boolean isProperty() {
+		return false;
+	}
+
+	@Override
+	public boolean isEntityLink() {
+		return true;
+	}
+
+	@Override
+	public boolean isEntity() {
 		return false;
 	}
 }

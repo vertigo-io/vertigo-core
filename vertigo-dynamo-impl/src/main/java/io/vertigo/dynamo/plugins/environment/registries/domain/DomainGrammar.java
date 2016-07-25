@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -53,14 +53,14 @@ import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-public final class DomainGrammar implements DslEntityGrammar {
+public final class DomainGrammar implements DslGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */

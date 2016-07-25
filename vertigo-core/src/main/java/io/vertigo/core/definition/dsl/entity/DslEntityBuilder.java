@@ -66,7 +66,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public DslEntityBuilder addField(final String fieldName, final DslEntityType type, final boolean required) {
+	public DslEntityBuilder addField(final String fieldName, final DslEntityFieldType type, final boolean required) {
 		return addField(fieldName, type, false, required);
 	}
 
@@ -102,7 +102,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 * @param required If the field is required
 	 * @return this builder
 	 */
-	private DslEntityBuilder addField(final String fieldName, final DslEntityType type, final boolean multiple, final boolean required) {
+	private DslEntityBuilder addField(final String fieldName, final DslEntityFieldType type, final boolean multiple, final boolean required) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(type);
 		//-----

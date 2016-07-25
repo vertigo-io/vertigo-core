@@ -29,7 +29,7 @@ public final class DslEntityField {
 	private final String name;
 	private final boolean multiple;
 	private final boolean required;
-	private final DslEntityType type;
+	private final DslEntityFieldType type;
 
 	/**
 	 * Constructor.
@@ -38,7 +38,7 @@ public final class DslEntityField {
 	 * @param multiple If multiple
 	 * @param required If not null
 	 */
-	DslEntityField(final String name, final DslEntityType type, final boolean multiple, final boolean required) {
+	DslEntityField(final String name, final DslEntityFieldType type, final boolean multiple, final boolean required) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(type);
 		//-----
@@ -72,7 +72,7 @@ public final class DslEntityField {
 	/**
 	 * @return the type of the entity
 	 */
-	public DslEntityType getType() {
+	public DslEntityFieldType getType() {
 		return type;
 	}
 }

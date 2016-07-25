@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author  pchretien
  */
-public enum DslEntityPropertyType implements DslEntityType {
+public enum DslPropertyType implements DslEntityFieldType {
 	/** Integer. */
 	Integer(Integer.class),
 	/** Double. */
@@ -43,7 +43,7 @@ public enum DslEntityPropertyType implements DslEntityType {
 	 *
 	 * @param javaClass Classe java encapsulée
 	 */
-	DslEntityPropertyType(final Class<?> javaClass) {
+	DslPropertyType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
 		//-----
 		this.javaClass = javaClass;
@@ -77,7 +77,17 @@ public enum DslEntityPropertyType implements DslEntityType {
 	}
 
 	@Override
-	public boolean isPrimitive() {
+	public boolean isProperty() {
 		return true;
+	}
+
+	@Override
+	public boolean isEntityLink() {
+		return true;
+	}
+
+	@Override
+	public boolean isEntity() {
+		return false;
 	}
 }

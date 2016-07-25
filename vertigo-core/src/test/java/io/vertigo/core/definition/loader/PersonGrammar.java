@@ -18,22 +18,22 @@
  */
 package io.vertigo.core.definition.loader;
 
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Double;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Double;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author npiedeloup
  */
-public final class PersonGrammar implements DslEntityGrammar {
+public final class PersonGrammar implements DslGrammar {
 
 	static final String NAME = "name";
 	static final String FIRST_NAME = "firstName";

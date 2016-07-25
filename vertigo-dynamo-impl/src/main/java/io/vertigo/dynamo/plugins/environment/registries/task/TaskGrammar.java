@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
@@ -30,14 +30,14 @@ import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-final class TaskGrammar implements DslEntityGrammar {
+final class TaskGrammar implements DslGrammar {
 	/** Attribute name. */
 	public static final String TASK_ATTRIBUTE = "attribute";
 

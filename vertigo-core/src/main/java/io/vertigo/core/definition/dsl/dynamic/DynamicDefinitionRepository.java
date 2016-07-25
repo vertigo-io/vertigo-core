@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -49,7 +49,7 @@ public final class DynamicDefinitionRepository {
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
 	private final DynamicRegistry registry;
-	private final DslEntityGrammar grammar;
+	private final DslGrammar grammar;
 
 	/**
 	 * Constructeur.
@@ -65,7 +65,7 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * @return Grammar
 	 */
-	public DslEntityGrammar getGrammar() {
+	public DslGrammar getGrammar() {
 		return grammar;
 	}
 

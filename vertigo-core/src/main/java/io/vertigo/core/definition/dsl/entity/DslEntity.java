@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslEntity implements DslEntityType {
+public final class DslEntity implements DslEntityFieldType {
 	/**
 	 * Nom de la metadefinition (Type de la définition).
 	 */
@@ -83,18 +83,18 @@ public final class DslEntity implements DslEntityType {
 	public Set<String> getPropertyNames() {
 		final Set<String> names = new HashSet<>();
 		for (final DslEntityField field : fields.values()) {
-			if (field.getType().isPrimitive()) {
+			if (field.getType().isProperty()) {
 				names.add(field.getName());
 			}
 		}
 		return names;
 	}
 
-	public DslEntityPropertyType getPrimitiveType(final String fieldName) {
-		final DslEntityType type = getAttribute(fieldName).getType();
-		Assertion.checkArgument(type.isPrimitive(), "property {0} not found on {1}", fieldName, this);
+	public DslPropertyType getPrimitiveType(final String fieldName) {
+		final DslEntityFieldType type = getAttribute(fieldName).getType();
+		Assertion.checkArgument(type.isProperty(), "property {0} not found on {1}", fieldName, this);
 		//-----
-		return (DslEntityPropertyType) type;
+		return (DslPropertyType) type;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class DslEntity implements DslEntityType {
 	/**
 	 * Returns the value to which the specified name is mapped.
 	 * @param fieldName Name of the field
-	 * @return Field 
+	 * @return Field
 	 */
 	public DslEntityField getAttribute(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
@@ -119,21 +119,16 @@ public final class DslEntity implements DslEntityType {
 	}
 
 	/**
-	 * @return List of the entity's fields 
+	 * @return List of the entity's fields
 	 */
 	public Set<DslEntityField> getAttributes() {
 		final Set<DslEntityField> attributes = new HashSet<>();
 		for (final DslEntityField field : fields.values()) {
-			if (!field.getType().isPrimitive()) {
+			if (!field.getType().isProperty()) {
 				attributes.add(field);
 			}
 		}
 		return attributes;
-	}
-
-	@Override
-	public boolean isPrimitive() {
-		return false;
 	}
 
 	public DslEntityLink getLink() {
@@ -147,5 +142,20 @@ public final class DslEntity implements DslEntityType {
 
 	public boolean isRoot() {
 		return root;
+	}
+
+	@Override
+	public boolean isProperty() {
+		return false;
+	}
+
+	@Override
+	public boolean isEntityLink() {
+		return false;
+	}
+
+	@Override
+	public boolean isEntity() {
+		return true;
 	}
 }

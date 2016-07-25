@@ -18,18 +18,20 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
+import java.util.List;
+
 /**
- * There are 3 types of entities.
- * - property 
- * - entity
- * - entitylink
- * 
- * @author pchretien
+ * Une grammaire est composée d'entités et de propriétés.
+ * Les entités sont une composition d'entités et de propriétés.
  *
+ * Il est possible de composer une grammaire à partir de grammaires.
+ *
+ * @author pchretien
  */
-public interface DslEntityType {
+public interface DslGrammar {
 	/**
-	 * @return If the entity is a primitive (a property)
+	 * Returns the list of entities
+	 * @return List of entities.
 	 */
-	boolean isPrimitive();
+	List<DslEntity> getEntities();
 }

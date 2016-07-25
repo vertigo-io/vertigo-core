@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import static io.vertigo.core.definition.dsl.entity.DslEntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
@@ -32,7 +32,7 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-final class SearchGrammar implements DslEntityGrammar {
+final class SearchGrammar implements DslGrammar {
 
 	/** Index definition. */
 	public static final DslEntity INDEX_DEFINITION_ENTITY;

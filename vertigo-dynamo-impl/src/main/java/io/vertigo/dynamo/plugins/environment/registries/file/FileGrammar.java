@@ -23,21 +23,21 @@ import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
-import io.vertigo.core.definition.dsl.entity.DslEntityPropertyType;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
+import io.vertigo.core.definition.dsl.entity.DslPropertyType;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
  * @author npiedeloup
  */
-final class FileGrammar implements DslEntityGrammar {
+final class FileGrammar implements DslGrammar {
 
 	/**Définition de tache.*/
 	public static final DslEntity FILE_INFO_DEFINITION_ENTITY;
 
 	static {
 		FILE_INFO_DEFINITION_ENTITY = new DslEntityBuilder("FileInfo")
-				.addField(KspProperty.DATA_SPACE, DslEntityPropertyType.String, true)
+				.addField(KspProperty.DATA_SPACE, DslPropertyType.String, true)
 				.build();
 	}
 

@@ -23,12 +23,12 @@ import java.util.List;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 
 /**
  * @author pchretien
  */
-public final class KernelGrammar implements DslEntityGrammar {
+public final class KernelGrammar implements DslGrammar {
 	/** Mot-clé des MetaDefinitions de DataType. */
 	private static final String DATA_TYPE_META_DEFINITION = "DataType";
 
