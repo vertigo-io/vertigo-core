@@ -77,11 +77,21 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
 
-		for (final DslEntityField attribute : entity.getAttributes()) {
-			final String attributeName = attribute.getName();
-			attributeNames.add(attributeName);
-			DslEntity entityAttribute = attribute.getType() instanceof DslEntity ? DslEntity.class.cast(attribute.getType()) : DslEntityLink.class.cast(attribute.getType()).getEntity();
-			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, entityAttribute));
+		for (final DslEntityField dslEntityField : entity.getFields()) {
+			attributeNames.add(dslEntityField.getName());
+
+			final DslEntity dslEntity;
+			if (dslEntityField.getType() instanceof DslEntity) {
+				dslEntity = DslEntity.class.cast(dslEntityField.getType());
+			} else if (dslEntityField.getType() instanceof DslEntityLink) {
+				dslEntity = DslEntityLink.class.cast(dslEntityField.getType()).getEntity();
+			} else {
+				//case property
+				dslEntity = null;
+			}
+			if (dslEntity != null) {
+				innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, dslEntityField.getName(), dslEntity));
+			}
 		}
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
@@ -89,14 +99,14 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 		final FirstOfRule firstOfRule = new FirstOfRule(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
-				new FirstOfRule(innerDefinitionRules),//2,
+				new FirstOfRule(innerDefinitionRules), //2,
 				SPACES);
 
 		final ManyRule<Choice> manyRule = new ManyRule<>(firstOfRule, true);
 		return new SequenceRule(
 				OBJECT_START,
 				SPACES,
-				manyRule,//2
+				manyRule, //2
 				SPACES,
 				OBJECT_END);
 	}

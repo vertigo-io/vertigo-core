@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.definition.dsl.entity;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -112,14 +113,8 @@ public final class DslEntity implements DslEntityFieldType {
 	/**
 	 * @return List of the entity's fields
 	 */
-	public Set<DslEntityField> getAttributes() {
-		final Set<DslEntityField> attributes = new HashSet<>();
-		for (final DslEntityField field : fields.values()) {
-			if (!field.getType().isProperty()) {
-				attributes.add(field);
-			}
-		}
-		return attributes;
+	public Collection<DslEntityField> getFields() {
+		return fields.values();
 	}
 
 	public DslEntityLink getLink() {
