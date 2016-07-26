@@ -29,7 +29,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
-import io.vertigo.dynamo.database.data.Movie;
+import io.vertigo.dynamo.database.data.domain.Movie;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;

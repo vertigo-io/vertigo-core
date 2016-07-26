@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.task.data;
+package io.vertigo.dynamo.task.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;

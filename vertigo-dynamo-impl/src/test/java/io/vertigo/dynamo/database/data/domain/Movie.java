@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.data;
+package io.vertigo.dynamo.database.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;

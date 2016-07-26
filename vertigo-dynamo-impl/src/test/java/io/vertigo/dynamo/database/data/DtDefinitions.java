@@ -21,6 +21,8 @@ package io.vertigo.dynamo.database.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import io.vertigo.dynamo.database.data.domain.Movie;
+
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
