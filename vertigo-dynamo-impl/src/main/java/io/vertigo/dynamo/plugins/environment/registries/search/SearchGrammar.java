@@ -33,32 +33,25 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 final class SearchGrammar implements DslGrammar {
-
 	/** Index definition. */
 	public static final DslEntity INDEX_DEFINITION_ENTITY;
+	/** Facet definition. */
+	public static final DslEntity FACET_DEFINITION_ENTITY;
+	/** Faceted query definition. */
+	public static final DslEntity FACETED_QUERY_DEFINITION_ENTITY;
+
 	/** Search loader id. */
 	public static final String SEARCH_LOADER_PROPERTY = "LOADER_ID";
 	/** List filter class. */
 	public static final String LIST_FILTER_BUILDER_CLASS = "LIST_FILTER_BUILDER_CLASS";
 	/** List filter query. */
 	public static final String LIST_FILTER_BUILDER_QUERY = "LIST_FILTER_BUILDER_QUERY";
-
-	/** Index copy fields. */
-	public static final DslEntity INDEX_COPY_ENTITY;
-
 	/** Fieldname. */
 	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet order. */
 	public static final String FACET_ORDER = "ORDER";
-	/** Facet definition. */
-	public static final DslEntity FACET_DEFINITION_ENTITY;
-	/** Facet range. */
-	private static final DslEntity FACET_RANGE_ENTITY;
 	/** Range filter. */
 	public static final String RANGE_FILTER_PROPERTY = "FILTER";
-	/** Faceted query definition. */
-	public static final DslEntity FACETED_QUERY_DEFINITION_ENTITY;
-
 	/** indexCopy to. */
 	public static final String INDEX_COPY_TO_PROPERTY = "indexCopyTo";
 	/** indexCopy from. */
@@ -71,21 +64,21 @@ final class SearchGrammar implements DslGrammar {
 	    dtIndex : DT_TEST,
 	    indexCopyTo FIELD_TO_1 : { from: "FIELD_FROM_1,FIELD_FROM_2" }, //use field formatters
 	    indexCopyTo FIELD_TO_2 : { from: "FIELD_FROM_3" }, //use field formatters
-
+	
 	    searchLoader : com.project.domain.search.dao.SearchLoaderPeople
 	}
-
+	
 	create FacetDefinition FCT_MOVIE_GENRE {
 		dtDefinition : DT_TEST, fieldName : "GENRE", label : "Par genre"
 	}
-
+	
 	create FacetDefinition FCT_MOVIE_ANNEE {
 		dtDefinition : DT_TEST, fieldName : "YEAR", label : "Par année",
 	 	range R1 { filter : "YEAR:[* TO 2000]", label : "avant 2000"}, //TODO : fieldName in filter too ?
 	 	range R2 { filter : "YEAR:[2000 TO 2005]", label : "2000-2005"},
 	 	range R3 { filter : "YEAR:[2005 TO *]", label : "après 2005"}
 	}
-
+	
 	create FacetedQueryDefinition QRY_MOVIE {
 		facet FCT_MOVIE_GENRE,
 		facet FCT_MOVIE_ANNEE,
@@ -93,36 +86,38 @@ final class SearchGrammar implements DslGrammar {
 	*/
 
 	static {
-		INDEX_COPY_ENTITY = new DslEntityBuilder("indexCopyTo")
-				.addField(INDEX_COPY_FROM_PROPERTY, String, true)
+		/** Index copy fields. */
+		final DslEntity indexCopyEntity = new DslEntityBuilder("indexCopyTo")
+				.addRequiredField(INDEX_COPY_FROM_PROPERTY, String)
 				.build();
 
 		INDEX_DEFINITION_ENTITY = new DslEntityBuilder("IndexDefinition")
-				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
-				.addFields(INDEX_COPY_TO_PROPERTY, INDEX_COPY_ENTITY, false) //facultative
-				.addField(SEARCH_LOADER_PROPERTY, String, true)
+				.addRequiredField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
+				.addManyFields(INDEX_COPY_TO_PROPERTY, indexCopyEntity)
+				.addRequiredField(SEARCH_LOADER_PROPERTY, String)
 				.build();
 
-		FACET_RANGE_ENTITY = new DslEntityBuilder("range")
-				.addField(RANGE_FILTER_PROPERTY, String, true)
-				.addField(KspProperty.LABEL, String, true)
+		/** Facet range. */
+		final DslEntity facetRangeEntity = new DslEntityBuilder("range")
+				.addRequiredField(RANGE_FILTER_PROPERTY, String)
+				.addRequiredField(KspProperty.LABEL, String)
 				.build();
 
 		FACET_DEFINITION_ENTITY = new DslEntityBuilder("FacetDefinition")
-				.addField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
-				.addField(FIELD_NAME, String, true)
-				.addField(KspProperty.LABEL, String, true)
-				.addField(FACET_ORDER, String, false) //facultative, default to count
-				.addFields("range", FACET_RANGE_ENTITY, false) //facultative
+				.addRequiredField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField(FIELD_NAME, String)
+				.addRequiredField(KspProperty.LABEL, String)
+				.addOptionalField(FACET_ORDER, String) //facultative, default to count
+				.addManyFields("range", facetRangeEntity)
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new DslEntityBuilder("FacetedQueryDefinition")
-				.addField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("domainCriteria", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
-				.addField(LIST_FILTER_BUILDER_CLASS, String, true)
-				.addField(LIST_FILTER_BUILDER_QUERY, String, true)
-				.addFields("facets", FACET_DEFINITION_ENTITY.getLink(), true)
+				.addRequiredField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("domainCriteria", DomainGrammar.DOMAIN_ENTITY.getLink())
+				.addRequiredField(LIST_FILTER_BUILDER_CLASS, String)
+				.addRequiredField(LIST_FILTER_BUILDER_QUERY, String)
+				.addManyFields("facets", FACET_DEFINITION_ENTITY.getLink())
 				.build();
 	}
 

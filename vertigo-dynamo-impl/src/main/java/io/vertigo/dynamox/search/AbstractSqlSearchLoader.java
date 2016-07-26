@@ -153,7 +153,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @return Nom de la table
 	 */
 	protected static final String getTableName(final DtDefinition dtDefinition) {
-		return dtDefinition.getLocalName();
+		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
 }

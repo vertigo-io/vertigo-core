@@ -83,7 +83,7 @@ public final class DynamicDefinitionRepository {
 	 *  -Soit la clé n'existe pas
 	 *  -Soit la clé existe mais sans aucune définition
 	 *  -Soit la clé raméne une définition.
-	 *  
+	 *
 	 * @param definitionName Name of the definition
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
@@ -98,7 +98,7 @@ public final class DynamicDefinitionRepository {
 
 	/**
 	 * Résolution des références de définitions.
-	 * @param definitionSpace Space where all the definitions are stored 
+	 * @param definitionSpace Space where all the definitions are stored
 	 */
 	public void solve(final DefinitionSpace definitionSpace) {
 		Assertion.checkNotNull(definitionSpace);
@@ -119,7 +119,7 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
 		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
-			if (!xdefinition.getEntity().isRoot()) {
+			if (!xdefinition.getEntity().isProvided()) {
 				//The definition identified as root are not registered.
 				final Definition definition = registry.createDefinition(definitionSpace, xdefinition);
 				definitionSpace.put(definition);

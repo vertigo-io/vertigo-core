@@ -118,7 +118,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @return the name of the table
 	 */
 	protected static final String getTableName(final DtDefinition dtDefinition) {
-		return dtDefinition.getLocalName();
+		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
 	/** {@inheritDoc} */

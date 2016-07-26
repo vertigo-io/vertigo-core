@@ -29,8 +29,10 @@ import io.vertigo.core.definition.dsl.entity.DslGrammar;
  * @author pchretien
  */
 public final class KernelGrammar implements DslGrammar {
-	/**Type Primitif.*/
-	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType").withRoot().build();
+	/**the data types are provided by the language (String, Integer...) */
+	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType")
+			.withProvided()
+			.build();
 
 	/**
 	 * @return Type primitif.

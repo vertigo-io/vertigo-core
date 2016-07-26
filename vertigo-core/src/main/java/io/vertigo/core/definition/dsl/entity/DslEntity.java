@@ -48,7 +48,7 @@ public final class DslEntity implements DslEntityFieldType {
 	 */
 	private final Map<String, DslEntityField> fields;
 
-	private final boolean root;
+	private final boolean provided;
 
 	/**
 	 * Constructeur de la MetaDefinition
@@ -56,12 +56,12 @@ public final class DslEntity implements DslEntityFieldType {
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	DslEntity(final String name, final Set<DslEntityField> fields, final boolean root) {
+	DslEntity(final String name, final Set<DslEntityField> fields, final boolean provided) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(fields);
 		//-----
 		this.name = name;
-		this.root = root;
+		this.provided = provided;
 		this.fields = new HashMap<>();
 		for (final DslEntityField field : fields) {
 			Assertion.checkArgument(!this.fields.containsKey(field.getName()), "field {0} is already registered for {1}", field, this);
@@ -126,8 +126,8 @@ public final class DslEntity implements DslEntityFieldType {
 		return name;
 	}
 
-	public boolean isRoot() {
-		return root;
+	public boolean isProvided() {
+		return provided;
 	}
 
 	@Override

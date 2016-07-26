@@ -39,6 +39,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
@@ -96,6 +97,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			return createDomain(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
 			return createDtDefinition(definitionSpace, xdefinition);
+		} else if (entity.equals(DomainGrammar.FRAGMENT_ENTITY)) {
+			return createFragmentDtDefinition(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
 			return createAssociationSimpleDefinition(definitionSpace, xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
@@ -146,6 +149,68 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return domainBuilder
 				.withConstraints(createConstraints(definitionSpace, constraintNames))
 				.withProperties(extractProperties(xdomain))
+				.build();
+	}
+
+	private static DtDefinition createFragmentDtDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdtDefinition) {
+		final DtDefinition from = definitionSpace.resolve(xdtDefinition.getDefinitionLinkName("from"), DtDefinition.class);
+
+		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
+		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
+
+		//0. clones characteristics
+		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(xdtDefinition.getName())
+				.withFragment(from)
+				.withPackageName(xdtDefinition.getPackageName())
+				.withPersistent(from.isPersistent())
+				.withDynamic(from.isDynamic())
+				.withDataSpace(from.getDataSpace())
+				.withPackageName(from.getPackageName())
+				.withStereoType(from.getStereotype());
+
+		//0. adds ID field
+		if (from.getIdField().isPresent()) {
+			final DtField idField = from.getIdField().get();
+			dtDefinitionBuilder.addIdField(
+					idField.getName(),
+					idField.getLabel().getDisplay(),
+					idField.getDomain(),
+					idField.getName().equals(sortFieldName),
+					idField.getName().equals(displayFieldName));
+		}
+
+		//1. adds aliases
+		for (final DynamicDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
+			final DtField aliasDtField = from.getField(alias.getName());
+
+			//--- REQUIRED
+			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.NOT_NULL);
+			final boolean required = overiddenRequired != null ? overiddenRequired : aliasDtField.isRequired();
+
+			//--- LABEL
+			final String overiddenLabel = (String) alias.getPropertyValue(KspProperty.LABEL);
+			final String label = overiddenLabel != null ? overiddenLabel : aliasDtField.getLabel().getDisplay();
+
+			dtDefinitionBuilder.addDataField(
+					aliasDtField.getName(),
+					label,
+					aliasDtField.getDomain(),
+					required,
+					aliasDtField.isPersistent(),
+					aliasDtField.getName().equals(sortFieldName),
+					aliasDtField.getName().equals(displayFieldName));
+		}
+
+		//2. adds data and computed fields
+		//Déclaration des champs du DT
+		final List<DynamicDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields, sortFieldName, displayFieldName);
+
+		//Déclaration des champs calculés
+		final List<DynamicDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
+
+		return dtDefinitionBuilder
 				.build();
 	}
 

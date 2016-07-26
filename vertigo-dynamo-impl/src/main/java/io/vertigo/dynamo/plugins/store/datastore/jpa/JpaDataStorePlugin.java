@@ -211,7 +211,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private static String getTableName(final DtDefinition dtDefinition) {
 		// Warning jSQL is "almost case-insensitive"; that's why we have to keep the case of java objects
-		return dtDefinition.getClassSimpleName();
+		return dtDefinition.getFragment().orElse(dtDefinition).getClassSimpleName();
 	}
 
 	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {

@@ -41,23 +41,21 @@ final class TaskGrammar implements DslGrammar {
 	/** Attribute name. */
 	public static final String TASK_ATTRIBUTE = "attribute";
 
-	/**Définition d'un attribut de tache.*/
-	private static final DslEntity TASK_ATTRIBUTE_DEFINITION_ENTITY;
 	/**Définition de tache.*/
 	public static final DslEntity TASK_DEFINITION_ENTITY;
 
 	static {
-		TASK_ATTRIBUTE_DEFINITION_ENTITY = new DslEntityBuilder("Attribute")
-				.addField(NOT_NULL, Boolean, true)
-				.addField(IN_OUT, String, true)
-				.addField("domain", DomainGrammar.DOMAIN_ENTITY.getLink(), true)
+		final DslEntity taskAttributeDefinitionEntity = new DslEntityBuilder("Attribute")
+				.addRequiredField(NOT_NULL, Boolean)
+				.addRequiredField(IN_OUT, String)
+				.addRequiredField("domain", DomainGrammar.DOMAIN_ENTITY.getLink())
 				.build();
 
 		TASK_DEFINITION_ENTITY = new DslEntityBuilder("Task")
-				.addField(REQUEST, String, true)
-				.addField(DATA_SPACE, String, false)
-				.addField(CLASS_NAME, String, true)
-				.addFields(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, false)
+				.addRequiredField(REQUEST, String)
+				.addOptionalField(DATA_SPACE, String)
+				.addRequiredField(CLASS_NAME, String)
+				.addManyFields(TASK_ATTRIBUTE, taskAttributeDefinitionEntity)
 				.build();
 	}
 
@@ -65,7 +63,6 @@ final class TaskGrammar implements DslGrammar {
 	public List<DslEntity> getEntities() {
 		return new ListBuilder<DslEntity>()
 				.add(TASK_DEFINITION_ENTITY)
-				.add(TASK_ATTRIBUTE_DEFINITION_ENTITY)
 				.unmodifiable()
 				.build();
 	}

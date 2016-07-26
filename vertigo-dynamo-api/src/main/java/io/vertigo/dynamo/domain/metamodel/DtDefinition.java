@@ -42,6 +42,9 @@ public final class DtDefinition implements Definition {
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
+	/** if the definition is a fragment. */
+	private final Optional<DtDefinition> fragment;
+
 	/** name of the definition. */
 	private final String name;
 
@@ -77,6 +80,7 @@ public final class DtDefinition implements Definition {
 	 */
 	DtDefinition(
 			final String name,
+			final Optional<DtDefinition> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
 			final boolean persistent,
@@ -84,12 +88,14 @@ public final class DtDefinition implements Definition {
 			final boolean dynamic,
 			final String dataSpace) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
+		Assertion.checkNotNull(fragment);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
 		Assertion.checkArgNotEmpty(dataSpace);
 		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
 		//-----
 		this.name = name;
+		this.fragment = fragment;
 		this.stereotype = stereotype;
 		this.persistent = persistent;
 		this.packageName = packageName;
@@ -144,6 +150,10 @@ public final class DtDefinition implements Definition {
 		if (dtField.isDisplay()) {
 			registerDisplay(dtField);
 		}
+	}
+
+	public Optional<DtDefinition> getFragment() {
+		return fragment;
 	}
 
 	/**

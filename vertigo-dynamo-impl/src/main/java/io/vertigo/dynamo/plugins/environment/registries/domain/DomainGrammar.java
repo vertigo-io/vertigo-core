@@ -78,94 +78,108 @@ public final class DomainGrammar implements DslGrammar {
 	public static final DslEntity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
 	public static final DslEntity FORMATTER_ENTITY;
-	/**Définition d'une propriété.*/
-	private static final DslEntity PROPERTY_ENTITY;
 	/**Définition d'un domain.*/
 	public static final DslEntity DOMAIN_ENTITY;
 
-	/**Définition d'un champ de DT.*/
+	/**Field*/
 	public static final DslEntity DT_FIELD_ENTITY;
-	/**Définition d'un champ computed de DT.*/
-	private static final DslEntity FT_COMPUTED_FIELD_ENTITY;
-	/**Définition d'un DT.*/
+
 	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
 	public static final DslEntity ASSOCIATION_ENTITY;
 	/**Définition d'une association NN.*/
 	public static final DslEntity ASSOCIATION_NN_ENTITY;
 
+	/**
+	 * Fragments
+	 */
+	public static final DslEntity FRAGMENT_ENTITY;
+
 	static {
 		CONSTRAINT_ENTITY = new DslEntityBuilder("Constraint")
-				.addField(CLASS_NAME, String, true)
-				.addField(ARGS, String, false)
-				.addField(MSG, String, false)
+				.addRequiredField(CLASS_NAME, String)
+				.addOptionalField(ARGS, String)
+				.addOptionalField(MSG, String)
 				.build();
 		FORMATTER_ENTITY = new DslEntityBuilder("Formatter")
-				.addField(CLASS_NAME, String, true)
-				.addField(ARGS, String, false)
+				.addRequiredField(CLASS_NAME, String)
+				.addOptionalField(ARGS, String)
 				.build();
-		PROPERTY_ENTITY = new DslEntityBuilder("Property").build();
 
 		DOMAIN_ENTITY = new DslEntityBuilder("Domain")
-				.addField(MAX_LENGTH, Integer, false)
-				.addField(TYPE, String, false)
-				.addField(UNIT, String, false)
-				.addField(INDEX_TYPE, String, false)
-				.addField(STORE_TYPE, String, false)
-				.addField("formatter", FORMATTER_ENTITY.getLink(), true)
-				.addField("dataType", KernelGrammar.getDataTypeEntity().getLink(), true)
-				.addFields("constraint", CONSTRAINT_ENTITY.getLink(), false)
+				.addOptionalField(MAX_LENGTH, Integer)
+				.addOptionalField(TYPE, String)
+				.addOptionalField(UNIT, String)
+				.addOptionalField(INDEX_TYPE, String)
+				.addOptionalField(STORE_TYPE, String)
+				.addRequiredField("formatter", FORMATTER_ENTITY.getLink())
+				.addRequiredField("dataType", KernelGrammar.getDataTypeEntity().getLink())
+				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
 		DT_FIELD_ENTITY = new DslEntityBuilder("Field")
-				.addField(LABEL, String, true)
-				.addField(NOT_NULL, Boolean, true)
-				.addField("domain", DOMAIN_ENTITY.getLink(), true)
-				.addField(PERSISTENT, Boolean, false)
+				.addRequiredField(LABEL, String)
+				.addRequiredField(NOT_NULL, Boolean)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		FT_COMPUTED_FIELD_ENTITY = new DslEntityBuilder("ComputedField")
-				.addField(LABEL, String, true)
-				.addField("domain", DOMAIN_ENTITY.getLink(), true)
-				.addField(EXPRESSION, String, true)
+		final DslEntity computedFieldEntity = new DslEntityBuilder("ComputedField")
+				.addRequiredField(LABEL, String)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+				.addRequiredField(EXPRESSION, String)
 				.build();
 
 		DT_DEFINITION_ENTITY = new DslEntityBuilder("DtDefinition")
-				.addField(DISPLAY_FIELD, String, false)
-				.addField(SORT_FIELD, String, false)
-				.addFields(FIELD, DT_FIELD_ENTITY, false)
-				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
-				.addField(ID, DT_FIELD_ENTITY, false)
-				.addField(PERSISTENT, Boolean, false)
-				.addField(DYNAMIC, Boolean, false)
-				.addField(STEREOTYPE, String, false)
-				.addField(DATA_SPACE, String, false)
+				.addOptionalField(DISPLAY_FIELD, String)
+				.addOptionalField(SORT_FIELD, String)
+				.addManyFields(FIELD, DT_FIELD_ENTITY)
+				.addManyFields(COMPUTED, computedFieldEntity)
+				.addOptionalField(ID, DT_FIELD_ENTITY)
+				.addOptionalField(PERSISTENT, Boolean)
+				.addOptionalField(DYNAMIC, Boolean)
+				.addOptionalField(STEREOTYPE, String)
+				.addOptionalField(DATA_SPACE, String)
+				.build();
+
+		final DslEntity fieldAliasEntity = new DslEntityBuilder("fieldAlias")
+				.addOptionalField(LABEL, String)
+				.addOptionalField(NOT_NULL, Boolean)
+				.build();
+
+		FRAGMENT_ENTITY = new DslEntityBuilder("Fragment")
+				.addRequiredField("from", DT_DEFINITION_ENTITY.getLink())
+				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
+				.addOptionalField(DISPLAY_FIELD, String)
+				.addOptionalField(SORT_FIELD, String)
+				.addManyFields(FIELD, DT_FIELD_ENTITY) //on peut ajouter des champs
+				.addManyFields(COMPUTED, computedFieldEntity) //et des computed
 				.build();
 
 		ASSOCIATION_ENTITY = new DslEntityBuilder("Association")
-				.addField(FK_FIELD_NAME, String, false)
-				.addField(MULTIPLICITY_A, String, true)
-				.addField(NAVIGABILITY_A, Boolean, true)
-				.addField(ROLE_A, String, true)
-				.addField(LABEL_A, String, true)
-				.addField(MULTIPLICITY_B, String, true)
-				.addField(NAVIGABILITY_B, Boolean, true)
-				.addField(ROLE_B, String, true)
-				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
+				.addOptionalField(FK_FIELD_NAME, String)
+				.addRequiredField(MULTIPLICITY_A, String)
+				.addRequiredField(NAVIGABILITY_A, Boolean)
+				.addRequiredField(ROLE_A, String)
+				.addRequiredField(LABEL_A, String)
+				.addRequiredField(MULTIPLICITY_B, String)
+				.addRequiredField(NAVIGABILITY_B, Boolean)
+				.addRequiredField(ROLE_B, String)
+				.addRequiredField(LABEL_B, String)
+				.addRequiredField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new DslEntityBuilder("AssociationNN")
-				.addField(TABLE_NAME, String, true)
-				.addField(NAVIGABILITY_A, Boolean, true)
-				.addField(ROLE_A, String, true)
-				.addField(LABEL_A, String, true)
-				.addField(NAVIGABILITY_B, Boolean, true)
-				.addField(ROLE_B, String, true)
-				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
+				.addRequiredField(TABLE_NAME, String)
+				.addRequiredField(NAVIGABILITY_A, Boolean)
+				.addRequiredField(ROLE_A, String)
+				.addRequiredField(LABEL_A, String)
+				.addRequiredField(NAVIGABILITY_B, Boolean)
+				.addRequiredField(ROLE_B, String)
+				.addRequiredField(LABEL_B, String)
+				.addRequiredField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
 				.build();
 
 	}
@@ -173,13 +187,11 @@ public final class DomainGrammar implements DslGrammar {
 	@Override
 	public List<DslEntity> getEntities() {
 		return new ListBuilder<DslEntity>()
-				.add(PROPERTY_ENTITY)
 				.add(CONSTRAINT_ENTITY)
 				.add(FORMATTER_ENTITY)
 				//---
 				.add(DOMAIN_ENTITY)
-				.add(DT_FIELD_ENTITY)
-				.add(FT_COMPUTED_FIELD_ENTITY)
+				.add(FRAGMENT_ENTITY)
 				.add(DT_DEFINITION_ENTITY)
 				.add(ASSOCIATION_ENTITY)
 				.add(ASSOCIATION_NN_ENTITY)

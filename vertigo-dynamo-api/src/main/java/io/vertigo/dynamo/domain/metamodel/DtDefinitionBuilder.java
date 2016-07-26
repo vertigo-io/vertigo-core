@@ -20,6 +20,7 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
@@ -55,6 +56,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	private DtDefinition dtDefinition;
 	private final String myName;
+	private DtDefinition myFragment;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private boolean myPersistent;
@@ -82,6 +84,17 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//the packageName can be null
 		//-----
 		myPackageName = packageName;
+		return this;
+	}
+
+	/**
+	 * Sets fragment
+	 * @return this builder
+	 */
+	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
+		Assertion.checkNotNull(fragment);
+		//---
+		myFragment = fragment;
 		return this;
 	}
 
@@ -239,7 +252,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myStereotype == null) {
 			myStereotype = (myIdField == null) ? DtStereotype.Data : DtStereotype.Entity;
 		}
-		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
+		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myPersistent, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
 		return dtDefinition;
 	}
 }

@@ -21,6 +21,7 @@ package io.vertigo.core.definition.dsl.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertigo.core.definition.dsl.entity.DslEntityField.Cardinality;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -40,7 +41,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 */
 	private final Set<DslEntityField> fields;
 
-	private boolean myRoot;
+	private boolean myProvided;
 
 	/**
 	 * Constructor.
@@ -54,59 +55,62 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 
 	}
 
-	public DslEntityBuilder withRoot() {
-		myRoot = true;
+	public DslEntityBuilder withProvided() {
+		myProvided = true;
 		return this;
 	}
 
 	/**
-	 * Adds a new simple field.
-	 * @param fieldName Name of the field
-	 * @param type Type of the field
-	 * @param required If the field is required
+	 * Adds a new simple REQUIRED field.
+	 * @param fieldName the name of the field
+	 * @param type the type of the field
 	 * @return this builder
 	 */
-	public DslEntityBuilder addField(final String fieldName, final DslEntityFieldType type, final boolean required) {
-		return addField(fieldName, type, false, required);
+	public DslEntityBuilder addRequiredField(final String fieldName, final DslEntityFieldType type) {
+		return addField(fieldName, type, Cardinality.one);
+	}
+
+	/**
+	 * Adds a new simple OPTIONAL field.
+	 * @param fieldName the name of the field
+	 * @param type the type of the field
+	 * @return this builder
+	 */
+	public DslEntityBuilder addOptionalField(final String fieldName, final DslEntityFieldType type) {
+		return addField(fieldName, type, Cardinality.optional);
 	}
 
 	/**
 	 * Adds a new multi field defined by an entity.
-	 * @param fieldName Name of the field
+	 * @param fieldName the name of the field
 	 * @param entity Type of the field
-	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public DslEntityBuilder addFields(final String fieldName, final DslEntity entity, final boolean required) {
+	public DslEntityBuilder addManyFields(final String fieldName, final DslEntity entity) {
 		//Only Entities may be multiple
-		return addField(fieldName, entity, true, required);
+		return addField(fieldName, entity, Cardinality.many);
 	}
 
 	/**
 	 * Adds a new multi field defined by an entity.
-	 * @param fieldName Name of the field
+	 * @param fieldName the name of the field
 	 * @param entityLink Type of the field
-	 * @param required If the field is required
 	 * @return this builder
 	 */
-	public DslEntityBuilder addFields(final String fieldName, final DslEntityLink entityLink, final boolean required) {
+	public DslEntityBuilder addManyFields(final String fieldName, final DslEntityLink entityLink) {
 		//Only Entities or  Link may be multiple
-		return addField(fieldName, entityLink, true, required);
+		return addField(fieldName, entityLink, Cardinality.many);
 	}
 
 	/**
 	 * Adds a new field.
-	 * @param fieldName Name of the field
-	 * @param type Type of the field
-	 * @param multiple If the field can have many values
-	 * @param required If the field is required
+	 * @param fieldName the name of the field
+	 * @param type the type of the field
+	 * @param cardinality the cardinality of the field
 	 * @return this builder
 	 */
-	private DslEntityBuilder addField(final String fieldName, final DslEntityFieldType type, final boolean multiple, final boolean required) {
-		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(type);
-		//-----
-		final DslEntityField field = new DslEntityField(fieldName, type, multiple, required);
+	private DslEntityBuilder addField(final String fieldName, final DslEntityFieldType type, final Cardinality cardinality) {
+		final DslEntityField field = new DslEntityField(fieldName, type, cardinality);
 		//-----
 		fields.add(field);
 		return this;
@@ -115,6 +119,6 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	/** {@inheritDoc} */
 	@Override
 	public DslEntity build() {
-		return new DslEntity(name, fields, myRoot);
+		return new DslEntity(name, fields, myProvided);
 	}
 }

@@ -86,7 +86,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
-		if (!xdefinition.getEntity().isRoot()) {
+		if (!xdefinition.getEntity().isProvided()) {
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
 			dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 		}

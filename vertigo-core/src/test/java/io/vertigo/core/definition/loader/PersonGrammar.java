@@ -34,6 +34,7 @@ import io.vertigo.util.ListBuilder;
  * @author npiedeloup
  */
 public final class PersonGrammar implements DslGrammar {
+	static final DslEntity ADDRESS_ENTITY;
 
 	static final String NAME = "name";
 	static final String FIRST_NAME = "firstName";
@@ -47,29 +48,27 @@ public final class PersonGrammar implements DslGrammar {
 	static final String STREET = "street";
 	static final String POSTAL_CODE = "postalCode";
 	static final String CITY = "city";
-	static final DslEntity ADDRESS_ENTITY;
 
 	static {
 		ADDRESS_ENTITY = new DslEntityBuilder("address")
-				.addField(STREET, String, true)
-				.addField(POSTAL_CODE, String, false)
-				.addField(CITY, String, false)
+				.addRequiredField(STREET, String)
+				.addOptionalField(POSTAL_CODE, String)
+				.addOptionalField(CITY, String)
 				.build();
 		PERSON_ENTITY = new DslEntityBuilder("person")
-				.addField(NAME, String, true)
-				.addField(FIRST_NAME, String, true)
-				.addField(AGE, Integer, false)
-				.addField(HEIGHT, Double, false)
-				.addField(MALE, Boolean, true)
-				.addField(MAIN_ADDRESS, ADDRESS_ENTITY.getLink(), true)
-				.addField("secondaryAddress", ADDRESS_ENTITY.getLink(), false)
+				.addRequiredField(NAME, String)
+				.addRequiredField(FIRST_NAME, String)
+				.addOptionalField(AGE, Integer)
+				.addOptionalField(HEIGHT, Double)
+				.addRequiredField(MALE, Boolean)
+				.addRequiredField(MAIN_ADDRESS, ADDRESS_ENTITY.getLink())
+				.addOptionalField("secondaryAddress", ADDRESS_ENTITY.getLink())
 				.build();
 	}
 
 	@Override
 	public List<DslEntity> getEntities() {
 		return new ListBuilder<DslEntity>()
-				.add(ADDRESS_ENTITY)
 				.add(PERSON_ENTITY)
 				.unmodifiable()
 				.build();

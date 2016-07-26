@@ -23,6 +23,7 @@ import java.util.Set;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityField;
+import io.vertigo.core.definition.dsl.entity.DslEntityField.Cardinality;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -93,7 +94,9 @@ final class DynamicValidator {
 		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
 		for (final String propertyName : entityPropertyNames) {
 			final DslEntityField entityField = myEntity.getField(propertyName);
-			if (entityField.isRequired() && (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
+
+			if ((entityField.getCardinality() == Cardinality.one)
+					&& (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
 				// est nulle alors erreur !

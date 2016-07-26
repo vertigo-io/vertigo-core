@@ -37,7 +37,7 @@ final class FileGrammar implements DslGrammar {
 
 	static {
 		FILE_INFO_DEFINITION_ENTITY = new DslEntityBuilder("FileInfo")
-				.addField(KspProperty.DATA_SPACE, DslPropertyType.String, true)
+				.addRequiredField(KspProperty.DATA_SPACE, DslPropertyType.String)
 				.build();
 	}
 

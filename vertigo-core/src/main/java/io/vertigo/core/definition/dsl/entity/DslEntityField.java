@@ -26,25 +26,31 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DslEntityField {
+	public enum Cardinality {
+		/* 0  or 1*/
+		optional,
+		/* 1 */
+		one,
+		/* 0..n */
+		many
+	}
+
 	private final String name;
-	private final boolean multiple;
-	private final boolean required;
+	private final Cardinality cardinality;
 	private final DslEntityFieldType type;
 
 	/**
 	 * Constructor.
 	 * @param name Name
 	 * @param type Type of the entity
-	 * @param multiple If multiple
-	 * @param required If not null
 	 */
-	DslEntityField(final String name, final DslEntityFieldType type, final boolean multiple, final boolean required) {
+	DslEntityField(final String name, final DslEntityFieldType type, final Cardinality cardinality) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(type);
+		Assertion.checkNotNull(cardinality);
 		//-----
 		this.name = name;
-		this.multiple = multiple;
-		this.required = required;
+		this.cardinality = cardinality;
 		this.type = type;
 	}
 
@@ -56,17 +62,10 @@ public final class DslEntityField {
 	}
 
 	/**
-	 * @return If multiple
+	 * @return the cardinality
 	 */
-	boolean isMultiple() {
-		return multiple;
-	}
-
-	/**
-	 * @return If required
-	 */
-	public boolean isRequired() {
-		return required;
+	public Cardinality getCardinality() {
+		return cardinality;
 	}
 
 	/**
