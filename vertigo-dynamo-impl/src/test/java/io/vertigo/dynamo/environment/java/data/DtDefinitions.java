@@ -22,6 +22,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.dynamo.environment.java.data.domain.Attachment;
+import io.vertigo.dynamo.environment.java.data.domain.City;
+import io.vertigo.dynamo.environment.java.data.domain.Command;
+import io.vertigo.dynamo.environment.java.data.domain.CommandType;
+import io.vertigo.dynamo.environment.java.data.domain.CommandValidation;
 
 /**
  * Attention cette classe est générée automatiquement !
@@ -41,7 +46,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Objet de données CommandType. */
 		CommandType(CommandType.class),
 		/** Objet de données CommandValidation. */
-		CommandValidation(CommandValidation.class), ;
+		CommandValidation(CommandValidation.class),;
 
 		private final Class<?> clazz;
 

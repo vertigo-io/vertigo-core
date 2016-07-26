@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.environment.java.data;
+package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
@@ -38,8 +38,8 @@ public final class Command implements KeyConcept {
 	private Long cmdId;
 	private Long ctyId;
 	private Long citId;
-	private io.vertigo.dynamo.environment.java.data.CommandType commandType;
-	private io.vertigo.dynamo.environment.java.data.City city;
+	private io.vertigo.dynamo.environment.java.data.domain.CommandType commandType;
+	private io.vertigo.dynamo.environment.java.data.domain.City city;
 
 	/**
 	 * Champ : ID.
@@ -125,15 +125,15 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.environment.java.data.CommandType getCommandType() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> fkURI = getCommandTypeURI();
+	public io.vertigo.dynamo.environment.java.data.domain.CommandType getCommandType() {
+		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> fkURI = getCommandTypeURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (commandType != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> uri;
+			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> uri;
 			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(commandType);
 			if (!fkURI.urn().equals(uri.urn())) {
 				commandType = null;
@@ -163,8 +163,8 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.CommandType> getCommandTypeURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CTY_CMD", io.vertigo.dynamo.environment.java.data.CommandType.class);
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> getCommandTypeURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CTY_CMD", io.vertigo.dynamo.environment.java.data.domain.CommandType.class);
 	}
 
 	/**
@@ -185,15 +185,15 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.environment.java.data.City getCity() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> fkURI = getCityURI();
+	public io.vertigo.dynamo.environment.java.data.domain.City getCity() {
+		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> fkURI = getCityURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (city != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> uri;
+			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> uri;
 			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(city);
 			if (!fkURI.urn().equals(uri.urn())) {
 				city = null;
@@ -223,8 +223,8 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.City> getCityURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CIT_CMD", io.vertigo.dynamo.environment.java.data.City.class);
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> getCityURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CIT_CMD", io.vertigo.dynamo.environment.java.data.domain.City.class);
 	}
 
 	/** {@inheritDoc} */

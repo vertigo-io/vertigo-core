@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.environment.java.data;
+package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
@@ -25,62 +25,62 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * Attention cette classe est générée automatiquement !
- * Objet de données Attachment
+ * Objet de données CommandValidation
  */
 @javax.persistence.Entity
-@javax.persistence.Table(name = "ATTACHMENT")
+@javax.persistence.Table(name = "COMMAND_VALIDATION")
 @DtDefinition
-public final class Attachment implements Entity {
+public final class CommandValidation implements Entity {
 
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	private Long attId;
-	private String url;
+	private Long cvaId;
+	private String signerName;
 	private Long cmdId;
-	private io.vertigo.dynamo.environment.java.data.Command command;
+	private io.vertigo.dynamo.environment.java.data.domain.Command command;
 
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
-	 * @return Long attId <b>Obligatoire</b>
+	 * @return Long cvaId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_ATTACHMENT")
+	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_VALIDATION")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "sequence")
-	@javax.persistence.Column(name = "ATT_ID")
+	@javax.persistence.Column(name = "CVA_ID")
 	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "id")
-	public Long getAttId() {
-		return attId;
+	public Long getCvaId() {
+		return cvaId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'id'.
-	 * @param attId Long <b>Obligatoire</b>
+	 * @param cvaId Long <b>Obligatoire</b>
 	 */
-	public void setAttId(final Long attId) {
-		this.attId = attId;
+	public void setCvaId(final Long cvaId) {
+		this.cvaId = cvaId;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Url'.
-	 * @return String url <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Signer name'.
+	 * @return String signerName <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "URL")
-	@Field(domain = "DO_KEYWORD", required = true, label = "Url")
-	public String getUrl() {
-		return url;
+	@javax.persistence.Column(name = "SIGNER_NAME")
+	@Field(domain = "DO_FULL_TEXT", required = true, label = "Signer name")
+	public String getSignerName() {
+		return signerName;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Url'.
-	 * @param url String <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Signer name'.
+	 * @param signerName String <b>Obligatoire</b>
 	 */
-	public void setUrl(final String url) {
-		this.url = url;
+	public void setSignerName(final String signerName) {
+		this.signerName = signerName;
 	}
 
 	/**
@@ -109,27 +109,27 @@ public final class Attachment implements Entity {
 	 */
 	@javax.persistence.Transient
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
+			name = "A_CMD_CVA",
 			fkFieldName = "CMD_ID",
 			primaryDtDefinitionName = "DT_COMMAND",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
 			primaryLabel = "Command",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
+			foreignDtDefinitionName = "DT_COMMAND_VALIDATION",
 			foreignIsNavigable = false,
-			foreignRole = "Attachment",
-			foreignLabel = "Attachment",
+			foreignRole = "CommandValidation",
+			foreignLabel = "Command validation",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.environment.java.data.Command getCommand() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> fkURI = getCommandURI();
+	public io.vertigo.dynamo.environment.java.data.domain.Command getCommand() {
+		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> fkURI = getCommandURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (command != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> uri;
+			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> uri;
 			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(command);
 			if (!fkURI.urn().equals(uri.urn())) {
 				command = null;
@@ -147,20 +147,20 @@ public final class Attachment implements Entity {
 	 */
 	@javax.persistence.Transient
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
+			name = "A_CMD_CVA",
 			fkFieldName = "CMD_ID",
 			primaryDtDefinitionName = "DT_COMMAND",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
 			primaryLabel = "Command",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
+			foreignDtDefinitionName = "DT_COMMAND_VALIDATION",
 			foreignIsNavigable = false,
-			foreignRole = "Attachment",
-			foreignLabel = "Attachment",
+			foreignRole = "CommandValidation",
+			foreignLabel = "Command validation",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.Command> getCommandURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CMD_ATT", io.vertigo.dynamo.environment.java.data.Command.class);
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> getCommandURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CMD_CVA", io.vertigo.dynamo.environment.java.data.domain.Command.class);
 	}
 
 	/** {@inheritDoc} */

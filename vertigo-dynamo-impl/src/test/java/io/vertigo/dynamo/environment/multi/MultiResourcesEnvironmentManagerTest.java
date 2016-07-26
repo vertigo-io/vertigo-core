@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.environment.splittedmodules;
+package io.vertigo.dynamo.environment.multi;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,17 +28,17 @@ import io.vertigo.app.config.LogConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.environment.multi.data.DtDefinitions;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamock.domain.DtDefinitions;
 
 /**
  * Test de l'implémentation standard.
  *
  * @author npiedeloup
  */
-public final class SplittedModulesEnvironmentManagerTest {
+public final class MultiResourcesEnvironmentManagerTest {
 
 	//
 	//<module name="test-2"><!--  this moduleReference -->
@@ -46,9 +46,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 	//</module>
 
 	@Test
-	public void testFirstModule() {
+	public void testFirst() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
+				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr").endModule()
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
@@ -58,11 +58,11 @@ public final class SplittedModulesEnvironmentManagerTest {
 	}
 
 	@Test
-	public void testMergedModules() {
+	public void testMergedResources() {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
@@ -71,8 +71,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
-			Assert.assertNotNull(dtFamille);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
+			Assert.assertNotNull(dtItem);
 		}
 	}
 
@@ -81,8 +81,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.addDefinitionResource("kpr", "io/vertigo/dynamock/execution.kpr")
-					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
+				.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+				.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
@@ -90,8 +90,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
-			final DtDefinition dtFamille = app.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
-			Assert.assertNotNull(dtFamille);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
+			Assert.assertNotNull(dtItem);
 		}
 	}
 

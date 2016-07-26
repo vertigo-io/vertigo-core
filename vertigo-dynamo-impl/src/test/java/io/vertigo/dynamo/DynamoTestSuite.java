@@ -39,6 +39,7 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
+import io.vertigo.dynamo.environment.multi.MultiResourcesEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
@@ -51,7 +52,6 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitio
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
-import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.delayedmemory.DelayedMemoryKVStoreManagerTest;
@@ -81,7 +81,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//--OOM
 		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, OOMParserTest.class, OOMParserAATest.class, OOMParserIdentifiersTest.class,
 		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
-		SplittedModulesEnvironmentManagerTest.class,
+		MultiResourcesEnvironmentManagerTest.class,
 		//--
 		//--collections
 		CollectionsManagerTest.class,

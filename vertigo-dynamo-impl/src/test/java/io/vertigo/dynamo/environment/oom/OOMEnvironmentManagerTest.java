@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
-import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 
@@ -86,8 +85,8 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void testDtDefinition() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final DtDefinition dtDefinition = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
-		Assert.assertEquals(Famille.class.getCanonicalName(), dtDefinition.getClassCanonicalName());
+		Assert.assertEquals("io.vertigo.dynamock.domain.famille.Famille", dtDefinition.getClassCanonicalName());
 		Assert.assertTrue(dtDefinition.isPersistent());
-		Assert.assertEquals(Famille.class.getPackage().getName(), dtDefinition.getPackageName());
+		Assert.assertEquals("io.vertigo.dynamock.domain.famille", dtDefinition.getPackageName());
 	}
 }

@@ -33,11 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
  */
 public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "managers-test.xml", "managers-test-stereotypes.xml" };
-	}
-
 	private DtDefinition getDtDefinition(final String urn) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, DtDefinition.class);
