@@ -1,0 +1,17 @@
+package io.vertigo.dynamock.domain
+
+create Formatter FMT_DEFAULT{
+	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
+
+create Domain DO_STRING {
+	dataType : String
+	formatter : FMT_DEFAULT
+	indexType : "text.fr"
+}
+
+create Domain DO_LONG {
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
+
