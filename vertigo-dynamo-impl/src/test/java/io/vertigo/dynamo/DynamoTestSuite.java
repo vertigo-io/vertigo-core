@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.facet.FacetManagerTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
@@ -83,15 +84,14 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		SplittedModulesEnvironmentManagerTest.class,
 		//--
 		//--collections
-		io.vertigo.dynamo.collections.javaconfig.CollectionsManagerTest.class,
-		io.vertigo.dynamo.collections.xmlconfig.CollectionsManagerTest.class,
+		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--database
 		DataBaseManagerTest.class,
 		//--domain
 		ConstraintTest.class,
-		DateFormatterTest.class,
 		BooleanFormatterTest.class,
+		DateFormatterTest.class,
 		NumberFormatterTest.class,
 		StringFormatterTest.class,
 		DomainManagerTest.class,

@@ -37,10 +37,9 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
 
 /**
- *
- * @author dchallas
+ * @author pchretien
  */
-public abstract class AbstractCollectionsManagerTest extends AbstractTestCaseJU4 {
+public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	private static final String Ba = "Ba";
 	private static final String aaa = "aaa";
 	private static final String bb = "bb";
