@@ -3,7 +3,7 @@ package io.vertigo.dynamo.environment.multi.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.environment.multi.data.domain.Item;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override

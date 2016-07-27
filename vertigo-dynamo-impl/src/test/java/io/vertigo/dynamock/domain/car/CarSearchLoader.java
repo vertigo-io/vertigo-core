@@ -63,7 +63,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 		//-----
 		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>(uris.size());
 		final Map<Long, Car> carPerId = new HashMap<>();
-		for (final Car car : carDataBase) {
+		for (final Car car : carDataBase.getAllCars()) {
 			carPerId.put(car.getId(), car);
 		}
 		for (final URI<Car> uri : uris) {
@@ -81,7 +81,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;
-		for (final Car car : carDataBase) {
+		for (final Car car : carDataBase.getAllCars()) {
 			if (i > lastId) {
 				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
 			}

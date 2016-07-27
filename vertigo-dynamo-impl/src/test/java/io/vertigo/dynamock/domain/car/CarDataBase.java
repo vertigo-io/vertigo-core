@@ -21,7 +21,6 @@ package io.vertigo.dynamock.domain.car;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -32,7 +31,7 @@ import io.vertigo.dynamo.domain.model.DtList;
  *
  * @author pchretien
  */
-public final class CarDataBase implements Iterable<Car> {
+public final class CarDataBase {
 	private final List<Car> cars = new ArrayList<>();
 	private long size = 0;
 
@@ -67,16 +66,11 @@ public final class CarDataBase implements Iterable<Car> {
 		size++;
 	}
 
-	@Override
-	public Iterator<Car> iterator() {
-		return cars.iterator();
-	}
-
 	public long size() {
 		return size;
 	}
 
-	public final DtList<Car> createList() {
+	public final DtList<Car> getAllCars() {
 		final DtList<Car> dtList = new DtList<>(Car.class);
 		for (final Car car : cars) {
 			dtList.add(car);
@@ -84,7 +78,7 @@ public final class CarDataBase implements Iterable<Car> {
 		return dtList;
 	}
 
-	public List<Car> getByMake(final String make) {
+	public List<Car> getCarsByMaker(final String make) {
 		final List<Car> byMakeCars = new ArrayList<>();
 		for (final Car car : cars) {
 			if (car.getMake().toLowerCase().equals(make)) {
@@ -94,7 +88,7 @@ public final class CarDataBase implements Iterable<Car> {
 		return byMakeCars;
 	}
 
-	public long before(final int year) {
+	public long getCarsBefore(final int year) {
 		long count = 0;
 		for (final Car car : cars) {
 			if (car.getYear() <= year) {

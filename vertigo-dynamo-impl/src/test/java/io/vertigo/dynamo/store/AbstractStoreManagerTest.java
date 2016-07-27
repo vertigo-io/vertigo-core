@@ -107,7 +107,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		carDataBase.loadDatas();
 		initialDbCarSize = carDataBase.size();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final Car car : carDataBase.createList()) {
+			for (final Car car : carDataBase.getAllCars()) {
 				car.setId(null);
 				storeManager.getDataStore().create(car);
 			}
