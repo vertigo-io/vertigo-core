@@ -3,13 +3,13 @@ package io.vertigo.dynamock.search
 create FacetDefinition FCT_DESCRIPTION_CAR {
 	dtDefinition : DT_CAR
 	fieldName : "DESCRIPTION"
-	label : "Par constructeur"
+	label : "Par description"
 }
 		
 create FacetDefinition FCT_MAKE_CAR {
 	dtDefinition : DT_CAR
 	fieldName : "MAKE"
-	label : "Par description"
+	label : "Par constructeur"
 }
 	
 create FacetDefinition FCT_YEAR_CAR {

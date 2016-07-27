@@ -9,8 +9,9 @@ create Domain DO_STRING {
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_LONG {
+create Domain DO_ID{
 	dataType : Long
+	formatter : FMT_DEFAULT
 }
 
 create Domain DO_FULL_TEXT {
@@ -23,17 +24,8 @@ create Domain DO_KEYWORD {
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_CONSO {
-	dataType : BigDecimal
-	formatter : FMT_DEFAULT
-}
-
 create Domain DO_INTEGER {
 	dataType : Integer
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_IDENTIFIANT {
-	dataType : Long
-	formatter : FMT_DEFAULT
-}
