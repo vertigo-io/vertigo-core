@@ -53,14 +53,14 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.data.domain.CarDataBase;
+import io.vertigo.dynamo.search.data.domain.CarFacetInitializer;
+import io.vertigo.dynamo.search.data.domain.CarSearchLoader;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.dynamock.domain.car.CarDataBase;
-import io.vertigo.dynamock.domain.car.CarSearchLoader;
-import io.vertigo.dynamock.facet.CarFacetInitializer;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -1018,7 +1018,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);
 	}
 
-	private static URI<Car> createURI(final long id) {
+	private static URI<io.vertigo.dynamo.search.data.domain.Car> createURI(final long id) {
 		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
 	}
 

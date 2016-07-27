@@ -30,12 +30,12 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.dynamock.domain.car.CarDataBase;
 
 /**
  * @author  npiedeloup

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.facet;
+package io.vertigo.dynamo.search.data.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamox.search.DslListFilterBuilder;
 import io.vertigo.lang.MessageText;
 

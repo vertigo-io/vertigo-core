@@ -33,6 +33,6 @@
 			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
 		</definitions>
 
-		<component class="io.vertigo.dynamock.domain.car.CarSearchLoader"/>
+		<component class="io.vertigo.dynamo.search.data.domain.CarSearchLoader"/>
 	</module>
 </config>
