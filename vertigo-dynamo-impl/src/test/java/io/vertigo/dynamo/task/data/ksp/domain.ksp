@@ -14,7 +14,7 @@ create Domain DO_INTEGER {
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_IDENTIFIANT {
+create Domain DO_ID {
 	dataType : Long
 	formatter : FMT_DEFAULT
 }
