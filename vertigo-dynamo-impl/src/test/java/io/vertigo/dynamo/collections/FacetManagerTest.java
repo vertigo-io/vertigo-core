@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.collections.facet;
+package io.vertigo.dynamo.collections;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,17 +30,14 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.data.domain.Car;
+import io.vertigo.dynamo.collections.data.domain.CarDataBase;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.dynamock.domain.car.CarDataBase;
-import io.vertigo.dynamock.facet.CarFacetInitializer;
 
 /**
  * @author  npiedeloup
@@ -58,7 +55,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		carFacetQueryDefinition = definitionSpace.resolve(CarFacetInitializer.QRY_CAR_FACET, FacetedQueryDefinition.class);
+		carFacetQueryDefinition = definitionSpace.resolve("QRY_CAR_FACET", FacetedQueryDefinition.class);
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<Car, ?> result) {
@@ -68,7 +65,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette date
-		final Facet yearFacet = getFacetByName(result, CarFacetInitializer.FCT_YEAR_CAR);
+		final Facet yearFacet = getFacetByName(result, "FCT_YEAR_CAR");
 		Assert.assertNotNull(yearFacet);
 		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
@@ -89,7 +86,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette constructeur
-		final Facet makeFacet = getFacetByName(result, CarFacetInitializer.FCT_MAKE_CAR);
+		final Facet makeFacet = getFacetByName(result, "FCT_MAKE_CAR");
 		Assert.assertNotNull(makeFacet);
 		//On vérifie que l'on est sur le champ Make
 		Assert.assertEquals("MAKE", makeFacet.getDefinition().getDtField().getName());
@@ -138,7 +135,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
 		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
-		final FacetedQuery query = addFacetQuery(CarFacetInitializer.FCT_YEAR_CAR, "avant", result);
+		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
 		final FacetedQueryResult<Car, DtList<Car>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
 		Assert.assertEquals(carDataBase.before(2000), resultFiltered.getCount());
 	}
@@ -182,7 +179,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
 		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
-		final FacetedQuery query = addFacetQuery(CarFacetInitializer.FCT_MAKE_CAR, "peugeot", result);
+		final FacetedQuery query = addFacetQuery("FCT_MAKE_CAR", "peugeot", result);
 		final FacetedQueryResult<Car, DtList<Car>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
 		Assert.assertEquals(carDataBase.getByMake("peugeot").size(), (int) resultFiltered.getCount());
 	}

@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
-import io.vertigo.dynamo.collections.facet.FacetManagerTest;
+import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;

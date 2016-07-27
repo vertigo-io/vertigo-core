@@ -98,6 +98,12 @@ public final class CarFacetInitializer {
 
 		final Domain criteriaDomain = descriptionDtField.getDomain();
 
-		return new FacetedQueryDefinition(QRY_CAR_FACET, carDefinition, facetDefinitions, criteriaDomain, DslListFilterBuilder.class, "#query#");
+		return new FacetedQueryDefinition(
+				QRY_CAR_FACET,
+				carDefinition,
+				facetDefinitions,
+				criteriaDomain,
+				DslListFilterBuilder.class,
+				"#query#");
 	}
 }
