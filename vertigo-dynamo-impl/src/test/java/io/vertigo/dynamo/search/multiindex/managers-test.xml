@@ -27,7 +27,7 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/data/search.kpr" />
 			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
 		</definitions>
 	</module>
