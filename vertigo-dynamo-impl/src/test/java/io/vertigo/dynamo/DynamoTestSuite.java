@@ -44,6 +44,7 @@ import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
 import io.vertigo.dynamo.environment.oom.OOMParserIdentifiersTest;
+import io.vertigo.dynamo.environment.oom.OOMParserStereotypesTest;
 import io.vertigo.dynamo.environment.oom.OOMParserTest;
 import io.vertigo.dynamo.environment.oom.OOMTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionBodyRuleTest;
@@ -70,19 +71,12 @@ import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 /**
- * Test de l'implémentation standard.
+ * This suite contains all the tests for 'dynamo' module.
  *
  * @author pchretien
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		JavaParserStereotypesTest.class,
-		JavaEnvironmentManagerTest.class,
-		//--OOM
-		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, OOMParserTest.class, OOMParserAATest.class, OOMParserIdentifiersTest.class,
-		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
-		MultiResourcesEnvironmentManagerTest.class,
-		//--
 		//--collections
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
@@ -95,35 +89,58 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		NumberFormatterTest.class,
 		StringFormatterTest.class,
 		DomainManagerTest.class,
+		//--Environment
+		//----EAXMI
+		EAXmiAATest.class,
+		EAXmiEnvironmentManagerTest.class,
+		EAXmiTest.class,
+		EAXmiTestParser.class,
+		EAXmiTestParserAA.class,
+		EAXmiTestParserIdentifiers.class,
+		//----Java
+		JavaParserStereotypesTest.class,
+		JavaEnvironmentManagerTest.class,
+		//----Multi
+		MultiResourcesEnvironmentManagerTest.class,
+		//----OOM
+		OOMAATest.class,
+		OOMEnvironmentManagerTest.class,
+		OOMParserAATest.class,
+		OOMParserIdentifiersTest.class,
+		OOMParserStereotypesTest.class,
+		OOMParserTest.class,
+		OOMTest.class,
+		//----Rule
+		DslDefinitionBodyRuleTest.class,
+		DslDefinitionEntryRuleTest.class,
+		DslDefinitionRuleTest.class,
+		DslPackageRuleTest.class,
+		DslWordListRuleTest.class,
+		DslPropertyEntryRuleTest.class,
 		//--file
 		FileManagerTest.class,
-		//--kvdatastore
-		DelayedMemoryKVStoreManagerTest.class,
+		//--kvstore
 		BerkeleyKVStoreManagerTest.class,
-		//--persistence
-		CachedStoreManagerTest.class,
-		StoreManagerTest.class,
-		JpaStoreManagerTest.class,
-		MultiStoreManagerTest.class,
-
-		//--task
-		TaskManagerTest.class,
-		TaskEngineSelectDynamicTest.class,
-
-		//--transaction
-		VTransactionManagerTest.class,
-		VTransactionBeforeAfterCommitTest.class,
-
-		//Rule
-		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class,
-		DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
-
-		//Search
+		DelayedMemoryKVStoreManagerTest.class,
+		//--search
 		SearchManagerDynaFieldsTest.class,
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
 		SearchManagerStoreTest.class,
+		//--store
+		CachedStoreManagerTest.class,
+		StoreManagerTest.class,
+		JpaStoreManagerTest.class,
+		MultiStoreManagerTest.class,
+		//--task
+		TaskManagerTest.class,
+		TaskEngineSelectDynamicTest.class,
+		//--transaction
+		VTransactionManagerTest.class,
+		VTransactionBeforeAfterCommitTest.class,
+		//x
 		DslListFilterBuilderTest.class,
+
 })
 public final class DynamoTestSuite {
 	//
