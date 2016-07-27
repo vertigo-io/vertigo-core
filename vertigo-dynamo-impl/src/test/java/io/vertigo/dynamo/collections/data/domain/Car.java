@@ -34,7 +34,7 @@ public final class Car implements KeyConcept {
 	private String maker;
 	@Field(domain = "DO_INTEGER", required = true, label = "Année")
 	private Integer year;
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Descriptif")
+	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
 	private String description;
 
 	public final Long getId() {

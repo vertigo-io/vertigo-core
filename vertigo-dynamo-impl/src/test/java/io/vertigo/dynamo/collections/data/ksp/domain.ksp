@@ -4,17 +4,12 @@ create Formatter FMT_DEFAULT{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_STRING {
-	dataType : String
-	formatter : FMT_DEFAULT
-}
-
 create Domain DO_ID{
 	dataType : Long
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_FULL_TEXT {
+create Domain DO_TEXT {
 	dataType : String
 	formatter : FMT_DEFAULT
 }

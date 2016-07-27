@@ -31,7 +31,7 @@ public final class Item implements Entity {
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_STRING", label = "label")
+	@Field(domain = "DO_TEXT", label = "label")
 	private String label;
 
 	public final Long getId() {
