@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 @DtDefinition
-public final class Car implements KeyConcept {
+public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

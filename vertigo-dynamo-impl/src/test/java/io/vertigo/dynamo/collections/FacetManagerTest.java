@@ -30,8 +30,8 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.dynamo.collections.data.domain.Car;
-import io.vertigo.dynamo.collections.data.domain.CarDataBase;
+import io.vertigo.dynamo.collections.data.domain.SmartCar;
+import io.vertigo.dynamo.collections.data.domain.SmartCarDataBase;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -46,19 +46,19 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private CollectionsManager collectionsManager;
 	private FacetedQueryDefinition carFacetQueryDefinition;
-	private CarDataBase carDataBase;
+	private SmartCarDataBase carDataBase;
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
 		//On construit la BDD des voitures
-		carDataBase = new CarDataBase();
+		carDataBase = new SmartCarDataBase();
 		carDataBase.loadDatas();
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		carFacetQueryDefinition = definitionSpace.resolve("QRY_CAR_FACET", FacetedQueryDefinition.class);
 	}
 
-	private void testFacetResultByRange(final FacetedQueryResult<Car, ?> result) {
+	private void testFacetResultByRange(final FacetedQueryResult<SmartCar, ?> result) {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
@@ -79,7 +79,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue(found);
 	}
 
-	private void testFacetResultByTerm(final FacetedQueryResult<Car, ?> result) {
+	private void testFacetResultByTerm(final FacetedQueryResult<SmartCar, ?> result) {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
@@ -105,7 +105,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue(found);
 	}
 
-	private static Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {
+	private static Facet getFacetByName(final FacetedQueryResult<SmartCar, ?> result, final String facetName) {
 		for (final Facet facet : result.getFacets()) {
 			if (facetName.equals(facet.getDefinition().getName())) {
 				return facet;
@@ -119,9 +119,9 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFacetListByRange() {
-		final DtList<Car> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = carDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByRange(result);
 	}
 
@@ -131,16 +131,16 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFacetListByRange() {
-		final DtList<Car> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = carDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
-		final FacetedQueryResult<Car, DtList<Car>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
 		Assert.assertEquals(carDataBase.getCarsBefore(2000), resultFiltered.getCount());
 	}
 
-	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
+	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<SmartCar, ?> result) {
 		FacetValue facetFilter = null; //pb d'initialisation, et assert.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
@@ -163,9 +163,9 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFacetListByTerm() {
-		final DtList<Car> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = carDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByTerm(result);
 	}
 
@@ -175,12 +175,12 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFacetListByTerm() {
-		final DtList<Car> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = carDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_MAKER_CAR", "peugeot", result);
-		final FacetedQueryResult<Car, DtList<Car>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
 		Assert.assertEquals(carDataBase.getCarsByMaker("peugeot").size(), (int) resultFiltered.getCount());
 	}
 

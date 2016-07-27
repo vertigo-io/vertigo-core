@@ -28,8 +28,8 @@ import io.vertigo.dynamo.domain.model.DtList;
  *
  * @author pchretien
  */
-public final class CarDataBase {
-	private final List<Car> cars = new ArrayList<>();
+public final class SmartCarDataBase {
+	private final List<SmartCar> cars = new ArrayList<>();
 	private long size = 0;
 
 	public void loadDatas() {
@@ -45,7 +45,7 @@ public final class CarDataBase {
 	}
 
 	private void add(final long id, final String make, final int year, final String description) {
-		final Car car = new Car();
+		final SmartCar car = new SmartCar();
 		car.setId(size);
 		car.setMaker(make);
 		car.setYear(year);
@@ -59,17 +59,17 @@ public final class CarDataBase {
 		return size;
 	}
 
-	public final DtList<Car> getAllCars() {
-		final DtList<Car> dtList = new DtList<>(Car.class);
-		for (final Car car : cars) {
+	public final DtList<SmartCar> getAllCars() {
+		final DtList<SmartCar> dtList = new DtList<>(SmartCar.class);
+		for (final SmartCar car : cars) {
 			dtList.add(car);
 		}
 		return dtList;
 	}
 
-	public List<Car> getCarsByMaker(final String maker) {
-		final List<Car> carsByMaker = new ArrayList<>();
-		for (final Car car : cars) {
+	public List<SmartCar> getCarsByMaker(final String maker) {
+		final List<SmartCar> carsByMaker = new ArrayList<>();
+		for (final SmartCar car : cars) {
 			if (car.getMaker().toLowerCase().equals(maker)) {
 				carsByMaker.add(car);
 			}
@@ -79,7 +79,7 @@ public final class CarDataBase {
 
 	public long getCarsBefore(final int year) {
 		long count = 0;
-		for (final Car car : cars) {
+		for (final SmartCar car : cars) {
 			if (car.getYear() <= year) {
 				count++;
 			}
