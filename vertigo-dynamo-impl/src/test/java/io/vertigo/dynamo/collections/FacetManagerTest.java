@@ -86,10 +86,10 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette constructeur
-		final Facet makeFacet = getFacetByName(result, "FCT_MAKE_CAR");
+		final Facet makeFacet = getFacetByName(result, "FCT_MAKER_CAR");
 		Assert.assertNotNull(makeFacet);
 		//On vérifie que l'on est sur le champ Make
-		Assert.assertEquals("MAKE", makeFacet.getDefinition().getDtField().getName());
+		Assert.assertEquals("MAKER", makeFacet.getDefinition().getDtField().getName());
 		Assert.assertFalse(makeFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
@@ -179,7 +179,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
 		final FacetedQueryResult<Car, DtList<Car>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
-		final FacetedQuery query = addFacetQuery("FCT_MAKE_CAR", "peugeot", result);
+		final FacetedQuery query = addFacetQuery("FCT_MAKER_CAR", "peugeot", result);
 		final FacetedQueryResult<Car, DtList<Car>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
 		Assert.assertEquals(carDataBase.getCarsByMaker("peugeot").size(), (int) resultFiltered.getCount());
 	}
