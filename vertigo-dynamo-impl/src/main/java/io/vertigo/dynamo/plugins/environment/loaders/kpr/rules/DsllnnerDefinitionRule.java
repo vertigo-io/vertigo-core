@@ -103,10 +103,6 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		}
 	}
 
-	//=========================================================================
-	//=================================STATIC==================================
-	//=========================================================================
-
 	/**
 	 * Retourne la valeur typée en fonction de son expression sous forme de String
 	 * L'expression est celle utilisée dans le fichier xml/ksp.
