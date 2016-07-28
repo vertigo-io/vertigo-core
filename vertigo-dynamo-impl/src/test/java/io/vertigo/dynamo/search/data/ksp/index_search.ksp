@@ -3,29 +3,35 @@ package io.vertigo.dynamo.search.data.domain
 create IndexDefinition IDX_CAR {
     keyConcept : DT_CAR
     dtIndex : DT_CAR
-    indexCopyTo ALL_TEXT { from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" },
-    indexCopyTo MODEL_SORT { from: "MODEL" },
+    indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    indexCopyTo MODEL_SORT 	{ from: "MODEL" }
     loaderId : "CarSearchLoader"
 }
 
 create IndexDefinition IDX_DYNA_CAR {
     keyConcept : DT_CAR
     dtIndex : DT_CAR
-    indexCopyTo ALL_TEXT { from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" },
-    indexCopyTo MODEL_SORT { from: "MODEL" },
+    indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    indexCopyTo MODEL_SORT 	{ from: "MODEL" }
     loaderId : "CarSearchLoader"
 }
 
 create FacetDefinition FCT_DESCRIPTION_CAR {
-	dtDefinition : DT_CAR, fieldName : "DESCRIPTION", label : "Description"
+	dtDefinition : DT_CAR 
+	fieldName : "DESCRIPTION" 
+	label : "Description"
 }
 
 create FacetDefinition FCT_MAKE_CAR {
-	dtDefinition : DT_CAR, fieldName : "MAKE", label : "Par constructeur"
+	dtDefinition : DT_CAR 
+	fieldName : "MAKE"
+	label : "Par constructeur"
 }
 
 create FacetDefinition FCT_MAKE_CAR_ALPHA {
-	dtDefinition : DT_CAR, fieldName : "MAKE", label : "Par constructeur", order : "alpha"
+	dtDefinition : DT_CAR 
+	fieldName : "MAKE"
+	label : "Par constructeur", order : "alpha"
 }
 
 create FacetDefinition FCT_YEAR_CAR {
@@ -44,7 +50,3 @@ create FacetedQueryDefinition QRY_CAR_FACET {
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    
 }
-
-
-
-	
