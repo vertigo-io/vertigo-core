@@ -16,25 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.fileinfo;
+package io.vertigo.dynamo.search.data;
 
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
+import java.util.Arrays;
+import java.util.Iterator;
 
-/**
- * Attention cette classe est générée automatiquement !
- * Objet représentant un fichier persistant FileInfoStd
- */
-public final class FileInfoStd extends AbstractFileInfo {
-	/** SerialVersionUID. */
-	private static final long serialVersionUID = 1L;
+import io.vertigo.dynamo.search.data.domain.Car;
 
-	/**
-	 * Constructeur par défaut.
-	 * @param vFile Données du fichier
-	 */
-	public FileInfoStd(final VFile vFile) {
-		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), vFile);
+public final class DtDefinitions implements Iterable<Class<?>> {
+	@Override
+	public Iterator<Class<?>> iterator() {
+		return Arrays.asList(new Class<?>[] {
+				Car.class,
+		}).iterator();
 	}
 }

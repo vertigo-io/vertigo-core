@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.domain;
+package io.vertigo.dynamo.store.data;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -33,9 +33,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum Definitions {
 			/** Objet de données Car. */
-			Car(io.vertigo.dynamock.domain.car.Car.class),
+			Car(io.vertigo.dynamo.store.data.domain.car.Car.class),
 			/** Objet de données Famille. */
-			Famille(io.vertigo.dynamock.domain.famille.Famille.class),
+			Famille(io.vertigo.dynamo.store.data.domain.famille.Famille.class),
 		;
 		
 		private final Class<?> clazz;

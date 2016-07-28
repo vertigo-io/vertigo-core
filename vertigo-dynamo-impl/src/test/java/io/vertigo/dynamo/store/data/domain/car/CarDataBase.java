@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.domain.car;
+package io.vertigo.dynamo.store.data.domain.car;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

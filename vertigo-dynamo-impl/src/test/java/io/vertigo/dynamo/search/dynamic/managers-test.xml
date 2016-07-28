@@ -30,7 +30,7 @@
 	<module name="myApp" api="false">
 		<definitions>	
 			<resource type="kpr" path="io/vertigo/dynamo/search/data/search.kpr" />
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
 		</definitions>
 
 		<component class="io.vertigo.dynamo.search.data.domain.CarSearchLoader"/>

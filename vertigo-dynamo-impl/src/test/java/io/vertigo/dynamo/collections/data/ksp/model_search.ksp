@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.search
+package io.vertigo.dynamo.collections.data.domain
 
 create FacetDefinition FCT_DESCRIPTION_CAR {
 	dtDefinition : DT_SMART_CAR

@@ -64,8 +64,8 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamock/executionOtherStore.kpr" />
-			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+			<resource type="kpr" path="io/vertigo/dynamo/store/data/executionOtherStore.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
 		</definitions>
 	</module>
 	

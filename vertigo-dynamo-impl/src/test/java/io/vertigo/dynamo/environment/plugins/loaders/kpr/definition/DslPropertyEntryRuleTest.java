@@ -36,8 +36,8 @@ public final class DslPropertyEntryRuleTest {
 	private static DslPropertyEntryRule MAIN;
 	static {
 		final Set<String> propertyNames = new HashSet<>();
-		propertyNames.add(DslPropertyEntryRuleTest.LABEL);
-		propertyNames.add(DslPropertyEntryRuleTest.SIZE);
+		propertyNames.add(LABEL);
+		propertyNames.add(SIZE);
 		MAIN = new DslPropertyEntryRule(propertyNames);
 	}
 
@@ -82,7 +82,8 @@ public final class DslPropertyEntryRuleTest {
 	public void testFail() throws NotFoundException {
 		final Parser<DslPropertyEntry> parser = MAIN.createParser();
 		//---
-		final String text = "maxlength   : \"54\";"; //La propriété maxlength n'est pas enregistrée
+		final String text = "maxlength   : \"54\";";
+		//La propriété maxlength n'est pas enregistrée
 		/*final int end = */parser.parse(text, 0);
 		Assert.fail();
 	}

@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.car
+package io.vertigo.dynamo.search.data.domain
 
 create DtDefinition DT_CAR {
     persistent : "false"

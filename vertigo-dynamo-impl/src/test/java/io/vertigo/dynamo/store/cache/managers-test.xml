@@ -48,8 +48,8 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamock/executionWfileinfo.kpr" />
-			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+			<resource type="kpr" path="io/vertigo/dynamo/store/data/executionWfileinfo.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
 		</definitions>
 	</module>
 	

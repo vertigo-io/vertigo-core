@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.search
+package io.vertigo.dynamo.store.data.domain
 
 create Domain DO_FULL_TEXT {
     dataType : String

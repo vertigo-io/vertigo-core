@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.fileinfo;
+package io.vertigo.dynamo.store.data.fileinfo;
 
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.VFile;
@@ -24,9 +24,9 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 
 /**
  * Attention cette classe est générée automatiquement !
- * Objet représentant un fichier persistant FileInfoTemp
+ * Objet représentant un fichier persistant FileInfoStd
  */
-public final class FileInfoTemp extends AbstractFileInfo {
+public final class FileInfoStd extends AbstractFileInfo {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public final class FileInfoTemp extends AbstractFileInfo {
 	 * Constructeur par défaut.
 	 * @param vFile Données du fichier
 	 */
-	public FileInfoTemp(final VFile vFile) {
-		super(FileInfoDefinition.findFileInfoDefinition(FileInfoTemp.class), vFile);
+	public FileInfoStd(final VFile vFile) {
+		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), vFile);
 	}
 }

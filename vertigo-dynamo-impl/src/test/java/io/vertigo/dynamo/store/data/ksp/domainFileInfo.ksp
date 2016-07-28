@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.fileinfo
+package io.vertigo.dynamo.store.data.fileinfo
 
 create FileInfo FI_FILE_INFO_STD {
 	storeName : "main"

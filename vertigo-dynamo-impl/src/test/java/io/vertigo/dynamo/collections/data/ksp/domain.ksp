@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain
+package io.vertigo.dynamo.collections.data.domain
 
 create Formatter FMT_DEFAULT{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"

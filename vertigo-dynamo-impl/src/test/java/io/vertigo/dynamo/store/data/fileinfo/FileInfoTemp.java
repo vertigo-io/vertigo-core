@@ -16,28 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store;
+package io.vertigo.dynamo.store.data.fileinfo;
 
-import javax.inject.Inject;
-
-import io.vertigo.core.spaces.component.ComponentInitializer;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.data.domain.car.Car;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 
 /**
- * Initialisation des listes de références.
- *
- * @author jmforhan
+ * Attention cette classe est générée automatiquement !
+ * Objet représentant un fichier persistant FileInfoTemp
  */
-public class StoreManagerInitializer implements ComponentInitializer {
-	@Inject
-	private StoreManager storeManager;
+public final class FileInfoTemp extends AbstractFileInfo {
+	/** SerialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-	/** {@inheritDoc} */
-	@Override
-	public void init() {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true, true);
+	/**
+	 * Constructeur par défaut.
+	 * @param vFile Données du fichier
+	 */
+	public FileInfoTemp(final VFile vFile) {
+		super(FileInfoDefinition.findFileInfoDefinition(FileInfoTemp.class), vFile);
 	}
 }

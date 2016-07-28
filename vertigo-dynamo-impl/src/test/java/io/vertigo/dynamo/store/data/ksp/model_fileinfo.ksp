@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.fileinfo
+package io.vertigo.dynamo.store.data.domain.fileinfo
 
 create DtDefinition DT_VX_FILE_INFO {
 	 persistent : "true"

@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain
+package io.vertigo.dynamo.database.data.domain
 
 create Domain DO_STRING {
 	dataType : String

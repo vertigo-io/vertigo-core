@@ -30,8 +30,8 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.store.AbstractStoreManagerTest;
+import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.dynamock.fileinfo.FileInfoTemp;
 
 /**
  * Test de l'implémentation standard.

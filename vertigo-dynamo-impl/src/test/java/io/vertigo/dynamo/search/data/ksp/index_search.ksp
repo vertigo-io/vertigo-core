@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.search
+package io.vertigo.dynamo.search.data.domain
 
 create IndexDefinition IDX_CAR {
     keyConcept : DT_CAR

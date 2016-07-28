@@ -12,8 +12,8 @@
        	  <!--  On scan le package courant pour avoir les Entity -->
 	      <jar-file>.</jar-file>
        	  <!--  Ou on selection quelques entity -->
-	      <!-- <class>io.vertigo.dynamock.domain.car.Car</class>
-       	  <class>io.vertigo.dynamock.domain.famille.Famille</class> -->
+	      <!-- <class>io.vertigo.dynamo.store.data.domain.car.Car</class>
+       	  <class>io.vertigo.dynamo.store.data.domain.famille.Famille</class> -->
        	  
        	  <properties>
        	  	 <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>

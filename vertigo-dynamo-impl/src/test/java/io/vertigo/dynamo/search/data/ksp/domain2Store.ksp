@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.persistence
+package io.vertigo.dynamo.search.data.domain
 
 alter Domain DO_STRING {
 	storeType : "VARCHAR(500)"

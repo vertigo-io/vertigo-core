@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamock.domain.famille;
+package io.vertigo.dynamo.store.data.domain.famille;
 
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamock.domain.car.Car;
+import io.vertigo.dynamo.store.data.domain.car.Car;
 
 /**
  * Attention cette classe est gÃ©nÃ©rÃ©e automatiquement ! Objet de donnÃ©es
