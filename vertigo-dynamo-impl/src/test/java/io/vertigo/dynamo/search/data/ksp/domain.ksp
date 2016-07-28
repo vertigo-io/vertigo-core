@@ -4,6 +4,11 @@ create Formatter FMT_DEFAULT{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
+create Constraint CK_MAX_LENGTH_250 {
+    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    args :"250"
+}
+
 create Domain DO_STRING {
 	dataType : String
 	formatter : FMT_DEFAULT
@@ -51,7 +56,4 @@ create Domain DO_STREAM{
 	formatter : FMT_DEFAULT
 }
 
-create Constraint CK_MAX_LENGTH_250 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
-    args :"250"
-}
+

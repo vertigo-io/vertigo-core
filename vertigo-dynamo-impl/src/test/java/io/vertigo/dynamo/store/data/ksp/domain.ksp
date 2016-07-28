@@ -7,7 +7,6 @@ create Formatter FMT_DEFAULT{
 create Domain DO_STRING {
 	dataType : String
 	formatter : FMT_DEFAULT
-	indexType : "text.fr"
 }
 
 create Domain DO_LONG {
