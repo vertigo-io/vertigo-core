@@ -55,5 +55,3 @@ create Domain DO_STREAM{
 	dataType : DataStream
 	formatter : FMT_DEFAULT
 }
-
-

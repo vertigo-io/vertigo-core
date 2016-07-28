@@ -20,4 +20,3 @@ create Domain DO_CONSO {
 alter Domain DO_INTEGER {
     indexType: "standard:integer"
 }
-
