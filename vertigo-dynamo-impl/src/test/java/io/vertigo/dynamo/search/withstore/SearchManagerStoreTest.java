@@ -77,16 +77,8 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
-			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
-
-			execCallableStatement(connection, "create table fam_car_location(fam_id BIGINT , ID BIGINT);");
-
-			execCallableStatement(connection, "create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
+			execCallableStatement(connection, "create table car(ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
 			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
-
-			execCallableStatement(connection, "create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
-			execCallableStatement(connection, "create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
 			transaction.commit();
 		}
 

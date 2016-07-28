@@ -56,7 +56,7 @@
 			<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
 			<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
 		</definitions>
-		<component class="io.vertigo.dynamo.search.data.domain.CarSearchLoader"/>
+		<component class="io.vertigo.dynamo.search.withstore.CarSearchLoader"/>
 	</module>
 
 	<init>
