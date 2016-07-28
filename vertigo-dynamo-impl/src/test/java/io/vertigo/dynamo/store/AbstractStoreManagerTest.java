@@ -237,55 +237,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		nop(taskResult);
 	}
 
-	protected final void nativeUpdateCar(final Car car) {
-		Assertion.checkArgument(car.getId() != null, "L'id est null");
-		//-----
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
-
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
-				.withEngine(TaskEngineProc.class)
-				.withRequest("update CAR set "
-						+ "FAM_ID = #DTO_CAR.FAM_ID#, "
-						+ "MAKE = #DTO_CAR.MAKE#, "
-						+ "MODEL = #DTO_CAR.MODEL#, "
-						+ "DESCRIPTION = #DTO_CAR.DESCRIPTION#, "
-						+ "YEAR = #DTO_CAR.YEAR#, "
-						+ "KILO = #DTO_CAR.KILO#, "
-						+ "PRICE = #DTO_CAR.PRICE#, "
-						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
-						+ "where CAR_ID = #DTO_CAR.ID#" + "")
-				.addInAttribute("DTO_CAR", doCar, true)
-				.build();
-
-		final Task task = new TaskBuilder(taskDefinition)
-				.addValue("DTO_CAR", car)
-				.build();
-		final TaskResult taskResult = taskManager
-				.execute(task);
-		nop(taskResult);
-	}
-
-	protected final Car nativeLoadCar(final long carId) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doId = definitionSpace.resolve("DO_IDENTIFIANT", Domain.class);
-		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
-
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
-				.withEngine(TaskEngineSelect.class)
-				.withRequest("select * from CAR where ID = #ID#")
-				.addInAttribute("ID", doId, true)
-				.withOutAttribute("dtc", doCar, true)
-				.build();
-
-		final Task task = new TaskBuilder(taskDefinition)
-				.addValue("CAR_ID", carId)
-				.build();
-		return taskManager
-				.execute(task)
-				.getResult();
-	}
-
 	protected final DtList<Car> nativeLoadCarList() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
