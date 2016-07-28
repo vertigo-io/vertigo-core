@@ -33,18 +33,18 @@ public final class SmartCarDataBase {
 	private long size = 0;
 
 	public void loadDatas() {
-		add(4600L, "Peugeot", 2002, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE");
-		add(13500L, "Audi", 2006, "AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir final noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent");
-		add(28500L, "Volkswagen", 2010, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord");
-		add(4400L, "Peugeot", 2001, "7 Places, Sièges cuir, Attelage, l'avenir est à nous");
-		add(109000L, "Hyundai", 2004, "TRES BON ETAT, Sièges chauffants, 4 roues motrices");
-		add(13500L, "Volkswagen", 2006, "volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable");
-		add(18290L, "Lancia", 2009, "Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)");
-		add(4000L, "Peugeot", 1999, "phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté");
-		add(2500L, "Peugeot", 1998, "bon état, CD MP3 neuf, garage s'abstenir");
+		add("Peugeot", 2002, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE");
+		add("Audi", 2006, "AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir final noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent");
+		add("Volkswagen", 2010, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord");
+		add("Peugeot", 2001, "7 Places, Sièges cuir, Attelage, l'avenir est à nous");
+		add("Hyundai", 2004, "TRES BON ETAT, Sièges chauffants, 4 roues motrices");
+		add("Volkswagen", 2006, "volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable");
+		add("Lancia", 2009, "Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)");
+		add("Peugeot", 1999, "phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté");
+		add("Peugeot", 1998, "bon état, CD MP3 neuf, garage s'abstenir");
 	}
 
-	private void add(final long id, final String make, final int year, final String description) {
+	private void add(final String make, final int year, final String description) {
 		final SmartCar car = new SmartCar();
 		car.setId(size);
 		car.setMaker(make);
