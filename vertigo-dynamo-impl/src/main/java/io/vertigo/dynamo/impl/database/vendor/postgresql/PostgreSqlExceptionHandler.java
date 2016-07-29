@@ -46,7 +46,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
-		final String code = errCode.substring(0, 2);
+		final String code = errCode != null ? errCode.substring(0, 2) : null; //some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		if ("22001".equals(errCode) || "22003".equals(errCode)) {
 			// Valeur trop grande pour ce champs
 			handleTooLargeValueSqlException(sqle);
