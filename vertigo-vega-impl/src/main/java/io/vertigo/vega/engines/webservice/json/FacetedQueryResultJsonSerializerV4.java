@@ -82,13 +82,15 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 			final JsonArray jsonCluster = new JsonArray();
 			for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
 				final DtList<?> dtList = (DtList<?>) cluster.getValue();
-				final JsonArray jsonList = (JsonArray) context.serialize(dtList);
-				final JsonObject jsonClusterElement = new JsonObject();
-				jsonClusterElement.addProperty("code", cluster.getKey().getCode());
-				jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
-				jsonClusterElement.add("list", jsonList);
-				jsonClusterElement.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
-				jsonCluster.add(jsonClusterElement);
+				if (!dtList.isEmpty()) {
+					final JsonArray jsonList = (JsonArray) context.serialize(dtList);
+					final JsonObject jsonClusterElement = new JsonObject();
+					jsonClusterElement.addProperty("code", cluster.getKey().getCode());
+					jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
+					jsonClusterElement.add("list", jsonList);
+					jsonClusterElement.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
+					jsonCluster.add(jsonClusterElement);
+				}
 			}
 			jsonObject.add("groups", jsonCluster);
 		}
@@ -99,11 +101,13 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		for (final Facet facet : facets) {
 			final JsonArray jsonFacetValues = new JsonArray();
 			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-				final JsonObject jsonFacetValuesElement = new JsonObject();
-				jsonFacetValuesElement.addProperty("code", entry.getKey().getCode());
-				jsonFacetValuesElement.addProperty("count", entry.getValue());
-				jsonFacetValuesElement.addProperty("label", entry.getKey().getLabel().getDisplay());
-				jsonFacetValues.add(jsonFacetValuesElement);
+				if (entry.getValue() > 0) {
+					final JsonObject jsonFacetValuesElement = new JsonObject();
+					jsonFacetValuesElement.addProperty("code", entry.getKey().getCode());
+					jsonFacetValuesElement.addProperty("count", entry.getValue());
+					jsonFacetValuesElement.addProperty("label", entry.getKey().getLabel().getDisplay());
+					jsonFacetValues.add(jsonFacetValuesElement);
+				}
 			}
 			final String facetName = facet.getDefinition().getName();
 			final JsonObject jsonFacetElement = new JsonObject();
