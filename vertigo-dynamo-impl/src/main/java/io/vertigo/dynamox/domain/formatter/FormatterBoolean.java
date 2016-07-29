@@ -99,14 +99,15 @@ public final class FormatterBoolean implements Formatter {
 	 */
 	private Boolean stringToBoolean(final String booleanString) throws FormatterException {
 		if (null == booleanString) {
-			return null;
+			result = null;
 		} else if ("true".equals(booleanString) || "1".equals(booleanString) || truePattern.equals(booleanString)) {
-			return Boolean.TRUE;
+			result = Boolean.TRUE;
 		} else if ("false".equals(booleanString) || "0".equals(booleanString) || falsePattern.equals(booleanString)) {
-			return Boolean.FALSE;
+			result = Boolean.FALSE;
 		} else {
 			throw new FormatterException(Resources.DYNAMOX_BOOLEAN_NOT_FORMATTED);
 		}
+		return result;
 	}
 
 	/**
