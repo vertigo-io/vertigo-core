@@ -98,6 +98,7 @@ public final class FormatterBoolean implements Formatter {
 	 * @throws FormatterException Erreur de parsing
 	 */
 	private Boolean stringToBoolean(final String booleanString) throws FormatterException {
+		final Boolean result;
 		if (null == booleanString) {
 			result = null;
 		} else if ("true".equals(booleanString) || "1".equals(booleanString) || truePattern.equals(booleanString)) {
