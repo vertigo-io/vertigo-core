@@ -19,7 +19,6 @@
 package io.vertigo.dynamox.search;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +46,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<Optional<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
+	public final Iterable<Optional<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
 		return new Iterable<Optional<SearchChunk<K>>>() {
 
 			private final Iterator<Optional<SearchChunk<K>>> iterator = new Iterator<Optional<SearchChunk<K>>>() {
@@ -100,7 +99,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 		}
 		// call loader service
 		final List<URI<K>> uris = loadNextURI(lastId, dtDefinition);
-		return new SearchChunkImpl<>(uris);
+		return new SearchChunk<>(uris);
 	}
 
 	/**
@@ -137,30 +136,5 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
 		}
 		return pkValue;
-	}
-
-	/**
-	 * Default chunk implementation.
-	 * @author npiedeloup
-	 * @param <K> KeyConcept type
-	 */
-	public static class SearchChunkImpl<K extends KeyConcept> implements SearchChunk<K> {
-
-		private final List<URI<K>> uris;
-
-		/**
-		 * @param uris Liste des uris du chunk
-		 */
-		public SearchChunkImpl(final List<URI<K>> uris) {
-			Assertion.checkNotNull(uris);
-			// ----
-			this.uris = Collections.unmodifiableList(uris); // pas de clone pour l'instant
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public List<URI<K>> getAllURIs() {
-			return uris;
-		}
 	}
 }

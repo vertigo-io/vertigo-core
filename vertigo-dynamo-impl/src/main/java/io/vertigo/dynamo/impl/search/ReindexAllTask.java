@@ -108,7 +108,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes;
 					// >>> Tx start
 					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-						searchIndexes = searchLoader.loadData(uris);
+						searchIndexes = searchLoader.loadData(searchChunk.get());
 					}
 					// <<< Tx end
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);

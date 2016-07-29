@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -57,16 +58,16 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 
 	/** {@inheritDoc} */
 	@Override
-	public List<SearchIndex<Car, Car>> loadData(final List<URI<Car>> uris) {
+	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
 		Assertion.checkNotNull(carDataBase, "carDataBase not bound");
 		Assertion.checkState(transactionManager.hasCurrentTransaction(), "SearchLoader must be use in Tx");
 		//-----
-		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>(uris.size());
+		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>();
 		final Map<Long, Car> carPerId = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
 			carPerId.put(car.getId(), car);
 		}
-		for (final URI<Car> uri : uris) {
+		for (final URI<Car> uri : searchChunk.getAllURIs()) {
 			final Car car = carPerId.get(uri.getId());
 			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car));
 		}
