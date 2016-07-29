@@ -18,20 +18,34 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.Assertion;
 
 /**
  * Chunk of keyConcept uris.
  * @author npiedeloup, pchretien
- * @param <S> KeyConcept's type
+ * @param <K> the type of the KeyConcept
  */
-public interface SearchChunk<S extends KeyConcept> {
+public final class SearchChunk<K extends KeyConcept> {
+	private final List<URI<K>> uris;
+
+	/**
+	 * @param uris the list of keyConcept uris
+	 */
+	public SearchChunk(final List<URI<K>> uris) {
+		Assertion.checkNotNull(uris);
+		//---
+		this.uris = Collections.unmodifiableList(uris); // pas de clone pour l'instant
+	}
 
 	/**
 	 * @return All KeyConcept's uris of this chunk
 	 */
-	List<URI<S>> getAllURIs();
+	public List<URI<K>> getAllURIs() {
+		return uris;
+	}
 }

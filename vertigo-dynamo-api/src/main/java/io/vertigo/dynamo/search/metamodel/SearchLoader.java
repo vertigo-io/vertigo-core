@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Component;
 
@@ -36,10 +35,10 @@ import io.vertigo.lang.Component;
 public interface SearchLoader<K extends KeyConcept, I extends DtObject> extends Component {
 	/**
 	 * Load all data from a list of keyConcepts.
-	 * @param uris List of keyConcept uris
+	 * @param searchChunk the chunk
 	 * @return List of searchIndex
 	 */
-	List<SearchIndex<K, I>> loadData(List<URI<K>> uris);
+	List<SearchIndex<K, I>> loadData(SearchChunk<K> searchChunk);
 
 	/**
 	 * Create a chunk iterator for crawl all keyConcept data.

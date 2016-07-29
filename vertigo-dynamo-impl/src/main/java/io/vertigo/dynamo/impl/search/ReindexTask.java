@@ -32,6 +32,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -79,7 +80,8 @@ final class ReindexTask implements Runnable {
 				}
 				dirtyElementsCount = reindexUris.size();
 				if (!reindexUris.isEmpty()) {
-					loadAndIndexAndRetry(reindexUris, 0);
+
+					loadAndIndexAndRetry(new SearchChunk(reindexUris), 0);
 				}
 			} catch (final Exception e) {
 				LOGGER.error("Update index error, skip " + dirtyElementsCount + " elements (" + reindexUris + ")", e);
@@ -90,9 +92,9 @@ final class ReindexTask implements Runnable {
 
 	}
 
-	private void loadAndIndexAndRetry(final List<URI<? extends KeyConcept>> reindexUris, final int tryNumber) {
+	private void loadAndIndexAndRetry(final SearchChunk<? extends KeyConcept> searchChunk, final int tryNumber) {
 		try {
-			loadAndIndex(reindexUris);
+			loadAndIndex(searchChunk);
 		} catch (final Exception e) {
 			if (tryNumber >= REINDEX_ERROR_MAX_RETRY) {
 				LOGGER.error("Update index error after " + tryNumber + " retry", e);
@@ -105,28 +107,28 @@ final class ReindexTask implements Runnable {
 			} catch (final InterruptedException ie) {
 				//rien
 			}
-			loadAndIndexAndRetry(reindexUris, tryNumber + 1); //on retry
+			loadAndIndexAndRetry(searchChunk, tryNumber + 1); //on retry
 		}
 	}
 
-	private void loadAndIndex(final List<URI<? extends KeyConcept>> reindexUris) {
+	private void loadAndIndex(final SearchChunk<? extends KeyConcept> searchChunk) {
 		final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
 		// >>> Tx start
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-			searchIndexes = searchLoader.loadData(reindexUris);
+			searchIndexes = searchLoader.loadData(searchChunk);
 		}
 		// <<< Tx end
-		removedNotFoundKeyConcept(searchIndexes, reindexUris);
+		removedNotFoundKeyConcept(searchIndexes, searchChunk);
 		if (!searchIndexes.isEmpty()) {
 			searchManager.putAll(searchIndexDefinition, searchIndexes);
 		}
 	}
 
-	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final List<URI<? extends KeyConcept>> reindexUris) {
-		if (searchIndexes.size() < reindexUris.size()) {
-			final Set<URI<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(reindexUris);
+	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk<? extends KeyConcept> searchChunk) {
+		if (searchIndexes.size() < searchChunk.getAllURIs().size()) {
+			final Set<URI<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllURIs());
 			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
 				if (notFoundUris.contains(searchIndex.getURI())) {
 					notFoundUris.remove(searchIndex.getURI());
