@@ -120,9 +120,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 
-		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
 				.addPropertyValue(PERSISTENT, dtDefinitionAnnotation.persistent());
 
