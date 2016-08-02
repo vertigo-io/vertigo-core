@@ -43,22 +43,32 @@ import io.vertigo.util.StringUtil;
  * {
  *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...],
- *   facets : [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
+ *   facets : [
+ *   		{ code:"FCT_ONE", label:"My first facet",
+ *				values : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] },
+ *    		{ code:"FCT_TWO", label:"My second facet",
+ *				values : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] }
+ *	 ],
  *   totalCount : 10045
  * }
  * Or if cluster :
  * {
  * 	 groups : [
  * 			{ code:term1, label:term1,
- *   			list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...] *
  *   		},
  *   		{ code:term2, label:term2,
- *   			list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...]
  *   		},
  *   ],
- *   facets : [ { FCT_ONE : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] }, { FCT_TWO : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] ],
+ *   facets : [
+ *   		{ code:"FCT_ONE", label:"My first facet",
+ *				values : [ {code:term1, count:12, label:term1}, {code:term2, count:10, label:term2}, ...] },
+ *    		{ code:"FCT_TWO", label:"My second facet",
+ *				values : [ {code:term20, count:15, label:term20}, {code:term21, count:8, label:term21}, ...] }
+ *	 ],
  *   totalCount : 10045
  * }
  *
@@ -109,9 +119,10 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 					jsonFacetValues.add(jsonFacetValuesElement);
 				}
 			}
-			final String facetName = facet.getDefinition().getName();
 			final JsonObject jsonFacetElement = new JsonObject();
-			jsonFacetElement.add(facetName, jsonFacetValues);
+			jsonFacetElement.addProperty("code", facet.getDefinition().getName());
+			jsonFacetElement.addProperty("label", facet.getDefinition().getLabel().getDisplay());
+			jsonFacetElement.add("values", jsonFacetValues);
 			jsonFacet.add(jsonFacetElement);
 		}
 		jsonObject.add("facets", jsonFacet);

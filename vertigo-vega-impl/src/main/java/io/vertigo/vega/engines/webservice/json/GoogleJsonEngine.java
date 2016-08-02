@@ -69,7 +69,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
-		V4Beta(FacetedQueryResultJsonSerializerV4.class); //with highlights
+		V4(FacetedQueryResultJsonSerializerV4.class); //with highlights and code, label for facet
 
 		private Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
 

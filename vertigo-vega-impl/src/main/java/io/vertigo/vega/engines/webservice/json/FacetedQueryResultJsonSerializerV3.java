@@ -55,7 +55,9 @@ import io.vertigo.dynamo.domain.model.DtList;
  * }
  *
  * @author npiedeloup
+ * @deprecated Use last FacetedQueryResultJsonSerializer instead.
  */
+@Deprecated
 final class FacetedQueryResultJsonSerializerV3 implements JsonSerializer<FacetedQueryResult<?, ?>> {
 
 	/** {@inheritDoc} */
