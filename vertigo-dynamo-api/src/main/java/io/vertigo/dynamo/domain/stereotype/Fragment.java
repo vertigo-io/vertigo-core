@@ -32,11 +32,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target({ ElementType.TYPE })
-public @interface DtDefinition {
-	/**
-	 * Persistance du champ.
-	 */
-	boolean persistent() default true;
-
-	String fragmentOf() default "";
+public @interface Fragment {
+	String fragmentOf();
 }

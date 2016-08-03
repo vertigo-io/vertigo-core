@@ -106,7 +106,7 @@ public final class DtDefinition implements Definition {
 
 		for (final DtField dtField : dtFields) {
 			if (DtField.FieldType.ID.equals(dtField.getType())) {
-				Assertion.checkState(id == null, "Un seul champ identifiant est autorisé par objet : {0}", name);
+				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
 			doRegisterDtField(dtField);
@@ -116,7 +116,8 @@ public final class DtDefinition implements Definition {
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.checkState(!persistent || idField.isPresent(), "Si un DT est persistant il doit posséder un ID");
+		Assertion.checkState(!persistent || idField.isPresent(), "If an object is persistent then it must have an ID");
+		Assertion.checkState(persistent || DtStereotype.Data == stereotype, "If an object is not persistent then it must be a simple data");
 	}
 
 	private void registerSort(final DtField dtField) {

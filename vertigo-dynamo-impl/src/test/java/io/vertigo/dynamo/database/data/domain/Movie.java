@@ -19,14 +19,12 @@
 package io.vertigo.dynamo.database.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * Movie.
  */
-@DtDefinition
 public final class Movie implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

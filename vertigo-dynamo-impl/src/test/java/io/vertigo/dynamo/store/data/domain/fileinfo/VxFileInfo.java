@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.store.data.domain.fileinfo;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -30,7 +29,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "VX_FILE_INFO")
 @org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = "DO_STREAM", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })
-@DtDefinition
 public final class VxFileInfo implements Entity {
 
 	/** SerialVersionUID. */

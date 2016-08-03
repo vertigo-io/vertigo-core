@@ -19,10 +19,8 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
-@DtDefinition
 public final class Address implements DtObject {
 	private static final long serialVersionUID = 8922834274442256496L;
 

@@ -19,11 +19,9 @@
 package io.vertigo.dynamo.collections.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-@DtDefinition
 public final class Item implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

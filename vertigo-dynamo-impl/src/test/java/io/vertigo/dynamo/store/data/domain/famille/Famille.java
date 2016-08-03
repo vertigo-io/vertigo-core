@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
@@ -37,7 +36,6 @@ import io.vertigo.dynamo.store.data.domain.car.Car;
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "FAMILLE")
-@DtDefinition
 public final class Famille implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

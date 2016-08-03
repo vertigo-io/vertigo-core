@@ -19,14 +19,12 @@
 package io.vertigo.dynamo.database.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * Title of the Movie.
  */
-@DtDefinition(persistent = false)
 public final class MovieInfo implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

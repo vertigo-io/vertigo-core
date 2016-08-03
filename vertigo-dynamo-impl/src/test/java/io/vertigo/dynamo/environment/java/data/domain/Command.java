@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -29,7 +28,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "COMMAND")
-@DtDefinition
 public final class Command implements KeyConcept {
 
 	/** SerialVersionUID. */

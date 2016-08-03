@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -29,7 +28,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "COMMAND_TYPE")
-@DtDefinition
 public final class CommandType implements DtMasterData {
 
 	/** SerialVersionUID. */

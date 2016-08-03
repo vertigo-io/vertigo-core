@@ -53,6 +53,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -109,15 +111,31 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
-		for (final Annotation annotation : clazz.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.DtDefinition) {
-				parseDtDefinition((io.vertigo.dynamo.domain.stereotype.DtDefinition) annotation, clazz, dynamicModelrepository);
-				break;
+		Boolean persistent = null;
+		String fragmentOf = null;
+		if (Entity.class.isAssignableFrom(clazz)) {
+			persistent = true;
+		} else if (DtObject.class.isAssignableFrom(clazz)) {
+			//Simple DtObjects without ID
+			persistent = false;
+			//Fragments
+			for (final Annotation annotation : clazz.getAnnotations()) {
+				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {
+					fragmentOf = ((io.vertigo.dynamo.domain.stereotype.Fragment) annotation).fragmentOf();
+					break;
+				}
 			}
+		}
+		if (persistent != null) {
+			parseDtDefinition(clazz, persistent, fragmentOf, dynamicModelrepository);
 		}
 	}
 
-	private static void parseDtDefinition(final io.vertigo.dynamo.domain.stereotype.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDtDefinition(
+			final Class<?> clazz,
+			final boolean persistent,
+			final String fragmentOf,
+			final DynamicDefinitionRepository dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 
@@ -125,8 +143,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
-				.addPropertyValue(PERSISTENT, dtDefinitionAnnotation.persistent())
-				.addPropertyValue(FRAGMENT_OF, dtDefinitionAnnotation.fragmentOf());
+				.addPropertyValue(PERSISTENT, persistent)
+				.addPropertyValue(FRAGMENT_OF, fragmentOf);
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre

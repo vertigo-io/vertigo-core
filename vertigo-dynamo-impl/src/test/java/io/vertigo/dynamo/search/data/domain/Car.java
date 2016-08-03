@@ -19,12 +19,10 @@
 package io.vertigo.dynamo.search.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.VSystemException;
 
-@DtDefinition
 public final class Car implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.VSystemException;
@@ -29,7 +28,6 @@ import io.vertigo.lang.VSystemException;
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "CAR")
-@DtDefinition
 public final class Car implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

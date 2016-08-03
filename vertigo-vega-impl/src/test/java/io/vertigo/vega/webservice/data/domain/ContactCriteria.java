@@ -21,10 +21,8 @@ package io.vertigo.vega.webservice.data.domain;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
-@DtDefinition(persistent = false)
 public final class ContactCriteria implements DtObject {
 
 	private static final long serialVersionUID = 6839427455017031471L;
