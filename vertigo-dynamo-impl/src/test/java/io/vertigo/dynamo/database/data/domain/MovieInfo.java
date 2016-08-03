@@ -16,20 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.data;
+package io.vertigo.dynamo.database.data.domain;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-import io.vertigo.dynamo.database.data.domain.Movie;
-import io.vertigo.dynamo.database.data.domain.MovieInfo;
+/**
+ * Title of the Movie.
+ */
+@DtDefinition(persistent = false)
+public final class MovieInfo implements DtObject {
+	/** SerialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-public final class DtDefinitions implements Iterable<Class<?>> {
+	private String title;
+
+	@Field(domain = "DO_STRING", label = "title")
+	public final String getTitle() {
+		return title;
+	}
+
+	public final void setTitle(final String title) {
+		this.title = title;
+	}
+
+	/** {@inheritDoc} */
 	@Override
-	public Iterator<Class<?>> iterator() {
-		return Arrays.asList(new Class<?>[] {
-				Movie.class,
-				MovieInfo.class
-		}).iterator();
+	public String toString() {
+		return DtObjectUtil.toString(this);
 	}
 }

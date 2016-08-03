@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -56,7 +57,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	private DtDefinition dtDefinition;
 	private final String myName;
-	private DtDefinition myFragment;
+	private DefinitionReference<DtDefinition> myFragment;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private boolean myPersistent;
@@ -94,7 +95,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
 		Assertion.checkNotNull(fragment);
 		//---
-		myFragment = fragment;
+		myFragment = new DefinitionReference<>(fragment);
 		return this;
 	}
 

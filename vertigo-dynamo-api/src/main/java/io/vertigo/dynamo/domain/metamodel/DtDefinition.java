@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -43,7 +44,7 @@ public final class DtDefinition implements Definition {
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
 	/** if the definition is a fragment. */
-	private final Optional<DtDefinition> fragment;
+	private final Optional<DefinitionReference<DtDefinition>> fragment;
 
 	/** name of the definition. */
 	private final String name;
@@ -80,7 +81,7 @@ public final class DtDefinition implements Definition {
 	 */
 	DtDefinition(
 			final String name,
-			final Optional<DtDefinition> fragment,
+			final Optional<DefinitionReference<DtDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
 			final boolean persistent,
@@ -95,7 +96,9 @@ public final class DtDefinition implements Definition {
 		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
 		//-----
 		this.name = name;
+		//
 		this.fragment = fragment;
+		//
 		this.stereotype = stereotype;
 		this.persistent = persistent;
 		this.packageName = packageName;
@@ -153,7 +156,10 @@ public final class DtDefinition implements Definition {
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		return fragment;
+		if (fragment.isPresent()) {
+			return Optional.of(fragment.get().get());
+		}
+		return Optional.empty();
 	}
 
 	/**

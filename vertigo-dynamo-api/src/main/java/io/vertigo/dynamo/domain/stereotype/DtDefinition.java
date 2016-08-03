@@ -37,4 +37,6 @@ public @interface DtDefinition {
 	 * Persistance du champ.
 	 */
 	boolean persistent() default true;
+
+	String fragmentOf() default "";
 }

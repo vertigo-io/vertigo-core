@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.environment.registries.domain;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -138,6 +139,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addOptionalField(ID, DT_FIELD_ENTITY)
 				.addOptionalField(PERSISTENT, Boolean)
 				.addOptionalField(DYNAMIC, Boolean)
+				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)
 				.addOptionalField(DATA_SPACE, String)
 				.build();

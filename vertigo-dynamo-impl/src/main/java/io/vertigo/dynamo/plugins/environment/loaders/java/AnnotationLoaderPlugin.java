@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
@@ -124,7 +125,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
-				.addPropertyValue(PERSISTENT, dtDefinitionAnnotation.persistent());
+				.addPropertyValue(PERSISTENT, dtDefinitionAnnotation.persistent())
+				.addPropertyValue(FRAGMENT_OF, dtDefinitionAnnotation.fragmentOf());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre

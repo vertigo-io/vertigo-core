@@ -45,6 +45,8 @@ public final class KspProperty {
 	//==============================
 	//----Domain
 	//==============================
+	public static final String FRAGMENT_OF = "FRAGMENT_OF";
+
 	/**
 	 * Propriété standard : libellé du champ, valeur String.
 	 */

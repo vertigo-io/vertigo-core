@@ -53,6 +53,7 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * @author pchretien
@@ -228,6 +229,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//-----
 		final String dataSpace = (String) xdtDefinition.getPropertyValue(KspProperty.DATA_SPACE);
 		//-----
+		final String fragmentOf = (String) xdtDefinition.getPropertyValue(KspProperty.FRAGMENT_OF);
+		//-----
 		final Boolean persistent = (Boolean) xdtDefinition.getPropertyValue(KspProperty.PERSISTENT);
 		Assertion.checkNotNull(persistent, "Le mot-clé ''persistent'' est obligatoire sur une DtDefinition ({0}).", xdtDefinition.getName());
 		//-----
@@ -243,6 +246,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.withDataSpace(dataSpace);
 		if (stereotype != null) {
 			dtDefinitionBuilder.withStereoType(stereotype);
+		}
+		if (!StringUtil.isEmpty(fragmentOf)) {
+			dtDefinitionBuilder.withFragment(definitionSpace.resolve(fragmentOf, DtDefinition.class));
 		}
 
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
