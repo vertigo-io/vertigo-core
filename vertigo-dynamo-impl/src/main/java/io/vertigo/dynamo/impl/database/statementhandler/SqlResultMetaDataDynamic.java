@@ -52,7 +52,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 
 	/** {@inheritDoc} */
 	@Override
-	public Entity createEntity() {
+	public Entity createDtObject() {
 		return new SqlDynamicEntity(serializableDefinition);
 	}
 

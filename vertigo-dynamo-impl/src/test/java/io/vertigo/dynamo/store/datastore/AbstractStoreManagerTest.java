@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store;
+package io.vertigo.dynamo.store.datastore;
 
 import java.io.OutputStream;
 import java.text.DecimalFormat;
@@ -47,6 +47,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.store.util.DAO;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
@@ -316,7 +317,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//1.Création du fichier depuis un fichier texte du FS
 
-			final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
+			final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
 			//2. Sauvegarde en BDD
 			final FileInfo fileInfo = new FileInfoStd(vFile);
 			storeManager.getFileStore().create(fileInfo);

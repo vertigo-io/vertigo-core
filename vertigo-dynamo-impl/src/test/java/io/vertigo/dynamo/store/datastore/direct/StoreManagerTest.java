@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.direct;
+package io.vertigo.dynamo.store.datastore.direct;
 
-import io.vertigo.dynamo.store.AbstractStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 
 /**
  * Test de l'implémentation standard.

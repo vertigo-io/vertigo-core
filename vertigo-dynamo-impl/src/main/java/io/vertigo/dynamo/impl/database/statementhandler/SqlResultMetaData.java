@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * Type de sortie du prepareStatement.
@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.model.Entity;
  * @author  pchretien
  */
 interface SqlResultMetaData {
-	Entity createEntity();
+	DtObject createDtObject();
 
 	/***
 	 * Récupération de la DtDefinition du type de retour du PrepareStatement.

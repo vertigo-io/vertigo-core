@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -45,8 +45,8 @@ final class SqlResultMetaDataStatic implements SqlResultMetaData {
 
 	/** {@inheritDoc} */
 	@Override
-	public Entity createEntity() {
-		return DtObjectUtil.createEntity(dtDefinition);
+	public DtObject createDtObject() {
+		return DtObjectUtil.createDtObject(dtDefinition);
 	}
 
 	/** {@inheritDoc} */

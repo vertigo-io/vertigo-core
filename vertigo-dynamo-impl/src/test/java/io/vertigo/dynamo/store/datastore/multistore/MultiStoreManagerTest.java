@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.multistore;
+package io.vertigo.dynamo.store.datastore.multistore;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -29,8 +29,8 @@ import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.store.AbstractStoreManagerTest;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
+import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 
 /**
@@ -72,7 +72,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	@Test
 	public void testOtherStoreFile() throws Exception {
-		final VFile vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
 		//1.Création du fichier depuis un fichier texte du FS
 		final FileInfo fileInfo = new FileInfoTemp(vFile);
 
