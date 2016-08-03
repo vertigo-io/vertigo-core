@@ -174,6 +174,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			return DtStereotype.MasterData;
 		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
 			return DtStereotype.KeyConcept;
+		} else if (Entity.class.isAssignableFrom(clazz)) {
+			return DtStereotype.Entity;
 		}
 		return DtStereotype.Data;
 	}

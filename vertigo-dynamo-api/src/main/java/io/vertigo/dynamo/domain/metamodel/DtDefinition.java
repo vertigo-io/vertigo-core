@@ -116,8 +116,11 @@ public final class DtDefinition implements Definition {
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.checkState(!persistent || idField.isPresent(), "If an object is persistent then it must have an ID");
-		Assertion.checkState(persistent || DtStereotype.Data == stereotype, "If an object is not persistent then it must be a simple data");
+		//Persistent => ID
+		Assertion.checkState(!persistent ^ idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+		Assertion.checkState(DtStereotype.Data == stereotype ^ idField.isPresent(), "Error on {0}, If an object is a 'Data'  then it must not have an ID", name);
+		//NOT Persistent => Data
+		Assertion.checkState(persistent ^ DtStereotype.Data == stereotype, "Error on {0}, if an object is not persistent then it must be a simple data", name);
 	}
 
 	private void registerSort(final DtField dtField) {
