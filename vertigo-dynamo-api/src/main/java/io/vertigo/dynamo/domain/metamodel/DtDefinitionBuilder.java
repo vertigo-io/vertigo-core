@@ -95,6 +95,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
 		Assertion.checkNotNull(fragment);
 		//---
+		myStereotype = DtStereotype.Fragment;
 		myFragment = new DefinitionReference<>(fragment);
 		return this;
 	}

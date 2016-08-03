@@ -166,8 +166,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.withPersistent(from.isPersistent())
 				.withDynamic(from.isDynamic())
 				.withDataSpace(from.getDataSpace())
-				.withPackageName(from.getPackageName())
-				.withStereoType(from.getStereotype());
+				.withPackageName(from.getPackageName());
 
 		//0. adds ID field
 		if (from.getIdField().isPresent()) {
