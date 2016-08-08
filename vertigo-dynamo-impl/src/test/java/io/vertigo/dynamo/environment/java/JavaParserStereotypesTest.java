@@ -67,6 +67,17 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	 * Test du stereotype Data
 	 */
 	@Test
+	public void testStereotypeEntity() {
+		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
+		Assert.assertNotNull(dtDefinitionAttachment);
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
+
+		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
+		Assert.assertNotNull(dtDefinitionCommandValidation);
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
+	}
+
+	@Test
 	public void testStereotypeData() {
 		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
 		Assert.assertNotNull(dtDefinitionAttachment);
