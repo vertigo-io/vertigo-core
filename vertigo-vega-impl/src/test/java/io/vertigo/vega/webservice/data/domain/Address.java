@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
-public final class Address implements DtObject {
+public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "address Id")
