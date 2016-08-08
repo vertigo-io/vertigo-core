@@ -42,6 +42,7 @@ import io.vertigo.util.StringUtil;
  * JsonSerializer of FacetedQueryResult.
  * {
  *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   listType:dtType,
  *   highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...],
  *   facets : [
  *   		{ code:"FCT_ONE", label:"My first facet",
@@ -56,10 +57,12 @@ import io.vertigo.util.StringUtil;
  * 	 groups : [
  * 			{ code:term1, label:term1,
  *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   			listType:dtType,
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...] *
  *   		},
  *   		{ code:term2, label:term2,
  *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
+ *   			listType:dtType,
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...]
  *   		},
  *   ],
@@ -86,6 +89,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 			final DtList<?> dtList = facetedQueryResult.getDtList();
 			final JsonArray jsonList = (JsonArray) context.serialize(dtList);
 			jsonObject.add("list", jsonList);
+			jsonObject.addProperty("listType", dtList.getDefinition().getClassSimpleName());
 			jsonObject.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
 		} else {
 			//if it's a cluster add data's cluster
@@ -98,6 +102,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 					jsonClusterElement.addProperty("code", cluster.getKey().getCode());
 					jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
 					jsonClusterElement.add("list", jsonList);
+					jsonClusterElement.addProperty("listType", dtList.getDefinition().getClassSimpleName());
 					jsonClusterElement.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
 					jsonCluster.add(jsonClusterElement);
 				}

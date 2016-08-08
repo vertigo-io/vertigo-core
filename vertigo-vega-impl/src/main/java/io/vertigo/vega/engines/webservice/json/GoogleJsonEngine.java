@@ -84,7 +84,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	@Inject
 	public GoogleJsonEngine(@Named("searchApiVersion") final Optional<String> searchApiVersionStr) {
-		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V3.name()));
+		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 		gson = createGson(searchApiVersion);
 	}
 
