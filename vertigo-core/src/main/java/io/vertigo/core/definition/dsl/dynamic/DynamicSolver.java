@@ -84,16 +84,19 @@ final class DynamicSolver {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final String definitionName : definition.getAllDefinitionLinkNames()) {
-			//reference should be already solved in a previous resources module : then continue
-			if (!definitionSpace.containsDefinitionName(definitionName)) {
-				//or references should be in currently parsed resources
-				if (!definitionRepository.containsDefinitionName(definitionName)) {
-					throw new VSystemException("Clé {0} référencée par {1} non trouvée", definitionName, xdefRoot.getName());
-				}
-				final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
-				if (!orderedList.contains(linkedDefinition)) {
-					return false;
+		for (final String fieldName : definition.getAllDefinitionLinkFieldNames()) {
+			for (final String definitionName : definition.getDefinitionLinkNames(fieldName)) {
+				//reference should be already solved in a previous resources module : then continue
+				if (!definitionSpace.containsDefinitionName(definitionName)) {
+					//or references should be in currently parsed resources
+					if (!definitionRepository.containsDefinitionName(definitionName)) {
+						final String xdefRootName = xdefRoot.getName().equals(definition.getName()) ? xdefRoot.getName() : xdefRoot.getName() + "." + definition.getName();
+						throw new VSystemException("Clé {0} de type {3}, référencée par la propriété {2} de {1} non trouvée", definitionName, xdefRootName, fieldName, definition.getDataTypeByFieldName(fieldName));
+					}
+					final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
+					if (!orderedList.contains(linkedDefinition)) {
+						return false;
+					}
 				}
 			}
 		}

@@ -83,7 +83,7 @@ public enum DslPropertyType implements DslEntityFieldType {
 
 	@Override
 	public boolean isEntityLink() {
-		return true;
+		return false;
 	}
 
 	@Override

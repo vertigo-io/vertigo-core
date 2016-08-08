@@ -45,6 +45,11 @@ public final class DslEntityLink implements DslEntityFieldType {
 	}
 
 	@Override
+	public String toString() {
+		return "Link<" + entity.getName() + ">";
+	}
+
+	@Override
 	public boolean isProperty() {
 		return false;
 	}

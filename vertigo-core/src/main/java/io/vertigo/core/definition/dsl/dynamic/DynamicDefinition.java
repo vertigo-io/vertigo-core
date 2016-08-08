@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityFieldType;
 
 /**
  * Classe permettant de créer dynamiquement une structure grammaticale.
@@ -82,10 +83,16 @@ public interface DynamicDefinition {
 	boolean containsDefinitionLinkName(final String fieldName);
 
 	/**
-	 * Permet de récupérer la collection de toutes les liste de définitions utilisées par référence.
-	 * @return Collection de toutes les liste de définitions référencées.
+	 * Permet de récupérer la collection de tous les champs qui pointent vers des définitions utilisées par référence.
+	 * @return Collection de tous les champs utilisant des définitions référencées.
 	 */
-	List<String> getAllDefinitionLinkNames();
+	List<String> getAllDefinitionLinkFieldNames();
+
+	/**
+	 * Permet de récupérer le type d'un champ.
+	 * @return Type d'un champ.
+	 */
+	DslEntityFieldType getDataTypeByFieldName(final String fieldName);
 
 	/**
 	 * Récupération de la liste des definitions dont est composée la définition principale.

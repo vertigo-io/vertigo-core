@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityFieldType;
 import io.vertigo.core.definition.dsl.entity.DslEntityLink;
 import io.vertigo.lang.Assertion;
 
@@ -56,7 +57,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	 * Map (fieldName, definitions identified by its name)
 	 */
 
-	private final Map<String, List<String>> DefinitionLinkNamesByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<String>> definitionLinkNamesByFieldName = new LinkedHashMap<>();
 
 	/**
 	 * Children.
@@ -121,7 +122,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public List<String> getDefinitionLinkNames(final String fieldName) {
-		return obtainList(DefinitionLinkNamesByFieldName, fieldName);
+		return obtainList(definitionLinkNamesByFieldName, fieldName);
 	}
 
 	/** {@inheritDoc} */
@@ -143,14 +144,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsDefinitionLinkName(final String fieldName) {
-		return DefinitionLinkNamesByFieldName.containsKey(fieldName);
+		return definitionLinkNamesByFieldName.containsKey(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getDefinitionLinkName(final String fieldName) {
 		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
-		final List<String> list = DefinitionLinkNamesByFieldName.get(fieldName);
+		final List<String> list = definitionLinkNamesByFieldName.get(fieldName);
 		final String definitionName = list.get(0);
 		//-----
 		// On vérifie qu'il y a une définition pour le champ demandé
@@ -160,12 +161,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public List<String> getAllDefinitionLinkNames() {
-		final List<String> allDefinitionNames = new ArrayList<>();
-		for (final List<String> dynamicDefinitionNames : DefinitionLinkNamesByFieldName.values()) {
-			allDefinitionNames.addAll(dynamicDefinitionNames);
-		}
-		return allDefinitionNames;
+	public List<String> getAllDefinitionLinkFieldNames() {
+		return new ArrayList<>(definitionLinkNamesByFieldName.keySet());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DslEntityFieldType getDataTypeByFieldName(final String fieldName) {
+		return entity.getField(fieldName).getType();
 	}
 
 	/** {@inheritDoc} */
@@ -219,7 +222,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntityLink,
 				"expected a link on {0}", fieldName);
 		//-----
-		obtainList(DefinitionLinkNamesByFieldName, fieldName).addAll(definitionNames);
+		obtainList(definitionLinkNamesByFieldName, fieldName).addAll(definitionNames);
 		return this;
 	}
 
@@ -240,7 +243,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// 2. maj fieldNameDefinitionKeyListMap
 		final DynamicDefinitionImpl other = (DynamicDefinitionImpl) dynamicDefinition;
 
-		for (final Entry<String, List<String>> entry : other.DefinitionLinkNamesByFieldName.entrySet()) {
+		for (final Entry<String, List<String>> entry : other.definitionLinkNamesByFieldName.entrySet()) {
 			final String fieldName = entry.getKey();
 			final List<String> definitionNames = entry.getValue();
 			//-----
