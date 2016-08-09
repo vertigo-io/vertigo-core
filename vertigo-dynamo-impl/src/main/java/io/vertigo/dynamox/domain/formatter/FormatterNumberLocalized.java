@@ -56,12 +56,11 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	 * Constructeur.
 	 */
 	public FormatterNumberLocalized(final String args) {
-		super(args);
+		super("#");//fake format
+		initLocalizedParameters(args);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	private final void initLocalizedParameters(final String args) {
 		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
 		if (args != null) {
 			//-----

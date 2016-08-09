@@ -79,7 +79,7 @@ public class FormatterNumber implements Formatter {
 	/**
 	 * @param args args
 	 */
-	protected void initParameters(final String args) {
+	protected final void initParameters(final String args) {
 		Assertion.checkNotNull(args);
 		//-----
 		pattern = args;
