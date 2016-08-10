@@ -54,6 +54,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.
@@ -97,14 +98,40 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends KeyConcept>>());
+			final List<URI<? extends KeyConcept>> dirtyElements = new ArrayList<>();
+			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
+			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this, transactionManager), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		executorService.shutdown();
+		try {
+			indexLastDirtyElements(5);
+		} finally {
+			executorService.shutdown();
+		}
+	}
+
+	private void indexLastDirtyElements(final long timeoutSeconds) {
+		final long time = System.currentTimeMillis();
+		int remaningDirty;
+		do {
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+				//nothing
+			}
+			remaningDirty = 0;
+			for (final List<URI<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
+				remaningDirty += dirtyElements.size();
+			}
+		} while (remaningDirty > 0 && System.currentTimeMillis() - time < timeoutSeconds * 1000);
+		if (remaningDirty > 0) {
+			//TODO garder le nom des entity desynchronisees
+			throw new VSystemException("Timeout ({1}s) while waiting for last dirty elements to index ({0} remaining). Index may be desync with data store.", remaningDirty, timeoutSeconds);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -205,7 +232,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
 		}
-		executorService.schedule(new ReindexTask(searchIndexDefinition, dirtyElements, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation dans max 5s
 	}
 
 	/** {@inheritDoc} */

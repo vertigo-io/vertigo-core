@@ -251,7 +251,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(5000 + 1500); //wait index was done
+			Thread.sleep(1000 + 1500); //wait index was done
 		} catch (final InterruptedException e) {
 			//rien
 		}
