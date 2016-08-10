@@ -35,6 +35,7 @@ import io.vertigo.core.param.xml.XmlParamManagerTest;
 import io.vertigo.core.resource.ResourceManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
+import io.vertigo.core.spaces.component.ComponentSpace4Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;
 import io.vertigo.core.spaces.definition.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
@@ -58,6 +59,7 @@ import io.vertigo.util.StringUtilTest;
 		ComponentSpaceTest.class,
 		ComponentSpace2Test.class,
 		ComponentSpace3Test.class,
+		ComponentSpace4Test.class,
 		InjectorTest.class,
 		ReactorTest.class,
 		//Boot
