@@ -97,7 +97,6 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final ListFilter removeQuery = new ListFilter("*:*");
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 		searchManager.removeAll(carDynIndexDefinition, removeQuery);
-
 		waitIndexation();
 
 		final long sizeCar = query("*:*", carIndexDefinition);

@@ -215,7 +215,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		index(true);
-		waitIndexation();
 		final long size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
 	}
@@ -227,7 +226,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testQuery() {
 		index(false);
-		waitIndexation();
 		long size;
 		size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
@@ -270,7 +268,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCopyFieldsQuery() {
 		index(false);
-		waitIndexation();
 		long size;
 		size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
@@ -299,7 +296,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testBadSyntaxQuery() {
 		index(false);
-		waitIndexation();
 		long size;
 		size = query("_all:(error or)");
 		Assert.assertEquals(0L, size);
@@ -336,7 +332,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testInsensitivityQuery() {
 		index(false);
-		waitIndexation();
 
 		final long databaseResult = carDataBase.containsDescription("sieges") + carDataBase.containsDescription("sièges");
 		long size;
@@ -453,7 +448,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetQueryByTerm() {
 		index(false);
-		waitIndexation();
 		final FacetedQueryResult<Car, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByTerm(result);
 	}
@@ -513,7 +507,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testSecurityQuery() {
 		index(false);
-		waitIndexation();
 		long size;
 		size = query("*:*", "+YEAR:[ 2005 TO * ]");
 		Assert.assertEquals(carDataBase.size() - carDataBase.getCarsBefore(2005), size);
@@ -552,7 +545,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.size(), size);
 		//On en supprime 2
 		remove(2);
-		waitIndexation();
 		final long resize = query("*:*");
 		Assert.assertEquals(carDataBase.size() - 2, resize);
 	}
@@ -575,7 +567,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 		//On supprime toute les Peugeots
 		remove("MAKE:Peugeot");
-		waitIndexation();
 		final long resize = query("*:*");
 		Assert.assertEquals(carDataBase.size() - nbPeugeot, resize);
 	}
@@ -933,17 +924,17 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private void index(final boolean all) {
 		doIndex(all);
-
+		waitIndexation();
 	}
 
 	private void remove(final int count) {
 		doRemove(count);
-
+		waitIndexation();
 	}
 
-	private void remove(final String query) {
+	protected void remove(final String query) {
 		doRemove(query);
-
+		waitIndexation();
 	}
 
 	private void doIndex(final boolean all) {
@@ -961,7 +952,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				searchManager.put(carIndexDefinition, index);
 			}
 		}
-		waitIndexation();
 	}
 
 	private void doRemove(final int count) {

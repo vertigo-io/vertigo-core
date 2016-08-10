@@ -83,7 +83,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		//On supprime tout
-		doRemove("*:*");
+		remove("*:*");
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -96,7 +96,6 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		waitIndexation();
-
 	}
 
 	/** {@inheritDoc} */
@@ -142,7 +141,6 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
-
 		waitIndexation();
 		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
 		Assert.assertEquals(1, query("DESCRIPTION:légende"));
@@ -161,7 +159,6 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
-
 		waitIndexation();
 		Assert.assertEquals(0, query("ID:10001"));
 		Assert.assertEquals(initialDbCarSize - 1, query("*:*"));
@@ -204,7 +201,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRemoveAll() {
 		//On supprime tout
-		doRemove("*:*");
+		remove("*:*");
 		final long resize = query("*:*");
 		Assert.assertEquals(0L, resize);
 	}
@@ -237,14 +234,19 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, listState);
 	}
 
-	private void doRemove(final String query) {
-		final ListFilter removeQuery = new ListFilter(query);
-		searchManager.removeAll(carIndexDefinition, removeQuery);
-	}
-
 	private static URI createURI(final long carId) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
 		return new URI(dtDefinition, carId);
+	}
+
+	protected void remove(final String query) {
+		doRemove(query);
+		waitIndexation();
+	}
+
+	private void doRemove(final String query) {
+		final ListFilter removeQuery = new ListFilter(query);
+		searchManager.removeAll(carIndexDefinition, removeQuery);
 	}
 
 	private static void waitIndexation() {
