@@ -79,12 +79,9 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testStereotypeData() {
-		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
+		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_COMMAND_CRITERIA");
 		Assert.assertNotNull(dtDefinitionAttachment);
 		Assert.assertEquals(DtStereotype.Data, dtDefinitionAttachment.getStereotype());
 
-		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
-		Assert.assertNotNull(dtDefinitionCommandValidation);
-		Assert.assertEquals(DtStereotype.Data, dtDefinitionCommandValidation.getStereotype());
 	}
 }

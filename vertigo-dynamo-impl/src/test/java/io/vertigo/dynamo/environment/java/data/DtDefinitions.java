@@ -21,10 +21,10 @@ package io.vertigo.dynamo.environment.java.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.environment.java.data.domain.Attachment;
 import io.vertigo.dynamo.environment.java.data.domain.City;
 import io.vertigo.dynamo.environment.java.data.domain.Command;
+import io.vertigo.dynamo.environment.java.data.domain.CommandCriteria;
 import io.vertigo.dynamo.environment.java.data.domain.CommandType;
 import io.vertigo.dynamo.environment.java.data.domain.CommandValidation;
 
@@ -43,6 +43,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		City(City.class),
 		/** Objet de données Command. */
 		Command(Command.class),
+		/** Objet de données CommandCriteria. */
+		CommandCriteria(CommandCriteria.class),
 		/** Objet de données CommandType. */
 		CommandType(CommandType.class),
 		/** Objet de données CommandValidation. */
@@ -61,40 +63,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		public Class<?> getDtClass() {
 			return clazz;
 		}
-	}
-
-	/**
-	 * Enumération des champs de Car.
-	 */
-	public enum CarFields implements DtFieldName {
-		/** Propriété 'identifiant de la voiture'. */
-		ID,
-		/** Propriété 'Constructeur'. */
-		MAKE,
-		/** Propriété 'ModÃ¨le'. */
-		MODEL,
-		/** Propriété 'Descriptif'. */
-		DESCRIPTION,
-		/** Propriété 'AnnÃ©e'. */
-		YEAR,
-		/** Propriété 'KilomÃ©trage'. */
-		KILO,
-		/** Propriété 'Prix'. */
-		PRICE,
-		/** Propriété 'Type de moteur'. */
-		MOTOR_TYPE,
-	}
-
-	/**
-	 * Enumération des champs de Famille.
-	 */
-	public enum FamilleFields implements DtFieldName {
-		/** Propriété 'identifiant de la famille'. */
-		FAM_ID,
-		/** Propriété 'Libelle'. */
-		LIBELLE,
-		/** Propriété 'Libelle'. */
-		DESCRIPTION,
 	}
 
 	/** {@inheritDoc} */
