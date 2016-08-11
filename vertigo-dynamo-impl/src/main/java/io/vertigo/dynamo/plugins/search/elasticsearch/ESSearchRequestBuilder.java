@@ -63,6 +63,7 @@ import io.vertigo.lang.Builder;
  */
 final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
+	private static final boolean ACCEPT_UNMAPPED_SORT_FIELD = false; //utile uniquement pour la recherche multi type
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
@@ -147,8 +148,15 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (myListState.getSortFieldName().isPresent()) {
 			final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
-					.ignoreUnmapped(true)
 					.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
+
+			if (ACCEPT_UNMAPPED_SORT_FIELD) {
+				//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
+				final Optional<IndexType> indexType = IndexType.readIndexType(sortField.getDomain());
+				final String sortType = indexType.isPresent() ? indexType.get().getIndexDataType() : sortField.getDomain().getDataType().name();
+				sortBuilder.unmappedType(sortType);
+			}
+
 			searchRequestBuilder.addSort(sortBuilder);
 		}
 	}

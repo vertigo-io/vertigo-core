@@ -383,6 +383,34 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test
+	public void testSortByOptionalFieldQuery() {
+		index(false);
+		Car firstCar;
+
+		firstCar = doQueryAndGetFirst("*:*", "OPTIONAL_ID", false);
+		Assert.assertEquals("Audi", firstCar.getMake());
+
+		firstCar = doQueryAndGetFirst("*:*", "OPTIONAL_STRING", false);
+		Assert.assertEquals("Peugeot", firstCar.getMake());
+	}
+
+	/**
+	 * Test de requétage de l'index avec tri.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test(expected = NullPointerException.class)
+	public void testSortByUnknownFieldQuery() {
+		index(false);
+
+		doQueryAndGetFirst("*:*", "UNKNOWN_FIELD", false);
+		Assert.fail();
+	}
+
+	/**
+	 * Test de requétage de l'index avec tri.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
 	public void testPaginatedQuery() {
 		index(false);
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*").build();
