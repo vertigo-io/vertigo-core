@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import java.io.Reader;
 import java.util.Arrays;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -59,9 +58,9 @@ final class DefaultAnalyzer extends Analyzer {
 	   *         StandardFilter, StopFilter, FrenchStemFilter and LowerCaseFilter
 	   */
 	@Override
-	protected TokenStreamComponents createComponents(final String fieldName, final Reader reader) {
+	protected TokenStreamComponents createComponents(final String fieldName) {
 		/* initialisation du token */
-		final Tokenizer source = new StandardTokenizer(reader);
+		final Tokenizer source = new StandardTokenizer();
 		//-----
 		/* on retire les élisions*/
 		final CharArraySet elisionSet = new CharArraySet(Arrays.asList(LuceneConstants.ELISION_ARTICLES), true);

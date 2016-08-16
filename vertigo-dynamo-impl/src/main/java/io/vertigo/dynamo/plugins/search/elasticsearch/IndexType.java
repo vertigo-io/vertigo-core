@@ -43,6 +43,10 @@ final class IndexType {
 		return Optional.of(new IndexType(indexType, domain));
 	}
 
+	static String obtainDefaultIndexDataType(final Domain domain) {
+		return domain.getDataType().name();
+	}
+
 	private IndexType(final String indexType, final Domain domain) {
 		Assertion.checkNotNull(indexType);
 		//-----

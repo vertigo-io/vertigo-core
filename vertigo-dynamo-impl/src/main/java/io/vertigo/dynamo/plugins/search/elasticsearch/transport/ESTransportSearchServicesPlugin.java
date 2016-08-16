@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.transport;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -25,7 +26,6 @@ import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
@@ -85,13 +85,13 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	/** {@inheritDoc} */
 	@Override
 	protected Client createClient() {
-		client = new TransportClient(buildNodeSettings());
+		client = TransportClient.builder().settings(buildNodeSettings()).build();
 		for (final String serverName : serversNames) {
 			final String[] serverNameSplit = serverName.split(":");
 			Assertion.checkArgument(serverNameSplit.length == 2,
 					"La déclaration du serveur doit être au format host:port ({0}", serverName);
 			final int port = Integer.parseInt(serverNameSplit[1]);
-			client.addTransportAddress(new InetSocketTransportAddress(serverNameSplit[0], port));
+			client.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(serverNameSplit[0], port)));
 		}
 		return client;
 	}
@@ -104,7 +104,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return ImmutableSettings.settingsBuilder().put("node.name", nodeName)
+		return Settings.settingsBuilder().put("node.name", nodeName)
 				// .put("node.data", false)
 				// .put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")

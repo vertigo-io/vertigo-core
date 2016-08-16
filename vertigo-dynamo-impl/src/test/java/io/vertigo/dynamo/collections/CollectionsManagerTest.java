@@ -40,9 +40,9 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * @author pchretien
  */
 public class CollectionsManagerTest extends AbstractTestCaseJU4 {
-	private static final String Ba = "Ba";
-	private static final String aaa = "aaa";
-	private static final String bb = "bb";
+	private static final String Ba_aa = "Ba aa";
+	private static final String aaa_ba = "aaa ba";
+	private static final String bb_aa = "bb aa";
 	private DtDefinition dtDefinitionItem;
 	@Inject
 	private CollectionsManager collectionsManager;
@@ -98,7 +98,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testSort() {
 		DtList<Item> sortDtc;
 		final DtList<Item> dtc = createItems();
-		final String[] indexDtc = indexId(dtc);
+		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
 		// ======================== Ascendant
@@ -109,8 +109,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.sort("LABEL", false)
 				.apply(dtc);
 
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 
 		// ======================== Descendant
 		// =================================== not nullLast
@@ -118,8 +118,39 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		sortDtc = collectionsManager.createDtListProcessor()
 				.sort("LABEL", true)
 				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, bb, Ba, aaa }, indexId(sortDtc));
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
+	}
+
+	/**
+	 * @see DtListProcessor#sort
+	 */
+	@Test
+	public void testNumericSort() {
+		DtList<Item> sortDtc;
+		final DtList<Item> dtc = createItems();
+		final String[] indexDtc = extractLabels(dtc);
+
+		// Cas de base.
+		// ======================== Ascendant
+		// =================================== nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager
+				.createDtListProcessor()
+				.sort("ID", false)
+				.apply(dtc);
+
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
+
+		// ======================== Descendant
+		// =================================== not nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("ID", true)
+				.apply(dtc);
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
 	/**
@@ -149,7 +180,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilter() {
 		final DtList<Item> result = collectionsManager.createDtListProcessor()
-				.filterByValue("LABEL", "aaa")
+				.filterByValue("LABEL", aaa_ba)
 				.apply(createItems());
 		Assert.assertEquals(1, result.size());
 	}
@@ -175,7 +206,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.filter("aa", 1000, dtDefinitionItem.getFields())
 				.build()
 				.apply(createItems());
-		Assert.assertEquals(1, result.size(), 0);
+		Assert.assertEquals(3, result.size(), 0);
 
 	}
 
@@ -285,7 +316,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testSortWithIndex() {
 		DtList<Item> sortDtc;
 		final DtList<Item> dtc = createItems();
-		final String[] indexDtc = indexId(dtc);
+		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
 		// ======================== Ascendant
@@ -294,16 +325,48 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.build()
 				.apply(dtc);
 
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 
 		// ======================== Descendant
 		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
 				.sort("LABEL", true)
 				.build()
 				.apply(dtc);
-		assertEquals(indexDtc, indexId(dtc));
-		assertEquals(new String[] { null, bb, Ba, aaa }, indexId(sortDtc));
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
+	}
+
+	/**
+	 * @see DtListProcessor#sort
+	 */
+	@Test
+	public void testNumericSortWithIndex() {
+		DtList<Item> sortDtc;
+		final DtList<Item> dtc = createItems();
+		final String[] indexDtc = extractLabels(dtc);
+
+		// Cas de base.
+		// ======================== Ascendant
+		// =================================== nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+				.sort("ID", false)
+				.build()
+				.apply(dtc);
+
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
+
+		// ======================== Descendant
+		// =================================== not nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+				.sort("ID", true)
+				.build()
+				.apply(dtc);
+		assertEquals(indexDtc, extractLabels(dtc));
+		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
 	/**
@@ -387,10 +450,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testChainFilterSortSubList() {
 
 		final DtList<Item> dtc = createItems();
-		final String[] indexDtc = indexId(dtc);
+		final String[] indexDtc = extractLabels(dtc);
 
 		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByValue("LABEL", "aaa");
+				.filterByValue("LABEL", aaa_ba);
 		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
 				.sort("LABEL", false);
 
@@ -399,42 +462,42 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		DtList<Item> sortDtc, filterDtc, subList;
 		// ======================== sort/filter
 		sortDtc = sortState.apply(dtc);
-		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
+		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		filterDtc = filter.apply(sortDtc);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sort/sublist
 		sortDtc = sortState.apply(dtc);
-		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
+		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		subList = subList(sortDtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sort
 		filterDtc = filter.apply(dtc);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		sortDtc = sortState.apply(filterDtc);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sublist
 		filterDtc = filter.apply(dtc);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		subList = subList(filterDtc, 0, filterDtc.size() - 1);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sublist/sort
 		subList = subList(dtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { Ba, null, aaa }, indexId(subList));
+		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
 		sortDtc = sortState.apply(subList);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sublist/filter
 		subList = subList(dtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { Ba, null, aaa }, indexId(subList));
+		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
 		filterDtc = filter.apply(subList);
-		assertEquals(new String[] { aaa }, indexId(filterDtc));
+		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// === dtc non modifié
-		assertEquals(indexDtc, indexId(dtc));
+		assertEquals(indexDtc, extractLabels(dtc));
 
 	}
 
@@ -453,7 +516,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testTermFilterString() {
-		testTermFilter("LABEL:\"aaa\"", 3);
+		testTermFilter("LABEL:\"aaa\"", 2);
 		testTermFilter("LABEL:\"aaab\"", 1);
 	}
 
@@ -603,7 +666,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(Arrays.toString(expected), Arrays.toString(actual));
 	}
 
-	private static String[] indexId(final DtList<Item> dtc) {
+	private static String[] extractLabels(final DtList<Item> dtc) {
 		final String[] index = new String[dtc.size()];
 		for (int i = 0; i < dtc.size(); i++) {
 			index[i] = dtc.get(i).getLabel();
@@ -618,7 +681,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// les index sont données par ordre alpha > null à la fin >
 		final Item mockB = new Item();
 		mockB.setId(seqId++);
-		mockB.setLabel(Ba);
+		mockB.setLabel(Ba_aa);
 		dtc.add(mockB);
 
 		final Item mockNull = new Item();
@@ -628,12 +691,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 		final Item mocka = new Item();
 		mocka.setId(seqId++);
-		mocka.setLabel(aaa);
+		mocka.setLabel(aaa_ba);
 		dtc.add(mocka);
 
 		final Item mockb = new Item();
 		mockb.setId(seqId++);
-		mockb.setLabel(bb);
+		mockb.setLabel(bb_aa);
 		dtc.add(mockb);
 
 		// On crée et on supprimme un élément dans la liste pour vérifier

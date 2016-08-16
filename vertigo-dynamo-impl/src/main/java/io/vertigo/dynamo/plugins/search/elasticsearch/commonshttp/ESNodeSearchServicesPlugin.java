@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -99,7 +98,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return ImmutableSettings.settingsBuilder().put("node.name", nodeName)
+		return Settings.settingsBuilder().put("node.name", nodeName)
 				.put("node.data", false)
 				.put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")

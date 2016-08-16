@@ -23,7 +23,7 @@ package io.vertigo.dynamo.plugins.collections.lucene;
  *
  * @author  pchretien
  */
-public final class LuceneConstants {
+final class LuceneConstants {
 
 	private LuceneConstants() {
 		//rien

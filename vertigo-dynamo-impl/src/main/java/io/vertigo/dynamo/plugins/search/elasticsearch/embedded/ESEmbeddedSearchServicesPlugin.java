@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -102,7 +101,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		return ImmutableSettings.settingsBuilder()
+		return Settings.settingsBuilder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("path.home", homePath)
 				.build();

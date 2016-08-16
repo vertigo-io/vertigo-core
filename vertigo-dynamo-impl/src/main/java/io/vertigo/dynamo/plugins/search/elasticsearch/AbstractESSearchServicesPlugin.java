@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,18 +31,16 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
-import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
@@ -116,15 +115,19 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				if (configFile == null) {
 					esClient.admin().indices().prepareCreate(indexName).get();
 				} else {
-					final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-					esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
+					try (InputStream is = configFile.openStream()) {
+						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
+					}
 				}
 			} else if (configFile != null) {
 				// If we use local config file, we check config against ES server
-				final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
+				try (InputStream is = configFile.openStream()) {
+					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
+				}
 			}
-		} catch (final ElasticsearchException e) {
+		} catch (final ElasticsearchException | IOException e) {
 			throw new WrappedException("Error on index " + indexName, e);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
@@ -214,7 +217,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
-		markToOptimize(indexDefinition);
+		markToOptimize();
 	}
 
 	/** {@inheritDoc} */
@@ -242,7 +245,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(listFilter);
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
-		markToOptimize(indexDefinition);
+		markToOptimize();
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
@@ -273,7 +276,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
 					typeMapping.startObject(dtField.getName());
 					if (indexType.isPresent()) {
-						appendIndexTypeMapping(typeMapping, indexType);
+						appendIndexTypeMapping(typeMapping, indexType.get());
+					} else {
+						//sinon, il faut le type par défaut
+						typeMapping.field("type", IndexType.obtainDefaultIndexDataType(dtField.getDomain()));
 					}
 					if (copyFromFields.contains(dtField)) {
 						appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
@@ -282,10 +288,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				}
 			}
 			typeMapping.endObject().endObject(); //end properties
-			//
-			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin)
-					.setIndices(indexName)
+
+			final PutMappingResponse putMappingResponse = esClient.admin().indices().preparePutMapping(indexName)
 					.setType(indexDefinition.getName().toLowerCase())
 					.setSource(typeMapping)
 					.get();
@@ -309,16 +313,17 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Optional<IndexType> indexType) throws IOException {
-		typeMapping
-				.field("type", indexType.get().getIndexDataType())
-				.field("analyzer", indexType.get().getIndexAnalyzer());
+	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
+		typeMapping.field("type", indexType.getIndexDataType());
+		typeMapping.field("analyzer", indexType.getIndexAnalyzer());
 	}
 
-	private void markToOptimize(final SearchIndexDefinition indexDefinition) {
+	private void markToOptimize() {
 		esClient.admin().indices()
-				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase())
-						.flush(true).maxNumSegments(32)); //32 files : empirique
+				.prepareForceMerge(indexName)
+				.setFlush(true)
+				.setMaxNumSegments(32)//32 files : empirique
+				.execute().actionGet();
 	}
 
 	private void waitForYellowStatus() {

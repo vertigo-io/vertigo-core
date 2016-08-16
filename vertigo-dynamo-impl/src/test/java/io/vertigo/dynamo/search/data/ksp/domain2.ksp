@@ -16,7 +16,3 @@ create Domain DO_CONSO {
 	dataType :BigDecimal
 	formatter : FMT_DEFAULT
 }
-
-alter Domain DO_INTEGER {
-    indexType: "standard:integer"
-}

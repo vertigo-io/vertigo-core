@@ -26,9 +26,7 @@ import java.util.regex.Pattern;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.exp.ExponentialDecayFunctionBuilder;
@@ -162,26 +160,35 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	}
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
-		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		final BoolQueryBuilder mainBoolQueryBuilder = QueryBuilders.boolQuery();
+
+		//on ajoute les critères de la recherche AVEC impact sur le score
+		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		mainBoolQueryBuilder.must(queryBuilder);
+
+		//on ajoute les filtres de sécurité SANS impact sur le score
 		if (searchQuery.getSecurityListFilter().isPresent()) {
-			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
+			final QueryBuilder securityFilterBuilder = translateToQueryBuilder(searchQuery.getSecurityListFilter().get());
+			mainBoolQueryBuilder.filter(securityFilterBuilder);
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
 		}
 
-		if (searchQuery.isBoostMostRecent()) {
-			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
-		}
+		//on ajoute les filtres des facettes SANS impact sur le score
 		if (searchQuery.getFacetedQuery().isPresent() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
-			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
-				filterBuilder.add(translateToFilterBuilder(facetQuery));
+				mainBoolQueryBuilder.filter(translateToQueryBuilder(facetQuery));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
+		}
+
+		final QueryBuilder requestQueryBuilder;
+		if (searchQuery.isBoostMostRecent()) {
+			requestQueryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
+		} else {
+			requestQueryBuilder = mainBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(queryBuilder)
+				.setQuery(requestQueryBuilder)
 				//.setHighlighterFilter(true) //We don't highlight the security filter
 				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
@@ -264,7 +271,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.filter(filterValue, FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(filterValue)));
+			filters.filter(filterValue, QueryBuilders.queryStringQuery(filterValue));
 		}
 		return filters;
 	}
@@ -344,7 +351,4 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
 	}
 
-	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
-		return FilterBuilders.queryFilter(translateToQueryBuilder(query));
-	}
 }

@@ -30,6 +30,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.SortedDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -46,7 +47,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.util.BytesRef;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -71,7 +72,7 @@ import io.vertigo.lang.VUserException;
  * @author  pchretien, npiedeloup
  * @param <D> Type d'objet
  */
-final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
+final class RamLuceneIndex<D extends DtObject> {
 	/** Prefix for a created field use for sorting. */
 	static final String SORT_FIELD_PREFIX = "4SORT_";
 
@@ -106,7 +107,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 	}
 
 	private IndexWriter createIndexWriter() throws IOException {
-		final IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, indexAnalyser); //sur une implé mémoire on peut utiliser la dernière version
+		final IndexWriterConfig config = new IndexWriterConfig(indexAnalyser); //sur une implé mémoire on peut utiliser la dernière version
 		return new IndexWriter(directory, config);
 	}
 
@@ -159,8 +160,12 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return dtcResult;
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Add element to index.
+	 * @param fullDtc Full Dtc to index
+	 * @param storeValue if data are store in index
+	 * @throws IOException Indexation error
+	 */
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
 		//-----
@@ -173,20 +178,18 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 				final Object pkValue = idField.getDataAccessor().getValue(dto);
 				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.name());
 				final String indexedPkValue = String.valueOf(pkValue);
-				document.add(createKeyword(idField.name(), indexedPkValue, true));
+				addKeyword(document, idField.name(), indexedPkValue, true);
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
-					if (value != null) {
+					if (value != null && !dtField.equals(idField)) {
 						if (value instanceof String) {
 							final String valueAsString = getStringValue(dto, dtField);
-							document.add(createIndexed(dtField.name(), valueAsString, storeValue));
-							//we add a special field for sorting
-							document.add(createKeyword(SORT_FIELD_PREFIX + dtField.name(), valueAsString.toLowerCase(), storeValue));
+							addIndexed(document, dtField.name(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
-							document.add(createKeyword(dtField.name(), valueAsString, storeValue));
+							addKeyword(document, dtField.name(), valueAsString, storeValue);
 						} else {
-							document.add(createKeyword(dtField.name(), value.toString(), storeValue));
+							addKeyword(document, dtField.name(), value.toString(), storeValue);
 						}
 					}
 				}
@@ -220,8 +223,16 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return null;
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Querying index.
+	 * @param keywords Keywords
+	 * @param searchedFields Searched field list
+	 * @param listFilters Added filters
+	 * @param listState list state
+	 * @param boostedField Field use for boosting score
+	 * @return Filtered ordered list
+	 * @throws IOException Query error
+	 */
 	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Optional<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
@@ -232,12 +243,18 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortQuery);
 	}
 
-	private static IndexableField createKeyword(final String fieldName, final String fieldValue, final boolean storeValue) {
-		return new StringField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
+	private static void addKeyword(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
+		final IndexableField keywordField = new StringField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
+		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue));
+		document.add(keywordField);
+		document.add(sortedDocValuesField);
 	}
 
-	private static IndexableField createIndexed(final String fieldName, final String fieldValue, final boolean storeValue) {
-		return new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
+	private static void addIndexed(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
+		final IndexableField textField = new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
+		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase()));
+		document.add(textField);
+		document.add(sortedDocValuesField);
 	}
 
 	private static Sort createSortQuery(final DtListState dtListState) {
@@ -245,8 +262,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D> {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
-			final String fieldName = RamLuceneIndex.SORT_FIELD_PREFIX + sortFieldName; //can't use the tokenized field with sorting
-			final SortField sortField = new SortField(fieldName, luceneType, sortDesc);
+			final SortField sortField = new SortField(sortFieldName, luceneType, sortDesc);
 			sortField.setMissingValue(SortField.STRING_LAST);
 			return new Sort(sortField);
 		}
