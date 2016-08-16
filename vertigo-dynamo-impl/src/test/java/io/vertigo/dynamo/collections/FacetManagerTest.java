@@ -42,7 +42,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 /**
  * @author  npiedeloup
  */
-public final class FacetManagerTest extends AbstractTestCaseJU4 {
+public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private CollectionsManager collectionsManager;
 	private FacetedQueryDefinition carFacetQueryDefinition;

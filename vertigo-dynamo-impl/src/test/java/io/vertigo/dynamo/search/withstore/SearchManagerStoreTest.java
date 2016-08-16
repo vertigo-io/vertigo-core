@@ -53,7 +53,7 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
  *
  * @author npiedeloup
  */
-public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
+public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject

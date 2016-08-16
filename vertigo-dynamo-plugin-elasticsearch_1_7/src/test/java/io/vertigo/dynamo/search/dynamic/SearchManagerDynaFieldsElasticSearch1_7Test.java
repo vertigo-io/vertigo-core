@@ -18,19 +18,14 @@
  */
 package io.vertigo.dynamo.search.dynamic;
 
-import io.vertigo.dynamo.search.AbstractSearchManagerTest;
-
 /**
  * @author  npiedeloup
  */
-public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
-	//Index
-	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
+public final class SearchManagerDynaFieldsElasticSearch1_7Test extends SearchManagerDynaFieldsTest {
 
-	/**{@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
-	protected void doSetUp() {
-		//attention : la première utilisation de l'index fige la définition des types
-		init(IDX_DYNA_CAR);
+	protected String[] getManagersXmlFileName() {
+		return new String[] { "./managers-elasticsearch_1_7-test.xml", };
 	}
 }

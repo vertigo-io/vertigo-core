@@ -40,7 +40,7 @@ import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 /**
  * @author  npiedeloup
  */
-public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
+public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	//Index
 	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
 	private static final String IDX_CAR = "IDX_CAR";

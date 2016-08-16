@@ -16,21 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.dynamic;
+package io.vertigo.dynamo.plugins.collections.lucene_4_10;
 
-import io.vertigo.dynamo.search.AbstractSearchManagerTest;
+import io.vertigo.lang.MessageKey;
 
 /**
+ * Dictionnaire des ressources.
+ *
  * @author  npiedeloup
- */
-public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
-	//Index
-	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
-
-	/**{@inheritDoc}*/
-	@Override
-	protected void doSetUp() {
-		//attention : la première utilisation de l'index fige la définition des types
-		init(IDX_DYNA_CAR);
-	}
+*/
+public enum Resources implements MessageKey {
+	/**
+	 * "Votre recherche n'est pas assez sélective. Merci de préciser plus de lettres.".
+	 */
+	DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES,
 }

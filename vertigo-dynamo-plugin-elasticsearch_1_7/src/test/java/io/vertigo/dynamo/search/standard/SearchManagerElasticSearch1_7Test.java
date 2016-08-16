@@ -16,21 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.dynamic;
-
-import io.vertigo.dynamo.search.AbstractSearchManagerTest;
+package io.vertigo.dynamo.search.standard;
 
 /**
  * @author  npiedeloup
  */
-public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
-	//Index
-	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
-
-	/**{@inheritDoc}*/
+public class SearchManagerElasticSearch1_7Test extends SearchManagerTest {
+	/** {@inheritDoc} */
 	@Override
-	protected void doSetUp() {
-		//attention : la première utilisation de l'index fige la définition des types
-		init(IDX_DYNA_CAR);
+	protected String[] getManagersXmlFileName() {
+		return new String[] { "./managers-elasticsearch_1_7-test.xml", };
 	}
 }
