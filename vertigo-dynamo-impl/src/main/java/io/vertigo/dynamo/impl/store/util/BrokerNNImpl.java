@@ -120,7 +120,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final Set<URI> set = new HashSet<>();
 		for (final URI dtoUri : newUriList) {
 			//On vérifie que l'on n'enregistre pas deux fois la même relation.
-			Assertion.checkArgument(set.add(dtoUri), "Duplicate key [{0}]dans la nouvelle collection.", dtoUri);
+			Assertion.checkArgument(set.add(dtoUri), "Duplicate key [{0}] dans la nouvelle collection.", dtoUri);
 			appendNN(descriptionNN, dtoUri.getId());
 		}
 	}
