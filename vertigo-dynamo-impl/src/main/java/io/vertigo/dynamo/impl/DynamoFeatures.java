@@ -19,6 +19,9 @@
 package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.commons.impl.script.ScriptManagerImpl;
+import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
+import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -39,7 +42,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 
 /**
  * Defines dynamo features.
- * 
+ *
  * @author pchretien
  */
 public final class DynamoFeatures extends Features {
@@ -58,8 +61,11 @@ public final class DynamoFeatures extends Features {
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
+				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
+				.addPlugin(JaninoExpressionEvaluatorPlugin.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
+
 	}
 
 	public DynamoFeatures withStore() {
