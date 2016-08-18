@@ -51,9 +51,8 @@ import io.vertigo.lang.Assertion;
  */
 @DefinitionPrefix("IDX")
 public final class SearchIndexDefinition implements Definition {
-	/**
-	* Nom de l'index.
-	*/
+
+	/** Nom de l'index. */
 	private final String name;
 
 	/** Structure des éléments indexés. */
@@ -84,7 +83,7 @@ public final class SearchIndexDefinition implements Definition {
 		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkState(indexDtDefinition.getIdField().isPresent(), "Index Object {0} must have a field declared as id", indexDtDefinition.getClassSimpleName());
+		//Assertion.checkState(indexDtDefinition.getIdField().isPresent(), "Index Object {0} must have a field declared as id", indexDtDefinition.getClassSimpleName());
 		Assertion.checkNotNull(indexCopyToFieldsMap);
 		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----

@@ -47,6 +47,7 @@ import io.vertigo.util.ClassUtil;
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
+	private static final String URI_RESERVERD_PATTERN = "(?i)([\\[\\]\\:\\@\\-])";
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
 	private static volatile long REINDEX_COUNT = 0;
@@ -89,7 +90,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-				String lastUri = "*";
+				String lastUri = null;
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
 
 				for (final Iterator<Optional<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
@@ -112,8 +113,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					}
 					// <<< Tx end
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
-					final String maxUri = String.valueOf(chunkMaxUri.getId());
-					Assertion.checkState(!lastUri.equals(maxUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
+					final String maxUri = String.valueOf(chunkMaxUri.toString());
+					Assertion.checkState(!maxUri.equals(lastUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
@@ -155,10 +156,11 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
-		final String indexIdFieldName = searchIndexDefinition.getIndexDtDefinition().getIdField().get().getName();
 		final String filterValue = new StringBuilder()
-				.append(indexIdFieldName).append(":{") //{ for exclude min
-				.append(firstUri).append(" TO ").append(lastUri)
+				.append("_id").append(":{") //{ for exclude min
+				.append(firstUri != null ? "\"" + firstUri + "\"" : "*")
+				.append(" TO ")
+				.append(lastUri != null ? "\"" + lastUri + "\"" : "*")
 				.append("]")
 				.toString();
 		return new ListFilter(filterValue);
