@@ -103,11 +103,11 @@ public final class DefinitionSpace implements Component, Activeable {
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(definitions.containsKey(clazz), "Type de définition '{0}' non enregistré", clazz.getName());
+		Assertion.checkArgument(definitions.containsKey(clazz), "Type de définition '{0}' non enregistré (aucune définition de ce type)", clazz.getName());
 		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
 		final Object o = tobjects.get(name);
-		Assertion.checkNotNull(o, "Definition '{0}' non trouvé", name);
+		Assertion.checkNotNull(o, "Definition '{0}' de type '{2}' non trouvée ({1})", name, tobjects.keySet(), clazz.getSimpleName());
 		return clazz.cast(o);
 	}
 
