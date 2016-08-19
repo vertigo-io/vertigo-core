@@ -26,6 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
@@ -122,6 +123,15 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
+	 * Update an object's fragment.
+	 *
+	 * @param fragment Fragment to update
+	 */
+	public final void update(final Fragment<E> fragment) {
+		dataStore.update(fragment);
+	}
+
+	/**
 	 * Suppression d'un objet persistant par son URI.
 	 *
 	 * @param uri URI de l'objet à supprimer
@@ -152,6 +162,16 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
+	 * Récupération d'un fragment persistant par son URI. L'objet doit exister.
+	 *
+	 * @param uri URI de l'objet à récupérer
+	 * @return D Fragment recherché
+	 */
+	public final <F extends Fragment<E>> F getFragment(final URI<F> uri) {
+		return dataStore.<F> read(uri);
+	}
+
+	/**
 	 * Récupération d'un objet persistant par son identifiant.<br>
 	 * Cette méthode est utile uniquement dans les cas où l'identifiant est un identifiant technique (ex: entier calculé
 	 * via une séquence).
@@ -161,6 +181,16 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 */
 	public final E get(final P id) {
 		return get(createDtObjectURI(id));
+	}
+
+	/**
+	 * Récupération d'un fragment persistant par son identifiant.<br>
+	 *
+	 * @param id identifiant de l'objet persistant recherché
+	 * @return D Fragment recherché
+	 */
+	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
+		return getFragment(new URI<F>(DtObjectUtil.findDtDefinition(fragmentClass), id));
 	}
 
 	/**

@@ -121,6 +121,19 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
+	protected static String getRequestedField(final DtDefinition dtDefinition) {
+		if (dtDefinition.getFragment().isPresent()) {
+			final StringBuilder sb = new StringBuilder();
+			String sep = "";
+			for (final DtField dtField : dtDefinition.getFields()) {
+				sb.append(sep).append(dtField.getName());
+				sep = ", ";
+			}
+			return sb.toString();
+		}
+		return "*"; //all fields
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public final String getDataSpace() {
@@ -141,12 +154,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	@Override
 	public final <E extends Entity> E read(final DtDefinition dtDefinition, final URI<E> uri) {
 		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_SELECT + "_" + tableName + "_BY_URI";
+		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
+		final String requestedFields = getRequestedField(dtDefinition);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
-				.append(" select * from ")
+				.append(" select ")
+				.append(requestedFields)
+				.append(" from ")
 				.append(tableName)
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
@@ -262,8 +278,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(filterCriteria);
 		//-----
 		final String tableName = getTableName(dtDefinition);
+		final String requestedFields = getRequestedField(dtDefinition);
 		final String taskName = getListTaskName(tableName, filterCriteria);
-		final String request = createLoadAllLikeQuery(tableName, filterCriteria, maxRows);
+		final String request = createLoadAllLikeQuery(tableName, requestedFields, filterCriteria, maxRows);
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -294,8 +311,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
-		final StringBuilder request = new StringBuilder("select * from ").append(tableName);
+	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final String requestedFields, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
+		final StringBuilder request = new StringBuilder("select ").append(requestedFields).append(" from ").append(tableName);
 		String sep = " where ";
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
 			request.append(sep);
@@ -551,9 +568,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
+		final String requestedFields = getRequestedField(dtDefinition);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
-		final String request = getSelectForUpdate(tableName, idFieldName);
+		final String request = getSelectForUpdate(tableName, requestedFields, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -580,9 +598,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param idFieldName nom de la clé primaire
 	 * @return select à exécuter.
 	 */
-	protected String getSelectForUpdate(final String tableName, final String idFieldName) {
+	protected String getSelectForUpdate(final String tableName, final String requestedFields, final String idFieldName) {
 		return new StringBuilder()
-				.append(" select * from ")
+				.append(" select ").append(requestedFields).append(" from ")
 				.append(tableName)
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.append(" for update ")
