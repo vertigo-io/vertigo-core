@@ -22,5 +22,6 @@ public enum DtStereotype {
 	MasterData, //
 	KeyConcept, //
 	Data, //By default
-	Entity, Fragment
+	Entity, //
+	Fragment
 }

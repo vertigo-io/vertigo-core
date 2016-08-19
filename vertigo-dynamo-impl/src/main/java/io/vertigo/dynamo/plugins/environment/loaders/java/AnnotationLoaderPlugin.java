@@ -55,6 +55,7 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -113,11 +114,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//-----
 		Boolean persistent = null;
 		String fragmentOf = null;
-		if (Entity.class.isAssignableFrom(clazz)) {
+		if (Fragment.class.isAssignableFrom(clazz)) {
 			persistent = true;
-		} else if (DtObject.class.isAssignableFrom(clazz)) {
-			//Simple DtObjects without ID
-			persistent = false;
 			//Fragments
 			for (final Annotation annotation : clazz.getAnnotations()) {
 				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {
@@ -125,6 +123,11 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 					break;
 				}
 			}
+		} else if (Entity.class.isAssignableFrom(clazz)) {
+			persistent = true;
+		} else if (DtObject.class.isAssignableFrom(clazz)) {
+			//Simple DtObjects without ID
+			persistent = false;
 		}
 		if (persistent != null) {
 			parseDtDefinition(clazz, persistent, fragmentOf, dynamicModelrepository);

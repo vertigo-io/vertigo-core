@@ -27,6 +27,6 @@ package io.vertigo.dynamo.domain.model;
  *
  * @author pchretien
  */
-public interface Fragment extends Entity {
+public interface Fragment<E extends Entity> extends Entity {
 	//
 }
