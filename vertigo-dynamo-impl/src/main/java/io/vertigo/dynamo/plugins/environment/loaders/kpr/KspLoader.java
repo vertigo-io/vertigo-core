@@ -39,18 +39,18 @@ import io.vertigo.util.StringUtil;
  */
 final class KspLoader {
 
-	private final String charset;
+	private final Charset charset;
 	private final URL kspURL;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param kspURL URL du fichier KSP.
 	 * @param charset charset d'encoding du fihcier KSP à lire
 	 */
-	KspLoader(final URL kspURL, final String charset) {
+	KspLoader(final URL kspURL, final Charset charset) {
 		Assertion.checkNotNull(kspURL);
-		Assertion.checkArgNotEmpty(charset);
+		Assertion.checkNotNull(charset);
 		//-----
 		this.kspURL = kspURL;
 		this.charset = charset;
@@ -83,7 +83,7 @@ final class KspLoader {
 	 * @throws IOException Erreur d'entrÃ©e/sortie
 	 */
 	private String parseFile() throws IOException {
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), Charset.forName(charset)))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), charset))) {
 			final StringBuilder buff = new StringBuilder();
 			String line = reader.readLine();
 			while (line != null) {

@@ -47,7 +47,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	private static final String KPR_EXTENSION = ".kpr";
 	private static final String KSP_EXTENSION = ".ksp";
 	private final ResourceManager resourceManager;
-	private final String charset;
+	private final Charset charset;
 
 	/**
 	 * Constructor.
@@ -61,7 +61,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = encoding.orElse("ISO-8859-1");
+		charset = Charset.forName(encoding.orElse("ISO-8859-1"));
 	}
 
 	/** {@inheritDoc} */
@@ -83,7 +83,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param kprURL fichier KPR
 	 * @return List liste des fichiers KSP.
 	 */
-	private static List<URL> getKspFiles(final URL kprURL, final String charset, final ResourceManager resourceManager) {
+	private static List<URL> getKspFiles(final URL kprURL, final Charset charset, final ResourceManager resourceManager) {
 		try {
 			return doGetKspFiles(kprURL, charset, resourceManager);
 		} catch (final Exception e) {
@@ -91,9 +91,9 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static List<URL> doGetKspFiles(final URL kprURL, final String charset, final ResourceManager resourceManager) throws Exception {
+	private static List<URL> doGetKspFiles(final URL kprURL, final Charset charset, final ResourceManager resourceManager) throws Exception {
 		final List<URL> kspFiles = new ArrayList<>();
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream(), Charset.forName(charset)))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream(), charset))) {
 			String path = kprURL.getPath();
 			path = path.substring(0, path.lastIndexOf('/'));
 
