@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.environment.registries.domain;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -29,6 +28,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DYNAMIC;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.EXPRESSION;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.INDEX_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
@@ -122,6 +122,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addRequiredField(LABEL, String)
 				.addRequiredField(NOT_NULL, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+				.addOptionalField(EXPRESSION, String)
 				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
