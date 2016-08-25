@@ -28,8 +28,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityFieldType;
-import io.vertigo.core.definition.dsl.entity.DslEntityLink;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -66,15 +64,15 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName = new LinkedHashMap<>();
 
 	/**
-	 * Constructeur.
-	 * @param dynamicDefinitionName name of the dynamicDefinition
+	 * Constructor.
+	 * @param name the name of the dynamicDefinition
 	 * @param entity Entité
 	 */
-	DynamicDefinitionImpl(final String dynamicDefinitionName, final DslEntity entity) {
-		Assertion.checkNotNull(dynamicDefinitionName);
+	DynamicDefinitionImpl(final String name, final DslEntity entity) {
+		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(entity);
 		//-----
-		name = dynamicDefinitionName;
+		this.name = name;
 		this.entity = entity;
 	}
 
@@ -105,7 +103,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public Object getPropertyValue(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
+		assertThatFieldIsAProperty(fieldName);
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
 		//-----
@@ -121,13 +119,9 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public List<String> getDefinitionLinkNames(final String fieldName) {
-		return obtainList(definitionLinkNamesByFieldName, fieldName);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+		assertThatFieldIsAnEntity(fieldName);
+		//---
 		return obtainList(childDefinitionsByFieldName, fieldName);
 	}
 
@@ -144,13 +138,24 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsDefinitionLinkName(final String fieldName) {
+		assertThatFieldIsALink(fieldName);
+		//---
 		return definitionLinkNamesByFieldName.containsKey(fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
+	public List<String> getDefinitionLinkNames(final String fieldName) {
+		assertThatFieldIsALink(fieldName);
+		//---
+		return obtainList(definitionLinkNamesByFieldName, fieldName);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public String getDefinitionLinkName(final String fieldName) {
-		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getName());
+		assertThatFieldIsALink(fieldName);
+		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucun lien déclaré pour le champ ''{0}'' sur ''{1}'' ", fieldName, getName());
 		final List<String> list = definitionLinkNamesByFieldName.get(fieldName);
 		final String definitionName = list.get(0);
 		//-----
@@ -167,12 +172,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public DslEntityFieldType getDataTypeByFieldName(final String fieldName) {
-		return entity.getField(fieldName).getType();
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
 		packageName = newPackageName;
 		return this;
@@ -180,9 +179,11 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addPropertyValue(final String propertyName, final Object value) {
-		getEntity().getPropertyType(propertyName).checkValue(value);
-		propertyValueByFieldName.put(propertyName, value);
+	public DynamicDefinitionBuilder addPropertyValue(final String fieldName, final Object value) {
+		assertThatFieldIsAProperty(fieldName);
+		//----
+		getEntity().getPropertyType(fieldName).checkValue(value);
+		propertyValueByFieldName.put(fieldName, value);
 		return this;
 	}
 
@@ -206,21 +207,35 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	private void addAllChildDefinitions(final String fieldName, final List<DynamicDefinition> definitions) {
-		Assertion.checkNotNull(fieldName);
+		assertThatFieldIsAnEntity(fieldName);
 		Assertion.checkNotNull(definitions);
-		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntity,
-				"expected a pure entity on {0}", fieldName);
 		//-----
 		obtainList(childDefinitionsByFieldName, fieldName).addAll(definitions);
+	}
+
+	private void assertThatFieldIsAProperty(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(entity.getField(fieldName).getType().isProperty(),
+				"expected a property on {0}", fieldName);
+	}
+
+	private void assertThatFieldIsAnEntity(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(entity.getField(fieldName).getType().isEntity(),
+				"expected an entity on {0}", fieldName);
+	}
+
+	private void assertThatFieldIsALink(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(entity.getField(fieldName).getType().isEntityLink(),
+				"expected a link on {0}", fieldName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DynamicDefinitionBuilder addAllDefinitionLinks(final String fieldName, final List<String> definitionNames) {
-		Assertion.checkNotNull(fieldName);
+		assertThatFieldIsALink(fieldName);
 		Assertion.checkNotNull(definitionNames);
-		Assertion.checkState(entity.getField(fieldName).getType() instanceof DslEntityLink,
-				"expected a link on {0}", fieldName);
 		//-----
 		obtainList(definitionLinkNamesByFieldName, fieldName).addAll(definitionNames);
 		return this;

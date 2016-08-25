@@ -105,7 +105,7 @@ public final class DslEntity implements DslEntityFieldType {
 	 */
 	public DslEntityField getField(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fields.containsKey(fieldName), "la propriete {0} n'est pas declaree pour {1}", fieldName, this);
+		Assertion.checkArgument(fields.containsKey(fieldName), "Field  '{0}' is not declared on entity '{1}'", fieldName, this);
 		//-----
 		return fields.get(fieldName);
 	}
