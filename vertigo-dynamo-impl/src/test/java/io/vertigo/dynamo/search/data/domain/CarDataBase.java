@@ -48,7 +48,7 @@ public final class CarDataBase {
 		add(2500, "Peugeot", "207 pack", 1998, "diesel", 212500, 7, "bon état, CD MP3 neuf, garage s'abstenir", 200L, null);
 	}
 
-	private void add(final int price, final String make, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalId, final String optionalString) {
+	private void add(final int price, final String make, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalNumber, final String optionalString) {
 		final Car car = new Car();
 		car.setId(size);
 		car.setPrice(price);
@@ -61,7 +61,7 @@ public final class CarDataBase {
 		car.setConsommation(conso);
 		car.setMotorType(motorType.toLowerCase());
 		car.setDescription(description);
-		car.setOptionalId(optionalId);
+		car.setOptionalNumber(optionalNumber);
 		car.setOptionalString(optionalString);
 		//-----
 		cars.add(car);
