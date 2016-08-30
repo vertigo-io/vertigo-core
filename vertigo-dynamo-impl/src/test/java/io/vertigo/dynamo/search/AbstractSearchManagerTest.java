@@ -387,7 +387,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(false);
 		Car firstCar;
 
-		firstCar = doQueryAndGetFirst("*:*", "OPTIONAL_ID", false);
+		firstCar = doQueryAndGetFirst("*:*", "OPTIONAL_NUMBER", false);
 		Assert.assertEquals("Audi", firstCar.getMake());
 
 		firstCar = doQueryAndGetFirst("*:*", "OPTIONAL_STRING", false);

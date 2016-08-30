@@ -37,7 +37,7 @@ public final class Car implements KeyConcept {
 	private java.math.BigDecimal consommation;
 	private String motorType;
 	private Long famId;
-	private Long optionalId;
+	private Long optionalNumber;
 	private String optionalString;
 
 	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")
@@ -130,13 +130,13 @@ public final class Car implements KeyConcept {
 		this.famId = famId;
 	}
 
-	@Field(domain = "DO_IDENTIFIANT", label = "OptionalId")
-	public final Long getOptionalId() {
-		return optionalId;
+	@Field(domain = "DO_IDENTIFIANT", label = "OptionalNumber")
+	public final Long getOptionalNumber() {
+		return optionalNumber;
 	}
 
-	public final void setOptionalId(final Long optionalId) {
-		this.optionalId = optionalId;
+	public final void setOptionalNumber(final Long optionalNumber) {
+		this.optionalNumber = optionalNumber;
 	}
 
 	@Field(domain = "DO_KEYWORD", label = "OptionalString")
