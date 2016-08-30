@@ -47,7 +47,6 @@ import io.vertigo.util.ClassUtil;
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
-	private static final String URI_RESERVERD_PATTERN = "(?i)([\\[\\]\\:\\@\\-])";
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
 	private static volatile long REINDEX_COUNT = 0;
@@ -96,7 +95,8 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				for (final Iterator<Optional<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
 					final Optional<SearchChunk<S>> searchChunk;
 					// >>> Tx start
-					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { 
+						//on execute dans une transaction
 						searchChunk = it.next();
 					}
 					// <<< Tx end
