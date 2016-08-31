@@ -107,7 +107,7 @@ public final class DefinitionSpace implements Component, Activeable {
 		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
 		final Object o = tobjects.get(name);
-		Assertion.checkNotNull(o, "Definition '{0}' de type '{2}' non trouvée ({1})", name, tobjects.keySet(), clazz.getSimpleName());
+		Assertion.checkNotNull(o, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), tobjects.keySet());
 		return clazz.cast(o);
 	}
 
