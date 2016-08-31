@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -58,11 +59,13 @@ import io.vertigo.util.StringUtil;
  * 			{ code:term1, label:term1,
  *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   			listType:dtType,
+ *   			totalCount : 12,
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...] *
  *   		},
  *   		{ code:term2, label:term2,
  *   			list : [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   			listType:dtType,
+ *   			totalCount : 53,
  *   			highlight : [ { <<indexFieldsWithHL>> }, { <<indexFieldsWithHL>> }, ...]
  *   		},
  *   ],
@@ -85,7 +88,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		final JsonObject jsonObject = new JsonObject();
 
 		//1- add result list as data, with highlight
-		if (facetedQueryResult.getClusters().isEmpty()) {
+		if (!facetedQueryResult.getClusterFacetDefinition().isPresent()) {
 			final DtList<?> dtList = facetedQueryResult.getDtList();
 			final JsonArray jsonList = (JsonArray) context.serialize(dtList);
 			jsonObject.add("list", jsonList);
@@ -103,6 +106,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 					jsonClusterElement.addProperty("label", cluster.getKey().getLabel().getDisplay());
 					jsonClusterElement.add("list", jsonList);
 					jsonClusterElement.addProperty("listType", dtList.getDefinition().getClassSimpleName());
+					jsonClusterElement.addProperty("totalCount", getFacetCount(cluster.getKey(), facetedQueryResult));
 					jsonClusterElement.add("highlight", serializeHighLight(dtList, (FacetedQueryResult) facetedQueryResult));
 					jsonCluster.add(jsonClusterElement);
 				}
@@ -135,6 +139,20 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		//3 -add totalCount
 		jsonObject.addProperty(DtList.TOTAL_COUNT_META, facetedQueryResult.getCount());
 		return jsonObject;
+	}
+
+	private Long getFacetCount(final FacetValue key, final FacetedQueryResult<?, ?> facetedQueryResult) {
+		final FacetDefinition clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
+		for (final Facet facet : facetedQueryResult.getFacets()) {
+			if (clusterFacetDefinition.equals(facet.getDefinition())) {
+				for (final FacetValue facetValue : facet.getFacetValues().keySet()) {
+					if (key.getCode().equals(facetValue.getCode())) {
+						return facet.getFacetValues().get(key);
+					}
+				}
+			}
+		}
+		throw new IllegalArgumentException("Can't found facet for search cluster");
 	}
 
 	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {
