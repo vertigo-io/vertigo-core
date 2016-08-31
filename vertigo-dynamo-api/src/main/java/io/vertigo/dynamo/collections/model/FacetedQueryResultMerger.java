@@ -159,6 +159,6 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			final Facet clusterFacet = new Facet(clusterFacetDefinition.get(), clustersCount);
 			facets.add(clusterFacet);
 		}
-		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, clustersDtc, highlights, source);
+		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, clusterFacetDefinition, clustersDtc, highlights, source);
 	}
 }

@@ -29,6 +29,7 @@ import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -74,6 +75,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
 
+		//TODO 2a- cluster vide
+		final Optional<FacetDefinition> clusterFacetDefinition = Optional.empty();
 		//TODO 2b- cluster vide
 		final Map<FacetValue, DtList<R>> resultCluster = Collections.emptyMap();
 
@@ -81,7 +84,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Optional.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
+		return new FacetedQueryResult<>(Optional.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, clusterFacetDefinition, resultCluster, highlights, dtList);
 	}
 
 	//=========================================================================

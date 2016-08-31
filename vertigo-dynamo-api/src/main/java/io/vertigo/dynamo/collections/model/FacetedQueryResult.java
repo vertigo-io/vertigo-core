@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -43,6 +44,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final DtList<R> dtc;
 	private final List<Facet> facets;
 	private final Map<R, Map<DtField, String>> highlights;
+	private final Optional<FacetDefinition> clusterFacetDefinition;
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
 	private final S source;
@@ -54,15 +56,17 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param count  Nombre total de résultats
 	 * @param dtc DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.
 	 * @param facets Liste des facettes. (Peut être vide jamais null)
+	 * @param clusterFacetDefinition FacetDefinition du Cluster
 	 * @param clusteredDtc Cluster des documents. (Peut être vide jamais null)
 	 * @param highlights Liste des extraits avec mise en valeur par objet et par champs
 	 * @param source Object source permettant rerentrer dans le mechanisme de filtrage
 	 */
-	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
+	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Optional<FacetDefinition> clusterFacetDefinition, final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
 		Assertion.checkNotNull(query);
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(facets);
 		Assertion.checkNotNull(source);
+		Assertion.checkNotNull(clusterFacetDefinition);
 		Assertion.checkNotNull(clusteredDtc);
 		Assertion.checkNotNull(highlights);
 		//-----
@@ -70,6 +74,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		this.count = count;
 		this.dtc = dtc;
 		this.facets = facets;
+		this.clusterFacetDefinition = clusterFacetDefinition;
 		this.clusteredDtc = clusteredDtc;
 		this.highlights = highlights;
 		this.source = source;
@@ -102,6 +107,13 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 */
 	public List<Facet> getFacets() {
 		return facets;
+	}
+
+	/**
+	 * @return FacetDefinition du cluster des documents par valeur de facette, si demandé lors de la requête.
+	 */
+	public Optional<FacetDefinition> getClusterFacetDefinition() {
+		return clusterFacetDefinition;
 	}
 
 	/**

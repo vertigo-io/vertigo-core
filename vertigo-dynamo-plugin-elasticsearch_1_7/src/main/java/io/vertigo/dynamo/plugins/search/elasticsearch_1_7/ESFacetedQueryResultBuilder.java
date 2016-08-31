@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
@@ -110,7 +111,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultCluster, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, Optional.ofNullable(searchQuery.getClusteringFacetDefinition()), resultCluster, resultHighlights, searchQuery);
 
 	}
 
