@@ -124,18 +124,6 @@ public interface DataStorePlugin extends Plugin {
 	void update(DtDefinition dtDefinition, Entity entity);
 
 	/**
-	* Merges an object.
-	* Strategy to create or update this object depends on the state of the database.
-	*
-	*  - If  this object is already created : update
-	*  - If  this object is not found : create
-	*
-	* @param dtDefinition Definition
-	* @param entity Object to merge
-	*/
-	void merge(DtDefinition dtDefinition, Entity entity);
-
-	/**
 	 * Deletes an object identified by an uri.
 	 * @param dtDefinition Definition
 	 * @param uri URI

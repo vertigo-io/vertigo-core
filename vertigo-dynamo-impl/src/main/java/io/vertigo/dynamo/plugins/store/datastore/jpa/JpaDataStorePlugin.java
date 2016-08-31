@@ -339,11 +339,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		put("Jpa:update", entity, false);
 	}
 
-	@Override
-	public void merge(final DtDefinition dtDefinition, final Entity entity) {
-		put("Jpa:merge", entity, false);
-	}
-
 	private void put(final String prefixServiceName, final Entity entity, final boolean persist) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String serviceName = prefixServiceName + dtDefinition.getName();

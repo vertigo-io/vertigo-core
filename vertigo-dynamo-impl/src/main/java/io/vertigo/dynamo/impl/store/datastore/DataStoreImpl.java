@@ -119,17 +119,6 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final Entity entity) {
-		Assertion.checkNotNull(entity);
-		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		getPhysicalStore(dtDefinition).merge(dtDefinition, entity);
-		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void delete(final URI<? extends Entity> uri) {
 		Assertion.checkNotNull(uri);
 		//-----

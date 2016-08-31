@@ -83,17 +83,6 @@ public interface DataStore {
 	void update(Entity entity);
 
 	/**
-	* Merge an object.
-	* Strategy to create or update this object depends on the state of the database.
-	*
-	*  - If  this object is already created : update
-	*  - If  this object is not found : create
-	*
-	* @param entity the entity to merge
-	*/
-	void merge(Entity entity);
-
-	/**
 	 * Destruction d'un objet persistant par son URI.
 	 *
 	 * @param uri URI de l'objet à supprimer

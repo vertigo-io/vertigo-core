@@ -397,20 +397,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void merge(final DtDefinition dtDefinition, final Entity entity) {
-		//On fait un update
-		boolean saved = put(entity, false);
-		if (!saved) {
-			//Si l'update ne marche pas on fait un insert
-			saved = put(entity, true);
-		}
-		if (!saved) {
-			throw new VSystemException("no data merged");
-		}
-	}
-
 	/**
 	 * Creates the insert request.
 	 *
