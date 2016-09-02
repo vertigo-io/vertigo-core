@@ -48,4 +48,8 @@ public final class SearchChunk<K extends KeyConcept> {
 	public List<URI<K>> getAllURIs() {
 		return uris;
 	}
+
+	public URI getLastURI() {
+		return uris.get(uris.size() - 1);
+	}
 }

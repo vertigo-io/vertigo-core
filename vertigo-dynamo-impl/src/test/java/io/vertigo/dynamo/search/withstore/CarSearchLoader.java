@@ -40,6 +40,8 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
@@ -57,8 +59,8 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager) {
-		super(taskManager);
+	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
+		super(taskManager, transactionManager);
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		definitionSpace = Home.getApp().getDefinitionSpace();
 	}
@@ -66,13 +68,15 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
-		final List<SearchIndex<Car, Car>> result = new ArrayList<>();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		for (final Car car : loadCarList(searchChunk)) {
-			final URI<Car> uri = new URI<>(dtDefinition, car.getId());
-			result.add(SearchIndex.createIndex(indexDefinition, uri, car));
+		try (final VTransactionWritable tx = getTransactionManager().createAutonomousTransaction()) {
+			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
+			for (final Car car : loadCarList(searchChunk)) {
+				final URI<Car> uri = new URI<>(dtDefinition, car.getId());
+				result.add(SearchIndex.createIndex(indexDefinition, uri, car));
+			}
+			return result;
 		}
-		return result;
 	}
 
 	private DtList<Car> loadCarList(final SearchChunk<Car> searchChunk) {

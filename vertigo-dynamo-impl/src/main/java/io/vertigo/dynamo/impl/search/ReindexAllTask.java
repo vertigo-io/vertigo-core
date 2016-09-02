@@ -19,9 +19,6 @@
 package io.vertigo.dynamo.impl.search;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -29,14 +26,11 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
@@ -53,25 +47,21 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
-	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructor.
 	 * @param searchIndexDefinition Search index definition
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
-	 * @param transactionManager Transaction manager
 	 */
-	ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(reindexFuture);
 		Assertion.checkNotNull(searchManager);
-		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.reindexFuture = reindexFuture;
 		this.searchManager = searchManager;
-		this.transactionManager = transactionManager;
 	}
 
 	/** {@inheritDoc} */
@@ -92,35 +82,17 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				String lastUri = null;
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
 
-				for (final Iterator<Optional<SearchChunk<S>>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
-					final Optional<SearchChunk<S>> searchChunk;
-					// >>> Tx start
-					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { 
-						//on execute dans une transaction
-						searchChunk = it.next();
-					}
-					// <<< Tx end
-					if (!searchChunk.isPresent()) {
-						break;
-					}
+				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
+					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final List<URI<S>> uris = searchChunk.get().getAllURIs();
-					//-----
-					final Collection<SearchIndex<S, DtObject>> searchIndexes;
-					// >>> Tx start
-					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-						searchIndexes = searchLoader.loadData(searchChunk.get());
-					}
-					// <<< Tx end
-					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
-					final String maxUri = String.valueOf(chunkMaxUri.toString());
+					final String maxUri = String.valueOf(searchChunk.getLastURI().toString());
 					Assertion.checkState(!maxUri.equals(lastUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
 					lastUri = maxUri;
-					reindexCount += uris.size();
+					reindexCount += searchChunk.getAllURIs().size();
 					updateReindexCount(reindexCount);
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation

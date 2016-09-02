@@ -21,7 +21,7 @@ package io.vertigo.dynamox.search;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -32,7 +32,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
-import io.vertigo.lang.Assertion;
 
 /**
  * Abstract SearchLoader with default chunk implementation.
@@ -46,60 +45,66 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	/** {@inheritDoc} */
 	@Override
-	public final Iterable<Optional<SearchChunk<K>>> chunk(final Class<K> keyConceptClass) {
-		return new Iterable<Optional<SearchChunk<K>>>() {
-
-			private final Iterator<Optional<SearchChunk<K>>> iterator = new Iterator<Optional<SearchChunk<K>>>() {
-
-				private SearchChunk<K> current = null;
-
-				/** {@inheritDoc} */
-				@Override
-				public boolean hasNext() {
-					//hasNext at first call, and if current.allUri wasn't empty
-					return current == null || !current.getAllURIs().isEmpty();
-				}
-
-				/** {@inheritDoc} */
-				@Override
-				public Optional<SearchChunk<K>> next() {
-					current = nextChunk(keyConceptClass, current);
-					if (current.getAllURIs().isEmpty()) {
-						return Optional.empty();
-					}
-					return Optional.of(current);
-				}
-
-				/** {@inheritDoc} */
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException("This list is unmodifiable");
-				}
-			};
+	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
+		return new Iterable<SearchChunk<K>>() {
 
 			/** {@inheritDoc} */
 			@Override
-			public Iterator<Optional<SearchChunk<K>>> iterator() {
-				return iterator;
+			public Iterator<SearchChunk<K>> iterator() {
+				return new Iterator<SearchChunk<K>>() {
+					private final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+					private SearchChunk<K> current;
+					private SearchChunk<K> next = firstChunk();
+
+					/** {@inheritDoc} */
+					@Override
+					public boolean hasNext() {
+						if (next == null) {
+							next = nextChunk(current);
+						}
+						return !next.getAllURIs().isEmpty();
+					}
+
+					/** {@inheritDoc} */
+					@Override
+					public SearchChunk<K> next() {
+						if (!hasNext()) {
+							throw new NoSuchElementException("no next chunk found");
+						}
+						current = next;
+						next = null;
+						return current;
+					}
+
+					/** {@inheritDoc} */
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException("This list is unmodifiable");
+					}
+
+					private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
+						final List<URI<K>> previousUris = previousChunk.getAllURIs();
+						final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
+						// call loader service
+						final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+						return new SearchChunk<>(uris);
+					}
+
+					private SearchChunk<K> firstChunk() {
+						final P lastId = getLowestIdValue(dtDefinition);
+						// call loader service
+						final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+						return new SearchChunk<>(uris);
+					}
+
+				};
 			}
+
 		};
 	}
 
-	private SearchChunk<K> nextChunk(final Class<K> keyConceptClass, final SearchChunk<K> previousChunck) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
-		P lastId = getLowestIdValue(dtDefinition);
-		if (previousChunck != null) {
-			final List<URI<K>> previousUris = previousChunck.getAllURIs();
-			Assertion
-					.checkState(
-							!previousUris.isEmpty(),
-							"No more SearchChunk for KeyConcept {0}, ensure you use Iterable pattern or call hasNext before next",
-							keyConceptClass.getSimpleName());
-			lastId = (P) previousUris.get(previousUris.size() - 1).getId();
-		}
-		// call loader service
-		final List<URI<K>> uris = loadNextURI(lastId, dtDefinition);
-		return new SearchChunk<>(uris);
+	private List<URI<K>> doLoadNextURI(final P lastId, final DtDefinition dtDefinition) {
+		return loadNextURI(lastId, dtDefinition);
 	}
 
 	/**

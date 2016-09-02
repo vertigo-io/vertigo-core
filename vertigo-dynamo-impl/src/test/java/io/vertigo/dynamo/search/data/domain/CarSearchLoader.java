@@ -31,7 +31,6 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.search.AbstractSearchLoader;
 import io.vertigo.lang.Assertion;
 
@@ -39,12 +38,10 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	private static final int SEARCH_CHUNK_SIZE = 5;
 	private final SearchIndexDefinition indexDefinition;
 	private CarDataBase carDataBase;
-	private final VTransactionManager transactionManager;
 
 	@Inject
-	public CarSearchLoader(final SearchManager searchManager, final VTransactionManager transactionManager) {
+	public CarSearchLoader(final SearchManager searchManager) {
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
-		this.transactionManager = transactionManager;
 	}
 
 	/**
@@ -60,7 +57,6 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
 		Assertion.checkNotNull(carDataBase, "carDataBase not bound");
-		Assertion.checkState(transactionManager.hasCurrentTransaction(), "SearchLoader must be use in Tx");
 		//-----
 		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>();
 		final Map<Long, Car> carPerId = new HashMap<>();
@@ -77,8 +73,6 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	/** {@inheritDoc} */
 	@Override
 	protected List<URI<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
-		Assertion.checkState(transactionManager.hasCurrentTransaction(), "SearchLoader must be use in Tx");
-		//-----
 		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;

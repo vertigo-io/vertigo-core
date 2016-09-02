@@ -36,8 +36,6 @@ import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
 final class ReindexTask implements Runnable {
@@ -50,18 +48,14 @@ final class ReindexTask implements Runnable {
 	private final List<URI<? extends KeyConcept>> dirtyElements;
 	private final SearchManager searchManager;
 
-	private final VTransactionManager transactionManager;
-
-	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(dirtyElements);
 		Assertion.checkNotNull(searchManager);
-		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.dirtyElements = dirtyElements; //On ne fait pas la copie ici
 		this.searchManager = searchManager;
-		this.transactionManager = transactionManager;
 	}
 
 	/** {@inheritDoc} */
@@ -115,11 +109,8 @@ final class ReindexTask implements Runnable {
 		final SearchLoader searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
-		// >>> Tx start
-		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-			searchIndexes = searchLoader.loadData(searchChunk);
-		}
-		// <<< Tx end
+		searchIndexes = searchLoader.loadData(searchChunk);
+
 		removedNotFoundKeyConcept(searchIndexes, searchChunk);
 		if (!searchIndexes.isEmpty()) {
 			searchManager.putAll(searchIndexDefinition, searchIndexes);

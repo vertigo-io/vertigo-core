@@ -51,7 +51,6 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -63,7 +62,6 @@ import io.vertigo.lang.VSystemException;
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	private static final String ANALYTICS_TYPE = "search";
-	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
@@ -74,15 +72,17 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * Constructor.
 	 * @param searchServicesPlugin the searchServicesPlugin
 	 * @param eventBusManager the  eventBusManager
-	 * @param transactionManager the  transactionManager
 	 * @param localeManager the localeManager
 	 * @param analyticsManager the analyticsManager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventBusManager eventBusManager, final VTransactionManager transactionManager, final LocaleManager localeManager, final AnalyticsManager analyticsManager) {
+	public SearchManagerImpl(
+			final SearchServicesPlugin searchServicesPlugin,
+			final EventBusManager eventBusManager,
+			final LocaleManager localeManager,
+			final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		Assertion.checkNotNull(eventBusManager);
-		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
@@ -91,7 +91,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
-		this.transactionManager = transactionManager;
 	}
 
 	/** {@inheritDoc} */
@@ -100,7 +99,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final List<URI<? extends KeyConcept>> dirtyElements = new ArrayList<>();
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
-			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this, transactionManager), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
+			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
 		}
 	}
 
@@ -238,7 +237,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public Future<Long> reindexAll(final SearchIndexDefinition searchIndexDefinition) {
 		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
-		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 		return reindexFuture;
 	}
 
