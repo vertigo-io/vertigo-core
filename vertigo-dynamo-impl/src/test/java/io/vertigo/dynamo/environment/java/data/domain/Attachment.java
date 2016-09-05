@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -38,6 +39,12 @@ public final class Attachment implements Entity {
 	private Long cmdId;
 	private io.vertigo.dynamo.environment.java.data.domain.Command command;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<Attachment> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -127,8 +134,7 @@ public final class Attachment implements Entity {
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (command != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(command);
+			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> uri = command.getURI();
 			if (!fkURI.urn().equals(uri.urn())) {
 				command = null;
 			}

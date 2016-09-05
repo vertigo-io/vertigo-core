@@ -31,6 +31,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -139,7 +140,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
-		return new DtListURIForSimpleAssociation(associationDefinition, createURI(entity), roleName);
+		return new DtListURIForSimpleAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
@@ -155,7 +156,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
-		return new DtListURIForNNAssociation(associationDefinition, createURI(entity), roleName);
+		return new DtListURIForNNAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
@@ -168,6 +169,21 @@ public final class DtObjectUtil {
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(entity);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
+	}
+
+	/**
+	 * Creates an URI from an existing object.
+	 * @param entity Object
+	 * @return this object URI
+	 */
+	public static <E extends Entity, F extends Fragment<E>> URI<E> createEntityURI(final F fragment) {
+		Assertion.checkNotNull(fragment);
+		//-----
+		final DtDefinition dtDefinition = findDtDefinition(fragment);
+		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
+		final DtField idField = entityDtDefinition.getIdField().get();
+		final Object idValue = idField.getDataAccessor().getValue(fragment);
+		return new URI<>(entityDtDefinition, idValue);
 	}
 
 	/**

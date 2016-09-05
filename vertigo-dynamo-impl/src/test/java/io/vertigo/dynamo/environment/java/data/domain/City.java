@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,7 +37,13 @@ public final class City implements DtMasterData {
 	private Long citId;
 	private String label;
 	private String postalCode;
-
+	
+	/** {@inheritDoc} */
+	@Override
+	public URI<City> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.

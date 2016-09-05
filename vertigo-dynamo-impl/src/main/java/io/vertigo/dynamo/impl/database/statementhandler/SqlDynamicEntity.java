@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -53,6 +54,12 @@ final class SqlDynamicEntity implements Entity, Dynamic {
 
 	/** {@inheritDoc} */
 	@Override
+	public URI getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public DtDefinition getDefinition() {
 		return serializableDefinition.getDtDefinition();
 	}
@@ -74,4 +81,5 @@ final class SqlDynamicEntity implements Entity, Dynamic {
 	public String toString() {
 		return DtObjectUtil.toString(this);
 	}
+
 }

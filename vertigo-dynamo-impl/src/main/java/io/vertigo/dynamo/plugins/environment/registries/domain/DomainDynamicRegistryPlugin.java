@@ -163,7 +163,13 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(xdtDefinition.getName())
 				.withFragment(from)
 				.withPackageName(xdtDefinition.getPackageName())
-				.withPersistent(from.isPersistent())
+				// >>>>>>>>>>>>>>>
+				// >>>>>>>>>>>>>>>
+				// >>>>>>>>>>>>>>>
+				.withPersistent(true) //WARN !! TODO : inversé ?? >>>>>>>>>>>>>>>  devrait être false
+				// >>>>>>>>>>>>>>>
+				// >>>>>>>>>>>>>>>
+				// >>>>>>>>>>>>>>>
 				.withDynamic(from.isDynamic())
 				.withDataSpace(from.getDataSpace())
 				.withPackageName(from.getPackageName());

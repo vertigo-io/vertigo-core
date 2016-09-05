@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -31,6 +32,12 @@ public final class Item implements Entity {
 
 	@Field(domain = "DO_TEXT", label = "label")
 	private String label;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Item> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	public final Long getId() {
 		return id;

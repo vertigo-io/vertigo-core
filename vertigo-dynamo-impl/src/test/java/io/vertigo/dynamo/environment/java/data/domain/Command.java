@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -39,6 +40,12 @@ public final class Command implements KeyConcept {
 	private io.vertigo.dynamo.environment.java.data.domain.CommandType commandType;
 	private io.vertigo.dynamo.environment.java.data.domain.City city;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<Command> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.

@@ -115,7 +115,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		Boolean persistent = null;
 		String fragmentOf = null;
 		if (Fragment.class.isAssignableFrom(clazz)) {
-			persistent = true;
+			persistent = false;
 			//Fragments
 			for (final Annotation annotation : clazz.getAnnotations()) {
 				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {

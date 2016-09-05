@@ -9,5 +9,10 @@ package io.vertigo.dynamo.domain.model;
  * @author pchretien
  */
 public interface Entity extends DtObject {
-	//
+
+	/**
+	 * @return URI of this entity
+	 */
+	URI getURI();
+
 }

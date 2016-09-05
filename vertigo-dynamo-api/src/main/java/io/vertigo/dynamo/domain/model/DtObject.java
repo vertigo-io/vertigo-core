@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * Interface to have a marker on all business objects.
- * 
+ *
  * @author  fconstantin, pchretien
  */
 public interface DtObject extends Serializable {

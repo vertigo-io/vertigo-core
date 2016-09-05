@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -34,6 +35,12 @@ public final class SmartCar implements KeyConcept {
 	private Integer year;
 	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
 	private String description;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<SmartCar> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	public final Long getId() {
 		return id;

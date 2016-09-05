@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.database.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -31,6 +32,12 @@ public final class Movie implements KeyConcept {
 
 	private Long id;
 	private String title;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Movie> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the movie")
 	public final Long getId() {

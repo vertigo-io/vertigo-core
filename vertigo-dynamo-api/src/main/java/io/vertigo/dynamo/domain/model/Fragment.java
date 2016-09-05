@@ -19,14 +19,18 @@
 package io.vertigo.dynamo.domain.model;
 
 /**
- * An fragment placed in a domain model.
- * An fragment has an identity and a lifecycle.
+ * Fragment of an entity.
  *
- * An fragment should be persistent.
- * An fragment is include into an Entity.
+ * An fragment placed in a domain model.
+ * An fragment belongs to an entity.
  *
  * @author pchretien
+ * @param <E> Entity type
  */
-public interface Fragment<E extends Entity> extends Entity {
-	//
+public interface Fragment<E extends Entity> extends DtObject {
+
+	/**
+	 * @return URI of linked entity
+	 */
+	URI<E> getURI();
 }
