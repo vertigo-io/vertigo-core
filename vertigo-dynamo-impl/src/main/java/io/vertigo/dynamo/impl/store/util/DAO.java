@@ -125,9 +125,9 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * Reload entity from fragment, and keep fragment modifications.
+	 * Reloads entity from fragment, and keep fragment modifications.
 	 *
-	 * @param entity merged from datastore and input
+	 * @param fragment  merged from datastore and input
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);

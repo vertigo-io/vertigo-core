@@ -60,9 +60,6 @@ public final class DtDefinition implements Definition {
 
 	private final DtStereotype stereotype;
 
-	/** If data is persisted. */
-	private final boolean persistent;
-
 	/**
 	 * Si la classe est dynamic, c'est à dire non représentée par une classe.
 	 */
@@ -84,7 +81,6 @@ public final class DtDefinition implements Definition {
 			final Optional<DefinitionReference<DtDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
-			final boolean persistent,
 			final List<DtField> dtFields,
 			final boolean dynamic,
 			final String dataSpace) {
@@ -100,7 +96,6 @@ public final class DtDefinition implements Definition {
 		this.fragment = fragment;
 		//
 		this.stereotype = stereotype;
-		this.persistent = persistent;
 		this.packageName = packageName;
 		DtField id = null;
 
@@ -118,10 +113,8 @@ public final class DtDefinition implements Definition {
 		//-----
 		Assertion.checkState(!fragment.isPresent() ^ DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
 		//Persistent => ID
-		Assertion.checkState(!persistent ^ idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+		Assertion.checkState(!stereotype.isPersistent() ^ idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
 		Assertion.checkState(DtStereotype.Data == stereotype ^ idField.isPresent(), "Error on {0}, If an object is a 'Data'  then it must not have an ID", name);
-		//NOT Persistent => Data
-		Assertion.checkState(persistent ^ DtStereotype.Data == stereotype, "Error on {0}, if an object is not persistent then it must be a simple data", name);
 	}
 
 	private void registerSort(final DtField dtField) {
@@ -256,7 +249,7 @@ public final class DtDefinition implements Definition {
 	 * @return Si la définition est persistée.
 	 */
 	public boolean isPersistent() {
-		return persistent;
+		return stereotype.isPersistent();
 	}
 
 	/**

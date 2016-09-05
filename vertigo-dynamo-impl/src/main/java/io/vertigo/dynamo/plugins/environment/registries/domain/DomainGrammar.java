@@ -138,7 +138,6 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields(FIELD, DT_FIELD_ENTITY)
 				.addManyFields(COMPUTED, computedFieldEntity)
 				.addOptionalField(ID, DT_FIELD_ENTITY)
-				.addOptionalField(PERSISTENT, Boolean)
 				.addOptionalField(DYNAMIC, Boolean)
 				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)

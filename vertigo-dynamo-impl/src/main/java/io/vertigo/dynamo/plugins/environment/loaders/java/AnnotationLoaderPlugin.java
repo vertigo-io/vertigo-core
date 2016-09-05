@@ -53,7 +53,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -112,10 +111,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
-		Boolean persistent = null;
 		String fragmentOf = null;
 		if (Fragment.class.isAssignableFrom(clazz)) {
-			persistent = true;
 			//Fragments
 			for (final Annotation annotation : clazz.getAnnotations()) {
 				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {
@@ -123,20 +120,12 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 					break;
 				}
 			}
-		} else if (Entity.class.isAssignableFrom(clazz)) {
-			persistent = true;
-		} else if (DtObject.class.isAssignableFrom(clazz)) {
-			//Simple DtObjects without ID
-			persistent = false;
 		}
-		if (persistent != null) {
-			parseDtDefinition(clazz, persistent, fragmentOf, dynamicModelrepository);
-		}
+		parseDtDefinition(clazz, fragmentOf, dynamicModelrepository);
 	}
 
 	private static void parseDtDefinition(
 			final Class<?> clazz,
-			final boolean persistent,
 			final String fragmentOf,
 			final DynamicDefinitionRepository dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
@@ -146,7 +135,6 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
-				.addPropertyValue(PERSISTENT, persistent)
 				.addPropertyValue(FRAGMENT_OF, fragmentOf);
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
