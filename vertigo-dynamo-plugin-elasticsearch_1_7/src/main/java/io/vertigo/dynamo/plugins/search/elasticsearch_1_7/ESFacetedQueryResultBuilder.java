@@ -111,8 +111,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, Optional.ofNullable(searchQuery.getClusteringFacetDefinition()), resultCluster, resultHighlights, searchQuery);
-
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(), resultCluster, resultHighlights, searchQuery);
 	}
 
 	private Map<FacetValue, DtList<I>> createCluster(final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
