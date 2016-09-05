@@ -21,7 +21,9 @@ package io.vertigo.dynamo.impl.store.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -123,12 +125,20 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * Update an object's fragment.
+	 * Reload entity from fragment, and keep fragment modifications.
 	 *
-	 * @param fragment Fragment to update
+	 * @param entity merged from datastore and input
 	 */
-	public final void update(final Fragment<E> fragment) {
-		dataStore.update(fragment);
+	public final E reloadAndMerge(final Fragment<E> fragment) {
+		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
+		final DtField idField = fragmentDefinition.getFragment().get().getIdField().get();
+		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor du fragment sur l'entity
+		final E dto = get(entityId);
+		for (final DtField fragmentField : fragmentDefinition.getFields()) {
+			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
+			dataAccessor.setValue(dto, dataAccessor.getValue(fragment)); //etrange on utilise l'accessor du fragment sur l'entity
+		}
+		return dto;
 	}
 
 	/**
