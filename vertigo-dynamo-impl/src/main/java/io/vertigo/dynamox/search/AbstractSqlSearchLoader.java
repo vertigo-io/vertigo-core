@@ -82,7 +82,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	@Override
 	@Transactional
 	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
-		try (final VTransactionWritable tx = transactionManager.createAutonomousTransaction()) {
+		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final String tableName = getTableName(dtDefinition);
 			final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
 			final DtField idField = dtDefinition.getIdField().get();
