@@ -113,8 +113,8 @@ public final class DtDefinition implements Definition {
 		//-----
 		Assertion.checkState(!fragment.isPresent() ^ DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
 		//Persistent => ID
-		Assertion.checkState(!stereotype.isPersistent() ^ idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
-		Assertion.checkState(DtStereotype.Data == stereotype ^ idField.isPresent(), "Error on {0}, If an object is a 'Data'  then it must not have an ID", name);
+		Assertion.checkState(!stereotype.isPersistent() || idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+		Assertion.checkState(DtStereotype.Data != stereotype || !idField.isPresent(), "Error on {0}, If an object is a 'Data' then it must not have an ID", name);
 	}
 
 	private void registerSort(final DtField dtField) {
