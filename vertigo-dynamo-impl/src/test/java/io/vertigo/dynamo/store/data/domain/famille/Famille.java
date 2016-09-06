@@ -122,7 +122,19 @@ public final class Famille implements Entity {
 	 * Association : Voitures de la famille.
 	 */
 	@javax.persistence.Transient
-	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
+	@Association(
+			name = "A_FAM_CAR_FAMILLE",
+			fkFieldName = "FAM_ID",
+			primaryDtDefinitionName = "DT_FAMILLE",
+			primaryIsNavigable = false,
+			primaryRole = "Famille",
+			primaryLabel = "Famille",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_CAR",
+			foreignIsNavigable = true,
+			foreignRole = "VoituresFamille",
+			foreignLabel = "Voitures de la famille",
+			foreignMultiplicity = "0..*")
 	public final DtList<Car> getVoituresFamilleList() {
 		final DtListURI fkDtListURI = getVoituresFamilleDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
@@ -140,7 +152,19 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
+	@Association(
+			name = "A_FAM_CAR_FAMILLE",
+			fkFieldName = "FAM_ID",
+			primaryDtDefinitionName = "DT_FAMILLE",
+			primaryIsNavigable = false,
+			primaryRole = "Famille",
+			primaryLabel = "Famille",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_CAR",
+			foreignIsNavigable = true,
+			foreignRole = "VoituresFamille",
+			foreignLabel = "Voitures de la famille",
+			foreignMultiplicity = "0..*")
 	public final DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
 		return DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_FAM_CAR_FAMILLE", "VoituresFamille");
 	}
@@ -149,7 +173,17 @@ public final class Famille implements Entity {
 	 * Association : Voitures de location.
 	 */
 	@javax.persistence.Transient
-	@AssociationNN(name = "ANN_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
+	@AssociationNN(
+			name = "ANN_FAM_CAR_LOCATION",
+			tableName = "FAM_CAR_LOCATION",
+			dtDefinitionA = "DT_FAMILLE",
+			dtDefinitionB = "DT_CAR",
+			navigabilityA = false,
+			navigabilityB = true,
+			roleA = "Famille",
+			roleB = "VoituresLocation",
+			labelA = "Famille",
+			labelB = "Voitures de location")
 	public final DtList<Car> getVoituresLocationList() {
 		// return this.<.domain.car.Car> getList(getVoituresLocationListURI());
 		final DtListURI fkDtListURI = getVoituresLocationDtListURI();
@@ -168,7 +202,17 @@ public final class Famille implements Entity {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@AssociationNN(name = "ANN_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
+	@AssociationNN(
+			name = "ANN_FAM_CAR_LOCATION",
+			tableName = "FAM_CAR_LOCATION",
+			dtDefinitionA = "DT_FAMILLE",
+			dtDefinitionB = "DT_CAR",
+			navigabilityA = false,
+			navigabilityB = true,
+			roleA = "Famille",
+			roleB = "VoituresLocation",
+			labelA = "Famille",
+			labelB = "Voitures de location")
 	public final DtListURIForNNAssociation getVoituresLocationDtListURI() {
 		return DtObjectUtil.createDtListURIForNNAssociation(this, "ANN_FAM_CAR_LOCATION", "VoituresLocation");
 	}
