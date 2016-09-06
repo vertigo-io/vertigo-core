@@ -177,8 +177,15 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param uri URI de l'objet à récupérer
 	 * @return D Fragment recherché
 	 */
-	public final <F extends Fragment<E>> F getFragment(final URI<F> uri) {
-		return dataStore.<F> read(uri);
+	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
+		final E dto = dataStore.<E> read(uri);
+		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
+		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
+		for (final DtField fragmentField : fragmentDefinition.getFields()) {
+			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
+			dataAccessor.setValue(fragment, dataAccessor.getValue(dto)); //etrange on utilise l'accessor du fragment sur l'entity
+		}
+		return fragment;
 	}
 
 	/**
@@ -200,7 +207,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		return getFragment(new URI<F>(DtObjectUtil.findDtDefinition(fragmentClass), id));
+		return getFragment(new URI<E>(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id), fragmentClass);
 	}
 
 	/**

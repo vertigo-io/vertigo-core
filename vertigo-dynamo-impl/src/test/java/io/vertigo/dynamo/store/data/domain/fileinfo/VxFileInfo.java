@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.store.data.domain.fileinfo;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -40,6 +41,12 @@ public final class VxFileInfo implements Entity {
 	private Long length;
 	private java.util.Date lastModified;
 	private io.vertigo.dynamo.domain.metamodel.DataStream fileData;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<VxFileInfo> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	/**
 	 * Champ : ID.

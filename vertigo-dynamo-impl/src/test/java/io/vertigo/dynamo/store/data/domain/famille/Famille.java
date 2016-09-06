@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -31,7 +32,7 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 
 /**
- * Attention cette classe est gÃ©nÃ©rÃ©e automatiquement ! Objet de donnÃ©es
+ * Attention cette classe est générée automatiquement ! Objet de données
  * Famille
  */
 @javax.persistence.Entity
@@ -45,9 +46,15 @@ public final class Famille implements Entity {
 	private DtList<Car> voituresFamille;
 	private DtList<Car> voituresLocation;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<Famille> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+
 	/**
 	 * Champ : ID.
-	 * rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
+	 * récupére la valeur de la propriété 'identifiant de la famille'.
 	 *
 	 * @return Long famId <b>Obligatoire</b>
 	 */
@@ -62,7 +69,7 @@ public final class Famille implements Entity {
 
 	/**
 	 * Champ : ID.
-	 * DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de la famille'.
+	 * Définit la valeur de la propriété 'identifiant de la famille'.
 	 *
 	 * @param famId
 	 *            Long <b>Obligatoire</b>
@@ -72,7 +79,7 @@ public final class Famille implements Entity {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Libelle'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Libelle'.
 	 *
 	 * @return String libelle
 	 */
@@ -83,7 +90,7 @@ public final class Famille implements Entity {
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Libelle'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Libelle'.
 	 *
 	 * @param libelle
 	 *            String
@@ -93,7 +100,7 @@ public final class Famille implements Entity {
 	}
 
 	/**
-	 * Champ : COMPUTED. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© calculÃ©e
+	 * Champ : COMPUTED. récupère la valeur de la propriété calculée
 	 * 'Libelle'.
 	 *
 	 * @return String description
@@ -116,7 +123,6 @@ public final class Famille implements Entity {
 	@javax.persistence.Transient
 	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
 	public final DtList<Car> getVoituresFamilleList() {
-		// return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
 		final DtListURI fkDtListURI = getVoituresFamilleDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//-----

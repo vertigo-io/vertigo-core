@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.VSystemException;
@@ -42,6 +43,12 @@ public final class Car implements KeyConcept {
 	private java.math.BigDecimal consommation;
 	private String motorType;
 	private Long famId;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Car> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	/**
 	 * Champ : ID.
