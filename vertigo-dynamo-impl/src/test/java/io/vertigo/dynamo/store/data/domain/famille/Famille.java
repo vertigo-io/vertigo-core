@@ -47,6 +47,7 @@ public final class Famille implements Entity {
 	private DtList<Car> voituresLocation;
 
 	/** {@inheritDoc} */
+	@javax.persistence.Transient
 	@Override
 	public URI<Famille> getURI() {
 		return DtObjectUtil.createURI(this);

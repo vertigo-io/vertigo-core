@@ -45,6 +45,7 @@ public final class Car implements KeyConcept {
 	private Long famId;
 
 	/** {@inheritDoc} */
+	@javax.persistence.Transient
 	@Override
 	public URI<Car> getURI() {
 		return DtObjectUtil.createURI(this);

@@ -43,6 +43,7 @@ public final class VxFileInfo implements Entity {
 	private io.vertigo.dynamo.domain.metamodel.DataStream fileData;
 
 	/** {@inheritDoc} */
+	@javax.persistence.Transient
 	@Override
 	public URI<VxFileInfo> getURI() {
 		return DtObjectUtil.createURI(this);
