@@ -34,6 +34,8 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** Champ DUPLICATE_KEY_1. */
 	private static final int DUPLICATE_KEY_1 = 23001;
+	/** Champ UNIQUE_INDEX_1. */
+	private static final int UNIQUE_INDEX_1 = 23505;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1. */
 	private static final int REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1 = 23003;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1. */
@@ -71,6 +73,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 				handleForeignConstraintSQLException(sqle);
 				break;
 			case DUPLICATE_KEY_1:
+			case UNIQUE_INDEX_1:
 				// Violation de contrainte d'unicité
 				handleUniqueConstraintSQLException(sqle);
 				break;
@@ -91,7 +94,16 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/** {@inheritDoc} */
 	@Override
 	protected String extractConstraintName(final String msg) {
-		return "";
+		return extractConstraintName(msg, "violation", '"', ' ');
+	}
+
+	private static String extractConstraintName(final String msg, final String constraintName, final char constraintNameStart, final char constraintNameEnd) {
+		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
+		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
+		if (i1 > -1 && i2 > -1 && i2 > i1) {
+			return msg.substring(i1 + 1, i2).toUpperCase().trim();
+		}
+		return null;
 	}
 
 	/*
@@ -111,6 +123,9 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 *
 	 * DUPLICATE_KEY_1: Unique index or primary key violation: "PRIMARY KEY ON PUBLIC.TEST(ID)"; SQL statement: INSERT INTO TEST VALUES(1)
 	 * [23001-147]
+	 *
+	 * UNIQUE_INDEX_1: Unique index ou violation de clé primaire: "INS_UNIQUE_UTI_SES_INDEX_9 ON PUBLIC.INSCRIPTION (UTI_ID, SES_ID) VALUES (/ * clé: 1010 * / null, null, null, null , null, null, null, 1003, 1) "; 
+	 * [23505-176]
 	 */
 
 }
