@@ -37,13 +37,14 @@ public final class City implements DtMasterData {
 	private Long citId;
 	private String label;
 	private String postalCode;
-	
+
 	/** {@inheritDoc} */
 	@Override
+	@javax.persistence.Transient
 	public URI<City> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.

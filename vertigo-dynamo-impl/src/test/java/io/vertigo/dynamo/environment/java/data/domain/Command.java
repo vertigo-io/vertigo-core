@@ -42,10 +42,11 @@ public final class Command implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
+	@javax.persistence.Transient
 	public URI<Command> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -117,19 +118,7 @@ public final class Command implements KeyConcept {
 	 * @return io.vertigo.dynamo.environment.java.data.CommandType
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CTY_CMD",
-			fkFieldName = "CTY_ID",
-			primaryDtDefinitionName = "DT_COMMAND_TYPE",
-			primaryIsNavigable = true,
-			primaryRole = "CommandType",
-			primaryLabel = "Command type",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
-			foreignIsNavigable = false,
-			foreignRole = "Command",
-			foreignLabel = "Command",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CTY_CMD", fkFieldName = "CTY_ID", primaryDtDefinitionName = "DT_COMMAND_TYPE", primaryIsNavigable = true, primaryRole = "CommandType", primaryLabel = "Command type", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_COMMAND", foreignIsNavigable = false, foreignRole = "Command", foreignLabel = "Command", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.environment.java.data.domain.CommandType getCommandType() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> fkURI = getCommandTypeURI();
 		if (fkURI == null) {
@@ -155,19 +144,7 @@ public final class Command implements KeyConcept {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CTY_CMD",
-			fkFieldName = "CTY_ID",
-			primaryDtDefinitionName = "DT_COMMAND_TYPE",
-			primaryIsNavigable = true,
-			primaryRole = "CommandType",
-			primaryLabel = "Command type",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
-			foreignIsNavigable = false,
-			foreignRole = "Command",
-			foreignLabel = "Command",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CTY_CMD", fkFieldName = "CTY_ID", primaryDtDefinitionName = "DT_COMMAND_TYPE", primaryIsNavigable = true, primaryRole = "CommandType", primaryLabel = "Command type", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_COMMAND", foreignIsNavigable = false, foreignRole = "Command", foreignLabel = "Command", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> getCommandTypeURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CTY_CMD", io.vertigo.dynamo.environment.java.data.domain.CommandType.class);
 	}
@@ -177,19 +154,7 @@ public final class Command implements KeyConcept {
 	 * @return io.vertigo.dynamo.environment.java.data.City
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CIT_CMD",
-			fkFieldName = "CIT_ID",
-			primaryDtDefinitionName = "DT_CITY",
-			primaryIsNavigable = true,
-			primaryRole = "City",
-			primaryLabel = "City",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
-			foreignIsNavigable = false,
-			foreignRole = "Command",
-			foreignLabel = "Command",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CIT_CMD", fkFieldName = "CIT_ID", primaryDtDefinitionName = "DT_CITY", primaryIsNavigable = true, primaryRole = "City", primaryLabel = "City", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_COMMAND", foreignIsNavigable = false, foreignRole = "Command", foreignLabel = "Command", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.environment.java.data.domain.City getCity() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> fkURI = getCityURI();
 		if (fkURI == null) {
@@ -215,19 +180,7 @@ public final class Command implements KeyConcept {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CIT_CMD",
-			fkFieldName = "CIT_ID",
-			primaryDtDefinitionName = "DT_CITY",
-			primaryIsNavigable = true,
-			primaryRole = "City",
-			primaryLabel = "City",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
-			foreignIsNavigable = false,
-			foreignRole = "Command",
-			foreignLabel = "Command",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CIT_CMD", fkFieldName = "CIT_ID", primaryDtDefinitionName = "DT_CITY", primaryIsNavigable = true, primaryRole = "City", primaryLabel = "City", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_COMMAND", foreignIsNavigable = false, foreignRole = "Command", foreignLabel = "Command", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> getCityURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CIT_CMD", io.vertigo.dynamo.environment.java.data.domain.City.class);
 	}

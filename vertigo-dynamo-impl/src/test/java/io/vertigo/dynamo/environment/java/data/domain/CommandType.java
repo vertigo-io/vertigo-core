@@ -39,10 +39,11 @@ public final class CommandType implements DtMasterData {
 
 	/** {@inheritDoc} */
 	@Override
+	@javax.persistence.Transient
 	public URI<CommandType> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.

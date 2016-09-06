@@ -41,10 +41,11 @@ public final class Attachment implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
+	@javax.persistence.Transient
 	public URI<Attachment> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -113,19 +114,7 @@ public final class Attachment implements Entity {
 	 * @return io.vertigo.dynamo.environment.java.data.Command
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
-			fkFieldName = "CMD_ID",
-			primaryDtDefinitionName = "DT_COMMAND",
-			primaryIsNavigable = true,
-			primaryRole = "Command",
-			primaryLabel = "Command",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
-			foreignIsNavigable = false,
-			foreignRole = "Attachment",
-			foreignLabel = "Attachment",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CMD_ATT", fkFieldName = "CMD_ID", primaryDtDefinitionName = "DT_COMMAND", primaryIsNavigable = true, primaryRole = "Command", primaryLabel = "Command", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_ATTACHMENT", foreignIsNavigable = false, foreignRole = "Attachment", foreignLabel = "Attachment", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.environment.java.data.domain.Command getCommand() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> fkURI = getCommandURI();
 		if (fkURI == null) {
@@ -150,19 +139,7 @@ public final class Attachment implements Entity {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
-			fkFieldName = "CMD_ID",
-			primaryDtDefinitionName = "DT_COMMAND",
-			primaryIsNavigable = true,
-			primaryRole = "Command",
-			primaryLabel = "Command",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
-			foreignIsNavigable = false,
-			foreignRole = "Attachment",
-			foreignLabel = "Attachment",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CMD_ATT", fkFieldName = "CMD_ID", primaryDtDefinitionName = "DT_COMMAND", primaryIsNavigable = true, primaryRole = "Command", primaryLabel = "Command", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_ATTACHMENT", foreignIsNavigable = false, foreignRole = "Attachment", foreignLabel = "Attachment", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> getCommandURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CMD_ATT", io.vertigo.dynamo.environment.java.data.domain.Command.class);
 	}

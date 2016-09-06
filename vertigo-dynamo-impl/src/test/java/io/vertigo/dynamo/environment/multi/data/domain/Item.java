@@ -35,6 +35,7 @@ public final class Item implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
+	@javax.persistence.Transient
 	public URI<Item> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
