@@ -94,7 +94,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/** {@inheritDoc} */
 	@Override
 	protected String extractConstraintName(final String msg) {
-		return extractConstraintName(msg, "violation", '"', " ");
+		return extractConstraintName(msg, "violation", '"', ' ');
 	}
 
 	private static String extractConstraintName(final String msg, final String constraintName, final char constraintNameStart, final char constraintNameEnd) {
