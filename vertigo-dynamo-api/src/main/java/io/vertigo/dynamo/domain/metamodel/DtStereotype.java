@@ -23,5 +23,11 @@ public enum DtStereotype {
 	KeyConcept, //
 	Data, //By default
 	Entity, //
-	Fragment
+	Fragment;
+
+	public boolean isPersistent() {
+		return this == Entity
+				|| this == KeyConcept
+				|| this == MasterData;
+	}
 }

@@ -60,7 +60,6 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DefinitionReference<DtDefinition> myFragment;
 	private String myPackageName;
 	private DtStereotype myStereotype;
-	private boolean myPersistent;
 	private boolean myDynamic;
 	private DtField myIdField;
 	private final List<DtField> myFields = new ArrayList<>();
@@ -114,17 +113,6 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	/**
-	 * Sets the persistent state.
-	 *
-	 * @param persistent if the dtDefinition is persisted
-	 * @return this builder
-	 */
-	public DtDefinitionBuilder withPersistent(final boolean persistent) {
-		myPersistent = persistent;
-		return this;
-	}
-
-	/**
 	 * Sets the dynamic state.
 	 *
 	 * @param dynamic if this dtDefinition is dynamic
@@ -169,7 +157,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 */
 	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
-		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, false, null, computedExpression, false, sort, display);
+		final boolean persistent = false;
+		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, persistent, null, computedExpression, false, sort, display);
 		myFields.add(dtField);
 		return this;
 	}
@@ -210,7 +199,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//le champ ID est tjrs required
 		final boolean required = true;
 		//le champ ID est persistant SSI la définition est persitante.
-		final boolean persistent = myPersistent;
+		final boolean persistent = true;
 		//le champ  est dynamic SSI la définition est dynamique
 		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null, myDynamic, sort, display);
 		myIdField = dtField;
@@ -231,7 +220,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		final MessageText label = new MessageText(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
-		return new DtField(id, fieldName, type, domain, label, required, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
+		return new DtField(id, fieldName, type, domain, label, required, persistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
 	/**
@@ -254,7 +243,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myStereotype == null) {
 			myStereotype = (myIdField == null) ? DtStereotype.Data : DtStereotype.Entity;
 		}
-		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myPersistent, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
+		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
 		return dtDefinition;
 	}
 }

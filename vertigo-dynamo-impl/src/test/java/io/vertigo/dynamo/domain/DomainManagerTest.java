@@ -39,7 +39,6 @@ public class DomainManagerTest {
 			final Domain domain = new DomainBuilder("DO_NAME", DataType.String).build();
 
 			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
-					.withPersistent(false)
 					.withDynamic(true)
 					.addDataField("NAME", "nom du film", domain, true, true, false, false)
 					.build();

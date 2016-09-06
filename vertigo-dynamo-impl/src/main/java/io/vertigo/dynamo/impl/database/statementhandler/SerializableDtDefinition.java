@@ -59,7 +59,6 @@ final class SerializableDtDefinition implements Serializable {
 		//synchronizer, car lasy loading
 		if (dtDefinition == null) {
 			final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(DT_DYNAMIC)
-					.withPersistent(false)
 					.withDynamic(true);
 
 			for (final SerializableDtField field : fields) {
