@@ -28,7 +28,6 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Car;
 import io.vertigo.dynamo.search.data.domain.CarDataBase;
@@ -70,10 +69,10 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 
 		for (final Car car : carDataBase.getAllCars()) {
-			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, DtObjectUtil.createURI(car), car);
+			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
 			searchManager.put(carIndexDefinition, index);
 
-			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, DtObjectUtil.createURI(car), car);
+			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, car.getURI(), car);
 			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();

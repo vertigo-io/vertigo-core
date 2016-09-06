@@ -85,7 +85,7 @@ public final class CacheData {
 		//-----
 		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
-		cacheManager.put(context, DtObjectUtil.createURI(entity), entity);
+		cacheManager.put(context, entity.getURI(), entity);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public final class CacheData {
 
 		//1.On met à jour les objets
 		for (final Entity entity : dtc) {
-			cacheManager.put(context, DtObjectUtil.createURI(entity), entity);
+			cacheManager.put(context, entity.getURI(), entity);
 		}
 		//2.Puis on met à jour la liste racine : pour que la liste ne soit pas evincée par les objets
 		cacheManager.put(context, dtc.getURI(), dtc);
