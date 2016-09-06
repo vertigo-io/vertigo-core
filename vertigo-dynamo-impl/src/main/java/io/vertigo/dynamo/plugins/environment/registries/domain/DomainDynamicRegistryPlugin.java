@@ -229,9 +229,6 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//-----
 		final String fragmentOf = (String) xdtDefinition.getPropertyValue(KspProperty.FRAGMENT_OF);
 		//-----
-		final Boolean persistent = (Boolean) xdtDefinition.getPropertyValue(KspProperty.PERSISTENT);
-		Assertion.checkNotNull(persistent, "Le mot-clé ''persistent'' est obligatoire sur une DtDefinition ({0}).", xdtDefinition.getName());
-		//-----
 		final Boolean tmpDynamic = (Boolean) xdtDefinition.getPropertyValue(KspProperty.DYNAMIC);
 		//Si DYNAMIC est non renseigné on suppose que le champ est non dynamic.
 		final boolean dynamic = tmpDynamic != null && tmpDynamic.booleanValue();
