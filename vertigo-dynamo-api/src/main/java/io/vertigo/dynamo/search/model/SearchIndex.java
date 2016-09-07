@@ -60,7 +60,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 		Assertion.checkNotNull(indexDtObject);
 		//On vérifie la consistance des données.
 		Assertion.checkArgument(indexDefinition.getKeyConceptDtDefinition().equals(uri.getDefinition()), "Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uri.toString(), indexDefinition.getKeyConceptDtDefinition().getName());
-		Assertion.checkArgument(indexDtObject == null || indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)), "Le type l'objet indexé ({1})ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+		Assertion.checkArgument(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)), "Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uri = uri;
 		this.indexDefinition = indexDefinition;
