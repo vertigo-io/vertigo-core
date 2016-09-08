@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.app.Home;
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -99,6 +100,8 @@ public final class SwaggerWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/{resourceUrl}")
 	public void getSwapperUi(@PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
+		FileUtil.checkUserFileName(resourceUrl);
+		//----
 		if (resourceUrl.isEmpty()) {
 			response.sendRedirect("./index.html");
 		}
@@ -117,6 +120,9 @@ public final class SwaggerWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/{resourcePathUrl}/{resourceUrl}")
 	public void getSwapperUi(@PathParam("resourcePathUrl") final String resourcePathUrl, @PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
+		FileUtil.checkUserPath(resourcePathUrl);
+		FileUtil.checkUserFileName(resourceUrl);
+		//----
 		final URL url = SwaggerWebServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
 		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}

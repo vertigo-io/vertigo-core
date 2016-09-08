@@ -25,12 +25,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import io.vertigo.lang.Assertion;
+
 /**
  * Utilitaire de gestion des fichiers et flux associés.
  *
  * @author npiedeloup
  */
 public final class FileUtil {
+
+	private static final String USER_CHECK_ERROR_MSG = "User try to use illegal fileName";
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
@@ -123,5 +127,26 @@ public final class FileUtil {
 				.replaceAll(KEY_USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
 				.replaceAll(KEY_USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
 				.replaceAll(KEY_JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
+	}
+
+	/**
+	 * Check a filepath send by a user.
+	 * @param userFileName Path to check
+	 */
+	public static void checkUserPath(final String userPath) {
+		Assertion.checkArgument(!userPath.contains("..")
+				&& userPath.indexOf((char) 0) == -1, //char 0
+				USER_CHECK_ERROR_MSG);
+	}
+
+	/**
+	 * Check a filename send by a user.
+	 * @param userFileName FileName to check
+	 */
+	public static void checkUserFileName(final String userFileName) {
+		Assertion.checkArgument(userFileName.indexOf('\\') == -1 //Windows path_separator
+				&& userFileName.indexOf('/') == -1 //Linux path_separator
+				&& userFileName.indexOf((char) 0) == -1, //char 0
+				USER_CHECK_ERROR_MSG);
 	}
 }
