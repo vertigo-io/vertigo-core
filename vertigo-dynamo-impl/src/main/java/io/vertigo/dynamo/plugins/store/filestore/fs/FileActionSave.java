@@ -114,7 +114,9 @@ final class FileActionSave implements VTransactionSynchronization {
 	private void doRollback() {
 		// on ne fait pas de ménage si on a eu une erreur
 		if (txNewFile.exists()) {
-			txNewFile.delete();
+			if (!txNewFile.delete()) {
+				LOG.error("Can't rollback and delete file : " + txNewFile.getAbsolutePath());
+			}
 		}
 	}
 }
