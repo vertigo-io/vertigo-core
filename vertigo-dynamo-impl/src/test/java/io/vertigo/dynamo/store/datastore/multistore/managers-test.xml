@@ -51,7 +51,7 @@
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin">
 				<param name="name" value="temp"/>
-				<param name="path" value="java.io.tmpdir/testVertigo/"/>
+				<param name="path" value="${java.io.tmpdir}/testVertigo/"/>
 				<!-- <param name="purgeDelayMinutes" value="1440" />  --> <!--  24h -->
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin">

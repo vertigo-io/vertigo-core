@@ -43,6 +43,7 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
@@ -60,9 +61,6 @@ import io.vertigo.lang.WrappedException;
 public final class FsFileStorePlugin implements FileStorePlugin {
 	private static final String DEFAULT_STORE_NAME = "main";
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -114,15 +112,8 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		readOnly = false;
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
-		documentRoot = translatePath(path);
+		documentRoot = FileUtil.translatePath(path);
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
-	}
-
-	private static String translatePath(final String path) {
-		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */

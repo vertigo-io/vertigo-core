@@ -34,6 +34,9 @@ public final class FileUtil {
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
+	private static final String KEY_USER_HOME = "\\$\\{" + USER_HOME + "\\}";
+	private static final String KEY_USER_DIR = "\\$\\{" + USER_DIR + "\\}";
+	private static final String KEY_JAVA_IO_TMPDIR = "\\$\\{" + JAVA_IO_TMPDIR + "\\}";
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -117,8 +120,8 @@ public final class FileUtil {
 	 */
 	public static String translatePath(final String path) {
 		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
+				.replaceAll(KEY_USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
+				.replaceAll(KEY_USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
+				.replaceAll(KEY_JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 }

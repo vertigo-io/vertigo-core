@@ -37,6 +37,7 @@ import com.sleepycat.je.EnvironmentConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
@@ -50,10 +51,6 @@ import io.vertigo.util.ListBuilder;
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
-
 	private final List<BerkeleyCollectionConfig> collectionConfigs;
 	private final List<String> collectionNames;
 
@@ -99,17 +96,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		}
 		collectionNames = collectionNamesBuilder.unmodifiable().build();
 		//-----
-		dbFilePathTranslated = translatePath(dbFilePath);
+		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
 		this.daemonManager = daemonManager;
-	}
-
-	private static String translatePath(final String path) {
-		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {
