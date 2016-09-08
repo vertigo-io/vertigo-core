@@ -139,7 +139,7 @@ final class ReindexTask implements Runnable {
 			sb.append(String.valueOf(uri.getId()));
 			sep = " OR ";
 		}
-		sb.append(")");
+		sb.append(')');
 		return new ListFilter(sb.toString());
 	}
 }

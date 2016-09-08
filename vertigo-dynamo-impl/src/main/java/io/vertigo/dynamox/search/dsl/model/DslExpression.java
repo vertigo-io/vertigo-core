@@ -66,11 +66,11 @@ public final class DslExpression {
 				.append(preBody);
 		if (field.isPresent()) {
 			sb.append(field.get())
-					.append(":");
+					.append(':');
 		}
 		if (multiField.isPresent()) {
 			sb.append(multiField.get())
-					.append(":");
+					.append(':');
 		}
 		sb.append(query)
 				.append(postBody);

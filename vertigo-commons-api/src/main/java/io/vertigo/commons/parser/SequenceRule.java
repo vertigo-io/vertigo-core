@@ -60,7 +60,7 @@ public final class SequenceRule implements Rule<List<?>> {
 		final StringBuilder buffer = new StringBuilder();
 		for (final Rule<?> rule : rules) {
 			if (buffer.length() > 0) {
-				buffer.append(" ");
+				buffer.append(' ');
 			}
 			buffer.append(rule.getExpression());
 		}

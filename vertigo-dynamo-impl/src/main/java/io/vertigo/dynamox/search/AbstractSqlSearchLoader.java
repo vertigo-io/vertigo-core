@@ -123,11 +123,15 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		final StringBuilder request = new StringBuilder()
 				.append(" select " + pkFieldName + " from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
+				.append(" where ")
+				.append(pkFieldName)
+				.append(" > #")
+				.append(pkFieldName)
+				.append('#');
 		final String sqlQueryFilter = getSqlQueryFilter();
 		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
-			request.append("and (").append(sqlQueryFilter).append(")");
+			request.append("and (").append(sqlQueryFilter).append(')');
 		}
 		request.append(" order by " + pkFieldName + " ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);

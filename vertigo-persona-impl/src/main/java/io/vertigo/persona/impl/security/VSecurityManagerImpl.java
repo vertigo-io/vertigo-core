@@ -191,7 +191,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		int nextIndex = filter.indexOf("${", previousIndex);
 		while (nextIndex >= 0) {
 			personalFilter.append(filter.substring(previousIndex, nextIndex));
-			final int endIndex = filter.indexOf("}", nextIndex + "${".length());
+			final int endIndex = filter.indexOf('}', nextIndex + "${".length());
 			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
 			final String key = filter.substring(nextIndex + "${".length(), endIndex);
 			final String securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/

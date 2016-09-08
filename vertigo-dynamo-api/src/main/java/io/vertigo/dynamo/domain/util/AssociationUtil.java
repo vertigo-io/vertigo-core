@@ -66,7 +66,7 @@ public final class AssociationUtil {
 
 			final StringBuilder msg = new StringBuilder("Multiplicité '").append(multiplicity).append("' non reconnue parmi : ");
 			for (final Cardinality cardinality : values()) {
-				msg.append(cardinality.multiplicity).append(" ");
+				msg.append(cardinality.multiplicity).append(' ');
 			}
 			throw new IllegalArgumentException(msg.toString());
 		}

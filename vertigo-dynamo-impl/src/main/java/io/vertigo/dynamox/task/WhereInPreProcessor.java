@@ -124,9 +124,9 @@ final class WhereInPreProcessor {
 							.append(separator)
 							.append(IN_CHAR)
 							.append(inputParamName)
-							.append(".")
+							.append('.')
 							.append(String.valueOf(listObject.indexOf(dto)))
-							.append(".")
+							.append('.')
 							.append(pkFieldName)
 							.append(IN_CHAR);
 					separator = ",";
@@ -141,9 +141,9 @@ final class WhereInPreProcessor {
 					//-----
 					index++;
 				}
-				buildQuery.append(")");
+				buildQuery.append(')');
 				if (moreThanOneWhereIn) {
-					buildQuery.append(")");
+					buildQuery.append(')');
 				}
 			}
 		}

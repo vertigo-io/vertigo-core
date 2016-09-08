@@ -92,11 +92,11 @@ public final class NotFoundException extends Exception {
 		String sep = "- ";
 		int i = 1;
 		for (final String msg : errorRuleList) {
-			sb.append("\t")
+			sb.append('\t')
 					.append(i++)
 					.append(sep)
 					.append(msg)
-					.append("\n");
+					.append('\n');
 			sep = "- dans ";
 		}
 		return sb.toString();

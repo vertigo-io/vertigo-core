@@ -215,7 +215,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		query.append(dslField.getPreBody())
 				.append(dslField.getFieldName())
 				.append(dslField.getPostBody())
-				.append(":");
+				.append(':');
 	}
 
 	private void appendMultiQuery(final StringBuilder query, final DslBlockQuery dslMultiQueryDefinition, final DslExpression expressionDefinition, final StringBuilder parentQuery) {

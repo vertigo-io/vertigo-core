@@ -184,7 +184,7 @@ final class VFileUtil {
 				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
 					sb.append((char) c);
 				} else {
-					sb.append("%");
+					sb.append('%');
 					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
 				}
 			}

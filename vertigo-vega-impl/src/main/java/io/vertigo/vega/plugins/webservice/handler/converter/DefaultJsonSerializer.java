@@ -163,7 +163,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		final EncodedType encodedType = findEncodedType(result);
 		final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 		if (encodedType.getEncoderType() != EncoderType.JSON) {
-			contentType.append(";").append(encodedType.obtainContentType());
+			contentType.append(';').append(encodedType.obtainContentType());
 		}
 		response.type(contentType.toString());
 		return writeValue(result, response, webServiceDefinition);
@@ -234,10 +234,10 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 				sb.append(sep);
 				final String encodedValue = writeValue(entry.getValue(), response, webServiceDefinition);
-				sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
+				sb.append('\"').append(entry.getKey()).append("\":").append(encodedValue).append("");
 				sep = ", ";
 			}
-			sb.append("}");
+			sb.append('}');
 			return sb.toString();
 		} else if (value instanceof ExtendedObject<?>) {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;

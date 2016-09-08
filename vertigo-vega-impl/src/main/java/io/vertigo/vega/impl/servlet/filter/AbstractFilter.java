@@ -98,7 +98,7 @@ public abstract class AbstractFilter implements Filter {
 	protected static final boolean isUrlMatch(final String context, final String requestUri, final Pattern pattern) {
 		String url = requestUri.substring(requestUri.indexOf(context) + context.length());
 		if (url.contains(";")) { //pour les ;jsessionid qui ne doivent pas etre pris en compte par les patterns
-			url = url.substring(0, url.indexOf(";"));
+			url = url.substring(0, url.indexOf(';'));
 		}
 		final Matcher matcher = pattern.matcher(url);
 		return matcher.matches();

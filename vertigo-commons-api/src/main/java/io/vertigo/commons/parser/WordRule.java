@@ -95,11 +95,11 @@ public final class WordRule implements Rule<String> {
 						.append(readableCheckedChar)
 						.append("|\\.)");
 			} else {
-				expression.append("!");
+				expression.append('!');
 				expression.append(readableCheckedChar);
 			}
 		} else if (mode == Mode.REJECT || mode == Mode.REJECT_ESCAPABLE) {//tout
-			expression.append(".");
+			expression.append('.');
 		} else {
 			throw new IllegalArgumentException("case not implemented");
 		}

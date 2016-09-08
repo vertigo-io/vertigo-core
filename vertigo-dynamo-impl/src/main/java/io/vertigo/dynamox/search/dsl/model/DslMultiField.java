@@ -51,13 +51,13 @@ public final class DslMultiField {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append("[");
+				.append(preBody).append('[');
 		String sep = "";
 		for (final DslField field : fields) {
 			sb.append(sep).append(field);
 			sep = ",";
 		}
-		sb.append("]").append(postBody);
+		sb.append(']').append(postBody);
 		return sb.toString();
 	}
 
