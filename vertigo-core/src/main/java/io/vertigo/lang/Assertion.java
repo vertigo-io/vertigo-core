@@ -22,21 +22,21 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Assertions have been introduced by  B.Meyer with a language called Eiffel.
- * 
- * An assertion allows you to design by contract. 
+ *
+ * An assertion allows you to design by contract.
  * Each time an assetion fails, an specific exception is thrown.
  * - checkNotNull     throws NullPointerException
  * - checkArgument    throws IllegalArgumentException
  * - checkArgNotEmpty throws IllegalArgumentException
- * - checkState       throws IllegalStateException   
- * 
+ * - checkState       throws IllegalStateException
+ *
  * Assertion can define a message and args.
- * "hello {0}, an error occured on '{1}'", "foo", "bar" 
+ * "hello {0}, an error occured on '{1}'", "foo", "bar"
  *  hello foo, an error occured on 'bar'
- *  
+ *
  * You can use ' inside the message.
- *   
- * 
+ *
+ *
  * @author fconstantin
  */
 public final class Assertion {
@@ -58,9 +58,9 @@ public final class Assertion {
 	/**
 	 * Check if an object is not null.
 	 * If not an exception with a contextual message is thrown.
-	 * 
+	 *
 	 * @param o Object object that must be not null
-	 * @param msg Error message 
+	 * @param msg Error message
 	 * @param params params of the message
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
@@ -73,9 +73,9 @@ public final class Assertion {
 	/**
 	 * Check if a test is valid.
 	 * If not an exception with a contextual message is thrown.
-	 * 
+	 *
 	 * @param test If the assertion succeeds
-	 * @param msg Error message 
+	 * @param msg Error message
 	 * @param params params of the message
 	 */
 	public static void checkArgument(final boolean test, final String msg, final Object... params) {
@@ -87,8 +87,8 @@ public final class Assertion {
 	/**
 	 * Check if a string is not empty.
 	 * If not an generic exception is thrown.
-	 * 
-	 * @param str String that must be not empty 
+	 *
+	 * @param str String that must be not empty
 	 */
 	public static void checkArgNotEmpty(final String str) {
 		checkNotNull(str);
@@ -99,8 +99,8 @@ public final class Assertion {
 
 	/**
 	 * Check if a string is not empty.
-	 * @param str String that must be not empty 
-	 * @param msg Error message 
+	 * @param str String that must be not empty
+	 * @param msg Error message
 	 * @param params params of the message
 	 */
 	public static void checkArgNotEmpty(final String str, final String msg, final Object... params) {
@@ -115,12 +115,29 @@ public final class Assertion {
 	 * This assertion should be used inside a processing to check a step.
 	 *
 	 * @param test If the assertion succeeds
-	 * @param msg Error message 
+	 * @param msg Error message
 	 * @param params params of the message
 	 */
 	public static void checkState(final boolean test, final String msg, final Object... params) {
 		if (!test) {
 			throw new IllegalStateException(StringUtil.format(msg, params));
 		}
+	}
+
+	/**
+	 * @param ifCondition condition of this assertion
+	 * @return Assertion to check if condition is true
+	 */
+	public static ConditionalAssertion when(final boolean ifCondition) {
+		return (test, msg, params) -> {
+			if (ifCondition) {
+				Assertion.checkState(test, msg, params);
+			}
+		};
+	}
+
+	@FunctionalInterface
+	public interface ConditionalAssertion {
+		void check(final boolean test, final String msg, final Object... params);
 	}
 }
