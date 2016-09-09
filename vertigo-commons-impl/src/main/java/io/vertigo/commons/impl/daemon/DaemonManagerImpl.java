@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
@@ -49,14 +48,9 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		Home.getApp().registerAppListener(new AppListener() {
-
-			/** {@inheritDoc} */
-			@Override
-			public void onPostStart() {
-				DaemonManagerImpl.this.startAllDaemons();
-				appStarted = true;
-			}
+		Home.getApp().registerPostStartFunction(() -> {
+			DaemonManagerImpl.this.startAllDaemons();
+			appStarted = true;
 		});
 	}
 

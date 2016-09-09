@@ -20,7 +20,6 @@ package io.vertigo.core.spaces.component.data;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.lang.Activeable;
 
@@ -34,13 +33,8 @@ public final class StartedManagerImpl implements StartedManager, Activeable {
 	 */
 	@Inject
 	public StartedManagerImpl() {
-		Home.getApp().registerAppListener(new AppListener() {
-
-			/** {@inheritDoc} */
-			@Override
-			public void onPostStart() {
-				componentPostStarted = true;
-			}
+		Home.getApp().registerPostStartFunction(() -> {
+			componentPostStarted = true;
 		});
 	}
 

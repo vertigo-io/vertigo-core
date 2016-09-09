@@ -63,7 +63,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final ComponentSpace componentSpace;
 
 	//à remplacer par event ??
-	private final List<AppListener> appListeners = new ArrayList<>();
+	private final List<Runnable> postStartFunctions = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -115,16 +115,16 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public void registerAppListener(final AppListener appListener) {
+	public void registerPostStartFunction(final Runnable postStartFunction) {
 		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
-		Assertion.checkNotNull(appListener);
+		Assertion.checkNotNull(postStartFunction);
 		//-----
-		appListeners.add(appListener);
+		postStartFunctions.add(postStartFunction);
 	}
 
 	private void appPostStart() {
-		for (final AppListener appListener : appListeners) {
-			appListener.onPostStart();
+		for (final Runnable postStartFunction : postStartFunctions) {
+			postStartFunction.run();
 		}
 	}
 

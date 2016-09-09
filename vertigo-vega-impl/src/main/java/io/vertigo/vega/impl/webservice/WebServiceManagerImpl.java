@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -100,13 +99,9 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		this.webServerPlugin = webServerPlugin;
 		handlerChain = new HandlerChain(sortedWebServiceHandlerPlugins);
 		//we do nothing with webServerPlugin
-		Home.getApp().registerAppListener(new AppListener() {
-			/** {@inheritDoc} */
-			@Override
-			public void onPostStart() {
-				final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
-				WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
-			}
+		Home.getApp().registerPostStartFunction(() -> {
+			final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
+			WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
 		});
 	}
 
