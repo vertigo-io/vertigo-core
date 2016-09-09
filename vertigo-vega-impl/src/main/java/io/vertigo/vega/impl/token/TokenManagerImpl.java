@@ -38,6 +38,7 @@ import io.vertigo.vega.token.TokenManager;
  * @author npiedeloup
  */
 public final class TokenManagerImpl implements TokenManager {
+	private static final int UUID_LENGTH = 36;
 	private final String collection;
 	private final VSecurityManager securityManager;
 	/** Object token, by */
@@ -101,8 +102,10 @@ public final class TokenManagerImpl implements TokenManager {
 		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
-		return new StringBuilder(36 + 1 + 36)
-				.append(getUserTokenPart()).append(":").append(objectUUID)
+		return new StringBuilder(UUID_LENGTH + 1 + UUID_LENGTH)
+				.append(getUserTokenPart())
+				.append(":")
+				.append(objectUUID)
 				.toString();
 	}
 

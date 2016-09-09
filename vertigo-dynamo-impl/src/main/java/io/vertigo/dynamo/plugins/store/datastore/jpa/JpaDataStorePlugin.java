@@ -69,6 +69,7 @@ import io.vertigo.util.StringUtil;
  * @author  pchretien, npiedeloup
  */
 public final class JpaDataStorePlugin implements DataStorePlugin {
+	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final String DEFAULT_CONNECTION_NAME = "main";
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
@@ -236,8 +237,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			sb.append("_BY_CRITERIA");
 		}
 		String result = sb.toString();
-		if (result.length() > 40) {
-			result = result.substring(result.length() - 40);
+		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
+			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 
 		return result;
@@ -260,7 +261,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
 			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
 			request.append(sep)
-					.append("t.").append(camelFieldName).append(" like concat(:").append(fieldName)
+					.append("t.")
+					.append(camelFieldName)
+					.append(" like concat(:")
+					.append(fieldName)
 					.append(",'%')");
 			sep = " and ";
 		}
@@ -308,12 +312,20 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final String fkFieldName = fkField.getName();
 
 			final StringBuilder request = new StringBuilder(" select t.* from ")
-					.append(dtDefinition.getLocalName()).append(" t")
+					.append(dtDefinition.getLocalName())
+					.append(" t")
 					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-					.append(" join ").append(joinTableName)
-					.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+					.append(" join ")
+					.append(joinTableName)
+					.append(" j on j.")
+					.append(joinDtField.getName())
+					.append(" = t.")
+					.append(idFieldName)
 					//Condition de la recherche
-					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
+					.append(" where j.")
+					.append(fkFieldName)
+					.append(" = :")
+					.append(fkFieldName);
 
 			final URI uri = dtcUri.getSource();
 

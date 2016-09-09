@@ -30,6 +30,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class NotFoundException extends Exception {
 	private static final long serialVersionUID = 6096295235950712319L;
+	private static final int CONTEXT_AROUND_ERROR_WIDTH = 150; //number of char before and after an error to extract context
 	private final int index;
 	private final String s;
 	private final String comment;
@@ -121,12 +122,12 @@ public final class NotFoundException extends Exception {
 	 */
 	private String displayPosition() {
 		int start = index > 1 ? (s.lastIndexOf('\n', index - 1) + 1) : 0;
-		start = Math.max(index - 150, start);
+		start = Math.max(index - CONTEXT_AROUND_ERROR_WIDTH, start);
 		int end = s.indexOf('\n', index + 1);
 		if (end == -1) {
 			end = s.length();
 		}
-		end = Math.min(index + 150, end);
+		end = Math.min(index + CONTEXT_AROUND_ERROR_WIDTH, end);
 		final int pos = index - start;
 		final StringBuilder pointeur = new StringBuilder(pos);
 		for (int i = 0; i < pos; i++) {

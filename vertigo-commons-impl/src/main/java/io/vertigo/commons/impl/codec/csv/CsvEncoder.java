@@ -32,7 +32,8 @@ import io.vertigo.commons.codec.Encoder;
  * @author pchretien
  */
 public final class CsvEncoder implements Encoder<String, String> {
-	// caractere de remplace du caractère 13
+	// caractere 11 remplace le caractère 13 (retour chariot)
+	private static final char CHAR_13 = (char) 13;
 	private static final char CHAR_11 = (char) 11;
 
 	/** {@inheritDoc} */
@@ -43,7 +44,7 @@ public final class CsvEncoder implements Encoder<String, String> {
 		}
 		//On double les double-quotes et le retour chariot 13 (sinon carré dans Excel)
 		// ' '
-		return toEncode.replace("\"", "\"\"").replace((char) 13, CHAR_11);
+		return toEncode.replace("\"", "\"\"").replace(CHAR_13, CHAR_11);
 
 	}
 }

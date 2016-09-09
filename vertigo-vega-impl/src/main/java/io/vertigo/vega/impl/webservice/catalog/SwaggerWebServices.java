@@ -140,7 +140,7 @@ public final class SwaggerWebServices implements WebServices {
 				}
 			}
 		} else {
-			response.setStatus(404);
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			//send a content otherwise Jetty change status to 204
 			try (final OutputStream output = response.getOutputStream()) {
 				output.write((resourceName + " not found").getBytes("ISO-8859-1"));

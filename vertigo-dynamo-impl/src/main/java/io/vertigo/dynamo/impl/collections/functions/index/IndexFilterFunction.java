@@ -40,11 +40,12 @@ import io.vertigo.lang.Assertion;
  */
 public final class IndexFilterFunction<D extends DtObject> implements DtListFunction<D> {
 
+	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;
 	private Collection<DtField> searchedFields = Collections.emptyList();
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
-	private int top = 250;
+	private int top = DEFAULT_MAX_ROWS;
 
 	private final IndexPlugin indexPlugin;
 	private Boolean sortDesc;

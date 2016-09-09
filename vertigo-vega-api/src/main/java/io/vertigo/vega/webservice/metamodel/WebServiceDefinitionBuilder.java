@@ -39,6 +39,7 @@ import io.vertigo.vega.webservice.model.UiListState;
  * @author npiedeloup
  */
 public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefinition> {
+	private static final int NAME_MAX_SIZE = 40;
 	private final Method myMethod;
 	private Verb myVerb;
 	private String myPathPrefix;
@@ -105,7 +106,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				.replaceAll("_+", "_");
 		final String hashcodeAsHex = "$" + Integer.toHexString(argsRemovedPath.hashCode());
 		//On limite sa taille pour avec un nom de définition acceptable
-		return normalizedString.substring(0, Math.min(40, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
+		return normalizedString.substring(0, Math.min(NAME_MAX_SIZE, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
 	}
 
 	/**

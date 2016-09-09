@@ -76,7 +76,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		putCorsResponseHeaders(request, response);
 		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
-			response.status(200);
+			response.status(HttpServletResponse.SC_OK);
 			response.type("application/json;charset=UTF-8");
 			return "";
 		}

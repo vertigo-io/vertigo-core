@@ -43,6 +43,7 @@ import io.vertigo.lang.MessageText;
  * @author  fconstantin, pchretien , npiedeloup
  */
 public final class DtField implements DtFieldName {
+	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
 	public static final String PREFIX = "FLD_";
 
@@ -132,7 +133,7 @@ public final class DtField implements DtFieldName {
 		this.required = required;
 		//-----
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fieldName.length() <= 30, "the name of the field {0} has a limit size of 30", fieldName);
+		Assertion.checkArgument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH);
 		Assertion.checkArgument(fieldName.toUpperCase(Locale.ENGLISH).equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
 		name = fieldName;
 		//-----

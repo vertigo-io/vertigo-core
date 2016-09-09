@@ -33,6 +33,8 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, pforhan
  */
 public final class XmlAssociation {
+	private static final int SECOND_SEPARATOR = 7;
+	private static final int FIRST_SEPARATOR = 3;
 	private final String code;
 	private final String packageName;
 
@@ -102,7 +104,7 @@ public final class XmlAssociation {
 	 * @return Nom de l'association défini par l'utilisateur. (Peut être null)
 	 */
 	public String getCodeName() {
-		if (code.length() > 8 && code.charAt(3) == '_' && code.charAt(7) == '_') {
+		if (code.length() > 8 && code.charAt(FIRST_SEPARATOR) == '_' && code.charAt(SECOND_SEPARATOR) == '_') {
 			return code.substring(8);
 		}
 		return null;

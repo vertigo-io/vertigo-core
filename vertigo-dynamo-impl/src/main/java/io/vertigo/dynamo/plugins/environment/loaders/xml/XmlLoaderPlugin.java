@@ -45,6 +45,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public abstract class XmlLoaderPlugin implements LoaderPlugin {
+	private static final int MAX_COLUMN_LENGTH = 30;
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
 
@@ -190,8 +191,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On raccourci le nom de la clé étrangère.
-		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
-			fkFieldName = fkFieldName.substring(0, 30);
+		if (fkFieldName.length() > MAX_COLUMN_LENGTH) { // 30 est le max de dynamo (et de Oracle)
+			fkFieldName = fkFieldName.substring(0, MAX_COLUMN_LENGTH);
 			while (fkFieldName.endsWith("_")) {
 				fkFieldName = fkFieldName.substring(0, fkFieldName.length() - 1);
 			}

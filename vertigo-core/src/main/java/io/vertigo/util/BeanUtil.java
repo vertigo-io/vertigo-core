@@ -34,6 +34,7 @@ import io.vertigo.lang.WrappedException;
  * Méthodes utilitaires pour manipuler les propriétés (getter/setter) des JavaBeans (ie tous les types d'objets).
  */
 public final class BeanUtil {
+	private static final int BEAN_INFOS_MAX_SIZE = 250;
 	private static final Map<Class<?>, BeanInfo> BEAN_INFOS = new ConcurrentHashMap<>();
 
 	/**
@@ -92,7 +93,7 @@ public final class BeanUtil {
 	private static BeanInfo getBeanInfo(final Class<?> beanClass) throws IntrospectionException {
 		BeanInfo beanInfo = BEAN_INFOS.get(beanClass);
 		if (beanInfo == null) {
-			if (BEAN_INFOS.size() > 250) {
+			if (BEAN_INFOS.size() > BEAN_INFOS_MAX_SIZE) {
 				BEAN_INFOS.clear();
 				// pour éviter une fuite mémoire potentielle, par ex sur classes proxy
 			}

@@ -78,7 +78,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			final String indexName = "INDEX_" + dtcUri.urn();
 			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
-			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 1800, 3600));
+			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 30 * 60, 60 * 60));
 			index = RamLuceneIndex.class.cast(cacheManager.get(cacheContext, indexName));
 			if (index == null) {
 				index = createIndex(fullDtc, storeValue);

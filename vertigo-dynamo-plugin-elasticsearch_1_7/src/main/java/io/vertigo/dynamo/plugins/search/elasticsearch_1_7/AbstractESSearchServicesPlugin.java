@@ -70,6 +70,7 @@ import io.vertigo.lang.WrappedException;
  * @author dchallas
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
@@ -333,7 +334,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		esClient.admin()
 				.indices()
 				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
-						.flush(true).maxNumSegments(32)); //32 files : empirique
+						.flush(true).maxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)); //32 files : empirique
 	}
 
 	private void waitForYellowStatus() {

@@ -62,6 +62,7 @@ import io.vertigo.lang.VSystemException;
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
+	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final String DEFAULT_CONNECTION_NAME = "main";
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
@@ -164,7 +165,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.append(requestedFields)
 				.append(" from ")
 				.append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ")
+				.append(idFieldName)
+				.append(" = #")
+				.append(idFieldName)
+				.append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -209,12 +214,21 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String fkFieldName = fkField.getName();
 
 		final String request = new StringBuilder(" select t.* from ")
-				.append(tableName).append(" t")
+				.append(tableName)
+				.append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ").append(joinTableName)
-				.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+				.append(" join ")
+				.append(joinTableName)
+				.append(" j on j.")
+				.append(joinDtField.getName())
+				.append(" = t.")
+				.append(idFieldName)
 				//Condition de la recherche
-				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
+				.append(" where j.")
+				.append(fkFieldName)
+				.append(" = #")
+				.append(fkFieldName)
+				.append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -326,7 +340,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
 			request.append(sep)
-					.append(fieldName).append(" like #").append(fieldName).append('#')
+					.append(fieldName)
+					.append(" like #")
+					.append(fieldName)
+					.append('#')
 					.append(getConcatOperator() + "'%%'");
 			sep = " and ";
 		}
@@ -363,9 +380,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			sb.append("_BY_CRITERIA");
 		}
 		String result = sb.toString();
-		if (result.length() > 40) {
+		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
 			final int indexOfList = result.indexOf("_LIST_");
-			result = result.substring(0, indexOfList + "_LIST_".length()) + result.substring(indexOfList + "_LIST_".length() + result.length() - 40);
+			result = result.substring(0, indexOfList + "_LIST_".length()) + result.substring(indexOfList + "_LIST_".length() + result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 		return result;
 	}
@@ -492,8 +509,13 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String idFieldName = idField.getName();
 
 		final String request = new StringBuilder()
-				.append("delete from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append("delete from ")
+				.append(tableName)
+				.append(" where ")
+				.append(idFieldName)
+				.append(" = #")
+				.append(idFieldName)
+				.append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -586,9 +608,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected String getSelectForUpdate(final String tableName, final String requestedFields, final String idFieldName) {
 		return new StringBuilder()
-				.append(" select ").append(requestedFields).append(" from ")
+				.append(" select ")
+				.append(requestedFields)
+				.append(" from ")
 				.append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ")
+				.append(idFieldName)
+				.append(" = #")
+				.append(idFieldName)
+				.append('#')
 				.append(" for update ")
 				.toString();
 	}

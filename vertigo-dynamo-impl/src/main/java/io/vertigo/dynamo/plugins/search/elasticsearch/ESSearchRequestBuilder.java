@@ -61,6 +61,7 @@ import io.vertigo.lang.Builder;
  */
 final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
+	private static final int HIGHLIGHTER_NUM_OF_FRAGMENTS = 3;
 	private static final boolean ACCEPT_UNMAPPED_SORT_FIELD = false; //utile uniquement pour la recherche multi type
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
@@ -190,7 +191,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		searchRequestBuilder
 				.setQuery(requestQueryBuilder)
 				//.setHighlighterFilter(true) //We don't highlight the security filter
-				.setHighlighterNumOfFragments(3)
+				.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
 				.addHighlightedField("*");
 	}
 
