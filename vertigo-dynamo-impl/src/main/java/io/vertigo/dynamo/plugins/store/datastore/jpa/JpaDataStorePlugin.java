@@ -315,17 +315,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 					.append(dtDefinition.getLocalName())
 					.append(" t")
 					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-					.append(" join ")
-					.append(joinTableName)
-					.append(" j on j.")
-					.append(joinDtField.getName())
-					.append(" = t.")
-					.append(idFieldName)
+					.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
 					//Condition de la recherche
-					.append(" where j.")
-					.append(fkFieldName)
-					.append(" = :")
-					.append(fkFieldName);
+					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
 
 			final URI uri = dtcUri.getSource();
 
