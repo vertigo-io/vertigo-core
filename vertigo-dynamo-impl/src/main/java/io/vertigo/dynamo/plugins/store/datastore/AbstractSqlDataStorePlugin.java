@@ -161,15 +161,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
-				.append(" select ")
-				.append(requestedFields)
-				.append(" from ")
-				.append(tableName)
-				.append(" where ")
-				.append(idFieldName)
-				.append(" = #")
-				.append(idFieldName)
-				.append('#')
+				.append(" select ").append(requestedFields)
+				.append(" from ").append(tableName)
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -214,21 +208,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String fkFieldName = fkField.getName();
 
 		final String request = new StringBuilder(" select t.* from ")
-				.append(tableName)
-				.append(" t")
+				.append(tableName).append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ")
-				.append(joinTableName)
-				.append(" j on j.")
-				.append(joinDtField.getName())
-				.append(" = t.")
-				.append(idFieldName)
+				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
 				//Condition de la recherche
-				.append(" where j.")
-				.append(fkFieldName)
-				.append(" = #")
-				.append(fkFieldName)
-				.append('#')
+				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -340,11 +324,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
 			request.append(sep)
-					.append(fieldName)
-					.append(" like #")
-					.append(fieldName)
-					.append('#')
-					.append(getConcatOperator() + "'%%'");
+					.append(fieldName).append(" like #").append(fieldName).append('#').append(getConcatOperator() + "'%%'");
 			sep = " and ";
 		}
 		if (maxRows != null) {
@@ -509,13 +489,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String idFieldName = idField.getName();
 
 		final String request = new StringBuilder()
-				.append("delete from ")
-				.append(tableName)
-				.append(" where ")
-				.append(idFieldName)
-				.append(" = #")
-				.append(idFieldName)
-				.append('#')
+				.append("delete from ").append(tableName)
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -608,15 +583,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected String getSelectForUpdate(final String tableName, final String requestedFields, final String idFieldName) {
 		return new StringBuilder()
-				.append(" select ")
-				.append(requestedFields)
-				.append(" from ")
-				.append(tableName)
-				.append(" where ")
-				.append(idFieldName)
-				.append(" = #")
-				.append(idFieldName)
-				.append('#')
+				.append(" select ").append(requestedFields)
+				.append(" from ").append(tableName)
+				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.append(" for update ")
 				.toString();
 	}
