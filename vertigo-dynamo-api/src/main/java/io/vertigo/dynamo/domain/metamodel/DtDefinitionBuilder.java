@@ -241,7 +241,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.checkState(dtDefinition == null, "build() already executed");
 		//-----
 		if (myStereotype == null) {
-			myStereotype = (myIdField == null) ? DtStereotype.Data : DtStereotype.Entity;
+			myStereotype = (myIdField == null) ? DtStereotype.ValueObject : DtStereotype.Entity;
 		}
 		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
 		return dtDefinition;

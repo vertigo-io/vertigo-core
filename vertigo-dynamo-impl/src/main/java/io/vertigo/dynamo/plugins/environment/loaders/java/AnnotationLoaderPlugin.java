@@ -168,7 +168,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		} else if (Entity.class.isAssignableFrom(clazz)) {
 			return DtStereotype.Entity;
 		}
-		return DtStereotype.Data;
+		return DtStereotype.ValueObject;
 	}
 
 	private static void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {

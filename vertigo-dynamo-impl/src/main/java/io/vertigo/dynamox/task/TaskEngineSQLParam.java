@@ -112,7 +112,7 @@ final class TaskEngineSQLParam {
 		// Le paramètre n'est pas encore indexé
 		Assertion.checkNotNull(newAttributeName);
 		// Si le numéro de ligne est renseignée alors le champ doit l'être aussi
-		Assertion.checkNotNull(dtcRowNumber == null || newfieldName != null);
+		Assertion.when(dtcRowNumber != null).check(newfieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 		//-----
 		attributeName = newAttributeName;
 		this.in = in;
