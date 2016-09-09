@@ -42,7 +42,9 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return new AppConfigBuilder()
-				.beginBoot().withLogConfig(new LogConfig("/log4j.xml")).endBoot()
+				.beginBoot()
+				.withLogConfig(new LogConfig("/log4j.xml"))
+				.endBoot()
 				.build();
 	}
 
@@ -70,20 +72,16 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
 		byte[] serialized;
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-				oos.writeObject(sampleDefinitionRef);
-				oos.flush();
-			}
+		try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(); final ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+			oos.writeObject(sampleDefinitionRef);
+			oos.flush();
 			serialized = bos.toByteArray();
 		}
 
 		//---
 		DefinitionReference definitionReference;
-		try (ByteArrayInputStream bis = new ByteArrayInputStream(serialized)) {
-			try (ObjectInputStream ios = new ObjectInputStream(bis)) {
-				definitionReference = DefinitionReference.class.cast(ios.readObject());
-			}
+		try (final ByteArrayInputStream bis = new ByteArrayInputStream(serialized); final ObjectInputStream ios = new ObjectInputStream(bis)) {
+			definitionReference = DefinitionReference.class.cast(ios.readObject());
 		}
 
 		Assert.assertNotSame("DefinitionReferences must be not strictly equals", sampleDefinitionRef, definitionReference);
