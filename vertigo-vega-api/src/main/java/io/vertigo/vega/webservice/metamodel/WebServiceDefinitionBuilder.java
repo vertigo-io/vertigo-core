@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import io.vertigo.lang.Assertion;
@@ -74,7 +75,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		final String acceptedType = computeAcceptedType();
 		return new WebServiceDefinition(
 				//"WS_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
-				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(),
+				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(Locale.ENGLISH),
 				myVerb,
 				usedPath,
 				acceptedType,

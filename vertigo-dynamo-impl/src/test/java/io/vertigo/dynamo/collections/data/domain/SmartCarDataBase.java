@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections.data.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.vertigo.dynamo.domain.model.DtList;
 
@@ -70,7 +71,7 @@ public final class SmartCarDataBase {
 	public List<SmartCar> getCarsByMaker(final String maker) {
 		final List<SmartCar> carsByMaker = new ArrayList<>();
 		for (final SmartCar car : cars) {
-			if (car.getMaker().toLowerCase().equals(maker)) {
+			if (car.getMaker().toLowerCase(Locale.FRENCH).equals(maker)) {
 				carsByMaker.add(car);
 			}
 		}

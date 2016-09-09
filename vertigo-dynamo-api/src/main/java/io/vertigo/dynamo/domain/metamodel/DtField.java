@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.Locale;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
@@ -131,7 +133,7 @@ public final class DtField implements DtFieldName {
 		//-----
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fieldName.length() <= 30, "the name of the field {0} has a limit size of 30", fieldName);
-		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
+		Assertion.checkArgument(fieldName.toUpperCase(Locale.ENGLISH).equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
 		name = fieldName;
 		//-----
 		Assertion.checkNotNull(label);

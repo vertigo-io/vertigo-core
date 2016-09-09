@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -94,7 +95,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexName = indexName.toLowerCase().trim();
+		this.indexName = indexName.toLowerCase(Locale.ENGLISH).trim();
 		if (configFile.isPresent()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
@@ -134,16 +135,20 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
 			logMappings();
-			types.add(indexDefinition.getName().toLowerCase());
+			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
 		}
 
 		waitForYellowStatus();
 	}
 
 	private boolean isIndexSettingsDirty(final Settings settings) {
-		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
-				.addIndices(indexName).get()
-				.getSettings().get(indexName);
+		final Settings currentSettings = esClient.admin()
+				.indices()
+				.prepareGetIndex()
+				.addIndices(indexName)
+				.get()
+				.getSettings()
+				.get(indexName);
 		boolean indexSettingsDirty = false;
 		final Map<String, String> settingsMap = settings.getAsMap();
 		for (final Entry<String, String> entry : settingsMap.entrySet()) {
@@ -251,9 +256,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(), esClient);
+		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
 	}
 
 	/**
@@ -264,7 +269,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
-			typeMapping.startObject().startObject("properties")
+			typeMapping.startObject()
+					.startObject("properties")
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
@@ -289,8 +295,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			final PutMappingResponse putMappingResponse = esClient.admin().indices().preparePutMapping(indexName)
-					.setType(indexDefinition.getName().toLowerCase())
+			final PutMappingResponse putMappingResponse = esClient.admin()
+					.indices()
+					.preparePutMapping(indexName)
+					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
@@ -319,11 +327,13 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private void markToOptimize() {
-		esClient.admin().indices()
+		esClient.admin()
+				.indices()
 				.prepareForceMerge(indexName)
 				.setFlush(true)
 				.setMaxNumSegments(32)//32 files : empirique
-				.execute().actionGet();
+				.execute()
+				.actionGet();
 	}
 
 	private void waitForYellowStatus() {

@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -97,7 +98,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexName = indexName.toLowerCase().trim();
+		this.indexName = indexName.toLowerCase(Locale.ENGLISH).trim();
 		if (configFile.isPresent()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
@@ -133,16 +134,20 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
 			logMappings();
-			types.add(indexDefinition.getName().toLowerCase());
+			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
 		}
 
 		waitForYellowStatus();
 	}
 
 	private boolean isIndexSettingsDirty(final Settings settings) {
-		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
-				.addIndices(indexName).get()
-				.getSettings().get(indexName);
+		final Settings currentSettings = esClient.admin()
+				.indices()
+				.prepareGetIndex()
+				.addIndices(indexName)
+				.get()
+				.getSettings()
+				.get(indexName);
 		boolean indexSettingsDirty = false;
 		final Map<String, String> settingsMap = settings.getAsMap();
 		for (final Entry<String, String> entry : settingsMap.entrySet()) {
@@ -250,12 +255,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
 		final IndicesExistsResponse response = esClient.admin().indices().prepareExists(indexName).get(TimeValue.timeValueSeconds(5));
 		Assertion.checkState(response.isExists(), "Can't connect to Index {0}", indexName);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(), esClient);
+		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
 	}
 
 	/**
@@ -266,7 +271,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
-			typeMapping.startObject().startObject("properties")
+			typeMapping.startObject()
+					.startObject("properties")
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
@@ -294,7 +300,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin)
 					.setIndices(indexName)
-					.setType(indexDefinition.getName().toLowerCase())
+					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
@@ -324,8 +330,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private void markToOptimize(final SearchIndexDefinition indexDefinition) {
-		esClient.admin().indices()
-				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase())
+		esClient.admin()
+				.indices()
+				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
 						.flush(true).maxNumSegments(32)); //32 files : empirique
 	}
 

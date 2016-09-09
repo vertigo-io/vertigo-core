@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -750,7 +751,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		car.setModel("407");
 		car.setYear(2014);
 		car.setKilo(20000);
-		car.setMotorType("essence".toLowerCase());
+		car.setMotorType("essence".toLowerCase(Locale.FRENCH));
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");
 		return car;
 	}

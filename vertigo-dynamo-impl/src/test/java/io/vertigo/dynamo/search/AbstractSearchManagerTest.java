@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -456,7 +457,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains("avant")) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
 				Assert.assertEquals(carDataBase.getCarsBefore(2000), entry.getValue().longValue());
 			}
@@ -497,7 +498,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		boolean found = false;
 		final String make = "peugeot";
 		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().equals(make)) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(make)) {
 				found = true;
 				Assert.assertEquals(carDataBase.getCarsByMaker(make).size(), entry.getValue().intValue());
 			}
@@ -651,7 +652,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		FacetValue facetValue = null; //pb d'initialisation, et assert.notNull ne suffit pas
 		final Facet facet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains(facetValueLabel)) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
 				facetValue = entry.getKey();
 				break;
 			}
@@ -668,7 +669,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private static long getFacetValueCount(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
 		final Facet facet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains(facetValueLabel)) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
 				return entry.getValue();
 			}
 		}
@@ -793,24 +794,24 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Car>> databaseCluster = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
-			List<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase());
+			List<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase(Locale.FRENCH));
 			if (carsByMake == null) {
 				carsByMake = new ArrayList<>();
-				databaseCluster.put(car.getMake().toLowerCase(), carsByMake);
+				databaseCluster.put(car.getMake().toLowerCase(Locale.FRENCH), carsByMake);
 			}
 			carsByMake.add(car);
 		}
 		int previousCount = Integer.MAX_VALUE;
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
-			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
 			final int searchFacetCount = entry.getValue().size();
 			final List<Car> carsByMake = databaseCluster.get(searchFacetLabel);
 			Assert.assertEquals(carsByMake.size(), searchFacetCount);
 			Assert.assertTrue("Group order invalid", previousCount >= searchFacetCount);
 			previousCount = searchFacetCount;
 			for (final Car car : entry.getValue()) {
-				Assert.assertEquals(searchFacetLabel, car.getMake().toLowerCase());
+				Assert.assertEquals(searchFacetLabel, car.getMake().toLowerCase(Locale.FRENCH));
 			}
 		}
 	}
@@ -856,7 +857,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
-			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
 			final int searchFacetCount = entry.getValue().size();
 			final List<Car> carsByYear = databaseCluster.get(searchFacetLabel);
 			Assert.assertEquals(carsByYear.size(), searchFacetCount);
@@ -899,7 +900,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
-			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
 			final int searchFacetCount = entry.getValue().size();
 			final List<Car> carsByYear = databaseCluster.get(searchFacetLabel);
 			Assert.assertEquals(carsByYear.size(), searchFacetCount);
@@ -928,7 +929,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private static long containsDescription(final List<Car> cars, final String word) {
 		long count = 0;
 		for (final Car car : cars) {
-			if (car.getDescription().toLowerCase().contains(word)) {
+			if (car.getDescription().toLowerCase(Locale.FRENCH).contains(word)) {
 				count++;
 			}
 		}

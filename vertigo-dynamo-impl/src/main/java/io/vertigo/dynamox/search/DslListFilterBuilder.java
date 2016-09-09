@@ -400,7 +400,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				criteriaOnDefinitionField++;
 				query.append(userCriteria.getPreMissingPart());
 				if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
-					query.append(criteriaValue.toUpperCase()); //toUpperCase car ES n'interprete pas correctement en lowercase
+					query.append(criteriaValue.toUpperCase(Locale.ENGLISH)); //toUpperCase car ES n'interprete pas correctement en lowercase
 				} else {
 					query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
 							.append(criteriaValue)

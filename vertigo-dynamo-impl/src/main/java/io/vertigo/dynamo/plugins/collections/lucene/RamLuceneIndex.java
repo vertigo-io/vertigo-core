@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -251,7 +252,7 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	private static void addIndexed(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
 		final IndexableField textField = new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
-		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase()));
+		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase(Locale.ENGLISH)));
 		document.add(textField);
 		document.add(sortedDocValuesField);
 	}

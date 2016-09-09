@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -80,7 +81,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 		final SerializableDtField[] fields = new SerializableDtField[metaData.getColumnCount()];
 		for (int i = 1; i <= metaData.getColumnCount(); i++) {
 			//On passe les champs en maj pour postgreSQL et SQLServer.
-			fieldName = metaData.getColumnName(i).toUpperCase();
+			fieldName = metaData.getColumnName(i).toUpperCase(Locale.ENGLISH);
 			//On vérifie que la colonne possède un nom signifiant
 			Assertion.checkArgNotEmpty(fieldName, "Une des colonnes de la requête ne possède ni nom ni alias.");
 			//-----

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
 import java.sql.SQLException;
+import java.util.Locale;
 
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
@@ -86,7 +87,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
 		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
 		if (i1 > -1 && i2 > -1 && i2 > i1) {
-			return msg.substring(i1 + 1, i2).toUpperCase().trim();
+			return msg.substring(i1 + 1, i2).toUpperCase(Locale.ENGLISH).trim();
 		}
 		return null;
 	}

@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
@@ -53,7 +54,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 						new TermRule("Or"), //5
 						new TermRule("or"), //6
 						new TermRule("||") //7
-				),
+		),
 				DslSyntaxRules.SPACES //2
 		);
 	}
@@ -64,6 +65,6 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 		final String preSpaces = (String) parsing.get(0);
 		final String operator = (String) ((Choice) parsing.get(1)).getResult();
 		final String postSpaces = (String) parsing.get(2);
-		return DslUtil.concat(preSpaces, operator.toUpperCase(), postSpaces); //toUpperCase car ES n'interprete pas correctement en lowercase
+		return DslUtil.concat(preSpaces, operator.toUpperCase(Locale.ENGLISH), postSpaces); //toUpperCase car ES n'interprete pas correctement en lowercase
 	}
 }

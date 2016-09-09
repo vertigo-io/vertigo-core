@@ -114,7 +114,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final DslEntity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
 		final DslEntity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
 
-		final String name = association.getCode().toUpperCase();
+		final String name = association.getCode().toUpperCase(Locale.ENGLISH);
 
 		//On regarde si on est dans le cas d'une association simple ou multiple
 		final boolean isAssociationNN = AssociationUtil.isMultiple(association.getMultiplicityA()) && AssociationUtil.isMultiple(association.getMultiplicityB());

@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.vertigo.dynamo.domain.model.DtList;
 
@@ -59,7 +60,7 @@ public final class CarDataBase {
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);
 		car.setConsommation(conso);
-		car.setMotorType(motorType.toLowerCase());
+		car.setMotorType(motorType.toLowerCase(Locale.FRENCH));
 		car.setDescription(description);
 		car.setOptionalNumber(optionalNumber);
 		car.setOptionalString(optionalString);
@@ -83,7 +84,7 @@ public final class CarDataBase {
 	public List<Car> getCarsByMaker(final String make) {
 		final List<Car> byMakeCars = new ArrayList<>();
 		for (final Car car : cars) {
-			if (car.getMake().toLowerCase().equals(make)) {
+			if (car.getMake().toLowerCase(Locale.FRENCH).equals(make)) {
 				byMakeCars.add(car);
 			}
 		}
@@ -103,7 +104,7 @@ public final class CarDataBase {
 	public long containsDescription(final String word) {
 		long count = 0;
 		for (final Car car : cars) {
-			if (car.getDescription().toLowerCase().contains(word)) {
+			if (car.getDescription().toLowerCase(Locale.FRENCH).contains(word)) {
 				count++;
 			}
 		}

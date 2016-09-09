@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import io.vertigo.lang.Assertion;
 
@@ -112,7 +113,7 @@ public final class FileUtil {
 			extension = "";
 			// null dans la version cvs précédente
 		} else {
-			extension = fileName.substring(index + 1).toLowerCase();
+			extension = fileName.substring(index + 1).toLowerCase(Locale.ENGLISH);
 		}
 		return extension;
 	}

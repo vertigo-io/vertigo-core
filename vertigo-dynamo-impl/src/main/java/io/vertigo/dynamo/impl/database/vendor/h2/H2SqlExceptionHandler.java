@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.database.vendor.h2;
 
 import java.sql.SQLException;
+import java.util.Locale;
 
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
@@ -101,7 +102,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
 		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
 		if (i1 > -1 && i2 > -1 && i2 > i1) {
-			return msg.substring(i1 + 1, i2).toUpperCase().trim();
+			return msg.substring(i1 + 1, i2).toUpperCase(Locale.ENGLISH).trim();
 		}
 		return null;
 	}
@@ -124,7 +125,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 * DUPLICATE_KEY_1: Unique index or primary key violation: "PRIMARY KEY ON PUBLIC.TEST(ID)"; SQL statement: INSERT INTO TEST VALUES(1)
 	 * [23001-147]
 	 *
-	 * UNIQUE_INDEX_1: Unique index ou violation de clé primaire: "INS_UNIQUE_UTI_SES_INDEX_9 ON PUBLIC.INSCRIPTION (UTI_ID, SES_ID) VALUES (/ * clé: 1010 * / null, null, null, null , null, null, null, 1003, 1) "; 
+	 * UNIQUE_INDEX_1: Unique index ou violation de clé primaire: "INS_UNIQUE_UTI_SES_INDEX_9 ON PUBLIC.INSCRIPTION (UTI_ID, SES_ID) VALUES (/ * clé: 1010 * / null, null, null, null , null, null, null, 1003, 1) ";
 	 * [23505-176]
 	 */
 

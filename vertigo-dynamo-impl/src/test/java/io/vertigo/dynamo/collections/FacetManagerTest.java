@@ -21,6 +21,7 @@ package io.vertigo.dynamo.collections;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -71,7 +72,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains("avant")) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
 				Assert.assertEquals(carDataBase.getCarsBefore(2000), entry.getValue().longValue());
 			}
@@ -96,7 +97,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 		boolean found = false;
 		final String maker = "peugeot";
 		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().equals(maker)) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(maker)) {
 				found = true;
 				//System.out.println("make" + entry.getKey().getLabel().getDisplay());
 				Assert.assertEquals(carDataBase.getCarsByMaker(maker).size(), entry.getValue().intValue());
@@ -144,7 +145,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 		FacetValue facetFilter = null; //pb d'initialisation, et assert.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains(facetValueLabel)) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
 				facetFilter = entry.getKey();
 				break;
 			}
