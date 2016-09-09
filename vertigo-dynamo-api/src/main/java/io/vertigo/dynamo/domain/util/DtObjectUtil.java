@@ -172,9 +172,9 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Creates an URI from an existing object.
-	 * @param entity Object
-	 * @return this object URI
+	 * Creates an URI of entity from an existing fragment.
+	 * @param fragment fragment
+	 * @return related entity URI
 	 */
 	public static <E extends Entity, F extends Fragment<E>> URI<E> createEntityURI(final F fragment) {
 		Assertion.checkNotNull(fragment);
