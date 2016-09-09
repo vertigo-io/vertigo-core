@@ -40,7 +40,7 @@ public final class PurgeTempFileDaemon implements Daemon {
 
 	/** {@inheritDoc} */
 	@Override
-	public void run() throws Exception {
+	public void run() {
 		final File documentRootFile = new File(documentRoot);
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutes * 60L * 1000L;
 		purgeOlderFile(documentRootFile, maxTime);

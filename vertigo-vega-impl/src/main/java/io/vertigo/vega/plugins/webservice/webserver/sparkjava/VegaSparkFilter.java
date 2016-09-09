@@ -19,7 +19,6 @@
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 
 import spark.servlet.SparkApplication;
 import spark.servlet.SparkFilter;
@@ -32,7 +31,7 @@ public final class VegaSparkFilter extends SparkFilter {
 
 	/** {@inheritDoc} */
 	@Override
-	protected SparkApplication getApplication(final FilterConfig filterConfig) throws ServletException {
+	protected SparkApplication getApplication(final FilterConfig filterConfig) {
 		return new SparkApplication() {
 
 			/** {@inheritDoc} */

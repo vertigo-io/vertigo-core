@@ -84,7 +84,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnection obtainConnection() throws SQLException {
+	public SqlConnection obtainConnection() {
 		final EntityManager em = obtainJpaResource().getEntityManager();
 		return obtainWrappedConnection(em);
 	}
