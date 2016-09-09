@@ -150,14 +150,14 @@ final class TaskEngineSQLParam {
 	 * @return Paramètre de type liste.(DTC)
 	 */
 	boolean isList() {
-		return !isPrimitive() && rowNumber != null;
+		return rowNumber != null && !isPrimitive();
 	}
 
 	/**
 	 * @return Paramètre de type Objet.(DTO)
 	 */
 	boolean isObject() {
-		return !isPrimitive() && rowNumber == null;
+		return rowNumber == null && !isPrimitive();
 	}
 
 	/**

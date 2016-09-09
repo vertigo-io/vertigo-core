@@ -59,7 +59,7 @@ public final class CatalogWebServices implements WebServices {
 						.append('\n');
 			}
 			sb.append(webServiceDefinition.getVerb().name())
-					.append(" ")
+					.append(' ')
 					.append(webServiceDefinition.getPath())
 					.append(" (");
 			String sep = "";

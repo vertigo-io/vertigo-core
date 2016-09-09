@@ -57,7 +57,7 @@ final class VFileUtil {
 	 */
 	static boolean isMultipartRequest(final Request request) {
 		final String contentType = request.contentType();
-		return "POST".equalsIgnoreCase(request.raw().getMethod()) && contentType != null && contentType.startsWith("multipart/form-data");
+		return contentType != null && "POST".equalsIgnoreCase(request.raw().getMethod()) && contentType.startsWith("multipart/form-data");
 	}
 
 	/**
@@ -181,7 +181,7 @@ final class VFileUtil {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
 			sb.append(";filename*=UTF-8''");
 			for (final byte c : utf8FileName) {
-				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
+				if (c == '.' || c == '-' || c == '_' || isSimpleLetterOrDigit(c)) {
 					sb.append((char) c);
 				} else {
 					sb.append('%');

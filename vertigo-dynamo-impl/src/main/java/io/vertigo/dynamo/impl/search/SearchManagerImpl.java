@@ -120,7 +120,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			try {
 				Thread.sleep(100);
 			} catch (final InterruptedException e) {
-				//nothing
+				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 			remaningDirty = 0;
 			for (final List<URI<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {

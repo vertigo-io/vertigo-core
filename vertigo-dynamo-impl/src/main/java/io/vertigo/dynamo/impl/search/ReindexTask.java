@@ -99,7 +99,7 @@ final class ReindexTask implements Runnable {
 			try {
 				Thread.sleep(REINDEX_ERROR_WAIT);
 			} catch (final InterruptedException ie) {
-				//rien
+				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 			loadAndIndexAndRetry(searchChunk, tryNumber + 1); //on retry
 		}

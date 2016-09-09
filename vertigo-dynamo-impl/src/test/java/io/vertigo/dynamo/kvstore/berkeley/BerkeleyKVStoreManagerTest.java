@@ -176,7 +176,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		try {
 			Thread.sleep(timeSecond * 1000);
 		} catch (final InterruptedException e) {
-			//nothing
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 	}
 

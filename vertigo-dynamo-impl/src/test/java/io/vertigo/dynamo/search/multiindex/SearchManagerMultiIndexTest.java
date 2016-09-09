@@ -117,7 +117,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		try {
 			Thread.sleep(2000); //wait index was done
 		} catch (final InterruptedException e) {
-			//rien
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 	}
 }

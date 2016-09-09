@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -142,7 +143,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private Map<String, Object> createPathItemObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> pathItem = new LinkedHashMap<>();
-		pathItem.put(webServiceDefinition.getVerb().name().toLowerCase(), createOperationObject(webServiceDefinition));
+		pathItem.put(webServiceDefinition.getVerb().name().toLowerCase(Locale.ENGLISH), createOperationObject(webServiceDefinition));
 		return pathItem;
 	}
 

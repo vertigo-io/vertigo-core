@@ -250,7 +250,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		try {
 			Thread.sleep(1000 + 1500); //wait index was done
 		} catch (final InterruptedException e) {
-			//rien
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 	}
 

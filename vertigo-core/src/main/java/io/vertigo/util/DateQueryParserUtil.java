@@ -92,7 +92,7 @@ final class DateQueryParserUtil {
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
 			//---
-			final int unitCount = sign * Integer.valueOf(matcher.group(1));
+			final int unitCount = sign * Integer.parseInt(matcher.group(1));
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
 			if (!CALENDAR_UNITS.containsKey(calendarUnit)) {

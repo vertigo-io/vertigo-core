@@ -131,7 +131,7 @@ final class WhereInPreProcessor {
 							.append(IN_CHAR);
 					separator = ",";
 					//-----
-					if (moreThanOneWhereIn && index != listObject.size() && index % NB_MAX_WHERE_IN_ITEM == 0) {
+					if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
 						buildQuery
 								.append(isNotIn ? ") AND " : ") OR ")
 								.append(fkFieldName)
