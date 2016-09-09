@@ -103,9 +103,7 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
 		//-----
 		return new StringBuilder(UUID_LENGTH + 1 + UUID_LENGTH)
-				.append(getUserTokenPart())
-				.append(":")
-				.append(objectUUID)
+				.append(getUserTokenPart()).append(":").append(objectUUID)
 				.toString();
 	}
 
