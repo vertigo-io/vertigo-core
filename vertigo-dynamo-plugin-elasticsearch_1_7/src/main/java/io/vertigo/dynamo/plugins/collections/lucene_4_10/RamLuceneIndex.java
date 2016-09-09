@@ -230,7 +230,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @param keywords Keywords
 	 * @param searchedFields Searched field list
 	 * @param listFilters Added filters
-	 * @param listState list state
+	 * @param dtListState list state
 	 * @param boostedField Field use for boosting score
 	 * @return Filtered ordered list
 	 * @throws IOException Query error

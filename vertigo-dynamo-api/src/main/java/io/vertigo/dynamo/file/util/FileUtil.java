@@ -131,8 +131,8 @@ public final class FileUtil {
 	}
 
 	/**
-	 * Check a filepath send by a user.
-	 * @param userFileName Path to check
+	 * Check a filePath send by a user.
+	 * @param userPath Path to check
 	 */
 	public static void checkUserPath(final String userPath) {
 		Assertion.checkArgument(!userPath.contains("..")
