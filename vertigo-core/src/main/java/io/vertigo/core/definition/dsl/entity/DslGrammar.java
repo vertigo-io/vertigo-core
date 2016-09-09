@@ -28,6 +28,7 @@ import java.util.List;
  *
  * @author pchretien
  */
+@FunctionalInterface
 public interface DslGrammar {
 	/**
 	 * Returns the list of entities

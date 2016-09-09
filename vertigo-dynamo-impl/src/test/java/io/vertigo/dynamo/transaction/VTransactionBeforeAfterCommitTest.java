@@ -259,7 +259,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			}
 		});
 
-		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
+		currentTransaction.addAfterCompletion(new VTransactionAfterCompletionFunction() {
 
 			@Override
 			public void afterCompletion(final boolean txCommited) {
@@ -268,7 +268,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			}
 		});
 
-		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
+		currentTransaction.addAfterCompletion(new VTransactionAfterCompletionFunction() {
 			@Override
 			public void afterCompletion(final boolean txCommited) {
 				run2AfterCommit.set(txCommited);
@@ -278,7 +278,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			}
 		});
 
-		currentTransaction.addAfterCompletion(new VTransactionSynchronization() {
+		currentTransaction.addAfterCompletion(new VTransactionAfterCompletionFunction() {
 			@Override
 			public void afterCompletion(final boolean txCommited) {
 				run3AfterCommit.set(txCommited);

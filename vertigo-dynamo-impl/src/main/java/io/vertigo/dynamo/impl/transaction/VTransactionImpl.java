@@ -27,7 +27,7 @@ import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
-import io.vertigo.dynamo.transaction.VTransactionSynchronization;
+import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -54,7 +54,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new LinkedHashMap<>();
 
 	private final List<Runnable> beforeCommitFunctions = new ArrayList<>();
-	private final List<VTransactionSynchronization> afterCompletionFunctions = new ArrayList<>();
+	private final List<VTransactionAfterCompletionFunction> afterCompletionFunctions = new ArrayList<>();
 
 	/**
 	 * Transaction parente dans le cadre d'une transaction imbriquée.
@@ -279,7 +279,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	}
 
 	private void doAfterCompletion(final boolean commitSucceeded) {
-		for (final VTransactionSynchronization function : afterCompletionFunctions) {
+		for (final VTransactionAfterCompletionFunction function : afterCompletionFunctions) {
 			try {
 				function.afterCompletion(commitSucceeded);
 			} catch (final Throwable th) {
@@ -431,7 +431,7 @@ final class VTransactionImpl implements VTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void addAfterCompletion(final VTransactionSynchronization function) {
+	public void addAfterCompletion(final VTransactionAfterCompletionFunction function) {
 		Assertion.checkNotNull(function);
 		//-----
 		afterCompletionFunctions.add(function);

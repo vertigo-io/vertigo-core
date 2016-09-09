@@ -23,6 +23,7 @@ package io.vertigo.commons.eventbus;
  * @author npiedeloup
  * @param <E> the type of event
  */
+@FunctionalInterface
 public interface EventListener<E extends Event> {
 
 	/**

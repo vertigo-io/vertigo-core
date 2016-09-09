@@ -107,12 +107,7 @@ public final class FileManagerImpl implements FileManager {
 			throw new WrappedException("Can't get file meta from url", e);
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
-		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() throws IOException {
-				return ressourceUrl.openStream();
-			}
-		};
+		final InputStreamBuilder inputStreamBuilder = () -> ressourceUrl.openStream();
 		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
 	}
 

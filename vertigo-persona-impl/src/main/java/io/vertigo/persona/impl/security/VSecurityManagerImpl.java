@@ -19,7 +19,6 @@
 package io.vertigo.persona.impl.security;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -90,12 +89,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	private LocaleProvider createLocaleProvider() {
-		return new LocaleProvider() {
-			@Override
-			public Locale getCurrentLocale() {
-				final Optional<UserSession> userSession = getCurrentUserSession();
-				return userSession.isPresent() ? userSession.get().getLocale() : null;
-			}
+		return () -> {
+			final Optional<UserSession> userSession = getCurrentUserSession();
+			return userSession.isPresent() ? userSession.get().getLocale() : null;
 		};
 	}
 

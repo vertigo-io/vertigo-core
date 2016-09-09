@@ -46,61 +46,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	/** {@inheritDoc} */
 	@Override
 	public final Iterable<SearchChunk<K>> chunk(final Class<K> keyConceptClass) {
-		return new Iterable<SearchChunk<K>>() {
-
-			/** {@inheritDoc} */
-			@Override
-			public Iterator<SearchChunk<K>> iterator() {
-				return new Iterator<SearchChunk<K>>() {
-					private final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
-					private SearchChunk<K> current;
-					private SearchChunk<K> next = firstChunk();
-
-					/** {@inheritDoc} */
-					@Override
-					public boolean hasNext() {
-						if (next == null) {
-							next = nextChunk(current);
-						}
-						return !next.getAllURIs().isEmpty();
-					}
-
-					/** {@inheritDoc} */
-					@Override
-					public SearchChunk<K> next() {
-						if (!hasNext()) {
-							throw new NoSuchElementException("no next chunk found");
-						}
-						current = next;
-						next = null;
-						return current;
-					}
-
-					/** {@inheritDoc} */
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException("This list is unmodifiable");
-					}
-
-					private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
-						final List<URI<K>> previousUris = previousChunk.getAllURIs();
-						final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
-						// call loader service
-						final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
-						return new SearchChunk<>(uris);
-					}
-
-					private SearchChunk<K> firstChunk() {
-						final P lastId = getLowestIdValue(dtDefinition);
-						// call loader service
-						final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
-						return new SearchChunk<>(uris);
-					}
-
-				};
-			}
-
-		};
+		return () -> createIterator(keyConceptClass);
 	}
 
 	private List<URI<K>> doLoadNextURI(final P lastId, final DtDefinition dtDefinition) {
@@ -141,5 +87,55 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");
 		}
 		return pkValue;
+	}
+
+	private Iterator<SearchChunk<K>> createIterator(final Class<K> keyConceptClass) {
+		return new Iterator<SearchChunk<K>>() {
+			private final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+			private SearchChunk<K> current;
+			private SearchChunk<K> next = firstChunk();
+
+			/** {@inheritDoc} */
+			@Override
+			public boolean hasNext() {
+				if (next == null) {
+					next = nextChunk(current);
+				}
+				return !next.getAllURIs().isEmpty();
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public SearchChunk<K> next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException("no next chunk found");
+				}
+				current = next;
+				next = null;
+				return current;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("This list is unmodifiable");
+			}
+
+			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
+				final List<URI<K>> previousUris = previousChunk.getAllURIs();
+				final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
+				// call loader service
+				final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+				return new SearchChunk<>(uris);
+			}
+
+			private SearchChunk<K> firstChunk() {
+				final P lastId = getLowestIdValue(dtDefinition);
+				// call loader service
+				final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+				return new SearchChunk<>(uris);
+			}
+
+		};
 	}
 }

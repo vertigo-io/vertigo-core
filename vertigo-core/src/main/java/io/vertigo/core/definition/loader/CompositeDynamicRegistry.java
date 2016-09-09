@@ -61,13 +61,8 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new DslGrammar() {
+		return () -> entities;
 
-			@Override
-			public List<DslEntity> getEntities() {
-				return entities;
-			}
-		};
 	}
 
 	/** {@inheritDoc} */

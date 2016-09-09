@@ -25,6 +25,7 @@ import java.util.Locale;
  *
  * @author  pchretien, npiedeloup
  */
+@FunctionalInterface
 public interface LocaleProvider {
 	/**
 	 * @return Current locale (may be null)

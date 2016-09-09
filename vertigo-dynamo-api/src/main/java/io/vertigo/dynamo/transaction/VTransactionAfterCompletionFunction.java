@@ -23,7 +23,8 @@ package io.vertigo.dynamo.transaction;
  * Inspired from javax.transaction.Synchronization.
  * @author npiedeloup
  */
-public interface VTransactionSynchronization {
+@FunctionalInterface
+public interface VTransactionAfterCompletionFunction {
 
 	/**
 	 *  This method is invoked after the transaction has committed or

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 import org.hibernate.Session;
-import org.hibernate.jdbc.ReturningWork;
 
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -74,12 +72,8 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
-		return session.doReturningWork(new ReturningWork<SqlConnection>() {
-			@Override
-			public SqlConnection execute(final Connection connection) throws SQLException {
-				return new SqlConnection(connection, getDataBase(), false);
-			}
-		});
+		return session.doReturningWork((final Connection connection) -> new SqlConnection(connection, getDataBase(), false));
+
 	}
 
 	/** {@inheritDoc} */
