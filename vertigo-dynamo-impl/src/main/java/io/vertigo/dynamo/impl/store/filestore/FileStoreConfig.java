@@ -47,7 +47,7 @@ public final class FileStoreConfig {
 			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
 			Assertion.checkState(previous == null, "FileStorePlugin {0}, was already registered", name);
 		}
-		Assertion.when(!fileStoresMap.isEmpty()).check(fileStoresMap.get(MAIN_FILE_STORE_NAME) != null, "No {0} FileStorePlugin was set. Configure one and only one FileStorePlugin with name ''{0}''.", MAIN_FILE_STORE_NAME);
+		Assertion.when(!fileStoresMap.isEmpty()).check(() -> fileStoresMap.get(MAIN_FILE_STORE_NAME) != null, "No {0} FileStorePlugin was set. Configure one and only one FileStorePlugin with name ''{0}''.", MAIN_FILE_STORE_NAME);
 	}
 
 	/**
