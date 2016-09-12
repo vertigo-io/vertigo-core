@@ -57,7 +57,7 @@ public final class NotFoundException extends Exception {
 	 * Cette ligne indique l'endroit vraisemblable de l'erreur SI IL s'agit de la bonne règle !!
 	 * @return Index probable de l'erreur.
 	 */
-	int getLine() {
+	private int getLine() {
 		//On compte le nombre de lignes
 		int line = 0;
 		int next = 0;

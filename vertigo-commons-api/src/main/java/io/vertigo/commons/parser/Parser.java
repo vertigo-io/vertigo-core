@@ -29,11 +29,11 @@ package io.vertigo.commons.parser;
 @FunctionalInterface
 public interface Parser<R> {
 	/**
-	 * Return the new index position.
+	 * Returns the result of the parsing operation.
 	 * @param text Text to parse
 	 * @param start Start of the element of text to parse
 	 * @throws NotFoundException if parsing has failed.
-	 * @return new index position
+	 * @return the new index and the result
 	 */
 	ParserCursor<R> parse(String text, int start) throws NotFoundException;
 

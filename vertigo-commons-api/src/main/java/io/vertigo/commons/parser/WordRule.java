@@ -111,7 +111,6 @@ public final class WordRule implements Rule<String> {
 	@Override
 	public Parser<String> createParser() {
 		return new Parser<String>() {
-			private String word;
 
 			/** {@inheritDoc} */
 			@Override
@@ -127,7 +126,7 @@ public final class WordRule implements Rule<String> {
 				if (!emptyAccepted && index == start) {
 					throw new NotFoundException(text, start, null, "Mot respectant {0} attendu", getExpression());
 				}
-				word = text.substring(start, index);
+				String word = text.substring(start, index);
 				if (mode == Mode.REJECT_ESCAPABLE) {
 					word = word.replaceAll("\\\\(.)", "$1");
 				}

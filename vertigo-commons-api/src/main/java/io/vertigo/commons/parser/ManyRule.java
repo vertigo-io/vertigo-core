@@ -18,20 +18,21 @@
  */
 package io.vertigo.commons.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
 
 /**
  * The manyRule.
- * If the pattern AB is searched and 
- * the text is 
+ * If the pattern AB is searched and
+ * the text is
  *  - empty : an empty list is returned only if emptyAccepted.
- *  - ABAB : a list with a size of 2 is returned 
+ *  - ABAB : a list with a size of 2 is returned
  *  - ABABC : a list with a size of 2 is returned only if repeat is false.
- *  
- *  if repeat is true then all the text must be consumed during the evaluation.	
- *   
+ *
+ *  if repeat is true then all the text must be consumed during the evaluation.
+ *
  * @author pchretien
  * @param <R> Type of the product text parsing
  */
@@ -45,7 +46,7 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	 * Constructor.
 	 * @param rule the rule that's will be evaluated
 	 * @param emptyAccepted If an empty list is accepted
-	 * @param repeat if the evaluation must be repeated  
+	 * @param repeat if the evaluation must be repeated
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
 		Assertion.checkNotNull(rule);
@@ -70,21 +71,56 @@ public final class ManyRule<R> implements Rule<List<R>> {
 		return "(" + rule.getExpression() + ")" + (emptyAccepted ? "*" : "+");
 	}
 
-	boolean isEmptyAccepted() {
+	private boolean isEmptyAccepted() {
 		return emptyAccepted;
 	}
 
-	boolean isRepeat() {
+	private boolean isRepeat() {
 		return repeat;
 	}
 
-	Rule<R> getRule() {
+	private Rule<R> getRule() {
 		return rule;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Parser<List<R>> createParser() {
-		return new ManyRuleParser<>(this);
+		return new Parser<List<R>>() {
+			/** {@inheritDoc} */
+			@Override
+			public ParserCursor<List<R>> parse(final String text, final int start) throws NotFoundException {
+				int index = start;
+				//-----
+				final List<R> results = new ArrayList<>();
+				NotFoundException best = null;
+				try {
+					int prevIndex = -1;
+					while (index < text.length() && index > prevIndex) {
+						prevIndex = index;
+						final ParserCursor<R> parserCursor = getRule()
+								.createParser()
+								.parse(text, index);
+						index = parserCursor.getIndex();
+						if (index > prevIndex) {
+							//celé signifie que l"index n a pas avancé, on sort
+							results.add(parserCursor.getResult());
+						}
+					}
+				} catch (final NotFoundException e) {
+					best = e;
+					if (best.getIndex() > index) { //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+						throw best;
+					}
+				}
+				if (!isEmptyAccepted() && results.isEmpty()) {
+					throw new NotFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
+				}
+				if (isRepeat() && text.length() > index) {
+					throw new NotFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
+				}
+				return new ParserCursor<>(index, results);
+			}
+		};
 	}
 }

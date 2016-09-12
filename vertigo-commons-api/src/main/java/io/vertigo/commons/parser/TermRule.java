@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class TermRule implements Rule<String>, Parser<String> {
+public final class TermRule implements Rule<String> {
 	private final String term;
 
 	/**
@@ -47,23 +47,23 @@ public final class TermRule implements Rule<String>, Parser<String> {
 
 	@Override
 	public Parser<String> createParser() {
-		//Parser of terminal is threadsafe.
-		return this;
-	}
+		return new Parser<String>() {
 
-	/** {@inheritDoc} */
-	@Override
-	public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
-		final int end = Math.min(start + term.length(), text.length());
-		int match = start;
-		//We look how far the text matches with the rule.
-		while (match < end && text.charAt(match) == term.charAt(match - start)) {
-			match++;
-		}
-		//if the rule was fully evaluated then it's ok.
-		if (match == start + term.length()) {
-			return new ParserCursor<>(match, term);
-		}
-		throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
+			/** {@inheritDoc} */
+			@Override
+			public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
+				final int end = Math.min(start + term.length(), text.length());
+				int match = start;
+				//We look how far the text matches with the rule.
+				while (match < end && text.charAt(match) == term.charAt(match - start)) {
+					match++;
+				}
+				//if the rule was fully evaluated then it's ok.
+				if (match == start + term.length()) {
+					return new ParserCursor<>(match, term);
+				}
+				throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
+			}
+		};
 	}
 }
