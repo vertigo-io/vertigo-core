@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule;
 
 public final class DslWordListRuleTest {
@@ -32,17 +31,19 @@ public final class DslWordListRuleTest {
 
 	@Test
 	public void testList0() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("[ ]", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse("[ ]", 0)
+				.getResult();
 		Assert.assertEquals(0, list.size());
 	}
 
 	@Test
 	public void testList1() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("[BLEU, VerT, ROUGE ]", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse("[BLEU, VerT, ROUGE ]", 0)
+				.getResult();
 		Assert.assertEquals(3, list.size());
 		Assert.assertTrue(list.contains("BLEU"));
 		Assert.assertTrue(list.contains("VerT"));
@@ -51,9 +52,10 @@ public final class DslWordListRuleTest {
 
 	@Test
 	public void testList2() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("[BLEU, VERT, ROUGE ]", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse("[BLEU, VERT, ROUGE ]", 0)
+				.getResult();
 		Assert.assertEquals(3, list.size());
 		Assert.assertTrue(list.contains("BLEU"));
 		Assert.assertTrue(list.contains("VERT"));
@@ -62,25 +64,28 @@ public final class DslWordListRuleTest {
 
 	@Test(expected = Exception.class)
 	public void testList3() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0)
+				.getResult();
 		Assert.fail("liste :" + list);
 	}
 
 	@Test(expected = Exception.class)
 	public void testList4() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0)
+				.getResult();
 		Assert.fail("liste :" + list);
 	}
 
 	@Test
 	public void testList5() throws NotFoundException {
-		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("[BLEU ]", 0);
-		final List<String> list = parser.get();
+		final List<String> list = wordListRule
+				.createParser()
+				.parse("[BLEU ]", 0)
+				.getResult();
 		Assert.assertEquals(1, list.size());
 		Assert.assertTrue(list.contains("BLEU"));
 	}

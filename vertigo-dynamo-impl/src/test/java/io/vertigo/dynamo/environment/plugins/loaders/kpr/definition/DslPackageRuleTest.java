@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.parser.ParserCursor;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPackageRule;
 
 public final class DslPackageRuleTest {
@@ -30,23 +30,24 @@ public final class DslPackageRuleTest {
 
 	@Test
 	public void testExpression() throws NotFoundException {
-		Parser<String> parser = packageRule.createParser();
-		int index = parser.parse("package io.vertigo  xxxx", 0);
-		Assert.assertEquals("io.vertigo", parser.get());
-		Assert.assertEquals("package io.vertigo  ".length(), index);
+		final ParserCursor<String> cursor = packageRule
+				.createParser()
+				.parse("package io.vertigo  xxxx", 0);
+		Assert.assertEquals("io.vertigo", cursor.getResult());
+		Assert.assertEquals("package io.vertigo  ".length(), cursor.getIndex());
 	}
 
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression() throws NotFoundException {
-		Parser<String> parser = packageRule.createParser();
-		parser.parse("packageio.vertigo", 0);
-		Assert.fail("package : " + parser.get());
+		final ParserCursor<String> cursor = packageRule
+				.createParser()
+				.parse("packageio.vertigo", 0);
 	}
 
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression2() throws NotFoundException {
-		Parser<String> parser = packageRule.createParser();
-		parser.parse("  packageio.vertigo", 0);
-		Assert.fail("package : " + parser.get());
+		final ParserCursor<String> cursor = packageRule
+				.createParser()
+				.parse("  packageio.vertigo", 0);
 	}
 }

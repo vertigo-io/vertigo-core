@@ -20,6 +20,7 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.parser.ParserCursor;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.commons.parser.WordRule;
@@ -86,17 +87,9 @@ final class DslSyntaxRules {
 		@Override
 		public Parser<Void> createParser() {
 			return new Parser<Void>() {
-				/**
-				 * @return Mot trouvé par la règle
-				 */
-				@Override
-				public Void get() {
-					return null;
-				}
-
 				/** {@inheritDoc} */
 				@Override
-				public int parse(final String text, final int start) throws NotFoundException {
+				public ParserCursor<Void> parse(final String text, final int start) throws NotFoundException {
 					throw new NotFoundException(text, start, null, "Too deep", getExpression());
 				}
 

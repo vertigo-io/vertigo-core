@@ -25,7 +25,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Rule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
@@ -65,8 +64,9 @@ final class KspLoader {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();
-			final Rule<Void> rule = new DslKspRule(dynamicModelrepository);
-			rule.createParser().parse(s, 0);
+			new DslKspRule(dynamicModelrepository)
+					.createParser()
+					.parse(s, 0);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
 			throw new WrappedException(message, e);

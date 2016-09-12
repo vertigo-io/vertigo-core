@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.parser.ParserCursor;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
 
@@ -43,58 +43,58 @@ public final class DslPropertyEntryRuleTest {
 
 	@Test
 	public void test() throws NotFoundException {
-		final Parser<DslPropertyEntry> parser = MAIN.createParser();
-		//---
 		final String text = "label   : \"BLeU\", non reconnu";
-		final int end = parser.parse(text, 0);
-		final DslPropertyEntry propertyEntry = parser.get();
+		final ParserCursor<DslPropertyEntry> cursor = MAIN
+				.createParser()
+				.parse(text, 0);
+		final DslPropertyEntry propertyEntry = cursor.getResult();
 		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
 		Assert.assertEquals("BLeU", propertyEntry.getPropertyValueAsString());
-		Assert.assertEquals(text.length() - " non reconnu".length(), end); //On vérfifie que le pointeur a avancé jusqu'à 'non reconnu'
+		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex()); //On vérfifie que le pointeur a avancé jusqu'à 'non reconnu'
 
 	}
 
 	@Test
 	public void test2() throws NotFoundException {
-		final Parser<DslPropertyEntry> parser = MAIN.createParser();
-		//---
 		final String text = "label  :    \" vert \"";
-		final int end = parser.parse(text, 0); //On ne met pas de séparateur final et on met un espace
-		final DslPropertyEntry propertyEntry = parser.get();
+		final ParserCursor<DslPropertyEntry> cursor = MAIN
+				.createParser()
+				.parse(text, 0);
+		//On ne met pas de séparateur final et on met un espace
+		final DslPropertyEntry propertyEntry = cursor.getResult();
 		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
 		Assert.assertEquals(" vert ", propertyEntry.getPropertyValueAsString()); //l'espace doit être conservé
-		Assert.assertEquals(text.length(), end);
+		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
 	public void test3() throws NotFoundException {
-		final Parser<DslPropertyEntry> parser = MAIN.createParser();
-		//---
 		final String text = "size   : \"54\",";
-		final int end = parser.parse(text, 0);
-		final DslPropertyEntry propertyEntry = parser.get();
+		final ParserCursor<DslPropertyEntry> cursor = MAIN
+				.createParser()
+				.parse(text, 0);
+
+		final DslPropertyEntry propertyEntry = cursor.getResult();
 		Assert.assertEquals(SIZE, propertyEntry.getPropertyName());
 		Assert.assertEquals("54", propertyEntry.getPropertyValueAsString());
-		Assert.assertEquals(text.length(), end);
+		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail() throws NotFoundException {
-		final Parser<DslPropertyEntry> parser = MAIN.createParser();
-		//---
 		final String text = "maxlength   : \"54\";";
 		//La propriété maxlength n'est pas enregistrée
-		/*final int end = */parser.parse(text, 0);
-		Assert.fail();
+		MAIN
+				.createParser()
+				.parse(text, 0);
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail2() throws NotFoundException {
-		final Parser<DslPropertyEntry> parser = MAIN.createParser();
-		//---
 		final String text = "label  :    vert \"";
-		parser.parse(text, 0); //On omet la quote de début
-		Assert.fail();
+		MAIN
+				.createParser()
+				.parse(text, 0); //On omet la quote de début
 	}
 
 }

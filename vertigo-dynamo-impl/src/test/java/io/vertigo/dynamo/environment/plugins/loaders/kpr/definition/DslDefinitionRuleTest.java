@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDynamicDefinitionRule;
@@ -32,12 +31,12 @@ public class DslDefinitionRuleTest {
 
 	@Test
 	public void test1() throws NotFoundException {
-		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
+		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
+				.createParser()
+				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
+				.getResult();
 
-		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0);
-
-		Assert.assertNotNull(parser.get());
+		Assert.assertNotNull(dynamicDefinition);
 	}
 
 	//Exemple de test sur la déclaration d'un Domain
@@ -48,16 +47,17 @@ public class DslDefinitionRuleTest {
 	//		)
 	@Test
 	public void test2() throws NotFoundException {
-		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
-
-		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0);
-		Assert.assertNotNull(parser.get());
+		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
+				.createParser()
+				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
+				.getResult();
+		Assert.assertNotNull(dynamicDefinition);
 	}
 
 	@Test
 	public void testTemplate() throws NotFoundException {
-		final DslDynamicDefinitionRule DynamicDefinitionRule = new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository);
-		DynamicDefinitionRule.createParser().parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
+		new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository)
+				.createParser()
+				.parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
 	}
 }
