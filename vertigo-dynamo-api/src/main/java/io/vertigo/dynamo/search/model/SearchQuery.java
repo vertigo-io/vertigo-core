@@ -59,10 +59,14 @@ public final class SearchQuery implements Serializable {
 		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(queryListFilter);
 		Assertion.checkNotNull(securityListFilter);
-		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
-		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
-		Assertion.checkArgument(numDaysOfBoostRefDocument == null || numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
-		Assertion.checkArgument(mostRecentBoost == null || mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.when(boostedDocumentDateField != null)
+				.check(() -> numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
+		Assertion.when(boostedDocumentDateField == null)
+				.check(() -> numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
+		Assertion.when(numDaysOfBoostRefDocument != null)
+				.check(() -> numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.when(mostRecentBoost != null)
+				.check(() -> mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
 		this.facetedQuery = facetedQuery;
 		this.queryListFilter = queryListFilter;

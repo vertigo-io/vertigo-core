@@ -37,7 +37,8 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 
 	public AbstractSparkJavaWebServerPlugin(final Optional<String> apiPrefix) {
 		Assertion.checkNotNull(apiPrefix);
-		Assertion.checkArgument(!apiPrefix.isPresent() || apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
+		Assertion.when(apiPrefix.isPresent())
+				.check(() -> apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
 		//-----
 		this.apiPrefix = apiPrefix;
 	}

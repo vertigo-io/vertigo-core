@@ -102,8 +102,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mailPort);
 		Assertion.checkNotNull(mailLogin);
 		Assertion.checkNotNull(mailPassword);
-		Assertion.checkArgument(!mailLogin.isPresent() || !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
-				"When defined Login can't be empty");
+		Assertion.when(mailLogin.isPresent())
+				.check(() -> !StringUtil.isEmpty(mailLogin.get()), // if set, login can't be empty
+						"When defined Login can't be empty");
 		Assertion.checkArgument(!mailLogin.isPresent() ^ mailPassword.isPresent(), // login and password must be null or not null both
 				"Password is required when login is defined");
 		//-----
