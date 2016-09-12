@@ -167,17 +167,6 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.withDataSpace(from.getDataSpace())
 				.withPackageName(from.getPackageName());
 
-		//0. adds ID field
-		if (from.getIdField().isPresent()) {
-			final DtField idField = from.getIdField().get();
-			dtDefinitionBuilder.addIdField(
-					idField.getName(),
-					idField.getLabel().getDisplay(),
-					idField.getDomain(),
-					idField.getName().equals(sortFieldName),
-					idField.getName().equals(displayFieldName));
-		}
-
 		//1. adds aliases
 		for (final DynamicDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
 			final DtField aliasDtField = from.getField(alias.getName());
@@ -209,8 +198,23 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final List<DynamicDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
 
-		return dtDefinitionBuilder
+		final DtDefinition dtDefinition = dtDefinitionBuilder
 				.build();
+
+		//0. adds ID field -->>> Should be first, but needs an already build DtDefinition
+		if (from.getIdField().isPresent()) {
+			final DtField idField = from.getIdField().get();
+			dtDefinitionBuilder.addForeignKey(
+					idField.getName(),
+					idField.getLabel().getDisplay(),
+					idField.getDomain(),
+					true,
+					from.getName(),
+					idField.getName().equals(sortFieldName),
+					idField.getName().equals(displayFieldName));
+		}
+
+		return dtDefinition;
 	}
 
 	/**
