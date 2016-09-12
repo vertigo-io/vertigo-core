@@ -18,6 +18,8 @@
  */
 package io.vertigo.lang;
 
+import java.util.function.BooleanSupplier;
+
 import io.vertigo.util.StringUtil;
 
 /**
@@ -131,13 +133,13 @@ public final class Assertion {
 	public static ConditionalAssertion when(final boolean ifCondition) {
 		return (test, msg, params) -> {
 			if (ifCondition) {
-				Assertion.checkState(test, msg, params);
+				Assertion.checkState(test.getAsBoolean(), msg, params);
 			}
 		};
 	}
 
 	@FunctionalInterface
 	public interface ConditionalAssertion {
-		void check(final boolean test, final String msg, final Object... params);
+		void check(final BooleanSupplier test, final String msg, final Object... params);
 	}
 }
