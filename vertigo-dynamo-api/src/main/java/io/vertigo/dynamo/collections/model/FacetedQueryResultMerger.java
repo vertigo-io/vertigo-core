@@ -69,7 +69,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResultMerger(final FacetedQueryResult<?, S> firstResult, final String firstResultcode, final String firstResultFilter, final String firstResultLabel, final MessageKey firstResultLabelKey) {
 		Assertion.checkNotNull(firstResult);
 		Assertion.checkArgNotEmpty(firstResultFilter);
-		Assertion.checkArgument(firstResultLabelKey != null || firstResultLabel != null, "You must set a label for firstResult when merging result");
+		Assertion.when(firstResultLabelKey == null).check(() -> firstResultLabel != null, "You must set a label for firstResult when merging result");
 		//-----
 		//On garde les infos qui sont basés sur le premier élément
 		facetedQuery = firstResult.getFacetedQuery();
@@ -91,7 +91,8 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
-		Assertion.checkArgument(resultLabelKey != null || resultLabel != null, "You must set a label when merging result");
+		Assertion.when(resultLabelKey == null)
+				.check(() -> resultLabel != null, "You must set a label when merging result");
 		//-----
 		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
 		if (otherFacetValue == null) {

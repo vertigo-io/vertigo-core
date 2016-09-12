@@ -94,7 +94,8 @@ public final class Injector {
 			final Object injected = getInjected(container, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
-			Assertion.checkState(field.getType().isPrimitive() || null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
+			Assertion.when(!field.getType().isPrimitive())
+					.check(() -> null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
 		}
 	}

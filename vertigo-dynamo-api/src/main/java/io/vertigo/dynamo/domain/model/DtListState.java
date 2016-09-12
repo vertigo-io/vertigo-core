@@ -41,9 +41,11 @@ public final class DtListState {
 	 * @param sortDesc desc or asc order (null if not use)
 	 */
 	public DtListState(final Integer maxRows, final int skipRows, final String sortFieldName, final Boolean sortDesc) {
-		Assertion.checkArgument(maxRows == null || maxRows > 0, "maxRows must be positive ({0})", maxRows);
+		Assertion.when(maxRows != null)
+				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);
-		Assertion.checkArgument(sortFieldName == null || sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
+		Assertion.when(sortFieldName != null)
+				.check(() -> sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----
 		this.maxRows = Optional.ofNullable(maxRows);
 		this.skipRows = skipRows;

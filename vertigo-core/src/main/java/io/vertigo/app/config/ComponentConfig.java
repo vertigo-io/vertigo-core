@@ -53,7 +53,7 @@ public final class ComponentConfig {
 	ComponentConfig(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.checkArgument(!apiClass.isPresent() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.when(apiClass.isPresent()).check(() -> Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----

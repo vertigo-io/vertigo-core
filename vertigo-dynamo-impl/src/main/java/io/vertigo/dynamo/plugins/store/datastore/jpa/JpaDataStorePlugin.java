@@ -161,7 +161,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
+		Assertion.when(criteria != null)
+				.check(() -> criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
 		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
 		return doLoadList(dtDefinition, filterCriteria, maxRows);
