@@ -27,6 +27,7 @@ import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
+import io.vertigo.commons.parser.Rule.Dummy;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
@@ -44,7 +45,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslKspRule extends AbstractRule<Void, List<?>> {
+public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelrepository;
 
 	/**
@@ -70,13 +71,13 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
 		return new SequenceRule(
 				SPACES,
-				new DslPackageRule(),//1
+				new DslPackageRule(), //1
 				SPACES,
 				manyRule); //3
 	}
 
 	@Override
-	protected Void handle(final List<?> parsing) {
+	protected Dummy handle(final List<?> parsing) {
 		final String packageName = (String) parsing.get(1);
 		final List<Choice> tuples = (List<Choice>) parsing.get(3);
 
@@ -98,7 +99,7 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
 			}
 		}
-		return null;
+		return Dummy.INSTANCE;
 	}
 
 	private void handleTemplateRule(final DynamicDefinition dynamicDefinition) {

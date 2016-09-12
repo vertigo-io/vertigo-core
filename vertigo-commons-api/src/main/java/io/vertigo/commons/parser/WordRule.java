@@ -109,31 +109,23 @@ public final class WordRule implements Rule<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Parser<String> createParser() {
-		return new Parser<String>() {
-
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
-				int index = start;
-				// On vérifie que le caractère est contenu dans les caractères acceptés.
-				// On vérifie que le caractère n'est pas contenu dans les caractères rejetés.
-				while (index < text.length()
-						&& (mode != Mode.ACCEPT || acceptedCharacters.indexOf(text.charAt(index)) >= 0)
-						&& (mode == Mode.REJECT_ESCAPABLE && (index > 0) && text.charAt(index - 1) == escapeChar || (rejectedCharacters.indexOf(text.charAt(index)) < 0))) {
-					index++;
-				}
-				if (!emptyAccepted && index == start) {
-					throw new NotFoundException(text, start, null, "Mot respectant {0} attendu", getExpression());
-				}
-				String word = text.substring(start, index);
-				if (mode == Mode.REJECT_ESCAPABLE) {
-					word = word.replaceAll("\\\\(.)", "$1");
-				}
-				return new ParserCursor<>(index, word);
-			}
-
-		};
+	public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
+		int index = start;
+		// On vérifie que le caractère est contenu dans les caractères acceptés.
+		// On vérifie que le caractère n'est pas contenu dans les caractères rejetés.
+		while (index < text.length()
+				&& (mode != Mode.ACCEPT || acceptedCharacters.indexOf(text.charAt(index)) >= 0)
+				&& (mode == Mode.REJECT_ESCAPABLE && (index > 0) && text.charAt(index - 1) == escapeChar || (rejectedCharacters.indexOf(text.charAt(index)) < 0))) {
+			index++;
+		}
+		if (!emptyAccepted && index == start) {
+			throw new NotFoundException(text, start, null, "Mot respectant {0} attendu", getExpression());
+		}
+		String word = text.substring(start, index);
+		if (mode == Mode.REJECT_ESCAPABLE) {
+			word = word.replaceAll("\\\\(.)", "$1");
+		}
+		return new ParserCursor<>(index, word);
 	}
 
 	private static String encode(final String chaine) {

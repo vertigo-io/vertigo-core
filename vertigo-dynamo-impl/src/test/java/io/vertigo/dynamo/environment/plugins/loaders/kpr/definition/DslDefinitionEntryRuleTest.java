@@ -35,7 +35,6 @@ public final class DslDefinitionEntryRuleTest {
 	public void test0() throws NotFoundException {
 		final String text = "myFirstProperty : [BLEU ], non reconnu";
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -48,7 +47,6 @@ public final class DslDefinitionEntryRuleTest {
 	public void test1() throws NotFoundException {
 		final String text = "myFirstProperty : [BLEU, VerT, ROUGE, T_REX ], non reconnu";
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -62,7 +60,6 @@ public final class DslDefinitionEntryRuleTest {
 	public void test2() throws NotFoundException {
 		final String text = "myLastProperty : [ ],";
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 
 		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
@@ -75,7 +72,6 @@ public final class DslDefinitionEntryRuleTest {
 	public void test3() throws NotFoundException {
 		final String text = "myFirstProperty    :    [BLEU,VerT,    ROUGE    ]";
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -88,7 +84,6 @@ public final class DslDefinitionEntryRuleTest {
 	public void test4() throws NotFoundException {
 		final String text = "myFirstProperty : BLEU,";
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -102,17 +97,13 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myLastProperty : [BLEU;";
 		//on ne ferme pas l'accolade
 		final ParserCursor<DslDefinitionEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
-		Assert.fail();
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail2() throws NotFoundException {
 		final String text = "myUnknownProperty : BLEU";
 		//on positionne un nom erroné de propriété
-		MAIN.createParser()
-				.parse(text, 0);
-		Assert.fail();
+		MAIN.parse(text, 0);
 	}
 }

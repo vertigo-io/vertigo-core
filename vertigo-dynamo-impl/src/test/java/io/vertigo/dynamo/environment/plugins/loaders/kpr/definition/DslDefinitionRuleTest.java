@@ -32,7 +32,6 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void test1() throws NotFoundException {
 		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
-				.createParser()
 				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
 				.getResult();
 
@@ -48,7 +47,6 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void test2() throws NotFoundException {
 		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
-				.createParser()
 				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
 				.getResult();
 		Assert.assertNotNull(dynamicDefinition);
@@ -57,7 +55,6 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void testTemplate() throws NotFoundException {
 		new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository)
-				.createParser()
 				.parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
 	}
 }

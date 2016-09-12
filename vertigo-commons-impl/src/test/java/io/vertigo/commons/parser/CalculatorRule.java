@@ -21,7 +21,7 @@ package io.vertigo.commons.parser;
 import java.util.List;
 
 final class CalculatorRule extends AbstractRule<Integer, List<?>> {
-	private static final Rule<Void> SPACES = new WhiteSpaceRule(" ");
+	private static final Rule<?> SPACES = new WhiteSpaceRule(" ");
 
 	//---Liste des opérations gérées
 	private static final Rule<String> ADD = new TermRule("+");
@@ -35,9 +35,9 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 
 	private static final Rule<List<?>> EXPRESSION = new SequenceRule(//
 			NUMBER, //0
-			SPACES,//
-			OPERATOR,//
-			SPACES,//
+			SPACES, //
+			OPERATOR, //
+			SPACES, //
 			NUMBER //4
 	);
 

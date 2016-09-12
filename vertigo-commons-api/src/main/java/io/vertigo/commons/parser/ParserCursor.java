@@ -1,5 +1,7 @@
 package io.vertigo.commons.parser;
 
+import io.vertigo.lang.Assertion;
+
 /**
  * 	Contains the result of a parsing operation.
  *   - the new index position
@@ -18,7 +20,7 @@ public final class ParserCursor<R> {
 	 * @param result
 	 */
 	public ParserCursor(final int index, final R result) {
-		//	Assertion.checkNotNull(result);
+		Assertion.checkNotNull(result);
 		//---
 		this.index = index;
 		this.result = result;

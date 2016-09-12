@@ -45,7 +45,6 @@ public final class DslPropertyEntryRuleTest {
 	public void test() throws NotFoundException {
 		final String text = "label   : \"BLeU\", non reconnu";
 		final ParserCursor<DslPropertyEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		final DslPropertyEntry propertyEntry = cursor.getResult();
 		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
@@ -58,7 +57,6 @@ public final class DslPropertyEntryRuleTest {
 	public void test2() throws NotFoundException {
 		final String text = "label  :    \" vert \"";
 		final ParserCursor<DslPropertyEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 		//On ne met pas de séparateur final et on met un espace
 		final DslPropertyEntry propertyEntry = cursor.getResult();
@@ -71,7 +69,6 @@ public final class DslPropertyEntryRuleTest {
 	public void test3() throws NotFoundException {
 		final String text = "size   : \"54\",";
 		final ParserCursor<DslPropertyEntry> cursor = MAIN
-				.createParser()
 				.parse(text, 0);
 
 		final DslPropertyEntry propertyEntry = cursor.getResult();
@@ -84,17 +81,13 @@ public final class DslPropertyEntryRuleTest {
 	public void testFail() throws NotFoundException {
 		final String text = "maxlength   : \"54\";";
 		//La propriété maxlength n'est pas enregistrée
-		MAIN
-				.createParser()
-				.parse(text, 0);
+		MAIN.parse(text, 0);
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail2() throws NotFoundException {
 		final String text = "label  :    vert \"";
-		MAIN
-				.createParser()
-				.parse(text, 0); //On omet la quote de début
+		MAIN.parse(text, 0); //On omet la quote de début
 	}
 
 }

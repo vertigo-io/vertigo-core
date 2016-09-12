@@ -44,7 +44,6 @@ public final class DslParserUtil {
 	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) throws NotFoundException {
 		final Rule<DslMultiExpression> expressionsRule = new DslMultiExpressionRule();
 		return new ManyRule<>(expressionsRule, false, true)
-				.createParser()
 				.parse(buildQuery, 0)
 				.getResult();
 	}

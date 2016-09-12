@@ -76,40 +76,34 @@ public final class FirstOfRule implements Rule<Choice> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Parser<Choice> createParser() {
-		return new Parser<Choice>() {
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<Choice> parse(final String text, final int start) throws NotFoundException {
-				//Règle ayant été le plus profond
-				NotFoundException best = null;
-				int bestIndex = -1;
-				for (int i = 0; i < getRules().size(); i++) {
-					try {
-						final Parser<?> parser = getRules().get(i).createParser();
-						final ParserCursor<?> parserCursor = parser.parse(text, start);
-						final int end = parserCursor.getIndex();
-						final Choice result = new Choice(i, parserCursor.getResult());
-						if (end < bestIndex) {
-							//best est non null, car affecté en même temps que bestIndex
-							throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
-						}
-						return new ParserCursor(end, result);
-					} catch (final NotFoundException e) {
-						if (e.getIndex() > bestIndex) {
-							bestIndex = e.getIndex();
-							best = e;
-						}
-						//Tant que l'on a des erreurs sur l'évaluation des règles
-						//on recommence jusqu'à trouver la première qui fonctionne.
-					}
+	public ParserCursor<Choice> parse(final String text, final int start) throws NotFoundException {
+		//Règle ayant été le plus profond
+		NotFoundException best = null;
+		int bestIndex = -1;
+		for (int i = 0; i < getRules().size(); i++) {
+			try {
+				final ParserCursor<?> parserCursor = getRules().get(i)
+						.parse(text, start);
+				final int end = parserCursor.getIndex();
+				final Choice result = new Choice(i, parserCursor.getResult());
+				if (end < bestIndex) {
+					//best est non null, car affecté en même temps que bestIndex
+					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				//Nothing has been found
-				if (best == null) {
-					throw new NotFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
+				return new ParserCursor(end, result);
+			} catch (final NotFoundException e) {
+				if (e.getIndex() > bestIndex) {
+					bestIndex = e.getIndex();
+					best = e;
 				}
-				throw best;
+				//Tant que l'on a des erreurs sur l'évaluation des règles
+				//on recommence jusqu'à trouver la première qui fonctionne.
 			}
-		};
+		}
+		//Nothing has been found
+		if (best == null) {
+			throw new NotFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
+		}
+		throw best;
 	}
 }

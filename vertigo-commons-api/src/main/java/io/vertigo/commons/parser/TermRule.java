@@ -45,25 +45,19 @@ public final class TermRule implements Rule<String> {
 		return "'" + term + "'";
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public Parser<String> createParser() {
-		return new Parser<String>() {
-
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
-				final int end = Math.min(start + term.length(), text.length());
-				int match = start;
-				//We look how far the text matches with the rule.
-				while (match < end && text.charAt(match) == term.charAt(match - start)) {
-					match++;
-				}
-				//if the rule was fully evaluated then it's ok.
-				if (match == start + term.length()) {
-					return new ParserCursor<>(match, term);
-				}
-				throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
-			}
-		};
+	public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
+		final int end = Math.min(start + term.length(), text.length());
+		int match = start;
+		//We look how far the text matches with the rule.
+		while (match < end && text.charAt(match) == term.charAt(match - start)) {
+			match++;
+		}
+		//if the rule was fully evaluated then it's ok.
+		if (match == start + term.length()) {
+			return new ParserCursor<>(match, term);
+		}
+		throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
 	}
 }

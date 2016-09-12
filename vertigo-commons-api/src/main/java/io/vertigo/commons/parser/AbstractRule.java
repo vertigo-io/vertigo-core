@@ -46,22 +46,15 @@ public abstract class AbstractRule<R, M> implements Rule<R> {
 
 	protected abstract R handle(M parsing);
 
+	/** {@inheritDoc} */
 	@Override
-	public final Parser<R> createParser() {
-		return new Parser<R>() {
-
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<R> parse(final String text, final int start) throws NotFoundException {
-				final ParserCursor<M> parserCursor = getMainRule()
-						.createParser()
-						.parse(text, start);
-				final int end = parserCursor.getIndex();
-				//---
-				final R result = handle(parserCursor.getResult());
-				//---
-				return new ParserCursor<>(end, result);
-			}
-		};
+	public ParserCursor<R> parse(final String text, final int start) throws NotFoundException {
+		final ParserCursor<M> parserCursor = getMainRule()
+				.parse(text, start);
+		final int end = parserCursor.getIndex();
+		//---
+		final R result = handle(parserCursor.getResult());
+		//---
+		return new ParserCursor<>(end, result);
 	}
 }

@@ -25,11 +25,28 @@ package io.vertigo.commons.parser;
  * @param<R> Type of the product text parsing
  */
 public interface Rule<R> {
+	public static class Dummy {
+		public static Dummy INSTANCE = new Dummy();
+
+		private Dummy() {
+			super();
+		}
+	}
+
 	/**
-	 * @return Expression de la règle.
-	 */
+	* @return Expression de la règle.
+	*/
 	String getExpression();
 
-	Parser<R> createParser();
-
+	/**
+	 * Parser produces an object <P> or throw an exception.
+	 * A parser analyzes a text, according some rules.
+	 * A parser is responsible for moving the index position or throw an exception.
+	 * Returns the result of the parsing operation.
+	 * @param text Text to parse
+	 * @param start Start of the element of text to parse
+	 * @throws NotFoundException if parsing has failed.
+	 * @return the new index and the result
+	 */
+	ParserCursor<R> parse(final String text, final int start) throws NotFoundException;
 }

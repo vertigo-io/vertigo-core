@@ -31,7 +31,6 @@ public final class DslPackageRuleTest {
 	@Test
 	public void testExpression() throws NotFoundException {
 		final ParserCursor<String> cursor = packageRule
-				.createParser()
 				.parse("package io.vertigo  xxxx", 0);
 		Assert.assertEquals("io.vertigo", cursor.getResult());
 		Assert.assertEquals("package io.vertigo  ".length(), cursor.getIndex());
@@ -40,14 +39,12 @@ public final class DslPackageRuleTest {
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression() throws NotFoundException {
 		final ParserCursor<String> cursor = packageRule
-				.createParser()
 				.parse("packageio.vertigo", 0);
 	}
 
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression2() throws NotFoundException {
 		final ParserCursor<String> cursor = packageRule
-				.createParser()
 				.parse("  packageio.vertigo", 0);
 	}
 }

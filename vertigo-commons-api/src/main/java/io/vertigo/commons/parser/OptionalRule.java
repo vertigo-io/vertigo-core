@@ -52,21 +52,14 @@ public final class OptionalRule<R> implements Rule<Optional<R>> {
 	}
 
 	@Override
-	public Parser<Optional<R>> createParser() {
-		return new Parser<Optional<R>>() {
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<Optional<R>> parse(final String text, final int start) throws NotFoundException {
-				try {
-					final Parser<R> parser = rule.createParser();
-					final ParserCursor<R> result = parser.parse(text, start);
-					final Optional<R> option = Optional.ofNullable(result.getResult());
-					return new ParserCursor<>(result.getIndex(), option);
-				} catch (final NotFoundException e) {
-					//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
-					return new ParserCursor<>(start, Optional.empty());
-				}
-			}
-		};
+	public ParserCursor<Optional<R>> parse(final String text, final int start) throws NotFoundException {
+		try {
+			final ParserCursor<R> result = rule.parse(text, start);
+			final Optional<R> option = Optional.ofNullable(result.getResult());
+			return new ParserCursor<>(result.getIndex(), option);
+		} catch (final NotFoundException e) {
+			//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
+			return new ParserCursor<>(start, Optional.empty());
+		}
 	}
 }

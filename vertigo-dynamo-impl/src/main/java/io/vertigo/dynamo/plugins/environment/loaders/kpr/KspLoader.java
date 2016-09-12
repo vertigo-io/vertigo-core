@@ -65,7 +65,6 @@ final class KspLoader {
 		try {
 			final String s = parseFile();
 			new DslKspRule(dynamicModelrepository)
-					.createParser()
 					.parse(s, 0);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());

@@ -85,42 +85,35 @@ public final class ManyRule<R> implements Rule<List<R>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Parser<List<R>> createParser() {
-		return new Parser<List<R>>() {
-			/** {@inheritDoc} */
-			@Override
-			public ParserCursor<List<R>> parse(final String text, final int start) throws NotFoundException {
-				int index = start;
-				//-----
-				final List<R> results = new ArrayList<>();
-				NotFoundException best = null;
-				try {
-					int prevIndex = -1;
-					while (index < text.length() && index > prevIndex) {
-						prevIndex = index;
-						final ParserCursor<R> parserCursor = getRule()
-								.createParser()
-								.parse(text, index);
-						index = parserCursor.getIndex();
-						if (index > prevIndex) {
-							//celé signifie que l"index n a pas avancé, on sort
-							results.add(parserCursor.getResult());
-						}
-					}
-				} catch (final NotFoundException e) {
-					best = e;
-					if (best.getIndex() > index) { //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
-						throw best;
-					}
+	public ParserCursor<List<R>> parse(final String text, final int start) throws NotFoundException {
+		int index = start;
+		//-----
+		final List<R> results = new ArrayList<>();
+		NotFoundException best = null;
+		try {
+			int prevIndex = -1;
+			while (index < text.length() && index > prevIndex) {
+				prevIndex = index;
+				final ParserCursor<R> parserCursor = getRule()
+						.parse(text, index);
+				index = parserCursor.getIndex();
+				if (index > prevIndex) {
+					//celé signifie que l"index n a pas avancé, on sort
+					results.add(parserCursor.getResult());
 				}
-				if (!isEmptyAccepted() && results.isEmpty()) {
-					throw new NotFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
-				}
-				if (isRepeat() && text.length() > index) {
-					throw new NotFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
-				}
-				return new ParserCursor<>(index, results);
 			}
-		};
+		} catch (final NotFoundException e) {
+			best = e;
+			if (best.getIndex() > index) { //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+				throw best;
+			}
+		}
+		if (!isEmptyAccepted() && results.isEmpty()) {
+			throw new NotFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
+		}
+		if (isRepeat() && text.length() > index) {
+			throw new NotFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
+		}
+		return new ParserCursor<>(index, results);
 	}
 }

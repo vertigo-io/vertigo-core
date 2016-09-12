@@ -49,7 +49,6 @@ public class DslDefinitionBodyRuleTest {
 		final DslEntity entity = find(entities, "Formatter");
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
-				.createParser()
 				.parse("{ args : \"UPPER\" }", 0)
 				.getResult();
 
@@ -68,7 +67,6 @@ public class DslDefinitionBodyRuleTest {
 		final DslEntity entity = find(entities, "Domain");
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
-				.createParser()
 				.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0)
 				.getResult();
 
@@ -82,7 +80,6 @@ public class DslDefinitionBodyRuleTest {
 		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";
 		try {
 			new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
-					.createParser()
 					.parse(testValue, 0);
 			Assert.fail();
 		} catch (final NotFoundException e) {

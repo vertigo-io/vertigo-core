@@ -32,7 +32,6 @@ public final class DslWordListRuleTest {
 	@Test
 	public void testList0() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse("[ ]", 0)
 				.getResult();
 		Assert.assertEquals(0, list.size());
@@ -41,7 +40,6 @@ public final class DslWordListRuleTest {
 	@Test
 	public void testList1() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse("[BLEU, VerT, ROUGE ]", 0)
 				.getResult();
 		Assert.assertEquals(3, list.size());
@@ -53,7 +51,6 @@ public final class DslWordListRuleTest {
 	@Test
 	public void testList2() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse("[BLEU, VERT, ROUGE ]", 0)
 				.getResult();
 		Assert.assertEquals(3, list.size());
@@ -65,7 +62,6 @@ public final class DslWordListRuleTest {
 	@Test(expected = Exception.class)
 	public void testList3() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0)
 				.getResult();
 		Assert.fail("liste :" + list);
@@ -74,7 +70,6 @@ public final class DslWordListRuleTest {
 	@Test(expected = Exception.class)
 	public void testList4() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0)
 				.getResult();
 		Assert.fail("liste :" + list);
@@ -83,7 +78,6 @@ public final class DslWordListRuleTest {
 	@Test
 	public void testList5() throws NotFoundException {
 		final List<String> list = wordListRule
-				.createParser()
 				.parse("[BLEU ]", 0)
 				.getResult();
 		Assert.assertEquals(1, list.size());

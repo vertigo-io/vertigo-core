@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons.parser;
 
+import io.vertigo.commons.parser.Rule.Dummy;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -26,7 +27,7 @@ import io.vertigo.lang.Assertion;
  * mais permet de faire avancer l'index.
  * @author pchretien
  */
-public final class WhiteSpaceRule implements Rule<Void> {
+public final class WhiteSpaceRule implements Rule<Dummy> {
 	private final Rule<String> rule;
 
 	/**
@@ -48,33 +49,25 @@ public final class WhiteSpaceRule implements Rule<Void> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Parser<Void> createParser() {
-		return new Parser<Void>() {
+	public final ParserCursor<Dummy> parse(final String text, final int start) throws NotFoundException {
+		int lastIndex;
+		int index = start;
+		index = rule
+				.parse(text, index)
+				.getIndex();
 
-			/** {@inheritDoc} */
-			@Override
-			public final ParserCursor<Void> parse(final String text, final int start) throws NotFoundException {
-				int lastIndex;
-				int index = start;
-				index = rule
-						.createParser()
-						.parse(text, index)
-						.getIndex();
-
-				//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
-				while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
-					index += 2;
-					lastIndex = index;
-					index = text.indexOf("*/", index);
-					if (index < 0) {
-						throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
-					}
-					index += 2;
-					//On supprime les blancs
-					index = rule.createParser().parse(text, index).getIndex();
-				}
-				return new ParserCursor<>(index, null);
+		//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
+		while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
+			index += 2;
+			lastIndex = index;
+			index = text.indexOf("*/", index);
+			if (index < 0) {
+				throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
 			}
-		};
+			index += 2;
+			//On supprime les blancs
+			index = rule.parse(text, index).getIndex();
+		}
+		return new ParserCursor<>(index, Dummy.INSTANCE);
 	}
 }
