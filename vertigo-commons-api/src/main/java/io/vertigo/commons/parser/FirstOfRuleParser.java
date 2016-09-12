@@ -26,7 +26,6 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class FirstOfRuleParser implements Parser<Choice> {
-	private Choice result;
 	private final FirstOfRule firstOfRule;
 
 	FirstOfRuleParser(final FirstOfRule firstOfRule) {
@@ -35,30 +34,23 @@ final class FirstOfRuleParser implements Parser<Choice> {
 		this.firstOfRule = firstOfRule;
 	}
 
-	/**
-	 * @return the choice number that succeeded.
-	 */
-	@Override
-	public Choice get() {
-		return result;
-	}
-
 	/** {@inheritDoc} */
 	@Override
-	public int parse(final String text, final int start) throws NotFoundException {
+	public ParserCursor<Choice> parse(final String text, final int start) throws NotFoundException {
 		//Règle ayant été le plus profond
 		NotFoundException best = null;
 		int bestIndex = -1;
 		for (int i = 0; i < firstOfRule.getRules().size(); i++) {
 			try {
 				final Parser<?> parser = firstOfRule.getRules().get(i).createParser();
-				final int end = parser.parse(text, start);
-				result = new Choice(i, parser.get());
+				final ParserCursor<?> parserCursor = parser.parse(text, start);
+				final int end = parserCursor.getIndex();
+				final Choice result = new Choice(i, parserCursor.getResult());
 				if (end < bestIndex) {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				return end;
+				return new ParserCursor(end, result);
 			} catch (final NotFoundException e) {
 				if (e.getIndex() > bestIndex) {
 					bestIndex = e.getIndex();

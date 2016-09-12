@@ -26,23 +26,22 @@ public class CalculatorTest {
 
 	@Test
 	public void test() throws NotFoundException {
-		final Parser<Integer> parser = MAIN.createParser();
+		final Parser<Integer> parser = MAIN
+				.createParser();
 		//--
-		parser.parse("2*3", 0);
-		Assert.assertEquals(6, parser.get().intValue());
+		Assert.assertEquals(6, parser.parse("2*3", 0).getResult().intValue());
 		//--
-		parser.parse("2 + 3", 0);
-		Assert.assertEquals(5, parser.get().intValue());
+		Assert.assertEquals(5, parser.parse("2 + 3", 0).getIndex());
 		//--
 		parser.parse("121 /11", 0);
-		Assert.assertEquals(11, parser.get().intValue());
+		Assert.assertEquals(11, parser.parse("121 /11", 0).getResult().intValue());
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail() throws NotFoundException {
-		final Parser<Integer> parser = MAIN.createParser();
-		//--
-		parser.parse("2 $ 3", 0); //l'opérateur  $ n'existe pas 
-		Assert.fail();
+		MAIN
+				.createParser()
+				.parse("2 $ 3", 0);
+		//l'opérateur  $ n'existe pas
 	}
 }

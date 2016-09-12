@@ -21,11 +21,12 @@ package io.vertigo.commons.parser;
 /**
  * Parser produces an object <P> or throw an exception.
  * A parser analyzes a text, according some rules.
- * A parser is responsible for moving the index position or throw an exception. 
+ * A parser is responsible for moving the index position or throw an exception.
  *
  * @author pchretien
  * @param<R> Type of the product text parsing
  */
+@FunctionalInterface
 public interface Parser<R> {
 	/**
 	 * Return the new index position.
@@ -34,10 +35,6 @@ public interface Parser<R> {
 	 * @throws NotFoundException if parsing has failed.
 	 * @return new index position
 	 */
-	int parse(String text, int start) throws NotFoundException;
+	ParserCursor<R> parse(String text, int start) throws NotFoundException;
 
-	/**
-	 * @return Product text parsing 
-	 */
-	R get();
 }

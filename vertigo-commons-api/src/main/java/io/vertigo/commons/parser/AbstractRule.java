@@ -18,8 +18,6 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.lang.Assertion;
-
 /**
  * Une règle peut être vue comme
  * - la création d'une règle principale
@@ -51,23 +49,18 @@ public abstract class AbstractRule<R, M> implements Rule<R> {
 	@Override
 	public final Parser<R> createParser() {
 		return new Parser<R>() {
-			private R result;
 
 			/** {@inheritDoc} */
 			@Override
-			public int parse(final String text, final int start) throws NotFoundException {
-				final Parser<M> parser = getMainRule().createParser();
-				final int end = parser.parse(text, start);
+			public ParserCursor<R> parse(final String text, final int start) throws NotFoundException {
+				final ParserCursor<M> parserCursor = getMainRule()
+						.createParser()
+						.parse(text, start);
+				final int end = parserCursor.getIndex();
 				//---
-				result = handle(parser.get());
+				final R result = handle(parserCursor.getResult());
 				//---
-				return end;
-			}
-
-			@Override
-			public R get() {
-				Assertion.checkNotNull(result);
-				return result;
+				return new ParserCursor<>(end, result);
 			}
 		};
 	}

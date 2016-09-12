@@ -54,10 +54,13 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 
 	/** {@inheritDoc} */
 	@Override
-	public int parse(final String text, final int start) throws NotFoundException {
+	public ParserCursor<Void> parse(final String text, final int start) throws NotFoundException {
 		int lastIndex;
 		int index = start;
-		index = rule.createParser().parse(text, index);
+		index = rule
+				.createParser()
+				.parse(text, index)
+				.getIndex();
 
 		//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
 		while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
@@ -69,15 +72,8 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 			}
 			index += 2;
 			//On supprime les blancs
-			index = rule.createParser().parse(text, index);
+			index = rule.createParser().parse(text, index).getIndex();
 		}
-		return index;
+		return new ParserCursor<>(index, null);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Void get() {
-		return null;
-	}
-
 }

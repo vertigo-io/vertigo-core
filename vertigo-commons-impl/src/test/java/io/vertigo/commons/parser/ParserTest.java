@@ -34,9 +34,9 @@ public final class ParserTest {
 	private static final Rule PROPERTY = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE);
 	private static final Rule AB = new TermRule("ab");
 	//---
-	private static final Rule MANY_AB = new ManyRule(AB, true, false);//=(AB, true) no global (can match abc)
-	private static final Rule MANY_AB2 = new ManyRule(AB, true, true); //global (can't match abc)
-	private static final Rule MANY_AB_MORE = new ManyRule(AB, false);
+	private static final Rule<List<?>> MANY_AB = new ManyRule(AB, true, false);//=(AB, true) no global (can match abc)
+	private static final Rule<List<?>> MANY_AB2 = new ManyRule(AB, true, true); //global (can't match abc)
+	private static final Rule<List<?>> MANY_AB_MORE = new ManyRule(AB, false);
 
 	private static final Rule HELLO_WORLD = new SequenceRule(
 			HELLO,
@@ -52,7 +52,7 @@ public final class ParserTest {
 			SPACE,
 			WORLD_MUSIC);
 
-	private static final Rule HELLO_WORLD_FROM = new SequenceRule(
+	private static final Rule<List<?>> HELLO_WORLD_FROM = new SequenceRule(
 			HELLO,
 			SPACE,
 			WORLD,
@@ -70,101 +70,103 @@ public final class ParserTest {
 
 	@Test
 	public void testTerm() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO.createParser();
-		//---
-		int end;
-		end = parser.parse("hello", 0);
+		final ParserCursor<List<?>> cursor = HELLO
+				.createParser()
+				.parse("hello", 0);
 		//On vérifie que l'on a trouvé la chaine "hello"
-		Assert.assertEquals("hello".length(), end);
-		Assert.assertEquals("hello", parser.get());
+		Assert.assertEquals("hello".length(), cursor.getIndex());
+		Assert.assertEquals("hello", cursor.getResult());
 		//---
-		end = parser.parse("hello, my name is", 0);
+		final ParserCursor<List<?>> cursor2 = HELLO
+				.createParser()
+				.parse("hello, my name is", 0);
 		//On vérifie que l'on a trouvé la chaine "hello"
-		Assert.assertEquals("hello".length(), end);
-		Assert.assertEquals("hello", parser.get());
-
+		Assert.assertEquals("hello".length(), cursor2.getIndex());
+		Assert.assertEquals("hello", cursor2.getResult());
 	}
 
 	@Test
 	public void testPropertyEscapable() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO_PROPERTY.createParser();
-		//---
-		int end;
-		end = parser.parse("hello \\\"mister\\\"", 0);
+		final ParserCursor<List<?>> cursor = HELLO_PROPERTY
+				.createParser()
+				.parse("hello \\\"mister\\\"", 0);
 		//On vérifie que l'on a trouvé la chaine "mister"
-		Assert.assertEquals("hello \\\"mister\\\"".length(), end);
-		Assert.assertEquals("\"mister\"", parser.get().get(2));
+		Assert.assertEquals("hello \\\"mister\\\"".length(), cursor.getIndex());
+		Assert.assertEquals("\"mister\"", cursor.getResult().get(2));
 
-		end = parser.parse("hello mister\\\\truc\\\"hello\\\"", 0);
+		final ParserCursor<List<?>> cursor2 = HELLO_PROPERTY
+				.createParser()
+				.parse("hello mister\\\\truc\\\"hello\\\"", 0);
 		//On vérifie que l'on a trouvé la chaine "mister"
-		Assert.assertEquals("hello mister\\\\truc\\\"hello\\\"".length(), end);
-		Assert.assertEquals("mister\\truc\"hello\"", parser.get().get(2));
+		Assert.assertEquals("hello mister\\\\truc\\\"hello\\\"".length(), cursor2.getIndex());
+		Assert.assertEquals("mister\\truc\"hello\"", cursor2.getResult().get(2));
 
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testTermFail() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO.createParser();
-		//---
-		parser.parse("Hi", 0);
-		Assert.fail();
+		HELLO
+				.createParser()
+				.parse("Hi", 0);
 	}
 
 	@Test
 	public void testSequence() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO_WORLD.createParser();
+		final Parser<List<?>> parser = HELLO_WORLD
+				.createParser();
 		//---
-		int end;
-		end = parser.parse("hello worlds", 0);
+		final ParserCursor<List<?>> cursor = parser.parse("hello worlds", 0);
 		//On vérifie que l'on a trouvé la chaine "hello world"
-		Assert.assertEquals("hello world".length(), end);
-		Assert.assertEquals("hello", parser.get().get(0));
-		Assert.assertEquals("world", parser.get().get(2));
+		Assert.assertEquals("hello world".length(), cursor.getIndex());
+		Assert.assertEquals("hello", cursor.getResult().get(0));
+		Assert.assertEquals("world", cursor.getResult().get(2));
 
-		end = parser.parse("hello world, my name is", 0);
+		final ParserCursor<List<?>> cursor2 = parser.parse("hello world, my name is", 0);
 		//On vérifie que l'on a trouvé la chaine "hello world"
-		Assert.assertEquals("hello world".length(), end);
-		Assert.assertEquals("hello", parser.get().get(0));
-		Assert.assertEquals("world", parser.get().get(2));
+		Assert.assertEquals("hello world".length(), cursor2.getIndex());
+		Assert.assertEquals("hello", cursor2.getResult().get(0));
+		Assert.assertEquals("world", cursor2.getResult().get(2));
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testSequenceFail() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO_WORLD.createParser();
-		//---
-		parser.parse("hello worms", 0);
+		HELLO_WORLD
+				.createParser()
+				.parse("hello worms", 0);
 		Assert.fail();
 	}
 
 	@Test
 	public void testFirstOf() throws NotFoundException {
-		final Parser<Choice> parser = WORLD_MUSIC.createParser();
-		//---
-		parser.parse("world", 0);
+		final Choice choice = WORLD_MUSIC
+				.createParser()
+				.parse("world", 0)
+				.getResult();
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
-		Assert.assertEquals(0, parser.get().getValue());
-		Assert.assertEquals("world", parser.get().getResult());
+		Assert.assertEquals(0, choice.getValue());
+		Assert.assertEquals("world", choice.getResult());
 		//---
-		parser.parse("music", 0);
+		final Choice choice2 = WORLD_MUSIC
+				.createParser()
+				.parse("music", 0).getResult();
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
-		Assert.assertEquals(1, parser.get().getValue());
-		Assert.assertEquals("music", parser.get().getResult());
+		Assert.assertEquals(1, choice2.getValue());
+		Assert.assertEquals("music", choice2.getResult());
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail() throws NotFoundException {
-		final Parser<Choice> parser = WORLD_MUSIC.createParser();
-		//---
-		parser.parse("worm", 0);
+		WORLD_MUSIC.createParser()
+				.parse("worm", 0);
 		Assert.fail();
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail2() throws NotFoundException {
 		//On crée une liste vide de choix
-		final Parser<Choice> parser = new FirstOfRule().createParser();
-		//---
-		parser.parse("world", 0);
+		new FirstOfRule()
+				.createParser()
+				.parse("world", 0);
 		Assert.fail();
 	}
 
@@ -174,45 +176,45 @@ public final class ParserTest {
 		//---
 		Choice choice;
 		//-
-		parser.parse("hello world, my name", 0);
+		final ParserCursor<List<?>> cursor = parser.parse("hello world, my name", 0);
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
-		choice = (Choice) parser.get().get(2);
+		choice = (Choice) cursor.getResult().get(2);
 		Assert.assertEquals(0, choice.getValue());
 		Assert.assertEquals("world", choice.getResult());
 		//---
-		parser.parse("hello music, my name", 0);
+		final ParserCursor<List<?>> cursor2 = parser.parse("hello music, my name", 0);
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
-		choice = (Choice) parser.get().get(2);
+		choice = (Choice) cursor2.getResult().get(2);
 		Assert.assertEquals(1, choice.getValue());
 		Assert.assertEquals("music", choice.getResult());
 	}
 
 	@Test
 	public void testOption() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
-		//---
 		Optional<List<?>> from;
 
 		//-
-		parser.parse("hello world bla bla", 0);
-		from = (Optional<List<?>>) parser.get().get(3);
+		final ParserCursor<List<?>> cursor = HELLO_WORLD_FROM
+				.createParser()
+				.parse("hello world bla bla", 0);
+		from = (Optional<List<?>>) cursor.getResult().get(3);
 		Assert.assertFalse(from.isPresent());
 		//-
-		parser.parse("hello world from mars", 0);
-		from = (Optional<List<?>>) parser.get().get(3);
+		final ParserCursor<List<?>> cursor2 = HELLO_WORLD_FROM
+				.createParser()
+				.parse("hello world from mars", 0);
+		from = (Optional<List<?>>) cursor2.getResult().get(3);
 		Assert.assertTrue(from.isPresent());
 		Assert.assertEquals("mars", from.get().get(3));
 	}
 
 	@Test
 	public void testOptionFail() throws NotFoundException {
-		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
-		//---
-		Optional<List<?>> from;
+		final ParserCursor<List<?>> cursor = HELLO_WORLD_FROM
+				.createParser()
+				.parse("hello world from ", 0);
 
-		//-
-		parser.parse("hello world from ", 0);
-		from = (Optional<List<?>>) parser.get().get(3);
+		final Optional<List<?>> from = (Optional<List<?>>) cursor.getResult().get(3);
 		Assert.assertFalse(from.isPresent()); //pas d'exception NotFound
 	}
 
@@ -220,26 +222,20 @@ public final class ParserTest {
 	public void testMany() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB.createParser();
 		//---
-		List results;
-		//-
-		parser.parse("", 0);
-		results = parser.get();
+		List results = parser.parse("", 0).getResult();
 		Assert.assertEquals(0, results.size());
 		//-
 		//		end = parser.parse("a", 0);
 		//		results = parser.get();
 		//		Assert.assertEquals(0, results.size()); //ce cas ne match pas (ab)+
 		//-
-		parser.parse("ab", 0);
-		results = parser.get();
+		results = parser.parse("ab", 0).getResult();
 		Assert.assertEquals(1, results.size());
 		//-
-		parser.parse("abc", 0);
-		results = parser.get();
+		results = parser.parse("abc", 0).getResult();
 		Assert.assertEquals(1, results.size());
 		//-
-		parser.parse("abababab", 0);
-		results = parser.get();
+		results = parser.parse("abababab", 0).getResult();
 		Assert.assertEquals(4, results.size());
 		Assert.assertEquals("ab", results.get(0));
 		Assert.assertEquals("ab", results.get(1));
@@ -257,27 +253,24 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testManyGlobalFail2() throws NotFoundException {
-		final Parser<List<?>> parser = MANY_AB2.createParser();
-		//---
-		/*int end =*/parser.parse("abc", 0);
+		MANY_AB2
+				.createParser()
+				.parse("abc", 0);
 		Assert.fail();
 	}
 
 	@Test
 	public void testManyFail2() throws NotFoundException {
-		final Parser<List<?>> parser = MANY_AB.createParser();
-		//---
-		/*int end =*/parser.parse("abc", 0);
-		final List results = parser.get();
+		final List results = MANY_AB
+				.createParser()
+				.parse("abc", 0)
+				.getResult();
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals("ab", results.get(0));
 	}
 
 	@Test
 	public void testManyMore() throws NotFoundException {
-		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
-		//---
-		List results;
 		//-
 		//		end = parser.parse("", 0);
 		//		results = parser.get();
@@ -287,16 +280,21 @@ public final class ParserTest {
 		//		results = parser.get();
 		//		Assert.assertEquals(0, results.size());
 		//-
-		parser.parse("ab", 0);
-		results = parser.get();
+		List results = MANY_AB_MORE
+				.createParser()
+				.parse("ab", 0)
+				.getResult();
 		Assert.assertEquals(1, results.size());
 		//-
-		parser.parse("abc", 0);
-		results = parser.get();
+		results = MANY_AB_MORE
+				.createParser()
+				.parse("abc", 0).getResult();
 		Assert.assertEquals(1, results.size());
 		//-
-		parser.parse("abababab", 0);
-		results = parser.get();
+		results = MANY_AB_MORE
+				.createParser()
+				.parse("abababab", 0).getResult();
+
 		Assert.assertEquals(4, results.size());
 		Assert.assertEquals("ab", results.get(0));
 		Assert.assertEquals("ab", results.get(1));
@@ -306,18 +304,16 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testManyMoreFail() throws NotFoundException {
-		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
-		//---
-		parser.parse("", 0);
-		Assert.fail();
+		MANY_AB_MORE
+				.createParser()
+				.parse("", 0);
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testManyMoreFail2() throws NotFoundException {
-		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
-		//---
-		parser.parse("a", 0);
-		Assert.fail();
+		MANY_AB_MORE
+				.createParser()
+				.parse("a", 0);
 	}
 
 	public static void main(final String[] args) throws NotFoundException {
@@ -331,12 +327,13 @@ public final class ParserTest {
 	}
 
 	private static void parse(final Rule rule, final String text) throws NotFoundException {
-		final Parser parser = rule.createParser();
-		final int end = parser.parse(text, 0);
+		final ParserCursor cursor = rule
+				.createParser()
+				.parse(text, 0);
 		System.out.println("======================================");
 		System.out.println("text  : " + text);
 		System.out.println("Règle : " + rule.getExpression());
-		System.out.println("  reste     :" + text.substring(end));
-		System.out.println("  elements  :" + parser.get());
+		System.out.println("  reste     :" + text.substring(cursor.getIndex()));
+		System.out.println("  elements  :" + cursor.getResult());
 	}
 }

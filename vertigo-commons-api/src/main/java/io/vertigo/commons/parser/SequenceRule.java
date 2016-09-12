@@ -76,29 +76,26 @@ public final class SequenceRule implements Rule<List<?>> {
 	@Override
 	public Parser<List<?>> createParser() {
 		return new Parser<List<?>>() {
-			private List results;
 
 			/** {@inheritDoc} */
 			@Override
-			public int parse(final String text, final int start) throws NotFoundException {
-				results = new ArrayList<>();
+			public ParserCursor<List<?>> parse(final String text, final int start) throws NotFoundException {
+				final List results = new ArrayList<>();
 				int index = start;
 				try {
 					for (final Rule<?> rule : rules) {
-						final Parser<?> parser = rule.createParser();
-						index = parser.parse(text, index);
-						results.add(parser.get());
+						final ParserCursor<?> cursor = rule
+								.createParser()
+								.parse(text, index);
+						index = cursor.getIndex();
+						results.add(cursor.getResult());
 					}
 				} catch (final NotFoundException e) {
 					throw new NotFoundException(text, e.getIndex(), e, getExpression());
 				}
-				return index;
+				return new ParserCursor<>(index, results);
 			}
 
-			@Override
-			public List<?> get() {
-				return results;
-			}
 		};
 	}
 }

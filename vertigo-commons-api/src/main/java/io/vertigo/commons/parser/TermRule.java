@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 /**
  * A  terminal rule succeeds if the first character of the input string matches that terminal.
  * If not an exception is thrown.
- * 
+ *
  * @author pchretien
  */
 public final class TermRule implements Rule<String>, Parser<String> {
@@ -53,7 +53,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public int parse(final String text, final int start) throws NotFoundException {
+	public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;
 		//We look how far the text matches with the rule.
@@ -62,13 +62,8 @@ public final class TermRule implements Rule<String>, Parser<String> {
 		}
 		//if the rule was fully evaluated then it's ok.
 		if (match == start + term.length()) {
-			return match;
+			return new ParserCursor<>(match, term);
 		}
 		throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
-	}
-
-	@Override
-	public String get() {
-		return term;
 	}
 }

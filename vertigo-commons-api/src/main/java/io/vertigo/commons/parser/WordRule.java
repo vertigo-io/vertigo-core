@@ -113,17 +113,9 @@ public final class WordRule implements Rule<String> {
 		return new Parser<String>() {
 			private String word;
 
-			/**
-			 * @return Mot trouvé par la règle
-			 */
-			@Override
-			public String get() {
-				return word;
-			}
-
 			/** {@inheritDoc} */
 			@Override
-			public int parse(final String text, final int start) throws NotFoundException {
+			public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				// On vérifie que le caractère est contenu dans les caractères acceptés.
 				// On vérifie que le caractère n'est pas contenu dans les caractères rejetés.
@@ -139,7 +131,7 @@ public final class WordRule implements Rule<String> {
 				if (mode == Mode.REJECT_ESCAPABLE) {
 					word = word.replaceAll("\\\\(.)", "$1");
 				}
-				return index;
+				return new ParserCursor<>(index, word);
 			}
 
 		};

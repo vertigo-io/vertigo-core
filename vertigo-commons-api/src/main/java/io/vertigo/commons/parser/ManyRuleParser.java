@@ -28,7 +28,6 @@ import io.vertigo.lang.Assertion;
  */
 final class ManyRuleParser<R> implements Parser<List<R>> {
 	private final ManyRule<R> manyRule;
-	private List<R> results;
 
 	ManyRuleParser(final ManyRule<R> manyRule) {
 		Assertion.checkNotNull(manyRule);
@@ -38,20 +37,21 @@ final class ManyRuleParser<R> implements Parser<List<R>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public int parse(final String text, final int start) throws NotFoundException {
+	public ParserCursor<List<R>> parse(final String text, final int start) throws NotFoundException {
 		int index = start;
 		//-----
-		results = new ArrayList<>();
+		final List<R> results = new ArrayList<>();
 		NotFoundException best = null;
 		try {
 			int prevIndex = -1;
 			while (index < text.length() && index > prevIndex) {
 				prevIndex = index;
 				final Parser<R> parser = manyRule.getRule().createParser();
-				index = parser.parse(text, index);
+				final ParserCursor<R> parserCursor = parser.parse(text, index);
+				index = parserCursor.getIndex();
 				if (index > prevIndex) {
 					//celé signifie que l"index n a pas avancé, on sort
-					results.add(parser.get());
+					results.add(parserCursor.getResult());
 				}
 			}
 		} catch (final NotFoundException e) {
@@ -66,11 +66,6 @@ final class ManyRuleParser<R> implements Parser<List<R>> {
 		if (manyRule.isRepeat() && text.length() > index) {
 			throw new NotFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), manyRule.getExpression());
 		}
-		return index;
-	}
-
-	@Override
-	public List<R> get() {
-		return results;
+		return new ParserCursor<>(index, results);
 	}
 }

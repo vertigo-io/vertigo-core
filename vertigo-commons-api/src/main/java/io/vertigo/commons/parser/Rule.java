@@ -31,4 +31,5 @@ public interface Rule<R> {
 	String getExpression();
 
 	Parser<R> createParser();
+
 }
