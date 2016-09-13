@@ -36,7 +36,7 @@ public final class ParserTest {
 	//---
 	private static final Rule<List<?>> MANY_AB = new ManyRule(AB, true, false);//=(AB, true) no global (can match abc)
 	private static final Rule<List<?>> MANY_AB2 = new ManyRule(AB, true, true); //global (can't match abc)
-	private static final Rule<List<?>> MANY_AB_MORE = new ManyRule(AB, false);
+	private static final Rule<List<?>> MANY_AB_MORE = new ManyRule(AB, false, false);
 
 	private static final Rule<List<?>> HELLO_WORLD = new SequenceRule(
 			HELLO,

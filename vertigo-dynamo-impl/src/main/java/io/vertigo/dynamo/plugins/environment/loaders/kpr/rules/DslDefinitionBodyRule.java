@@ -102,7 +102,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 				new FirstOfRule(innerDefinitionRules), //2,
 				SPACES);
 
-		final ManyRule<Choice> manyRule = new ManyRule<>(firstOfRule, true);
+		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, false);
 		return new SequenceRule(
 				OBJECT_START,
 				SPACES,

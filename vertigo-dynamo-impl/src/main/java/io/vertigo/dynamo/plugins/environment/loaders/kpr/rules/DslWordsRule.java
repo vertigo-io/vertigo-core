@@ -54,20 +54,20 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 					ARRAY_SEPARATOR,
 					SPACES,
 					WORD //2
-			), true);
+			), true, false);
 
 	//{ XXXXX (,XXXX)+ }
 	private static final Rule<List<?>> NON_EMPTY_LIST = new SequenceRule(//"Liste non vide"
 			ARRAY_START,
 			SPACES,
-			WORD,//2
+			WORD, //2
 			MANY_WORDS, // 3
 			SPACES,
 			ARRAY_END);
 
 	@Override
 	// {} | { XXXXX (,XXXX)+ }
-			protected
+	protected
 			Rule<Choice> createMainRule() {
 		return new FirstOfRule(//"liste vide ou non"
 				EMPTY_LIST, //0

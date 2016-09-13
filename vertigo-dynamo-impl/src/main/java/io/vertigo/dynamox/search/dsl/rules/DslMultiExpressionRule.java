@@ -63,7 +63,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 				new DslExpressionRule(), //0
 				new DslMultiExpressionRule(level + 1) //1
 		);
-		final Rule<List<Choice>> manyExpressionRule = new ManyRule<>(expressionsRule, false);
+		final Rule<List<Choice>> manyExpressionRule = new ManyRule<>(expressionsRule, false, false);
 		final Rule<List<?>> blockExpressionRule = new SequenceRule(
 				new OptionalRule<>(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1

@@ -70,9 +70,9 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 				new DslFixedQueryRule() //3
 		);
 
-		final Rule<List<Choice>> manyQueriesRule = new ManyRule<>(queriesRule, false);
+		final Rule<List<Choice>> manyQueriesRule = new ManyRule<>(queriesRule, false, false);
 		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.BLOCK_START,
 				manyQueriesRule, //2
 				DslSyntaxRules.BLOCK_END,

@@ -43,12 +43,12 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
 						new DslFieldRule() //3
-				), true);
+				), true, false);
 
 		return new SequenceRule(
 				DslSyntaxRules.ARRAY_START,
 				DslSyntaxRules.SPACES,
-				new DslFieldRule(),//2
+				new DslFieldRule(), //2
 				otherFieldsRule, //3
 				DslSyntaxRules.SPACES,
 				DslSyntaxRules.ARRAY_END);

@@ -56,14 +56,6 @@ public final class ManyRule<R> implements Rule<List<R>> {
 		this.repeat = repeat;
 	}
 
-	/**
-	 * Constructor.
-	 * @param rule the rule that's will be evaluated
-	 * @param emptyAccepted If an empty list is accepted
-	 */
-	public ManyRule(final Rule<R> rule, final boolean emptyAccepted) {
-		this(rule, emptyAccepted, false);
-	}
 
 	/** {@inheritDoc} */
 	@Override
