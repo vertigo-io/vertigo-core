@@ -33,11 +33,11 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 	//---Par simplicité un nombre est une suite de chiffres
 	private static final Rule<String> NUMBER = new WordRule(false, "0123456789", WordRule.Mode.ACCEPT);
 
-	private static final Rule<List<?>> EXPRESSION = new SequenceRule(//
+	private static final Rule<List<?>> EXPRESSION = new SequenceRule(
 			NUMBER, //0
-			SPACES, //
-			OPERATOR, //
-			SPACES, //
+			SPACES,
+			OPERATOR,
+			SPACES,
 			NUMBER //4
 	);
 

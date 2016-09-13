@@ -24,18 +24,22 @@ import org.junit.Test;
 public class CalculatorTest {
 	private static final Rule<Integer> MAIN = new CalculatorRule();
 
+	private static int eval(final String s) throws NotFoundException {
+		return MAIN.parse(s, 0).getResult().intValue();
+	}
+
 	@Test
 	public void test() throws NotFoundException {
-		Assert.assertEquals(6, MAIN.parse("2*3", 0).getResult().intValue());
+		Assert.assertEquals(6, eval("2*3"));
 		//--
-		Assert.assertEquals(5, MAIN.parse("2 + 3", 0).getIndex());
+		Assert.assertEquals(5, eval("2 + 3"));
 		//--
-		Assert.assertEquals(11, MAIN.parse("121 /11", 0).getResult().intValue());
+		Assert.assertEquals(11, eval("121 /11"));
 	}
 
 	@Test(expected = NotFoundException.class)
 	public void testFail() throws NotFoundException {
-		MAIN.parse("2 $ 3", 0);
+		eval("2 $ 3");
 		//l'opérateur  $ n'existe pas
 	}
 }

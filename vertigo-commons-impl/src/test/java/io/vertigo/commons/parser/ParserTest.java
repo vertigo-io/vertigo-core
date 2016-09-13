@@ -101,8 +101,7 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testTermFail() throws NotFoundException {
-		HELLO
-				.parse("Hi", 0);
+		HELLO.parse("Hi", 0);
 	}
 
 	@Test
@@ -147,8 +146,7 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail() throws NotFoundException {
-		WORLD_MUSIC
-				.parse("worm", 0);
+		WORLD_MUSIC.parse("worm", 0);
 	}
 
 	@Test(expected = NotFoundException.class)
@@ -300,8 +298,8 @@ public final class ParserTest {
 
 	}
 
-	private static void parse(final Rule rule, final String text) throws NotFoundException {
-		final ParserCursor cursor = rule
+	private static void parse(final Rule<?> rule, final String text) throws NotFoundException {
+		final ParserCursor<?> cursor = rule
 				.parse(text, 0);
 		System.out.println("======================================");
 		System.out.println("text  : " + text);

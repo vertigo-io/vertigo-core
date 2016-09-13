@@ -90,7 +90,7 @@ public final class FirstOfRule implements Rule<Choice> {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				return new ParserCursor(end, result);
+				return new ParserCursor<>(end, result);
 			} catch (final NotFoundException e) {
 				if (e.getIndex() > bestIndex) {
 					bestIndex = e.getIndex();
