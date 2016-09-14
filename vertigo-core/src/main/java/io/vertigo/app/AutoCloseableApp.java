@@ -180,7 +180,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
-			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()), "The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
+			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
+					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
 			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
 			componentInitializer.init();
 		}
