@@ -123,7 +123,8 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
 		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
 		Assertion.checkArgument(constructors[0].getParameterTypes().length == args.length, "Les paramètres passés ne sont pas compatible avec ceux du constructeur sur {0}.", clazz.getName());
-		Assertion.checkArgument(constructors[0].getAnnotation(Inject.class) == null, "Le constructeur des daemons ne support pas @Inject, utiliser @Inject sur les attributs d'instance sur {0}.", clazz.getName());
+		Assertion.checkArgument(constructors[0].getAnnotation(Inject.class) == null, "Le constructeur des daemons ne support pas @Inject, utiliser @Inject sur les attributs d'instance sur {0}.",
+				clazz.getName());
 		//-----
 		//On a un et un seul constructeur.
 		return constructors[0];

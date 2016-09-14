@@ -49,7 +49,7 @@ public final class WhiteSpaceRule implements Rule<Dummy> {
 
 	/** {@inheritDoc} */
 	@Override
-	public final ParserCursor<Dummy> parse(final String text, final int start) throws NotFoundException {
+	public ParserCursor<Dummy> parse(final String text, final int start) throws NotFoundException {
 		int lastIndex;
 		int index = start;
 		index = rule

@@ -74,7 +74,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 			count++;
 			method.setAccessible(true);
 			register((Class<? extends Event>) method.getParameterTypes()[0],
-					(event) -> ClassUtil.invoke(suscriberInstance, method, event));
+					event -> ClassUtil.invoke(suscriberInstance, method, event));
 		}
 		//3. Check that there is almost one suscriber on this object.
 		Assertion.checkState(count > 0, "no suscriber found on class {0}", suscriberInstance.getClass());

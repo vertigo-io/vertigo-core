@@ -27,7 +27,7 @@ import io.vertigo.lang.Assertion;
  * This rule is usefull each time there is an optional part inside a more global expression.
  *
  * @author pchretien
- * @param<R> Type of the product text parsing
+ * @param <R> Type of the product text parsing
  */
 public final class OptionalRule<R> implements Rule<Optional<R>> {
 	private final String expression;

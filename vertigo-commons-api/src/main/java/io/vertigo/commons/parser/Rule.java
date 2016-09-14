@@ -25,8 +25,10 @@ package io.vertigo.commons.parser;
  * @param<R> Type of the product text parsing
  */
 public interface Rule<R> {
-	public static class Dummy {
-		public static Dummy INSTANCE = new Dummy();
+	/** Dummy class, used for rule that returns Void. */
+	public static final class Dummy {
+		/** singleton. */
+		public static final Dummy INSTANCE = new Dummy();
 
 		private Dummy() {
 			super();

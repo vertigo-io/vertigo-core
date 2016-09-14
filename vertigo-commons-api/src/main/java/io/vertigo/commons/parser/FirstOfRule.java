@@ -85,19 +85,19 @@ public final class FirstOfRule implements Rule<Choice> {
 				final ParserCursor<?> parserCursor = getRules().get(i)
 						.parse(text, start);
 				final int end = parserCursor.getIndex();
-				final Choice result = new Choice(i, parserCursor.getResult());
 				if (end < bestIndex) {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
+				final Choice result = new Choice(i, parserCursor.getResult());
 				return new ParserCursor<>(end, result);
 			} catch (final NotFoundException e) {
+				//Tant que l'on a des erreurs sur l'évaluation des règles
+				//on recommence jusqu'à trouver la première qui fonctionne.
 				if (e.getIndex() > bestIndex) {
 					bestIndex = e.getIndex();
 					best = e;
 				}
-				//Tant que l'on a des erreurs sur l'évaluation des règles
-				//on recommence jusqu'à trouver la première qui fonctionne.
 			}
 		}
 		//Nothing has been found
