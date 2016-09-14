@@ -54,7 +54,8 @@ public final class InheritanceModuleRule implements ModuleRule {
 				clazz = componentConfig.getImplClass();
 			}
 			if (!superClass.isAssignableFrom(clazz)) {
-				throw new VSystemException("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName());
+				throw new VSystemException("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.",
+						moduleConfig, componentConfig, superClass.getSimpleName());
 			}
 		}
 	}
