@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.app.Logo;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -83,7 +82,6 @@ public final class AppConfig {
 	 */
 	public void print(final PrintStream out) {
 		Assertion.checkNotNull(out);
-		Logo.printCredits(out);
 		doPrint(out);
 	}
 

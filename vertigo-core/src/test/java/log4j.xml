@@ -31,7 +31,7 @@
 
 <!--  Pour les tests on ne loggue que FATAL. -->
 	<root>
-		<level value="FATAL" />
+		<level value="ERROR" />
 		<appender-ref ref="STDOUT" />
 	</root>
 	

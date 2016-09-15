@@ -98,6 +98,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
 			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
+				Logo.printCredits(System.out);
 				appConfig.print(System.out);
 			}
 			//-----4. post-Initialize all components
