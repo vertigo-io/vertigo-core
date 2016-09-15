@@ -27,10 +27,8 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityField;
@@ -96,14 +94,14 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
-		final FirstOfRule firstOfRule = new FirstOfRule(
+		final Rule<Choice> firstOfRule = Rules.firstOf(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
-				new FirstOfRule(innerDefinitionRules), //2,
+				Rules.firstOf(innerDefinitionRules), //2,
 				SPACES);
 
-		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, false);
-		return new SequenceRule(
+		final Rule<List<Choice>> manyRule = Rules.zeroOrMore(firstOfRule, false);
+		return Rules.sequence(
 				OBJECT_START,
 				SPACES,
 				manyRule, //2

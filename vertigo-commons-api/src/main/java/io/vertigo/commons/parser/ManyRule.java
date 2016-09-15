@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  * @param <R> Type of the product text parsing
  */
-public final class ManyRule<R> implements Rule<List<R>> {
+final class ManyRule<R> implements Rule<List<R>> {
 	private final Rule<R> rule;
 	private final boolean emptyAccepted;
 
@@ -48,14 +48,13 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	 * @param emptyAccepted If an empty list is accepted
 	 * @param repeat if the evaluation must be repeated
 	 */
-	public ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
+	ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
 		Assertion.checkNotNull(rule);
 		//-----
 		this.rule = rule;
 		this.emptyAccepted = emptyAccepted;
 		this.repeat = repeat;
 	}
-
 
 	/** {@inheritDoc} */
 	@Override

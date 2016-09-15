@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class FirstOfRule implements Rule<Choice> {
+final class FirstOfRule implements Rule<Choice> {
 	private final List<Rule<?>> rules;
 	private final String expression;
 
@@ -38,7 +38,7 @@ public final class FirstOfRule implements Rule<Choice> {
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	public FirstOfRule(final Rule<?>... rules) {
+	FirstOfRule(final Rule<?>... rules) {
 		this(Arrays.asList(rules));
 	}
 
@@ -46,7 +46,7 @@ public final class FirstOfRule implements Rule<Choice> {
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	public FirstOfRule(final List<Rule<?>> rules) {
+	FirstOfRule(final List<Rule<?>> rules) {
 		Assertion.checkNotNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(rules);

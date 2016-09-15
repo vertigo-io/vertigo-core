@@ -21,7 +21,7 @@ package io.vertigo.dynamox.search.dsl.rules;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.ParserCursor;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.commons.parser.WordRule;
 
 /**
@@ -44,36 +44,36 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final Rule<?> SPACES = new WordRule(true, WHITE_SPACE, WordRule.Mode.ACCEPT, "_");
+	static final Rule<?> SPACES = Rules.word(true, WHITE_SPACE, WordRule.Mode.ACCEPT, "_");
 
 	/** array start. */
-	static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
+	static final Rule<String> ARRAY_START = Rules.term("["); //like arrays in json syntax
 	/** array end. */
-	static final Rule<String> ARRAY_END = new TermRule("]");
+	static final Rule<String> ARRAY_END = Rules.term("]");
 	/** array separator. */
-	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
+	static final Rule<String> ARRAY_SEPARATOR = Rules.term(",");
 
 	/** block start. */
-	static final Rule<String> BLOCK_START = new TermRule("(");
+	static final Rule<String> BLOCK_START = Rules.term("(");
 	/** block end. */
-	static final Rule<String> BLOCK_END = new TermRule(")");
+	static final Rule<String> BLOCK_END = Rules.term(")");
 
 	/** term mark. */
-	static final Rule<String> TERM_MARK = new TermRule("#");
+	static final Rule<String> TERM_MARK = Rules.term("#");
 	/** field end. */
-	static final Rule<String> FIELD_END = new TermRule(":");
+	static final Rule<String> FIELD_END = Rules.term(":");
 
 	/** premodifier. */
-	static final Rule<String> PRE_MODIFIER_VALUE = new WordRule(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
+	static final Rule<String> PRE_MODIFIER_VALUE = Rules.word(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
 	/** postmodifier. */
-	static final Rule<String> POST_MODIFIER_VALUE = new WordRule(true, POST_MODIFIER, WordRule.Mode.ACCEPT, "POSTM");
+	static final Rule<String> POST_MODIFIER_VALUE = Rules.word(true, POST_MODIFIER, WordRule.Mode.ACCEPT, "POSTM");
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */
-	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DEL");
+	static final Rule<String> WORD = Rules.word(false, DELIMITERS, WordRule.Mode.REJECT, "DEL");
 
 	/** fixed word. */
-	static final Rule<String> FIXED_WORD = new WordRule(false, WHITE_SPACE + "]),", WordRule.Mode.REJECT, "!_");
+	static final Rule<String> FIXED_WORD = Rules.word(false, WHITE_SPACE + "]),", WordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
 	static final Rule<?> DEPTH_OVERFLOW = new Rule<Void>() {

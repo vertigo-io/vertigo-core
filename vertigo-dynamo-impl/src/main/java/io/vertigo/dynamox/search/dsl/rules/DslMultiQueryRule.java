@@ -23,10 +23,8 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 
@@ -63,15 +61,15 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 			return (Rule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
 
-		final Rule<Choice> queriesRule = new FirstOfRule(//"single or multiple")
+		final Rule<Choice> queriesRule = Rules.firstOf(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(level + 1), //2
 				new DslFixedQueryRule() //3
 		);
 
-		final Rule<List<Choice>> manyQueriesRule = new ManyRule<>(queriesRule, false, false);
-		return new SequenceRule(
+		final Rule<List<Choice>> manyQueriesRule = Rules.oneOrMore(queriesRule, false);
+		return Rules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.BLOCK_START,
 				manyQueriesRule, //2

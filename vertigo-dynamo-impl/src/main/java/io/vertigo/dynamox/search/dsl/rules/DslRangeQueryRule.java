@@ -22,9 +22,8 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
@@ -46,21 +45,21 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 	@Override
 	protected Rule<List<?>> createMainRule() {
 
-		final Rule<Choice> queriesRule = new FirstOfRule(//"term or fixed")
+		final Rule<Choice> queriesRule = Rules.firstOf(//"term or fixed")
 				new DslTermQueryRule(), //0
 				new DslFixedQueryRule() //1
 		);
 
-		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
-				new WordRule(false, "[{", WordRule.Mode.ACCEPT), //1
+		return Rules.sequence(
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
+				Rules.word(false, "[{", WordRule.Mode.ACCEPT), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
-				new WordRule(false, "TOto", WordRule.Mode.ACCEPT, "to"),
+				Rules.word(false, "TOto", WordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
-				queriesRule,//6
+				queriesRule, //6
 				DslSyntaxRules.SPACES,
-				new WordRule(false, "]}", WordRule.Mode.ACCEPT), //8
+				Rules.word(false, "]}", WordRule.Mode.ACCEPT), //8
 				DslSyntaxRules.POST_MODIFIER_VALUE); //9
 	}
 

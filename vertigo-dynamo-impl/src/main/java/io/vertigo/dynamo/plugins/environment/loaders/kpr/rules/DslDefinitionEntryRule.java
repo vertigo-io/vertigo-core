@@ -28,11 +28,8 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
 
@@ -57,17 +54,17 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 	protected Rule<List<?>> createMainRule() {
 		final List<Rule<?>> fieldNamesRules = new ArrayList<>();
 		for (final String fieldName : fieldNames) {
-			fieldNamesRules.add(new TermRule(fieldName));
+			fieldNamesRules.add(Rules.term(fieldName));
 		}
 		//-----
-		return new SequenceRule(//"DefinitionKey"
-				new FirstOfRule(fieldNamesRules), //0
+		return Rules.sequence(//"DefinitionKey"
+				Rules.firstOf(fieldNamesRules), //0
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
-				new FirstOfRule(WORD, WORDS),//4
+				Rules.firstOf(WORD, WORDS), //4
 				SPACES,
-				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

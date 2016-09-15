@@ -24,11 +24,9 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.Rule.Dummy;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -64,12 +62,12 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	protected Rule<List<?>> createMainRule() {
 		final Rule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
 		final Rule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final Rule<Choice> firstOfRule = new FirstOfRule(//"definition or template")
+		final Rule<Choice> firstOfRule = Rules.firstOf(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);
-		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
-		return new SequenceRule(
+		final Rule<List<Choice>> manyRule = Rules.zeroOrMore(firstOfRule, true);
+		return Rules.sequence(
 				SPACES,
 				new DslPackageRule(), //1
 				SPACES,

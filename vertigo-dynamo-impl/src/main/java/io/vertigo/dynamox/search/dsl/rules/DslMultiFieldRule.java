@@ -22,9 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 
@@ -37,15 +36,15 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		final Rule<List<List<?>>> otherFieldsRule = new ManyRule<>(
-				new SequenceRule(
+		final Rule<List<List<?>>> otherFieldsRule = Rules.zeroOrMore(
+				Rules.sequence(
 						DslSyntaxRules.SPACES,
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
 						new DslFieldRule() //3
-				), true, false);
+				), false);
 
-		return new SequenceRule(
+		return Rules.sequence(
 				DslSyntaxRules.ARRAY_START,
 				DslSyntaxRules.SPACES,
 				new DslFieldRule(), //2

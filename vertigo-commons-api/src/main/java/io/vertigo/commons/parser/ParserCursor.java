@@ -19,7 +19,7 @@ public final class ParserCursor<R> {
 	 * @param index
 	 * @param result
 	 */
-	public ParserCursor(final int index, final R result) {
+	ParserCursor(final int index, final R result) {
 		Assertion.checkNotNull(result);
 		//---
 		this.index = index;

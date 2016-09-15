@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
 
 /**
@@ -40,8 +40,8 @@ final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
-				DslSyntaxRules.SPACES,//0
+		return Rules.sequence(
+				DslSyntaxRules.SPACES, //0
 				DslSyntaxRules.FIXED_WORD);//1
 	}
 

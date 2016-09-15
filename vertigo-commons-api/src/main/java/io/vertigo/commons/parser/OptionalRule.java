@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  * @param <R> Type of the product text parsing
  */
-public final class OptionalRule<R> implements Rule<Optional<R>> {
+final class OptionalRule<R> implements Rule<Optional<R>> {
 	private final String expression;
 	private final Rule<R> rule;
 
@@ -37,7 +37,7 @@ public final class OptionalRule<R> implements Rule<Optional<R>> {
 	 * Constructor.
 	 * @param rule Optional rule
 	 */
-	public OptionalRule(final Rule<R> rule) {
+	OptionalRule(final Rule<R> rule) {
 		super();
 		Assertion.checkNotNull(rule);
 		//-----

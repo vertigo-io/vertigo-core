@@ -21,10 +21,8 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
@@ -52,14 +50,14 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
-		return new SequenceRule(//"InnerDefinition"
-				new TermRule(entityName),
+		return Rules.sequence(//"InnerDefinition"
+				Rules.term(entityName),
 				DslSyntaxRules.SPACES,
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.SPACES,
 				definitionBodyRule, //4
 				DslSyntaxRules.SPACES,
-				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 
 /**
@@ -35,8 +35,8 @@ final class DslFieldRule extends AbstractRule<DslField, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
+		return Rules.sequence(
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.WORD, //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 	}

@@ -23,10 +23,8 @@ import java.util.Locale;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 
 /**
  * Parsing rule for boolean operator.
@@ -43,18 +41,18 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
+		return Rules.sequence(
 				DslSyntaxRules.SPACES, //0
-				new FirstOfRule(//"single or multiple") //1
-						new TermRule("AND"), //0
-						new TermRule("and"), //1
-						new TermRule("And"), //2
-						new TermRule("&&"), //3
-						new TermRule("OR"), //4
-						new TermRule("Or"), //5
-						new TermRule("or"), //6
-						new TermRule("||") //7
-		),
+				Rules.firstOf(//"single or multiple") //1
+						Rules.term("AND"), //0
+						Rules.term("and"), //1
+						Rules.term("And"), //2
+						Rules.term("&&"), //3
+						Rules.term("OR"), //4
+						Rules.term("Or"), //5
+						Rules.term("or"), //6
+						Rules.term("||") //7
+				),
 				DslSyntaxRules.SPACES //2
 		);
 	}

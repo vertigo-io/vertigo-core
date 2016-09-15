@@ -25,45 +25,45 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class ParserTest {
-	private static final Rule HELLO = new TermRule("hello");
-	private static final Rule WORLD = new TermRule("world");
-	private static final Rule MUSIC = new TermRule("music");
-	private static final Rule SPACE = new TermRule(" ");
-	private static final Rule FROM = new TermRule("from");
-	private static final Rule WHERE = new WordRule(false, "abcdefghijklmnopqrstuvwxyz", WordRule.Mode.ACCEPT);
-	private static final Rule PROPERTY = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE);
-	private static final Rule AB = new TermRule("ab");
+	private static final Rule HELLO = Rules.term("hello");
+	private static final Rule WORLD = Rules.term("world");
+	private static final Rule MUSIC = Rules.term("music");
+	private static final Rule SPACE = Rules.term(" ");
+	private static final Rule FROM = Rules.term("from");
+	private static final Rule WHERE = Rules.word(false, "abcdefghijklmnopqrstuvwxyz", WordRule.Mode.ACCEPT);
+	private static final Rule PROPERTY = Rules.word(false, "\"", WordRule.Mode.REJECT_ESCAPABLE);
+	private static final Rule<String> AB = Rules.term("ab");
 	//---
-	private static final Rule<List<?>> MANY_AB = new ManyRule(AB, true, false);//=(AB, true) no global (can match abc)
-	private static final Rule<List<?>> MANY_AB2 = new ManyRule(AB, true, true); //global (can't match abc)
-	private static final Rule<List<?>> MANY_AB_MORE = new ManyRule(AB, false, false);
+	private static final Rule<List<String>> MANY_AB = Rules.zeroOrMore(AB, false);//=(AB, true) no global (can match abc)
+	private static final Rule<List<String>> MANY_AB2 = Rules.zeroOrMore(AB, true); //global (can't match abc)
+	private static final Rule<List<String>> MANY_AB_MORE = Rules.oneOrMore(AB, false);
 
-	private static final Rule<List<?>> HELLO_WORLD = new SequenceRule(
+	private static final Rule<List<?>> HELLO_WORLD = Rules.sequence(
 			HELLO,
 			SPACE,
 			WORLD);
 
-	private static final Rule<Choice> WORLD_MUSIC = new FirstOfRule(
+	private static final Rule<Choice> WORLD_MUSIC = Rules.firstOf(
 			WORLD,
 			MUSIC);
 
-	private static final Rule<List<?>> HELLO_WORLD_MUSIC = new SequenceRule(
+	private static final Rule<List<?>> HELLO_WORLD_MUSIC = Rules.sequence(
 			HELLO,
 			SPACE,
 			WORLD_MUSIC);
 
-	private static final Rule<List<?>> HELLO_WORLD_FROM = new SequenceRule(
+	private static final Rule<List<?>> HELLO_WORLD_FROM = Rules.sequence(
 			HELLO,
 			SPACE,
 			WORLD,
-			new OptionalRule<>(new SequenceRule(
+			new OptionalRule<>(Rules.sequence(
 					SPACE,
 					FROM,
 					SPACE,
 					WHERE))//3
 	);
 
-	private static final Rule<List<?>> HELLO_PROPERTY = new SequenceRule(
+	private static final Rule<List<?>> HELLO_PROPERTY = Rules.sequence(
 			HELLO,
 			SPACE,
 			PROPERTY);
@@ -152,7 +152,7 @@ public final class ParserTest {
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail2() throws NotFoundException {
 		//On crée une liste vide de choix
-		new FirstOfRule()
+		Rules.firstOf()
 				.parse("world", 0);
 	}
 

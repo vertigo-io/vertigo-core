@@ -27,18 +27,18 @@ import io.vertigo.lang.Assertion;
  * mais permet de faire avancer l'index.
  * @author pchretien
  */
-public final class WhiteSpaceRule implements Rule<Dummy> {
+final class WhiteSpaceRule implements Rule<Dummy> {
 	private final Rule<String> rule;
 
 	/**
 	 * Constructeur.
 	 * @param blanks Caractères "blancs" et commentaires.
 	 */
-	public WhiteSpaceRule(final String blanks) {
+	WhiteSpaceRule(final String blanks) {
 		super();
 		Assertion.checkNotNull(blanks);
 		//-----
-		rule = new WordRule(true, blanks, WordRule.Mode.ACCEPT);
+		rule = Rules.word(true, blanks, WordRule.Mode.ACCEPT);
 	}
 
 	/** {@inheritDoc} */

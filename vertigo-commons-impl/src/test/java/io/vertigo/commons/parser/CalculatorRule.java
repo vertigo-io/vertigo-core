@@ -21,19 +21,19 @@ package io.vertigo.commons.parser;
 import java.util.List;
 
 final class CalculatorRule extends AbstractRule<Integer, List<?>> {
-	private static final Rule<?> SPACES = new WhiteSpaceRule(" ");
+	private static final Rule<?> SPACES = Rules.skipBlanks(" ");
 
 	//---Liste des opérations gérées
-	private static final Rule<String> ADD = new TermRule("+");
-	private static final Rule<String> MINUS = new TermRule("-");
-	private static final Rule<String> MULTI = new TermRule("*");
-	private static final Rule<String> DIV = new TermRule("/");
-	private static final Rule OPERATOR = new FirstOfRule(MULTI, DIV, ADD, MINUS);
+	private static final Rule<String> ADD = Rules.term("+");
+	private static final Rule<String> MINUS = Rules.term("-");
+	private static final Rule<String> MULTI = Rules.term("*");
+	private static final Rule<String> DIV = Rules.term("/");
+	private static final Rule OPERATOR = Rules.firstOf(MULTI, DIV, ADD, MINUS);
 
 	//---Par simplicité un nombre est une suite de chiffres
-	private static final Rule<String> NUMBER = new WordRule(false, "0123456789", WordRule.Mode.ACCEPT);
+	private static final Rule<String> NUMBER = Rules.word(false, "0123456789", WordRule.Mode.ACCEPT);
 
-	private static final Rule<List<?>> EXPRESSION = new SequenceRule(
+	private static final Rule<List<?>> EXPRESSION = Rules.sequence(
 			NUMBER, //0
 			SPACES,
 			OPERATOR,

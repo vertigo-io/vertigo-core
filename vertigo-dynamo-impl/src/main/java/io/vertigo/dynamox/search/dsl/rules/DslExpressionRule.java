@@ -23,10 +23,8 @@ import java.util.Optional;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
@@ -49,23 +47,23 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 	@Override
 	protected Rule<List<?>> createMainRule() {
 
-		final Rule<List<?>> multiFieldsRule = new SequenceRule(
+		final Rule<List<?>> multiFieldsRule = Rules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				new DslMultiFieldRule(), //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 
-		final Rule<Choice> fieldsRule = new FirstOfRule(//"single or multiple")
+		final Rule<Choice> fieldsRule = Rules.firstOf(//"single or multiple")
 				new DslFieldRule(), //0
 				multiFieldsRule //1
 		);
-		final Rule<Choice> queriesRule = new FirstOfRule(//"single or multiple")
+		final Rule<Choice> queriesRule = Rules.firstOf(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(), //2
 				new DslFixedQueryRule() //3
 		);
-		return new SequenceRule(
-				new OptionalRule<>(new DslBooleanOperatorRule()), //0
+		return Rules.sequence(
+				Rules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.SPACES, //1
 				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,

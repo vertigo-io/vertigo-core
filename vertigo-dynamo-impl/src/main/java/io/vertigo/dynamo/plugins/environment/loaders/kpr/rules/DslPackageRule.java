@@ -25,8 +25,7 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 
 /**
  * règle de déclaration d'un package.
@@ -39,10 +38,10 @@ public final class DslPackageRule extends AbstractRule<String, List<?>> {
 
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
-				new TermRule("package "),//après package il y a un blanc obligatoire
+		return Rules.sequence(
+				Rules.term("package "), //après package il y a un blanc obligatoire
 				SPACES,
-				WORD,// Nom du package 2
+				WORD, // Nom du package 2
 				SPACES);
 	}
 

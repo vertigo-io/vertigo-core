@@ -20,9 +20,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Rule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
@@ -43,7 +43,7 @@ public final class DslParserUtil {
 	 */
 	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) throws NotFoundException {
 		final Rule<DslMultiExpression> expressionsRule = new DslMultiExpressionRule();
-		return new ManyRule<>(expressionsRule, false, true)
+		return Rules.oneOrMore(expressionsRule, true)
 				.parse(buildQuery, 0)
 				.getResult();
 	}

@@ -26,14 +26,14 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class TermRule implements Rule<String> {
+final class TermRule implements Rule<String> {
 	private final String term;
 
 	/**
 	 * Constructor.
 	 * @param term Terminal
 	 */
-	public TermRule(final String term) {
+	TermRule(final String term) {
 		Assertion.checkNotNull(term, "Terminal is required");
 		//-----
 		this.term = term;
@@ -51,7 +51,8 @@ public final class TermRule implements Rule<String> {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;
 		//We look how far the text matches with the rule.
-		while (match < end && text.charAt(match) == term.charAt(match - start)) {
+		while (match < end
+				&& text.charAt(match) == term.charAt(match - start)) {
 			match++;
 		}
 		//if the rule was fully evaluated then it's ok.

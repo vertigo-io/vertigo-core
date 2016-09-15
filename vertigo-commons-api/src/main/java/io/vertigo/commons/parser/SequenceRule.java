@@ -34,29 +34,22 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class SequenceRule implements Rule<List<?>> {
+final class SequenceRule implements Rule<List<?>> {
 	private final List<Rule<?>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 */
-	public SequenceRule(final Rule<?>... rules) {
-		this(Arrays.asList(rules));
-	}
-
-	/**
-	 * Constructeur.
-	 */
-	public SequenceRule(final List<Rule<?>> rules) {
+	SequenceRule(final Rule<?>... rules) {
 		Assertion.checkNotNull(rules);
 		//-----
-		this.rules = Collections.unmodifiableList(rules);
+		this.rules = Collections.unmodifiableList(Arrays.asList(rules));
 		expression = createExpression(rules);
 	}
 
 	/*A sequence of rules/expressions is like that : e1 e2 e3 */
-	private static String createExpression(final List<Rule<?>> rules) {
+	private static String createExpression(final Rule<?>[] rules) {
 		final StringBuilder buffer = new StringBuilder();
 		for (final Rule<?> rule : rules) {
 			if (buffer.length() > 0) {

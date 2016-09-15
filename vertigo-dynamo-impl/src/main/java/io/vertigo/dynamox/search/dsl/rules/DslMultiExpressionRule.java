@@ -24,11 +24,8 @@ import java.util.Optional;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 
@@ -59,19 +56,19 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		if (level > MAX_DEPTH) {
 			return (Rule<Choice>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
-		final Rule<Choice> expressionsRule = new FirstOfRule(//"single or multiple")
+		final Rule<Choice> expressionsRule = Rules.firstOf(//"single or multiple")
 				new DslExpressionRule(), //0
 				new DslMultiExpressionRule(level + 1) //1
 		);
-		final Rule<List<Choice>> manyExpressionRule = new ManyRule<>(expressionsRule, false, false);
-		final Rule<List<?>> blockExpressionRule = new SequenceRule(
-				new OptionalRule<>(new DslBooleanOperatorRule()), //0
+		final Rule<List<Choice>> manyExpressionRule = Rules.oneOrMore(expressionsRule, false);
+		final Rule<List<?>> blockExpressionRule = Rules.sequence(
+				Rules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.BLOCK_START, //2
 				manyExpressionRule, //3
 				DslSyntaxRules.BLOCK_END, //4
 				DslSyntaxRules.POST_MODIFIER_VALUE); //5
-		return new FirstOfRule(//"single or multiple")
+		return Rules.firstOf(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
 		);

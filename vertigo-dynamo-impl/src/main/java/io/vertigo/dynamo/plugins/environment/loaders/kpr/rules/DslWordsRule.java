@@ -29,10 +29,8 @@ import java.util.List;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.Rules;
 
 /**
  * règle de composition d'une déclaration de liste de mots.
@@ -43,21 +41,21 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 	static final Rule<List<String>> WORDS = new DslWordsRule();
 
 	// 	{ }
-	private static final Rule<List<?>> EMPTY_LIST = new SequenceRule(//Liste vide
+	private static final Rule<List<?>> EMPTY_LIST = Rules.sequence(//Liste vide
 			ARRAY_START,
 			SPACES,
 			ARRAY_END);
 
 	// , XXXX
-	private static final Rule<List<List<?>>> MANY_WORDS = new ManyRule<>(
-			new SequenceRule(//"mot"
+	private static final Rule<List<List<?>>> MANY_WORDS = Rules.zeroOrMore(
+			Rules.sequence(//"mot"
 					ARRAY_SEPARATOR,
 					SPACES,
 					WORD //2
-			), true, false);
+			), false);
 
 	//{ XXXXX (,XXXX)+ }
-	private static final Rule<List<?>> NON_EMPTY_LIST = new SequenceRule(//"Liste non vide"
+	private static final Rule<List<?>> NON_EMPTY_LIST = Rules.sequence(//"Liste non vide"
 			ARRAY_START,
 			SPACES,
 			WORD, //2
@@ -69,7 +67,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 	// {} | { XXXXX (,XXXX)+ }
 	protected
 			Rule<Choice> createMainRule() {
-		return new FirstOfRule(//"liste vide ou non"
+		return Rules.firstOf(//"liste vide ou non"
 				EMPTY_LIST, //0
 				NON_EMPTY_LIST);//1
 	}

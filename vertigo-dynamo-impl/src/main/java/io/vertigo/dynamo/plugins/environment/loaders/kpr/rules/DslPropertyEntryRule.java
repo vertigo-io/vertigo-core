@@ -31,11 +31,8 @@ import java.util.Set;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -61,10 +58,10 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 		super();
 		Assertion.checkNotNull(entityPropertyNames);
 		//-----
-		this.entityProperties = new HashMap<>();
+		entityProperties = new HashMap<>();
 		for (final String entityPropertyName : entityPropertyNames) {
 			final String propertyName = StringUtil.constToLowerCamelCase(entityPropertyName);
-			this.entityProperties.put(propertyName, entityPropertyName);
+			entityProperties.put(propertyName, entityPropertyName);
 		}
 	}
 
@@ -72,19 +69,19 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 	protected Rule<List<?>> createMainRule() {
 		final List<Rule<?>> propertyNamesRules = new ArrayList<>();
 		for (final String propertyName : entityProperties.keySet()) {
-			propertyNamesRules.add(new TermRule(propertyName));
+			propertyNamesRules.add(Rules.term(propertyName));
 		}
 
-		return new SequenceRule(
-				new FirstOfRule(propertyNamesRules),
+		return Rules.sequence(
+				Rules.firstOf(propertyNamesRules),
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
 				QUOTATION_MARK,
-				PROPERTY_VALUE,//5
+				PROPERTY_VALUE, //5
 				QUOTATION_MARK,
 				SPACES,
-				new OptionalRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

@@ -23,11 +23,8 @@ import java.util.Optional;
 
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionalRule;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.Rules;
 import io.vertigo.commons.parser.WordRule;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
@@ -47,25 +44,25 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		final Rule<Choice> escapeModeRule = new FirstOfRule(
-				new TermRule("?(removeReserved)"), //choice 0
-				new TermRule("?(escapeReserved)")); //choice 1
+		final Rule<Choice> escapeModeRule = Rules.firstOf(
+				Rules.term("?(removeReserved)"), //choice 0
+				Rules.term("?(escapeReserved)")); //choice 1
 
-		final Rule<List<?>> defaultValueRule = new SequenceRule(
-				new TermRule("!("),
-				new WordRule(false, ")", WordRule.Mode.REJECT), //1
-				new TermRule(")"));
+		final Rule<List<?>> defaultValueRule = Rules.sequence(
+				Rules.term("!("),
+				Rules.word(false, ")", WordRule.Mode.REJECT), //1
+				Rules.term(")"));
 
-		final Rule<List<?>> termRule = new SequenceRule(
+		final Rule<List<?>> termRule = Rules.sequence(
 				DslSyntaxRules.TERM_MARK,
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE, //3
 				DslSyntaxRules.TERM_MARK,
-				new OptionalRule<>(escapeModeRule), //5
-				new OptionalRule<>(defaultValueRule)); //6
+				Rules.optional(escapeModeRule), //5
+				Rules.optional(defaultValueRule)); //6
 
-		return new SequenceRule(
+		return Rules.sequence(
 				DslSyntaxRules.SPACES, //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				termRule, //2
