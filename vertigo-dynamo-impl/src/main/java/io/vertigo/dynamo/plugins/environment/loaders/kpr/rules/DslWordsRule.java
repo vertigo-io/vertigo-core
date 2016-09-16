@@ -27,35 +27,35 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 
 /**
  * règle de composition d'une déclaration de liste de mots.
  * {mot1, mot2, mot3}
  * @author pchretien
  */
-public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
-	static final Rule<List<String>> WORDS = new DslWordsRule();
+public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
+	static final PegRule<List<String>> WORDS = new DslWordsRule();
 
 	// 	{ }
-	private static final Rule<List<?>> EMPTY_LIST = Rules.sequence(//Liste vide
+	private static final PegRule<List<?>> EMPTY_LIST = PegRules.sequence(//Liste vide
 			ARRAY_START,
 			SPACES,
 			ARRAY_END);
 
 	// , XXXX
-	private static final Rule<List<List<?>>> MANY_WORDS = Rules.zeroOrMore(
-			Rules.sequence(//"mot"
+	private static final PegRule<List<List<?>>> MANY_WORDS = PegRules.zeroOrMore(
+			PegRules.sequence(//"mot"
 					ARRAY_SEPARATOR,
 					SPACES,
 					WORD //2
 			), false);
 
 	//{ XXXXX (,XXXX)+ }
-	private static final Rule<List<?>> NON_EMPTY_LIST = Rules.sequence(//"Liste non vide"
+	private static final PegRule<List<?>> NON_EMPTY_LIST = PegRules.sequence(//"Liste non vide"
 			ARRAY_START,
 			SPACES,
 			WORD, //2
@@ -66,14 +66,14 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 	@Override
 	// {} | { XXXXX (,XXXX)+ }
 	protected
-			Rule<Choice> createMainRule() {
-		return Rules.firstOf(//"liste vide ou non"
+			PegRule<PegChoice> createMainRule() {
+		return PegRules.firstOf(//"liste vide ou non"
 				EMPTY_LIST, //0
 				NON_EMPTY_LIST);//1
 	}
 
 	@Override
-	protected List<String> handle(final Choice parsing) {
+	protected List<String> handle(final PegChoice parsing) {
 		final List<String> words = new ArrayList<>();
 		//---
 		switch (parsing.getValue()) {

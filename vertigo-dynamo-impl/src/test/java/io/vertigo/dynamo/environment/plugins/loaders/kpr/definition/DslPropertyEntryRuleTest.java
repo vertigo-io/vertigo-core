@@ -24,8 +24,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.ParserCursor;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
 
@@ -42,9 +42,9 @@ public final class DslPropertyEntryRuleTest {
 	}
 
 	@Test
-	public void test() throws NotFoundException {
+	public void test() throws PegNoMatchFoundException {
 		final String text = "label   : \"BLeU\", non reconnu";
-		final ParserCursor<DslPropertyEntry> cursor = MAIN
+		final PegResult<DslPropertyEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslPropertyEntry propertyEntry = cursor.getResult();
 		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
@@ -54,9 +54,9 @@ public final class DslPropertyEntryRuleTest {
 	}
 
 	@Test
-	public void test2() throws NotFoundException {
+	public void test2() throws PegNoMatchFoundException {
 		final String text = "label  :    \" vert \"";
-		final ParserCursor<DslPropertyEntry> cursor = MAIN
+		final PegResult<DslPropertyEntry> cursor = MAIN
 				.parse(text, 0);
 		//On ne met pas de séparateur final et on met un espace
 		final DslPropertyEntry propertyEntry = cursor.getResult();
@@ -66,9 +66,9 @@ public final class DslPropertyEntryRuleTest {
 	}
 
 	@Test
-	public void test3() throws NotFoundException {
+	public void test3() throws PegNoMatchFoundException {
 		final String text = "size   : \"54\",";
-		final ParserCursor<DslPropertyEntry> cursor = MAIN
+		final PegResult<DslPropertyEntry> cursor = MAIN
 				.parse(text, 0);
 
 		final DslPropertyEntry propertyEntry = cursor.getResult();
@@ -77,15 +77,15 @@ public final class DslPropertyEntryRuleTest {
 		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
-	@Test(expected = NotFoundException.class)
-	public void testFail() throws NotFoundException {
+	@Test(expected = PegNoMatchFoundException.class)
+	public void testFail() throws PegNoMatchFoundException {
 		final String text = "maxlength   : \"54\";";
 		//La propriété maxlength n'est pas enregistrée
 		MAIN.parse(text, 0);
 	}
 
-	@Test(expected = NotFoundException.class)
-	public void testFail2() throws NotFoundException {
+	@Test(expected = PegNoMatchFoundException.class)
+	public void testFail2() throws PegNoMatchFoundException {
 		final String text = "label  :    vert \"";
 		MAIN.parse(text, 0); //On omet la quote de début
 	}

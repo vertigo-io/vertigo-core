@@ -22,11 +22,11 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rule.Dummy;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -59,15 +59,15 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		final Rule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
-		final Rule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final Rule<Choice> firstOfRule = Rules.firstOf(//"definition or template")
+	protected PegRule<List<?>> createMainRule() {
+		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
+		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
+		final PegRule<PegChoice> firstOfRule = PegRules.firstOf(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);
-		final Rule<List<Choice>> manyRule = Rules.zeroOrMore(firstOfRule, true);
-		return Rules.sequence(
+		final PegRule<List<PegChoice>> manyRule = PegRules.zeroOrMore(firstOfRule, true);
+		return PegRules.sequence(
 				SPACES,
 				new DslPackageRule(), //1
 				SPACES,
@@ -77,9 +77,9 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	@Override
 	protected Dummy handle(final List<?> parsing) {
 		final String packageName = (String) parsing.get(1);
-		final List<Choice> tuples = (List<Choice>) parsing.get(3);
+		final List<PegChoice> tuples = (List<PegChoice>) parsing.get(3);
 
-		for (final Choice item : tuples) {
+		for (final PegChoice item : tuples) {
 			//Tant qu'il y a du texte, il doit correspondre
 			// - à des définitions qui appartiennent toutes au même package.
 			// - à des gestion de droits.

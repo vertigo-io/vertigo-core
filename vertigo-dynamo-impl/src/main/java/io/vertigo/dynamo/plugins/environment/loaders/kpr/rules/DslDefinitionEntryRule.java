@@ -26,10 +26,10 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRu
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
 
@@ -51,28 +51,28 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		final List<Rule<?>> fieldNamesRules = new ArrayList<>();
+	protected PegRule<List<?>> createMainRule() {
+		final List<PegRule<?>> fieldNamesRules = new ArrayList<>();
 		for (final String fieldName : fieldNames) {
-			fieldNamesRules.add(Rules.term(fieldName));
+			fieldNamesRules.add(PegRules.term(fieldName));
 		}
 		//-----
-		return Rules.sequence(//"DefinitionKey"
-				Rules.firstOf(fieldNamesRules), //0
+		return PegRules.sequence(//"DefinitionKey"
+				PegRules.firstOf(fieldNamesRules), //0
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
-				Rules.firstOf(WORD, WORDS), //4
+				PegRules.firstOf(WORD, WORDS), //4
 				SPACES,
-				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
+				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override
 	protected DslDefinitionEntry handle(final List<?> parsing) {
-		final String fieldName = (String) ((Choice) parsing.get(0)).getResult();
+		final String fieldName = (String) ((PegChoice) parsing.get(0)).getResult();
 		final List<String> definitionKeys;
 
-		final Choice definitionChoice = (Choice) parsing.get(4);
+		final PegChoice definitionChoice = (PegChoice) parsing.get(4);
 		switch (definitionChoice.getValue()) {
 			case 1:
 				//Déclaration d'une liste de définitions identifiée par leurs clés

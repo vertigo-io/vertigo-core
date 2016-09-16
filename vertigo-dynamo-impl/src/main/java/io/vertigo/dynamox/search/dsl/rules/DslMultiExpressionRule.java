@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 
@@ -34,7 +34,7 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
  * (preMultiExpression)\((expression|multiExpression)+\)(postMultiExpression)
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choice> {
+final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegChoice> {
 	private static final int MAX_DEPTH = 3;
 	private final int level;
 
@@ -52,23 +52,23 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<Choice> createMainRule() {
+	protected PegRule<PegChoice> createMainRule() {
 		if (level > MAX_DEPTH) {
-			return (Rule<Choice>) DslSyntaxRules.DEPTH_OVERFLOW;
+			return (PegRule<PegChoice>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
-		final Rule<Choice> expressionsRule = Rules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> expressionsRule = PegRules.firstOf(//"single or multiple")
 				new DslExpressionRule(), //0
 				new DslMultiExpressionRule(level + 1) //1
 		);
-		final Rule<List<Choice>> manyExpressionRule = Rules.oneOrMore(expressionsRule, false);
-		final Rule<List<?>> blockExpressionRule = Rules.sequence(
-				Rules.optional(new DslBooleanOperatorRule()), //0
+		final PegRule<List<PegChoice>> manyExpressionRule = PegRules.oneOrMore(expressionsRule, false);
+		final PegRule<List<?>> blockExpressionRule = PegRules.sequence(
+				PegRules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.BLOCK_START, //2
 				manyExpressionRule, //3
 				DslSyntaxRules.BLOCK_END, //4
 				DslSyntaxRules.POST_MODIFIER_VALUE); //5
-		return Rules.firstOf(//"single or multiple")
+		return PegRules.firstOf(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
 		);
@@ -76,22 +76,22 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiExpression handle(final Choice parsing) {
+	protected DslMultiExpression handle(final PegChoice parsing) {
 		final String preMultiExpression;
 		final String postMultiExpression;
 		//---
 		final boolean block = parsing.getValue() == 0;
-		final List<Choice> many;
+		final List<PegChoice> many;
 		switch (parsing.getValue()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getResult();
 				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
-				many = (List<Choice>) blockExpression.get(3);
+				many = (List<PegChoice>) blockExpression.get(3);
 				postMultiExpression = (String) blockExpression.get(5);
 				break;
 			case 1:
 				preMultiExpression = "";
-				many = (List<Choice>) parsing.getResult();
+				many = (List<PegChoice>) parsing.getResult();
 				postMultiExpression = "";
 				break;
 			default:
@@ -102,7 +102,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, Choi
 		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 
 		//On récupère le produit de la règle many
-		for (final Choice item : many) {
+		for (final PegChoice item : many) {
 			switch (item.getValue()) {
 				case 0:
 					expressionDefinitions.add((DslExpression) item.getResult());

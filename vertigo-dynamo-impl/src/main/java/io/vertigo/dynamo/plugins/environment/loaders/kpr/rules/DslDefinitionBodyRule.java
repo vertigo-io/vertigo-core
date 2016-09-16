@@ -25,10 +25,10 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityField;
@@ -70,10 +70,10 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
+	protected PegRule<List<?>> createMainRule() {
 		final List<String> attributeNames = new ArrayList<>();
 
-		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
+		final List<PegRule<?>> innerDefinitionRules = new ArrayList<>();
 
 		for (final DslEntityField dslEntityField : entity.getFields()) {
 			attributeNames.add(dslEntityField.getName());
@@ -94,14 +94,14 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
-		final Rule<Choice> firstOfRule = Rules.firstOf(
+		final PegRule<PegChoice> firstOfRule = PegRules.firstOf(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
-				Rules.firstOf(innerDefinitionRules), //2,
+				PegRules.firstOf(innerDefinitionRules), //2,
 				SPACES);
 
-		final Rule<List<Choice>> manyRule = Rules.zeroOrMore(firstOfRule, false);
-		return Rules.sequence(
+		final PegRule<List<PegChoice>> manyRule = PegRules.zeroOrMore(firstOfRule, false);
+		return PegRules.sequence(
 				OBJECT_START,
 				SPACES,
 				manyRule, //2
@@ -111,11 +111,11 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 	@Override
 	protected DslDefinitionBody handle(final List<?> parsing) {
-		final List<Choice> many = (List<Choice>) parsing.get(2);
+		final List<PegChoice> many = (List<PegChoice>) parsing.get(2);
 
 		final List<DslDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();
 		final List<DslPropertyEntry> fieldPropertyEntries = new ArrayList<>();
-		for (final Choice item : many) {
+		for (final PegChoice item : many) {
 			switch (item.getValue()) {
 				case 0:
 					//Soit on est en présence d'une propriété standard
@@ -127,7 +127,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 					fieldDefinitionEntries.add(xDefinitionEntry);
 					break;
 				case 2:
-					final Choice subTuple = (Choice) item.getResult();
+					final PegChoice subTuple = (PegChoice) item.getResult();
 					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getResult());
 					break;
 				case 3:

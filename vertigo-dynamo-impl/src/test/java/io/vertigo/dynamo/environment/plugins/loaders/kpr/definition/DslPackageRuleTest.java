@@ -21,30 +21,30 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.ParserCursor;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPackageRule;
 
 public final class DslPackageRuleTest {
 	private static final DslPackageRule packageRule = new DslPackageRule();
 
 	@Test
-	public void testExpression() throws NotFoundException {
-		final ParserCursor<String> cursor = packageRule
+	public void testExpression() throws PegNoMatchFoundException {
+		final PegResult<String> cursor = packageRule
 				.parse("package io.vertigo  xxxx", 0);
 		Assert.assertEquals("io.vertigo", cursor.getResult());
 		Assert.assertEquals("package io.vertigo  ".length(), cursor.getIndex());
 	}
 
 	@Test(expected = Exception.class)
-	public void testMalFormedExpression() throws NotFoundException {
-		final ParserCursor<String> cursor = packageRule
+	public void testMalFormedExpression() throws PegNoMatchFoundException {
+		final PegResult<String> cursor = packageRule
 				.parse("packageio.vertigo", 0);
 	}
 
 	@Test(expected = Exception.class)
-	public void testMalFormedExpression2() throws NotFoundException {
-		final ParserCursor<String> cursor = packageRule
+	public void testMalFormedExpression2() throws PegNoMatchFoundException {
+		final PegResult<String> cursor = packageRule
 				.parse("  packageio.vertigo", 0);
 	}
 }

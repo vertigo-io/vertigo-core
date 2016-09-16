@@ -21,10 +21,10 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslExpression;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
@@ -45,25 +45,25 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
+	protected PegRule<List<?>> createMainRule() {
 
-		final Rule<List<?>> multiFieldsRule = Rules.sequence(
+		final PegRule<List<?>> multiFieldsRule = PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				new DslMultiFieldRule(), //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 
-		final Rule<Choice> fieldsRule = Rules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> fieldsRule = PegRules.firstOf(//"single or multiple")
 				new DslFieldRule(), //0
 				multiFieldsRule //1
 		);
-		final Rule<Choice> queriesRule = Rules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> queriesRule = PegRules.firstOf(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(), //2
 				new DslFixedQueryRule() //3
 		);
-		return Rules.sequence(
-				Rules.optional(new DslBooleanOperatorRule()), //0
+		return PegRules.sequence(
+				PegRules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.SPACES, //1
 				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,
@@ -78,7 +78,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 		final String postExpression;
 		final Optional<DslField> field;
 		final Optional<DslMultiField> multiField;
-		final Choice fields = (Choice) parsing.get(2);
+		final PegChoice fields = (PegChoice) parsing.get(2);
 		switch (fields.getValue()) {
 			case 0:
 				field = Optional.of((DslField) fields.getResult());
@@ -96,7 +96,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 				throw new IllegalArgumentException("case " + fields.getValue() + " not implemented");
 		}
 
-		final Choice queries = (Choice) parsing.get(4);
+		final PegChoice queries = (PegChoice) parsing.get(4);
 		final DslQuery query = (DslQuery) queries.getResult();
 
 		return new DslExpression(preExpression, field, multiField, query, postExpression);

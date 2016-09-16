@@ -16,25 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
-/**
- * @author pchretien
- */
-public final class Choice {
-	private final int value;
-	private final Object result;
+import org.junit.Assert;
+import org.junit.Test;
 
-	Choice(final int value, final Object result) {
-		this.value = value;
-		this.result = result;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegRule;
+
+public class CalculatorTest {
+	private static final PegRule<Integer> MAIN = new CalculatorRule();
+
+	private static int eval(final String s) throws PegNoMatchFoundException {
+		return MAIN.parse(s, 0).getResult().intValue();
 	}
 
-	public Object getResult() {
-		return result;
+	@Test
+	public void test() throws PegNoMatchFoundException {
+		Assert.assertEquals(6, eval("2*3"));
+		//--
+		Assert.assertEquals(5, eval("2 + 3"));
+		//--
+		Assert.assertEquals(11, eval("121 /11"));
 	}
 
-	public int getValue() {
-		return value;
+	@Test(expected = PegNoMatchFoundException.class)
+	public void testFail() throws PegNoMatchFoundException {
+		eval("2 $ 3");
+		//l'opérateur  $ n'existe pas
 	}
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,15 +30,15 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class FirstOfRule implements Rule<Choice> {
-	private final List<Rule<?>> rules;
+final class PegFirstOfRule implements PegRule<PegChoice> {
+	private final List<PegRule<?>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	FirstOfRule(final Rule<?>... rules) {
+	PegFirstOfRule(final PegRule<?>... rules) {
 		this(Arrays.asList(rules));
 	}
 
@@ -46,13 +46,13 @@ final class FirstOfRule implements Rule<Choice> {
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	FirstOfRule(final List<Rule<?>> rules) {
+	PegFirstOfRule(final List<PegRule<?>> rules) {
 		Assertion.checkNotNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---
 		final StringBuilder buffer = new StringBuilder();
-		for (final Rule<?> rule : rules) {
+		for (final PegRule<?> rule : rules) {
 			if (buffer.length() > 0) {
 				buffer.append(" | ");
 			}
@@ -70,28 +70,28 @@ final class FirstOfRule implements Rule<Choice> {
 	/**
 	 * @return the list of rules to test
 	 */
-	private List<Rule<?>> getRules() {
+	private List<PegRule<?>> getRules() {
 		return rules;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public ParserCursor<Choice> parse(final String text, final int start) throws NotFoundException {
+	public PegResult<PegChoice> parse(final String text, final int start) throws PegNoMatchFoundException {
 		//Règle ayant été le plus profond
-		NotFoundException best = null;
+		PegNoMatchFoundException best = null;
 		int bestIndex = -1;
 		for (int i = 0; i < getRules().size(); i++) {
 			try {
-				final ParserCursor<?> parserCursor = getRules().get(i)
+				final PegResult<?> parserCursor = getRules().get(i)
 						.parse(text, start);
 				final int end = parserCursor.getIndex();
 				if (end < bestIndex) {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				final Choice result = new Choice(i, parserCursor.getResult());
-				return new ParserCursor<>(end, result);
-			} catch (final NotFoundException e) {
+				final PegChoice result = new PegChoice(i, parserCursor.getResult());
+				return new PegResult<>(end, result);
+			} catch (final PegNoMatchFoundException e) {
 				//Tant que l'on a des erreurs sur l'évaluation des règles
 				//on recommence jusqu'à trouver la première qui fonctionne.
 				if (e.getIndex() > bestIndex) {
@@ -102,7 +102,7 @@ final class FirstOfRule implements Rule<Choice> {
 		}
 		//Nothing has been found
 		if (best == null) {
-			throw new NotFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
+			throw new PegNoMatchFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
 		}
 		throw best;
 	}

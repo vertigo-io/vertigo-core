@@ -20,11 +20,11 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
-import io.vertigo.commons.parser.WordRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegWordRule;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 
@@ -43,23 +43,23 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
+	protected PegRule<List<?>> createMainRule() {
 
-		final Rule<Choice> queriesRule = Rules.firstOf(//"term or fixed")
+		final PegRule<PegChoice> queriesRule = PegRules.firstOf(//"term or fixed")
 				new DslTermQueryRule(), //0
 				new DslFixedQueryRule() //1
 		);
 
-		return Rules.sequence(
+		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				Rules.word(false, "[{", WordRule.Mode.ACCEPT), //1
+				PegRules.word(false, "[{", PegWordRule.Mode.ACCEPT), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
-				Rules.word(false, "TOto", WordRule.Mode.ACCEPT, "to"),
+				PegRules.word(false, "TOto", PegWordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
 				queriesRule, //6
 				DslSyntaxRules.SPACES,
-				Rules.word(false, "]}", WordRule.Mode.ACCEPT), //8
+				PegRules.word(false, "]}", PegWordRule.Mode.ACCEPT), //8
 				DslSyntaxRules.POST_MODIFIER_VALUE); //9
 	}
 
@@ -69,10 +69,10 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 		final String preQuery = (String) parsing.get(0);
 		final String startRange = (String) parsing.get(1);
 
-		final Choice startTermQuery = (Choice) parsing.get(2);
+		final PegChoice startTermQuery = (PegChoice) parsing.get(2);
 		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getResult();
 
-		final Choice endTermQuery = (Choice) parsing.get(6);
+		final PegChoice endTermQuery = (PegChoice) parsing.get(6);
 		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getResult();
 
 		final String endRange = (String) parsing.get(8);

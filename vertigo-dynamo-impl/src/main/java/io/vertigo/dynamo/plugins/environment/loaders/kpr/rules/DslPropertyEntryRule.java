@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -66,14 +66,14 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		final List<Rule<?>> propertyNamesRules = new ArrayList<>();
+	protected PegRule<List<?>> createMainRule() {
+		final List<PegRule<?>> propertyNamesRules = new ArrayList<>();
 		for (final String propertyName : entityProperties.keySet()) {
-			propertyNamesRules.add(Rules.term(propertyName));
+			propertyNamesRules.add(PegRules.term(propertyName));
 		}
 
-		return Rules.sequence(
-				Rules.firstOf(propertyNamesRules),
+		return PegRules.sequence(
+				PegRules.firstOf(propertyNamesRules),
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
@@ -81,12 +81,12 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 				PROPERTY_VALUE, //5
 				QUOTATION_MARK,
 				SPACES,
-				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
+				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override
 	protected DslPropertyEntry handle(final List<?> parsing) {
-		final String propertyName = (String) ((Choice) parsing.get(0)).getResult();
+		final String propertyName = (String) ((PegChoice) parsing.get(0)).getResult();
 		final String propertyValue = (String) parsing.get(5);
 		return new DslPropertyEntry(entityProperties.get(propertyName), propertyValue);
 	}

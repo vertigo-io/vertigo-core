@@ -23,10 +23,10 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
 /*
  * @author pchretien
  */
-public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, Choice> {
+public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, PegChoice> {
 	/** Création de la définition. */
 	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final String operation;
@@ -54,27 +54,27 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 		this.dynamicModelRepository = dynamicModelRepository;
 	}
 
-	private Rule<List<?>> createRule(final DslInnerDefinitionRule definitionRule) {
+	private PegRule<List<?>> createRule(final DslInnerDefinitionRule definitionRule) {
 		// Création de la règle de déclaration d'une nouvelle definition.
-		return Rules.sequence(//Definition
-				Rules.term(operation), // alter ou create
+		return PegRules.sequence(//Definition
+				PegRules.term(operation), // alter ou create
 				SPACES,
 				definitionRule, //2
 				SPACES);
 	}
 
 	@Override
-	protected Rule<Choice> createMainRule() {
-		final List<Rule<?>> rules = new ArrayList<>();//"Definition")
+	protected PegRule<PegChoice> createMainRule() {
+		final List<PegRule<?>> rules = new ArrayList<>();//"Definition")
 		for (final DslEntity entity : dynamicModelRepository.getGrammar().getEntities()) {
 			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
 			rules.add(createRule(definitionRule));
 		}
-		return Rules.firstOf(rules);
+		return PegRules.firstOf(rules);
 	}
 
 	@Override
-	protected DynamicDefinition handle(final Choice parsing) {
+	protected DynamicDefinition handle(final PegChoice parsing) {
 		final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) ((List) parsing.getResult()).get(2);
 		return xDefinitionEntry.getDefinition();
 	}

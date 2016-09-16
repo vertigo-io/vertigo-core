@@ -23,14 +23,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule;
 
 public final class DslWordListRuleTest {
 	private final DslWordsRule wordListRule = new DslWordsRule();
 
 	@Test
-	public void testList0() throws NotFoundException {
+	public void testList0() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse("[ ]", 0)
 				.getResult();
@@ -38,7 +38,7 @@ public final class DslWordListRuleTest {
 	}
 
 	@Test
-	public void testList1() throws NotFoundException {
+	public void testList1() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse("[BLEU, VerT, ROUGE ]", 0)
 				.getResult();
@@ -49,7 +49,7 @@ public final class DslWordListRuleTest {
 	}
 
 	@Test
-	public void testList2() throws NotFoundException {
+	public void testList2() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse("[BLEU, VERT, ROUGE ]", 0)
 				.getResult();
@@ -60,7 +60,7 @@ public final class DslWordListRuleTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void testList3() throws NotFoundException {
+	public void testList3() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0)
 				.getResult();
@@ -68,7 +68,7 @@ public final class DslWordListRuleTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void testList4() throws NotFoundException {
+	public void testList4() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0)
 				.getResult();
@@ -76,7 +76,7 @@ public final class DslWordListRuleTest {
 	}
 
 	@Test
-	public void testList5() throws NotFoundException {
+	public void testList5() throws PegNoMatchFoundException {
 		final List<String> list = wordListRule
 				.parse("[BLEU ]", 0)
 				.getResult();

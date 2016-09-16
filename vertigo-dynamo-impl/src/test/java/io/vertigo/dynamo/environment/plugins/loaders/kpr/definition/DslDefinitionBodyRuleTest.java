@@ -23,7 +23,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
@@ -43,7 +43,7 @@ public class DslDefinitionBodyRuleTest {
 	}
 
 	@Test
-	public void test1() throws NotFoundException {
+	public void test1() throws PegNoMatchFoundException {
 		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
 
 		final DslEntity entity = find(entities, "Formatter");
@@ -62,7 +62,7 @@ public class DslDefinitionBodyRuleTest {
 	//			constraint : {CK_CODE_POSTAL}
 	//		)
 	@Test
-	public void test2() throws NotFoundException {
+	public void test2() throws PegNoMatchFoundException {
 		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
 		final DslEntity entity = find(entities, "Domain");
 
@@ -82,7 +82,7 @@ public class DslDefinitionBodyRuleTest {
 			new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
 					.parse(testValue, 0);
 			Assert.fail();
-		} catch (final NotFoundException e) {
+		} catch (final PegNoMatchFoundException e) {
 			System.out.println(e.getFullMessage());
 			Assert.assertEquals(testValue.indexOf("maxLengh") + "maxLengh".length() - 1, e.getIndex());
 		}

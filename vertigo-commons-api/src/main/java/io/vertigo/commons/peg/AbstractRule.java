@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 /**
  * Une règle peut être vue comme
@@ -26,17 +26,17 @@ package io.vertigo.commons.parser;
  * @author pchretien
  * @param<R> Type of the product text parsing
  */
-public abstract class AbstractRule<R, M> implements Rule<R> {
-	private Rule<M> mainRule;
+public abstract class AbstractRule<R, M> implements PegRule<R> {
+	private PegRule<M> mainRule;
 
-	protected final Rule<M> getMainRule() {
+	protected final PegRule<M> getMainRule() {
 		if (mainRule == null) {
 			mainRule = createMainRule();
 		}
 		return mainRule;
 	}
 
-	protected abstract Rule<M> createMainRule();
+	protected abstract PegRule<M> createMainRule();
 
 	/** {@inheritDoc} */
 	@Override
@@ -48,13 +48,13 @@ public abstract class AbstractRule<R, M> implements Rule<R> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ParserCursor<R> parse(final String text, final int start) throws NotFoundException {
-		final ParserCursor<M> parserCursor = getMainRule()
+	public PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
+		final PegResult<M> parserCursor = getMainRule()
 				.parse(text, start);
 		final int end = parserCursor.getIndex();
 		//---
 		final R result = handle(parserCursor.getResult());
 		//---
-		return new ParserCursor<>(end, result);
+		return new PegResult<>(end, result);
 	}
 }

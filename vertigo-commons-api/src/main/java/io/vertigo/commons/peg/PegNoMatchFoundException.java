@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import io.vertigo.util.StringUtil;
  * Exception levée lorsque la règle n'est pas respectée.
  * @author pchretien
  */
-public final class NotFoundException extends Exception {
+public final class PegNoMatchFoundException extends Exception {
 	private static final long serialVersionUID = 6096295235950712319L;
 	private static final int CONTEXT_AROUND_ERROR_WIDTH = 150; //number of char before and after an error to extract context
 	private final int index;
@@ -44,7 +44,7 @@ public final class NotFoundException extends Exception {
 	 * @param comment Explication de l'erreur au format MessageFormat si il y a des valeurs
 	 * @param commentValues Valeurs pour le MessageFormat de comment (il n'est pas conseillé de les fusionner au préalable dans comment)
 	 */
-	public NotFoundException(final String s, final int index, final NotFoundException rootException, final String comment, final Serializable... commentValues) {
+	public PegNoMatchFoundException(final String s, final int index, final PegNoMatchFoundException rootException, final String comment, final Serializable... commentValues) {
 		super(rootException);
 		this.index = index;
 		this.s = s;
@@ -86,8 +86,8 @@ public final class NotFoundException extends Exception {
 				.append("\n");
 		final List<String> errorRuleList = new ArrayList<>();
 		Throwable cause = this;
-		while (cause instanceof NotFoundException) {
-			errorRuleList.add(0, ((NotFoundException) cause).displayRule());
+		while (cause instanceof PegNoMatchFoundException) {
+			errorRuleList.add(0, ((PegNoMatchFoundException) cause).displayRule());
 			cause = cause.getCause();
 		}
 		String sep = "- ";

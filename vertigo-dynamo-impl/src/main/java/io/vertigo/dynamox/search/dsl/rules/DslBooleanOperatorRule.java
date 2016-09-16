@@ -21,10 +21,10 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.List;
 import java.util.Locale;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 
 /**
  * Parsing rule for boolean operator.
@@ -40,18 +40,18 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		return Rules.sequence(
+	protected PegRule<List<?>> createMainRule() {
+		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
-				Rules.firstOf(//"single or multiple") //1
-						Rules.term("AND"), //0
-						Rules.term("and"), //1
-						Rules.term("And"), //2
-						Rules.term("&&"), //3
-						Rules.term("OR"), //4
-						Rules.term("Or"), //5
-						Rules.term("or"), //6
-						Rules.term("||") //7
+				PegRules.firstOf(//"single or multiple") //1
+						PegRules.term("AND"), //0
+						PegRules.term("and"), //1
+						PegRules.term("And"), //2
+						PegRules.term("&&"), //3
+						PegRules.term("OR"), //4
+						PegRules.term("Or"), //5
+						PegRules.term("or"), //6
+						PegRules.term("||") //7
 				),
 				DslSyntaxRules.SPACES //2
 		);
@@ -61,7 +61,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 	@Override
 	protected String handle(final List<?> parsing) {
 		final String preSpaces = (String) parsing.get(0);
-		final String operator = (String) ((Choice) parsing.get(1)).getResult();
+		final String operator = (String) ((PegChoice) parsing.get(1)).getResult();
 		final String postSpaces = (String) parsing.get(2);
 		return DslUtil.concat(preSpaces, operator.toUpperCase(Locale.ENGLISH), postSpaces); //toUpperCase car ES n'interprete pas correctement en lowercase
 	}

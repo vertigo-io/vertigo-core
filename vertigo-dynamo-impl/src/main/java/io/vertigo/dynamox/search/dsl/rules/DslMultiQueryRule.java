@@ -21,10 +21,10 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 
@@ -56,20 +56,20 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
+	protected PegRule<List<?>> createMainRule() {
 		if (level > MAX_DEPTH) {
-			return (Rule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
+			return (PegRule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
 
-		final Rule<Choice> queriesRule = Rules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> queriesRule = PegRules.firstOf(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(level + 1), //2
 				new DslFixedQueryRule() //3
 		);
 
-		final Rule<List<Choice>> manyQueriesRule = Rules.oneOrMore(queriesRule, false);
-		return Rules.sequence(
+		final PegRule<List<PegChoice>> manyQueriesRule = PegRules.oneOrMore(queriesRule, false);
+		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.BLOCK_START,
 				manyQueriesRule, //2
@@ -83,8 +83,8 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 		final String preQuery = (String) parsing.get(0);
 		final List<DslQuery> queryDefinitions = new ArrayList<>();
 		final String postQuery = (String) parsing.get(4);
-		final List<Choice> manyQueries = (List<Choice>) parsing.get(2);
-		for (final Choice item : manyQueries) {
+		final List<PegChoice> manyQueries = (List<PegChoice>) parsing.get(2);
+		for (final PegChoice item : manyQueries) {
 			queryDefinitions.add((DslQuery) item.getResult());
 		}
 		return new DslBlockQuery(preQuery, queryDefinitions, postQuery);

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +34,14 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class SequenceRule implements Rule<List<?>> {
-	private final List<Rule<?>> rules;
+final class PegSequenceRule implements PegRule<List<?>> {
+	private final List<PegRule<?>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 */
-	SequenceRule(final Rule<?>... rules) {
+	PegSequenceRule(final PegRule<?>... rules) {
 		Assertion.checkNotNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(Arrays.asList(rules));
@@ -49,9 +49,9 @@ final class SequenceRule implements Rule<List<?>> {
 	}
 
 	/*A sequence of rules/expressions is like that : e1 e2 e3 */
-	private static String createExpression(final Rule<?>[] rules) {
+	private static String createExpression(final PegRule<?>[] rules) {
 		final StringBuilder buffer = new StringBuilder();
-		for (final Rule<?> rule : rules) {
+		for (final PegRule<?> rule : rules) {
 			if (buffer.length() > 0) {
 				buffer.append(' ');
 			}
@@ -68,19 +68,19 @@ final class SequenceRule implements Rule<List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ParserCursor<List<?>> parse(final String text, final int start) throws NotFoundException {
+	public PegResult<List<?>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final List results = new ArrayList<>();
 		int index = start;
 		try {
-			for (final Rule<?> rule : rules) {
-				final ParserCursor<?> cursor = rule
+			for (final PegRule<?> rule : rules) {
+				final PegResult<?> cursor = rule
 						.parse(text, index);
 				index = cursor.getIndex();
 				results.add(cursor.getResult());
 			}
-		} catch (final NotFoundException e) {
-			throw new NotFoundException(text, e.getIndex(), e, getExpression());
+		} catch (final PegNoMatchFoundException e) {
+			throw new PegNoMatchFoundException(text, e.getIndex(), e, getExpression());
 		}
-		return new ParserCursor<>(index, results);
+		return new PegResult<>(index, results);
 	}
 }

@@ -23,9 +23,9 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 
 /**
  * règle de déclaration d'un package.
@@ -37,9 +37,9 @@ import io.vertigo.commons.parser.Rules;
 public final class DslPackageRule extends AbstractRule<String, List<?>> {
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		return Rules.sequence(
-				Rules.term("package "), //après package il y a un blanc obligatoire
+	protected PegRule<List<?>> createMainRule() {
+		return PegRules.sequence(
+				PegRules.term("package "), //après package il y a un blanc obligatoire
 				SPACES,
 				WORD, // Nom du package 2
 				SPACES);

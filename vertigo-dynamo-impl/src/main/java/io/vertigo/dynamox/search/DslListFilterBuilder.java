@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
-import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
@@ -99,7 +99,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		//-----
 		try {
 			myBuildQuery = DslParserUtil.parseMultiExpression(buildQuery);
-		} catch (final NotFoundException e) {
+		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
 			throw new WrappedException(message, e);
 		} catch (final Exception e) {

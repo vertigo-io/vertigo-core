@@ -21,11 +21,11 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
-import io.vertigo.commons.parser.WordRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegWordRule;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 
@@ -43,26 +43,26 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		final Rule<Choice> escapeModeRule = Rules.firstOf(
-				Rules.term("?(removeReserved)"), //choice 0
-				Rules.term("?(escapeReserved)")); //choice 1
+	protected PegRule<List<?>> createMainRule() {
+		final PegRule<PegChoice> escapeModeRule = PegRules.firstOf(
+				PegRules.term("?(removeReserved)"), //choice 0
+				PegRules.term("?(escapeReserved)")); //choice 1
 
-		final Rule<List<?>> defaultValueRule = Rules.sequence(
-				Rules.term("!("),
-				Rules.word(false, ")", WordRule.Mode.REJECT), //1
-				Rules.term(")"));
+		final PegRule<List<?>> defaultValueRule = PegRules.sequence(
+				PegRules.term("!("),
+				PegRules.word(false, ")", PegWordRule.Mode.REJECT), //1
+				PegRules.term(")"));
 
-		final Rule<List<?>> termRule = Rules.sequence(
+		final PegRule<List<?>> termRule = PegRules.sequence(
 				DslSyntaxRules.TERM_MARK,
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE, //3
 				DslSyntaxRules.TERM_MARK,
-				Rules.optional(escapeModeRule), //5
-				Rules.optional(defaultValueRule)); //6
+				PegRules.optional(escapeModeRule), //5
+				PegRules.optional(defaultValueRule)); //6
 
-		return Rules.sequence(
+		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				termRule, //2
@@ -79,7 +79,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		final String preTerm = (String) term.get(1);
 		final String termField = (String) term.get(2);
 		final String postTerm = (String) term.get(3);
-		final Optional<Choice> escapeRule = (Optional<Choice>) term.get(5);
+		final Optional<PegChoice> escapeRule = (Optional<PegChoice>) term.get(5);
 		final EscapeMode escapeMode;
 		if (escapeRule.isPresent()) {
 			switch (escapeRule.get().getValue()) {

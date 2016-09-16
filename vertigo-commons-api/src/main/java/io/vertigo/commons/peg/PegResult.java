@@ -1,4 +1,4 @@
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 import io.vertigo.lang.Assertion;
 
@@ -10,7 +10,7 @@ import io.vertigo.lang.Assertion;
  *
  * @param <R> the type of the Result Object
  */
-public final class ParserCursor<R> {
+public final class PegResult<R> {
 	private final int index;
 	private final R result;
 
@@ -19,7 +19,7 @@ public final class ParserCursor<R> {
 	 * @param index
 	 * @param result
 	 */
-	ParserCursor(final int index, final R result) {
+	PegResult(final int index, final R result) {
 		Assertion.checkNotNull(result);
 		//---
 		this.index = index;

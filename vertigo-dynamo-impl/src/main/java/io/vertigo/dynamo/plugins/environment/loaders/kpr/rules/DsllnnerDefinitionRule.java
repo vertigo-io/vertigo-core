@@ -20,9 +20,9 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
@@ -48,16 +48,16 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
+	protected PegRule<List<?>> createMainRule() {
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
-		return Rules.sequence(//"InnerDefinition"
-				Rules.term(entityName),
+		return PegRules.sequence(//"InnerDefinition"
+				PegRules.term(entityName),
 				DslSyntaxRules.SPACES,
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.SPACES,
 				definitionBodyRule, //4
 				DslSyntaxRules.SPACES,
-				Rules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
+				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

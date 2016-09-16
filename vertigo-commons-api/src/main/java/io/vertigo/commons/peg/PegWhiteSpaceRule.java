@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
-import io.vertigo.commons.parser.Rule.Dummy;
+import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -27,18 +27,18 @@ import io.vertigo.lang.Assertion;
  * mais permet de faire avancer l'index.
  * @author pchretien
  */
-final class WhiteSpaceRule implements Rule<Dummy> {
-	private final Rule<String> rule;
+final class PegWhiteSpaceRule implements PegRule<Dummy> {
+	private final PegRule<String> rule;
 
 	/**
 	 * Constructeur.
 	 * @param blanks Caractères "blancs" et commentaires.
 	 */
-	WhiteSpaceRule(final String blanks) {
+	PegWhiteSpaceRule(final String blanks) {
 		super();
 		Assertion.checkNotNull(blanks);
 		//-----
-		rule = Rules.word(true, blanks, WordRule.Mode.ACCEPT);
+		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT);
 	}
 
 	/** {@inheritDoc} */
@@ -49,7 +49,7 @@ final class WhiteSpaceRule implements Rule<Dummy> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ParserCursor<Dummy> parse(final String text, final int start) throws NotFoundException {
+	public PegResult<Dummy> parse(final String text, final int start) throws PegNoMatchFoundException {
 		int lastIndex;
 		int index = start;
 		index = rule
@@ -62,12 +62,12 @@ final class WhiteSpaceRule implements Rule<Dummy> {
 			lastIndex = index;
 			index = text.indexOf("*/", index);
 			if (index < 0) {
-				throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
+				throw new PegNoMatchFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
 			}
 			index += 2;
 			//On supprime les blancs
 			index = rule.parse(text, index).getIndex();
 		}
-		return new ParserCursor<>(index, Dummy.INSTANCE);
+		return new PegResult<>(index, Dummy.INSTANCE);
 	}
 }

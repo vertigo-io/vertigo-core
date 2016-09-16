@@ -20,9 +20,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.Rules;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 
 /**
@@ -34,8 +34,8 @@ final class DslFieldRule extends AbstractRule<DslField, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		return Rules.sequence(
+	protected PegRule<List<?>> createMainRule() {
+		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.WORD, //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2

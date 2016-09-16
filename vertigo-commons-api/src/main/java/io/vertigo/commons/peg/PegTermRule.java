@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 import io.vertigo.lang.Assertion;
 
@@ -26,14 +26,14 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class TermRule implements Rule<String> {
+final class PegTermRule implements PegRule<String> {
 	private final String term;
 
 	/**
 	 * Constructor.
 	 * @param term Terminal
 	 */
-	TermRule(final String term) {
+	PegTermRule(final String term) {
 		Assertion.checkNotNull(term, "Terminal is required");
 		//-----
 		this.term = term;
@@ -47,7 +47,7 @@ final class TermRule implements Rule<String> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ParserCursor<String> parse(final String text, final int start) throws NotFoundException {
+	public PegResult<String> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;
 		//We look how far the text matches with the rule.
@@ -57,8 +57,8 @@ final class TermRule implements Rule<String> {
 		}
 		//if the rule was fully evaluated then it's ok.
 		if (match == start + term.length()) {
-			return new ParserCursor<>(match, term);
+			return new PegResult<>(match, term);
 		}
-		throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
+		throw new PegNoMatchFoundException(text, match, null, "Terminal '{0}' is expected", term);
 	}
 }

@@ -37,8 +37,8 @@ import io.vertigo.commons.codec.html.HtmlCodecTest;
 import io.vertigo.commons.codec.serialization.SerializationCodecTest;
 import io.vertigo.commons.daemon.DaemonManagerTest;
 import io.vertigo.commons.eventbus.EventBusManagerTest;
-import io.vertigo.commons.parser.CalculatorTest;
-import io.vertigo.commons.parser.ParserTest;
+import io.vertigo.commons.peg.CalculatorTest;
+import io.vertigo.commons.peg.ParserTest;
 import io.vertigo.commons.script.ScriptManagerTest;
 
 /**

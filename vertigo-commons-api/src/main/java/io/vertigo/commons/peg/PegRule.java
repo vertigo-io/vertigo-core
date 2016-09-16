@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.parser;
+package io.vertigo.commons.peg;
 
 /**
  * Règle.
@@ -24,7 +24,7 @@ package io.vertigo.commons.parser;
  * @author pchretien
  * @param<R> Type of the product text parsing
  */
-public interface Rule<R> {
+public interface PegRule<R> {
 	/** Dummy class, used for rule that returns Void. */
 	public static final class Dummy {
 		/** singleton. */
@@ -47,8 +47,8 @@ public interface Rule<R> {
 	 * Returns the result of the parsing operation.
 	 * @param text Text to parse
 	 * @param start Start of the element of text to parse
-	 * @throws NotFoundException if parsing has failed.
+	 * @throws PegNoMatchFoundException if parsing has failed.
 	 * @return the new index and the result
 	 */
-	ParserCursor<R> parse(final String text, final int start) throws NotFoundException;
+	PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException;
 }
