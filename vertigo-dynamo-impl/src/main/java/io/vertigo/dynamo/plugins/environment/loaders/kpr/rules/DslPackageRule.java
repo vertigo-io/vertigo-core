@@ -41,8 +41,7 @@ public final class DslPackageRule extends AbstractRule<String, List<?>> {
 		return PegRules.sequence(
 				PegRules.term("package "), //après package il y a un blanc obligatoire
 				SPACES,
-				WORD, // Nom du package 2
-				SPACES);
+				WORD); // Nom du package 2
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public final class DslPackageRuleTest {
 		final PegResult<String> cursor = packageRule
 				.parse("package io.vertigo  xxxx", 0);
 		Assert.assertEquals("io.vertigo", cursor.getResult());
-		Assert.assertEquals("package io.vertigo  ".length(), cursor.getIndex());
+		Assert.assertEquals("package io.vertigo".length(), cursor.getIndex());
 	}
 
 	@Test(expected = Exception.class)
