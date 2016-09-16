@@ -61,7 +61,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 			return (PegRule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
 
-		final PegRule<PegChoice> queriesRule = PegRules.orderedChoice(//"single or multiple")
+		final PegRule<PegChoice> queriesRule = PegRules.choice(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(level + 1), //2

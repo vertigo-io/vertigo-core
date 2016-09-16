@@ -62,7 +62,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	protected PegRule<List<?>> createMainRule() {
 		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
 		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final PegRule<PegChoice> firstOfRule = PegRules.orderedChoice(//"definition or template")
+		final PegRule<PegChoice> firstOfRule = PegRules.choice(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);

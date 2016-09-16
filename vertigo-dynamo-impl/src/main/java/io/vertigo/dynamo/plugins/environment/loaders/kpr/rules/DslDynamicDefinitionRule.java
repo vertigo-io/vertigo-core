@@ -70,7 +70,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
 			rules.add(createRule(definitionRule));
 		}
-		return PegRules.orderedChoice(rules);
+		return PegRules.choice(rules);
 	}
 
 	@Override

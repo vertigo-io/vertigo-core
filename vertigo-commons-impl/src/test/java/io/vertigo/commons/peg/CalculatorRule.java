@@ -28,7 +28,7 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 	private static final PegRule<String> MINUS = PegRules.term("-");
 	private static final PegRule<String> MULTI = PegRules.term("*");
 	private static final PegRule<String> DIV = PegRules.term("/");
-	private static final PegRule<PegChoice> OPERATOR = PegRules.orderedChoice(MULTI, DIV, ADD, MINUS);
+	private static final PegRule<PegChoice> OPERATOR = PegRules.choice(MULTI, DIV, ADD, MINUS);
 
 	//---Par simplicité un nombre est une suite de chiffres
 	private static final PegRule<String> NUMBER = PegRules.word(false, "0123456789", PegWordRule.Mode.ACCEPT);

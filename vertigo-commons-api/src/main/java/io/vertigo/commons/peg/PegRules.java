@@ -27,14 +27,14 @@ public final class PegRules {
 	/**
 	 * @param rules the list of rules to test
 	 */
-	public static PegRule<PegChoice> orderedChoice(final PegRule<?>... rules) {
+	public static PegRule<PegChoice> choice(final PegRule<?>... rules) {
 		return new PegFirstOfRule(rules);
 	}
 
 	/**
 	 * @param rules the list of rules to test
 	 */
-	public static PegRule<PegChoice> orderedChoice(final List<PegRule<?>> rules) {
+	public static PegRule<PegChoice> choice(final List<PegRule<?>> rules) {
 		return new PegFirstOfRule(rules);
 	}
 

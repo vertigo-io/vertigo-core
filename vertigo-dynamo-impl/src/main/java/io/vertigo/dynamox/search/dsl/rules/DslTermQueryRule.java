@@ -44,7 +44,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 	/** {@inheritDoc} */
 	@Override
 	protected PegRule<List<?>> createMainRule() {
-		final PegRule<PegChoice> escapeModeRule = PegRules.orderedChoice(
+		final PegRule<PegChoice> escapeModeRule = PegRules.choice(
 				PegRules.term("?(removeReserved)"), //choice 0
 				PegRules.term("?(escapeReserved)")); //choice 1
 

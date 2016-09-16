@@ -56,7 +56,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		if (level > MAX_DEPTH) {
 			return (PegRule<PegChoice>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
-		final PegRule<PegChoice> expressionsRule = PegRules.orderedChoice(//"single or multiple")
+		final PegRule<PegChoice> expressionsRule = PegRules.choice(//"single or multiple")
 				new DslExpressionRule(), //0
 				new DslMultiExpressionRule(level + 1) //1
 		);
@@ -68,7 +68,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				manyExpressionRule, //3
 				DslSyntaxRules.BLOCK_END, //4
 				DslSyntaxRules.POST_MODIFIER_VALUE); //5
-		return PegRules.orderedChoice(//"single or multiple")
+		return PegRules.choice(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
 		);
