@@ -58,11 +58,11 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 		}
 		//-----
 		return PegRules.sequence(//"DefinitionKey"
-				PegRules.firstOf(fieldNamesRules), //0
+				PegRules.orderedChoice(fieldNamesRules), //0
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
-				PegRules.firstOf(WORD, WORDS), //4
+				PegRules.orderedChoice(WORD, WORDS), //4
 				SPACES,
 				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}

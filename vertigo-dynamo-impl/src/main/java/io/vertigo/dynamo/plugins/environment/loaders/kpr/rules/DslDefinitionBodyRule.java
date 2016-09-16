@@ -94,10 +94,10 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
-		final PegRule<PegChoice> firstOfRule = PegRules.firstOf(
+		final PegRule<PegChoice> firstOfRule = PegRules.orderedChoice(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
-				PegRules.firstOf(innerDefinitionRules), //2,
+				PegRules.orderedChoice(innerDefinitionRules), //2,
 				SPACES);
 
 		final PegRule<List<PegChoice>> manyRule = PegRules.zeroOrMore(firstOfRule, false);

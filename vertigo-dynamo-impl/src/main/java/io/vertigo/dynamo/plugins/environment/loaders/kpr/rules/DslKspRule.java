@@ -25,8 +25,8 @@ import java.util.List;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
 import io.vertigo.commons.peg.PegRule.Dummy;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -62,7 +62,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	protected PegRule<List<?>> createMainRule() {
 		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
 		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final PegRule<PegChoice> firstOfRule = PegRules.firstOf(//"definition or template")
+		final PegRule<PegChoice> firstOfRule = PegRules.orderedChoice(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);

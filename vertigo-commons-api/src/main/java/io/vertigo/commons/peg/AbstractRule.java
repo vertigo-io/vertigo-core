@@ -48,7 +48,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 
 	/** {@inheritDoc} */
 	@Override
-	public PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
+	public final PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final PegResult<M> parserCursor = getMainRule()
 				.parse(text, start);
 		final int end = parserCursor.getIndex();

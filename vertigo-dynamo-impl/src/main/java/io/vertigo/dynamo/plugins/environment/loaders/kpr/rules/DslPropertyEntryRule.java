@@ -73,7 +73,7 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 		}
 
 		return PegRules.sequence(
-				PegRules.firstOf(propertyNamesRules),
+				PegRules.orderedChoice(propertyNamesRules),
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,

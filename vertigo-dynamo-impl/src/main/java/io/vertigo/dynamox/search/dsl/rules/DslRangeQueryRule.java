@@ -45,7 +45,7 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 	@Override
 	protected PegRule<List<?>> createMainRule() {
 
-		final PegRule<PegChoice> queriesRule = PegRules.firstOf(//"term or fixed")
+		final PegRule<PegChoice> queriesRule = PegRules.orderedChoice(//"term or fixed")
 				new DslTermQueryRule(), //0
 				new DslFixedQueryRule() //1
 		);

@@ -27,20 +27,16 @@ public final class PegRules {
 	/**
 	 * @param rules the list of rules to test
 	 */
-	public static PegRule<PegChoice> firstOf(final PegRule<?>... rules) {
+	public static PegRule<PegChoice> orderedChoice(final PegRule<?>... rules) {
 		return new PegFirstOfRule(rules);
 	}
 
 	/**
 	 * @param rules the list of rules to test
 	 */
-	public static PegRule<PegChoice> firstOf(final List<PegRule<?>> rules) {
+	public static PegRule<PegChoice> orderedChoice(final List<PegRule<?>> rules) {
 		return new PegFirstOfRule(rules);
 	}
-
-	//	public static <R> Rule<List<R>> many(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
-	//		return new ManyRule<>(rule, emptyAccepted, repeat);
-	//	}
 
 	public static <R> PegRule<List<R>> zeroOrMore(final PegRule<R> rule, final boolean repeat) {
 		return new PegManyRule<>(rule, true, repeat);

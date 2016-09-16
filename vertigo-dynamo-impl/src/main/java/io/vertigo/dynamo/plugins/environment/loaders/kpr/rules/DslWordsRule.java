@@ -67,7 +67,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 	// {} | { XXXXX (,XXXX)+ }
 	protected
 			PegRule<PegChoice> createMainRule() {
-		return PegRules.firstOf(//"liste vide ou non"
+		return PegRules.orderedChoice(//"liste vide ou non"
 				EMPTY_LIST, //0
 				NON_EMPTY_LIST);//1
 	}

@@ -43,7 +43,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 	protected PegRule<List<?>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
-				PegRules.firstOf(//"single or multiple") //1
+				PegRules.orderedChoice(//"single or multiple") //1
 						PegRules.term("AND"), //0
 						PegRules.term("and"), //1
 						PegRules.term("And"), //2

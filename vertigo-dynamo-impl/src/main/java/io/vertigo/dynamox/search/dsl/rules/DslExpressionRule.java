@@ -52,11 +52,11 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 				new DslMultiFieldRule(), //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 
-		final PegRule<PegChoice> fieldsRule = PegRules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> fieldsRule = PegRules.orderedChoice(//"single or multiple")
 				new DslFieldRule(), //0
 				multiFieldsRule //1
 		);
-		final PegRule<PegChoice> queriesRule = PegRules.firstOf(//"single or multiple")
+		final PegRule<PegChoice> queriesRule = PegRules.orderedChoice(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(), //2
