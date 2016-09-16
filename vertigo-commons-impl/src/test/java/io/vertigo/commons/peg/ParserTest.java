@@ -43,7 +43,7 @@ public final class ParserTest {
 			SPACE,
 			WORLD);
 
-	private static final PegRule<PegChoice> WORLD_MUSIC = PegRules.firstOf(
+	private static final PegRule<PegChoice> WORLD_MUSIC = PegRules.orderedChoice(
 			WORLD,
 			MUSIC);
 
@@ -152,7 +152,7 @@ public final class ParserTest {
 	@Test(expected = PegNoMatchFoundException.class)
 	public void testFirstOfFail2() throws PegNoMatchFoundException {
 		//On crée une liste vide de choix
-		PegRules.firstOf()
+		PegRules.orderedChoice()
 				.parse("world", 0);
 	}
 
