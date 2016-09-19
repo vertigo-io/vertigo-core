@@ -31,14 +31,14 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 	private static final PegRule<PegChoice> OPERATOR = PegRules.choice(MULTI, DIV, ADD, MINUS);
 
 	//---Par simplicité un nombre est une suite de chiffres
-	private static final PegRule<String> NUMBER = PegRules.word(false, "0123456789", PegWordRule.Mode.ACCEPT);
+	private static final PegRule<String> DIGITS = PegRules.word(false, "0123456789", PegWordRule.Mode.ACCEPT, "digits");
 
 	private static final PegRule<List<?>> EXPRESSION = PegRules.sequence(
-			NUMBER, //0
+			DIGITS, //0
 			SPACES,
 			OPERATOR,
 			SPACES,
-			NUMBER //4
+			DIGITS //4
 	);
 
 	@Override
@@ -51,7 +51,7 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 		final Integer a = Integer.parseInt((String) parsing.get(0));
 		final Integer b = Integer.parseInt((String) parsing.get(4));
 		final PegChoice tuple = (PegChoice) parsing.get(2);
-		switch (tuple.getValue()) {
+		switch (tuple.getChoiceIndex()) {
 			case 0:
 				return a * b;
 			case 1:

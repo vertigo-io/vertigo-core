@@ -21,6 +21,7 @@ package io.vertigo.commons.peg;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
@@ -30,7 +31,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class PegFirstOfRule implements PegRule<PegChoice> {
+final class PegChoiceRule implements PegRule<PegChoice> {
 	private final List<PegRule<?>> rules;
 	private final String expression;
 
@@ -38,7 +39,7 @@ final class PegFirstOfRule implements PegRule<PegChoice> {
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	PegFirstOfRule(final PegRule<?>... rules) {
+	PegChoiceRule(final PegRule<?>... rules) {
 		this(Arrays.asList(rules));
 	}
 
@@ -46,19 +47,18 @@ final class PegFirstOfRule implements PegRule<PegChoice> {
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	PegFirstOfRule(final List<PegRule<?>> rules) {
+	PegChoiceRule(final List<PegRule<?>> rules) {
 		Assertion.checkNotNull(rules);
+		Assertion.checkArgument(rules.size() > 1, "A choice must contain at least 2 rules");
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---
-		final StringBuilder buffer = new StringBuilder();
-		for (final PegRule<?> rule : rules) {
-			if (buffer.length() > 0) {
-				buffer.append(" | ");
-			}
-			buffer.append(rule.getExpression());
-		}
-		expression = buffer.toString();
+		//A choice of rules/expressions is like that : (e1 | e2 | e3)
+		expression = "("
+				+ rules.stream()
+						.map(rule -> rule.getExpression())
+						.collect(Collectors.joining(" | "))
+				+ ")";
 	}
 
 	/** {@inheritDoc} */
@@ -80,17 +80,17 @@ final class PegFirstOfRule implements PegRule<PegChoice> {
 		//Règle ayant été le plus profond
 		PegNoMatchFoundException best = null;
 		int bestIndex = -1;
-		for (int i = 0; i < getRules().size(); i++) {
+		for (int choiceIndex = 0; choiceIndex < getRules().size(); choiceIndex++) {
 			try {
-				final PegResult<?> parserCursor = getRules().get(i)
+				final PegResult<?> parserCursor = getRules().get(choiceIndex)
 						.parse(text, start);
 				final int end = parserCursor.getIndex();
 				if (end < bestIndex) {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				final PegChoice result = new PegChoice(i, parserCursor.getValue());
-				return new PegResult<>(end, result);
+				final PegChoice value = new PegChoice(choiceIndex, parserCursor.getValue());
+				return new PegResult<>(end, value);
 			} catch (final PegNoMatchFoundException e) {
 				//Tant que l'on a des erreurs sur l'évaluation des règles
 				//on recommence jusqu'à trouver la première qui fonctionne.

@@ -19,10 +19,10 @@
 package io.vertigo.commons.peg;
 
 /**
- * Règle.
+ * Rule used in PEG. parsing expression grammar.
  *
  * @author pchretien
- * @param<R> Type of the product text parsing
+ * @param <R> Type of the product text parsing
  */
 public interface PegRule<R> {
 	/** Dummy class, used for rule that returns Void. */

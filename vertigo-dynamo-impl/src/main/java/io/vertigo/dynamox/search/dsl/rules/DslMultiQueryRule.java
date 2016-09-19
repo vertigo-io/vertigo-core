@@ -85,7 +85,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 		final String postQuery = (String) parsing.get(4);
 		final List<PegChoice> manyQueries = (List<PegChoice>) parsing.get(2);
 		for (final PegChoice item : manyQueries) {
-			queryDefinitions.add((DslQuery) item.getResult());
+			queryDefinitions.add((DslQuery) item.getValue());
 		}
 		return new DslBlockQuery(preQuery, queryDefinitions, postQuery);
 	}

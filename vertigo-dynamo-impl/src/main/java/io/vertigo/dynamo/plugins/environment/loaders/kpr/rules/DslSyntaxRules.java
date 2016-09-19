@@ -51,9 +51,9 @@ final class DslSyntaxRules {
 	static final PegRule<String> PAIR_SEPARATOR = PegRules.term(":"); //name:"bill"
 	static final PegRule<String> QUOTATION_MARK = PegRules.term("\"");
 
-	static final PegRule<String> PROPERTY_VALUE = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE); //En fait il faut autoriser tous les caractères sauf les guillemets".
+	static final PegRule<String> PROPERTY_VALUE = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE, "propertyValue"); //En fait il faut autoriser tous les caractères sauf les guillemets".
 	//Il faut gérer le caractère d'évitement.
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "DELIMITERS");
+	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "word");
 
 	private DslSyntaxRules() {
 		//Classe sans état

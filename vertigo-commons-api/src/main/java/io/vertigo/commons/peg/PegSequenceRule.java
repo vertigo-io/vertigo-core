@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
@@ -43,21 +44,16 @@ final class PegSequenceRule implements PegRule<List<?>> {
 	 */
 	PegSequenceRule(final PegRule<?>... rules) {
 		Assertion.checkNotNull(rules);
+		Assertion.checkArgument(rules.length > 1, "A sequence must contain at least 2 rules");
 		//-----
 		this.rules = Collections.unmodifiableList(Arrays.asList(rules));
-		expression = createExpression(rules);
-	}
-
-	/*A sequence of rules/expressions is like that : e1 e2 e3 */
-	private static String createExpression(final PegRule<?>[] rules) {
-		final StringBuilder buffer = new StringBuilder();
-		for (final PegRule<?> rule : rules) {
-			if (buffer.length() > 0) {
-				buffer.append(' ');
-			}
-			buffer.append(rule.getExpression());
-		}
-		return buffer.toString();
+		//---
+		//A sequence of rules/expressions is like that : (e1 e2 e3)
+		expression = "("
+				+ this.rules.stream()
+						.map(rule -> rule.getExpression())
+						.collect(Collectors.joining(" "))
+				+ ")";
 	}
 
 	/** {@inheritDoc} */

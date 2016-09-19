@@ -83,18 +83,18 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 			//Tant qu'il y a du texte, il doit correspondre
 			// - à des définitions qui appartiennent toutes au même package.
 			// - à des gestion de droits.
-			switch (declarationChoice.getValue()) {
+			switch (declarationChoice.getChoiceIndex()) {
 				case 0:
 					//On positionne le Package
-					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) declarationChoice.getResult();
+					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) declarationChoice.getValue();
 					dynamicDefinition.withPackageName(packageName);
-					handleDefinitionRule((DynamicDefinition) declarationChoice.getResult());
+					handleDefinitionRule((DynamicDefinition) declarationChoice.getValue());
 					break;
 				case 1:
-					handleTemplateRule((DynamicDefinition) declarationChoice.getResult());
+					handleTemplateRule((DynamicDefinition) declarationChoice.getValue());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + declarationChoice.getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + declarationChoice.getChoiceIndex() + " not implemented");
 			}
 		}
 		return Dummy.INSTANCE;

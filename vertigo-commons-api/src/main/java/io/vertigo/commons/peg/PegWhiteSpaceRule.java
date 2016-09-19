@@ -38,13 +38,13 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 		super();
 		Assertion.checkNotNull(blanks);
 		//-----
-		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT);
+		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT, "_");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return "blanks";
+		return rule.getExpression(); // _ by convention
 	}
 
 	/** {@inheritDoc} */

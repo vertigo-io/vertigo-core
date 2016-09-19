@@ -76,12 +76,12 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 	protected List<String> handle(final PegChoice parsing) {
 		final List<String> words = new ArrayList<>();
 		//---
-		switch (parsing.getValue()) {
+		switch (parsing.getChoiceIndex()) {
 			case 0: //liste vide on s'arrète
 				break;
 			case 1: //liste non vide on continue
 				//On récupère le prmier mot qui est obligatoire.
-				final List<?> list = (List<?>) parsing.getResult();
+				final List<?> list = (List<?>) parsing.getValue();
 				words.add((String) list.get(2));
 				//On récupère le produit de la règle many
 				final List<List<?>> many = (List<List<?>>) list.get(3);
@@ -90,7 +90,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 				}
 				break;
 			default:
-				throw new IllegalArgumentException("case " + parsing.getValue() + " not implemented");
+				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
 		}
 		return words;
 	}

@@ -80,22 +80,22 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		final String preMultiExpression;
 		final String postMultiExpression;
 		//---
-		final boolean block = parsing.getValue() == 0;
+		final boolean block = parsing.getChoiceIndex() == 0;
 		final List<PegChoice> many;
-		switch (parsing.getValue()) {
+		switch (parsing.getChoiceIndex()) {
 			case 0:
-				final List<?> blockExpression = (List<?>) parsing.getResult();
+				final List<?> blockExpression = (List<?>) parsing.getValue();
 				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + (String) blockExpression.get(1);
 				many = (List<PegChoice>) blockExpression.get(3);
 				postMultiExpression = (String) blockExpression.get(5);
 				break;
 			case 1:
 				preMultiExpression = "";
-				many = (List<PegChoice>) parsing.getResult();
+				many = (List<PegChoice>) parsing.getValue();
 				postMultiExpression = "";
 				break;
 			default:
-				throw new IllegalArgumentException("case " + parsing.getValue() + " not implemented");
+				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
 		}
 
 		final List<DslExpression> expressionDefinitions = new ArrayList<>();
@@ -103,15 +103,15 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 
 		//On récupère le produit de la règle many
 		for (final PegChoice item : many) {
-			switch (item.getValue()) {
+			switch (item.getChoiceIndex()) {
 				case 0:
-					expressionDefinitions.add((DslExpression) item.getResult());
+					expressionDefinitions.add((DslExpression) item.getValue());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((DslMultiExpression) item.getResult());
+					multiExpressionDefinitions.add((DslMultiExpression) item.getValue());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + item.getChoiceIndex() + " not implemented");
 			}
 		}
 		//---

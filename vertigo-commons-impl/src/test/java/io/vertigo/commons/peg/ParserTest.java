@@ -30,8 +30,8 @@ public final class ParserTest {
 	private static final PegRule<String> MUSIC = PegRules.term("music");
 	private static final PegRule<String> SPACE = PegRules.term(" ");
 	private static final PegRule<String> FROM = PegRules.term("from");
-	private static final PegRule<String> WHERE = PegRules.word(false, "abcdefghijklmnopqrstuvwxyz", PegWordRule.Mode.ACCEPT);
-	private static final PegRule<String> PROPERTY = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE);
+	private static final PegRule<String> WHERE = PegRules.word(false, "abcdefghijklmnopqrstuvwxyz", PegWordRule.Mode.ACCEPT, "where");
+	private static final PegRule<String> PROPERTY = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE, "property");
 	private static final PegRule<String> AB = PegRules.term("ab");
 	//---
 	private static final PegRule<List<String>> MANY_AB = PegRules.zeroOrMore(AB, false);//=(AB, true) no global (can match abc)
@@ -134,14 +134,14 @@ public final class ParserTest {
 				.parse("world", 0)
 				.getValue();
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
-		Assert.assertEquals(0, choice.getValue());
-		Assert.assertEquals("world", choice.getResult());
+		Assert.assertEquals(0, choice.getChoiceIndex());
+		Assert.assertEquals("world", choice.getValue());
 		//---
 		final PegChoice choice2 = WORLD_MUSIC
 				.parse("music", 0).getValue();
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
-		Assert.assertEquals(1, choice2.getValue());
-		Assert.assertEquals("music", choice2.getResult());
+		Assert.assertEquals(1, choice2.getChoiceIndex());
+		Assert.assertEquals("music", choice2.getValue());
 	}
 
 	@Test(expected = PegNoMatchFoundException.class)
@@ -149,28 +149,34 @@ public final class ParserTest {
 		WORLD_MUSIC.parse("worm", 0);
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void testFirstOfFail2() throws PegNoMatchFoundException {
-		//On crée une liste vide de choix
+	@Test(expected = IllegalArgumentException.class)
+	public void testChoiceEmptyFailed() throws PegNoMatchFoundException {
+		//An empty list of choices
 		PegRules.choice()
 				.parse("world", 0);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testChoiceOneFailed() throws PegNoMatchFoundException {
+		PegRules.choice(HELLO)
+				.parse("world", 0);
+	}
+
 	@Test
-	public void testFirstOf2() throws PegNoMatchFoundException {
+	public void testChoice() throws PegNoMatchFoundException {
 		final PegResult<List<?>> cursor = HELLO_WORLD_MUSIC
 				.parse("hello world, my name", 0);
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
 		final PegChoice choice = (PegChoice) cursor.getValue().get(2);
-		Assert.assertEquals(0, choice.getValue());
-		Assert.assertEquals("world", choice.getResult());
+		Assert.assertEquals(0, choice.getChoiceIndex());
+		Assert.assertEquals("world", choice.getValue());
 		//---
 		final PegResult<List<?>> cursor2 = HELLO_WORLD_MUSIC
 				.parse("hello music, my name", 0);
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
 		final PegChoice choice2 = (PegChoice) cursor2.getValue().get(2);
-		Assert.assertEquals(1, choice2.getValue());
-		Assert.assertEquals("music", choice2.getResult());
+		Assert.assertEquals(1, choice2.getChoiceIndex());
+		Assert.assertEquals("music", choice2.getValue());
 	}
 
 	@Test

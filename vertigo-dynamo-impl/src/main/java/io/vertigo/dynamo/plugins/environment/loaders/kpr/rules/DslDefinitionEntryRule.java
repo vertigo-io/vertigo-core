@@ -69,18 +69,18 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 
 	@Override
 	protected DslDefinitionEntry handle(final List<?> parsing) {
-		final String fieldName = (String) ((PegChoice) parsing.get(0)).getResult();
+		final String fieldName = (String) ((PegChoice) parsing.get(0)).getValue();
 		final List<String> definitionKeys;
 
 		final PegChoice definitionChoice = (PegChoice) parsing.get(4);
-		switch (definitionChoice.getValue()) {
+		switch (definitionChoice.getChoiceIndex()) {
 			case 1:
 				//Déclaration d'une liste de définitions identifiée par leurs clés
-				definitionKeys = (List<String>) definitionChoice.getResult();
+				definitionKeys = (List<String>) definitionChoice.getValue();
 				break;
 			case 0:
 				//Déclaration d'une définition identifiée par sa clé
-				final String value = (String) definitionChoice.getResult();
+				final String value = (String) definitionChoice.getValue();
 				definitionKeys = java.util.Collections.singletonList(value);
 				break;
 			default:

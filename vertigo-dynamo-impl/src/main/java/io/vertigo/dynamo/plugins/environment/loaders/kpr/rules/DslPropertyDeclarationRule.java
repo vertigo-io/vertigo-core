@@ -86,7 +86,7 @@ public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEn
 
 	@Override
 	protected DslPropertyEntry handle(final List<?> parsing) {
-		final String propertyName = (String) ((PegChoice) parsing.get(0)).getResult();
+		final String propertyName = (String) ((PegChoice) parsing.get(0)).getValue();
 		final String propertyValue = (String) parsing.get(5);
 		return new DslPropertyEntry(entityProperties.get(propertyName), propertyValue);
 	}

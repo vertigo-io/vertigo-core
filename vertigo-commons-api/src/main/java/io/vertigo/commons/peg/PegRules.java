@@ -28,14 +28,14 @@ public final class PegRules {
 	 * @param rules the list of rules to test
 	 */
 	public static PegRule<PegChoice> choice(final PegRule<?>... rules) {
-		return new PegFirstOfRule(rules);
+		return new PegChoiceRule(rules);
 	}
 
 	/**
 	 * @param rules the list of rules to test
 	 */
 	public static PegRule<PegChoice> choice(final List<PegRule<?>> rules) {
-		return new PegFirstOfRule(rules);
+		return new PegChoiceRule(rules);
 	}
 
 	public static <R> PegRule<List<R>> zeroOrMore(final PegRule<R> rule, final boolean repeat) {
@@ -54,18 +54,9 @@ public final class PegRules {
 	 * @param emptyAccepted Si les mots vides sont acceptés
 	 * @param checkedChars Liste des caractères vérifiés
 	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé
+	 * @param readableExpression Expression nommée
 	 */
-	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final Mode mode) {
-		return new PegWordRule(emptyAccepted, checkedChars, mode);
-	}
-
-	/**
-	 * @param emptyAccepted Si les mots vides sont acceptés
-	 * @param checkedChars Liste des caractères vérifiés
-	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé
-	 * @param readableCheckedChar Expression lisible des caractères vérifiés
-	 */
-	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableCheckedChar) {
-		return new PegWordRule(emptyAccepted, checkedChars, mode, readableCheckedChar);
+	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableExpression) {
+		return new PegWordRule(emptyAccepted, checkedChars, mode, readableExpression);
 	}
 }

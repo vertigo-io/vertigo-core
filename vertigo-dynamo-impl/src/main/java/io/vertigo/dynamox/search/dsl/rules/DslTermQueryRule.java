@@ -50,7 +50,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 
 		final PegRule<List<?>> defaultValueRule = PegRules.sequence(
 				PegRules.term("!("),
-				PegRules.word(false, ")", PegWordRule.Mode.REJECT), //1
+				PegRules.word(false, ")", PegWordRule.Mode.REJECT, "value"), //1
 				PegRules.term(")"));
 
 		final PegRule<List<?>> termRule = PegRules.sequence(
@@ -82,7 +82,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		final Optional<PegChoice> escapeRule = (Optional<PegChoice>) term.get(5);
 		final EscapeMode escapeMode;
 		if (escapeRule.isPresent()) {
-			switch (escapeRule.get().getValue()) {
+			switch (escapeRule.get().getChoiceIndex()) {
 				case 0:
 					escapeMode = EscapeMode.remove;
 					break;
@@ -90,7 +90,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 					escapeMode = EscapeMode.escape;
 					break;
 				default:
-					throw new IllegalArgumentException("case " + escapeRule.get().getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + escapeRule.get().getChoiceIndex() + " not implemented");
 			}
 		} else {
 			escapeMode = EscapeMode.none;

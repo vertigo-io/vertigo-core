@@ -19,7 +19,6 @@
 package io.vertigo.commons.peg;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Règle a état permettant de récupérer un mot.
@@ -47,16 +46,6 @@ public final class PegWordRule implements PegRule<String> {
 	private final String readableCheckedChar;
 	private final boolean emptyAccepted;
 	private final Mode mode;
-
-	/**
-	 * Constructeur.
-	 * @param emptyAccepted Si les mots vides sont acceptés
-	 * @param checkedChars Liste des caractères vérifiés
-	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé
-	 */
-	PegWordRule(final boolean emptyAccepted, final String checkedChars, final Mode mode) {
-		this(emptyAccepted, checkedChars, mode, "[" + encode(checkedChars) + "]");
-	}
 
 	/**
 	 * Constructeur.
@@ -126,16 +115,5 @@ public final class PegWordRule implements PegRule<String> {
 			word = word.replaceAll("\\\\(.)", "$1");
 		}
 		return new PegResult<>(index, word);
-	}
-
-	private static String encode(final String chaine) {
-		final StringBuilder result = new StringBuilder(chaine);
-		StringUtil.replace(result, "\r", "\\r");
-		StringUtil.replace(result, "\n", "\\n");
-		StringUtil.replace(result, "\t", "\\t");
-		StringUtil.replace(result, "[", "\\[");
-		StringUtil.replace(result, "]", "\\]");
-		StringUtil.replace(result, "''", "\"");
-		return result.toString();
 	}
 }

@@ -38,32 +38,33 @@ import io.vertigo.lang.Assertion;
  */
 final class PegManyRule<R> implements PegRule<List<R>> {
 	private final PegRule<R> rule;
-	private final boolean emptyAccepted;
+	private final boolean zeroAccepted;
 
 	private final boolean repeat;
 
 	/**
 	 * Constructor.
 	 * @param rule the rule that's will be evaluated
-	 * @param emptyAccepted If an empty list is accepted
+	 * @param zeroAccepted zeroOrMore else oneOrMore
 	 * @param repeat if the evaluation must be repeated
 	 */
-	PegManyRule(final PegRule<R> rule, final boolean emptyAccepted, final boolean repeat) {
+	PegManyRule(final PegRule<R> rule, final boolean zeroAccepted, final boolean repeat) {
 		Assertion.checkNotNull(rule);
 		//-----
 		this.rule = rule;
-		this.emptyAccepted = emptyAccepted;
+		this.zeroAccepted = zeroAccepted;
 		this.repeat = repeat;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return "(" + rule.getExpression() + ")" + (emptyAccepted ? "*" : "+");
+		return rule.getExpression()
+				+ (zeroAccepted ? "*" : "+");
 	}
 
 	private boolean isEmptyAccepted() {
-		return emptyAccepted;
+		return zeroAccepted;
 	}
 
 	private boolean isRepeat() {

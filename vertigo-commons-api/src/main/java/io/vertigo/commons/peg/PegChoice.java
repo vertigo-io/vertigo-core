@@ -22,19 +22,19 @@ package io.vertigo.commons.peg;
  * @author pchretien
  */
 public final class PegChoice {
-	private final int value;
-	private final Object result;
+	private final int choiceIndex;
+	private final Object value;
 
-	PegChoice(final int value, final Object result) {
+	PegChoice(final int choiceIndex, final Object value) {
+		this.choiceIndex = choiceIndex;
 		this.value = value;
-		this.result = result;
 	}
 
-	public Object getResult() {
-		return result;
-	}
-
-	public int getValue() {
+	public Object getValue() {
 		return value;
+	}
+
+	public int getChoiceIndex() {
+		return choiceIndex;
 	}
 }

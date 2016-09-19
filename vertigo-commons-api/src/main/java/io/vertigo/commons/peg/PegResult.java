@@ -12,7 +12,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class PegResult<R> {
 	private final int index;
-	private final R result;
+	private final R value;
 
 	/**
 	 * Constructor.
@@ -23,7 +23,7 @@ public final class PegResult<R> {
 		Assertion.checkNotNull(result);
 		//---
 		this.index = index;
-		this.result = result;
+		this.value = result;
 	}
 
 	/**
@@ -37,7 +37,7 @@ public final class PegResult<R> {
 	 * @return the result value
 	 */
 	public R getValue() {
-		return result;
+		return value;
 	}
 
 }

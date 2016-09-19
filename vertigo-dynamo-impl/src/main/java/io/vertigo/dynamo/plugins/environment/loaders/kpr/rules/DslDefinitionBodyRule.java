@@ -116,19 +116,19 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 		final List<DslDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();
 		final List<DslPropertyEntry> fieldPropertyEntries = new ArrayList<>();
 		for (final PegChoice item : many) {
-			switch (item.getValue()) {
+			switch (item.getChoiceIndex()) {
 				case 0:
 					//Soit on est en présence d'une propriété standard
-					final DslPropertyEntry propertyEntry = (DslPropertyEntry) item.getResult();
+					final DslPropertyEntry propertyEntry = (DslPropertyEntry) item.getValue();
 					fieldPropertyEntries.add(propertyEntry);
 					break;
 				case 1:
-					final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) item.getResult();
+					final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) item.getValue();
 					fieldDefinitionEntries.add(xDefinitionEntry);
 					break;
 				case 2:
-					final PegChoice subTuple = (PegChoice) item.getResult();
-					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getResult());
+					final PegChoice subTuple = (PegChoice) item.getValue();
+					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getValue());
 					break;
 				case 3:
 					break;

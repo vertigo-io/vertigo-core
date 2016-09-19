@@ -52,14 +52,14 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
 		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				PegRules.word(false, "[{", PegWordRule.Mode.ACCEPT), //1
+				PegRules.choice(PegRules.term("["), PegRules.term("{")), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
 				PegRules.word(false, "TOto", PegWordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
 				queriesRule, //6
 				DslSyntaxRules.SPACES,
-				PegRules.word(false, "]}", PegWordRule.Mode.ACCEPT), //8
+				PegRules.choice(PegRules.term("]"), PegRules.term("}")), //8
 				DslSyntaxRules.POST_MODIFIER_VALUE); //9
 	}
 
@@ -67,16 +67,19 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 	@Override
 	protected DslRangeQuery handle(final List<?> parsing) {
 		final String preQuery = (String) parsing.get(0);
-		final String startRange = (String) parsing.get(1);
+		final PegChoice startChoice = (PegChoice) parsing.get(1);
 
 		final PegChoice startTermQuery = (PegChoice) parsing.get(2);
-		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getResult();
+		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getValue();
 
 		final PegChoice endTermQuery = (PegChoice) parsing.get(6);
-		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getResult();
+		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getValue();
 
-		final String endRange = (String) parsing.get(8);
+		final PegChoice endChoice = (PegChoice) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
+
+		final String startRange = (String) startChoice.getValue();
+		final String endRange = (String) endChoice.getValue();
 		return new DslRangeQuery(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
 	}
 }
