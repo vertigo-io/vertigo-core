@@ -138,8 +138,18 @@ public final class Assertion {
 		};
 	}
 
+	/**
+	 * Function to assert when a condition if fulfilled.
+	 * @author npiedeloup
+	 */
 	@FunctionalInterface
 	public interface ConditionalAssertion {
+		/**
+		 * Assert something if test return null
+		 * @param test BooleanSupplier Check if a state is valid.
+		 * @param msg Message Error message
+		 * @param params params of the message
+		 */
 		void check(final BooleanSupplier test, final String msg, final Object... params);
 	}
 }
