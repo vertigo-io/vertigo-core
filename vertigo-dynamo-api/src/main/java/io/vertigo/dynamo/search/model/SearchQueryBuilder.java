@@ -21,6 +21,7 @@ package io.vertigo.dynamo.search.model;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -118,6 +119,19 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		Assertion.checkNotNull(clusteringFacetDefinition);
 		//-----
 		myClusteringFacetDefinition = clusteringFacetDefinition;
+		return this;
+	}
+
+	/**
+	 * Add a clustering of result by Facet.
+	 * @param clusteringFacetName facet used to cluster data
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withFacetClustering(final String clusteringFacetName) {
+		Assertion.checkArgNotEmpty(clusteringFacetName);
+		//-----
+		final FacetDefinition clusteringFacetDefinition = Home.getApp().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
+		withFacetClustering(clusteringFacetDefinition);
 		return this;
 	}
 
