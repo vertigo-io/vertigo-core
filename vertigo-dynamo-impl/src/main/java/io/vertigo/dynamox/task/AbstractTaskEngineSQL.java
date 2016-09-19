@@ -37,7 +37,6 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -433,7 +432,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
-		if (DtDefinitionBuilder.DEFAULT_DATA_SPACE.equals(dataSpace)) {
+		if (StoreManager.MAIN_DATA_SPACE_NAME.equals(dataSpace)) {
 			return SQL_MAIN_RESOURCE_ID;
 		}
 		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);

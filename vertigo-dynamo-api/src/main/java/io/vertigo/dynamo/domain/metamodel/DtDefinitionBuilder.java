@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
@@ -37,7 +38,6 @@ import io.vertigo.lang.MessageText;
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
-	public static final String DEFAULT_DATA_SPACE = "main";
 
 	private static class MessageKeyImpl implements MessageKey {
 		private static final long serialVersionUID = 6959551752755175151L;
@@ -243,7 +243,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myStereotype == null) {
 			myStereotype = (myIdField == null) ? DtStereotype.ValueObject : DtStereotype.Entity;
 		}
-		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDynamic, myDataSpace == null ? DEFAULT_DATA_SPACE : myDataSpace);
+		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDynamic, myDataSpace == null ? StoreManager.MAIN_DATA_SPACE_NAME : myDataSpace);
 		return dtDefinition;
 	}
 }

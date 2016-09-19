@@ -16,41 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store;
+package io.vertigo.dynamo.domain.stereotype;
 
-import io.vertigo.dynamo.store.datastore.DataStore;
-import io.vertigo.dynamo.store.datastore.DataStoreConfig;
-import io.vertigo.dynamo.store.datastore.MasterDataConfig;
-import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.lang.Manager;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
-* Gestionnaire des données et des accès aux données.
-*
-* @author pchretien
-*/
-public interface StoreManager extends Manager {
+ * Nom du DataSpace auquel est rattaché l'entité.
+ *
+ * @author  mlaroche
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target({ ElementType.TYPE })
+public @interface DataSpace {
 
-	/** Main DataSpace's name. */
-	String MAIN_DATA_SPACE_NAME = "main";
-
-	/**
-	 * @return FileStore
-	 */
-	FileStore getFileStore();
-
-	/**
-	 * @return DataStore
-	 */
-	DataStore getDataStore();
-
-	/**
-	 * @return Configuration du composant de persistance
-	 */
-	DataStoreConfig getDataStoreConfig();
-
-	/**
-	 * @return Configuration MDM
-	 */
-	MasterDataConfig getMasterDataConfig();
+	String value();
 }

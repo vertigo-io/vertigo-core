@@ -45,7 +45,6 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  */
 abstract class AbstractDbFileStorePlugin {
-	private static final String DEFAULT_STORE_NAME = "main";
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
 
 	/**
@@ -62,7 +61,7 @@ abstract class AbstractDbFileStorePlugin {
 		Assertion.checkNotNull(name);
 		//-----
 		readOnly = false;
-		this.name = name.orElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 	}
 
 	/**

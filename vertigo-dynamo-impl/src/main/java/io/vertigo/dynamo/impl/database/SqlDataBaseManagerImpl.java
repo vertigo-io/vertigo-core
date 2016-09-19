@@ -67,7 +67,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);
 			Assertion.checkState(previous == null, "ConnectionProvider {0}, was already registered", name);
 		}
-		Assertion.checkNotNull(connectionProviderPluginMap.containsKey(MAIN_CONNECTION_PROVIDER_NAME), "No main ConnectionProvider was set. Configure one and only one connectionProviderPlugin with name 'main'.");
 		localeManager.add("io.vertigo.dynamo.impl.database.DataBase", io.vertigo.dynamo.impl.database.Resources.values());
 	}
 

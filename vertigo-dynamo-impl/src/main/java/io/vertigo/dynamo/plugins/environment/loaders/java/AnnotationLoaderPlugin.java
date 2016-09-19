@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
@@ -56,7 +57,9 @@ import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.stereotype.DataSpace;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -135,6 +138,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
+				.addPropertyValue(DATA_SPACE, parseDataSpaceAnnotation(clazz))
 				.addPropertyValue(FRAGMENT_OF, fragmentOf);
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -158,6 +162,16 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 		final DynamicDefinition dtDefinition = dtDefinitionBuilder.build();
 		dynamicModelRepository.addDefinition(dtDefinition);
+	}
+
+	private static String parseDataSpaceAnnotation(final Class<?> clazz) {
+		final DataSpace[] dataSpaceAnnotations = clazz.getAnnotationsByType(DataSpace.class);
+		Assertion.checkState(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
+		// ---
+		if (dataSpaceAnnotations.length == 1) {
+			return dataSpaceAnnotations[0].value();
+		}
+		return StoreManager.MAIN_DATA_SPACE_NAME;
 	}
 
 	private static DtStereotype parseStereotype(final Class<?> clazz) {
