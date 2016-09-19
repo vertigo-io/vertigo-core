@@ -38,7 +38,6 @@ import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
@@ -53,6 +52,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
@@ -70,7 +70,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class JpaDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final String DEFAULT_CONNECTION_NAME = "main";
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
@@ -97,8 +96,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
 		//-----
-		dataSpace = nameOption.orElse(DtDefinitionBuilder.DEFAULT_DATA_SPACE);
-		this.connectionName = connectionName.orElse(DEFAULT_CONNECTION_NAME);
+		dataSpace = nameOption.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
+		this.connectionName = connectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		this.analyticsManager = analyticsManager;
