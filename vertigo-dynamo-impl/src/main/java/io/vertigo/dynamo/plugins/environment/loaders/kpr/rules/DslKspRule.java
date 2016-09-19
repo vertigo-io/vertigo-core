@@ -62,39 +62,39 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	protected PegRule<List<?>> createMainRule() {
 		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
 		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final PegRule<PegChoice> firstOfRule = PegRules.choice(//"definition or template")
+		final PegRule<PegChoice> declarationChoiceRule = PegRules.choice(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);
-		final PegRule<List<PegChoice>> manyRule = PegRules.zeroOrMore(firstOfRule, true);
+		final PegRule<List<PegChoice>> declarationChoicesRule = PegRules.zeroOrMore(declarationChoiceRule, true);
 		return PegRules.sequence(
 				SPACES,
 				new DslPackageRule(), //1
 				SPACES,
-				manyRule); //3
+				declarationChoicesRule); //3
 	}
 
 	@Override
 	protected Dummy handle(final List<?> parsing) {
 		final String packageName = (String) parsing.get(1);
-		final List<PegChoice> tuples = (List<PegChoice>) parsing.get(3);
+		final List<PegChoice> declarationChoices = (List<PegChoice>) parsing.get(3);
 
-		for (final PegChoice item : tuples) {
+		for (final PegChoice declarationChoice : declarationChoices) {
 			//Tant qu'il y a du texte, il doit correspondre
 			// - à des définitions qui appartiennent toutes au même package.
 			// - à des gestion de droits.
-			switch (item.getValue()) {
+			switch (declarationChoice.getValue()) {
 				case 0:
 					//On positionne le Package
-					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) item.getResult();
+					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) declarationChoice.getResult();
 					dynamicDefinition.withPackageName(packageName);
-					handleDefinitionRule((DynamicDefinition) item.getResult());
+					handleDefinitionRule((DynamicDefinition) declarationChoice.getResult());
 					break;
 				case 1:
-					handleTemplateRule((DynamicDefinition) item.getResult());
+					handleTemplateRule((DynamicDefinition) declarationChoice.getResult());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + declarationChoice.getValue() + " not implemented");
 			}
 		}
 		return Dummy.INSTANCE;
