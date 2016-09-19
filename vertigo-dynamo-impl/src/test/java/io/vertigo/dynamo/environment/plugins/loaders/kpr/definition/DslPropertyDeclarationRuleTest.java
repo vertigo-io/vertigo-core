@@ -27,18 +27,18 @@ import org.junit.Test;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyEntryRule;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPropertyDeclarationRule;
 
-public final class DslPropertyEntryRuleTest {
+public final class DslPropertyDeclarationRuleTest {
 	private static final String LABEL = "LABEL";
 	private static final String SIZE = "SIZE";
 
-	private static DslPropertyEntryRule MAIN;
+	private static DslPropertyDeclarationRule MAIN;
 	static {
 		final Set<String> propertyNames = new HashSet<>();
 		propertyNames.add(LABEL);
 		propertyNames.add(SIZE);
-		MAIN = new DslPropertyEntryRule(propertyNames);
+		MAIN = new DslPropertyDeclarationRule(propertyNames);
 	}
 
 	@Test

@@ -48,13 +48,13 @@ import io.vertigo.util.StringUtil;
  *
  * @author pchretien
  */
-public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, List<?>> {
+public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEntry, List<?>> {
 	private final Map<String, String> entityProperties;
 
 	/**
 	 * <propertyName> : "<propertyvalue>";
 	 */
-	public DslPropertyEntryRule(final Set<String> entityPropertyNames) {
+	public DslPropertyDeclarationRule(final Set<String> entityPropertyNames) {
 		super();
 		Assertion.checkNotNull(entityPropertyNames);
 		//-----

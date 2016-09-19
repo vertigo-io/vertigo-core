@@ -50,8 +50,8 @@ import io.vertigo.dynamo.environment.oom.OOMTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionBodyRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageDeclarationRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyDeclarationRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvstore.berkeley.BerkeleyKVStoreManagerTest;
@@ -114,9 +114,9 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		DslDefinitionBodyRuleTest.class,
 		DslDefinitionEntryRuleTest.class,
 		DslDefinitionRuleTest.class,
-		DslPackageRuleTest.class,
+		DslPackageDeclarationRuleTest.class,
 		DslWordListRuleTest.class,
-		DslPropertyEntryRuleTest.class,
+		DslPropertyDeclarationRuleTest.class,
 		//--file
 		FileManagerTest.class,
 		//--kvstore

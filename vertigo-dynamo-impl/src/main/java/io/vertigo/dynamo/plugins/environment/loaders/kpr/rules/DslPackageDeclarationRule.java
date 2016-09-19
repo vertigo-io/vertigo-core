@@ -34,7 +34,7 @@ import io.vertigo.commons.peg.PegRules;
  * package nomdupackage;.
  * @author pchretien
  */
-public final class DslPackageRule extends AbstractRule<String, List<?>> {
+public final class DslPackageDeclarationRule extends AbstractRule<String, List<?>> {
 
 	@Override
 	protected PegRule<List<?>> createMainRule() {

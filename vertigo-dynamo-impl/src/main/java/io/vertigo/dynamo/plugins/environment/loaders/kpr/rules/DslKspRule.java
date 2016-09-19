@@ -69,7 +69,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 		final PegRule<List<PegChoice>> declarationChoicesRule = PegRules.zeroOrMore(declarationChoiceRule, true);
 		return PegRules.sequence(
 				SPACES,
-				new DslPackageRule(), //1
+				new DslPackageDeclarationRule(), //1
 				SPACES,
 				declarationChoicesRule); //3
 	}

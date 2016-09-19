@@ -34,9 +34,9 @@ public final class PegResult<R> {
 	}
 
 	/**
-	 * @return result
+	 * @return the result value
 	 */
-	public R getResult() {
+	public R getValue() {
 		return result;
 	}
 
