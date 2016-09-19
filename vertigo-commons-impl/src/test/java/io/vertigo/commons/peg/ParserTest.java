@@ -149,21 +149,23 @@ public final class ParserTest {
 		WORLD_MUSIC.parse("worm", 0);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = PegNoMatchFoundException.class)
 	public void testChoiceEmptyFailed() throws PegNoMatchFoundException {
 		//An empty list of choices
 		PegRules.choice()
 				.parse("world", 0);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testChoiceOneFailed() throws PegNoMatchFoundException {
-		PegRules.choice(HELLO)
-				.parse("world", 0);
+	@Test
+	public void testChoice() throws PegNoMatchFoundException {
+		final PegChoice choice = PegRules.choice(HELLO)
+				.parse("hello", 0)
+				.getValue();
+		Assert.assertEquals("hello", choice.getValue());
 	}
 
 	@Test
-	public void testChoice() throws PegNoMatchFoundException {
+	public void testChoice2() throws PegNoMatchFoundException {
 		final PegResult<List<?>> cursor = HELLO_WORLD_MUSIC
 				.parse("hello world, my name", 0);
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0

@@ -49,7 +49,6 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 	 */
 	PegChoiceRule(final List<PegRule<?>> rules) {
 		Assertion.checkNotNull(rules);
-		Assertion.checkArgument(rules.size() > 1, "A choice must contain at least 2 rules");
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---
