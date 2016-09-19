@@ -36,7 +36,7 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myFirstProperty : [BLEU ], non reconnu";
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
@@ -48,7 +48,7 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myFirstProperty : [BLEU, VerT, ROUGE, T_REX ], non reconnu";
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(4, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
@@ -62,7 +62,7 @@ public final class DslDefinitionEntryRuleTest {
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
 
-		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(0, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertEquals(text.length(), cursor.getIndex());
@@ -73,7 +73,7 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myFirstProperty    :    [BLEU,VerT,    ROUGE    ]";
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(3, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
@@ -85,7 +85,7 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myFirstProperty : BLEU,";
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = cursor.getResult();
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));

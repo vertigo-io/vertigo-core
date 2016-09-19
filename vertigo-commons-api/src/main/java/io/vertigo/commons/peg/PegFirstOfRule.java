@@ -89,7 +89,7 @@ final class PegFirstOfRule implements PegRule<PegChoice> {
 					//best est non null, car affecté en même temps que bestIndex
 					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				}
-				final PegChoice result = new PegChoice(i, parserCursor.getResult());
+				final PegChoice result = new PegChoice(i, parserCursor.getValue());
 				return new PegResult<>(end, result);
 			} catch (final PegNoMatchFoundException e) {
 				//Tant que l'on a des erreurs sur l'évaluation des règles

@@ -50,7 +50,7 @@ public class DslDefinitionBodyRuleTest {
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
 				.parse("{ args : \"UPPER\" }", 0)
-				.getResult();
+				.getValue();
 
 		Assert.assertEquals(1, definitionBody.getPropertyEntries().size());
 	}
@@ -68,7 +68,7 @@ public class DslDefinitionBodyRuleTest {
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
 				.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0)
-				.getResult();
+				.getValue();
 
 		Assert.assertNotNull(definitionBody);
 	}

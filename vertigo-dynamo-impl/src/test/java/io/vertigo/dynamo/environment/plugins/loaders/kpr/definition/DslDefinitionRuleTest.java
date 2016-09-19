@@ -33,7 +33,7 @@ public class DslDefinitionRuleTest {
 	public void test1() throws PegNoMatchFoundException {
 		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
 				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
-				.getResult();
+				.getValue();
 
 		Assert.assertNotNull(dynamicDefinition);
 	}
@@ -48,7 +48,7 @@ public class DslDefinitionRuleTest {
 	public void test2() throws PegNoMatchFoundException {
 		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository)
 				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
-				.getResult();
+				.getValue();
 		Assert.assertNotNull(dynamicDefinition);
 	}
 

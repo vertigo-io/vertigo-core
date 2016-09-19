@@ -76,7 +76,7 @@ final class PegSequenceRule implements PegRule<List<?>> {
 				final PegResult<?> cursor = rule
 						.parse(text, index);
 				index = cursor.getIndex();
-				results.add(cursor.getResult());
+				results.add(cursor.getValue());
 			}
 		} catch (final PegNoMatchFoundException e) {
 			throw new PegNoMatchFoundException(text, e.getIndex(), e, getExpression());

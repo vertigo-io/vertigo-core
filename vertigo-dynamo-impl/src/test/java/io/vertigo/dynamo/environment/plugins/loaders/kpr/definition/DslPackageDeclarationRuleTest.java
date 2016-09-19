@@ -32,7 +32,7 @@ public final class DslPackageDeclarationRuleTest {
 	public void testExpression() throws PegNoMatchFoundException {
 		final PegResult<String> result = PACKAGE_DECLARATION_RULE
 				.parse("package io.vertigo  xxxx", 0);
-		Assert.assertEquals("io.vertigo", result.getResult());
+		Assert.assertEquals("io.vertigo", result.getValue());
 		Assert.assertEquals("package io.vertigo".length(), result.getIndex());
 	}
 

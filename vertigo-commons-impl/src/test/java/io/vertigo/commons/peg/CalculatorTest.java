@@ -21,14 +21,11 @@ package io.vertigo.commons.peg;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.commons.peg.PegRule;
-
 public class CalculatorTest {
 	private static final PegRule<Integer> MAIN = new CalculatorRule();
 
 	private static int eval(final String s) throws PegNoMatchFoundException {
-		return MAIN.parse(s, 0).getResult().intValue();
+		return MAIN.parse(s, 0).getValue().intValue();
 	}
 
 	@Test

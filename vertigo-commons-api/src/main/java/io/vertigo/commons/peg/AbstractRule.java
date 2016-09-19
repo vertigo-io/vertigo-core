@@ -53,7 +53,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 				.parse(text, start);
 		final int end = parserCursor.getIndex();
 		//---
-		final R result = handle(parserCursor.getResult());
+		final R result = handle(parserCursor.getValue());
 		//---
 		return new PegResult<>(end, result);
 	}

@@ -90,7 +90,7 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 				index = parserCursor.getIndex();
 				if (index > prevIndex) {
 					//celé signifie que l"index n a pas avancé, on sort
-					results.add(parserCursor.getResult());
+					results.add(parserCursor.getValue());
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {

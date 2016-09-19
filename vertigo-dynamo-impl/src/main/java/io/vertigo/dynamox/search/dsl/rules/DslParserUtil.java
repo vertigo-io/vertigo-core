@@ -45,7 +45,7 @@ public final class DslParserUtil {
 		final PegRule<DslMultiExpression> expressionsRule = new DslMultiExpressionRule();
 		return PegRules.oneOrMore(expressionsRule, true)
 				.parse(buildQuery, 0)
-				.getResult();
+				.getValue();
 	}
 
 	/**
