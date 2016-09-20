@@ -136,10 +136,16 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
+		final DtStereotype stereotype = parseStereotype(clazz);
+
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
-				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
-				.addPropertyValue(DATA_SPACE, parseDataSpaceAnnotation(clazz))
+				.addPropertyValue(STEREOTYPE, stereotype.name())
 				.addPropertyValue(FRAGMENT_OF, fragmentOf);
+
+		// Only Persistent stereotypes have a dataspace => Fragment got it from parent
+		if (stereotype.isPersistent()) {
+			dtDefinitionBuilder.addPropertyValue(DATA_SPACE, parseDataSpaceAnnotation(clazz));
+		}
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
