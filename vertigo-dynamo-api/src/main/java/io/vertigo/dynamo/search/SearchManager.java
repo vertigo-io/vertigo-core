@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -48,13 +47,6 @@ public interface SearchManager extends Manager {
 	 */
 	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
-
-	/**
-	 * Check if a keyConcept have an IndexDefinition.
-	 * @param keyConceptDefinition KeyConcept definition
-	 * @return if there is a IndexDefinition for this keyConcept
-	 */
-	boolean hasIndexDefinitionByKeyConcept(DtDefinition keyConceptDefinition);
 
 	/**
 	 * Mark an uri list as dirty. Index of these elements will be reindexed.

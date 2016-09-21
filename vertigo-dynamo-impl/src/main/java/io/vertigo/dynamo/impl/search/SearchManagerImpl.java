@@ -201,9 +201,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return indexDefinition;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
+	private boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
 		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return indexDefinition != null;
 	}
