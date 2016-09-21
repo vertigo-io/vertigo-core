@@ -41,19 +41,15 @@ public final class EventBusManagerImpl implements EventBusManager {
 	public void post(final Event event) {
 		Assertion.checkNotNull(event);
 		//-----
-		boolean emitted = false;
-		for (final EventBusSubscription subscription : subscriptions) {
-			if (subscription.accept(event)) {
-				subscription.getListener().onEvent(event);
-				emitted = true;
-			}
-		}
+		final long emitted = subscriptions.stream()
+				.filter(subscription -> subscription.accept(event))
+				.peek(subscription -> subscription.getListener().onEvent(event))
+				.count();
 
 		//manages dead event
-		if (!emitted) {
-			for (final EventListener deadEventlistener : deadEventListeners) {
-				deadEventlistener.onEvent(event);
-			}
+		if (emitted == 0) {
+			deadEventListeners.stream()
+					.forEach(deadEventlistener -> deadEventlistener.onEvent(event));
 		}
 	}
 
