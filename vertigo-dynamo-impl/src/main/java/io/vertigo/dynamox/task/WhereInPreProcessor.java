@@ -79,12 +79,11 @@ final class WhereInPreProcessor {
 	}
 
 	private TaskAttribute obtainInTaskAttribute(final String attributeName) {
-		for (final TaskAttribute attribute : inTaskAttributes.keySet()) {
-			if (attribute.getName().equals(attributeName)) {
-				return attribute;
-			}
-		}
-		throw new IllegalStateException(StringUtil.format("Attribute {0} not found.", attributeName));
+		return inTaskAttributes.keySet()
+				.stream()
+				.filter(attribute -> attribute.getName().equals(attributeName))
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException(StringUtil.format("Attribute {0} not found.", attributeName)));
 	}
 
 	private String doEvaluate(final String sqlQuery) {

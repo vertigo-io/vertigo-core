@@ -58,8 +58,6 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	 */
 	@Override
 	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
-		Assertion.checkNotNull(dtDefinition);
-		//-----
 		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList, serializeElements);
 	}
 
