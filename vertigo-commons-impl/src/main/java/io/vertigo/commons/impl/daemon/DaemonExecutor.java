@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation basic du plugin de gestion de démon.
@@ -60,11 +60,10 @@ final class DaemonExecutor implements Activeable {
 	 * @return Daemons stats
 	 */
 	List<DaemonStat> getStats() {
-		final ListBuilder<DaemonStat> listBuilder = new ListBuilder<>();
-		for (final DaemonTimerTask daemonTimerTask : daemonTimerTasks) {
-			listBuilder.add(daemonTimerTask.getStat());
-		}
-		return listBuilder.unmodifiable().build();
+		return daemonTimerTasks
+				.stream()
+				.map(daemonTimerTask -> daemonTimerTask.getStat())
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */

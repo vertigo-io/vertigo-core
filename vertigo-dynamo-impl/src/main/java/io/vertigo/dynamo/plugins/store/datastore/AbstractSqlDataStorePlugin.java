@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.store.datastore;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -124,13 +125,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	protected static String getRequestedField(final DtDefinition dtDefinition) {
 		if (dtDefinition.getFragment().isPresent()) {
-			final StringBuilder sb = new StringBuilder();
-			String sep = "";
-			for (final DtField dtField : dtDefinition.getFields()) {
-				sb.append(sep).append(dtField.getName());
-				sep = ", ";
-			}
-			return sb.toString();
+			return dtDefinition.getFields()
+					.stream()
+					.map(dtField -> dtField.getName())
+					.collect(Collectors.joining(", "));
 		}
 		return "*"; //all fields
 	}

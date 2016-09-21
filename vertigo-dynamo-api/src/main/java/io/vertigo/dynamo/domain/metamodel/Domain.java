@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -26,7 +27,6 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -103,11 +103,10 @@ public final class Domain implements Definition {
 	}
 
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
-		final ListBuilder<DefinitionReference<ConstraintDefinition>> listBuilder = new ListBuilder<>();
-		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
-			listBuilder.add(new DefinitionReference<>(constraintDefinition));
-		}
-		return listBuilder.unmodifiable().build();
+		return constraintDefinitions
+				.stream()
+				.map(constraintDefinition -> new DefinitionReference<>(constraintDefinition))
+				.collect(Collectors.toList());
 	}
 
 	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
