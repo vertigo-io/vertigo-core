@@ -156,21 +156,13 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		}
 		final UserSession userSession = userSessionOption.get();
 		final Map<String, String> securityKeys = userSessionOption.get().getSecurityKeys();
-		for (final Role role : userSession.getRoles()) {
-			if (isAuthorized(role, resource, operation, securityKeys)) {
-				return true;
-			}
-		}
-		return false;
+		return userSession.getRoles().stream()
+				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
 	}
 
 	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, String> securityKeys) {
-		for (final Permission permission : role.getPermissions()) {
-			if (isAuthorized(permission, resource, operation, securityKeys)) {
-				return true;
-			}
-		}
-		return false;
+		return role.getPermissions().stream()
+				.anyMatch(permission -> isAuthorized(permission, resource, operation, securityKeys));
 	}
 
 	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, String> securityKeys) {
