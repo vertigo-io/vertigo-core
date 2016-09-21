@@ -51,17 +51,19 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		 */
 		SHA256("SHA-256");
 		//-----
+		//the name of the algo
 		private final String algoName;
 
 		Hash(final String algoName) {
 			this.algoName = algoName;
 		}
 
-		/**
-		 * @return Nom de l'algorithme.
-		 */
-		String getAlgoName() {
-			return algoName;
+		MessageDigest getMessageDigest() {
+			try {
+				return MessageDigest.getInstance(algoName);
+			} catch (final NoSuchAlgorithmException e) {
+				throw new WrappedException(algoName, e);
+			}
 		}
 	}
 
@@ -82,13 +84,8 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//-----
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance(hash.getAlgoName());
-		} catch (final NoSuchAlgorithmException e) {
-			throw new WrappedException(hash.getAlgoName(), e);
-		}
-		digest.update(data);
-		return digest.digest();
+		final MessageDigest messageDigest = hash.getMessageDigest();
+		messageDigest.update(data);
+		return messageDigest.digest();
 	}
 }
