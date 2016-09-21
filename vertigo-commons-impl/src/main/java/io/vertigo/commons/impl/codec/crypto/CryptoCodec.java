@@ -108,15 +108,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	 */
 	@Override
 	public byte[] encode(final byte[] data) {
-		Assertion.checkNotNull(data);
-		//-----
-		try {
-			final Cipher cipher = Cipher.getInstance(crypto.getAlgoName());
-			cipher.init(Cipher.ENCRYPT_MODE, key);
-			return cipher.doFinal(data);
-		} catch (final Exception e) {
-			throw new WrappedException(crypto.getAlgoName(), e);
-		}
+		return cipher(data, Cipher.ENCRYPT_MODE);
 	}
 
 	/**
@@ -126,11 +118,15 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	 */
 	@Override
 	public byte[] decode(final byte[] data) {
+		return cipher(data, Cipher.DECRYPT_MODE);
+	}
+
+	private byte[] cipher(final byte[] data, final int mode) {
 		Assertion.checkNotNull(data);
 		//-----
 		try {
 			final Cipher cipher = Cipher.getInstance(crypto.getAlgoName());
-			cipher.init(Cipher.DECRYPT_MODE, key);
+			cipher.init(mode, key);
 			return cipher.doFinal(data);
 		} catch (final Exception e) {
 			throw new WrappedException(crypto.getAlgoName(), e);
