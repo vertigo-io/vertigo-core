@@ -23,33 +23,26 @@ import java.util.List;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.dynamox.search.dsl.model.DslField;
+import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 
 /**
- * Parsing rule for Field.
- * (preField)(fieldName)(postField):
+ * Parsing rule for search expression.
+ * (multiExpression)+
  * @author npiedeloup
  */
-final class DslFieldRule extends AbstractRule<DslField, List<?>> {
+final class DslSearchExpressionRule extends AbstractRule<List<DslMultiExpression>, List<DslMultiExpression>> {
 
-	DslFieldRule() {
-		super(createMainRule());
+	DslSearchExpressionRule() {
+		super(createMainRule(), "searchExpression");
 	}
 
-	private static PegRule<List<?>> createMainRule() {
-		return PegRules.sequence(
-				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				DslSyntaxRules.WORD, //1
-				DslSyntaxRules.POST_MODIFIER_VALUE); //2
+	private static PegRule<List<DslMultiExpression>> createMainRule() {
+		return PegRules.oneOrMore(new DslMultiExpressionRule(), true);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	protected DslField handle(final List<?> parsing) {
-		final String preField = (String) parsing.get(0);
-		final String fieldName = (String) parsing.get(1);
-		final String postField = (String) parsing.get(2);
-		return new DslField(preField, fieldName, postField);
+	protected List<DslMultiExpression> handle(final List<DslMultiExpression> parsing) {
+		return parsing;
 	}
 
 }

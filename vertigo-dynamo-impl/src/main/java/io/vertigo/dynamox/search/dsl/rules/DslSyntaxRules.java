@@ -70,13 +70,19 @@ final class DslSyntaxRules {
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "DEL");
+	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 
 	/** fixed word. */
 	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
-	static final PegRule<?> DEPTH_OVERFLOW = new PegRule<Void>() {
+	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
+
+	private static class DepthOverflowRule implements PegRule<Void> {
+
+		DepthOverflowRule() {
+			PegRules.populateGramar(this, () -> "<depth overflow>");
+		}
 
 		@Override
 		public String getExpression() {
@@ -87,8 +93,7 @@ final class DslSyntaxRules {
 		public PegResult<Void> parse(final String text, final int start) throws PegNoMatchFoundException {
 			throw new PegNoMatchFoundException(text, start, null, "Too deep", getExpression());
 		}
-
-	};
+	}
 
 	private DslSyntaxRules() {
 		//Classe sans état

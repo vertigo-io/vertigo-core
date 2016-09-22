@@ -35,15 +35,12 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
  * @author npiedeloup
  */
 final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "query";
+
+	DslTermQueryRule() {
+		super(createMainRule(), "query");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule() {
 		final PegRule<PegChoice> escapeModeRule = PegRules.choice(
 				PegRules.term("?(removeReserved)"), //choice 0
 				PegRules.term("?(escapeReserved)")); //choice 1
@@ -66,7 +63,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 				DslSyntaxRules.SPACES, //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				termRule, //2
-				DslSyntaxRules.POST_MODIFIER_VALUE); //3);
+				DslSyntaxRules.POST_MODIFIER_VALUE); //3
 	}
 
 	/** {@inheritDoc} */

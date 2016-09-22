@@ -21,8 +21,6 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.List;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
@@ -42,8 +40,7 @@ public final class DslParserUtil {
 	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
 	 */
 	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
-		final PegRule<DslMultiExpression> expressionsRule = new DslMultiExpressionRule();
-		return PegRules.oneOrMore(expressionsRule, true)
+		return new DslSearchExpressionRule()
 				.parse(buildQuery, 0)
 				.getValue();
 	}

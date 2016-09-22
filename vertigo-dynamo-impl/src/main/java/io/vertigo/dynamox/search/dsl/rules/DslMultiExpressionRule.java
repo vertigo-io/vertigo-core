@@ -36,7 +36,6 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
  */
 final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegChoice> {
 	private static final int MAX_DEPTH = 3;
-	private final int level;
 
 	/**
 	 * Constructor.
@@ -47,12 +46,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 	}
 
 	private DslMultiExpressionRule(final int level) {
-		this.level = level;
+		super(createMainRule(level));
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<PegChoice> createMainRule() {
+	private static PegRule<PegChoice> createMainRule(final int level) {
 		if (level > MAX_DEPTH) {
 			return (PegRule<PegChoice>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}

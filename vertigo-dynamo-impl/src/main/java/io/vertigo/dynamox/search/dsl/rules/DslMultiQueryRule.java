@@ -35,28 +35,19 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  */
 final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 	private static final int MAX_DEPTH = 3;
-	private final int level;
 
 	/**
 	 * Constructor.
 	 */
 	DslMultiQueryRule() {
-		level = 0;
+		this(0);
 	}
 
 	private DslMultiQueryRule(final int level) {
-		this.level = level;
+		super(createMainRule(level), "multiQuery");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "multiQuery";
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule(final int level) {
 		if (level > MAX_DEPTH) {
 			return (PegRule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}

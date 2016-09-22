@@ -33,16 +33,18 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiField;
  * @author npiedeloup
  */
 final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	DslMultiFieldRule() {
+		super(createMainRule());
+	}
+
+	private static PegRule<List<?>> createMainRule() {
 		final PegRule<List<List<?>>> otherFieldsRule = PegRules.zeroOrMore(
 				PegRules.sequence(
 						DslSyntaxRules.SPACES,
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
 						new DslFieldRule() //3
-				), false);
+		), false);
 
 		return PegRules.sequence(
 				DslSyntaxRules.ARRAY_START,

@@ -35,16 +35,11 @@ import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
  */
 final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "rangeQuery";
+	DslRangeQueryRule() {
+		super(createMainRule(), "rangeQuery");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
-
+	private static PegRule<List<?>> createMainRule() {
 		final PegRule<PegChoice> queriesRule = PegRules.choice(//"term or fixed")
 				new DslTermQueryRule(), //0
 				new DslFixedQueryRule() //1

@@ -32,15 +32,12 @@ import io.vertigo.commons.peg.PegRules;
  * @author npiedeloup
  */
 final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "bool";
+
+	DslBooleanOperatorRule() {
+		super(createMainRule(), "boolOperator");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static final PegRule<List<?>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
 				PegRules.choice(//"single or multiple") //1
@@ -51,10 +48,8 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 						PegRules.term("OR"), //4
 						PegRules.term("Or"), //5
 						PegRules.term("or"), //6
-						PegRules.term("||") //7
-				),
-				DslSyntaxRules.SPACES //2
-		);
+						PegRules.term("||")), //7
+				DslSyntaxRules.SPACES); //2
 	}
 
 	/** {@inheritDoc} */

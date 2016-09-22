@@ -37,15 +37,11 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  */
 final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "expression";
+	DslExpressionRule() {
+		super(createMainRule(), "expression");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule() {
 
 		final PegRule<List<?>> multiFieldsRule = PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
@@ -67,8 +63,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 				DslSyntaxRules.SPACES, //1
 				fieldsRule, //2
 				DslSyntaxRules.FIELD_END,
-				queriesRule //4
-		);
+				queriesRule); //4
 	}
 
 	/** {@inheritDoc} */
