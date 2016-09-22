@@ -28,6 +28,7 @@ import io.vertigo.lang.Assertion;
  */
 final class PegTermRule implements PegRule<String> {
 	private final String term;
+	private final String expression;
 
 	/**
 	 * Constructor.
@@ -37,12 +38,13 @@ final class PegTermRule implements PegRule<String> {
 		Assertion.checkNotNull(term, "Terminal is required");
 		//-----
 		this.term = term;
+		expression = "'" + term + "'";
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return "'" + term + "'";
+		return expression;
 	}
 
 	/** {@inheritDoc} */

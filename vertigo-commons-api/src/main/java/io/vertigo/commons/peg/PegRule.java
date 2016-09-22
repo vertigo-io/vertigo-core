@@ -44,6 +44,17 @@ public interface PegRule<R> {
 	 * Parser produces an object <P> or throw an exception.
 	 * A parser analyzes a text, according some rules.
 	 * A parser is responsible for moving the index position or throw an exception.
+	 * @return the parser
+	 */
+	/*Parser<R> createParser();
+
+	@FunctionalInterface()
+	public interface Parser<R> {
+	*/
+	/**
+	 * Parser produces an object <P> or throw an exception.
+	 * A parser analyzes a text, according some rules.
+	 * A parser is responsible for moving the index position or throw an exception.
 	 * Returns the result of the parsing operation.
 	 * @param text Text to parse
 	 * @param start Start of the element of text to parse
@@ -51,4 +62,7 @@ public interface PegRule<R> {
 	 * @return the new index and the result
 	 */
 	PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException;
+
+	//}
+
 }

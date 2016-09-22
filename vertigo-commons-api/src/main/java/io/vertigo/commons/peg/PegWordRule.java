@@ -69,7 +69,7 @@ public final class PegWordRule implements PegRule<String> {
 			acceptedCharacters = "";
 			rejectedCharacters = checkedChars;
 		}
-		this.readableExpression = readableCheckedChar;
+		readableExpression = readableCheckedChar;
 	}
 
 	/** {@inheritDoc} */

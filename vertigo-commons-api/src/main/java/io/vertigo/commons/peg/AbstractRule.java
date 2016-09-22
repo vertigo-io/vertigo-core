@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.peg;
 
+import io.vertigo.lang.Assertion;
+
 /**
  * Une règle peut être vue comme
  * - la création d'une règle principale
@@ -27,21 +29,42 @@ package io.vertigo.commons.peg;
  * @param<R> Type of the product text parsing
  */
 public abstract class AbstractRule<R, M> implements PegRule<R> {
-	private PegRule<M> mainRule;
+	private final PegRule<M> mainRule;
+	private final PegRule<M> innerRule;
+	private final String expression;
+
+	protected AbstractRule(final PegRule<M> mainRule) {
+		Assertion.checkNotNull(mainRule);
+		//-----
+		this.innerRule = mainRule;
+		this.mainRule = innerRule;
+		this.expression = mainRule.getExpression();
+		PegRules.wrapped(this, innerRule);
+	}
+
+	protected AbstractRule(final PegRule<M> mainRule, final String ruleName) {
+		Assertion.checkNotNull(mainRule);
+		Assertion.checkArgNotEmpty(ruleName);
+		//-----
+		this.innerRule = mainRule;
+		this.mainRule = PegRules.named(this, innerRule, ruleName);
+		this.expression = mainRule.getExpression();
+	}
 
 	protected final PegRule<M> getMainRule() {
-		if (mainRule == null) {
-			mainRule = createMainRule();
-		}
 		return mainRule;
 	}
 
-	protected abstract PegRule<M> createMainRule();
+	protected final String getRuleName() {
+		return this.getClass().getSimpleName() + innerRule.getExpression().hashCode();
+	}
+
+	//protected abstract PegRule<M> createMainRule();
 
 	/** {@inheritDoc} */
 	@Override
-	public String getExpression() {
-		return getMainRule().getExpression();
+	public final String getExpression() {
+		return expression;
 	}
 
 	protected abstract R handle(M parsing);

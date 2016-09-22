@@ -29,6 +29,7 @@ import io.vertigo.lang.Assertion;
  */
 final class PegWhiteSpaceRule implements PegRule<Dummy> {
 	private final PegRule<String> rule;
+	private final String expression;
 
 	/**
 	 * Constructeur.
@@ -39,12 +40,13 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 		Assertion.checkNotNull(blanks);
 		//-----
 		rule = PegRules.word(true, blanks, PegWordRule.Mode.ACCEPT, "_");
+		expression = rule.getExpression();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return rule.getExpression(); // _ by convention
+		return expression; // _ by convention
 	}
 
 	/** {@inheritDoc} */

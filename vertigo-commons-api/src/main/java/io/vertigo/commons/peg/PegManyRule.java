@@ -38,8 +38,8 @@ import io.vertigo.lang.Assertion;
  */
 final class PegManyRule<R> implements PegRule<List<R>> {
 	private final PegRule<R> rule;
+	private final String expression;
 	private final boolean zeroAccepted;
-
 	private final boolean repeat;
 
 	/**
@@ -54,13 +54,13 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 		this.rule = rule;
 		this.zeroAccepted = zeroAccepted;
 		this.repeat = repeat;
+		expression = rule.getExpression() + (zeroAccepted ? "*" : "+");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return rule.getExpression()
-				+ (zeroAccepted ? "*" : "+");
+		return expression;
 	}
 
 	private boolean isEmptyAccepted() {

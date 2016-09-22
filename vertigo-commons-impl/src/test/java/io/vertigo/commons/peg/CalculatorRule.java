@@ -21,6 +21,7 @@ package io.vertigo.commons.peg;
 import java.util.List;
 
 final class CalculatorRule extends AbstractRule<Integer, List<?>> {
+
 	private static final PegRule<?> SPACES = PegRules.skipBlanks(" ");
 
 	//---Liste des opérations gérées
@@ -41,9 +42,8 @@ final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 			DIGITS //4
 	);
 
-	@Override
-	protected PegRule<List<?>> createMainRule() {
-		return EXPRESSION;
+	protected CalculatorRule() {
+		super(EXPRESSION, "Calculator");
 	}
 
 	@Override

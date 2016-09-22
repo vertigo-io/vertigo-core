@@ -19,7 +19,6 @@
 package io.vertigo.commons.peg;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,11 +41,11 @@ final class PegSequenceRule implements PegRule<List<?>> {
 	/**
 	 * Constructor.
 	 */
-	PegSequenceRule(final PegRule<?>... rules) {
+	PegSequenceRule(final List<PegRule<?>> rules) {
 		Assertion.checkNotNull(rules);
-		Assertion.checkArgument(rules.length > 1, "A sequence must contain at least 2 rules");
+		Assertion.checkArgument(rules.size() > 1, "A sequence must contain at least 2 rules");
 		//-----
-		this.rules = Collections.unmodifiableList(Arrays.asList(rules));
+		this.rules = Collections.unmodifiableList(rules);
 		//---
 		//A sequence of rules/expressions is like that : (e1 e2 e3)
 		expression = "("
