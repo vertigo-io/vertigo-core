@@ -37,9 +37,6 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, PegChoice> {
-	/** Création de la définition. */
-	private final DynamicDefinitionRepository dynamicModelRepository;
-	private final String operation;
 
 	/**
 	 * Constructeur.
@@ -47,30 +44,28 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
 	public DslDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
+		super(createMainRule(operation, dynamicModelRepository));
+	}
+
+	private static PegRule<PegChoice> createMainRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkNotNull(dynamicModelRepository);
 		//-----
-		this.operation = operation;
-		this.dynamicModelRepository = dynamicModelRepository;
+		final List<PegRule<?>> rules = new ArrayList<>();//"Definition")
+		for (final DslEntity entity : dynamicModelRepository.getGrammar().getEntities()) {
+			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(entity.getName(), entity);
+			rules.add(createRule(operation, definitionRule));
+		}
+		return PegRules.choice(rules);
 	}
 
-	private PegRule<List<?>> createRule(final DslInnerDefinitionRule definitionRule) {
+	private static PegRule<List<?>> createRule(final String operation, final DslInnerDefinitionRule definitionRule) {
 		// Création de la règle de déclaration d'une nouvelle definition.
 		return PegRules.sequence(//Definition
 				PegRules.term(operation), // alter ou create
 				SPACES,
 				definitionRule, //2
 				SPACES);
-	}
-
-	@Override
-	protected PegRule<PegChoice> createMainRule() {
-		final List<PegRule<?>> rules = new ArrayList<>();//"Definition")
-		for (final DslEntity entity : dynamicModelRepository.getGrammar().getEntities()) {
-			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
-			rules.add(createRule(definitionRule));
-		}
-		return PegRules.choice(rules);
 	}
 
 	@Override

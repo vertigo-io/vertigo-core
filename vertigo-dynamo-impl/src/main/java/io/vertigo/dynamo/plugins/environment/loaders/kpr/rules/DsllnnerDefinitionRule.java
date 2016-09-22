@@ -32,24 +32,20 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyE
 import io.vertigo.lang.Assertion;
 
 final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
-	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final String entityName;
 	private final DslEntity entity;
 
-	DslInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final DslEntity entity) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	DslInnerDefinitionRule(final String entityName, final DslEntity entity) {
+		super(createMainRule(entityName, entity));
+		this.entityName = entityName;
+		this.entity = entity;
+	}
+
+	private static PegRule<List<?>> createMainRule(final String entityName, final DslEntity entity) {
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
 		//-----
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.entityName = entityName;
-		this.entity = entity;
-
-	}
-
-	@Override
-	protected PegRule<List<?>> createMainRule() {
-		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
+		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(entity);
 		return PegRules.sequence(//"InnerDefinition"
 				PegRules.term(entityName),
 				DslSyntaxRules.SPACES,

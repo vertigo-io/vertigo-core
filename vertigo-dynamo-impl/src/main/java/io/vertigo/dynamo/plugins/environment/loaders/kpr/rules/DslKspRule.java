@@ -51,15 +51,13 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	 * @param dynamicModelrepository Grammaire
 	 */
 	public DslKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
-		super();
-		Assertion.checkNotNull(dynamicModelrepository);
-		//-----
+		super(createMainRule(dynamicModelrepository), "Ksp");
 		this.dynamicModelrepository = dynamicModelrepository;
-
 	}
 
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule(final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkNotNull(dynamicModelrepository);
+		//-----
 		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
 		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
 		final PegRule<PegChoice> declarationChoiceRule = PegRules.choice(//"definition or template")

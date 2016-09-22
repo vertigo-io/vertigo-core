@@ -38,7 +38,6 @@ import io.vertigo.commons.peg.PegRules;
  * @author pchretien
  */
 public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
-	static final PegRule<List<String>> WORDS = new DslWordsRule();
 
 	// 	{ }
 	private static final PegRule<List<?>> EMPTY_LIST = PegRules.sequence(//Liste vide
@@ -52,7 +51,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 					ARRAY_SEPARATOR,
 					SPACES,
 					WORD //2
-			), false);
+	), false);
 
 	//{ XXXXX (,XXXX)+ }
 	private static final PegRule<List<?>> NON_EMPTY_LIST = PegRules.sequence(//"Liste non vide"
@@ -63,10 +62,14 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 			SPACES,
 			ARRAY_END);
 
-	@Override
+	public DslWordsRule() {
+		super(createMainRule(), "Words");
+	}
+
+	static final PegRule<List<String>> WORDS = new DslWordsRule();
+
 	// {} | { XXXXX (,XXXX)+ }
-	protected
-			PegRule<PegChoice> createMainRule() {
+	private static PegRule<PegChoice> createMainRule() {
 		return PegRules.choice(//"liste vide ou non"
 				EMPTY_LIST, //0
 				NON_EMPTY_LIST);//1

@@ -36,8 +36,11 @@ import io.vertigo.commons.peg.PegRules;
  */
 public final class DslPackageDeclarationRule extends AbstractRule<String, List<?>> {
 
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	public DslPackageDeclarationRule() {
+		super(createMainRule());
+	}
+
+	private static PegRule<List<?>> createMainRule() {
 		return PegRules.sequence(
 				PegRules.term("package "), //après package il y a un blanc obligatoire
 				SPACES,

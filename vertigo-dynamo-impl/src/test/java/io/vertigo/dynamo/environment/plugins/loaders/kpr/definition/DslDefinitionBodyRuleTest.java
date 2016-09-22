@@ -48,7 +48,7 @@ public class DslDefinitionBodyRuleTest {
 
 		final DslEntity entity = find(entities, "Formatter");
 
-		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
+		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(entity)
 				.parse("{ args : \"UPPER\" }", 0)
 				.getValue();
 
@@ -66,7 +66,7 @@ public class DslDefinitionBodyRuleTest {
 		final List<DslEntity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
 		final DslEntity entity = find(entities, "Domain");
 
-		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
+		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(entity)
 				.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0)
 				.getValue();
 
@@ -79,7 +79,7 @@ public class DslDefinitionBodyRuleTest {
 		final DslEntity entity = find(entities, "Domain");
 		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";
 		try {
-			new DslDefinitionBodyRule(dynamicDefinitionRepository, entity)
+			new DslDefinitionBodyRule(entity)
 					.parse(testValue, 0);
 			Assert.fail();
 		} catch (final PegNoMatchFoundException e) {

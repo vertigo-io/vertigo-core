@@ -29,7 +29,6 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityField;
 import io.vertigo.core.definition.dsl.entity.DslEntityLink;
@@ -48,29 +47,16 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<?>> {
-	private final DynamicDefinitionRepository dynamicModelRepository;
-	private final DslEntity entity;
 
 	/**
 	 * Constructeur.
-	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final DslEntity entity) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	public DslDefinitionBodyRule(final DslEntity entity) {
+		super(createMainRule(entity), entity.getName());
+	}
+
+	private static PegRule<List<?>> createMainRule(final DslEntity entity) {
 		Assertion.checkNotNull(entity);
-		//-----
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.entity = entity;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "definition<" + entity.getName() + ">";
-	}
-
-	@Override
-	protected PegRule<List<?>> createMainRule() {
 		final List<String> attributeNames = new ArrayList<>();
 
 		final List<PegRule<?>> innerDefinitionRules = new ArrayList<>();
@@ -88,7 +74,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 				dslEntity = null;
 			}
 			if (dslEntity != null) {
-				innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, dslEntityField.getName(), dslEntity));
+				innerDefinitionRules.add(new DslInnerDefinitionRule(dslEntityField.getName(), dslEntity));
 			}
 		}
 

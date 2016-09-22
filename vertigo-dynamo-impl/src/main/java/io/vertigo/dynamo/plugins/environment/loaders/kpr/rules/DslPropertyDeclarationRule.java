@@ -55,7 +55,7 @@ public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEn
 	 * <propertyName> : "<propertyvalue>";
 	 */
 	public DslPropertyDeclarationRule(final Set<String> entityPropertyNames) {
-		super();
+		super(createMainRule(entityPropertyNames));
 		Assertion.checkNotNull(entityPropertyNames);
 		//-----
 		entityProperties = new HashMap<>();
@@ -65,11 +65,10 @@ public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEn
 		}
 	}
 
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule(final Set<String> entityPropertyNames) {
 		final List<PegRule<?>> propertyNamesRules = new ArrayList<>();
-		for (final String propertyName : entityProperties.keySet()) {
-			propertyNamesRules.add(PegRules.term(propertyName));
+		for (final String entityPropertyName : entityPropertyNames) {
+			propertyNamesRules.add(PegRules.term(StringUtil.constToLowerCamelCase(entityPropertyName)));
 		}
 
 		return PegRules.sequence(

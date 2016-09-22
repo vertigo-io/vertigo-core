@@ -38,20 +38,17 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<?>> {
-	private final List<String> fieldNames;
 
 	/**
 	 * Constructeur.
 	 */
 	public DslDefinitionEntryRule(final List<String> fieldNames) {
-		Assertion.checkNotNull(fieldNames);
-		//-----
-		this.fieldNames = fieldNames;
-
+		super(createMainRule(fieldNames));
 	}
 
-	@Override
-	protected PegRule<List<?>> createMainRule() {
+	private static PegRule<List<?>> createMainRule(final List<String> fieldNames) {
+		Assertion.checkNotNull(fieldNames);
+		//-----
 		final List<PegRule<?>> fieldNamesRules = new ArrayList<>();
 		for (final String fieldName : fieldNames) {
 			fieldNamesRules.add(PegRules.term(fieldName));
