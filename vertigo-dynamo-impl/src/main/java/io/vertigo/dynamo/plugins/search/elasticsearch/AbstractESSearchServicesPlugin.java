@@ -280,19 +280,17 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final Optional<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
-				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
-					typeMapping.startObject(dtField.getName());
-					if (indexType.isPresent()) {
-						appendIndexTypeMapping(typeMapping, indexType.get());
-					} else {
-						//sinon, il faut le type par défaut
-						typeMapping.field("type", IndexType.obtainDefaultIndexDataType(dtField.getDomain()));
-					}
-					if (copyFromFields.contains(dtField)) {
-						appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
-					}
-					typeMapping.endObject();
+				typeMapping.startObject(dtField.getName());
+				if (indexType.isPresent()) {
+					appendIndexTypeMapping(typeMapping, indexType.get());
+				} else {
+					//sinon, il faut le type par défaut
+					typeMapping.field("type", IndexType.obtainDefaultIndexDataType(dtField.getDomain()));
 				}
+				if (copyFromFields.contains(dtField)) {
+					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
+				}
+				typeMapping.endObject();
 			}
 			typeMapping.endObject().endObject(); //end properties
 
