@@ -53,10 +53,8 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
 
-	private Optional<FacetDefinition> clusterFacetDefinition = Optional.<FacetDefinition> empty();
-	private Optional<FacetedQuery> facetedQuery;
-	private DtList<R> results;
-	private S source;
+	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
+	private FacetedQueryResult<?, S> firstResult;
 
 	/**
 	 * Merger should create a facet for this cluster.
@@ -74,11 +72,8 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		Assertion.when(resultLabelKey == null)
 				.check(() -> resultLabel != null, "You must set a label of all result when merging result");
 		//-----
-		if (facetedQuery == null) {
-			//On garde les infos qui sont basés sur le premier élément
-			facetedQuery = result.getFacetedQuery();
-			results = new DtList(result.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
-			source = result.getSource();
+		if (firstResult == null) {
+			firstResult = result;
 		}
 		//-----
 		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
@@ -104,8 +99,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
-		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
-		clusterFacetDefinition = Optional.of(facetDefinition);
+		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
 		return this;
 	}
 
@@ -143,10 +137,17 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			//TODO merge highlights
 		}
 
-		if (clusterFacetDefinition.isPresent()) {
-			final Facet clusterFacet = new Facet(clusterFacetDefinition.get(), clustersCount);
+		//On garde les infos qui sont basés sur le premier élément
+		final Optional<FacetedQuery> facetedQuery = firstResult.getFacetedQuery();
+		final DtList<R> results = new DtList<>(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
+		final S source = firstResult.getSource();
+		final FacetDefinition clusterFacetDefinition = null;
+
+		if (facetDefinitionNameOpt.isPresent()) {
+			final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
+			final Facet clusterFacet = new Facet(facetDefinition, clustersCount);
 			facets.add(clusterFacet);
 		}
-		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, clusterFacetDefinition, clustersDtc, highlights, source);
+		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, Optional.ofNullable(clusterFacetDefinition), clustersDtc, highlights, source);
 	}
 }
