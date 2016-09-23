@@ -1,5 +1,6 @@
 package io.vertigo.commons.peg;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -8,8 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegWordRule.Mode;
@@ -112,9 +111,11 @@ public final class PegRules {
 	}
 
 	public static final String namedRulesAsHtml() {
-		final StringBuilder sb = new StringBuilder();
-		reverse(NAMED_RULES.values().stream()).forEachOrdered(
-				rule -> sb
+		final List<PegNamedRule> rules = new ArrayList<>(NAMED_RULES.values());
+		Collections.reverse(rules);
+		return rules
+				.stream()
+				.map(rule -> new StringBuilder()
 						.append("<h1 id='").append(rule.getRuleName()).append("'>").append(rule.getRuleName()).append("</h1>\n")
 						.append("<div>").append(rule.getRule().getExpression()).append("</div>\n")
 						.append("<div>").append(readGramar(rule.getRule())).append("</div>\n")
@@ -122,14 +123,8 @@ public final class PegRules {
 						.append("Diagram(\n\t")
 						.append(readGramar(rule.getRule()))
 						.append("\n).addTo();\n")
-						.append("</script>\n\n"));
-		return sb.toString();
+						.append("</script>\n\n")
+						.toString())
+				.collect(Collectors.joining());
 	}
-
-	static <T> Stream<T> reverse(final Stream<T> input) {
-		final Object[] temp = input.toArray();
-		return (Stream<T>) IntStream.range(0, temp.length)
-				.mapToObj(i -> temp[temp.length - i - 1]);
-	}
-
 }
