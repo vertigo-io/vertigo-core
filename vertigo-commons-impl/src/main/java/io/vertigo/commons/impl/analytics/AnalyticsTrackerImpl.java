@@ -122,14 +122,10 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 		if (logger.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Finish ")
-					.append(category);
-			if (success) {
-				sb.append(" successfully in  ( ");
-			} else {
-				sb.append(" with error in ( ");
-			}
-			sb.append(duration);
-			sb.append(" ms)");
+					.append(category)
+					.append(success ? " successfully" : " with error").append(" in ( ")
+					.append(duration)
+					.append(" ms)");
 			if (!measures.isEmpty()) {
 				sb.append(" measures:").append(measures);
 			}
