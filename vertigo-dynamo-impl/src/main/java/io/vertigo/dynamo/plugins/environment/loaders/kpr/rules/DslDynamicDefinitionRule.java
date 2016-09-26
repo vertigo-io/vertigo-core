@@ -28,8 +28,8 @@ import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
 
@@ -39,20 +39,19 @@ import io.vertigo.lang.Assertion;
 public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, PegChoice> {
 
 	/**
-	 * Constructeur.
-	 *
-	 * @param dynamicModelRepository DynamicModelRepository
+	 * Constructor.
+	 * @param grammar the grammar
 	 */
-	public DslDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
-		super(createMainRule(operation, dynamicModelRepository));
+	public DslDynamicDefinitionRule(final String operation, final DslGrammar grammar) {
+		super(createMainRule(operation, grammar));
 	}
 
-	private static PegRule<PegChoice> createMainRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static PegRule<PegChoice> createMainRule(final String operation, final DslGrammar grammar) {
 		Assertion.checkArgNotEmpty(operation);
-		Assertion.checkNotNull(dynamicModelRepository);
+		Assertion.checkNotNull(grammar);
 		//-----
 		final List<PegRule<?>> rules = new ArrayList<>();//"Definition")
-		for (final DslEntity entity : dynamicModelRepository.getGrammar().getEntities()) {
+		for (final DslEntity entity : grammar.getEntities()) {
 			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(entity.getName(), entity);
 			rules.add(createRule(operation, definitionRule));
 		}

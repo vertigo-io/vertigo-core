@@ -30,6 +30,7 @@ import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -51,15 +52,15 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	 * @param dynamicModelrepository Grammaire
 	 */
 	public DslKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
-		super(createMainRule(dynamicModelrepository), "Ksp");
+		super(createMainRule(dynamicModelrepository.getGrammar()), "Ksp");
 		this.dynamicModelrepository = dynamicModelrepository;
 	}
 
-	private static PegRule<List<?>> createMainRule(final DynamicDefinitionRepository dynamicModelrepository) {
-		Assertion.checkNotNull(dynamicModelrepository);
+	private static PegRule<List<?>> createMainRule(final DslGrammar grammar) {
+		Assertion.checkNotNull(grammar);
 		//-----
-		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
-		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
+		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", grammar);
+		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", grammar);
 		final PegRule<PegChoice> declarationChoiceRule = PegRules.choice(//"definition or template")
 				definitionRule, //0
 				templateRule //1
