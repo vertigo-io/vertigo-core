@@ -277,20 +277,18 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.endObject();
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
+			final Set<DtField> copyToFields = indexDefinition.getIndexCopyToFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final Optional<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
+				//if (!copyToFields.contains(dtField)) {
+				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
 				typeMapping.startObject(dtField.getName());
-				if (indexType.isPresent()) {
-					appendIndexTypeMapping(typeMapping, indexType.get());
-				} else {
-					//sinon, il faut le type par défaut
-					typeMapping.field("type", IndexType.obtainDefaultIndexDataType(dtField.getDomain()));
-				}
+				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
 				}
 				typeMapping.endObject();
+				//}
 			}
 			typeMapping.endObject().endObject(); //end properties
 
@@ -301,7 +299,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
-
 		} catch (final IOException e) {
 			throw new WrappedException("Serveur ElasticSearch indisponible", e);
 		}
@@ -322,7 +319,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
 		typeMapping.field("type", indexType.getIndexDataType());
-		typeMapping.field("analyzer", indexType.getIndexAnalyzer());
+		if (indexType.getIndexAnalyzer().isPresent()) {
+			typeMapping.field("analyzer", indexType.getIndexAnalyzer().get());
+		}
 	}
 
 	private void markToOptimize() {

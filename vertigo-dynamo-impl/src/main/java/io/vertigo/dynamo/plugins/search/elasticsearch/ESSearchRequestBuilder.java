@@ -151,8 +151,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 			if (ACCEPT_UNMAPPED_SORT_FIELD) {
 				//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
-				final Optional<IndexType> indexType = IndexType.readIndexType(sortField.getDomain());
-				final String sortType = indexType.isPresent() ? indexType.get().getIndexDataType() : sortField.getDomain().getDataType().name();
+				final IndexType indexType = IndexType.readIndexType(sortField.getDomain());
+				final String sortType = indexType.getIndexDataType();
 				sortBuilder.unmappedType(sortType);
 			}
 

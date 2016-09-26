@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -67,7 +66,6 @@ final class ESDocumentCodec {
 	private <I extends DtObject> String encode(final I dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		//	System.out.println(">>>encode : " + dto);
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
@@ -118,7 +116,8 @@ final class ESDocumentCodec {
 		//-----
 
 		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition);
+		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition); //on ne copie pas les champs not stored dans le domain
+		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {
 			dtResult = index.getIndexDtObject();
@@ -130,7 +129,6 @@ final class ESDocumentCodec {
 
 		/* 1: URI */
 		xContentBuilder.startObject();
-		//xContentBuilder.field(URN, index.getURI().toURN());
 		/* 2 : Result stocké */
 		final String result = encode(dtResult);
 		xContentBuilder.field(FULL_RESULT, result);
@@ -180,8 +178,8 @@ final class ESDocumentCodec {
 	}
 
 	private static boolean isIndexStoredDomain(final Domain domain) {
-		final Optional<IndexType> indexType = IndexType.readIndexType(domain);
-		return !indexType.isPresent() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
+		final IndexType indexType = IndexType.readIndexType(domain);
+		return indexType.isIndexStored(); //is no specific indexType, the field should be stored
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {
