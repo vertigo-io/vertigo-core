@@ -21,6 +21,7 @@ package io.vertigo.dynamo.collections.data.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtList;
 
@@ -69,22 +70,16 @@ public final class SmartCarDataBase {
 	}
 
 	public List<SmartCar> getCarsByMaker(final String maker) {
-		final List<SmartCar> carsByMaker = new ArrayList<>();
-		for (final SmartCar car : cars) {
-			if (car.getMaker().toLowerCase(Locale.FRENCH).equals(maker)) {
-				carsByMaker.add(car);
-			}
-		}
-		return carsByMaker;
+		return cars
+				.stream()
+				.filter(car -> car.getMaker().toLowerCase(Locale.FRENCH).equals(maker))
+				.collect(Collectors.toList());
 	}
 
 	public long getCarsBefore(final int year) {
-		long count = 0;
-		for (final SmartCar car : cars) {
-			if (car.getYear() <= year) {
-				count++;
-			}
-		}
-		return count;
+		return cars
+				.stream()
+				.filter(car -> car.getYear() <= year)
+				.count();
 	}
 }

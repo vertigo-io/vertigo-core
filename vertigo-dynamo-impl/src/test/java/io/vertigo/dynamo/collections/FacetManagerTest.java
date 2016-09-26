@@ -67,7 +67,6 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR_CAR");
-		Assert.assertNotNull(yearFacet);
 		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
@@ -88,7 +87,6 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 
 		//On recherche la facette constructeur
 		final Facet makeFacet = getFacetByName(result, "FCT_MAKER_CAR");
-		Assert.assertNotNull(makeFacet);
 		//On vérifie que l'on est sur le champ Make
 		Assert.assertEquals("MAKER", makeFacet.getDefinition().getDtField().getName());
 		Assert.assertFalse(makeFacet.getDefinition().isRangeFacet());
@@ -107,12 +105,11 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<SmartCar, ?> result, final String facetName) {
-		for (final Facet facet : result.getFacets()) {
-			if (facetName.equals(facet.getDefinition().getName())) {
-				return facet;
-			}
-		}
-		return null;
+		return result.getFacets()
+				.stream()
+				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException());
 	}
 
 	/**
