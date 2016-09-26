@@ -109,7 +109,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			}
 			final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 			if (bulkResponse.hasFailures()) {
-				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
+				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {2}", typeName, indexName, bulkResponse.buildFailureMessage());
 			}
 		} catch (final IOException e) {
 			handleIOException(e);
