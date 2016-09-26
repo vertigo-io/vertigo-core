@@ -23,7 +23,7 @@ import javax.inject.Named;
 
 import io.vertigo.lang.Plugin;
 
-public class FunctionPlugin implements Plugin {
+public final class FunctionPlugin implements Plugin {
 	@Inject
 	@Named("name")
 	private String name;

@@ -20,7 +20,7 @@ package io.vertigo.commons.eventbus.data;
 
 import io.vertigo.commons.eventbus.EventSuscriber;
 
-public class MySuscriber {
+public final class MySuscriber {
 	private int count = 0;
 	private int redCount = 0;
 	private int blueCount = 0;

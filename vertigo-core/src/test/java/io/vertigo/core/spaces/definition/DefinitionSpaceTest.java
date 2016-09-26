@@ -37,7 +37,7 @@ import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 
-public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
+public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {

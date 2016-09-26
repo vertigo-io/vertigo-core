@@ -31,7 +31,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterBoolean;
  *
  * @author pchretien
  */
-public class BooleanFormatterTest {
+public final class BooleanFormatterTest {
 	private final Formatter formatterBoolean = new FormatterBoolean("YES;NO");
 
 	/**

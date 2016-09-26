@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 
-public class StartedManagerInitializer implements ComponentInitializer {
+public final class StartedManagerInitializer implements ComponentInitializer {
 
 	@Inject
 	private StartedManager startedManager;

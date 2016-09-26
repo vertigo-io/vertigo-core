@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.lang.Component;
 
-public class FakeComponent implements Component {
+public final class FakeComponent implements Component {
 	int executions = 0;
 
 	@Inject

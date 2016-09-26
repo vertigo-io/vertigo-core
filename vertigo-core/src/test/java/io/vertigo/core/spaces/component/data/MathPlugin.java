@@ -23,12 +23,12 @@ import javax.inject.Named;
 
 import io.vertigo.lang.Plugin;
 
-public class MathPlugin implements Plugin {
+public final class MathPlugin implements Plugin {
 	@Inject
 	@Named("factor")
 	private int start;
 
-	public int add(int a, int b) {
+	public int add(final int a, final int b) {
 		return start + a + b;
 	}
 }

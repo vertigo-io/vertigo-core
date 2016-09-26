@@ -21,7 +21,7 @@ package io.vertigo.commons.peg;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class CalculatorTest {
+public final class CalculatorTest {
 	private static final PegRule<Integer> MAIN = new CalculatorRule();
 
 	private static int eval(final String s) throws PegNoMatchFoundException {

@@ -47,7 +47,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  *
  * @author pchretien
  */
-public class DataBaseManagerTest extends AbstractTestCaseJU4 {
+public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String TITLE_MOVIE_1 = "citizen kane";
 	private static final String TITLE_MOVIE_2 = "vertigo";
 	private static final String TITLE_MOVIE_3 = "gone girl";
