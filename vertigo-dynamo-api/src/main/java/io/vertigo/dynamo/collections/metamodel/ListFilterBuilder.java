@@ -41,9 +41,4 @@ public interface ListFilterBuilder<C> extends Builder<ListFilter> {
 	 * @return this builder
 	 */
 	ListFilterBuilder<C> withCriteria(C criteria);
-
-	/** {@inheritDoc} */
-	@Override
-	ListFilter build();
-
 }
