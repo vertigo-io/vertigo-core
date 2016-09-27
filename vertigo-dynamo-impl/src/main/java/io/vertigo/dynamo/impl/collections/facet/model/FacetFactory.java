@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.collections.facet.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -47,7 +47,6 @@ import io.vertigo.util.StringUtil;
  * @author pchretien, npiedeloup
  */
 public final class FacetFactory {
-
 	private final CollectionsManager collectionManager;
 
 	/**
@@ -70,12 +69,10 @@ public final class FacetFactory {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		Assertion.checkNotNull(dtList);
 		//-----
-		final List<Facet> facets = new ArrayList<>();
-		//Pour chaque type de facette
-		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
-			facets.add(createFacet(facetDefinition, dtList));
-		}
-		return facets;
+		return facetedQueryDefinition.getFacetDefinitions()
+				.stream()
+				.map(facetDefinition -> createFacet(facetDefinition, dtList))
+				.collect(Collectors.toList());
 	}
 
 	/**
