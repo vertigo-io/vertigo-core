@@ -39,7 +39,8 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * @author pchretien
  */
-public final class CollectionsManagerTest extends AbstractTestCaseJU4 {
+//non final, to be overrided for previous lib version
+public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	private static final String Ba_aa = "Ba aa";
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
