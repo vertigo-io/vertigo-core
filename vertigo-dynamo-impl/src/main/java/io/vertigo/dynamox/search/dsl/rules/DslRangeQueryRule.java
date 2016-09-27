@@ -25,6 +25,7 @@ import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
 import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 
@@ -41,8 +42,9 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
 	private static PegRule<List<?>> createMainRule() {
 		final PegRule<PegChoice> queriesRule = PegRules.choice(//"term or fixed")
-				new DslTermQueryRule(), //0
-				new DslFixedQueryRule() //1
+				PegRules.term("*"), //0
+				new DslTermQueryRule(), //1
+				new DslFixedQueryRule() //2
 		);
 
 		return PegRules.sequence(
@@ -65,10 +67,20 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 		final PegChoice startChoice = (PegChoice) parsing.get(1);
 
 		final PegChoice startTermQuery = (PegChoice) parsing.get(2);
-		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getValue();
+		final DslQuery startQueryDefinitions;
+		if (startTermQuery.getChoiceIndex() == 0) {
+			startQueryDefinitions = new DslFixedQuery("*");
+		} else {
+			startQueryDefinitions = (DslQuery) startTermQuery.getValue();
+		}
 
 		final PegChoice endTermQuery = (PegChoice) parsing.get(6);
-		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getValue();
+		final DslQuery endQueryDefinitions;
+		if (endTermQuery.getChoiceIndex() == 0) {
+			endQueryDefinitions = new DslFixedQuery("*");
+		} else {
+			endQueryDefinitions = (DslQuery) endTermQuery.getValue();
+		}
 
 		final PegChoice endChoice = (PegChoice) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
