@@ -108,10 +108,10 @@ public final class TokenManagerImpl implements TokenManager {
 	}
 
 	private String getUserTokenPart() {
-		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		Assertion.checkArgument(userSessionOption.isPresent(), "UserSession is mandatory for security token");
+		final Optional<UserSession> userSessionOptional = securityManager.getCurrentUserSession();
+		Assertion.checkArgument(userSessionOptional.isPresent(), "UserSession is mandatory for security token");
 		//-----
-		return userSessionOption.get().getSessionUUID().toString();
+		return userSessionOptional.get().getSessionUUID().toString();
 	}
 
 }
