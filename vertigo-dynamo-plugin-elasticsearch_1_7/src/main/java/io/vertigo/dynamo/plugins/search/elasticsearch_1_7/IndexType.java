@@ -29,7 +29,7 @@ final class IndexType {
 	private static final String INDEX_STORED = "stored";
 	private static final String INDEX_NOT_STORED = "notStored";
 
-	private final String indexAnalyzer;
+	private final Optional<String> indexAnalyzer;
 	private final String indexDataType;
 	private final boolean indexStored;
 
@@ -55,7 +55,7 @@ final class IndexType {
 		// par convention l'indexType du domain => l'analyzer de l'index
 		// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 		final String[] indexTypeArray = indexType.split(":", 3);
-		indexAnalyzer = indexTypeArray[0]; //le premier est toujours l'analyzer
+		indexAnalyzer = indexTypeArray[0].isEmpty() ? Optional.empty() : Optional.of(indexTypeArray[0]); //le premier est toujours l'analyzer
 		//le deuxième est optionnel et soit indexDataType, soit le indexStored
 		final String defaultIndexType = domain.getDataType().name().toLowerCase(Locale.ENGLISH);
 		final String secondParam = indexTypeArray.length >= 2 ? indexTypeArray[1] : defaultIndexType;
@@ -97,7 +97,7 @@ final class IndexType {
 		}
 	}
 
-	public String getIndexAnalyzer() {
+	public Optional<String> getIndexAnalyzer() {
 		return indexAnalyzer;
 	}
 

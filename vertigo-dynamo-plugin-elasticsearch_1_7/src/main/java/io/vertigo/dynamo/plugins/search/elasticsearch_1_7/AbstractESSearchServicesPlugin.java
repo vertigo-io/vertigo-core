@@ -325,9 +325,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
-		typeMapping
-				.field("type", indexType.getIndexDataType())
-				.field("analyzer", indexType.getIndexAnalyzer());
+		typeMapping.field("type", indexType.getIndexDataType());
+		if (indexType.getIndexAnalyzer().isPresent()) {
+			typeMapping.field("analyzer", indexType.getIndexAnalyzer().get());
+		}
 	}
 
 	private void markToOptimize(final SearchIndexDefinition indexDefinition) {
