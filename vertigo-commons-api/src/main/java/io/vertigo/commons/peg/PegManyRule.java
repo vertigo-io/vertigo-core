@@ -63,15 +63,15 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 		return expression;
 	}
 
-	private boolean isEmptyAccepted() {
+	protected boolean isEmptyAccepted() {
 		return zeroAccepted;
 	}
 
-	private boolean isRepeat() {
+	protected boolean isRepeat() {
 		return repeat;
 	}
 
-	private PegRule<R> getRule() {
+	protected PegRule<R> getRule() {
 		return rule;
 	}
 

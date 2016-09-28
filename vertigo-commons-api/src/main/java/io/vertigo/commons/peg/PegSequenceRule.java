@@ -61,6 +61,10 @@ final class PegSequenceRule implements PegRule<List<?>> {
 		return expression;
 	}
 
+	final List<PegRule<?>> getRules() {
+		return rules;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public PegResult<List<?>> parse(final String text, final int start) throws PegNoMatchFoundException {

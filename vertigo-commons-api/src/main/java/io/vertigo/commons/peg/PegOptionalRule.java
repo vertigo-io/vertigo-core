@@ -51,6 +51,10 @@ final class PegOptionalRule<R> implements PegRule<Optional<R>> {
 		return expression;
 	}
 
+	protected PegRule<R> getRule() {
+		return rule;
+	}
+
 	@Override
 	public PegResult<Optional<R>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		try {

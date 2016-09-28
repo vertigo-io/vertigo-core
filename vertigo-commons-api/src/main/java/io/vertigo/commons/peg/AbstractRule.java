@@ -39,7 +39,6 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 		this.innerRule = mainRule;
 		this.mainRule = innerRule;
 		this.expression = mainRule.getExpression();
-		PegRules.wrapped(this, innerRule);
 	}
 
 	protected AbstractRule(final PegRule<M> mainRule, final String ruleName) {

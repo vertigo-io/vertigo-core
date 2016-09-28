@@ -57,7 +57,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		return expression;
 	}
 
-	private final List<PegRule<?>> getRules() {
+	final List<PegRule<?>> getRules() {
 		return rules;
 	}
 
@@ -68,7 +68,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		for (int choiceIndex = 0; choiceIndex < rules.size(); choiceIndex++) {
 			subParsers.add(rules.get(choiceIndex).createParser());
 		}
-
+	
 		return (text, start) -> {
 			//Règle ayant été le plus profond
 			PegNoMatchFoundException best = null;
