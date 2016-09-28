@@ -14,12 +14,12 @@ import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegWordRule.Mode;
 
 public final class PegRules {
-	private static final Map<PegRule, String> ALL_RULES = Collections.synchronizedMap(new LinkedHashMap<>());
+	private static final Map<String, String> ALL_RULES = Collections.synchronizedMap(new LinkedHashMap<>());
 	private static final Map<String, PegNamedRule> NAMED_RULES = Collections.synchronizedMap(new LinkedHashMap<>());
 
 	public static <R> PegRule<R> named(final AbstractRule namedRule, final PegRule<R> innerRule, final String ruleName) {
 		final PegNamedRule<R> result = new PegNamedRule<>(innerRule, ruleName);
-		ALL_RULES.put(namedRule, "NonTerminal('" + ruleName + "', '#" + ruleName + "')");
+		ALL_RULES.put(namedRule.getExpression(), "NonTerminal('" + ruleName + "', '#" + ruleName + "')");
 		//ALL_RULES.put(result, "NonTerminal('" + ruleName + "', '#" + ruleName + "')");
 		NAMED_RULES.put(ruleName, result);
 		return populateGramar(result, () -> "NonTerminal('" + ruleName + "', '#" + ruleName + "')");
@@ -96,14 +96,14 @@ public final class PegRules {
 	}
 
 	public static <M> PegRule<M> populateGramar(final PegRule<M> rule, final Supplier<String> expressionHtml) {
-		ALL_RULES.put(rule, "Calculating");
-		ALL_RULES.put(rule, expressionHtml.get());
+		ALL_RULES.put(rule.getExpression(), "Calculating");
+		ALL_RULES.put(rule.getExpression(), expressionHtml.get());
 		//System.out.println(rule + " -> " + readGramar(rule));
 		return rule;
 	}
 
 	private static String readGramar(final PegRule<?> rule) {
-		final String result = ALL_RULES.get(rule);
+		final String result = ALL_RULES.get(rule.getExpression());
 		if (result == null) {
 			System.out.println("Not found : " + rule + " " + rule.getExpression());
 		}
