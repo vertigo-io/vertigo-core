@@ -80,13 +80,9 @@ final class DslSyntaxRules {
 
 	private static class DepthOverflowRule implements PegRule<Void> {
 
-		DepthOverflowRule() {
-			PegRules.populateGramar(this, () -> "<depth overflow>");
-		}
-
 		@Override
 		public String getExpression() {
-			return "<depth overflow>";
+			return "'depthOverflow'";
 		}
 
 		@Override
