@@ -1,9 +1,6 @@
 package io.vertigo.commons.peg;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -11,13 +8,13 @@ import io.vertigo.lang.Assertion;
 
 public final class PegRulesHtmlRenderer {
 
-	private final Map<PegRule, String> ALL_RULES = Collections.synchronizedMap(new LinkedHashMap<>());
-	private final Map<String, PegNamedRule> NAMED_RULES = Collections.synchronizedMap(new LinkedHashMap<>());
+	private int depth = 1;
+	private final Map<PegRule, String> ALL_RULES = new LinkedHashMap<>();
+	private final Map<Integer, Map<String, PegGrammarRule>> NAMED_RULES = new LinkedHashMap<>();
 
-	private void named(final PegNamedRule namedRule) {
-		Assertion.checkState(!NAMED_RULES.containsKey(namedRule.toString()), "{0} already knowned", namedRule.toString());
-		NAMED_RULES.put(namedRule.toString(), namedRule);
-		populateGramar(namedRule, "NonTerminal('" + namedRule.getRuleName() + "', '#" + namedRule.toString() + "')");
+	private void grammar(final PegGrammarRule grammarRule) {
+		NAMED_RULES.get(depth).put(grammarRule.getRuleName(), grammarRule);
+		populateGramar(grammarRule, "NonTerminal('" + grammarRule.getRuleName() + "', '#" + grammarRule.getRuleName() + "')");
 	}
 
 	private void optional(final PegOptionalRule rule) {
@@ -29,21 +26,19 @@ public final class PegRulesHtmlRenderer {
 	}
 
 	private void sequence(final PegSequenceRule rule) {
-		populateGramar(rule,
-				"Sequence(" +
-						(rule.getRules().isEmpty() ? "Skip()" : rule.getRules().stream()
-								.map(subRule -> readGramar(subRule))
-								.collect(Collectors.joining(", ")))
-						+ ")");
+		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : "Sequence("
+				+ rule.getRules().stream()
+						.map(subRule -> readGramar(subRule))
+						.collect(Collectors.joining(", "))
+				+ ")");
 	}
 
 	private void choice(final PegChoiceRule rule) {
-		populateGramar(rule,
-				"Choice(0," +
-						(rule.getRules().isEmpty() ? "Skip()" : rule.getRules().stream()
-								.map(subRule -> readGramar(subRule))
-								.collect(Collectors.joining(", ")))
-						+ ")");
+		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : "Choice(0,"
+				+ rule.getRules().stream()
+						.map(subRule -> readGramar(subRule))
+						.collect(Collectors.joining(", "))
+				+ ")");
 	}
 
 	private void many(final PegManyRule<?> rule) {
@@ -55,11 +50,11 @@ public final class PegRulesHtmlRenderer {
 	}
 
 	private void word(final PegWordRule rule) {
-		populateGramar(rule,
-				"NonTerminal('" + rule.getExpression() + "')");
+		populateGramar(rule, "NonTerminal('" + rule.getExpression() + "')");
 	}
 
 	private void populateGramar(final PegRule<?> rule, final String expressionHtml) {
+		Assertion.when(ALL_RULES.containsKey(rule)).check(() -> expressionHtml.equals(ALL_RULES.get(rule)), "{0} already knowned but different", rule.toString());
 		ALL_RULES.put(rule, expressionHtml);
 	}
 
@@ -74,16 +69,26 @@ public final class PegRulesHtmlRenderer {
 
 	public String render(final PegRule<?> rootRule) {
 		detectGrammar(rootRule);
-		final List<PegNamedRule> rules = new ArrayList<>(NAMED_RULES.values());
-		return rules
+		//final List<String> ruleNames = new ArrayList<>(NAMED_RULES.keySet());
+		//Collections.sort(ruleNames, (o1, o2) -> o1.substring(0, 2).compareTo(o2.substring(0, 2)));
+		//final List<PegGrammarRule> rules = new ArrayList<>();
+		//for (final String namedRule : ruleNames) {
+		//	rules.add(NAMED_RULES.get(namedRule));
+		//}
+		final Map<String, PegGrammarRule> rules = new LinkedHashMap();
+		for (final Map<String, PegGrammarRule> entry : NAMED_RULES.values()) {
+			rules.putAll(entry);
+		}
+
+		return rules.entrySet()
 				.stream()
-				.map(rule -> new StringBuilder()
-						.append("<h1 id='").append(rule.toString()).append("'>").append(rule.getRuleName()).append("</h1>\n")
+				.map(entry -> new StringBuilder()
+						.append("<h1 id='").append(entry.getValue().getRuleName()).append("'>").append(entry.getValue().getRuleName()).append("</h1>\n")
 						//.append("<div>").append(rule.getRule().getExpression()).append("</div>\n")
 						//.append("<div>").append(readGramar(rule.getRule())).append("</div>\n")
 						.append("<script>\n")
 						.append("Diagram(\n\t")
-						.append(readGramar(rule.getRule()))
+						.append(readGramar(entry.getValue().getRule()))
 						.append("\n).addTo();\n")
 						.append("</script>\n\n")
 						.toString())
@@ -91,28 +96,38 @@ public final class PegRulesHtmlRenderer {
 	}
 
 	private void detectGrammar(final PegRule<?> rule) {
-		if (rule instanceof PegChoiceRule) {
-			choice((PegChoiceRule) rule);
-		} else if (rule instanceof PegManyRule) {
-			many((PegManyRule) rule);
-		} else if (rule instanceof PegNamedRule) {
-			named((PegNamedRule) rule);
-			detectGrammar(((PegNamedRule) rule).getRule());
-		} else if (rule instanceof PegOptionalRule) {
-			optional((PegOptionalRule) rule);
-		} else if (rule instanceof PegSequenceRule) {
-			sequence((PegSequenceRule) rule);
-		} else if (rule instanceof PegTermRule) {
-			term((PegTermRule) rule);
-		} else if (rule instanceof PegWhiteSpaceRule) {
-			whiteSpace((PegWhiteSpaceRule) rule);
-		} else if (rule instanceof PegWordRule) {
-			word((PegWordRule) rule);
-		} else if (rule instanceof AbstractRule) {
-			detectGrammar(((AbstractRule) rule).getMainRule());
-			ALL_RULES.put(rule, readGramar(((AbstractRule) rule).getMainRule()));
-		} else {
-			ALL_RULES.put(rule, rule.getExpression());
+		try {
+			depth++;
+			if (!NAMED_RULES.containsKey(depth)) {
+				NAMED_RULES.put(depth, new LinkedHashMap<>());
+			}
+			if (rule instanceof PegChoiceRule) {
+				choice((PegChoiceRule) rule);
+			} else if (rule instanceof PegManyRule) {
+				many((PegManyRule) rule);
+			} else if (rule instanceof PegGrammarRule) {
+				grammar((PegGrammarRule) rule);
+				detectGrammar(((PegGrammarRule) rule).getRule());
+			} else if (rule instanceof PegOptionalRule) {
+				optional((PegOptionalRule) rule);
+			} else if (rule instanceof PegSequenceRule) {
+				sequence((PegSequenceRule) rule);
+			} else if (rule instanceof PegTermRule) {
+				term((PegTermRule) rule);
+			} else if (rule instanceof PegWhiteSpaceRule) {
+				whiteSpace((PegWhiteSpaceRule) rule);
+			} else if (rule instanceof PegWordRule) {
+				word((PegWordRule) rule);
+			} else if (rule instanceof AbstractRule) {
+				detectGrammar(((AbstractRule) rule).getMainRule());
+				//populateGramar(rule, "NonTerminal('" + rule.getClass().getSimpleName() + "', '#" + rule.toString() + "')");
+				populateGramar(rule, readGramar(((AbstractRule) rule).getMainRule()));
+			} else {
+				populateGramar(rule, rule.getExpression());
+			}
+		} finally {
+			depth--;
 		}
+
 	}
 }
