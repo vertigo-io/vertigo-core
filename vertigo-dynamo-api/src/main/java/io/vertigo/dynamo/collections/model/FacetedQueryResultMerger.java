@@ -141,11 +141,11 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		final Optional<FacetedQuery> facetedQuery = firstResult.getFacetedQuery();
 		final DtList<R> results = new DtList<>(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
 		final S source = firstResult.getSource();
-		final FacetDefinition clusterFacetDefinition = null;
+		FacetDefinition clusterFacetDefinition = null;
 
 		if (facetDefinitionNameOpt.isPresent()) {
-			final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
-			final Facet clusterFacet = new Facet(facetDefinition, clustersCount);
+			clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
+			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);
 		}
 		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, Optional.ofNullable(clusterFacetDefinition), clustersDtc, highlights, source);
