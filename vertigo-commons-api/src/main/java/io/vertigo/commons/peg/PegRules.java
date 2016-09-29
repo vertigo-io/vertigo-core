@@ -10,7 +10,7 @@ import io.vertigo.commons.peg.PegWordRule.Mode;
 public final class PegRules {
 
 	public static <R> PegRule<R> named(final AbstractRule namedRule, final PegRule<R> innerRule, final String ruleName) {
-		return new PegNamedRule<>(innerRule, ruleName);
+		return new PegGrammarRule<>(innerRule, ruleName);
 	}
 
 	public static <R> PegRule<Optional<R>> optional(final PegRule<R> rule) {

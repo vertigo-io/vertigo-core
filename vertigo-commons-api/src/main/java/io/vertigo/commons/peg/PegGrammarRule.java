@@ -26,12 +26,12 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  * @param <R> Type of the product text parsing
  */
-final class PegNamedRule<R> implements PegRule<R> {
+final class PegGrammarRule<R> implements PegRule<R> {
 
 	private final String ruleName;
 	private final PegRule<R> mainRule;
 
-	PegNamedRule(final PegRule<R> mainRule, final String ruleName) {
+	PegGrammarRule(final PegRule<R> mainRule, final String ruleName) {
 		Assertion.checkNotNull(mainRule, "MainRule is required");
 		Assertion.checkArgNotEmpty(ruleName, "Name is required");
 		//-----
