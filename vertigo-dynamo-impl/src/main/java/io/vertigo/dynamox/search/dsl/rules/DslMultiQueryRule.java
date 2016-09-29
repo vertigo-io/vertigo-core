@@ -44,7 +44,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 	}
 
 	private DslMultiQueryRule(final int level) {
-		super(createMainRule(level), "multiQuery");
+		super(createMainRule(level), "multiQuery-" + level);
 	}
 
 	private static PegRule<List<?>> createMainRule(final int level) {
