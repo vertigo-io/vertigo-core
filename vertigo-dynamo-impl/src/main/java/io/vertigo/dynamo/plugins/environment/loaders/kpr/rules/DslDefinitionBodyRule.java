@@ -52,7 +52,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 	 * Constructeur.
 	 */
 	public DslDefinitionBodyRule(final DslEntity entity) {
-		super(createMainRule(entity), entity.getName());
+		super(createMainRule(entity), entity.getName() + "Body");
 	}
 
 	private static PegRule<List<?>> createMainRule(final DslEntity entity) {

@@ -43,7 +43,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	 * @param grammar the grammar
 	 */
 	public DslDynamicDefinitionRule(final String operation, final DslGrammar grammar) {
-		super(createMainRule(operation, grammar));
+		super(createMainRule(operation, grammar), operation + "Definitions");
 	}
 
 	private static PegRule<PegChoice> createMainRule(final String operation, final DslGrammar grammar) {

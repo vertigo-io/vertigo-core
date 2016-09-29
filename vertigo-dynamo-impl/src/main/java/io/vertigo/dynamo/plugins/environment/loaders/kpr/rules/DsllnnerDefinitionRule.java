@@ -36,7 +36,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	private final DslEntity entity;
 
 	DslInnerDefinitionRule(final String entityName, final DslEntity entity) {
-		super(createMainRule(entityName, entity));
+		super(createMainRule(entityName, entity), entityName);
 		this.entityName = entityName;
 		this.entity = entity;
 	}
