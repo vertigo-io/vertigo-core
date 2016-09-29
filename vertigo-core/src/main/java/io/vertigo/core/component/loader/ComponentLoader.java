@@ -138,7 +138,7 @@ public final class ComponentLoader {
 			} else {
 				//Il s'agit d'un plugin
 				final PluginConfig pluginConfig = pluginConfigById.get(id);
-				final Plugin plugin = createPlugin(componentSpace, paramManagerOption, pluginConfig);
+				final Plugin plugin = createPluginWithOptions(componentSpace, paramManagerOption, pluginConfig);
 				// 2.c. On enregistre le plugin en tant que composant
 				componentSpace.registerComponent(pluginConfig.getId(), plugin);
 			}
@@ -196,7 +196,7 @@ public final class ComponentLoader {
 		final Component instance = createComponent(paramManagerOption, componentContainer, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig.getImplClass(), aspects.values());
 		if (!joinPoints.isEmpty()) {
 			return aopPlugin.create(instance, joinPoints);
 		}
@@ -214,6 +214,18 @@ public final class ComponentLoader {
 		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
 		return component;
+	}
+
+	private Plugin createPluginWithOptions(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
+		// 1. An instance is created
+		final Plugin instance = createPlugin(componentContainer, paramManagerOption, pluginConfig);
+
+		//2. AOP , a new instance is created when aspects are injected in the previous instance
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(pluginConfig.getImplClass(), aspects.values());
+		if (!joinPoints.isEmpty()) {
+			return Plugin.class.cast(aopPlugin.create(instance, joinPoints));
+		}
+		return instance;
 	}
 
 	private static Plugin createPlugin(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {

@@ -31,7 +31,7 @@ public final class TenMoreAspect implements Aspect {
 	}
 
 	@Override
-	public Class<?> getAnnotationType() {
+	public Class<TenMore> getAnnotationType() {
 		return TenMore.class;
 	}
 }

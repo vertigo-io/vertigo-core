@@ -25,9 +25,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectAnnotation;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -51,24 +53,29 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static Map<Method, List<Aspect>> createJoinPoints(final ComponentConfig componentConfig, final Collection<Aspect> aspects) {
-		Assertion.checkNotNull(componentConfig);
+	static Map<Method, List<Aspect>> createJoinPoints(final Class<?> implClass, final Collection<Aspect> aspects) {
+		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(aspects);
 		//-----
 		final Map<Method, List<Aspect>> joinPoints = new HashMap<>();
+
+		final Collection<Method> matchingMethods = getMethodsMatchingAnyAspect(implClass);
+
 		for (final Aspect aspect : aspects) {
 
 			// On récupère ttes les méthodes matchant pour l'aspect concerné
 			// puis on crée la liste des intercepteurs
-			for (final Method method : getMatchingMethods(aspect, componentConfig.getImplClass())) {
+			for (final Method method : getMatchingMethods(aspect, implClass)) {
 				List<Aspect> interceptors = joinPoints.get(method);
 				if (interceptors == null) {
 					interceptors = new ArrayList<>();
 					joinPoints.put(method, interceptors);
 				}
 				interceptors.add(aspect);
+				matchingMethods.remove(method);
 			}
 		}
+		Assertion.checkState(matchingMethods.isEmpty(), "An aspect may be missing : Unresolved methods join points on aspects : {0}", matchingMethods);
 		return joinPoints;
 	}
 
@@ -77,29 +84,33 @@ final class ComponentAspectUtil {
 	 * AspectConfig defines strategy to find these methods in a class.
 	 */
 	private static Collection<Method> getMatchingMethods(final Aspect aspect, final Class<?> implClass) {
-		final Class<?> annotationType = aspect.getAnnotationType();
-		final Collection<Method> methods = new ArrayList<>();
-		// aspect au niveau classe
-		for (final Annotation annotation : implClass.getAnnotations()) {
-			if (annotation.annotationType().equals(annotationType)) {
-				for (final Method method : implClass.getMethods()) {
-					// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
-					if (!Object.class.equals(method.getDeclaringClass())) {
-						//On ne veut pas des méthodes de Object
-						methods.add(method);
-					}
-				}
-			}
-		}
+		final Class<Annotation> annotationType = (Class<Annotation>) aspect.getAnnotationType();
 
-		// aspect au niveau méthode
-		for (final Method method : implClass.getMethods()) {
-			for (final Annotation annotation : method.getAnnotations()) {
-				if (annotation.annotationType().equals(annotationType)) {
-					methods.add(method);
-				}
-			}
-		}
-		return methods;
+		return Stream.concat(
+				Stream.of(implClass)
+						// aspect au niveau classe
+						.filter(myClass -> myClass.isAnnotationPresent(annotationType))
+						.flatMap(myClass -> Stream.of(myClass.getMethods()))
+						//methods from Object are excuded
+						.filter(method -> !Object.class.equals(method.getDeclaringClass())),
+				// aspect au niveau méthode
+				Stream.of(implClass.getMethods())
+						.filter(method -> method.isAnnotationPresent(annotationType)))
+				.collect(Collectors.toList());
+	}
+
+	private static Collection<Method> getMethodsMatchingAnyAspect(final Class<?> implClass) {
+		return Stream.concat(
+				Stream.of(implClass)
+						// aspect au niveau classe
+						.filter(myClass -> Stream.of(myClass.getAnnotations())
+								.anyMatch(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class)))
+						.flatMap(myClass -> Stream.of(myClass.getMethods()))
+						.filter(method -> !Object.class.equals(method.getDeclaringClass())),
+				// aspect au niveau méthode
+				Stream.of(implClass.getMethods())
+						.filter(method -> Stream.of(method.getAnnotations())
+								.anyMatch(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))))
+				.collect(Collectors.toList());
 	}
 }

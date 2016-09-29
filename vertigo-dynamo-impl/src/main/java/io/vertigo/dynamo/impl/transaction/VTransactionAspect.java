@@ -57,7 +57,7 @@ public final class VTransactionAspect implements Aspect {
 	}
 
 	@Override
-	public Class<?> getAnnotationType() {
+	public Class<Transactional> getAnnotationType() {
 		return Transactional.class;
 	}
 }

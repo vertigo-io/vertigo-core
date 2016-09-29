@@ -18,32 +18,32 @@
  */
 package io.vertigo.core.component.aop;
 
-import java.lang.annotation.Annotation;
+import java.util.Properties;
 
-/**
- * Aspect.
- *
- * use cases
- *  - log
- *  - monitoring
- *  - transaction
- *
- * @author pchretien
- */
-public interface Aspect {
+import org.junit.Test;
 
-	/**
-	 * Invoke method with this current aspect.
-	 * Apply aspect then call sub method
-	 * @param args method arguments
-	 * @param methodInvocation method invocation object
-	 * @return sub-method return
-	 */
-	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation);
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 
-	/**
-	 * returns Annotation that tagged any method or class concerned by this aspect
-	 * @return Annotation type.
-	 */
-	Class<? extends Annotation> getAnnotationType();
+public final class Aspect2Test {
+
+	@Test(expected = IllegalStateException.class)
+	public final void testLoadComponentsWithoutDeclaredAspects() {
+		try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
+			//nop
+		}
+	}
+
+	private AppConfig buildAppConfig() {
+		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
+		return new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), getManagersXmlFileName())
+				.beginBoot().silently().endBoot().build();
+	}
+
+	private static String[] getManagersXmlFileName() {
+		return new String[] { "./managers-without-aspects-test.xml", };
+	}
+
 }
