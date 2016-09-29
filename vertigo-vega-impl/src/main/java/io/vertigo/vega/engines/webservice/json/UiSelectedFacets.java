@@ -48,7 +48,7 @@ public final class UiSelectedFacets extends HashMap<String, String> {
 					FacetDefinition.class);
 			if (facetDefinition.isRangeFacet()) {
 				for (final FacetValue facet : facetDefinition.getFacetRanges()) {
-					if (facet.getLabel().getDisplay().equals(entry.getValue())) {
+					if (facet.getCode().equals(entry.getValue())) {
 						listFilters.add(facet.getListFilter());
 						break;
 					}
