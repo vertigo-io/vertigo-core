@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 
@@ -50,14 +49,15 @@ public final class ComponentConfig {
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(final String id, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		Assertion.when(apiClass.isPresent()).check(() -> Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
-		id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		this.id = id;
 		this.elastic = elastic;
 		//-----
 		this.apiClass = apiClass;

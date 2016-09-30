@@ -21,6 +21,7 @@ package io.vertigo.app.config;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
@@ -35,7 +36,7 @@ import io.vertigo.util.StringUtil;
   *
  * @author npiedeloup, pchretien
  */
-public final class PluginConfigBuilder implements Builder<PluginConfig> {
+public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final Map<String, String> myParams = new HashMap<>();
 	private final ModuleConfigBuilder myModuleConfigBuilder;
@@ -66,7 +67,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 
 	/*
 	 * We are looking for the type of the plugin.
-	 * This type is the first objector interface that inherits from then 'plugin' interface. 
+	 * This type is the first objector interface that inherits from then 'plugin' interface.
 	 */
 	private static String getType(final Class<? extends Plugin> pluginImplClass) {
 		//We are seeking the first and unique Object that extends Plugin.
@@ -105,7 +106,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 
 	/**
 	 * Ends this config of plugin.
-	 * @return the builder of the module 
+	 * @return the builder of the module
 	 */
 	public ModuleConfigBuilder endPlugin() {
 		return myModuleConfigBuilder;
@@ -113,11 +114,11 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 
 	/** {@inheritDoc} */
 	@Override
-	public PluginConfig build() {
+	public ComponentConfig build() {
 		Assertion.checkNotNull(myIndex, "an index is required to define an id");
 		//-----
 		//By Convention only the second plugin of a defined type is tagged by its index #nn
 		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
-		return new PluginConfig(pluginId, myPluginImplClass, myParams);
+		return new ComponentConfig(pluginId, Optional.empty(), myPluginImplClass, false, myParams);
 	}
 }

@@ -108,10 +108,6 @@ public final class AppConfig {
 			printComponent(out, moduleName, componentClassName, null);
 			moduleName = null;
 		}
-		for (final PluginConfig pluginConfig : moduleConfig.getPluginConfigs()) {
-			final String pluginClassName = pluginConfig.getImplClass().getSimpleName();
-			printComponent(out, moduleName, null, pluginClassName);
-		}
 	}
 
 	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {

@@ -44,20 +44,17 @@ public final class ModuleConfig {
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
-	private final List<PluginConfig> plugins;
 
 	ModuleConfig(final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<DefinitionResourceConfig> definitionResourceConfigs,
 			final List<ComponentConfig> componentConfigs,
-			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
-		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
 		//-----
@@ -65,7 +62,6 @@ public final class ModuleConfig {
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
-		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
@@ -87,13 +83,6 @@ public final class ModuleConfig {
 
 	public List<AspectConfig> getAspectConfigs() {
 		return aspects;
-	}
-
-	/**
-	 * @return Liste des configurations de plugins
-	 */
-	public List<PluginConfig> getPluginConfigs() {
-		return plugins;
 	}
 
 	/**

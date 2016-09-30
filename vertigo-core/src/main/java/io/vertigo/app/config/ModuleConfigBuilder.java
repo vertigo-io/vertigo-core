@@ -222,8 +222,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return pluginConfigBuilder;
 	}
 
-	private List<PluginConfig> buildPluginConfigs() {
-		final List<PluginConfig> pluginConfigs = new ArrayList<>();
+	private List<ComponentConfig> buildPluginConfigs() {
+		final List<ComponentConfig> pluginConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
 		int index = 1;
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
@@ -250,20 +250,19 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 			moduleRules.add(new APIModuleRule());
 		}
 		//-----
-		final List<ComponentConfig> componentConfig = new ArrayList<>();
+		final List<ComponentConfig> componentConfigs = new ArrayList<>();
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
-			componentConfig.add(componentConfigBuilder.build());
+			componentConfigs.add(componentConfigBuilder.build());
 		}
 
 		//creation of the pluginConfigs
-		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
+		componentConfigs.addAll(buildPluginConfigs());
 
 		final ModuleConfig moduleConfig = new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
 				myDefinitionResourceConfigs,
-				componentConfig,
-				pluginConfigs,
+				componentConfigs,
 				myAspectConfigs,
 				moduleRules);
 

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
@@ -69,7 +70,8 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		return new ComponentConfig(apiClass, implClass, elastic, myParams);
+		final String id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		return new ComponentConfig(id, apiClass, implClass, elastic, myParams);
 	}
 
 	/**

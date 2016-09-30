@@ -20,18 +20,17 @@ package io.vertigo.core.component.loader;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.PluginConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
@@ -51,7 +50,7 @@ import io.vertigo.lang.VSystemException;
 public final class ComponentLoader {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
-	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
+	private final List<Aspect> aspects = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -107,18 +106,11 @@ public final class ComponentLoader {
 		}
 
 		//Map des composants définis par leur id
-		final Map<String, ComponentConfig> componentConfigById = new HashMap<>();
-		final Map<String, PluginConfig> pluginConfigById = new HashMap<>();
+		final Map<String, ComponentConfig> componentConfigById = moduleConfig.getComponentConfigs()
+				.stream()
+				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
+				.collect(Collectors.toMap(ComponentConfig::getId, Function.identity()));
 
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			componentConfigById.put(componentConfig.getId(), componentConfig);
-			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet());
-		}
-
-		for (final PluginConfig pluginConfig : moduleConfig.getPluginConfigs()) {
-			pluginConfigById.put(pluginConfig.getId(), pluginConfig);
-			reactor.addComponent(pluginConfig.getId(), pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
-		}
 		//Comment trouver des plugins orphenlins ?
 
 		final List<String> ids = reactor.proceed();
@@ -129,30 +121,28 @@ public final class ComponentLoader {
 
 		for (final String id : ids) {
 			if (componentConfigById.containsKey(id)) {
-				//Si il s'agit d'un composant
+				//Si il s'agit d'un composant (y compris plugin)
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
 				final Component component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
-			} else {
-				//Il s'agit d'un plugin
-				final PluginConfig pluginConfig = pluginConfigById.get(id);
-				final Plugin plugin = createPluginWithOptions(componentSpace, paramManagerOption, pluginConfig);
-				// 2.c. On enregistre le plugin en tant que composant
-				componentSpace.registerComponent(pluginConfig.getId(), plugin);
 			}
 		}
 
 		//---
 		//--Search for unuseds plugins
-		// We are removing all used keys from the map of PluginConfig, and we check if we can find almost one plugin of the component.
-		for (final String pluginId : componentContainer.getUsedKeys()) {
-			pluginConfigById.remove(pluginId);
-		}
+		final List<String> unusedPluginIds = moduleConfig.getComponentConfigs()
+				.stream()
+				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
+				//only plugins are considered
+				.map(pluginConfig -> pluginConfig.getId())
+				//used keys are removed
+				.filter(pluginId -> !componentContainer.getUsedKeys().contains(pluginId))
+				.collect(Collectors.toList());
 
-		if (!pluginConfigById.isEmpty()) {
-			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", pluginConfigById.values(), moduleConfig);
+		if (!unusedPluginIds.isEmpty()) {
+			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", unusedPluginIds, moduleConfig);
 		}
 	}
 
@@ -171,69 +161,52 @@ public final class ComponentLoader {
 	private static List<Aspect> findAspects(final Container container, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		final List<Aspect> findAspects = new ArrayList<>();
-		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
-			// création de l'instance du composant
-			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
-			//---
-			Assertion.checkNotNull(aspect.getAnnotationType());
-			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
+		return moduleConfig.getAspectConfigs()
+				.stream()
+				.map(aspectConfig -> createAspect(container, aspectConfig))
+				.collect(Collectors.toList());
+	}
 
-			findAspects.add(aspect);
-		}
-		return findAspects;
+	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
+		// création de l'instance du composant
+		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
+		//---
+		Assertion.checkNotNull(aspect.getAnnotationType());
+		return aspect;
 	}
 
 	private void registerAspect(final Aspect aspect) {
 		Assertion.checkNotNull(aspect);
-		Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
+		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())), "aspect {0} already registered with the same class", aspect.getClass());
+		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())), "aspect {0} already registered with the same annotation", aspect.getClass());
 		//-----
-		aspects.put(aspect.getClass(), aspect);
+		aspects.add(aspect);
 	}
 
-	private Component createComponentWithOptions(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
-		// 1. An instance is created
-		final Component instance = createComponent(paramManagerOption, componentContainer, componentConfig);
-
+	private <C extends Component> C injectAspects(final C instance, final Class implClass) {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig.getImplClass(), aspects.values());
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(implClass, aspects);
 		if (!joinPoints.isEmpty()) {
 			return aopPlugin.create(instance, joinPoints);
 		}
 		return instance;
 	}
 
-	private static Component createComponent(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
-		//		if (componentConfig.isElastic()) {
-		//			return elasticaEngineOption.get().createProxy(componentConfig.getApiClass().get());
-		//		}
-		//---
+	private static <C extends Component> C createInstance(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
-		final Component component = Injector.newInstance(componentConfig.getImplClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
+		final C component = (C) Injector.newInstance(componentConfig.getImplClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in plugin '{1}'", paramsContainer.getUnusedKeys(), componentConfig.getId());
 		return component;
 	}
 
-	private Plugin createPluginWithOptions(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
+	private Component createComponentWithOptions(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
 		// 1. An instance is created
-		final Plugin instance = createPlugin(componentContainer, paramManagerOption, pluginConfig);
+		final Component instance = createInstance(componentContainer, paramManagerOption, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(pluginConfig.getImplClass(), aspects.values());
-		if (!joinPoints.isEmpty()) {
-			return Plugin.class.cast(aopPlugin.create(instance, joinPoints));
-		}
-		return instance;
+		return injectAspects(instance, componentConfig.getImplClass());
 	}
 
-	private static Plugin createPlugin(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final PluginConfig pluginConfig) {
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, pluginConfig.getParams());
-		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
-		//---
-		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in plugin '{1}'", paramsContainer.getUnusedKeys(), pluginConfig.getId());
-		return plugin;
-	}
 }
