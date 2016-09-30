@@ -39,7 +39,7 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 	@Inject
 	public SparkJavaEmbeddedWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix, @Named("port") final int port) {
 		super(apiPrefix);
-		Spark.setPort(port);
+		Spark.port(port);
 		//---
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));

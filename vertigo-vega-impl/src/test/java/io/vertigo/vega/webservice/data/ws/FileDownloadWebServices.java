@@ -61,6 +61,8 @@ public final class FileDownloadWebServices implements WebServices {
 				return "ÔÙæ óñµ°«/";
 			case 4:
 				return "€;_~";
+			case 5:
+				return "你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,;";
 			default:
 				return "";
 		}

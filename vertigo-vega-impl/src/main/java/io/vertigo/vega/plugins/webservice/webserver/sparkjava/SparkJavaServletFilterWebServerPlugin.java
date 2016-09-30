@@ -23,7 +23,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import spark.Access;
+import spark.globalstate.ServletFlag;
 
 /**
  * RoutesRegisterPlugin use to register Spark-java route.
@@ -38,7 +38,7 @@ public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJa
 	public SparkJavaServletFilterWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix) {
 		super(apiPrefix);
 		//-----
-		Access.runFromServlet();
+		ServletFlag.runFromServlet();
 		//must start initialize JavaSpark before registering route, if not Spark will start a standalone Jetty server
 	}
 

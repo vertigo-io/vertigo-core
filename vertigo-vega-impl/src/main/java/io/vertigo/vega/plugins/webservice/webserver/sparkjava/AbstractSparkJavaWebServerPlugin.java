@@ -51,33 +51,39 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(apiPrefix, webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+			final String routePath = convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath());
+			final String acceptType = webServiceDefinition.getAcceptType();
+			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
 				case GET:
-					Spark.get(sparkJavaRoute);
+					Spark.get(routePath, acceptType, sparkJavaRoute);
 					break;
 				case POST:
-					Spark.post(sparkJavaRoute);
+					Spark.post(routePath, acceptType, sparkJavaRoute);
 					break;
 				case PUT:
-					Spark.put(sparkJavaRoute);
+					Spark.put(routePath, acceptType, sparkJavaRoute);
 					break;
 				case PATCH:
-					Spark.patch(sparkJavaRoute);
+					Spark.patch(routePath, acceptType, sparkJavaRoute);
 					break;
 				case DELETE:
-					Spark.delete(sparkJavaRoute);
+					Spark.delete(routePath, acceptType, sparkJavaRoute);
 					break;
 				default:
 					throw new UnsupportedOperationException();
 			}
 			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
-
 		}
 		if (corsProtected) {
 			final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
-			Spark.options(sparkJavaOptionsRoute);
+			Spark.options("*", sparkJavaOptionsRoute);
 		}
+	}
 
+	private static String convertJaxRsPathToSpark(final String path) {
+		return path.replaceAll("\\(", "%28")
+				.replaceAll("\\)", "%29")
+				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

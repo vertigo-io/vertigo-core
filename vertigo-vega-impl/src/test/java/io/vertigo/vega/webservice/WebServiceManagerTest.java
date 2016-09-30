@@ -1301,7 +1301,7 @@ public final class WebServiceManagerTest {
 
 	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(loggedSessionFilter);
-		final String wsUrl = isAuto ? "/test/searchAutoPagined()" : "/test/searchQueryPagined()";
+		final String wsUrl = isAuto ? "/test/_searchAutoPagined" : "/test/_searchQueryPagined";
 		if (top != null) {
 			given.queryParam("top", top);
 		}
@@ -1575,8 +1575,10 @@ public final class WebServiceManagerTest {
 
 	@Test
 	public void testDownloadFileContentType() throws UnsupportedEncodingException {
-		final String[] expectedSimpleNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ%20óñµ°«_.png", "image4?__~.png" };
-		final String[] expectedEncodedNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ óñµ°«_.png", "image4€__~.png" };
+		final String[] expectedSimpleNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ%20óñµ°«_.png", "image4 __~.png",
+				"image5  abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$ {[]}+´¨^~'-_,_.png" };
+		final String[] expectedEncodedNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ óñµ°«_.png", "image4€__~.png",
+				"image5你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,_.png" };
 
 		for (int id = 0; id < expectedSimpleNames.length; id++) {
 			final String expectedSimpleName = expectedSimpleNames[id];
@@ -1584,7 +1586,7 @@ public final class WebServiceManagerTest {
 
 			loggedAndExpect(given().queryParam("id", id))
 					.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-					.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=" + expectedSimpleName + ";filename*=UTF-8''" + expectedEncodedName))
+					.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"" + expectedSimpleName + "\";filename*=UTF-8''" + expectedEncodedName))
 					.header("Content-Length", Matchers.equalTo("27039"))
 					.statusCode(HttpStatus.SC_OK)
 					.when()

@@ -25,22 +25,14 @@ import org.eclipse.jetty.util.MultiPartInputStreamParser;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
-import spark.utils.SparkUtils;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
  * @author npiedeloup
  */
-public final class JettyMultipartCleaner extends Filter {
+public final class JettyMultipartCleaner implements Filter {
 	private static final String JETTY_MULTIPART_INPUT_STREAM = org.eclipse.jetty.server.Request.__MULTIPART_INPUT_STREAM;//"org.eclipse.multipartConfig";
 	private static final Logger LOG = Logger.getLogger(JettyMultipartCleaner.class);
-
-	/**
-	 * Constructor.
-	 */
-	public JettyMultipartCleaner() {
-		super(SparkUtils.ALL_PATHS, "*/*");
-	}
 
 	/** {@inheritDoc} */
 	@Override

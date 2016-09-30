@@ -34,7 +34,7 @@ import spark.Route;
  * Handler of Options preflight request.
  * @author npiedeloup
  */
-public final class SparkJavaOptionsRoute extends Route {
+public final class SparkJavaOptionsRoute implements Route {
 	private static final Logger LOGGER = Logger.getLogger(SparkJavaOptionsRoute.class);
 
 	private final HandlerChain handlerChain;
@@ -44,7 +44,6 @@ public final class SparkJavaOptionsRoute extends Route {
 	 * @param handlerChain handlerChain
 	 */
 	SparkJavaOptionsRoute(final HandlerChain handlerChain) {
-		super("*"); //match all
 		this.handlerChain = handlerChain;
 		//we use a fake webServiceDefinition, to ensure no webservice was called on Options request
 		webServiceCors = new WebServiceDefinitionBuilder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
