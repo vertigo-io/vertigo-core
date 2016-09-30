@@ -57,48 +57,9 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		return expression;
 	}
 
-	final List<PegRule<?>> getRules() {
+	List<PegRule<?>> getRules() {
 		return rules;
 	}
-
-	/** {@inheritDoc} */
-	/*@Override
-	public Parser<PegChoice> createParser() {
-		final List<Parser<?>> subParsers = new ArrayList<>();
-		for (int choiceIndex = 0; choiceIndex < rules.size(); choiceIndex++) {
-			subParsers.add(rules.get(choiceIndex).createParser());
-		}
-	
-		return (text, start) -> {
-			//Règle ayant été le plus profond
-			PegNoMatchFoundException best = null;
-			int bestIndex = -1;
-			for (int choiceIndex = 0; choiceIndex < subParsers.size(); choiceIndex++) {
-				try {
-					final PegResult<?> parserCursor = subParsers.get(choiceIndex).parse(text, start);
-					final int end = parserCursor.getIndex();
-					if (end < bestIndex) {
-						Assertion.checkNotNull(best, "best exception should be set at same time of bestIndex");
-						throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
-					}
-					final PegChoice value = new PegChoice(choiceIndex, parserCursor.getValue());
-					return new PegResult<>(end, value);
-				} catch (final PegNoMatchFoundException e) {
-					//Tant que l'on a des erreurs sur l'évaluation des règles
-					//on recommence jusqu'à trouver la première qui fonctionne.
-					if (e.getIndex() > bestIndex) {
-						bestIndex = e.getIndex();
-						best = e;
-					}
-				}
-			}
-			//Nothing has been found
-			if (best == null) {
-				throw new PegNoMatchFoundException(text, start, null, "No rule found when evalutating  FirstOf : '{0}'", getExpression());
-			}
-			throw best;
-		};
-	}*/
 
 	@Override
 	public PegResult<PegChoice> parse(final String text, final int start) throws PegNoMatchFoundException {
@@ -110,7 +71,8 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 				final int end = parserCursor.getIndex();
 				if (end < bestIndex) {
 					Assertion.checkNotNull(best, "best exception should be set at same time of bestIndex");
-					throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+					//Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+					throw best;
 				}
 				final PegChoice value = new PegChoice(choiceIndex, parserCursor.getValue());
 				return new PegResult<>(end, value);

@@ -58,8 +58,6 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 		return this.getClass().getSimpleName() + innerRule.getExpression().hashCode();
 	}
 
-	//protected abstract PegRule<M> createMainRule();
-
 	/** {@inheritDoc} */
 	@Override
 	public final String getExpression() {

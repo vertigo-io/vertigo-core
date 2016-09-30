@@ -96,7 +96,8 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 			}
 		} catch (final PegNoMatchFoundException e) {
 			best = e;
-			if (best.getIndex() > index) { //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+			if (best.getIndex() > index) {
+				//Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 				throw best;
 			}
 		}

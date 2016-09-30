@@ -47,7 +47,7 @@ final class PegGrammarRule<R> implements PegRule<R> {
 
 	/** {@inheritDoc} */
 	@Override
-	public final PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
+	public PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
 		return mainRule.parse(text, start);
 	}
 
