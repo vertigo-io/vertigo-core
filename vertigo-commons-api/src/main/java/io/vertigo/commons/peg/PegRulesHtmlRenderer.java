@@ -67,20 +67,25 @@ public final class PegRulesHtmlRenderer {
 		return result;
 	}
 
-	public String render(final PegRule<?> rootRule) {
+	public Map<String, String> obtainGrammar(final PegRule<?> rootRule) {
 		detectGrammar(rootRule);
-		final Map<String, PegGrammarRule<?>> rules = new LinkedHashMap<>();
+		final Map<String, String> rules = new LinkedHashMap<>();
 		for (final Map<String, PegGrammarRule<?>> entry : NAMED_RULES.values()) {
-			rules.putAll(entry); //On resoud les conflits de noms en conservant l'ordre des profondeurs.
+			for (final PegGrammarRule<?> pegGrammar : entry.values()) {
+				rules.put(pegGrammar.getRuleName(), readGramar(pegGrammar.getRule())); //On resoud les conflits de noms en conservant l'ordre des profondeurs.
+			}
 		}
+		return rules;
+	}
 
-		return rules.entrySet()
+	public String render(final PegRule<?> rootRule) {
+		return obtainGrammar(rootRule).entrySet()
 				.stream()
 				.map(entry -> new StringBuilder()
-						.append("<h1 id='").append(entry.getValue().getRuleName()).append("'>").append(entry.getValue().getRuleName()).append("</h1>\n")
+						.append("<h1 id='").append(entry.getKey()).append("'>").append(entry.getKey()).append("</h1>\n")
 						.append("<script>\n")
 						.append("Diagram(\n\t")
-						.append(readGramar(entry.getValue().getRule()))
+						.append(entry.getValue())
 						.append("\n).addTo();\n")
 						.append("</script>\n\n")
 						.toString())
