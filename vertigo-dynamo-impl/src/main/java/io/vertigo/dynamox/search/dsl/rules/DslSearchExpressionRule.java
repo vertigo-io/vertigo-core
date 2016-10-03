@@ -30,9 +30,9 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
  * (multiExpression)+
  * @author npiedeloup
  */
-final class DslSearchExpressionRule extends AbstractRule<List<DslMultiExpression>, List<DslMultiExpression>> {
+public final class DslSearchExpressionRule extends AbstractRule<List<DslMultiExpression>, List<DslMultiExpression>> {
 
-	DslSearchExpressionRule() {
+	public DslSearchExpressionRule() {
 		super(createMainRule(), "searchExpression");
 	}
 
