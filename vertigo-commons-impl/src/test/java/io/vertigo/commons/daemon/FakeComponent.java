@@ -20,14 +20,15 @@ package io.vertigo.commons.daemon;
 
 import javax.inject.Inject;
 
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 
-public final class FakeComponent implements Component {
-	int executions = 0;
+public class FakeComponent implements Component {
+	private int executions = 0;
 
 	@Inject
 	public FakeComponent(final DaemonManager daemonManager) {
-		daemonManager.registerDaemon("simple", () -> new SimpleDaemon(), 2);
+		daemonManager.registerDaemon("simple", () -> new SimpleDaemon(this), 2);
 	}
 
 	public int getExecutionCount() {
@@ -42,8 +43,13 @@ public final class FakeComponent implements Component {
 	}
 
 	public static final class SimpleDaemon implements Daemon {
-		@Inject
-		private FakeComponent fakeComponent;
+		private final FakeComponent fakeComponent;
+
+		SimpleDaemon(final FakeComponent fakeComponent) {
+			Assertion.checkNotNull(fakeComponent);
+			//---
+			this.fakeComponent = fakeComponent;
+		}
 
 		/** {@inheritDoc} */
 		@Override
