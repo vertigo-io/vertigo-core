@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.collections;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.DtListFunction;
@@ -28,7 +29,6 @@ import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
@@ -83,14 +83,14 @@ final class DtListProcessorImpl implements DtListProcessor {
 	/** {@inheritDoc} */
 	@Override
 	public DtListProcessor filterByValue(final String fieldName, final Serializable value) {
-		final DtListFilter filter = new DtListValueFilter(fieldName, value);
+		final Predicate<? extends DtObject> filter = new DtListValueFilter(fieldName, value);
 		return add(new FilterFunction(filter));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DtListProcessor filter(final ListFilter listFilter) {
-		final DtListFilter filter = new DtListPatternFilter<>(listFilter.getFilterValue());
+		final Predicate<? extends DtObject> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
 		return add(new FilterFunction<>(filter));
 	}
 
@@ -103,7 +103,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 	/** {@inheritDoc} */
 	@Override
 	public <C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
-		final DtListFilter filter = new DtListRangeFilter(fieldName, min, max, true, true);
+		final Predicate<? extends DtObject> filter = new DtListRangeFilter(fieldName, min, max, true, true);
 		return add(new FilterFunction<>(filter));
 	}
 

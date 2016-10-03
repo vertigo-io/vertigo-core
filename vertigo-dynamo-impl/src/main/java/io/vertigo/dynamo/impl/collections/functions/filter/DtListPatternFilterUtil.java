@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,7 +63,7 @@ public final class DtListPatternFilterUtil {
 		//private constructor
 	}
 
-	static <D extends DtObject> DtListFilter<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
+	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(filterPattern);
 		Assertion.checkNotNull(parsedFilter);
 		Assertion.checkNotNull(dtDefinition);
@@ -105,12 +106,12 @@ public final class DtListPatternFilterUtil {
 		return Optional.of(groups);
 	}
 
-	private static <D extends DtObject> DtListFilter<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
+	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final Optional<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
 		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.orElse(null));
 	}
 
-	private static <D extends DtObject> DtListFilter<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
+	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final boolean isMinInclude = "[".equals(parsedFilter[2]);
 		final Optional<Comparable> minValue = convertToComparable(parsedFilter[3], dataType, true);
 		final Optional<Comparable> maxValue = convertToComparable(parsedFilter[4], dataType, true);

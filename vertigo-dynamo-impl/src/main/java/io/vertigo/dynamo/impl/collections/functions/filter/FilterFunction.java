@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import java.util.function.Predicate;
+
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -28,9 +30,9 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class FilterFunction<D extends DtObject> implements DtListFunction<D> {
-	private final DtListFilter<D> filter;
+	private final Predicate<D> filter;
 
-	public FilterFunction(final DtListFilter<D> filter) {
+	public FilterFunction(final Predicate<D> filter) {
 		Assertion.checkNotNull(filter);
 		//-----
 		this.filter = filter;
@@ -41,11 +43,10 @@ public final class FilterFunction<D extends DtObject> implements DtListFunction<
 		Assertion.checkNotNull(dtc);
 		//-----
 		final DtList<D> filteredDtc = new DtList<>(dtc.getDefinition());
-		for (final D dto : dtc) {
-			if (filter.accept(dto)) {
-				filteredDtc.add(dto);
-			}
-		}
+		dtc
+				.stream()
+				.filter(filter)
+				.forEach(dto -> filteredDtc.add(dto));
 		return filteredDtc;
 	}
 }

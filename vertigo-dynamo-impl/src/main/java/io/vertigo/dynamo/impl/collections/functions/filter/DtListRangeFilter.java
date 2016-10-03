@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -33,7 +34,7 @@ import io.vertigo.lang.Assertion;
  * @param <D> Type du DtObject
  * @param <C> Type du champs filtré
  */
-public final class DtListRangeFilter<D extends DtObject, C extends Comparable> implements DtListFilter<D>, Serializable {
+public final class DtListRangeFilter<D extends DtObject, C extends Comparable> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = 3469510250178487305L;
 	/** Nom du champ. */
 	private final String fieldName;
@@ -78,7 +79,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final D dto) {
+	public boolean test(final D dto) {
 		getDtField(dto);
 		return accept(dtField.getDataAccessor().getValue(dto));
 	}

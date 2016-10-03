@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -39,12 +40,12 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public final class DtListPatternFilter<D extends DtObject> implements DtListFilter<D>, Serializable {
+public final class DtListPatternFilter<D extends DtObject> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = 6282972172196740177L;
 
 	private final FilterPattern filterPattern;
 	private final String[] parsedFilter;
-	private DtListFilter<D> subDtListFilter;
+	private Predicate<D> subDtListFilter;
 
 	/**
 	 * Constructeur.
@@ -73,10 +74,10 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final D dto) {
+	public boolean test(final D dto) {
 		if (subDtListFilter == null) {
 			subDtListFilter = DtListPatternFilterUtil.createDtListFilterForPattern(filterPattern, parsedFilter, DtObjectUtil.findDtDefinition(dto));
 		}
-		return subDtListFilter.accept(dto);
+		return subDtListFilter.test(dto);
 	}
 }

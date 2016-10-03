@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -29,15 +30,15 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  * @param <D> Type d'objet
  */
-public final class DtListChainFilter<D extends DtObject> implements DtListFilter<D>, Serializable {
+public final class DtListChainFilter<D extends DtObject> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = -81683701282488344L;
-	private final DtListFilter<D>[] filters;
+	private final Predicate<D>[] filters;
 
 	/**
 	 * Constructeur.
 	 * @param filters Liste des filtres.
 	 */
-	public DtListChainFilter(final DtListFilter<D>... filters) {
+	public DtListChainFilter(final Predicate<D>... filters) {
 		Assertion.checkNotNull(filters);
 		Assertion.checkArgument(filters.length > 0, "Il faut au moins un filter");
 		//-----
@@ -46,9 +47,9 @@ public final class DtListChainFilter<D extends DtObject> implements DtListFilter
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final D dto) {
-		for (final DtListFilter<D> filter : filters) {
-			if (!filter.accept(dto)) {
+	public boolean test(final D dto) {
+		for (final Predicate<D> filter : filters) {
+			if (!filter.test(dto)) {
 				return false;
 			}
 		}

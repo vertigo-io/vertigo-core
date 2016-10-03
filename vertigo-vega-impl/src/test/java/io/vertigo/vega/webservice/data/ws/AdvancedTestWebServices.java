@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
@@ -387,7 +387,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	private static <C extends DtObject, O extends DtObject> DtListFunction<O> createDtListFunction(final C criteria, final Class<O> resultClass) {
-		final List<DtListFilter<O>> filters = new ArrayList<>();
+		final List<Predicate<O>> filters = new ArrayList<>();
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
@@ -411,7 +411,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			}
 			//si null, alors on ne filtre pas
 		}
-		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new DtListFilter[filters.size()])));
+		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new Predicate[filters.size()])));
 	}
 
 }
