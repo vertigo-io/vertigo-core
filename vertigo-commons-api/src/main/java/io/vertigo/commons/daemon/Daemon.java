@@ -23,11 +23,6 @@ package io.vertigo.commons.daemon;
  *
  * @author tingargiola
  */
-public interface Daemon {
-
-	/**
-	 * Runnable with exception.
-	 * @throws Exception exception.
-	 */
-	void run() throws Exception;
+public interface Daemon extends Runnable {
+	//
 }

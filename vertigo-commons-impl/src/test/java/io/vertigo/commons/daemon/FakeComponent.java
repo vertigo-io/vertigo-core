@@ -47,7 +47,7 @@ public final class FakeComponent implements Component {
 
 		/** {@inheritDoc} */
 		@Override
-		public void run() throws Exception {
+		public void run() {
 			fakeComponent.execute();
 		}
 	}
