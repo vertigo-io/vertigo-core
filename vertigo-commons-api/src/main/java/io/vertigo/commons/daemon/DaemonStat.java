@@ -20,13 +20,13 @@ package io.vertigo.commons.daemon;
 
 /**
  * Some execution stats about registered daemons.
- *  
+ *
  * @author pchretien
  */
 public interface DaemonStat {
 
-	/** 
-	 * Daemon execution status. 
+	/**
+	 * Daemon execution status.
 	 */
 	enum Status {
 		/** Waiting for next execution. */
@@ -39,11 +39,6 @@ public interface DaemonStat {
 	 * @return the daemon name
 	 */
 	String getDaemonName();
-
-	/**
-	 * @return the daemon class
-	 */
-	Class<? extends Daemon> getDaemonClass();
 
 	/**
 	 * @return the demon period

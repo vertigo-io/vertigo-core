@@ -153,7 +153,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		}
 
 		final int purgePeriodSeconds = 15 * 60;
-		daemonManager.registerDaemon("purgeBerkeleyKVStore", RemoveTooOldElementsDaemon.class, purgePeriodSeconds, this);
+		daemonManager.registerDaemon("purgeBerkeleyKVStore", () -> new RemoveTooOldElementsDaemon(this), purgePeriodSeconds);
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {

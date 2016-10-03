@@ -57,7 +57,7 @@ public final class FileManagerImpl implements FileManager {
 	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
-		daemonManager.registerDaemon("PurgeTempFileDaemon", PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH);
+		daemonManager.registerDaemon("PurgeTempFileDaemon", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
 	}
 
 	/** {@inheritDoc} */

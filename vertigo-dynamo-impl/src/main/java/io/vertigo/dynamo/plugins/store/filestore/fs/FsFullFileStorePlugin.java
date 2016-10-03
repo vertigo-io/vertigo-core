@@ -97,7 +97,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		documentRoot = FileUtil.translatePath(path);
 		//-----
 		if (purgeDelayMinutes.isPresent()) {
-			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
+			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60);
 		}
 	}
 

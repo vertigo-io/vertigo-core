@@ -80,7 +80,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
+		daemonManager.registerDaemon("kvDataStoreCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod);
 	}
 
 	/** {@inheritDoc} */

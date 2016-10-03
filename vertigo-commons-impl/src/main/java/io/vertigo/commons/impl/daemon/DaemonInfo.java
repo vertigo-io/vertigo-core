@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import java.util.function.Supplier;
+
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
 
@@ -31,39 +33,28 @@ final class DaemonInfo {
 	/** Name of the daemon. */
 	private final String name;
 	private final int periodInSeconds;
-	private final Class<? extends Daemon> daemonClass;
-	private final Object[] constructorArgs;
+	private final Supplier<Daemon> daemonSupplier;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param name Name of the daemon
-	 * @param daemonClass Class.
+	 * @param daemonSupplier the daemon supplier.
 	 * @param periodInSeconds daemon execution period.
 	 * @param constructorArgs Daemon params
 	 */
-	DaemonInfo(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs) {
+	DaemonInfo(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(daemonClass);
+		Assertion.checkNotNull(daemonSupplier);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
 		// -----
 		this.name = name;
-		this.daemonClass = daemonClass;
+		this.daemonSupplier = daemonSupplier;
 		this.periodInSeconds = periodInSeconds;
-		this.constructorArgs = constructorArgs;
 	}
 
 	String getName() {
 		return name;
-	}
-
-	/**
-	 * Give the value of daemonClass.
-	 *
-	 * @return DaemonClass.
-	 */
-	Class<? extends Daemon> getDaemonClass() {
-		return daemonClass;
 	}
 
 	/**
@@ -75,11 +66,7 @@ final class DaemonInfo {
 		return periodInSeconds;
 	}
 
-	/**
-	 * Give the daemon constructor args.
-	 * @return Daemon constructor args.
-	 */
-	Object[] getConstructorArgs() {
-		return constructorArgs;
+	Supplier<Daemon> getDaemonSupplier() {
+		return daemonSupplier;
 	}
 }

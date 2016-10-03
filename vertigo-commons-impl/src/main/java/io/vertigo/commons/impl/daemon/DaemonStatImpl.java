@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
@@ -57,12 +56,6 @@ public final class DaemonStatImpl implements DaemonStat {
 	@Override
 	public String getDaemonName() {
 		return daemonInfo.getName();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Class<? extends Daemon> getDaemonClass() {
-		return daemonInfo.getDaemonClass();
 	}
 
 	/** {@inheritDoc} */
