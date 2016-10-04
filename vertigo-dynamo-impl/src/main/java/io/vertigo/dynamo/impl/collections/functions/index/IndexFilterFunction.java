@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -38,7 +38,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup (5 janv. 2015 10:47:08)
  * @param <D> Object type
  */
-public final class IndexFilterFunction<D extends DtObject> implements DtListFunction<D> {
+public final class IndexFilterFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
 
 	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;

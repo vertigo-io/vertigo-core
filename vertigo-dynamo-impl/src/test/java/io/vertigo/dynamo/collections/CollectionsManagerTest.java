@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 
@@ -169,10 +170,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateTwoValuesFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByValue("Label", "a")
-				.filterByValue("FAM_ID", 1L);
-		Assert.assertNotNull(filter);
+		final DtList<Item> items = createItems();
+		final DtList<Item> filteredItems = collectionsManager.createDtListProcessor()
+				.filterByValue("LABEL", Ba_aa)
+				.filterByValue("LABEL", "b")
+				.apply(items);
+		Assert.assertNotNull(filteredItems);
 	}
 
 	/**
@@ -295,7 +298,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
-		final DtListFunction<Item> filterFunction = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<Item>> filterFunction = collectionsManager.<Item> createIndexDtListFunctionBuilder()
 				.filter("a", 2000, dtDefinitionItem.getFields())
 				.build();
 		Assert.assertNotNull(filterFunction);
@@ -557,7 +560,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testAddDtListFunction() {
 		final DtList<Item> Items = collectionsManager.createDtListProcessor()
-				.add(new DtListFunction<Item>() {
+				.add(new UnaryOperator<DtList<Item>>() {
 
 					/** {@inheritDoc} */
 					@Override

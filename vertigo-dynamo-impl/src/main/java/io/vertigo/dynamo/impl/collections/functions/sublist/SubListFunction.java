@@ -18,7 +18,8 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sublist;
 
-import io.vertigo.dynamo.collections.DtListFunction;
+import java.util.function.UnaryOperator;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -27,7 +28,7 @@ import io.vertigo.lang.Assertion;
  * Fonction de sous-liste.
  * @author pchretien
  */
-public final class SubListFunction<D extends DtObject> implements DtListFunction<D> {
+public final class SubListFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
 	private final int start, end;
 
 	public SubListFunction(final int start, final int end) {

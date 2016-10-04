@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * Fonction de filtre.
  * @author pchretien
  */
-public final class FilterFunction<D extends DtObject> implements DtListFunction<D> {
+public final class FilterFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
 	private final Predicate<D> filter;
 
 	public FilterFunction(final Predicate<D> filter) {

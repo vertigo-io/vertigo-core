@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.StoreManager;
@@ -33,7 +33,7 @@ import io.vertigo.lang.Assertion;
  * Fonction de tri.
  * @author pchretien
  */
-public final class SortFunction<D extends DtObject> implements DtListFunction<D> {
+public final class SortFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
 	private final String sortFieldName;
 	private final boolean sortDesc;
 	private final StoreManager storeManager;

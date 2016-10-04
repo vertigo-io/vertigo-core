@@ -19,12 +19,14 @@
 package io.vertigo.dynamo.impl.collections;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -37,18 +39,19 @@ import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Standard implementation of DtListProcessor.
  */
-final class DtListProcessorImpl implements DtListProcessor {
-	private final DtListFunction[] listFunctions;
+final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D> {
+	private final List<Function<DtList<D>, DtList<D>>> listFunctions;
 
 	DtListProcessorImpl() {
-		this(new DtListFunction[] {});
+		listFunctions = new ArrayList<>();
 	}
 
-	private DtListProcessorImpl(final DtListFunction[] listFunctions) {
+	private DtListProcessorImpl(final List<Function<DtList<D>, DtList<D>>> listFunctions) {
 		Assertion.checkNotNull(listFunctions);
 		//-----
 		this.listFunctions = listFunctions;
@@ -59,63 +62,58 @@ final class DtListProcessorImpl implements DtListProcessor {
 		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 
-	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {
+	private DtListProcessorImpl<D> createNewDtListProcessor(final Function<DtList<D>, DtList<D>> listFunction) {
 		Assertion.checkNotNull(listFunction);
-		//-----
-		final DtListFunction[] list = Arrays.copyOf(listFunctions, listFunctions.length + 1);
-		//adding a new listFunction
-		list[listFunctions.length] = listFunction;
-		return new DtListProcessorImpl(list);
+		return new DtListProcessorImpl<>(new ListBuilder<Function<DtList<D>, DtList<D>>>().addAll(listFunctions).add(listFunction).unmodifiable().build());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor add(final DtListFunction listFunction) {
+	public DtListProcessor<D> add(final UnaryOperator<DtList<D>> listFunction) {
 		return createNewDtListProcessor(listFunction);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor sort(final String fieldName, final boolean desc) {
+	public DtListProcessor<D> sort(final String fieldName, final boolean desc) {
 		return add(new SortFunction<>(fieldName, desc, getStoreManager()));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor filterByValue(final String fieldName, final Serializable value) {
-		final Predicate<? extends DtObject> filter = new DtListValueFilter(fieldName, value);
-		return add(new FilterFunction(filter));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor filter(final ListFilter listFilter) {
-		final Predicate<? extends DtObject> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
+	public DtListProcessor<D> filterByValue(final String fieldName, final Serializable value) {
+		final Predicate<D> filter = new DtListValueFilter<>(fieldName, value);
 		return add(new FilterFunction<>(filter));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor filterSubList(final int start, final int end) {
-		return add(new SubListFunction<>(start, end));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
-		final Predicate<? extends DtObject> filter = new DtListRangeFilter(fieldName, min, max, true, true);
+	public DtListProcessor<D> filter(final ListFilter listFilter) {
+		final Predicate<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
 		return add(new FilterFunction<>(filter));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> apply(final DtList<D> input) {
+	public DtListProcessor<D> filterSubList(final int start, final int end) {
+		return add(new SubListFunction<D>(start, end));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <C extends Comparable<?>> DtListProcessor<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
+		final Predicate<D> filter = new DtListRangeFilter<>(fieldName, min, max, true, true);
+		return add(new FilterFunction<>(filter));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DtList<D> apply(final DtList<D> input) {
 		Assertion.checkNotNull(input);
 		//-----
-		DtList<D> current = input;
-		for (final DtListFunction<D> listFunction : listFunctions) {
-			current = listFunction.apply(current);
-		}
-		return current;
+		return listFunctions
+				.stream()
+				.reduce(UnaryOperator.identity(), (fun1, fun2) -> fun1.andThen(fun2))
+				.apply(input);
 	}
 }
