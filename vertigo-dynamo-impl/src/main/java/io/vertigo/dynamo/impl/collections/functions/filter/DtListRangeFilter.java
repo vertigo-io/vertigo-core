@@ -69,10 +69,12 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 
 		//-----
 		// On vérifie le caractère serializable, car il est difficile de gérer cette propriété par les generics de bout en bout
-		Assertion.when(this.minValue != null)
-				.check(() -> this.minValue instanceof Serializable, "Les valeurs doivent être Serializable (min:{0})", this.minValue.getClass().getSimpleName());
-		Assertion.when(this.maxValue != null)
-				.check(() -> this.maxValue instanceof Serializable, "Les valeurs doivent être Serializable (max:{0})", this.maxValue.getClass().getSimpleName());
+		if (this.minValue != null) {
+			Assertion.checkArgument(this.minValue instanceof Serializable, "Les valeurs doivent être Serializable (min:{0})", this.minValue.getClass().getSimpleName());
+		}
+		if (this.maxValue != null) {
+			Assertion.checkArgument(this.maxValue instanceof Serializable, "Les valeurs doivent être Serializable (max:{0})", this.maxValue.getClass().getSimpleName());
+		}
 	}
 
 	/** {@inheritDoc} */
