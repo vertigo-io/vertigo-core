@@ -59,7 +59,12 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!manager.cacheExists(context)) {
 			final boolean overflowToDisk = cacheConfig.shouldSerializeElements(); //don't overflow
-			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, false, cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
+			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context,
+					cacheConfig.getMaxElementsInMemory(),
+					overflowToDisk,
+					false, //not eternal
+					cacheConfig.getTimeToLiveSeconds(),
+					cacheConfig.getTimeToIdleSeconds());
 			manager.addCache(cache);
 			cacheConfigsPerContext.put(context, cacheConfig);
 		}
@@ -73,7 +78,9 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheConfig(context).shouldSerializeElements()) {
-			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
+			Assertion.checkArgument(value instanceof Serializable,
+					"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
+					context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
 			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.

@@ -72,7 +72,9 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheConfig(context).shouldSerializeElements()) {
-			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it Serializable or change its CacheConfig 'serializeElement' parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
+			Assertion.checkArgument(value instanceof Serializable,
+					"Object to cache isn't Serializable. Make it Serializable or change its CacheConfig 'serializeElement' parameter. (context: {0}, key:{1}, class:{2})",
+					context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
 			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.
