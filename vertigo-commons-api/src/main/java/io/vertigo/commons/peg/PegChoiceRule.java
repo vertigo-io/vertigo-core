@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class PegChoiceRule implements PegRule<PegChoice> {
-	private final List<PegRule<?>> rules;
+	private final List<PegRule> rules;
 	private final String expression;
 
 	/**
@@ -57,7 +57,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		return expression;
 	}
 
-	List<PegRule<?>> getRules() {
+	List<PegRule> getRules() {
 		return rules;
 	}
 
