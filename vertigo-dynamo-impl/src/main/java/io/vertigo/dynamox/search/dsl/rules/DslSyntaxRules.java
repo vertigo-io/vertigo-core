@@ -64,9 +64,9 @@ final class DslSyntaxRules {
 	static final PegRule<String> FIELD_END = PegRules.term(":");
 
 	/** premodifier. */
-	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "PREM");
+	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "[~+-*?\" \t\n\r]*");
 	/** postmodifier. */
-	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "POSTM");
+	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */

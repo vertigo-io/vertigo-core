@@ -34,23 +34,23 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
  * (preQuery)(term)(postQuery)
  * @author npiedeloup
  */
-final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
+final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 
 	DslTermQueryRule() {
 		super(createMainRule(), "query");
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		final PegRule<PegChoice> escapeModeRule = PegRules.choice(
 				PegRules.term("?(removeReserved)"), //choice 0
 				PegRules.term("?(escapeReserved)")); //choice 1
 
-		final PegRule<List<?>> defaultValueRule = PegRules.sequence(
+		final PegRule<List<Object>> defaultValueRule = PegRules.sequence(
 				PegRules.term("!("),
-				PegRules.word(false, ")", PegWordRule.Mode.REJECT, "value"), //1
+				PegRules.word(false, ")", PegWordRule.Mode.REJECT, "[^)]"), //1
 				PegRules.term(")"));
 
-		final PegRule<List<?>> termRule = PegRules.sequence(
+		final PegRule<List<Object>> termRule = PegRules.sequence(
 				DslSyntaxRules.TERM_MARK,
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.WORD, //2
@@ -68,11 +68,11 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslTermQuery handle(final List<?> parsing) {
+	protected DslTermQuery handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String preQuery = (String) parsing.get(1);
 
-		final List<?> term = (List<?>) parsing.get(2);
+		final List<Object> term = (List<Object>) parsing.get(2);
 		final String preTerm = (String) term.get(1);
 		final String termField = (String) term.get(2);
 		final String postTerm = (String) term.get(3);
@@ -92,7 +92,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 		} else {
 			escapeMode = EscapeMode.none;
 		}
-		final Optional<List<?>> defaultRule = (Optional<List<?>>) term.get(6);
+		final Optional<List<Object>> defaultRule = (Optional<List<Object>>) term.get(6);
 		final Optional<String> defaultValue;
 		if (defaultRule.isPresent()) {
 			defaultValue = Optional.ofNullable((String) defaultRule.get().get(1));
