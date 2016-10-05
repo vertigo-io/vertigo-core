@@ -51,7 +51,7 @@ final class PegOptionalRule<R> implements PegRule<Optional<R>> {
 		return expression;
 	}
 
-	protected PegRule<R> getRule() {
+	PegRule<R> getRule() {
 		return rule;
 	}
 

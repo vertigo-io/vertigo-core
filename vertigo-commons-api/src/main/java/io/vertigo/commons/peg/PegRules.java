@@ -7,14 +7,32 @@ import java.util.Optional;
 import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegWordRule.Mode;
 
+/**
+ * Factory of all PeRules.
+ * @author pchretien
+ */
 public final class PegRules {
 
-	public static <R> PegRule<R> named(final AbstractRule namedRule, final PegRule<R> innerRule, final String ruleName) {
+	private PegRules() {
+		//no constructor for factory class
+	}
+
+	/**
+	 * Named a Rule.
+	 * @param innerRule Rule to name
+	 * @param ruleName Rule name
+	 * @return Named rule
+	 */
+	public static <R> PegRule<R> named(final PegRule<R> innerRule, final String ruleName) {
 		return new PegGrammarRule<>(innerRule, ruleName);
 	}
 
+	/**
+	 * @param rule Inner rule
+	 * @return Optional rule
+	 */
 	public static <R> PegRule<Optional<R>> optional(final PegRule<R> rule) {
-		return new PegOptionalRule(rule);
+		return new PegOptionalRule<>(rule);
 	}
 
 	/**
@@ -24,16 +42,25 @@ public final class PegRules {
 		return new PegTermRule(term);
 	}
 
-	public static PegRule<List<?>> sequence(final PegRule<?>... rules) {
+	/**
+	 * @param rules rules list
+	 * @return sequence rule of inner rules
+	 */
+	public static PegRule<List> sequence(final PegRule... rules) {
 		return sequence(Arrays.asList(rules));
 	}
 
-	public static PegRule<List<?>> sequence(final List<PegRule<?>> rules) {
+	/**
+	 * @param rules rules list
+	 * @return sequence rule of inner rules
+	 */
+	public static PegRule<List> sequence(final List<PegRule> rules) {
 		return new PegSequenceRule(rules);
 	}
 
 	/**
 	 * @param rules the list of rules to test
+	 * @return choice rule of inner rules
 	 */
 	public static PegRule<PegChoice> choice(final PegRule<?>... rules) {
 		return choice(Arrays.asList(rules));
@@ -41,19 +68,34 @@ public final class PegRules {
 
 	/**
 	 * @param rules the list of rules to test
+	 * @return choice rule of inner rules
 	 */
-	public static PegRule<PegChoice> choice(final List<PegRule<?>> rules) {
+	public static PegRule<PegChoice> choice(final List<PegRule> rules) {
 		return new PegChoiceRule(rules);
 	}
 
+	/**
+	 * @param rule Rule to repeat
+	 * @param repeat If text should be parsed entirely
+	 * @return zeroOrMore rule
+	 */
 	public static <R> PegRule<List<R>> zeroOrMore(final PegRule<R> rule, final boolean repeat) {
 		return new PegManyRule<>(rule, true, repeat);
 	}
 
+	/**
+	 * @param rule Rule to repeat
+	 * @param repeat If text should be parsed entirely
+	 * @return oneOrMore rule
+	 */
 	public static <R> PegRule<List<R>> oneOrMore(final PegRule<R> rule, final boolean repeat) {
 		return new PegManyRule<>(rule, false, repeat);
 	}
 
+	/**
+	 * @param blanks list of char to skip
+	 * @return Rule to match any blank char
+	 */
 	public static PegRule<Dummy> skipBlanks(final String blanks) {
 		return new PegWhiteSpaceRule(blanks);
 	}
@@ -68,6 +110,10 @@ public final class PegRules {
 		return new PegWordRule(emptyAccepted, checkedChars, mode, readableExpression);
 	}
 
+	/**
+	 * @param rootRule Root rule to start with
+	 * @return Html railroad diagram
+	 */
 	public static final String namedRulesAsHtml(final PegRule rootRule) {
 		final PegRulesHtmlRenderer pegRulesHtmlRenderer = new PegRulesHtmlRenderer();
 		return pegRulesHtmlRenderer.render(rootRule);

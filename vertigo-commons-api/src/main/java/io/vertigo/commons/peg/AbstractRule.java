@@ -46,7 +46,7 @@ public abstract class AbstractRule<R, M> implements PegRule<R> {
 		Assertion.checkArgNotEmpty(ruleName);
 		//-----
 		this.innerRule = mainRule;
-		this.mainRule = PegRules.named(this, innerRule, ruleName);
+		this.mainRule = PegRules.named(innerRule, ruleName);
 		this.expression = mainRule.getExpression();
 	}
 

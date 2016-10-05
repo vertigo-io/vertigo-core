@@ -63,15 +63,11 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 		return expression;
 	}
 
-	protected boolean isEmptyAccepted() {
+	boolean isEmptyAccepted() {
 		return zeroAccepted;
 	}
 
-	protected boolean isRepeat() {
-		return repeat;
-	}
-
-	protected PegRule<R> getRule() {
+	PegRule<R> getRule() {
 		return rule;
 	}
 
@@ -104,7 +100,7 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 		if (!isEmptyAccepted() && results.isEmpty()) {
 			throw new PegNoMatchFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
 		}
-		if (isRepeat() && text.length() > index) {
+		if (repeat && text.length() > index) {
 			throw new PegNoMatchFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
 		}
 		return new PegResult<>(index, results);
