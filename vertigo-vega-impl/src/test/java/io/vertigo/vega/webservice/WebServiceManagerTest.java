@@ -230,7 +230,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testExportContacts() {
 		loggedAndExpect()
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contacts.pdf;filename*=UTF-8''contacts.pdf"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"contacts.pdf\";filename*=UTF-8''contacts.pdf"))
 				// greaterThanOrEqualTo because it depends of previously inserted elements
 				.header("Content-Length", Matchers.greaterThanOrEqualTo("2572"))
 				.statusCode(HttpStatus.SC_OK)
@@ -241,7 +241,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testExportOneContact() {
 		loggedAndExpect()
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contact2.pdf;filename*=UTF-8''contact2.pdf"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"contact2.pdf\";filename*=UTF-8''contact2.pdf"))
 				.header("Content-Length", Matchers.equalTo("1703"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -1522,7 +1522,7 @@ public final class WebServiceManagerTest {
 				.formParam("note", "Some very important notes about this file."))
 						//expect
 						.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"npi2loup.png\";filename*=UTF-8''npi2loup.png"))
 						.header("Content-Length", Matchers.equalTo("27039"))
 						.statusCode(HttpStatus.SC_OK)
 						.when()//.log().headers()
@@ -1534,7 +1534,7 @@ public final class WebServiceManagerTest {
 				.multiPart("upfile", imageFile, "image/png"))
 						//expect
 						.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+						.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"npi2loup.png\";filename*=UTF-8''npi2loup.png"))
 						.header("Content-Length", Matchers.equalTo("27039"))
 						.statusCode(HttpStatus.SC_OK)
 						.when()//.log().headers()
@@ -1598,7 +1598,7 @@ public final class WebServiceManagerTest {
 	public void testDownloadFile() {
 		loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"image10.png\";filename*=UTF-8''image10.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -1611,7 +1611,7 @@ public final class WebServiceManagerTest {
 		//Sans préciser le if-Modified-Since, le serveur retourne le fichier
 		final Response response = loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"image10.png\";filename*=UTF-8''image10.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -1630,7 +1630,7 @@ public final class WebServiceManagerTest {
 		final String beforeLastModified = httpDateFormat.format(new DateBuilder(lastModifiedDate).addMinutes(-10).build());
 		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", beforeLastModified))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"image10.png\";filename*=UTF-8''image10.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
