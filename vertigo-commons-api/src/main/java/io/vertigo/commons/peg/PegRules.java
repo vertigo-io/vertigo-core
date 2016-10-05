@@ -46,7 +46,7 @@ public final class PegRules {
 	 * @param rules rules list
 	 * @return sequence rule of inner rules
 	 */
-	public static PegRule<List> sequence(final PegRule... rules) {
+	public static PegRule<List<Object>> sequence(final PegRule<? extends Object>... rules) {
 		return sequence(Arrays.asList(rules));
 	}
 
@@ -54,7 +54,7 @@ public final class PegRules {
 	 * @param rules rules list
 	 * @return sequence rule of inner rules
 	 */
-	public static PegRule<List> sequence(final List<PegRule> rules) {
+	public static PegRule<List<Object>> sequence(final List<PegRule<? extends Object>> rules) {
 		return new PegSequenceRule(rules);
 	}
 
@@ -62,7 +62,7 @@ public final class PegRules {
 	 * @param rules the list of rules to test
 	 * @return choice rule of inner rules
 	 */
-	public static PegRule<PegChoice> choice(final PegRule<?>... rules) {
+	public static PegRule<PegChoice> choice(final PegRule<? extends Object>... rules) {
 		return choice(Arrays.asList(rules));
 	}
 
@@ -70,7 +70,7 @@ public final class PegRules {
 	 * @param rules the list of rules to test
 	 * @return choice rule of inner rules
 	 */
-	public static PegRule<PegChoice> choice(final List<PegRule> rules) {
+	public static PegRule<PegChoice> choice(final List<PegRule<? extends Object>> rules) {
 		return new PegChoiceRule(rules);
 	}
 

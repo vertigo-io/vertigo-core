@@ -31,13 +31,13 @@ import io.vertigo.commons.peg.PegRules;
  * || or OR && and AND
  * @author npiedeloup
  */
-final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
+final class DslBooleanOperatorRule extends AbstractRule<String, List<Object>> {
 
 	DslBooleanOperatorRule() {
 		super(createMainRule(), "boolOperator");
 	}
 
-	private static final PegRule<List<?>> createMainRule() {
+	private static final PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
 				PegRules.choice(//"single or multiple") //1
@@ -54,7 +54,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected String handle(final List<?> parsing) {
+	protected String handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String operator = (String) ((PegChoice) parsing.get(1)).getValue();
 		final String postSpaces = (String) parsing.get(2);

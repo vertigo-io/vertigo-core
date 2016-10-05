@@ -58,7 +58,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				new DslMultiExpressionRule(level + 1) //1
 		);
 		final PegRule<List<PegChoice>> manyExpressionRule = PegRules.oneOrMore(expressionsRule, false);
-		final PegRule<List<?>> blockExpressionRule = PegRules.sequence(
+		final PegRule<List<Object>> blockExpressionRule = PegRules.sequence(
 				PegRules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.BLOCK_START, //2

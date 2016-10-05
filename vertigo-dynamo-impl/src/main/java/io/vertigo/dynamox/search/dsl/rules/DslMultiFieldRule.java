@@ -32,13 +32,13 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiField;
  * //(preMultiField)[(fields)+,](postMultiField)
  * @author npiedeloup
  */
-final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
+final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<Object>> {
 	DslMultiFieldRule() {
 		super(createMainRule());
 	}
 
-	private static PegRule<List<?>> createMainRule() {
-		final PegRule<List<List<?>>> otherFieldsRule = PegRules.zeroOrMore(
+	private static PegRule<List<Object>> createMainRule() {
+		final PegRule<List<List<Object>>> otherFieldsRule = PegRules.zeroOrMore(
 				PegRules.sequence(
 						DslSyntaxRules.SPACES,
 						DslSyntaxRules.ARRAY_SEPARATOR,
@@ -57,7 +57,7 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiField handle(final List<?> parsing) {
+	protected DslMultiField handle(final List<Object> parsing) {
 		final String preMultiField = "";//(String) parsing.get(0);
 		final List<DslField> fields = new ArrayList<>();
 		//---
@@ -65,8 +65,8 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 		final DslField firstField = (DslField) parsing.get(2);
 		fields.add(firstField);
 		//On récupère le produit de la règle many
-		final List<List<?>> many = (List<List<?>>) parsing.get(3);
-		for (final List<?> row : many) {
+		final List<List<Object>> many = (List<List<Object>>) parsing.get(3);
+		for (final List<Object> row : many) {
 			fields.add((DslField) row.get(3));
 		}
 		//---

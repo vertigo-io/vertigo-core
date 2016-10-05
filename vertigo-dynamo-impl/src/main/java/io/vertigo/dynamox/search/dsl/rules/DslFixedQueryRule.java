@@ -30,13 +30,13 @@ import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
  * (fixedQuery)
  * @author npiedeloup
  */
-final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<?>> {
+final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<Object>> {
 
 	DslFixedQueryRule() {
 		super(createMainRule(), "fixedQuery");
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
 				DslSyntaxRules.FIXED_WORD); //1
@@ -44,7 +44,7 @@ final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslFixedQuery handle(final List<?> parsing) {
+	protected DslFixedQuery handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String fixedQuery = (String) parsing.get(1);
 		return new DslFixedQuery(DslUtil.concat(preSpaces, fixedQuery));

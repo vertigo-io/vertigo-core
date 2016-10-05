@@ -44,7 +44,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
+public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 	private final DynamicDefinitionRepository dynamicModelrepository;
 
 	/**
@@ -56,7 +56,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 		this.dynamicModelrepository = dynamicModelrepository;
 	}
 
-	private static PegRule<List<?>> createMainRule(final DslGrammar grammar) {
+	private static PegRule<List<Object>> createMainRule(final DslGrammar grammar) {
 		Assertion.checkNotNull(grammar);
 		//-----
 		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", grammar);
@@ -74,7 +74,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<?>> {
 	}
 
 	@Override
-	protected Dummy handle(final List<?> parsing) {
+	protected Dummy handle(final List<Object> parsing) {
 		final String packageName = (String) parsing.get(1);
 		final List<PegChoice> declarationChoices = (List<PegChoice>) parsing.get(3);
 

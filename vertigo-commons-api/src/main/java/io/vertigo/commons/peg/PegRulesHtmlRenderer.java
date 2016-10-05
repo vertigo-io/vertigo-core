@@ -6,79 +6,18 @@ import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
+/**
+ * PegRenderer of Grammar as HTML.
+ *
+ * @author npiedeloup
+ */
 public final class PegRulesHtmlRenderer {
 
 	private int depth = 1;
-	private final Map<PegRule<?>, String> ALL_RULES = new LinkedHashMap<>();
-	private final Map<Integer, Map<String, PegGrammarRule<?>>> NAMED_RULES = new LinkedHashMap<>();
+	private final Map<PegRule<?>, String> allRules = new LinkedHashMap<>();
+	private final Map<Integer, Map<String, PegGrammarRule<?>>> namedRules = new LinkedHashMap<>();
 
-	private void grammar(final PegGrammarRule<?> grammarRule) {
-		NAMED_RULES.get(depth).put(grammarRule.getRuleName(), grammarRule);
-		populateGramar(grammarRule, "NonTerminal('" + grammarRule.getRuleName() + "', '#" + grammarRule.getRuleName() + "')");
-	}
-
-	private void optional(final PegOptionalRule<?> rule) {
-		populateGramar(rule, "Optional(" + readGramar(rule.getRule()) + ")");
-	}
-
-	private void term(final PegTermRule term) {
-		populateGramar(term, term.getExpression());
-	}
-
-	private void sequence(final PegSequenceRule rule) {
-		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : "Sequence("
-				+ rule.getRules().stream()
-						.map(subRule -> readGramar(subRule))
-						.collect(Collectors.joining(", "))
-				+ ")");
-	}
-
-	private void choice(final PegChoiceRule rule) {
-		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : "Choice(0,"
-				+ rule.getRules().stream()
-						.map(subRule -> readGramar(subRule))
-						.collect(Collectors.joining(", "))
-				+ ")");
-	}
-
-	private void many(final PegManyRule<?> rule) {
-		populateGramar(rule, (rule.isEmptyAccepted() ? "Zero" : "One") + "OrMore(" + readGramar(rule.getRule()) + ")");
-	}
-
-	private void whiteSpace(final PegWhiteSpaceRule rule) {
-		populateGramar(rule, "' '");
-	}
-
-	private void word(final PegWordRule rule) {
-		populateGramar(rule, "NonTerminal('" + rule.getExpression() + "')");
-	}
-
-	private void populateGramar(final PegRule<?> rule, final String expressionHtml) {
-		Assertion.when(ALL_RULES.containsKey(rule)).check(() -> expressionHtml.equals(ALL_RULES.get(rule)), "{0} already knowned but different", rule.toString());
-		ALL_RULES.put(rule, expressionHtml);
-	}
-
-	private String readGramar(final PegRule<?> rule) {
-		final String result = ALL_RULES.get(rule);
-		if (result == null) {
-			detectGrammar(rule);
-			return readGramar(rule);
-		}
-		return result;
-	}
-
-	public Map<String, String> obtainGrammar(final PegRule<?> rootRule) {
-		detectGrammar(rootRule);
-		final Map<String, String> rules = new LinkedHashMap<>();
-		for (final Map<String, PegGrammarRule<?>> entry : NAMED_RULES.values()) {
-			for (final PegGrammarRule<?> pegGrammar : entry.values()) {
-				rules.put(pegGrammar.getRuleName(), readGramar(pegGrammar.getRule())); //On resoud les conflits de noms en conservant l'ordre des profondeurs.
-			}
-		}
-		return rules;
-	}
-
-	public String render(final PegRule<?> rootRule) {
+	String render(final PegRule<?> rootRule) {
 		return obtainGrammar(rootRule).entrySet()
 				.stream()
 				.map(entry -> new StringBuilder()
@@ -92,11 +31,26 @@ public final class PegRulesHtmlRenderer {
 				.collect(Collectors.joining());
 	}
 
+	/**
+	 * @param rootRule Root rule to start with
+	 * @return Map of rule HTML rendered grammar element by grammar element name
+	 */
+	public Map<String, String> obtainGrammar(final PegRule<?> rootRule) {
+		detectGrammar(rootRule);
+		final Map<String, String> rules = new LinkedHashMap<>();
+		for (final Map<String, PegGrammarRule<?>> entry : namedRules.values()) {
+			for (final PegGrammarRule<?> pegGrammar : entry.values()) {
+				rules.put(pegGrammar.getRuleName(), readGramar(pegGrammar.getRule())); //On resoud les conflits de noms en conservant l'ordre des profondeurs.
+			}
+		}
+		return rules;
+	}
+
 	private void detectGrammar(final PegRule<?> rule) {
 		try {
 			depth++;
-			if (!NAMED_RULES.containsKey(depth)) {
-				NAMED_RULES.put(depth, new LinkedHashMap<>());
+			if (!namedRules.containsKey(depth)) {
+				namedRules.put(depth, new LinkedHashMap<>());
 			}
 			if (rule instanceof PegChoiceRule) {
 				choice((PegChoiceRule) rule);
@@ -124,6 +78,61 @@ public final class PegRulesHtmlRenderer {
 		} finally {
 			depth--;
 		}
-
 	}
+
+	private void grammar(final PegGrammarRule<?> grammarRule) {
+		namedRules.get(depth).put(grammarRule.getRuleName(), grammarRule);
+		populateGramar(grammarRule, "NonTerminal('" + grammarRule.getRuleName() + "', '#" + grammarRule.getRuleName() + "')");
+	}
+
+	private void optional(final PegOptionalRule<?> rule) {
+		populateGramar(rule, "Optional(" + readGramar(rule.getRule()) + ")");
+	}
+
+	private void term(final PegTermRule term) {
+		populateGramar(term, term.getExpression());
+	}
+
+	private void sequence(final PegSequenceRule rule) {
+		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : ("Sequence("
+				+ rule.getRules().stream()
+						.map(subRule -> readGramar(subRule))
+						.collect(Collectors.joining(", "))
+				+ ")"));
+	}
+
+	private void choice(final PegChoiceRule rule) {
+		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : ("Choice(0,"
+				+ rule.getRules().stream()
+						.map(subRule -> readGramar(subRule))
+						.collect(Collectors.joining(", "))
+				+ ")"));
+	}
+
+	private void many(final PegManyRule<?> rule) {
+		populateGramar(rule, (rule.isEmptyAccepted() ? "Zero" : "One") + "OrMore(" + readGramar(rule.getRule()) + ")");
+	}
+
+	private void whiteSpace(final PegWhiteSpaceRule rule) {
+		populateGramar(rule, "' '");
+	}
+
+	private void word(final PegWordRule rule) {
+		populateGramar(rule, "NonTerminal('" + rule.getExpression() + "')");
+	}
+
+	private void populateGramar(final PegRule<?> rule, final String expressionHtml) {
+		Assertion.when(allRules.containsKey(rule)).check(() -> expressionHtml.equals(allRules.get(rule)), "{0} already knowned but different", rule.toString());
+		allRules.put(rule, expressionHtml);
+	}
+
+	private String readGramar(final PegRule<?> rule) {
+		final String result = allRules.get(rule);
+		if (result == null) {
+			detectGrammar(rule);
+			return readGramar(rule);
+		}
+		return result;
+	}
+
 }

@@ -31,14 +31,14 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class PegChoiceRule implements PegRule<PegChoice> {
-	private final List<PegRule> rules;
+	private final List<PegRule<? extends Object>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 * @param rules the list of rules to test
 	 */
-	PegChoiceRule(final List<PegRule> rules) {
+	PegChoiceRule(final List<PegRule<? extends Object>> rules) {
 		Assertion.checkNotNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
@@ -57,7 +57,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		return expression;
 	}
 
-	List<PegRule> getRules() {
+	List<PegRule<? extends Object>> getRules() {
 		return rules;
 	}
 

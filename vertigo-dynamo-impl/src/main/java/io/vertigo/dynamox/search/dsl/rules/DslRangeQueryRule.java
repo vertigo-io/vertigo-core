@@ -34,13 +34,13 @@ import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
  * (preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
  * @author npiedeloup
  */
-final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
+final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<Object>> {
 
 	DslRangeQueryRule() {
 		super(createMainRule(), "rangeQuery");
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		final PegRule<PegChoice> queriesRule = PegRules.choice(//"term or fixed")
 				PegRules.term("*"), //0
 				new DslTermQueryRule(), //1
@@ -62,7 +62,7 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslRangeQuery handle(final List<?> parsing) {
+	protected DslRangeQuery handle(final List<Object> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final PegChoice startChoice = (PegChoice) parsing.get(1);
 

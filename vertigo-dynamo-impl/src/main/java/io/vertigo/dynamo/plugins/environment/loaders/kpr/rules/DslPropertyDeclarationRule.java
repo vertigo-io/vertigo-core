@@ -48,7 +48,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author pchretien
  */
-public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEntry, List<?>> {
+public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEntry, List<Object>> {
 	private final Map<String, String> entityProperties;
 
 	/**
@@ -65,7 +65,7 @@ public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEn
 		}
 	}
 
-	private static PegRule<List<?>> createMainRule(final Set<String> entityPropertyNames) {
+	private static PegRule<List<Object>> createMainRule(final Set<String> entityPropertyNames) {
 		final List<PegRule<?>> propertyNamesRules = new ArrayList<>();
 		for (final String entityPropertyName : entityPropertyNames) {
 			propertyNamesRules.add(PegRules.term(StringUtil.constToLowerCamelCase(entityPropertyName)));
@@ -84,7 +84,7 @@ public final class DslPropertyDeclarationRule extends AbstractRule<DslPropertyEn
 	}
 
 	@Override
-	protected DslPropertyEntry handle(final List<?> parsing) {
+	protected DslPropertyEntry handle(final List<Object> parsing) {
 		final String propertyName = (String) ((PegChoice) parsing.get(0)).getValue();
 		final String propertyValue = (String) parsing.get(5);
 		return new DslPropertyEntry(entityProperties.get(propertyName), propertyValue);

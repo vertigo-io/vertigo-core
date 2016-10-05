@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  * règle de déclaration d'une champ référenéant une listes de clés.
  * @author pchretien
  */
-public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<?>> {
+public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 
 	/**
 	 * Constructeur.
@@ -46,7 +46,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 		super(createMainRule(fieldNames));
 	}
 
-	private static PegRule<List<?>> createMainRule(final List<String> fieldNames) {
+	private static PegRule<List<Object>> createMainRule(final List<String> fieldNames) {
 		Assertion.checkNotNull(fieldNames);
 		//-----
 		final List<PegRule<?>> fieldNamesRules = new ArrayList<>();
@@ -65,7 +65,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 	}
 
 	@Override
-	protected DslDefinitionEntry handle(final List<?> parsing) {
+	protected DslDefinitionEntry handle(final List<Object> parsing) {
 		final String fieldName = (String) ((PegChoice) parsing.get(0)).getValue();
 		final List<String> definitionKeys;
 

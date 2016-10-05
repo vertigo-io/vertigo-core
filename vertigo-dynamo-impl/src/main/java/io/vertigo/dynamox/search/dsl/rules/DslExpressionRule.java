@@ -35,15 +35,15 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  * (preExpression)(field|multiField):(query)(postExpression)
  * @author npiedeloup
  */
-final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
+final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> {
 
 	DslExpressionRule() {
 		super(createMainRule(), "expression");
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 
-		final PegRule<List<?>> multiFieldsRule = PegRules.sequence(
+		final PegRule<List<Object>> multiFieldsRule = PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				new DslMultiFieldRule(), //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
@@ -68,7 +68,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslExpression handle(final List<?> parsing) {
+	protected DslExpression handle(final List<Object> parsing) {
 		String preExpression = ((Optional<String>) parsing.get(0)).orElse("") + (String) parsing.get(1);
 		final String postExpression;
 		final Optional<DslField> field;
@@ -81,7 +81,7 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<?>> {
 				postExpression = "";
 				break;
 			case 1:
-				final List<?> multiFieldParsing = (List<?>) fields.getValue();
+				final List<Object> multiFieldParsing = (List<Object>) fields.getValue();
 				preExpression = DslUtil.concat(preExpression, (String) multiFieldParsing.get(0));
 				multiField = Optional.of((DslMultiField) multiFieldParsing.get(1));
 				postExpression = (String) multiFieldParsing.get(2);

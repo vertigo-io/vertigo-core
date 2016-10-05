@@ -31,7 +31,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitio
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 
-final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
+final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 	private final String entityName;
 	private final DslEntity entity;
 
@@ -41,7 +41,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		this.entity = entity;
 	}
 
-	private static PegRule<List<?>> createMainRule(final String entityName, final DslEntity entity) {
+	private static PegRule<List<Object>> createMainRule(final String entityName, final DslEntity entity) {
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
 		//-----
@@ -57,7 +57,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	}
 
 	@Override
-	protected DslDefinitionEntry handle(final List<?> parsing) {
+	protected DslDefinitionEntry handle(final List<Object> parsing) {
 		//Dans le cas des sous définition :: field [PRD_XXX]
 
 		final String definitionName = (String) parsing.get(2);

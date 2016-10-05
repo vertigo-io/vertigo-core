@@ -34,14 +34,14 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class PegSequenceRule implements PegRule<List> {
-	private final List<PegRule> rules;
+final class PegSequenceRule implements PegRule<List<Object>> {
+	private final List<PegRule<? extends Object>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 */
-	PegSequenceRule(final List<PegRule> rules) {
+	PegSequenceRule(final List<PegRule<? extends Object>> rules) {
 		Assertion.checkNotNull(rules);
 		Assertion.checkArgument(rules.size() > 1, "A sequence must contain at least 2 rules");
 		//-----
@@ -61,18 +61,18 @@ final class PegSequenceRule implements PegRule<List> {
 		return expression;
 	}
 
-	final List<PegRule> getRules() {
+	final List<PegRule<? extends Object>> getRules() {
 		return rules;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public PegResult<List> parse(final String text, final int start) throws PegNoMatchFoundException {
-		final List results = new ArrayList<>();
+	public PegResult<List<Object>> parse(final String text, final int start) throws PegNoMatchFoundException {
+		final List<Object> results = new ArrayList<>();
 		int index = start;
 		try {
-			for (final PegRule<?> rule : rules) {
-				final PegResult<?> cursor = rule
+			for (final PegRule<? extends Object> rule : rules) {
+				final PegResult<? extends Object> cursor = rule
 						.parse(text, index);
 				index = cursor.getIndex();
 				results.add(cursor.getValue());

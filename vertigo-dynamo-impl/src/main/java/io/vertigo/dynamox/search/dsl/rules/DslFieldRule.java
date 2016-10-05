@@ -30,13 +30,13 @@ import io.vertigo.dynamox.search.dsl.model.DslField;
  * (preField)(fieldName)(postField):
  * @author npiedeloup
  */
-final class DslFieldRule extends AbstractRule<DslField, List<?>> {
+final class DslFieldRule extends AbstractRule<DslField, List<Object>> {
 
 	DslFieldRule() {
 		super(createMainRule());
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.WORD, //1
@@ -45,7 +45,7 @@ final class DslFieldRule extends AbstractRule<DslField, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslField handle(final List<?> parsing) {
+	protected DslField handle(final List<Object> parsing) {
 		final String preField = (String) parsing.get(0);
 		final String fieldName = (String) parsing.get(1);
 		final String postField = (String) parsing.get(2);

@@ -46,7 +46,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<?>> {
+public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<Object>> {
 
 	/**
 	 * Constructeur.
@@ -55,7 +55,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 		super(createMainRule(entity), entity.getName() + "Body");
 	}
 
-	private static PegRule<List<?>> createMainRule(final DslEntity entity) {
+	private static PegRule<List<Object>> createMainRule(final DslEntity entity) {
 		Assertion.checkNotNull(entity);
 		final List<String> attributeNames = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 	}
 
 	@Override
-	protected DslDefinitionBody handle(final List<?> parsing) {
+	protected DslDefinitionBody handle(final List<Object> parsing) {
 		final List<PegChoice> many = (List<PegChoice>) parsing.get(2);
 
 		final List<DslDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();

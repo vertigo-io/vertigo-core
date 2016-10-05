@@ -40,13 +40,13 @@ import io.vertigo.commons.peg.PegRules;
 public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 
 	// 	{ }
-	private static final PegRule<List<?>> EMPTY_LIST = PegRules.sequence(//Liste vide
+	private static final PegRule<List<Object>> EMPTY_LIST = PegRules.sequence(//Liste vide
 			ARRAY_START,
 			SPACES,
 			ARRAY_END);
 
 	// , XXXX
-	private static final PegRule<List<List<?>>> MANY_WORDS = PegRules.zeroOrMore(
+	private static final PegRule<List<List<Object>>> MANY_WORDS = PegRules.zeroOrMore(
 			PegRules.sequence(//"mot"
 					ARRAY_SEPARATOR,
 					SPACES,
@@ -54,7 +54,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 	), false);
 
 	//{ XXXXX (,XXXX)+ }
-	private static final PegRule<List<?>> NON_EMPTY_LIST = PegRules.sequence(//"Liste non vide"
+	private static final PegRule<List<Object>> NON_EMPTY_LIST = PegRules.sequence(//"Liste non vide"
 			ARRAY_START,
 			SPACES,
 			WORD, //2
@@ -84,11 +84,11 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 				break;
 			case 1: //liste non vide on continue
 				//On récupère le prmier mot qui est obligatoire.
-				final List<?> list = (List<?>) parsing.getValue();
+				final List<Object> list = (List<Object>) parsing.getValue();
 				words.add((String) list.get(2));
 				//On récupère le produit de la règle many
-				final List<List<?>> many = (List<List<?>>) list.get(3);
-				for (final List<?> row : many) {
+				final List<List<Object>> many = (List<List<Object>>) list.get(3);
+				for (final List<Object> row : many) {
 					words.add((String) row.get(2));
 				}
 				break;

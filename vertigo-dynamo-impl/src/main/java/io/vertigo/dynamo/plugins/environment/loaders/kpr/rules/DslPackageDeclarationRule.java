@@ -34,13 +34,13 @@ import io.vertigo.commons.peg.PegRules;
  * package nomdupackage;.
  * @author pchretien
  */
-public final class DslPackageDeclarationRule extends AbstractRule<String, List<?>> {
+public final class DslPackageDeclarationRule extends AbstractRule<String, List<Object>> {
 
 	public DslPackageDeclarationRule() {
 		super(createMainRule());
 	}
 
-	private static PegRule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				PegRules.term("package "), //après package il y a un blanc obligatoire
 				SPACES,
@@ -48,7 +48,7 @@ public final class DslPackageDeclarationRule extends AbstractRule<String, List<?
 	}
 
 	@Override
-	protected String handle(final List<?> parsing) {
+	protected String handle(final List<Object> parsing) {
 		return (String) parsing.get(2); //Indice de la règle packageNamerule
 	}
 }

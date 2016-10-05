@@ -33,7 +33,7 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  * (preMultiQuery)\((queries|rangeQuery|fixedQuery|multiQuery|)+\)(postMultiQuery)
  * @author npiedeloup
  */
-final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
+final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> {
 	private static final int MAX_DEPTH = 3;
 
 	/**
@@ -47,9 +47,9 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 		super(createMainRule(level), "multiQuery-" + level);
 	}
 
-	private static PegRule<List<?>> createMainRule(final int level) {
+	private static PegRule<List<Object>> createMainRule(final int level) {
 		if (level > MAX_DEPTH) {
-			return (PegRule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
+			return (PegRule<List<Object>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
 
 		final PegRule<PegChoice> queriesRule = PegRules.choice(//"single or multiple")
@@ -70,7 +70,7 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslBlockQuery handle(final List<?> parsing) {
+	protected DslBlockQuery handle(final List<Object> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final List<DslQuery> queryDefinitions = new ArrayList<>();
 		final String postQuery = (String) parsing.get(4);

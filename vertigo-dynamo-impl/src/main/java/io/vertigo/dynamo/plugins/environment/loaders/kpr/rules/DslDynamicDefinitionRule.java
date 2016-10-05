@@ -58,7 +58,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 		return PegRules.choice(rules);
 	}
 
-	private static PegRule<List<?>> createRule(final String operation, final DslInnerDefinitionRule definitionRule) {
+	private static PegRule<List<Object>> createRule(final String operation, final DslInnerDefinitionRule definitionRule) {
 		// Création de la règle de déclaration d'une nouvelle definition.
 		return PegRules.sequence(//Definition
 				PegRules.term(operation), // alter ou create
