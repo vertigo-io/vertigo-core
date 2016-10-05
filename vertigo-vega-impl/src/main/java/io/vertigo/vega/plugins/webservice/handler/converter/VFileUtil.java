@@ -175,7 +175,7 @@ final class VFileUtil {
 			sb.append("attachment;");
 		}
 		final String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
-		sb.append("filename=\"").append(cleanestFileName).append("\"");
+		sb.append("filename=\"").append(cleanestFileName).append('\"');
 		byte[] utf8FileName;
 		try {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
