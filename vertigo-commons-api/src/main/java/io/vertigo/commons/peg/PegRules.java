@@ -46,7 +46,7 @@ public final class PegRules {
 	 * @param rules rules list
 	 * @return sequence rule of inner rules
 	 */
-	public static PegRule<List<Object>> sequence(final PegRule<? extends Object>... rules) {
+	public static PegRule<List<Object>> sequence(final PegRule<?>... rules) {
 		return sequence(Arrays.asList(rules));
 	}
 
@@ -54,7 +54,7 @@ public final class PegRules {
 	 * @param rules rules list
 	 * @return sequence rule of inner rules
 	 */
-	public static PegRule<List<Object>> sequence(final List<PegRule<? extends Object>> rules) {
+	public static PegRule<List<Object>> sequence(final List<PegRule<?>> rules) {
 		return new PegSequenceRule(rules);
 	}
 
@@ -62,7 +62,7 @@ public final class PegRules {
 	 * @param rules the list of rules to test
 	 * @return choice rule of inner rules
 	 */
-	public static PegRule<PegChoice> choice(final PegRule<? extends Object>... rules) {
+	public static PegRule<PegChoice> choice(final PegRule<?>... rules) {
 		return choice(Arrays.asList(rules));
 	}
 
@@ -70,7 +70,7 @@ public final class PegRules {
 	 * @param rules the list of rules to test
 	 * @return choice rule of inner rules
 	 */
-	public static PegRule<PegChoice> choice(final List<PegRule<? extends Object>> rules) {
+	public static PegRule<PegChoice> choice(final List<PegRule<?>> rules) {
 		return new PegChoiceRule(rules);
 	}
 
@@ -114,7 +114,7 @@ public final class PegRules {
 	 * @param rootRule Root rule to start with
 	 * @return Html railroad diagram
 	 */
-	public static final String namedRulesAsHtml(final PegRule rootRule) {
+	public static final String namedRulesAsHtml(final PegRule<?> rootRule) {
 		final PegRulesHtmlRenderer pegRulesHtmlRenderer = new PegRulesHtmlRenderer();
 		return pegRulesHtmlRenderer.render(rootRule);
 	}

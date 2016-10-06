@@ -35,13 +35,13 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class PegSequenceRule implements PegRule<List<Object>> {
-	private final List<PegRule<? extends Object>> rules;
+	private final List<PegRule<?>> rules;
 	private final String expression;
 
 	/**
 	 * Constructor.
 	 */
-	PegSequenceRule(final List<PegRule<? extends Object>> rules) {
+	PegSequenceRule(final List<PegRule<?>> rules) {
 		Assertion.checkNotNull(rules);
 		Assertion.checkArgument(rules.size() > 1, "A sequence must contain at least 2 rules");
 		//-----
@@ -61,7 +61,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 		return expression;
 	}
 
-	final List<PegRule<? extends Object>> getRules() {
+	final List<PegRule<?>> getRules() {
 		return rules;
 	}
 
