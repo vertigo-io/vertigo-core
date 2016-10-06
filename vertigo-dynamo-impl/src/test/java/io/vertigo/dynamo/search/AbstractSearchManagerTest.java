@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -869,6 +871,43 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				} else {
 					Assert.assertEquals(searchFacetLabel, YearCluster.after2005.getLabel());
 				}
+			}
+		}
+	}
+
+	/**
+	 * Test le facettage par term d'une liste.
+	 */
+	@Test
+	public void testSortedClusterByFacetTerm() {
+		index(true);
+		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+				.withFacetClustering(makeFacetDefinition)
+				.build();
+
+		final DtListState listState = new DtListState(null, 0, carIndexDefinition.getIndexDtDefinition().getField("YEAR").getName(), true);
+		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, listState);
+
+		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne
+		final Map<String, Set<Car>> databaseCluster = new HashMap<>();
+		for (final Car car : carDataBase.getAllCars()) {
+			Set<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase(Locale.FRENCH));
+			if (carsByMake == null) {
+				carsByMake = new TreeSet<>((e1, e2) -> {
+					return e2.getYear().compareTo(e1.getYear());
+				});
+				databaseCluster.put(car.getMake().toLowerCase(Locale.FRENCH), carsByMake);
+			}
+			carsByMake.add(car);
+		}
+		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
+		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
+			final Car firstClusterCar = entry.getValue().get(0);
+			final Set<Car> carsByMake = databaseCluster.get(searchFacetLabel);
+			Assert.assertEquals(carsByMake.iterator().next().getId(), firstClusterCar.getId());
+			for (final Car car : entry.getValue()) {
+				Assert.assertEquals(searchFacetLabel, car.getMake().toLowerCase(Locale.FRENCH));
 			}
 		}
 	}
