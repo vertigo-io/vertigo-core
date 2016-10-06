@@ -76,25 +76,6 @@ public final class PegWordRule implements PegRule<String> {
 	@Override
 	public String getExpression() {
 		return readableExpression;
-		//		final StringBuilder expression = new StringBuilder();
-		//		if (!acceptedCharacters.isEmpty()) {
-		//			expression.append(readableCheckedChar);
-		//		} else if (!rejectedCharacters.isEmpty()) {
-		//			if (mode == Mode.REJECT_ESCAPABLE) {
-		//				expression.append("(!")
-		//						.append(readableCheckedChar)
-		//						.append("|\\.)");
-		//			} else {
-		//				expression.append('!');
-		//				expression.append(readableCheckedChar);
-		//			}
-		//		} else if (mode == Mode.REJECT || mode == Mode.REJECT_ESCAPABLE) {//tout
-		//			expression.append('.');
-		//		} else {
-		//			throw new IllegalArgumentException("case not implemented");
-		//		}
-		//		expression.append(emptyAccepted ? "*" : "+");
-		//		return expression.toString();
 	}
 
 	/** {@inheritDoc} */
