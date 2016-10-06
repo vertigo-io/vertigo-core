@@ -89,6 +89,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Sets fragment
+	 * @param fragment Persistent root DtDefinition for this fragment
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
@@ -135,7 +136,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display if this field is use for display
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName,
+			final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
 		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, required, persistent, fkDtDefinitionName, null, false, sort, display);
@@ -207,7 +209,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
-	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean required, final boolean persistent, final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean dynamic, final boolean sort, final boolean display) {
+	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean required, final boolean persistent,
+			final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean dynamic, final boolean sort, final boolean display) {
 
 		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
 		//-----

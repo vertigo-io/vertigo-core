@@ -61,7 +61,8 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param highlights Liste des extraits avec mise en valeur par objet et par champs
 	 * @param source Object source permettant rerentrer dans le mechanisme de filtrage
 	 */
-	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Optional<FacetDefinition> clusterFacetDefinition, final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
+	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Optional<FacetDefinition> clusterFacetDefinition,
+			final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
 		Assertion.checkNotNull(query);
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(facets);

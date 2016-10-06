@@ -128,6 +128,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * Reloads entity from fragment, and keep fragment modifications.
 	 *
 	 * @param fragment  merged from datastore and input
+	 * @return merged root entity merged with the fragment
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
@@ -175,6 +176,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * Récupération d'un fragment persistant par son URI. L'objet doit exister.
 	 *
 	 * @param uri URI de l'objet à récupérer
+	 * @param fragmentClass Fragment class
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
@@ -204,6 +206,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * Récupération d'un fragment persistant par son identifiant.<br>
 	 *
 	 * @param id identifiant de l'objet persistant recherché
+	 * @param fragmentClass Fragment class
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {

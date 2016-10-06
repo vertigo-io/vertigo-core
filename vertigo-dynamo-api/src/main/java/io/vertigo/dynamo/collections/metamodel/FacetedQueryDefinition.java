@@ -69,7 +69,8 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @param listFilterBuilderClass listFilterBuilderClass to use
 	 * @param listFilterBuilderQuery listFilterBuilderQuery to use
 	 */
-	public FacetedQueryDefinition(final String name, final DtDefinition keyConceptDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain, final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
+	public FacetedQueryDefinition(final String name, final DtDefinition keyConceptDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain,
+			final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);

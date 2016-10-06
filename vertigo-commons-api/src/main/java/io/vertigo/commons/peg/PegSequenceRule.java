@@ -61,7 +61,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 		return expression;
 	}
 
-	final List<PegRule<?>> getRules() {
+	List<PegRule<?>> getRules() {
 		return rules;
 	}
 

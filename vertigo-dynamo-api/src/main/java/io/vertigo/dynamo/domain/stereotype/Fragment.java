@@ -33,5 +33,9 @@ import java.lang.annotation.Target;
 @Inherited
 @Target({ ElementType.TYPE })
 public @interface Fragment {
+
+	/**
+	 * @return Fragment name
+	 */
 	String fragmentOf();
 }

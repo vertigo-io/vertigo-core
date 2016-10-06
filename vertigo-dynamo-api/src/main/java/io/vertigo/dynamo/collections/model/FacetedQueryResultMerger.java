@@ -144,7 +144,8 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		FacetDefinition clusterFacetDefinition = null;
 
 		if (facetDefinitionNameOpt.isPresent()) {
-			clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
+			clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0),
+					new MessageText("cluster", null), FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);
 		}

@@ -91,6 +91,10 @@ public final class DslEntity implements DslEntityFieldType {
 		return names;
 	}
 
+	/**
+	 * @param fieldName Name of the field
+	 * @return Property type
+	 */
 	public DslPropertyType getPropertyType(final String fieldName) {
 		final DslEntityFieldType type = getField(fieldName).getType();
 		Assertion.checkArgument(type.isProperty(), "property {0} not found on {1}", fieldName, this);
@@ -126,6 +130,9 @@ public final class DslEntity implements DslEntityFieldType {
 		return name;
 	}
 
+	/**
+	 * @return if this entity is identified as core and managed specificaly.
+	 */
 	public boolean isProvided() {
 		return provided;
 	}

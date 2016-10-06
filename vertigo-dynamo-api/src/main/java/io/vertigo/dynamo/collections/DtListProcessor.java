@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Processor that can be composed of filters or sorters
  * and be applied on a list.
  * @author pchretien
+ * @param <D> Type of list's element
  */
 public interface DtListProcessor<D extends DtObject> {
 	/**

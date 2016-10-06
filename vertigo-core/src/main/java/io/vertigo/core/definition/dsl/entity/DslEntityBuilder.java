@@ -55,6 +55,10 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 
 	}
 
+	/**
+	 * Set this entity as core and managed specificaly.
+	 * @return this builder
+	 */
 	public DslEntityBuilder withProvided() {
 		myProvided = true;
 		return this;

@@ -229,11 +229,13 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @param keywords Keywords
 	 * @param searchedFields Searched field list
 	 * @param listFilters Added filters
+	 * @param dtListState Sort and page list state
 	 * @param boostedField Field use for boosting score
 	 * @return Filtered ordered list
 	 * @throws IOException Query error
 	 */
-	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState, final Optional<DtField> boostedField) throws IOException {
+	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState,
+			final Optional<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
 		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");

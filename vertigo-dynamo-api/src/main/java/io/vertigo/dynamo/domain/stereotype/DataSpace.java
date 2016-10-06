@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 
 /**
  * Nom du DataSpace auquel est rattaché l'entité.
- *
  * @author  mlaroche
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,5 +33,8 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface DataSpace {
 
+	/**
+	 * @return DataSpace name
+	 */
 	String value();
 }

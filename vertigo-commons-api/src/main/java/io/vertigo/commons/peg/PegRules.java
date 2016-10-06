@@ -37,6 +37,7 @@ public final class PegRules {
 
 	/**
 	 * @param term Terminal
+	 * @return Term rule
 	 */
 	public static PegRule<String> term(final String term) {
 		return new PegTermRule(term);
@@ -105,6 +106,7 @@ public final class PegRules {
 	 * @param checkedChars Liste des caractères vérifiés
 	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé
 	 * @param readableExpression Expression nommée
+	 * @return Word rule (capture a word)
 	 */
 	public static PegRule<String> word(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableExpression) {
 		return new PegWordRule(emptyAccepted, checkedChars, mode, readableExpression);
@@ -114,7 +116,7 @@ public final class PegRules {
 	 * @param rootRule Root rule to start with
 	 * @return Html railroad diagram
 	 */
-	public static final String namedRulesAsHtml(final PegRule<?> rootRule) {
+	public static String namedRulesAsHtml(final PegRule<?> rootRule) {
 		final PegRulesHtmlRenderer pegRulesHtmlRenderer = new PegRulesHtmlRenderer();
 		return pegRulesHtmlRenderer.render(rootRule);
 	}

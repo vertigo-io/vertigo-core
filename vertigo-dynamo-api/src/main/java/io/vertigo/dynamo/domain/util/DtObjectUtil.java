@@ -71,6 +71,7 @@ public final class DtObjectUtil {
 
 	/**
 	 * Returns the 'id' of a 'DtObject'.
+	 * @param entity the entity
 	 * @return the id of the specified 'DtObject'
 	 */
 	public static Object getId(final Entity entity) {
@@ -102,7 +103,7 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param entity the entity
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)

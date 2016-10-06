@@ -74,11 +74,10 @@ final class ComponentAspectUtil {
 					.map(annotation -> findAspect(annotation, aspects))
 					.collect(Collectors.toList());
 
-			if (!classBasedInterceptors.isEmpty()) {
-				if (!Object.class.equals(method.getDeclaringClass())) {
-					//we add all class based interceptors on "no-object" methods
-					methodBasedInterceptors.addAll(classBasedInterceptors);
-				}
+			if (!classBasedInterceptors.isEmpty()
+					&& !Object.class.equals(method.getDeclaringClass())) {
+				//we add all class based interceptors on "no-object" methods
+				methodBasedInterceptors.addAll(classBasedInterceptors);
 			}
 			if (!methodBasedInterceptors.isEmpty()) {
 				//there is at least on aspect on this method

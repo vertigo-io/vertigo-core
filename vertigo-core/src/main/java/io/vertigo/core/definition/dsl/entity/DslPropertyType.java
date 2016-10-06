@@ -49,6 +49,10 @@ public enum DslPropertyType implements DslEntityFieldType {
 		this.javaClass = javaClass;
 	}
 
+	/**
+	 * Check value against this type.
+	 * @param value Value to check (nullable)
+	 */
 	public void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
@@ -57,6 +61,11 @@ public enum DslPropertyType implements DslEntityFieldType {
 		}
 	}
 
+	/**
+	 * Convert a read string value, to this DSL type.
+	 * @param stringValue string input
+	 * @return Typed object of this string
+	 */
 	public Object cast(final String stringValue) {
 		final String sValue = stringValue == null ? null : stringValue.trim();
 		if (sValue == null || sValue.length() == 0) {
@@ -76,16 +85,19 @@ public enum DslPropertyType implements DslEntityFieldType {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isProperty() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEntityLink() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEntity() {
 		return false;

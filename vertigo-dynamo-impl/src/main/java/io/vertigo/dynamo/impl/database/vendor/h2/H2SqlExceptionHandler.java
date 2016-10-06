@@ -125,7 +125,8 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 * DUPLICATE_KEY_1: Unique index or primary key violation: "PRIMARY KEY ON PUBLIC.TEST(ID)"; SQL statement: INSERT INTO TEST VALUES(1)
 	 * [23001-147]
 	 *
-	 * UNIQUE_INDEX_1: Unique index ou violation de clé primaire: "INS_UNIQUE_UTI_SES_INDEX_9 ON PUBLIC.INSCRIPTION (UTI_ID, SES_ID) VALUES (/ * clé: 1010 * / null, null, null, null , null, null, null, 1003, 1) ";
+	 * UNIQUE_INDEX_1: Unique index ou violation de clé primaire: "INS_UNIQUE_UTI_SES_INDEX_9 ON PUBLIC.INSCRIPTION (UTI_ID, SES_ID) VALUES
+	 * (/ * clé: 1010 * / null, null, null, null , null, null, null, 1003, 1) ";
 	 * [23505-176]
 	 */
 

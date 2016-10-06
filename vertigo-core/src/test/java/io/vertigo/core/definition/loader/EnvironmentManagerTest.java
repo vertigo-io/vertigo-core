@@ -81,4 +81,15 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 		dynamicDefinitionRepository.solve(definitionSpace);
 		Assert.assertNotNull(personDefinition);
 	}
+
+	@Test
+	public void badTypeTest() {
+		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+				.addPropertyValue(STREET, "1, rue du louvre")
+				.addPropertyValue(POSTAL_CODE, 75008)
+				.addPropertyValue(CITY, "Paris")
+				.build();
+		dynamicDefinitionRepository.addDefinition(address1Definition);
+
+	}
 }

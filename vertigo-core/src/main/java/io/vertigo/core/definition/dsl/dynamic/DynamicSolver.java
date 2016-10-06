@@ -90,8 +90,9 @@ final class DynamicSolver {
 				if (!definitionSpace.containsDefinitionName(definitionName)) {
 					//or references should be in currently parsed resources
 					if (!definitionRepository.containsDefinitionName(definitionName)) {
-						final String xdefRootName = xdefRoot.getName().equals(definition.getName()) ? xdefRoot.getName() : xdefRoot.getName() + "." + definition.getName();
-						throw new VSystemException("Clé {0} de type {1}, référencée par la propriété {2} de {3} non trouvée", definitionName, definition.getEntity().getField(fieldName).getType(), fieldName, xdefRootName);
+						final String xdefRootName = xdefRoot.getName().equals(definition.getName()) ? xdefRoot.getName() : (xdefRoot.getName() + "." + definition.getName());
+						throw new VSystemException("Clé {0} de type {1}, référencée par la propriété {2} de {3} non trouvée",
+								definitionName, definition.getEntity().getField(fieldName).getType(), fieldName, xdefRootName);
 					}
 					final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
 					if (!orderedList.contains(linkedDefinition)) {

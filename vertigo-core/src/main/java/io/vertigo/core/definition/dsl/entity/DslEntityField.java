@@ -26,6 +26,8 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DslEntityField {
+
+	/** Cardinalities of associations. */
 	public enum Cardinality {
 		/* 0  or 1*/
 		optional,

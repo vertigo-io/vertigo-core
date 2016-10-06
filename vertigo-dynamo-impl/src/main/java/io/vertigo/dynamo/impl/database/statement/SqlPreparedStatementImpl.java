@@ -124,7 +124,8 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param connection Connexion
 	 * @param returnGeneratedKeys true si on récupère les clés générées.
 	 */
-	public SqlPreparedStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
+	public SqlPreparedStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String sql,
+			final boolean returnGeneratedKeys) {
 		Assertion.checkNotNull(connection);
 		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(statementHandler);

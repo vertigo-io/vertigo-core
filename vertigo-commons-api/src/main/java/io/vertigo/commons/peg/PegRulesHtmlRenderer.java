@@ -96,7 +96,7 @@ public final class PegRulesHtmlRenderer {
 	private void sequence(final PegSequenceRule rule) {
 		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : ("Sequence("
 				+ rule.getRules().stream()
-						.map(subRule -> readGramar(subRule))
+						.map(this::readGramar)
 						.collect(Collectors.joining(", "))
 				+ ")"));
 	}
@@ -104,7 +104,7 @@ public final class PegRulesHtmlRenderer {
 	private void choice(final PegChoiceRule rule) {
 		populateGramar(rule, rule.getRules().isEmpty() ? "Skip()" : ("Choice(0,"
 				+ rule.getRules().stream()
-						.map(subRule -> readGramar(subRule))
+						.map(this::readGramar)
 						.collect(Collectors.joining(", "))
 				+ ")"));
 	}
