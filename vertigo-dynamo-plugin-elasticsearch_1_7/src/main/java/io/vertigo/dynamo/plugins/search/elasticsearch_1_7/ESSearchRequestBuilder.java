@@ -39,6 +39,7 @@ import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
+import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -138,7 +139,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder);
-		appendFacetDefinition(mySearchQuery, searchRequestBuilder);
+		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState);
 		return searchRequestBuilder;
 	}
 
@@ -147,19 +148,24 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
 		if (myListState.getSortFieldName().isPresent()) {
-			final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
-			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
-					.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
-
-			if (ACCEPT_UNMAPPED_SORT_FIELD) {
-				//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
-				final Optional<IndexType> indexType = IndexType.readIndexType(sortField.getDomain());
-				final String sortType = indexType.isPresent() ? indexType.get().getIndexDataType() : sortField.getDomain().getDataType().name();
-				sortBuilder.unmappedType(sortType);
-			}
+			final FieldSortBuilder sortBuilder = getFieldSortBuilder(myIndexDefinition, myListState);
 
 			searchRequestBuilder.addSort(sortBuilder);
 		}
+	}
+
+	private static FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
+		final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
+		final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
+				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
+
+		if (ACCEPT_UNMAPPED_SORT_FIELD) {
+			//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
+			final Optional<IndexType> indexType = IndexType.readIndexType(sortField.getDomain());
+			final String sortType = indexType.isPresent() ? indexType.get().getIndexDataType() : sortField.getDomain().getDataType().name();
+			sortBuilder.unmappedType(sortType);
+		}
+		return sortBuilder;
 	}
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
@@ -192,7 +198,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1D));
 	}
 
-	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
+	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
@@ -200,11 +206,16 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
 
 			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
-			aggregationBuilder.subAggregation(
-					AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-							.setSize(TOPHITS_SUBAGGREGATION_SIZE)
-							.setHighlighterNumOfFragments(3)
-							.addHighlightedField("*"));
+			final TopHitsBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
+					.setSize(TOPHITS_SUBAGGREGATION_SIZE)
+					.setHighlighterNumOfFragments(3)
+					.addHighlightedField("*");
+
+			if (myListState.getSortFieldName().isPresent()) {
+				topHitsBuilder.addSort(getFieldSortBuilder(myIndexDefinition, myListState));
+			}
+
+			aggregationBuilder.subAggregation(topHitsBuilder);
 			//We fetch source, because it's our only source to create result list
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
