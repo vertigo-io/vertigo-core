@@ -200,12 +200,14 @@ public final class DtObjectUtil {
 				.append('(');
 		boolean first = true;
 		for (final DtField dtField : findDtDefinition(dto).getFields()) {
-			if (!first) {
-				stringBuilder.append(", ");
+			if (dtField.getType() != DtField.FieldType.COMPUTED) {
+				if (!first) {
+					stringBuilder.append(", ");
+				}
+				stringBuilder.append(dtField.getName()).append('=');
+				stringBuilder.append(dtField.getDataAccessor().getValue(dto));
+				first = false;
 			}
-			stringBuilder.append(dtField.getName()).append('=');
-			stringBuilder.append(dtField.getDataAccessor().getValue(dto));
-			first = false;
 		}
 		stringBuilder.append(')');
 		return stringBuilder.toString();
