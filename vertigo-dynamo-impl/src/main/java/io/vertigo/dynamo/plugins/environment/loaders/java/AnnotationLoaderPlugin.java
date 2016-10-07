@@ -35,6 +35,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -73,7 +74,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
-	private static final class MethodComparator implements Comparator<Method> {
+	private static final class MethodComparator implements Comparator<Method>, Serializable {
+		private static final long serialVersionUID = -3272894481096942477L;
+
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final Method m1, final Method m2) {
@@ -81,7 +84,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static final class FieldComparator implements Comparator<Field> {
+	private static final class FieldComparator implements Comparator<Field>, Serializable {
+		private static final long serialVersionUID = -3272894481096942477L;
+
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final Field f1, final Field f2) {
