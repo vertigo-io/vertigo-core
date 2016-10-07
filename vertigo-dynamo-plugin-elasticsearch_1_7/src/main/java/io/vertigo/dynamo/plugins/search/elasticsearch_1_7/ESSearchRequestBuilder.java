@@ -67,7 +67,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static final int HIGHLIGHTER_NUM_OF_FRAGMENTS = 3;
 	private static final boolean ACCEPT_UNMAPPED_SORT_FIELD = false; //utile uniquement pour la recherche multi type
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
-	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
+	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
+	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //default 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\{])(.*) TO (.*)([\\}\\]])");
@@ -136,6 +137,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		Assertion.checkNotNull(myIndexDefinition, "You must set IndexDefinition");
 		Assertion.checkNotNull(mySearchQuery, "You must set SearchQuery");
 		Assertion.checkNotNull(myListState, "You must set ListState");
+		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
+				.check(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().get(), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder);
@@ -207,7 +211,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
 			final TopHitsBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-					.setSize(TOPHITS_SUBAGGREGATION_SIZE)
+					.setSize(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
+					.setFrom(myListState.getSkipRows())
 					.setHighlighterNumOfFragments(3)
 					.addHighlightedField("*");
 
