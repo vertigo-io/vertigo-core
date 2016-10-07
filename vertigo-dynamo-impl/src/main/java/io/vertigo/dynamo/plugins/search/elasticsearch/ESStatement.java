@@ -24,7 +24,6 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -222,11 +221,11 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @return Nombre de document indexés
 	 */
 	public long count() {
-		final CountResponse response = esClient.prepareCount()
-				.setIndices(indexName)
+		final SearchResponse response = esClient.prepareSearch(indexName)
 				.setTypes(typeName)
+				.setSize(0) //on cherche juste à compter
 				.execute()
 				.actionGet();
-		return response.getCount();
+		return response.getHits().getTotalHits();
 	}
 }
