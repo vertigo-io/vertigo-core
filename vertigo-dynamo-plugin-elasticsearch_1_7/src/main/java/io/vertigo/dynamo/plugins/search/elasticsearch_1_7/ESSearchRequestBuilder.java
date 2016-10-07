@@ -139,7 +139,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		Assertion.checkNotNull(myListState, "You must set ListState");
 		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
 				.check(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
-						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().get(), TOPHITS_SUBAGGREGATION_MAXSIZE);
+						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder);
@@ -239,11 +239,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	}
 
 	private static AggregationBuilder<?> facetToAggregationBuilder(final FacetDefinition facetDefinition) {
-		//Récupération des noms des champs correspondant aux facettes.
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {
 			return rangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
+		return termFacetToAggregationBuilder(facetDefinition, dtField);
+	}
+
+	private static AggregationBuilder<?> termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
 		final Order facetOrder;
 		switch (facetDefinition.getOrder()) {
@@ -258,7 +261,6 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
-
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html

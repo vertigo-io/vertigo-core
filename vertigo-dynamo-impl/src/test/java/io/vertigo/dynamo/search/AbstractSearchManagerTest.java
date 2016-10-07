@@ -941,8 +941,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
 			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
 			final int searchFacetCount = entry.getValue().size();
-			final List<Car> carsByYear = databaseCluster.get(searchFacetLabel);
-			Assert.assertEquals(carsByYear.size(), searchFacetCount);
+			Assert.assertEquals(1, searchFacetCount); //result == listState.top (=1)
 			for (final Car car : entry.getValue()) {
 				if (car.getYear() < 2000) {
 					Assert.assertEquals(searchFacetLabel, YearCluster.before2000.getLabel());
