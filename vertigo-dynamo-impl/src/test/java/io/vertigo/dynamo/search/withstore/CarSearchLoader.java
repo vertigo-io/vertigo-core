@@ -20,6 +20,7 @@ package io.vertigo.dynamo.search.withstore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -92,17 +93,14 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 
 	private TaskDefinition getTaskLoadCarList(final SearchChunk<Car> searchChunk) {
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
-		String sep = "";
-		final StringBuilder sql = new StringBuilder("select * from CAR where ID in (");
-		for (final URI<Car> uri : searchChunk.getAllURIs()) {
-			sql.append(sep).append(uri.getId());
-			sep = ",";
-		}
-		sql.append(")");
+		final String sql = searchChunk.getAllURIs()
+				.stream()
+				.map(uri -> uri.getId().toString())
+				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));
 
 		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
-				.withRequest(sql.toString())
+				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withOutAttribute("dtc", doCarList, true)
 				.build();
