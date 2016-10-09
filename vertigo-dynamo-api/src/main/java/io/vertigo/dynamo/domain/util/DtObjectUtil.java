@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.util;
 
+import java.util.stream.Collectors;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -195,22 +197,11 @@ public final class DtObjectUtil {
 	public static String toString(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		final StringBuilder stringBuilder = new StringBuilder()
-				.append(findDtDefinition(dto).getName())
-				.append('(');
-		boolean first = true;
-		for (final DtField dtField : findDtDefinition(dto).getFields()) {
-			if (dtField.getType() != DtField.FieldType.COMPUTED) {
-				if (!first) {
-					stringBuilder.append(", ");
-				}
-				stringBuilder.append(dtField.getName()).append('=');
-				stringBuilder.append(dtField.getDataAccessor().getValue(dto));
-				first = false;
-			}
-		}
-		stringBuilder.append(')');
-		return stringBuilder.toString();
+		return findDtDefinition(dto).getFields()
+				.stream()
+				.filter(dtField -> dtField.getType() != DtField.FieldType.COMPUTED)
+				.map(dtField -> (dtField.getName() + '=' + dtField.getDataAccessor().getValue(dto)))
+				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
 	}
 
 	/**
