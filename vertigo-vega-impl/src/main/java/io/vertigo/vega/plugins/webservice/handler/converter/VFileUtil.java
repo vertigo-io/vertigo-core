@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
@@ -118,13 +119,11 @@ final class VFileUtil {
 			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", webServiceParam.getName());
 			final Part file = request.raw().getPart(webServiceParam.getName());
 			if (file == null) {
-				final StringBuilder sb = new StringBuilder();
-				String sep = "";
-				for (final Part part : request.raw().getParts()) {
-					sb.append(sep).append(part.getName());
-					sep = ", ";
-				}
-				throw new IllegalArgumentException("File " + webServiceParam.getName() + " not found. Parts sent : " + sb.toString());
+				final String sentParts = request.raw().getParts()
+						.stream()
+						.map(part -> part.getName())
+						.collect(Collectors.joining(", "));
+				throw new IllegalArgumentException("File " + webServiceParam.getName() + " not found. Parts sent : " + sentParts);
 			}
 			return createVFile(file);
 		} catch (IOException | ServletException e) {
@@ -157,8 +156,7 @@ final class VFileUtil {
 	 * @param isAttachment boolean is Content an attachment
 	 * @return String
 	 */
-	private static String encodeFileNameToContentDisposition(final String fileName,
-			final boolean isAttachment) {
+	private static String encodeFileNameToContentDisposition(final String fileName, final boolean isAttachment) {
 		if (fileName == null) {
 			return "";
 		}

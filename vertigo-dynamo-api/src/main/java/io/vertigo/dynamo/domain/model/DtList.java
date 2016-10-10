@@ -96,15 +96,15 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder buf = new StringBuilder();
-		buf.append("(def=").append(getDefinition()).append(", size=").append(dtObjects.size());
+		final StringBuilder buf = new StringBuilder()
+				.append("(def=").append(getDefinition()).append(", size=").append(dtObjects.size());
 		if (dtObjects.size() > TO_STRING_MAX_ELEMENTS) {
 			buf.append(" show only the ").append(TO_STRING_MAX_ELEMENTS).append(" firsts");
 		}
 		buf.append(")\n");
 		for (int i = 0; i < Math.min(dtObjects.size(), TO_STRING_MAX_ELEMENTS); i++) { //pas plus de TO_STRING_MAX_ELEMENTS elements dans le toString
-			buf.append("\tRow #").append(i).append(" : ");
-			buf.append(get(i)).append('\n');
+			buf.append("\tRow #").append(i).append(" : ")
+					.append(get(i)).append('\n');
 		}
 
 		return buf.toString();
