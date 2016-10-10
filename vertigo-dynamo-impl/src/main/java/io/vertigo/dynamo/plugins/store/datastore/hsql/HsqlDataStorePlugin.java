@@ -86,12 +86,12 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private Long getSequenceNextval(final String sequenceName) {
 		final String taskName = TK_SELECT + '_' + sequenceName;
 
-		final StringBuilder request = chooseDataBaseStyle(sequenceName);
+		final String request = chooseDataBaseStyle(sequenceName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(getDataSpace())
-				.withRequest(request.toString())
+				.withRequest(request)
 				.withOutAttribute(SEQUENCE_FIELD, resultDomain, true)// OUT, obligatoire
 				.build();
 
@@ -102,9 +102,10 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.getResult();
 	}
 
-	private static StringBuilder chooseDataBaseStyle(final String sequenceName) {
+	private static String chooseDataBaseStyle(final String sequenceName) {
 		return new StringBuilder("select next value for " + sequenceName + "  as " + SEQUENCE_FIELD)
-				.append(" from information_schema.system_sequences where sequence_name = upper('" + sequenceName + "')");
+				.append(" from information_schema.system_sequences where sequence_name = upper('" + sequenceName + "')")
+				.toString();
 	}
 
 	/** {@inheritDoc} */
