@@ -18,11 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
@@ -81,16 +84,11 @@ final class KspLoader {
 	 * @return String Chaine parsable correspondant au fichier.
 	 * @throws IOException Erreur d'entrÃ©e/sortie
 	 */
-	private String parseFile() throws IOException {
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), charset))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
+	private String parseFile() throws URISyntaxException, IOException {
+		try (Stream<String> stream = Files.lines(Paths.get(kspURL.toURI()), charset)) {
+			return stream
+					.collect(Collectors.joining("\r\n", "", "\r\n"));
 		}
+
 	}
 }
