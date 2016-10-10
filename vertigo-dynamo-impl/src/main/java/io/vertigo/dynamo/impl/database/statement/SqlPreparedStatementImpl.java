@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
@@ -357,28 +358,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
-		final StringBuilder s = new StringBuilder(getSql()).append('(');
-		SqlParameter parameter;
-		for (int i = 0; i < getParameters().size(); i++) {
-			parameter = getParameter(i);
-			if (i > 0) {
-				s.append(", ");
-			}
-			if (parameter.isIn()) {
-				s.append("in");
-			}
-			if (parameter.isOut()) {
-				s.append("out");
-			}
-			s.append('=');
-			if (parameter.getValue() != null) {
-				s.append(parameter.getValue());
-			} else {
-				s.append("null");
-			}
-		}
-		s.append(')');
-		return s.toString();
+		return getParameters()
+				.stream()
+				.map(parameter -> parameter.toString())
+				.collect(Collectors.joining(", ", getSql() + '(', ")"));
 	}
 
 	/**

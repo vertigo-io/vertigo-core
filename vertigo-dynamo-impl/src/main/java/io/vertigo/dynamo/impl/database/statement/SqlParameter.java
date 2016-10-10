@@ -74,4 +74,22 @@ final class SqlParameter {
 	Object getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder s = new StringBuilder();
+		if (isIn()) {
+			s.append("in");
+		}
+		if (isOut()) {
+			s.append("out");
+		}
+		s.append('=');
+		if (getValue() != null) {
+			s.append(getValue());
+		} else {
+			s.append("null");
+		}
+		return s.toString();
+	}
 }
