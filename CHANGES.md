@@ -1,10 +1,51 @@
 Version history
 ===============
 
-Running 0.9.3-SNAPSHOT
+Running 0.9.4-SNAPSHOT
 ----------------------
 
 more to come :)
+
+
+Release 0.9.3 - 2016/10/11
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-092-to-093)
+
+__In Bold__ : Potential compatibility problems 
+* __[All] Updated to JDK 8__
+* [All] Code cleaning, refactoring and documenting
+* [All] Use Lambda when it's possible
+* __[Core] Added aspect on plugins + checked unmanaged aspect__
+* [Core] Added fluent assertion when( ... ).check(...)
+* [Core] Better message for DSL Solver unknown definitions error
+*	[Core] Clearer message in case of unresolved names
+*	[Commons] Refactored base64 codec to use jdk
+* __[Dynamo] Split DtObject as Entity (persistent) and simple DtObject (non persistent)_
+*	__[Dynamo] Added fragment of entity__
+* [Dynamo] Added support to unmapped sort field
+*	[Dynamo] Fixed #60. Use DtListState maxRows and skipRows when clustering result. (limited to 100 elements per group)
+*	[Dynamo] Fixed ElasticSearch must have a dataType for simple properties type (String, long, BigDecimal,...)
+*	[Dynamo] Fixed search indexType with optional analyzer
+*	[Dynamo] Refactor DSL parser (Ksp loader)
+*	[Dynamo] Removed property about persistence from dtDefinition
+*	[Dynamo] StoreManager only deals with entities
+*	__[Dynamo] Added maven module to support ElasticSearch 1.7__
+*	__[Dynamo] Updated ElasticSearch to 2.3.5 and Lucene to 5.5.0__
+*	__[Dynamo] Updated FacetedQueryResult JsonSerializer to Focus v3__
+* [Dynamo] Added FK to Entity in Fragments
+* [Dynamo] Added sort of elements inner a search cluster. Fix #73
+* [Dynamo] Fix #73 for ElasticSearch 1.7
+* [Dynamo] Fixed #69, now included in SerializerV4
+* [Dynamo] Fixed DslListFilter for range query starting by *
+* [Dynamo] Fixed sqlexception.getSQLState when it's null
+* [Dynamo] Fixed unique constrainte violation on H2 database
+* [Dynamo] Made reindex of dirty elements every 1s instead of 5s
+* [Dynamo] Renamed stereotype Data to ValueObject (always default sterotype)
+* [Dynamo] Updated DataStore and DAO to load and update Fragments
+*	[Vega] __Fixed check selected facet by code instead of label__
+* [Vega] Fixed serialization of FacetedQueryResult, removed facet and group if 0 elements (for emptied scope added as facets)
+* [Vega] Updated FacetedQueryResultJson as discuss in #69
+* [Vega] __Updated spark from 1.1.1 to 2.5 (jdk8/lambda)__
 
 
 
