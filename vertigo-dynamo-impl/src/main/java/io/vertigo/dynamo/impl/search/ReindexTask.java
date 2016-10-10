@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -131,15 +132,10 @@ final class ReindexTask implements Runnable {
 
 	private ListFilter urisToListFilter(final Set<URI<? extends KeyConcept>> removedUris) {
 		final String indexIdFieldName = searchIndexDefinition.getIndexDtDefinition().getIdField().get().getName();
-		final StringBuilder sb = new StringBuilder();
-		sb.append(indexIdFieldName).append(":(");
-		String sep = "";
-		for (final URI<?> uri : removedUris) {
-			sb.append(sep);
-			sb.append(String.valueOf(uri.getId()));
-			sep = " OR ";
-		}
-		sb.append(')');
-		return new ListFilter(sb.toString());
+		final String filterValue = removedUris
+				.stream()
+				.map(uri -> String.valueOf(uri.getId()))
+				.collect(Collectors.joining(" OR ", indexIdFieldName + ":(", ")"));
+		return new ListFilter(filterValue);
 	}
 }

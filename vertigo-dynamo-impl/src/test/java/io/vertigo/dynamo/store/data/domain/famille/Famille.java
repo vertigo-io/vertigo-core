@@ -110,12 +110,12 @@ public final class Famille implements Entity {
 	@javax.persistence.Transient
 	@Field(domain = "DO_LIBELLE_LONG", type = "COMPUTED", persistent = false, label = "Libelle")
 	public final String getDescription() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(getLibelle());
-		builder.append('[');
-		builder.append(getFamId());
-		builder.append(']');
-		return builder.toString();
+		return new StringBuilder()
+				.append(getLibelle())
+				.append('[')
+				.append(getFamId())
+				.append(']')
+				.toString();
 	}
 
 	/**
