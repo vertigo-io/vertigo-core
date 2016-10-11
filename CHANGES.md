@@ -47,6 +47,7 @@ __In Bold__ : Potential compatibility problems
 * [Vega] Fixed serialization of FacetedQueryResult, removed facet and group if 0 elements (for emptied scope added as facets)
 * [Vega] Updated FacetedQueryResultJson as discuss in #69
 * [Vega] __Updated spark from 1.1.1 to 2.5 (jdk8/lambda)__
+* [Dynamo] __Moved ExportManagerImpl to quarto__
 
 
 

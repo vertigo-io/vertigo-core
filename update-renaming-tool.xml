@@ -75,6 +75,16 @@
 			<replace dir="${src.path}" encoding="${src.encoding}" token="import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;" value="import io.vertigo.dynamo.search.metamodel.SearchChunk;${line.separator}import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;">
 					<include name="**/*SearchLoader.java" />
 			</replace>
+			<echo message="Replace in *.xml io.vertigo.quarto.impl.export. to io.vertigo.quarto.impl.export." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.quarto.impl.export." value="io.vertigo.quarto.impl.export.">
+					<include name="**/*.xml" />
+			</replace>
+			<echo message="Replace in *.xml io.vertigo.quarto.plugins.export. to io.vertigo.quarto.plugins.export." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.quarto.plugins.export." value="io.vertigo.quarto.plugins.export.">
+					<include name="**/*.xml" />
+			</replace>
+		
+		
 		</target>
 	
 	<target name="0.9.1 to 0.9.2" description="Usefull renames from 0.9.1 to 0.9.2">
