@@ -42,6 +42,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Made reindex of dirty elements every 1s instead of 5s
 * [Dynamo] Renamed stereotype Data to ValueObject (always default sterotype)
 * [Dynamo] Updated DataStore and DAO to load and update Fragments
+* [Dynamo] DtListProcessor is now typed
 *	[Vega] __Fixed check selected facet by code instead of label__
 * [Vega] Fixed serialization of FacetedQueryResult, removed facet and group if 0 elements (for emptied scope added as facets)
 * [Vega] Updated FacetedQueryResultJson as discuss in #69

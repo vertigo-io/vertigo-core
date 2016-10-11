@@ -34,9 +34,10 @@ import io.vertigo.lang.Manager;
 public interface CollectionsManager extends Manager {
 	/**
 	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
+	 * @param <D> Type de l'objet de la liste
 	 * @return DtListProcessor
 	 */
-	DtListProcessor createDtListProcessor();
+	<D extends DtObject> DtListProcessor<D> createDtListProcessor();
 
 	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
@@ -53,6 +54,7 @@ public interface CollectionsManager extends Manager {
 	 * @param dtList Liste à facetter
 	 * @param facetedQuery Requete à appliquer (filtrage)
 	 * @return Résultat correspondant à la requête
+	 * @param <R> Type de l'objet de la liste
 	 */
 	<R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery);
 }
