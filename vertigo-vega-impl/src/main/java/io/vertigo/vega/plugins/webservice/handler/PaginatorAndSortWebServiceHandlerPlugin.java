@@ -127,7 +127,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.createDtListProcessor()
+			sortedList = collectionsManager.<D> createDtListProcessor()
 					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
 					.apply(unFilteredList);
 		} else {
@@ -139,7 +139,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		} else if (uiListState.getTop() > 0) {
 			final int start = uiListState.getSkip();
 			final int end = Math.min(start + uiListState.getTop(), sortedList.size());
-			filteredList = collectionsManager.createDtListProcessor()
+			filteredList = collectionsManager.<D> createDtListProcessor()
 					.filterSubList(start, end)
 					.apply(sortedList);
 		} else {

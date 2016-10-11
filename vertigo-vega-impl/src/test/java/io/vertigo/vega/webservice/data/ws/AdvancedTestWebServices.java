@@ -366,7 +366,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.createDtListProcessor()
+			sortedList = collectionsManager.<D> createDtListProcessor()
 					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
 					.apply(unFilteredList);
 		} else {
@@ -377,7 +377,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			final int listSize = sortedList.size();
 			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
 			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
-			filteredList = collectionsManager.createDtListProcessor()
+			filteredList = collectionsManager.<D> createDtListProcessor()
 					.filterSubList(usedSkip, usedTop)
 					.apply(sortedList);
 		} else {
