@@ -32,7 +32,7 @@ public final class OneMoreAspect implements Aspect {
 	}
 
 	@Override
-	public Class<?> getAnnotationType() {
+	public Class<OneMore> getAnnotationType() {
 		return OneMore.class;
 	}
 

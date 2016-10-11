@@ -19,12 +19,12 @@
 package io.vertigo.core.param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 
@@ -116,7 +116,7 @@ public final class ParamManagerImpl implements ParamManager {
 		checkParamName(paramName);
 		//-----
 		for (final ParamPlugin paramPlugin : paramPlugins) {
-			final Option<String> value = paramPlugin.getValue(paramName);
+			final Optional<String> value = paramPlugin.getValue(paramName);
 			if (value.isPresent()) {
 				return value.get();
 			}

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.kvstore.berkeley;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import org.junit.Test;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
 
@@ -96,10 +96,10 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			kvStoreManager.put("flowers", "1", tulip);
 			transaction.commit();
 		}
-		final Option<Flower> flower1 = kvStoreManager.find("flowers", "1", Flower.class);
+		final Optional<Flower> flower1 = kvStoreManager.find("flowers", "1", Flower.class);
 		Assert.assertTrue("Flower id 1 not found", flower1.isPresent());
 
-		final Option<Flower> flower2 = kvStoreManager.find("flowers", "2", Flower.class);
+		final Optional<Flower> flower2 = kvStoreManager.find("flowers", "2", Flower.class);
 		Assert.assertFalse("There is already a flower id 2", flower2.isPresent());
 		try {
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -111,7 +111,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			//on doit passer par là
 		}
 
-		final Option<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
+		final Optional<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
 		Assert.assertFalse("Rollback flower id 2 failed", flower2bis.isPresent());
 
 	}
@@ -143,7 +143,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			sleep(3);
 
 			//find unexpired element
-			final Option<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
+			final Optional<Flower> tulip1Load = kvStoreManager.find("flowers", "1", Flower.class);
 			Assert.assertTrue(tulip1Load.isPresent());
 
 			//count after 3 inserts and T+9s
@@ -167,7 +167,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 			Assert.assertEquals(0, nbFlowers6);
 
 			//find expired element
-			final Option<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
+			final Optional<Flower> tulip1Reload = kvStoreManager.find("flowers", "1", Flower.class);
 			Assert.assertFalse(tulip1Reload.isPresent());
 		}
 	}
@@ -176,7 +176,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 		try {
 			Thread.sleep(timeSecond * 1000);
 		} catch (final InterruptedException e) {
-			//nothing
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 	}
 

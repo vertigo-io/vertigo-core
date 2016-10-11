@@ -19,12 +19,13 @@
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil.FilterPattern;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Filtre de DtList prenant en entrée un String qui doit respecter certains patterns.
@@ -39,12 +40,12 @@ import io.vertigo.lang.Option;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public final class DtListPatternFilter<D extends DtObject> implements DtListFilter<D>, Serializable {
+public final class DtListPatternFilter<D extends DtObject> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = 6282972172196740177L;
 
 	private final FilterPattern filterPattern;
 	private final String[] parsedFilter;
-	private DtListFilter<D> subDtListFilter;
+	private Predicate<D> subDtListFilter;
 
 	/**
 	 * Constructeur.
@@ -58,7 +59,7 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 
 		//On test les patterns dans l'ordre
 		for (final FilterPattern filterPatternTemp : FilterPattern.values()) {
-			final Option<String[]> parsedFilterOption = DtListPatternFilterUtil.parseFilter(filterString, filterPatternTemp.getPattern());
+			final Optional<String[]> parsedFilterOption = DtListPatternFilterUtil.parseFilter(filterString, filterPatternTemp.getPattern());
 			if (parsedFilterOption.isPresent()) {
 				foundFilterPattern = filterPatternTemp;
 				foundParsedFilter = parsedFilterOption.get();
@@ -73,10 +74,10 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final D dto) {
+	public boolean test(final D dto) {
 		if (subDtListFilter == null) {
 			subDtListFilter = DtListPatternFilterUtil.createDtListFilterForPattern(filterPattern, parsedFilter, DtObjectUtil.findDtDefinition(dto));
 		}
-		return subDtListFilter.accept(dto);
+		return subDtListFilter.test(dto);
 	}
 }

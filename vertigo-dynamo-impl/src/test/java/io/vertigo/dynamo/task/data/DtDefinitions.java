@@ -21,6 +21,8 @@ package io.vertigo.dynamo.task.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import io.vertigo.dynamo.task.data.domain.SuperHero;
+
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {

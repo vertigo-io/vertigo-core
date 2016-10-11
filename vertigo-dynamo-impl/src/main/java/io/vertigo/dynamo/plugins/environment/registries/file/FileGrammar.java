@@ -21,28 +21,28 @@ package io.vertigo.dynamo.plugins.environment.registries.file;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
-import io.vertigo.core.definition.dsl.entity.EntityPropertyType;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
+import io.vertigo.core.definition.dsl.entity.DslPropertyType;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
  * @author npiedeloup
  */
-final class FileGrammar implements EntityGrammar {
+final class FileGrammar implements DslGrammar {
 
 	/**Définition de tache.*/
-	public static final Entity FILE_INFO_DEFINITION_ENTITY;
+	public static final DslEntity FILE_INFO_DEFINITION_ENTITY;
 
 	static {
-		FILE_INFO_DEFINITION_ENTITY = new EntityBuilder("FileInfo")
-				.addField(KspProperty.DATA_SPACE, EntityPropertyType.String, true)
+		FILE_INFO_DEFINITION_ENTITY = new DslEntityBuilder("FileInfo")
+				.addRequiredField(KspProperty.DATA_SPACE, DslPropertyType.String)
 				.build();
 	}
 
 	@Override
-	public List<Entity> getEntities() {
+	public List<DslEntity> getEntities() {
 		return Collections.singletonList(FILE_INFO_DEFINITION_ENTITY);
 	}
 }

@@ -24,13 +24,16 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -44,6 +47,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 
@@ -57,6 +61,8 @@ import io.vertigo.lang.WrappedException;
  */
 final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
+	private static final boolean DEFAULT_REFRESH = false; //mettre a true pour TU uniquement
+	private static final boolean BULK_REFRESH = false; //mettre a true pour TU uniquement
 	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final Logger LOGGER = Logger.getLogger(ESStatement.class);
 
@@ -90,7 +96,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
+			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
 			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex()
@@ -102,7 +108,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			}
 			final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 			if (bulkResponse.hasFailures()) {
-				// process failures by iterating through each bulk response item
+				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {2}", typeName, indexName, bulkResponse.buildFailureMessage());
 			}
 		} catch (final IOException e) {
 			handleIOException(e);
@@ -119,7 +125,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			esClient.prepareIndex()
+			esClient.prepareIndex().setRefresh(DEFAULT_REFRESH)
 					.setIndex(indexName)
 					.setType(typeName)
 					.setId(index.getURI().urn())
@@ -139,11 +145,33 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		Assertion.checkNotNull(query);
 		//-----
 		final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-		esClient.prepareDeleteByQuery(indexName)
+		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch()
+				.setIndices(indexName)
 				.setTypes(typeName)
-				.setQuery(queryBuilder)
-				.execute()
-				.actionGet();
+				.setSearchType(SearchType.QUERY_THEN_FETCH)
+				.setNoFields()
+				.addSort("_id", SortOrder.ASC)
+				.setQuery(queryBuilder);
+		try {
+			//get all doc_id
+			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
+			final SearchHits searchHits = queryResponse.getHits();
+			if (searchHits.getTotalHits() > 0) {
+				//bulk delete all ids
+				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
+				for (final SearchHit searchHit : searchHits) {
+					bulkRequest.add(esClient.prepareDelete(indexName, typeName, searchHit.getId()));
+				}
+				final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+				if (bulkResponse.hasFailures()) {
+					throw new VSystemException("Can't removeBQuery {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
+				}
+			}
+		} catch (final SearchPhaseExecutionException e) {
+			final VUserException vue = new VUserException(new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			vue.initCause(e);
+			throw vue;
+		}
 	}
 
 	/**
@@ -153,7 +181,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		esClient.prepareDelete()
+		esClient.prepareDelete().setRefresh(DEFAULT_REFRESH)
 				.setIndex(indexName)
 				.setType(typeName)
 				.setId(uri.urn())
@@ -193,11 +221,11 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @return Nombre de document indexés
 	 */
 	public long count() {
-		final CountResponse response = esClient.prepareCount()
-				.setIndices(indexName)
+		final SearchResponse response = esClient.prepareSearch(indexName)
 				.setTypes(typeName)
+				.setSize(0) //on cherche juste à compter
 				.execute()
 				.actionGet();
-		return response.getCount();
+		return response.getHits().getTotalHits();
 	}
 }

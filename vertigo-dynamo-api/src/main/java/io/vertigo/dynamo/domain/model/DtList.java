@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Classe de stockage des listes.
@@ -42,6 +42,7 @@ import io.vertigo.lang.Option;
  * @param <D> Type du DtObject
  */
 public final class DtList<D extends DtObject> extends AbstractList<D> implements Serializable {
+	private static final int TO_STRING_MAX_ELEMENTS = 50;
 	private static final long serialVersionUID = -8059200549636099190L;
 	public static final String TOTAL_COUNT_META = "totalCount";
 
@@ -95,15 +96,15 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder buf = new StringBuilder();
-		buf.append("(def=").append(getDefinition()).append(", size=").append(dtObjects.size());
-		if (dtObjects.size() > 50) {
-			buf.append(" show only the 50 firsts");
+		final StringBuilder buf = new StringBuilder()
+				.append("(def=").append(getDefinition()).append(", size=").append(dtObjects.size());
+		if (dtObjects.size() > TO_STRING_MAX_ELEMENTS) {
+			buf.append(" show only the ").append(TO_STRING_MAX_ELEMENTS).append(" firsts");
 		}
 		buf.append(")\n");
-		for (int i = 0; i < Math.min(dtObjects.size(), 50); i++) { //pas plus de 50 elements dans le toString
-			buf.append("\tRow #").append(i).append(" : ");
-			buf.append(get(i)).append('\n');
+		for (int i = 0; i < Math.min(dtObjects.size(), TO_STRING_MAX_ELEMENTS); i++) { //pas plus de TO_STRING_MAX_ELEMENTS elements dans le toString
+			buf.append("\tRow #").append(i).append(" : ")
+					.append(get(i)).append('\n');
 		}
 
 		return buf.toString();
@@ -192,14 +193,14 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param <O> MetaData value type
 	 * @return MetaData value
 	 */
-	public <O extends Serializable> Option<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
+	public <O extends Serializable> Optional<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
 		Assertion.checkArgNotEmpty(metaDataName);
 		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
-			return Option.empty();
+			return Optional.empty();
 		}
-		return Option.of(metaDataClass.cast(value));
+		return Optional.of(metaDataClass.cast(value));
 	}
 
 	/**

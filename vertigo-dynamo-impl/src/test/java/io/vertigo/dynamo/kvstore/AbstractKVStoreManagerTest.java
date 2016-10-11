@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.kvstore;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -27,7 +29,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.lang.Option;
 
 /**
  * @author pchretien
@@ -84,12 +85,12 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFind() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Option<Flower> foundFlower = kvStoreManager.find("flowers", "1", Flower.class);
+			final Optional<Flower> foundFlower = kvStoreManager.find("flowers", "1", Flower.class);
 			Assert.assertFalse(foundFlower.isPresent());
 			final Flower tulip = buildFlower("tulip", 100);
 
 			kvStoreManager.put("flowers", "1", tulip);
-			final Option<Flower> foundFlower2 = kvStoreManager.find("flowers", "1", Flower.class);
+			final Optional<Flower> foundFlower2 = kvStoreManager.find("flowers", "1", Flower.class);
 			Assert.assertTrue(foundFlower2.isPresent());
 			Assert.assertEquals("tulip", foundFlower2.get().getName());
 			Assert.assertEquals(100d, foundFlower2.get().getPrice(), 0); //"Price must be excatly 100",
@@ -100,14 +101,14 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testRemove() {
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Option<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
+			final Optional<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
 			Assert.assertFalse("There is already a flower id 10", flower.isPresent());
 
 			kvStoreManager.put("flowers", "10", buildFlower("daisy", 60));
 			kvStoreManager.put("flowers", "11", buildFlower("tulip", 100));
 
-			final Option<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
-			final Option<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
+			final Optional<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
+			final Optional<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
 			Assert.assertTrue("Flower id 10 not found", flower1.isPresent());
 			Assert.assertTrue("Flower id 11 not found", flower2.isPresent());
 
@@ -115,13 +116,13 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Option<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
+			final Optional<Flower> flower = kvStoreManager.find("flowers", "10", Flower.class);
 			Assert.assertTrue("Flower id 10 not found", flower.isPresent());
 
 			kvStoreManager.remove("flowers", "10");
 
-			final Option<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
-			final Option<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
+			final Optional<Flower> flower1 = kvStoreManager.find("flowers", "10", Flower.class);
+			final Optional<Flower> flower2 = kvStoreManager.find("flowers", "11", Flower.class);
 			Assert.assertFalse("Remove flower id 10 failed", flower1.isPresent());
 			Assert.assertTrue("Flower id 11 not found", flower2.isPresent());
 		}

@@ -18,12 +18,12 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-@DtDefinition
-public final class Address implements DtObject {
+public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "address Id")
@@ -38,6 +38,12 @@ public final class Address implements DtObject {
 	private String postalCode;
 	@Field(domain = "DO_TEXTE_50", label = "country")
 	private String country;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Address> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	public Long getAdrId() {
 		return adrId;

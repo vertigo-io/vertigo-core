@@ -24,8 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Rule;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
@@ -39,18 +38,18 @@ import io.vertigo.util.StringUtil;
  */
 final class KspLoader {
 
-	private final String charset;
+	private final Charset charset;
 	private final URL kspURL;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param kspURL URL du fichier KSP.
 	 * @param charset charset d'encoding du fihcier KSP à lire
 	 */
-	KspLoader(final URL kspURL, final String charset) {
+	KspLoader(final URL kspURL, final Charset charset) {
 		Assertion.checkNotNull(kspURL);
-		Assertion.checkArgNotEmpty(charset);
+		Assertion.checkNotNull(charset);
 		//-----
 		this.kspURL = kspURL;
 		this.charset = charset;
@@ -65,9 +64,9 @@ final class KspLoader {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();
-			final Rule<Void> rule = new DslKspRule(dynamicModelrepository);
-			rule.createParser().parse(s, 0);
-		} catch (final NotFoundException e) {
+			new DslKspRule(dynamicModelrepository)
+					.parse(s, 0);
+		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
 			throw new WrappedException(message, e);
 		} catch (final Exception e) {
@@ -83,7 +82,7 @@ final class KspLoader {
 	 * @throws IOException Erreur d'entrÃ©e/sortie
 	 */
 	private String parseFile() throws IOException {
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), Charset.forName(charset)))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), charset))) {
 			final StringBuilder buff = new StringBuilder();
 			String line = reader.readLine();
 			while (line != null) {
@@ -92,6 +91,7 @@ final class KspLoader {
 				buff.append("\r\n");
 			}
 			return buff.toString();
+
 		}
 	}
 }

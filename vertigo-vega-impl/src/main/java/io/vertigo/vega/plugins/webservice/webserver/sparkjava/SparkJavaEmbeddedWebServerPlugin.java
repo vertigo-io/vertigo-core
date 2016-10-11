@@ -18,10 +18,11 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 import spark.Spark;
@@ -36,9 +37,9 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 	 * @param port Server port
 	 */
 	@Inject
-	public SparkJavaEmbeddedWebServerPlugin(@Named("apiPrefix") final Option<String> apiPrefix, @Named("port") final int port) {
+	public SparkJavaEmbeddedWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix, @Named("port") final int port) {
 		super(apiPrefix);
-		Spark.setPort(port);
+		Spark.port(port);
 		//---
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));

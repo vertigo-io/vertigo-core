@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 
@@ -33,7 +34,6 @@ import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -80,7 +80,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("kvDataStoreCache", RemoveTooOldElementsDaemon.class, purgePeriod, this);
+		daemonManager.registerDaemon("kvDataStoreCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod);
 	}
 
 	/** {@inheritDoc} */
@@ -132,17 +132,17 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(final String collection, final String key, final Class<C> clazz) {
+	public <C> Optional<C> find(final String collection, final String key, final Class<C> clazz) {
 		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkArgNotEmpty(key);
 		Assertion.checkNotNull(clazz);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
-			return Option.of(clazz.cast(cacheValue.getValue()));
+			return Optional.of(clazz.cast(cacheValue.getValue()));
 		}
 		getCollectionData(collection).remove(key);
-		return Option.empty(); //key expired : return null
+		return Optional.empty(); //key expired : return null
 	}
 
 	/** {@inheritDoc} */

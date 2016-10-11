@@ -1,0 +1,30 @@
+package io.vertigo.dynamo.file.data.domain
+
+create Formatter FMT_DEFAULT {
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
+
+create Formatter FMT_DATE {
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     args : "dd/MM/yyyy"
+}
+
+create Domain DO_LABEL {
+	dataType : String
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_DATE {
+	dataType : Date
+	formatter : FMT_DATE
+}
+
+create Domain DO_URI {
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_SIZE {
+	dataType : Long
+	formatter : FMT_DEFAULT
+}

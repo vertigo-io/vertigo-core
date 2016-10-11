@@ -20,6 +20,7 @@ package io.vertigo.dynamo.search.withstore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.task.TaskManager;
@@ -38,7 +41,8 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamock.domain.car.Car;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
@@ -56,26 +60,28 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager) {
-		super(taskManager);
+	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
+		super(taskManager, transactionManager);
 		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		definitionSpace = Home.getApp().getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<SearchIndex<Car, Car>> loadData(final List<URI<Car>> uris) {
-		final List<SearchIndex<Car, Car>> result = new ArrayList<>();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		for (final Car car : loadCarList(uris)) {
-			final URI<Car> uri = new URI<>(dtDefinition, car.getId());
-			result.add(SearchIndex.createIndex(indexDefinition, uri, car));
+	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
+		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
+			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
+			for (final Car car : loadCarList(searchChunk)) {
+				final URI<Car> uri = new URI<>(dtDefinition, car.getId());
+				result.add(SearchIndex.createIndex(indexDefinition, uri, car));
+			}
+			return result;
 		}
-		return result;
 	}
 
-	private DtList<Car> loadCarList(final List<URI<Car>> uris) {
-		final TaskDefinition taskLoadCars = getTaskLoadCarList(uris);
+	private DtList<Car> loadCarList(final SearchChunk<Car> searchChunk) {
+		final TaskDefinition taskLoadCars = getTaskLoadCarList(searchChunk);
 
 		final Task task = new TaskBuilder(taskLoadCars)
 				.build();
@@ -85,19 +91,16 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.getResult();
 	}
 
-	private TaskDefinition getTaskLoadCarList(final List<URI<Car>> uris) {
+	private TaskDefinition getTaskLoadCarList(final SearchChunk<Car> searchChunk) {
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
-		String sep = "";
-		final StringBuilder sql = new StringBuilder("select * from CAR where ID in (");
-		for (final URI<Car> uri : uris) {
-			sql.append(sep).append(uri.getId());
-			sep = ",";
-		}
-		sql.append(")");
+		final String sql = searchChunk.getAllURIs()
+				.stream()
+				.map(uri -> uri.getId().toString())
+				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));
 
 		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
-				.withRequest(sql.toString())
+				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withOutAttribute("dtc", doCarList, true)
 				.build();

@@ -18,27 +18,21 @@
  */
 package io.vertigo.vega.impl.webservice.filter;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.util.MultiException;
 import org.eclipse.jetty.util.MultiPartInputStreamParser;
 
 import spark.Filter;
 import spark.Request;
 import spark.Response;
-import spark.utils.SparkUtils;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
  * @author npiedeloup
  */
-public final class JettyMultipartCleaner extends Filter {
+public final class JettyMultipartCleaner implements Filter {
 	private static final String JETTY_MULTIPART_INPUT_STREAM = org.eclipse.jetty.server.Request.__MULTIPART_INPUT_STREAM;//"org.eclipse.multipartConfig";
-
-	/**
-	 * Constructor.
-	 */
-	public JettyMultipartCleaner() {
-		super(SparkUtils.ALL_PATHS, "*/*");
-	}
+	private static final Logger LOG = Logger.getLogger(JettyMultipartCleaner.class);
 
 	/** {@inheritDoc} */
 	@Override
@@ -51,7 +45,7 @@ public final class JettyMultipartCleaner extends Filter {
 				// the repeated call to deleteParts() here will safely do nothing.
 				multipartInputStream.deleteParts();
 			} catch (final MultiException e) {
-				//	            LOG.error("Error while deleting multipart request parts", e);
+				LOG.warn("Error while deleting multipart request parts", e);
 			}
 		}
 	}

@@ -47,7 +47,7 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 		int nextIndex = securityPattern.indexOf("${", previousIndex);
 		while (nextIndex >= 0) {
 			securityPatternTokenized.add(securityPattern.substring(previousIndex, nextIndex));
-			final int endIndex = securityPattern.indexOf("}", nextIndex + "${".length());
+			final int endIndex = securityPattern.indexOf('}', nextIndex + "${".length());
 			Assertion.checkState(endIndex >= nextIndex, "accolade fermante non trouvee : {0} a  {1}", securityPattern, nextIndex);
 			final String key = securityPattern.substring(nextIndex + "${".length(), endIndex);
 			securityPatternTokenized.add("$" + key);

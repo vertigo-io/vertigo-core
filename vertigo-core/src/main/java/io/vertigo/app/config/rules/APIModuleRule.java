@@ -18,9 +18,13 @@
  */
 package io.vertigo.app.config.rules;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleRule;
+import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
 
 /**
@@ -32,10 +36,16 @@ public final class APIModuleRule implements ModuleRule {
 	/** {@inheritDoc} */
 	@Override
 	public void check(final ModuleConfig moduleConfig) {
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			if (!componentConfig.getApiClass().isPresent()) {
-				throw new VSystemException("api rule : all components of module '{0}' must have an api. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig);
-			}
+		final List<ComponentConfig> noApiComponentConfigs = moduleConfig.getComponentConfigs()
+				.stream()
+				//we don't care plugins
+				.filter(componentConfig -> !Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
+				//which components don't have api ?
+				.filter(componentConfig -> !componentConfig.getApiClass().isPresent())
+				.collect(Collectors.toList());
+
+		if (!noApiComponentConfigs.isEmpty()) {
+			throw new VSystemException("api rule : all components of module '{0}' must have an api. Components '{1}' don't respect this rule.", moduleConfig, noApiComponentConfigs);
 		}
 	}
 }

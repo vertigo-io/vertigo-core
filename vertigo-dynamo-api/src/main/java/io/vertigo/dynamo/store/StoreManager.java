@@ -30,6 +30,10 @@ import io.vertigo.lang.Manager;
 * @author pchretien
 */
 public interface StoreManager extends Manager {
+
+	/** Main DataSpace's name. */
+	String MAIN_DATA_SPACE_NAME = "main";
+
 	/**
 	 * @return FileStore
 	 */

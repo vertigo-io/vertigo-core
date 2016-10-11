@@ -74,8 +74,7 @@ public final class WebServiceDefinition implements Definition {
 	 * Constructor.
 	 */
 	WebServiceDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields,
-			final List<WebServiceParam> webServiceParams
-			, final String doc, final boolean corsProtected) {
+			final List<WebServiceParam> webServiceParams, final String doc, final boolean corsProtected) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -86,9 +85,12 @@ public final class WebServiceDefinition implements Definition {
 		Assertion.checkNotNull(webServiceParams);
 		Assertion.checkNotNull(doc); //doc can be empty
 		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
-		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
-		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
-		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
+		Assertion.when(accessTokenConsume)
+				.check(() -> accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
+		Assertion.when(serverSideSave)
+				.check(() -> needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
+		Assertion.when(serverSideSave)
+				.check(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
 		checkPathParams(path, webServiceParams, userFriendlyMethodName);
 		//-----
 		this.name = name;

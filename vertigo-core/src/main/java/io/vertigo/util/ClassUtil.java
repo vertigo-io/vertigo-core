@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -264,13 +265,10 @@ public final class ClassUtil {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(annotation);
 		//-----
-		final List<Field> fields = new ArrayList<>();
-		for (final Field field : ClassUtil.getAllFields(clazz)) {
-			if (field.isAnnotationPresent(annotation)) {
-				fields.add(field);
-			}
-		}
-		return fields;
+		return ClassUtil.getAllFields(clazz)
+				.stream()
+				.filter(field -> field.isAnnotationPresent(annotation))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -283,13 +281,10 @@ public final class ClassUtil {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(annotation);
 		//-----
-		final List<Method> methods = new ArrayList<>();
-		for (final Method method : ClassUtil.getAllMethods(clazz)) {
-			if (method.isAnnotationPresent(annotation)) {
-				methods.add(method);
-			}
-		}
-		return methods;
+		return ClassUtil.getAllMethods(clazz)
+				.stream()
+				.filter(method -> method.isAnnotationPresent(annotation))
+				.collect(Collectors.toList());
 	}
 
 	/**

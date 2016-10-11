@@ -18,6 +18,8 @@
  */
 package io.vertigo.core.component.aop;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Aspect.
  *
@@ -43,5 +45,5 @@ public interface Aspect {
 	 * returns Annotation that tagged any method or class concerned by this aspect
 	 * @return Annotation type.
 	 */
-	Class<?> getAnnotationType();
+	Class<? extends Annotation> getAnnotationType();
 }

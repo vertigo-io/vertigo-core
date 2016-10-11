@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 /**
  * Type de sortie du prepareStatement.
  * Permet de créer des types de sortie dynamiques.
- * 
+ *
  * @author  pchretien
  */
 interface SqlResultMetaData {

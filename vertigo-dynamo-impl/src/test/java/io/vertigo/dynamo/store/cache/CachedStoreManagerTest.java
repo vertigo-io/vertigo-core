@@ -25,9 +25,9 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.AbstractStoreManagerTest;
+import io.vertigo.dynamo.store.data.domain.famille.Famille;
+import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.dynamock.domain.famille.Famille;
 
 /**
  * Test de l'implémentation avec cache.

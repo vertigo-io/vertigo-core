@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
@@ -31,9 +31,9 @@ import io.vertigo.vega.webservice.validation.DtObjectErrors;
 /**
  * Check that PK was set in this object.
  * @author npiedeloup (4 nov. 2014 12:32:31)
- * @param <O> Object type
+ * @param <E> the type of entity
  */
-public final class MandatoryPkValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
+public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObjectValidator<E> {
 
 	/**
 	 * NO checkMonoFieldConstraints.
@@ -43,12 +43,12 @@ public final class MandatoryPkValidator<O extends DtObject> extends AbstractDtOb
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkMultiFieldConstraints(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObject);
+	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String camelCaseFieldName = getCamelCaseFieldName(idField);
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DtObjectUtil.getId(dtObject) == null) {
+			if (DtObjectUtil.getId(entity) == null) {
 				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
 			}
 		}

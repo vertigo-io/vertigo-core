@@ -18,7 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
+import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
@@ -33,6 +35,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -52,8 +55,12 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.stereotype.DataSpace;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -67,7 +74,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
-	private static final class MethodComparator implements Comparator<Method> {
+	private static final class MethodComparator implements Comparator<Method>, Serializable {
+		private static final long serialVersionUID = -3272894481096942477L;
+
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final Method m1, final Method m2) {
@@ -75,7 +84,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static final class FieldComparator implements Comparator<Field> {
+	private static final class FieldComparator implements Comparator<Field>, Serializable {
+		private static final long serialVersionUID = -3272894481096942477L;
+
 		/** {@inheritDoc} */
 		@Override
 		public int compare(final Field f1, final Field f2) {
@@ -108,23 +119,38 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
-		for (final Annotation annotation : clazz.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.DtDefinition) {
-				parseDtDefinition((io.vertigo.dynamo.domain.stereotype.DtDefinition) annotation, clazz, dynamicModelrepository);
-				break;
+		String fragmentOf = null;
+		if (Fragment.class.isAssignableFrom(clazz)) {
+			//Fragments
+			for (final Annotation annotation : clazz.getAnnotations()) {
+				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {
+					fragmentOf = ((io.vertigo.dynamo.domain.stereotype.Fragment) annotation).fragmentOf();
+					break;
+				}
 			}
 		}
+		parseDtDefinition(clazz, fragmentOf, dynamicModelrepository);
 	}
 
-	private static void parseDtDefinition(final io.vertigo.dynamo.domain.stereotype.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDtDefinition(
+			final Class<?> clazz,
+			final String fragmentOf,
+			final DynamicDefinitionRepository dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 
-		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
-				.addPropertyValue(STEREOTYPE, parseStereotype(clazz).name())
-				.addPropertyValue(PERSISTENT, dtDefinitionAnnotation.persistent());
+		final DtStereotype stereotype = parseStereotype(clazz);
+
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
+				.addPropertyValue(STEREOTYPE, stereotype.name())
+				.addPropertyValue(FRAGMENT_OF, fragmentOf);
+
+		// Only Persistent stereotypes have a dataspace => Fragment got it from parent
+		if (stereotype.isPersistent()) {
+			dtDefinitionBuilder.addPropertyValue(DATA_SPACE, parseDataSpaceAnnotation(clazz));
+		}
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -149,13 +175,25 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		dynamicModelRepository.addDefinition(dtDefinition);
 	}
 
+	private static String parseDataSpaceAnnotation(final Class<?> clazz) {
+		final DataSpace[] dataSpaceAnnotations = clazz.getAnnotationsByType(DataSpace.class);
+		Assertion.checkState(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
+		// ---
+		if (dataSpaceAnnotations.length == 1) {
+			return dataSpaceAnnotations[0].value();
+		}
+		return StoreManager.MAIN_DATA_SPACE_NAME;
+	}
+
 	private static DtStereotype parseStereotype(final Class<?> clazz) {
 		if (DtMasterData.class.isAssignableFrom(clazz)) {
 			return DtStereotype.MasterData;
 		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
 			return DtStereotype.KeyConcept;
+		} else if (Entity.class.isAssignableFrom(clazz)) {
+			return DtStereotype.Entity;
 		}
-		return DtStereotype.Data;
+		return DtStereotype.ValueObject;
 	}
 
 	private static void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
@@ -179,8 +217,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(ROLE_B, association.foreignRole())
 						.addPropertyValue(LABEL_B, association.foreignRole())
 						//---
-						.addDefinition("dtDefinitionA", association.primaryDtDefinitionName())
-						.addDefinition("dtDefinitionB", association.foreignDtDefinitionName())
+						.addDefinitionLink("dtDefinitionA", association.primaryDtDefinitionName())
+						.addDefinitionLink("dtDefinitionB", association.foreignDtDefinitionName())
 						//---
 						.addPropertyValue(FK_FIELD_NAME, association.fkFieldName())
 						.build();
@@ -209,8 +247,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						.addPropertyValue(ROLE_B, association.roleB())
 						.addPropertyValue(LABEL_B, association.labelB())
 
-						.addDefinition("dtDefinitionA", association.dtDefinitionA())
-						.addDefinition("dtDefinitionB", association.dtDefinitionB())
+						.addDefinitionLink("dtDefinitionA", association.dtDefinitionA())
+						.addDefinitionLink("dtDefinitionB", association.dtDefinitionB())
 						.build();
 
 				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
@@ -248,7 +286,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
-				.addDefinition("domain", field.domain())
+				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
 				.addPropertyValue(NOT_NULL, field.required())
 				.addPropertyValue(PERSISTENT, field.persistent())
@@ -256,14 +294,14 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		switch (type) {
 			case ID:
-				dtDefinition.addDefinition(DomainGrammar.ID, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.ID, dtField);
 				break;
 			case DATA:
-				dtDefinition.addDefinition("field", dtField);
+				dtDefinition.addChildDefinition("field", dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addDefinition("computed", dtField);
+				dtDefinition.addChildDefinition("computed", dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

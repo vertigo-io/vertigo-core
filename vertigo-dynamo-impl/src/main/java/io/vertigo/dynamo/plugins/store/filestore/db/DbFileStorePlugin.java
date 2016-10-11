@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +28,7 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -37,7 +38,6 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -66,7 +66,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
-	public DbFileStorePlugin(@Named("name") final Option<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
+	public DbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);
@@ -81,8 +81,8 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<DtObject> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
-		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
+		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final Entity fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
@@ -99,7 +99,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoDto(fileInfo);
 		//-----
 		getStoreManager().getDataStore().create(fileInfoDto);
 		//-----
@@ -116,7 +116,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoDto(fileInfo);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 	}
@@ -128,13 +128,13 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<DtObject> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
 
-	private DtObject createFileInfoDto(final FileInfo fileInfo) {
+	private Entity createFileInfoDto(final FileInfo fileInfo) {
 		//Il doit exister un DtObjet associé à storeDtDefinition avec la structure attendue.
-		final DtObject fileInfoDto = DtObjectUtil.createDtObject(storeDtDefinition);
+		final Entity fileInfoDto = DtObjectUtil.createEntity(storeDtDefinition);
 		//-----
 
 		final VFile vFile = fileInfo.getVFile();

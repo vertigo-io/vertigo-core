@@ -21,8 +21,7 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDynamicDefinitionRule;
@@ -31,13 +30,12 @@ public class DslDefinitionRuleTest {
 	private final DynamicDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
 	@Test
-	public void test1() throws NotFoundException {
-		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
+	public void test1() throws PegNoMatchFoundException {
+		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
+				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
+				.getValue();
 
-		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0);
-
-		Assert.assertNotNull(parser.get());
+		Assert.assertNotNull(dynamicDefinition);
 	}
 
 	//Exemple de test sur la déclaration d'un Domain
@@ -47,17 +45,16 @@ public class DslDefinitionRuleTest {
 	//			constraint : {CK_CODE_POSTAL}
 	//		)
 	@Test
-	public void test2() throws NotFoundException {
-		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
-
-		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0);
-		Assert.assertNotNull(parser.get());
+	public void test2() throws PegNoMatchFoundException {
+		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
+				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
+				.getValue();
+		Assert.assertNotNull(dynamicDefinition);
 	}
 
 	@Test
-	public void testTemplate() throws NotFoundException {
-		final DslDynamicDefinitionRule DynamicDefinitionRule = new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository);
-		DynamicDefinitionRule.createParser().parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
+	public void testTemplate() throws PegNoMatchFoundException {
+		new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository.getGrammar())
+				.parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
 	}
 }

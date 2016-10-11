@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.task;
 
+import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_1;
+import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_2;
+import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_3;
+import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_OUT;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -132,18 +137,18 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD_2", "+");
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(TaskEngineMock.ATTR_IN_INT_1, 1)
-				.addValue(TaskEngineMock.ATTR_IN_INT_2, 8)
-				.addValue(TaskEngineMock.ATTR_IN_INT_3, 7)
+				.addValue(ATTR_IN_INT_1, 1)
+				.addValue(ATTR_IN_INT_2, 8)
+				.addValue(ATTR_IN_INT_3, 7)
 				.build();
 
-		Integer result1 = taskManager
+		final Integer result1 = taskManager
 				.execute(task)
 				.getResult();
 
 		Assert.assertEquals(Integer.valueOf(16), result1);
 
-		Integer result2 = taskManager
+		final Integer result2 = taskManager
 				.execute(task)
 				.getResult();
 
@@ -158,9 +163,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	private Integer executeTask(final TaskDefinition taskDefinition, final Integer value1, final Integer value2, final Integer value3) {
 		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(TaskEngineMock.ATTR_IN_INT_1, value1)
-				.addValue(TaskEngineMock.ATTR_IN_INT_2, value2)
-				.addValue(TaskEngineMock.ATTR_IN_INT_3, value3)
+				.addValue(ATTR_IN_INT_1, value1)
+				.addValue(ATTR_IN_INT_2, value2)
+				.addValue(ATTR_IN_INT_3, value3)
 				.build();
 
 		return taskManager
@@ -176,10 +181,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true)
-				.addInAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true)
-				.addInAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true)
-				.withOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
+				.addInAttribute(ATTR_IN_INT_1, doInteger, true)
+				.addInAttribute(ATTR_IN_INT_2, doInteger, true)
+				.addInAttribute(ATTR_IN_INT_3, doInteger, true)
+				.withOutAttribute(ATTR_OUT, doInteger, true)
 				.build();
 	}
 

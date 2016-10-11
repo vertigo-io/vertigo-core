@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
 import java.sql.SQLException;
+import java.util.Locale;
 
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
@@ -46,7 +47,8 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
-		final String code = errCode.substring(0, 2);
+		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
+		final String code = errCode != null ? errCode.substring(0, 2) : null;
 		if ("22001".equals(errCode) || "22003".equals(errCode)) {
 			// Valeur trop grande pour ce champs
 			handleTooLargeValueSqlException(sqle);
@@ -86,7 +88,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
 		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
 		if (i1 > -1 && i2 > -1 && i2 > i1) {
-			return msg.substring(i1 + 1, i2).toUpperCase().trim();
+			return msg.substring(i1 + 1, i2).toUpperCase(Locale.ENGLISH).trim();
 		}
 		return null;
 	}

@@ -18,6 +18,8 @@
  */
 package io.vertigo.lang;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 /**
@@ -106,4 +108,14 @@ public final class AssertionTest {
 	public void testCheckNotEmpty2Fail() {
 		Assertion.checkArgNotEmpty(null, "message {0}", "param");
 	}
+
+	@Test
+	public void testWhen() {
+		final Optional<String> option1 = Optional.empty();
+		Assertion.when(option1.isPresent()).check(() -> option1.get() != null, "fail");
+
+		final Optional<String> option2 = Optional.of("test");
+		Assertion.when(option2.isPresent()).check(() -> option2.get() != null, "fail");
+	}
+
 }

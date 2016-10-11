@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -54,7 +55,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
@@ -69,7 +69,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
-		V4Beta(FacetedQueryResultJsonSerializerV4.class); //with highlights
+		V4(FacetedQueryResultJsonSerializerV4.class); //with highlights and code, label for facet
 
 		private Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
 
@@ -83,8 +83,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	@Inject
-	public GoogleJsonEngine(@Named("searchApiVersion") final Option<String> searchApiVersionStr) {
-		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V3.name()));
+	public GoogleJsonEngine(@Named("searchApiVersion") final Optional<String> searchApiVersionStr) {
+		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 		gson = createGson(searchApiVersion);
 	}
 
@@ -242,10 +242,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static final class OptionJsonSerializer implements JsonSerializer<Option> {
+	private static final class OptionJsonSerializer implements JsonSerializer<Optional> {
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final Optional src, final Type typeOfSrc, final JsonSerializationContext context) {
 			if (src.isPresent()) {
 				return context.serialize(src.get());
 			}
@@ -342,7 +342,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(List.class, new ListJsonSerializer())
 					.registerTypeAdapter(Map.class, new MapJsonSerializer())
 					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
-					.registerTypeAdapter(Option.class, new OptionJsonSerializer())
+					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(URI.class, new URIJsonAdapter())
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())

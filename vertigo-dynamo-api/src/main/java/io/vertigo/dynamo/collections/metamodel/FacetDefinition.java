@@ -84,8 +84,8 @@ public final class FacetDefinition implements Definition {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
-		Assertion.checkArgument(!rangeFacet || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
-		Assertion.checkArgument(rangeFacet || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.when(rangeFacet).check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.when(!rangeFacet).check(() -> facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;

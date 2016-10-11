@@ -19,23 +19,25 @@
 package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Option;
 
 /**
  * Processor that can be composed of filters or sorters
  * and be applied on a list.
  * @author pchretien
+ * @param <D> Type of list's element
  */
-public interface DtListProcessor {
+public interface DtListProcessor<D extends DtObject> {
 	/**
 	 * Add any function that transform a list into an another list.
 	 * @param listFunction List function
 	 * @return new DtListProcessor completed with this function
 	 */
-	DtListProcessor add(DtListFunction<?> listFunction);
+	DtListProcessor<D> add(UnaryOperator<DtList<D>> listFunction);
 
 	/**
 	 * Création d'un tri de colonne.
@@ -43,7 +45,7 @@ public interface DtListProcessor {
 	 * @param desc Si tri descendant
 	 * @return Etat du tri
 	 */
-	DtListProcessor sort(final String fieldName, final boolean desc);
+	DtListProcessor<D> sort(final String fieldName, final boolean desc);
 
 	//=======================FILTER============================================
 	/**
@@ -52,7 +54,7 @@ public interface DtListProcessor {
 	 * @param value Valeur
 	 * @return Filtre
 	 */
-	DtListProcessor filterByValue(final String fieldName, final Serializable value);
+	DtListProcessor<D> filterByValue(final String fieldName, final Serializable value);
 
 	/**
 	 * Constructeur d'un filtre de range.
@@ -62,7 +64,7 @@ public interface DtListProcessor {
 	 * @return Filtre
 	 * @param <C> Type des bornes
 	 */
-	<C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Option<C> min, final Option<C> max);
+	<C extends Comparable<?>> DtListProcessor<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
@@ -70,7 +72,7 @@ public interface DtListProcessor {
 	 * @param listFilter Filtre de liste
 	 * @return Function de filtrage
 	 */
-	DtListProcessor filter(final ListFilter listFilter);
+	DtListProcessor<D> filter(final ListFilter listFilter);
 
 	//=======================SUB LIST==========================================
 	/**
@@ -79,15 +81,14 @@ public interface DtListProcessor {
 	 * @param end Indexe de fin (Exclus)
 	 * @return Collection filtrée
 	 */
-	DtListProcessor filterSubList(final int start, final int end);
+	DtListProcessor<D> filterSubList(final int start, final int end);
 
 	//=========================================================================
 	//=========================================================================
 	/**
 	 * Apply composed functions to list
-	 * @param <D> List element's type
 	 * @param input List ( will be unchanged)
 	 * @return a new List
 	 */
-	<D extends DtObject> DtList<D> apply(final DtList<D> input);
+	DtList<D> apply(final DtList<D> input);
 }

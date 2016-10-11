@@ -39,21 +39,21 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.dynamock.domain.car.CarDataBase;
 
 /**
  * Test de l'implémentation standard couplé au store.
  *
  * @author npiedeloup
  */
-public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
+public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -77,46 +77,34 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
-			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
-
-			execCallableStatement(connection, "create table fam_car_location(fam_id BIGINT , ID BIGINT);");
-
-			execCallableStatement(connection, "create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
+			execCallableStatement(connection, "create table car(ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50) );");
 			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
-
-			execCallableStatement(connection, "create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
-			execCallableStatement(connection, "create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
-			transaction.commit();
 		}
 
 		//On supprime tout
-		doRemove("*:*");
+		remove("*:*");
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
 		initialDbCarSize = carDataBase.size();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final Car car : carDataBase.createList()) {
+			for (final Car car : carDataBase.getAllCars()) {
 				car.setId(null);
 				storeManager.getDataStore().create(car);
 			}
 			transaction.commit();
 		}
 		waitIndexation();
-
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void doTearDown() throws Exception {
-		if (dataBaseManager != null) {
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				//A chaque fin de test on arréte la base.
-				final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-				execCallableStatement(connection, "shutdown;");
-				transaction.commit();
-			}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//A chaque fin de test on arréte la base.
+			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+			execCallableStatement(connection, "shutdown;");
+			transaction.commit();
 		}
 	}
 
@@ -150,7 +138,6 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(car);
 			transaction.commit();
 		}
-
 		waitIndexation();
 		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
 		Assert.assertEquals(1, query("DESCRIPTION:légende"));
@@ -169,7 +156,6 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
-
 		waitIndexation();
 		Assert.assertEquals(0, query("ID:10001"));
 		Assert.assertEquals(initialDbCarSize - 1, query("*:*"));
@@ -212,7 +198,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRemoveAll() {
 		//On supprime tout
-		doRemove("*:*");
+		remove("*:*");
 		final long resize = query("*:*");
 		Assert.assertEquals(0L, resize);
 	}
@@ -245,21 +231,26 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, listState);
 	}
 
-	private void doRemove(final String query) {
-		final ListFilter removeQuery = new ListFilter(query);
-		searchManager.removeAll(carIndexDefinition, removeQuery);
-	}
-
 	private static URI createURI(final long carId) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
 		return new URI(dtDefinition, carId);
 	}
 
+	protected void remove(final String query) {
+		doRemove(query);
+		waitIndexation();
+	}
+
+	private void doRemove(final String query) {
+		final ListFilter removeQuery = new ListFilter(query);
+		searchManager.removeAll(carIndexDefinition, removeQuery);
+	}
+
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(5000 + 1500); //wait index was done
+			Thread.sleep(1000 + 1500); //wait index was done
 		} catch (final InterruptedException e) {
-			//rien
+			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
 	}
 

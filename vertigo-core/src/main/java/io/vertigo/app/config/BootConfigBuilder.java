@@ -18,11 +18,12 @@
  */
 package io.vertigo.app.config;
 
+import java.util.Optional;
+
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 /**
  * Configuration.
@@ -30,11 +31,11 @@ import io.vertigo.lang.Option;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Option<LogConfig> myLogConfigOption = Option.empty(); //par défaut
+	private Optional<LogConfig> myLogConfigOption = Optional.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
-	private ModuleConfig myBootModuleConfig; //required 
+	private ModuleConfig myBootModuleConfig; //required
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -53,7 +54,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		myLogConfigOption = Option.of(logConfig);
+		myLogConfigOption = Optional.of(logConfig);
 		return this;
 	}
 

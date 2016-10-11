@@ -19,28 +19,29 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
-import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
@@ -59,7 +60,6 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -67,6 +67,7 @@ import io.vertigo.lang.WrappedException;
  * @author dchallas
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
@@ -86,7 +87,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Option<String> configFile,
+	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Optional<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(codecManager);
@@ -95,7 +96,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexName = indexName.toLowerCase().trim();
+		this.indexName = indexName.toLowerCase(Locale.ENGLISH).trim();
 		if (configFile.isPresent()) {
 			this.configFile = resourceManager.resolve(configFile.get());
 		} else {
@@ -116,31 +117,39 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				if (configFile == null) {
 					esClient.admin().indices().prepareCreate(indexName).get();
 				} else {
-					final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-					esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
+					try (InputStream is = configFile.openStream()) {
+						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
+					}
 				}
 			} else if (configFile != null) {
 				// If we use local config file, we check config against ES server
-				final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
+				try (InputStream is = configFile.openStream()) {
+					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
+				}
 			}
-		} catch (final ElasticsearchException e) {
+		} catch (final ElasticsearchException | IOException e) {
 			throw new WrappedException("Error on index " + indexName, e);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
 			logMappings();
-			types.add(indexDefinition.getName().toLowerCase());
+			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
 		}
 
 		waitForYellowStatus();
 	}
 
 	private boolean isIndexSettingsDirty(final Settings settings) {
-		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
-				.addIndices(indexName).get()
-				.getSettings().get(indexName);
+		final Settings currentSettings = esClient.admin()
+				.indices()
+				.prepareGetIndex()
+				.addIndices(indexName)
+				.get()
+				.getSettings()
+				.get(indexName);
 		boolean indexSettingsDirty = false;
 		final Map<String, String> settingsMap = settings.getAsMap();
 		for (final Entry<String, String> entry : settingsMap.entrySet()) {
@@ -214,7 +223,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
-		markToOptimize(indexDefinition);
+		markToOptimize();
 	}
 
 	/** {@inheritDoc} */
@@ -242,15 +251,15 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(listFilter);
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
-		markToOptimize(indexDefinition);
+		markToOptimize();
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(), esClient);
+		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
 	}
 
 	/**
@@ -261,36 +270,35 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
-			typeMapping.startObject().startObject("properties")
+			typeMapping.startObject()
+					.startObject("properties")
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
+			final Set<DtField> copyToFields = indexDefinition.getIndexCopyToFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
-				if (indexType.isPresent() || copyFromFields.contains(dtField)) {
-					typeMapping.startObject(dtField.getName());
-					if (indexType.isPresent()) {
-						appendIndexTypeMapping(typeMapping, indexType);
-					}
-					if (copyFromFields.contains(dtField)) {
-						appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
-					}
-					typeMapping.endObject();
+				//if (!copyToFields.contains(dtField)) {
+				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
+				typeMapping.startObject(dtField.getName());
+				appendIndexTypeMapping(typeMapping, indexType);
+				if (copyFromFields.contains(dtField)) {
+					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
 				}
+				typeMapping.endObject();
+				//}
 			}
 			typeMapping.endObject().endObject(); //end properties
-			//
-			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin)
-					.setIndices(indexName)
-					.setType(indexDefinition.getName().toLowerCase())
+
+			final PutMappingResponse putMappingResponse = esClient.admin()
+					.indices()
+					.preparePutMapping(indexName)
+					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
-
 		} catch (final IOException e) {
 			throw new WrappedException("Serveur ElasticSearch indisponible", e);
 		}
@@ -309,16 +317,21 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final Option<IndexType> indexType) throws IOException {
-		typeMapping
-				.field("type", indexType.get().getIndexDataType())
-				.field("analyzer", indexType.get().getIndexAnalyzer());
+	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
+		typeMapping.field("type", indexType.getIndexDataType());
+		if (indexType.getIndexAnalyzer().isPresent()) {
+			typeMapping.field("analyzer", indexType.getIndexAnalyzer().get());
+		}
 	}
 
-	private void markToOptimize(final SearchIndexDefinition indexDefinition) {
-		esClient.admin().indices()
-				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase())
-						.flush(true).maxNumSegments(32)); //32 files : empirique
+	private void markToOptimize() {
+		esClient.admin()
+				.indices()
+				.prepareForceMerge(indexName)
+				.setFlush(true)
+				.setMaxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
+				.execute()
+				.actionGet();
 	}
 
 	private void waitForYellowStatus() {

@@ -23,7 +23,7 @@ import io.vertigo.dynamo.search.AbstractSearchManagerTest;
 /**
  * @author  npiedeloup
  */
-public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
+public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index
 	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
 

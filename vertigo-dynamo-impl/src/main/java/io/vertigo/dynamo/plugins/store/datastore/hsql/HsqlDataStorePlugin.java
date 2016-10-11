@@ -18,14 +18,18 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.hsql;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
@@ -37,7 +41,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation d'un Store HSQLDB.
@@ -56,7 +59,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", DataType.Long);
+	private final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
 	private final String sequencePrefix;
 
 	/**
@@ -67,7 +70,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param sequencePrefix the prefix used by the sequence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("name") final Option<String> nameOption, @Named("connectionName") final Option<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public HsqlDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
@@ -83,12 +86,12 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private Long getSequenceNextval(final String sequenceName) {
 		final String taskName = TK_SELECT + '_' + sequenceName;
 
-		final StringBuilder request = chooseDataBaseStyle(sequenceName);
+		final String request = chooseDataBaseStyle(sequenceName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(getDataSpace())
-				.withRequest(request.toString())
+				.withRequest(request)
 				.withOutAttribute(SEQUENCE_FIELD, resultDomain, true)// OUT, obligatoire
 				.build();
 
@@ -99,17 +102,18 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.getResult();
 	}
 
-	private static StringBuilder chooseDataBaseStyle(final String sequenceName) {
+	private static String chooseDataBaseStyle(final String sequenceName) {
 		return new StringBuilder("select next value for " + sequenceName + "  as " + SEQUENCE_FIELD)
-				.append(" from information_schema.system_sequences where sequence_name = upper('" + sequenceName + "')");
+				.append(" from information_schema.system_sequences where sequence_name = upper('" + sequenceName + "')")
+				.toString();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected void preparePrimaryKey(final DtObject dto) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+	protected void preparePrimaryKey(final Entity entity) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
-		idField.getDataAccessor().setValue(dto, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));
+		idField.getDataAccessor().setValue(entity, getSequenceNextval(sequencePrefix + getTableName(dtDefinition)));
 		//executeInsert(transaction, dto);
 	}
 
@@ -117,28 +121,21 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder()
-				.append("insert into ").append(tableName).append(" (");
-
-		String separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent()) {
-				request.append(separator);
-				request.append(dtField.getName());
-				separator = ", ";
-			}
-		}
-		request.append(") values (");
-		separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent()) {
-				request.append(separator);
-				request.append(" #DTO.").append(dtField.getName()).append('#');
-				separator = ", ";
-			}
-		}
-		request.append(");");
-		return request.toString();
+		return new StringBuilder()
+				.append("insert into ").append(tableName).append(" (")
+				.append(dtDefinition.getFields()
+						.stream()
+						.filter(dtField -> dtField.isPersistent())
+						.map(dtField -> dtField.getName())
+						.collect(Collectors.joining(", ")))
+				.append(") values (")
+				.append(dtDefinition.getFields()
+						.stream()
+						.filter(dtField -> dtField.isPersistent())
+						.map(dtField -> " #DTO." + dtField.getName() + '#')
+						.collect(Collectors.joining(", ")))
+				.append(");")
+				.toString();
 	}
 
 	/** {@inheritDoc} */

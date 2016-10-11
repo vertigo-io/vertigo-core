@@ -18,11 +18,12 @@
  */
 package io.vertigo.core.component.di.data;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 public final class F {
 	@Inject
@@ -34,11 +35,11 @@ public final class F {
 	private String param2;
 
 	private final String param1;
-	private final Option<String> param3;
-	private final Option<String> param4;
+	private final Optional<String> param3;
+	private final Optional<String> param4;
 
 	@Inject
-	public F(final @Named("param1") String param1, final @Named("param3") Option<String> param3, final @Named("param4") Option<String> param4) {
+	public F(final @Named("param1") String param1, final @Named("param3") Optional<String> param3, final @Named("param4") Optional<String> param4) {
 		Assertion.checkNotNull(param1);
 		Assertion.checkNotNull(param3);
 		Assertion.checkNotNull(param4);
@@ -60,11 +61,11 @@ public final class F {
 		return param2;
 	}
 
-	public Option<String> getParam3() {
+	public Optional<String> getParam3() {
 		return param3;
 	}
 
-	public Option<String> getParam4() {
+	public Optional<String> getParam4() {
 		return param4;
 	}
 }

@@ -39,7 +39,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Component create(final Component instance, final Map<Method, List<Aspect>> joinPoints) {
+	public <C extends Component> C create(final C instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
@@ -53,7 +53,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 		enhancer.setInterfaces(intfs);
 		enhancer.setSuperclass(implClass);
-		return Component.class.cast(enhancer.create());
+		return (C) (enhancer.create());
 	}
 
 	private static Callback createCallBack(final Object instance, final Map<Method, List<Aspect>> joinPoints) {

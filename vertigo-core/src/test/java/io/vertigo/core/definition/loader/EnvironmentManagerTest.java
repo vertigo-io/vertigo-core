@@ -73,12 +73,23 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addPropertyValue(AGE, 42)
 				.addPropertyValue(HEIGHT, 175.0d)
 				.addPropertyValue(MALE, Boolean.TRUE)
-				.addDefinition(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
-				.addDefinition(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
+				.addDefinitionLink(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
+				.addDefinitionLink(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
 				.build();
 		dynamicDefinitionRepository.addDefinition(personDefinition);
 
 		dynamicDefinitionRepository.solve(definitionSpace);
 		Assert.assertNotNull(personDefinition);
+	}
+
+	@Test(expected = ClassCastException.class)
+	public void badTypeTest() {
+		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+				.addPropertyValue(STREET, "1, rue du louvre")
+				.addPropertyValue(POSTAL_CODE, 75008)
+				.addPropertyValue(CITY, "Paris")
+				.build();
+		dynamicDefinitionRepository.addDefinition(address1Definition);
+
 	}
 }

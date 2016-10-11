@@ -21,13 +21,15 @@ package io.vertigo.core.definition.dsl.dynamic;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
+import io.vertigo.core.definition.dsl.entity.DslEntityField.Cardinality;
 import io.vertigo.lang.Assertion;
 
 /**
- * 
+ *
  * Validate a definition considering its own entity.
- * 
+ *
  * @author pchretien
  *
  */
@@ -39,7 +41,7 @@ final class DynamicValidator {
 	static void check(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		final Entity myEntity = definition.getEntity();
+		final DslEntity myEntity = definition.getEntity();
 		// 1.On vérifie la définition par rapport à la métadéfinition
 		// 1.1 on vérifie les propriétés.
 		final Set<String> propertyNames = definition.getPropertyNames();
@@ -53,7 +55,7 @@ final class DynamicValidator {
 
 		// 1.1.3 on vérifie les types des propriétés déclarées
 		for (final String propertyName : propertyNames) {
-			myEntity.getPrimitiveType(propertyName).checkValue(definition.getPropertyValue(propertyName));
+			myEntity.getPropertyType(propertyName).checkValue(definition.getPropertyValue(propertyName));
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).
@@ -85,13 +87,16 @@ final class DynamicValidator {
 
 	private static void checkMandatoryProperties(
 			final DynamicDefinition dynamicDefinition,
-			final Entity myEntity,
+			final DslEntity myEntity,
 			final Set<String> propertyNames,
 			final Set<String> entityPropertyNames) {
 		// Vérification des propriétés obligatoires
 		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
 		for (final String propertyName : entityPropertyNames) {
-			if (myEntity.isRequired(propertyName) && (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
+			final DslEntityField entityField = myEntity.getField(propertyName);
+
+			if ((entityField.getCardinality() == Cardinality.one)
+					&& (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
 				// est nulle alors erreur !

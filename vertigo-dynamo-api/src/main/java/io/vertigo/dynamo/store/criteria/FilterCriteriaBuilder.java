@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -33,9 +33,9 @@ import io.vertigo.lang.Builder;
  * - Soit de type préfixe (Commence par).
  *
  * @author npiedeloup
- * @param <D> Type de l'objet
+ * @param <E> Type de l'objet
  */
-public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<FilterCriteria<D>> {
+public final class FilterCriteriaBuilder<E extends Entity> implements Builder<FilterCriteria<E>> {
 	private final Map<String, Object> mapFilter = new HashMap<>();
 	private final Map<String, String> mapPrefix = new HashMap<>();
 
@@ -46,7 +46,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @param value Valeur du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<D> withFilter(final DtFieldName fieldName, final Object value) {
+	public FilterCriteriaBuilder<E> withFilter(final DtFieldName fieldName, final Object value) {
 		return addFilter(fieldName.name(), value);
 	}
 
@@ -57,7 +57,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @param prefix Préfix du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<D> withPrefix(final DtFieldName fieldName, final String prefix) {
+	public FilterCriteriaBuilder<E> withPrefix(final DtFieldName fieldName, final String prefix) {
 		return withPrefix(fieldName.name(), prefix);
 	}
 
@@ -68,7 +68,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @param value Valeur du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<D> addFilter(final String fieldName, final Object value) {
+	public FilterCriteriaBuilder<E> addFilter(final String fieldName, final Object value) {
 		Assertion.checkNotNull(value);
 		check(fieldName);
 		//-----
@@ -83,7 +83,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @param prefix Préfix du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<D> withPrefix(final String fieldName, final String prefix) {
+	public FilterCriteriaBuilder<E> withPrefix(final String fieldName, final String prefix) {
 		Assertion.checkNotNull(prefix);
 		check(fieldName);
 		//-----
@@ -99,7 +99,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 
 	/** {@inheritDoc} */
 	@Override
-	public FilterCriteria<D> build() {
+	public FilterCriteria<E> build() {
 		return new FilterCriteria<>(mapFilter, mapPrefix);
 	}
 

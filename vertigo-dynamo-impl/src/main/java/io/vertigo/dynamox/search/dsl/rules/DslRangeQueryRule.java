@@ -20,12 +20,12 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.WordRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
 
@@ -34,50 +34,59 @@ import io.vertigo.dynamox.search.dsl.model.DslRangeQuery;
  * (preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
  * @author npiedeloup
  */
-final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<?>> {
+final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<Object>> {
 
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "rangeQuery";
+	DslRangeQueryRule() {
+		super(createMainRule(), "rangeQuery");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected Rule<List<?>> createMainRule() {
-
-		final Rule<Choice> queriesRule = new FirstOfRule(//"term or fixed")
-				new DslTermQueryRule(), //0
-				new DslFixedQueryRule() //1
+	private static PegRule<List<Object>> createMainRule() {
+		final PegRule<PegChoice> queriesRule = PegRules.choice(//"term or fixed")
+				PegRules.term("*"), //0
+				new DslTermQueryRule(), //1
+				new DslFixedQueryRule() //2
 		);
 
-		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
-				new WordRule(false, "[{", WordRule.Mode.ACCEPT), //1
+		return PegRules.sequence(
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
+				PegRules.choice(PegRules.term("["), PegRules.term("{")), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
-				new WordRule(false, "TOto", WordRule.Mode.ACCEPT, "to"),
+				PegRules.word(false, "TOto", PegWordRule.Mode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
-				queriesRule,//6
+				queriesRule, //6
 				DslSyntaxRules.SPACES,
-				new WordRule(false, "]}", WordRule.Mode.ACCEPT), //8
+				PegRules.choice(PegRules.term("]"), PegRules.term("}")), //8
 				DslSyntaxRules.POST_MODIFIER_VALUE); //9
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslRangeQuery handle(final List<?> parsing) {
+	protected DslRangeQuery handle(final List<Object> parsing) {
 		final String preQuery = (String) parsing.get(0);
-		final String startRange = (String) parsing.get(1);
+		final PegChoice startChoice = (PegChoice) parsing.get(1);
 
-		final Choice startTermQuery = (Choice) parsing.get(2);
-		final DslQuery startQueryDefinitions = (DslQuery) startTermQuery.getResult();
+		final PegChoice startTermQuery = (PegChoice) parsing.get(2);
+		final DslQuery startQueryDefinitions;
+		if (startTermQuery.getChoiceIndex() == 0) {
+			startQueryDefinitions = new DslFixedQuery("*");
+		} else {
+			startQueryDefinitions = (DslQuery) startTermQuery.getValue();
+		}
 
-		final Choice endTermQuery = (Choice) parsing.get(6);
-		final DslQuery endQueryDefinitions = (DslQuery) endTermQuery.getResult();
+		final PegChoice endTermQuery = (PegChoice) parsing.get(6);
+		final DslQuery endQueryDefinitions;
+		if (endTermQuery.getChoiceIndex() == 0) {
+			endQueryDefinitions = new DslFixedQuery("*");
+		} else {
+			endQueryDefinitions = (DslQuery) endTermQuery.getValue();
+		}
 
-		final String endRange = (String) parsing.get(8);
+		final PegChoice endChoice = (PegChoice) parsing.get(8);
 		final String postQuery = (String) parsing.get(9);
+
+		final String startRange = (String) startChoice.getValue();
+		final String endRange = (String) endChoice.getValue();
 		return new DslRangeQuery(preQuery, startRange, startQueryDefinitions, endQueryDefinitions, endRange, postQuery);
 	}
 }

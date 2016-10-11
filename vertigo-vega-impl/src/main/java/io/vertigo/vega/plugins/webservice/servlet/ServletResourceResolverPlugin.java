@@ -21,12 +21,12 @@ package io.vertigo.vega.plugins.webservice.servlet;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL liées à la servlet.
@@ -56,14 +56,14 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<URL> resolve(final String resource) {
+	public Optional<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		//-----
 		// 2. On recherche dans le context de la webapp
 		try {
-			return Option.ofNullable(servletContext.getResource(resource));
+			return Optional.ofNullable(servletContext.getResource(resource));
 		} catch (final MalformedURLException e) {
-			return Option.empty();
+			return Optional.empty();
 		}
 	}
 }

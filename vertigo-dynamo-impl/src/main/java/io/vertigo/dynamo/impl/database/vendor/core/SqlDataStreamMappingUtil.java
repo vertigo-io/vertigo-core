@@ -90,12 +90,10 @@ public final class SqlDataStreamMappingUtil {
 		//On crée  un fichier temporaire.
 		final File tmpFile = new TempFile("kdata", ".tmp");
 		//-----
-		try (final OutputStream fileOut = new FileOutputStream(tmpFile)) {
-			//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
-			try (final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
-				copy(memoryIn, fileOut, FILE_MAX_LENGTH);
-				Assertion.checkState(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
-			}
+		//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
+		try (final OutputStream fileOut = new FileOutputStream(tmpFile); final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
+			copy(memoryIn, fileOut, FILE_MAX_LENGTH);
+			Assertion.checkState(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			//2eme Etape : on copie la suite
 			final long length = copy(in, fileOut, FILE_MAX_LENGTH);
 			//La longueur totale du fichier est la somme.

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamock.domain.car.Car;
+import io.vertigo.dynamo.store.data.domain.car.Car;
 
 /**
  * Initialisation des listes de références.

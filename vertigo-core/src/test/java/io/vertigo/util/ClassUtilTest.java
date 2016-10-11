@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -35,7 +36,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -236,14 +236,14 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testMethodParameterGeneric() throws NoSuchMethodException, SecurityException {
-		final Method method = MyGenerics.class.getMethod("setOption", Option.class);
+		final Method method = MyGenerics.class.getMethod("setOption", Optional.class);
 		//---
 		Assert.assertEquals(Long.class, ClassUtil.getGeneric(method, 0));
 	}
 
 	@Test
 	public void testConstructorParameterGeneric() throws NoSuchMethodException, SecurityException {
-		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Option.class, List.class, List.class, List.class);
+		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Optional.class, List.class, List.class, List.class);
 		//---
 		Assert.assertEquals(Long.class, ClassUtil.getGeneric(constructor, 0));
 		//---
@@ -256,7 +256,7 @@ public final class ClassUtilTest {
 
 	@Test(expected = Exception.class)
 	public void testConstructorParameterGenericWithError() throws NoSuchMethodException, SecurityException {
-		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Option.class, List.class, List.class, List.class);
+		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Optional.class, List.class, List.class, List.class);
 		//---
 		final Class<?> generic = ClassUtil.getGeneric(constructor, 2);
 		nop(generic);
@@ -373,16 +373,16 @@ public final class ClassUtilTest {
 
 	public static final class MyGenerics {
 		//Tests pour les génériques
-		public Option<Long> myOption;
+		public Optional<Long> myOption;
 		public List<Long> myList;
 		public List<?> myList2;
 		public List<Map<?, ?>> myList3;
 
-		public MyGenerics(final Option<Long> myOption, final List<Long> myList, final List<?> myList2, final List<Map<?, ?>> myList3) {
+		public MyGenerics(final Optional<Long> myOption, final List<Long> myList, final List<?> myList2, final List<Map<?, ?>> myList3) {
 			//rien
 		}
 
-		public void setOption(final Option<Long> option) {
+		public void setOption(final Optional<Long> option) {
 			myOption = option;
 		}
 	}

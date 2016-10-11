@@ -1,49 +1,13 @@
-package io.vertigo.dynamock.file
-
-
-create Formatter FMT_DEFAULT {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDefault"
-}
-
-create Formatter FMT_DATE {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
-     args : "dd/MM/yyyy"
-}
+package io.vertigo.dynamo.file.data.domain
 
 create FileInfo FI_FILE_INFO_STD {
 	storeName : "main"
 }
 
-/**************************************************************************************************/
-/* 											Gestion des domaines pour le FileInfo								  */
-/**************************************************************************************************/
-	
-create Domain DO_LABEL {
-	dataType : String
-	formatter : FMT_DEFAULT
-}
-
-create Domain DO_DATE {
-	dataType : Date
-	formatter : FMT_DATE
-}
-
-create Domain DO_URI {
-	dataType : Long
-	formatter : FMT_DEFAULT
-}
-
-create Domain DO_SIZE {
-	dataType : Long
-	formatter : FMT_DEFAULT
-}
-
 create DtDefinition DT_VX_FILE_INFO {
-	 persistent : "true"
-	 key FIL_ID {domain : DO_URI, label : "Identifiant", notNull : "true"}
-	 field FILE_NAME {domain : DO_LABEL, label : "Nom", notNull : "true"}
-	 field MIME_TYPE {domain : DO_LABEL, label : "Type mime", notNull : "true"}
- 	 field LENGTH {domain : DO_SIZE, label : "Taille", notNull : "true"}
-	 field LAST_MODIFIED {domain : DO_DATE, label : "Date de dernière modification", notNull : "true" }
-	 field FILE_DATA {domain : DO_LABEL, label : "data", notNull : "false", persistent:"false" }	 
+	 key FIL_ID 			{domain : DO_URI 	label : "Identifiant" 			notNull : "true" }
+	 field FILE_NAME 		{domain : DO_LABEL 	label : "Nom" 					notNull : "true" }
+ 	 field LENGTH 			{domain : DO_SIZE 	label : "Taille" 				notNull : "true" }
+	 field LAST_MODIFIED 	{domain : DO_DATE 	label : "Date de modification" 	notNull : "true" }
+	 field FILE_DATA 		{domain : DO_LABEL	label : "data" 					notNull : "false", persistent:"false" }	 
 }

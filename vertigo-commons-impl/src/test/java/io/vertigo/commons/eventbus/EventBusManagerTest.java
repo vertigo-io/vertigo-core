@@ -31,9 +31,9 @@ import io.vertigo.commons.eventbus.data.RedColorEvent;
 import io.vertigo.commons.eventbus.data.WhiteColorEvent;
 
 /**
- * @author pchretien 
+ * @author pchretien
  */
-public final class EventBusManagerTest extends AbstractTestCaseJU4 implements EventListener<Event> {
+public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 
 	@Inject
 	private EventBusManager eventBusManager;
@@ -49,7 +49,7 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 implements Ev
 		mySuscriber2 = new MySuscriber();
 		eventBusManager.register(mySuscriber2);
 		//-----
-		eventBusManager.registerDead(this);
+		eventBusManager.registerDead(event -> deadEvents++);
 	}
 
 	@Test
@@ -74,10 +74,5 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 implements Ev
 		Assert.assertEquals(0, deadEvents);
 		eventBusManager.post(new DummyEvent());
 		Assert.assertEquals(1, deadEvents);
-	}
-
-	@Override
-	public void onEvent(final Event event) {
-		deadEvents++;
 	}
 }

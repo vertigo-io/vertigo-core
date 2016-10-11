@@ -19,7 +19,15 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 public enum DtStereotype {
-	MasterData,
-	KeyConcept,
-	Data; //By default
+	MasterData, //
+	KeyConcept, //
+	ValueObject, //By default
+	Entity, //
+	Fragment;
+
+	public boolean isPersistent() {
+		return this == Entity
+				|| this == KeyConcept
+				|| this == MasterData;
+	}
 }

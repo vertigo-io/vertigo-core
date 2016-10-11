@@ -196,7 +196,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			try {
 				th.join();
 			} catch (final InterruptedException e) {
-				//
+				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 		}
 		cacheManager.clear(CONTEXT);
@@ -221,7 +221,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
-					Thread.interrupted();
+					Thread.currentThread().interrupt(); //si interrupt on relance
 				}
 			}
 		}
@@ -247,7 +247,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
-					//rien
+					Thread.currentThread().interrupt(); //si interrupt on relance
 				}
 			}
 		}

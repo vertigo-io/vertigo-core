@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import io.vertigo.lang.Assertion;
@@ -38,6 +39,7 @@ import io.vertigo.vega.webservice.model.UiListState;
  * @author npiedeloup
  */
 public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefinition> {
+	private static final int NAME_MAX_SIZE = 40;
 	private final Method myMethod;
 	private Verb myVerb;
 	private String myPathPrefix;
@@ -74,7 +76,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		final String acceptedType = computeAcceptedType();
 		return new WebServiceDefinition(
 				//"WS_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
-				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(),
+				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(Locale.ENGLISH),
 				myVerb,
 				usedPath,
 				acceptedType,
@@ -104,7 +106,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				.replaceAll("_+", "_");
 		final String hashcodeAsHex = "$" + Integer.toHexString(argsRemovedPath.hashCode());
 		//On limite sa taille pour avec un nom de définition acceptable
-		return normalizedString.substring(0, Math.min(40, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
+		return normalizedString.substring(0, Math.min(NAME_MAX_SIZE, normalizedString.length())) + "_" + argsRemovedPathSize + hashcodeAsHex;
 	}
 
 	/**
@@ -126,8 +128,10 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 */
 	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
-		Assertion.checkArgument(!StringUtil.isEmpty(myPathPrefix) || !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
-		Assertion.checkArgument(StringUtil.isEmpty(path) || path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+		Assertion.when(StringUtil.isEmpty(myPathPrefix))
+				.check(() -> !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+		Assertion.when(!StringUtil.isEmpty(path))
+				.check(() -> path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myVerb = verb;
 		myPath = path;

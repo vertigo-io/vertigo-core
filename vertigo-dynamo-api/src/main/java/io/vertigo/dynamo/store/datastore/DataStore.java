@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.datastore;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 
 /**
@@ -44,60 +44,49 @@ public interface DataStore {
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * L'objet doit exister.
 	 *
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<D extends DtObject> D read(final URI<D> uri);
+	<E extends Entity> E read(final URI<E> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
 	 *
-	 * @param <D> Type des objets de la collection
+	 * @param <E> the type of entity
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtListURI uri);
+	<E extends Entity> DtList<E> findAll(final DtListURI uri);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
-	 * @param <D> Object type
+	 * @param <E> the type of entity
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<D extends DtObject> D readForUpdate(URI<D> uri);
+	<E extends Entity> E readForUpdate(URI<E> uri);
 
 	/**
 	* Create an object.
 	* No object with the same id must have been created previously.
 	*
-	* @param dto Object to create
+	* @param entity the entity to create
 	*/
-	void create(DtObject dto);
+	void create(Entity entity);
 
 	/**
 	* Update an object.
 	* This object must have an id.
-	* @param dto Object to update
+	* @param entity the entity to update
 	*/
-	void update(DtObject dto);
-
-	/**
-	* Merge an object.
-	* Strategy to create or update this object depends on the state of the database.
-	*
-	*  - If  this object is already created : update
-	*  - If  this object is not found : create
-	*
-	* @param dto Object to merge
-	*/
-	void merge(DtObject dto);
+	void update(Entity entity);
 
 	/**
 	 * Destruction d'un objet persistant par son URI.
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(URI<? extends DtObject> uri);
+	void delete(URI<? extends Entity> uri);
 
 }

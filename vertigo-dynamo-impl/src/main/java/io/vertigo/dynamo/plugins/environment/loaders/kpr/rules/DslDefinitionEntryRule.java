@@ -26,13 +26,10 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRu
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
 
@@ -40,50 +37,47 @@ import io.vertigo.lang.Assertion;
  * règle de déclaration d'une champ référenéant une listes de clés.
  * @author pchretien
  */
-public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<?>> {
-	private final List<String> fieldNames;
+public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 
 	/**
 	 * Constructeur.
 	 */
 	public DslDefinitionEntryRule(final List<String> fieldNames) {
-		Assertion.checkNotNull(fieldNames);
-		//-----
-		this.fieldNames = fieldNames;
-
+		super(createMainRule(fieldNames));
 	}
 
-	@Override
-	protected Rule<List<?>> createMainRule() {
-		final List<Rule<?>> fieldNamesRules = new ArrayList<>();
+	private static PegRule<List<Object>> createMainRule(final List<String> fieldNames) {
+		Assertion.checkNotNull(fieldNames);
+		//-----
+		final List<PegRule<?>> fieldNamesRules = new ArrayList<>();
 		for (final String fieldName : fieldNames) {
-			fieldNamesRules.add(new TermRule(fieldName));
+			fieldNamesRules.add(PegRules.term(fieldName));
 		}
 		//-----
-		return new SequenceRule(//"DefinitionKey"
-				new FirstOfRule(fieldNamesRules), //0
+		return PegRules.sequence(//"DefinitionKey"
+				PegRules.choice(fieldNamesRules), //0
 				SPACES,
 				PAIR_SEPARATOR,
 				SPACES,
-				new FirstOfRule(WORD, WORDS),//4
+				PegRules.choice(WORD, WORDS), //4
 				SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
+				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override
-	protected DslDefinitionEntry handle(final List<?> parsing) {
-		final String fieldName = (String) ((Choice) parsing.get(0)).getResult();
+	protected DslDefinitionEntry handle(final List<Object> parsing) {
+		final String fieldName = (String) ((PegChoice) parsing.get(0)).getValue();
 		final List<String> definitionKeys;
 
-		final Choice definitionChoice = (Choice) parsing.get(4);
-		switch (definitionChoice.getValue()) {
+		final PegChoice definitionChoice = (PegChoice) parsing.get(4);
+		switch (definitionChoice.getChoiceIndex()) {
 			case 1:
 				//Déclaration d'une liste de définitions identifiée par leurs clés
-				definitionKeys = (List<String>) definitionChoice.getResult();
+				definitionKeys = (List<String>) definitionChoice.getValue();
 				break;
 			case 0:
 				//Déclaration d'une définition identifiée par sa clé
-				final String value = (String) definitionChoice.getResult();
+				final String value = (String) definitionChoice.getValue();
 				definitionKeys = java.util.Collections.singletonList(value);
 				break;
 			default:

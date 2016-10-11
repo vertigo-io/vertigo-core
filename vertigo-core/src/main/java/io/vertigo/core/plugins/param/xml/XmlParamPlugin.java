@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,7 +37,6 @@ import org.xml.sax.SAXException;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 import io.vertigo.util.XMLUtil;
@@ -64,10 +64,10 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<String> getValue(final String paramName) {
+	public Optional<String> getValue(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Option.<String> ofNullable(params.get(paramName)) : Option.<String> empty();
+		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.get(paramName)) : Optional.<String> empty();
 	}
 
 	/**

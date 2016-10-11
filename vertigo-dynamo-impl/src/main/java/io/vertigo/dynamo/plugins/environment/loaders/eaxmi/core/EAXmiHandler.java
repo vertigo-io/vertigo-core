@@ -115,7 +115,7 @@ public final class EAXmiHandler extends DefaultHandler {
 	@Override
 	public void endElement(final String unusedUri, final String unusedLocalName, final String name) {
 		// Si c'est un attribut l'objet courant, on revient à la classe qui le contient.
-		if (currentObject.getType() != null && currentObject.getType().isAttribute() && !phase2) {
+		if (!phase2 && currentObject.getType() != null && currentObject.getType().isAttribute()) {
 			currentObject = currentObject.getParent();
 		}
 	}

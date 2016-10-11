@@ -20,50 +20,44 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.OptionRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 
-final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
-	private final DynamicDefinitionRepository dynamicModelRepository;
+final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 	private final String entityName;
-	private final Entity entity;
+	private final DslEntity entity;
 
-	DslInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final Entity entity) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	DslInnerDefinitionRule(final String entityName, final DslEntity entity) {
+		super(createMainRule(entityName, entity), entityName);
+		this.entityName = entityName;
+		this.entity = entity;
+	}
+
+	private static PegRule<List<Object>> createMainRule(final String entityName, final DslEntity entity) {
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
 		//-----
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.entityName = entityName;
-		this.entity = entity;
-
+		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(entity);
+		return PegRules.sequence(//"InnerDefinition"
+				PegRules.term(entityName),
+				DslSyntaxRules.SPACES,
+				DslSyntaxRules.WORD, //2
+				DslSyntaxRules.SPACES,
+				definitionBodyRule, //4
+				DslSyntaxRules.SPACES,
+				PegRules.optional(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
-		return new SequenceRule(//"InnerDefinition"
-				new TermRule(entityName),
-				DslSyntaxRules.SPACES,
-				DslSyntaxRules.WORD,//2
-				DslSyntaxRules.SPACES,
-				definitionBodyRule,//4
-				DslSyntaxRules.SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
-	}
-
-	@Override
-	protected DslDefinitionEntry handle(final List<?> parsing) {
+	protected DslDefinitionEntry handle(final List<Object> parsing) {
 		//Dans le cas des sous définition :: field [PRD_XXX]
 
 		final String definitionName = (String) parsing.get(2);
@@ -87,10 +81,10 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addAllDefinitions(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
+				dynamicDefinitionBuilder.addAllDefinitionLinks(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
 			}
 		}
 		for (final DslPropertyEntry dslPropertyEntry : definitionBody.getPropertyEntries()) {
@@ -103,21 +97,17 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		}
 	}
 
-	//=========================================================================
-	//=================================STATIC==================================
-	//=========================================================================
-
 	/**
 	 * Retourne la valeur typée en fonction de son expression sous forme de String
 	 * L'expression est celle utilisée dans le fichier xml/ksp.
 	 * Cette méthode n'a pas besoin d'être optimisée elle est appelée au démarrage uniquement.
 	 * @return J Valeur typée de la propriété
 	 */
-	private static Object readProperty(final Entity entity, final DslPropertyEntry dslPropertyEntry) {
+	private static Object readProperty(final DslEntity entity, final DslPropertyEntry dslPropertyEntry) {
 		Assertion.checkNotNull(entity);
 		Assertion.checkNotNull(dslPropertyEntry);
 		//-----
-		return entity.getPrimitiveType(dslPropertyEntry.getPropertyName()).cast(dslPropertyEntry.getPropertyValueAsString());
+		return entity.getPropertyType(dslPropertyEntry.getPropertyName()).cast(dslPropertyEntry.getPropertyValueAsString());
 	}
 
 }

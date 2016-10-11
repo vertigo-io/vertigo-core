@@ -26,10 +26,7 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 /**
@@ -58,31 +55,31 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final DtDefinition dtDefinition = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
 		Assert.assertTrue(dtDefinition.isPersistent());
-		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getCanonicalName(), dtDefinition.getClassCanonicalName());
-		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getPackage().getName(), dtDefinition.getPackageName());
-		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getSimpleName(), dtDefinition.getClassSimpleName());
+		Assert.assertEquals("io.vertigo.dynamock.domain.famille.Famille", dtDefinition.getClassCanonicalName());
+		Assert.assertEquals("io.vertigo.dynamock.domain.famille", dtDefinition.getPackageName());
+		Assert.assertEquals("Famille", dtDefinition.getClassSimpleName());
 	}
 
-	@Test
-	public void testCreateFamille() {
-		final Famille famille = new Famille();
-		famille.setFamId(45L);
-		famille.setLibelle("Armes");
-
-		Assert.assertEquals(45L, famille.getFamId().longValue());
-		Assert.assertEquals("Armes", famille.getLibelle());
-		Assert.assertEquals("Armes[45]", famille.getDescription());
-
-		//--Vérification des appels dynamiques--
-		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-
-		final DtField libelleDtField = dtFamille.getField("LIBELLE");
-		Assert.assertEquals("Armes", libelleDtField.getDataAccessor().getValue(famille));
-		//-cas du id
-		final DtField idDtField = dtFamille.getField("FAM_ID");
-		Assert.assertEquals(45L, idDtField.getDataAccessor().getValue(famille));
-		//-cas du computed
-		final DtField descriptionDtField = dtFamille.getField("DESCRIPTION");
-		Assert.assertEquals("Armes[45]", descriptionDtField.getDataAccessor().getValue(famille));
-	}
+	//	@Test
+	//	public void testCreateFamille() {
+	//		final Famille famille = new Famille();
+	//		famille.setFamId(45L);
+	//		famille.setLibelle("Armes");
+	//
+	//		Assert.assertEquals(45L, famille.getFamId().longValue());
+	//		Assert.assertEquals("Armes", famille.getLibelle());
+	//		Assert.assertEquals("Armes[45]", famille.getDescription());
+	//
+	//		//--Vérification des appels dynamiques--
+	//		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
+	//
+	//		final DtField libelleDtField = dtFamille.getField("LIBELLE");
+	//		Assert.assertEquals("Armes", libelleDtField.getDataAccessor().getValue(famille));
+	//		//-cas du id
+	//		final DtField idDtField = dtFamille.getField("FAM_ID");
+	//		Assert.assertEquals(45L, idDtField.getDataAccessor().getValue(famille));
+	//		//-cas du computed
+	//		final DtField descriptionDtField = dtFamille.getField("DESCRIPTION");
+	//		Assert.assertEquals("Armes[45]", descriptionDtField.getDataAccessor().getValue(famille));
+	//	}
 }

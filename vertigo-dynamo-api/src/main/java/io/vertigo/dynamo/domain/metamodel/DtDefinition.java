@@ -23,13 +23,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -41,6 +42,9 @@ import io.vertigo.util.StringUtil;
 public final class DtDefinition implements Definition {
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
+
+	/** if the definition is a fragment. */
+	private final Optional<DefinitionReference<DtDefinition>> fragment;
 
 	/** name of the definition. */
 	private final String name;
@@ -56,19 +60,16 @@ public final class DtDefinition implements Definition {
 
 	private final DtStereotype stereotype;
 
-	/** If data is persisted. */
-	private final boolean persistent;
-
 	/**
 	 * Si la classe est dynamic, c'est à dire non représentée par une classe.
 	 */
 	private final boolean dynamic;
 
 	/** id Field */
-	private final Option<DtField> idField;
+	private final Optional<DtField> idField;
 
-	private Option<DtField> sortField = Option.empty();
-	private Option<DtField> displayField = Option.empty();
+	private Optional<DtField> sortField = Optional.empty();
+	private Optional<DtField> displayField = Optional.empty();
 
 	private final String dataSpace;
 
@@ -77,51 +78,60 @@ public final class DtDefinition implements Definition {
 	 */
 	DtDefinition(
 			final String name,
+			final Optional<DefinitionReference<DtDefinition>> fragment,
 			final String packageName,
 			final DtStereotype stereotype,
-			final boolean persistent,
 			final List<DtField> dtFields,
 			final boolean dynamic,
 			final String dataSpace) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
+		Assertion.checkNotNull(fragment);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
 		Assertion.checkArgNotEmpty(dataSpace);
 		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
 		//-----
 		this.name = name;
+		//
+		this.fragment = fragment;
+		//
 		this.stereotype = stereotype;
-		this.persistent = persistent;
 		this.packageName = packageName;
 		DtField id = null;
 
 		for (final DtField dtField : dtFields) {
 			if (DtField.FieldType.ID.equals(dtField.getType())) {
-				Assertion.checkState(id == null, "Un seul champ identifiant est autorisé par objet : {0}", name);
+				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
 			doRegisterDtField(dtField);
 
 		}
-		idField = Option.ofNullable(id);
+		idField = Optional.ofNullable(id);
 		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
-		Assertion.checkState(!persistent || idField.isPresent(), "Si un DT est persistant il doit posséder un ID");
+		Assertion.when(fragment.isPresent())
+				.check(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
+		//Persistent => ID
+		Assertion.when(stereotype.isPersistent())
+				.check(() -> idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+		Assertion.when(!stereotype.isPersistent())
+				.check(() -> !idField.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
 
 	private void registerSort(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!sortField.isPresent(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		sortField = Option.of(dtField);
+		sortField = Optional.of(dtField);
 	}
 
 	private void registerDisplay(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!displayField.isPresent(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
 		//-----
-		displayField = Option.of(dtField);
+		displayField = Optional.of(dtField);
 	}
 
 	//TODO A fermer
@@ -144,6 +154,13 @@ public final class DtDefinition implements Definition {
 		if (dtField.isDisplay()) {
 			registerDisplay(dtField);
 		}
+	}
+
+	public Optional<DtDefinition> getFragment() {
+		if (fragment.isPresent()) {
+			return Optional.of(fragment.get().get());
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -219,7 +236,7 @@ public final class DtDefinition implements Definition {
 	/**
 	 * @return Champ identifiant l'identifiant
 	 */
-	public Option<DtField> getIdField() {
+	public Optional<DtField> getIdField() {
 		return idField;
 	}
 
@@ -235,7 +252,7 @@ public final class DtDefinition implements Definition {
 	 * @return Si la définition est persistée.
 	 */
 	public boolean isPersistent() {
-		return persistent;
+		return stereotype.isPersistent();
 	}
 
 	/**
@@ -254,14 +271,14 @@ public final class DtDefinition implements Definition {
 	/**
 	 * @return Champ représentant l'affichage
 	 */
-	public Option<DtField> getDisplayField() {
+	public Optional<DtField> getDisplayField() {
 		return displayField;
 	}
 
 	/**
 	 * @return Champ représentant le tri
 	 */
-	public Option<DtField> getSortField() {
+	public Optional<DtField> getSortField() {
 		return sortField;
 	}
 

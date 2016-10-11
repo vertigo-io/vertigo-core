@@ -23,12 +23,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-@DtDefinition
-public final class Contact implements DtObject {
+public final class Contact implements Entity {
 	private static final long serialVersionUID = 2074906343392206381L;
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "Contact Id")
@@ -47,6 +47,12 @@ public final class Contact implements DtObject {
 
 	private List<String> tels;
 	private Address address;
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Contact> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
 
 	public Long getConId() {
 		return conId;

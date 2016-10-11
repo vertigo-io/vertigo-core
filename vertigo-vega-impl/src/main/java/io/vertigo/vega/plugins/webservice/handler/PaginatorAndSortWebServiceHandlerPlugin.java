@@ -18,13 +18,14 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
@@ -81,7 +82,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String listServerToken = uiListState.getListServerToken();
-		Option<DtList<?>> fullListOption = Option.empty();
+		Optional<DtList<?>> fullListOption = Optional.empty();
 		if (listServerToken != null) {
 			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
@@ -126,7 +127,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.createDtListProcessor()
+			sortedList = collectionsManager.<D> createDtListProcessor()
 					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
 					.apply(unFilteredList);
 		} else {
@@ -138,7 +139,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		} else if (uiListState.getTop() > 0) {
 			final int start = uiListState.getSkip();
 			final int end = Math.min(start + uiListState.getTop(), sortedList.size());
-			filteredList = collectionsManager.createDtListProcessor()
+			filteredList = collectionsManager.<D> createDtListProcessor()
 					.filterSubList(start, end)
 					.apply(sortedList);
 		} else {

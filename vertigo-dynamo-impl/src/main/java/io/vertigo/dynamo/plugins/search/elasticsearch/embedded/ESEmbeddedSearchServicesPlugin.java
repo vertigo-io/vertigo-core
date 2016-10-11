@@ -22,12 +22,12 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -36,7 +36,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 //Vérifier
@@ -61,7 +60,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 */
 	@Inject
 	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("envIndex") final String envIndex,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Option<String> configFile,
+			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Optional<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
@@ -102,7 +101,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		return ImmutableSettings.settingsBuilder()
+		return Settings.settingsBuilder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("path.home", homePath)
 				.build();

@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.search.dsl.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
@@ -50,15 +51,10 @@ public final class DslMultiField {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append("[");
-		String sep = "";
-		for (final DslField field : fields) {
-			sb.append(sep).append(field);
-			sep = ",";
-		}
-		sb.append("]").append(postBody);
-		return sb.toString();
+		return fields
+				.stream()
+				.map(field -> field.toString())
+				.collect(Collectors.joining(",", preBody + '[', ']' + postBody));
 	}
 
 	/**

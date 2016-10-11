@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.EntityPropertyType.String;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
+import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -28,6 +28,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DYNAMIC;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.EXPRESSION;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.INDEX_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
@@ -51,16 +52,16 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien
  */
-public final class DomainGrammar implements EntityGrammar {
+public final class DomainGrammar implements DslGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
@@ -74,123 +75,125 @@ public final class DomainGrammar implements EntityGrammar {
 	 */
 	public static final String COMPUTED = "computed";
 
-	/** Mot-clé des MetaDefinitions de Fields. */
-	private static final String DT_FIELD_META_DEFINITION = "Field";
-	/** Mot-clé des MetaDefinitions de Fields. */
-	private static final String DT_COMPUTED_FIELD_META_DEFINITION = "ComputedField";
-	/** Mot-clé des MetaDefinitions de AssociationNN. */
-	private static final String ASSOCIATION_NN_META_DEFINITION = "AssociationNN";
-	/** Mot-clé des MetaDefinitions de Association. */
-	private static final String ASSOCIATION_META_DEFINITION = "Association";
-	/** Mot-clé des MetaDefinitions de DtDefinition. */
-	private static final String DT_DEFINITION_META_DEFINITION = "DtDefinition";
-
 	/**Définition d'une constraint.*/
-	public static final Entity CONSTRAINT_ENTITY;
+	public static final DslEntity CONSTRAINT_ENTITY;
 	/**Définition d'un formatter.*/
-	public static final Entity FORMATTER_ENTITY;
-	/**Définition d'une propriété.*/
-	private static final Entity PROPERTY_ENTITY;
+	public static final DslEntity FORMATTER_ENTITY;
 	/**Définition d'un domain.*/
-	public static final Entity DOMAIN_ENTITY;
+	public static final DslEntity DOMAIN_ENTITY;
 
-	/**Définition d'un champ de DT.*/
-	public static final Entity DT_FIELD_ENTITY;
-	/**Définition d'un champ computed de DT.*/
-	private static final Entity FT_COMPUTED_FIELD_ENTITY;
-	/**Définition d'un DT.*/
-	public static final Entity DT_DEFINITION_ENTITY;
+	/**Field*/
+	public static final DslEntity DT_FIELD_ENTITY;
+
+	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
-	public static final Entity ASSOCIATION_ENTITY;
+	public static final DslEntity ASSOCIATION_ENTITY;
 	/**Définition d'une association NN.*/
-	public static final Entity ASSOCIATION_NN_ENTITY;
+	public static final DslEntity ASSOCIATION_NN_ENTITY;
+
+	/**
+	 * Fragments
+	 */
+	public static final DslEntity FRAGMENT_ENTITY;
 
 	static {
-		CONSTRAINT_ENTITY = new EntityBuilder("Constraint")
-				.addField(CLASS_NAME, String, true)
-				.addField(ARGS, String, false)
-				.addField(MSG, String, false)
+		CONSTRAINT_ENTITY = new DslEntityBuilder("Constraint")
+				.addRequiredField(CLASS_NAME, String)
+				.addOptionalField(ARGS, String)
+				.addOptionalField(MSG, String)
 				.build();
-		FORMATTER_ENTITY = new EntityBuilder("Formatter")
-				.addField(CLASS_NAME, String, true)
-				.addField(ARGS, String, false)
-				.build();
-		PROPERTY_ENTITY = new EntityBuilder("Property").build();
-
-		DOMAIN_ENTITY = new EntityBuilder("Domain")
-				.addField(MAX_LENGTH, Integer, false)
-				.addField(TYPE, String, false)
-				.addField(UNIT, String, false)
-				.addField(INDEX_TYPE, String, false)
-				.addField(STORE_TYPE, String, false)
-				.addField("formatter", FORMATTER_ENTITY.getLink(), true)
-				.addField("dataType", KernelGrammar.getDataTypeEntity().getLink(), true)
-				.addFields("constraint", CONSTRAINT_ENTITY.getLink(), false)
+		FORMATTER_ENTITY = new DslEntityBuilder("Formatter")
+				.addRequiredField(CLASS_NAME, String)
+				.addOptionalField(ARGS, String)
 				.build();
 
-		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
-				.addField(LABEL, String, true)
-				.addField(NOT_NULL, Boolean, true)
-				.addField("domain", DOMAIN_ENTITY.getLink(), true)
-				.addField(PERSISTENT, Boolean, false)
+		DOMAIN_ENTITY = new DslEntityBuilder("Domain")
+				.addOptionalField(MAX_LENGTH, Integer)
+				.addOptionalField(TYPE, String)
+				.addOptionalField(UNIT, String)
+				.addOptionalField(INDEX_TYPE, String)
+				.addOptionalField(STORE_TYPE, String)
+				.addRequiredField("formatter", FORMATTER_ENTITY.getLink())
+				.addRequiredField("dataType", KernelGrammar.getDataTypeEntity().getLink())
+				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
-		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
-				.addField(LABEL, String, true)
-				.addField("domain", DOMAIN_ENTITY.getLink(), true)
-				.addField(EXPRESSION, String, true)
+		DT_FIELD_ENTITY = new DslEntityBuilder("Field")
+				.addRequiredField(LABEL, String)
+				.addRequiredField(NOT_NULL, Boolean)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+				.addOptionalField(EXPRESSION, String)
+				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
-				.addField(DISPLAY_FIELD, String, false)
-				.addField(SORT_FIELD, String, false)
-				.addFields(FIELD, DT_FIELD_ENTITY, false)
-				.addFields(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false)
-				.addField(ID, DT_FIELD_ENTITY, false)
-				.addField(PERSISTENT, Boolean, false)
-				.addField(DYNAMIC, Boolean, false)
-				.addField(STEREOTYPE, String, false)
-				.addField(DATA_SPACE, String, false)
+		final DslEntity computedFieldEntity = new DslEntityBuilder("ComputedField")
+				.addRequiredField(LABEL, String)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+				.addRequiredField(EXPRESSION, String)
 				.build();
 
-		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
-				.addField(FK_FIELD_NAME, String, false)
-				.addField(MULTIPLICITY_A, String, true)
-				.addField(NAVIGABILITY_A, Boolean, true)
-				.addField(ROLE_A, String, true)
-				.addField(LABEL_A, String, true)
-				.addField(MULTIPLICITY_B, String, true)
-				.addField(NAVIGABILITY_B, Boolean, true)
-				.addField(ROLE_B, String, true)
-				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
+		DT_DEFINITION_ENTITY = new DslEntityBuilder("DtDefinition")
+				.addOptionalField(DISPLAY_FIELD, String)
+				.addOptionalField(SORT_FIELD, String)
+				.addManyFields(FIELD, DT_FIELD_ENTITY)
+				.addManyFields(COMPUTED, computedFieldEntity)
+				.addOptionalField(ID, DT_FIELD_ENTITY)
+				.addOptionalField(DYNAMIC, Boolean)
+				.addOptionalField(FRAGMENT_OF, String)
+				.addOptionalField(STEREOTYPE, String)
+				.addOptionalField(DATA_SPACE, String)
 				.build();
 
-		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
-				.addField(TABLE_NAME, String, true)
-				.addField(NAVIGABILITY_A, Boolean, true)
-				.addField(ROLE_A, String, true)
-				.addField(LABEL_A, String, true)
-				.addField(NAVIGABILITY_B, Boolean, true)
-				.addField(ROLE_B, String, true)
-				.addField(LABEL_B, String, true)
-				.addField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink(), true)
-				.addField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink(), true)
+		final DslEntity fieldAliasEntity = new DslEntityBuilder("fieldAlias")
+				.addOptionalField(LABEL, String)
+				.addOptionalField(NOT_NULL, Boolean)
+				.build();
+
+		FRAGMENT_ENTITY = new DslEntityBuilder("Fragment")
+				.addRequiredField("from", DT_DEFINITION_ENTITY.getLink())
+				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
+				.addOptionalField(DISPLAY_FIELD, String)
+				.addOptionalField(SORT_FIELD, String)
+				.addManyFields(FIELD, DT_FIELD_ENTITY) //on peut ajouter des champs
+				.addManyFields(COMPUTED, computedFieldEntity) //et des computed
+				.build();
+
+		ASSOCIATION_ENTITY = new DslEntityBuilder("Association")
+				.addOptionalField(FK_FIELD_NAME, String)
+				.addRequiredField(MULTIPLICITY_A, String)
+				.addRequiredField(NAVIGABILITY_A, Boolean)
+				.addRequiredField(ROLE_A, String)
+				.addRequiredField(LABEL_A, String)
+				.addRequiredField(MULTIPLICITY_B, String)
+				.addRequiredField(NAVIGABILITY_B, Boolean)
+				.addRequiredField(ROLE_B, String)
+				.addRequiredField(LABEL_B, String)
+				.addRequiredField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
+				.build();
+
+		ASSOCIATION_NN_ENTITY = new DslEntityBuilder("AssociationNN")
+				.addRequiredField(TABLE_NAME, String)
+				.addRequiredField(NAVIGABILITY_A, Boolean)
+				.addRequiredField(ROLE_A, String)
+				.addRequiredField(LABEL_A, String)
+				.addRequiredField(NAVIGABILITY_B, Boolean)
+				.addRequiredField(ROLE_B, String)
+				.addRequiredField(LABEL_B, String)
+				.addRequiredField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink())
+				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
 				.build();
 
 	}
 
 	@Override
-	public List<Entity> getEntities() {
-		return new ListBuilder<Entity>()
-				.add(PROPERTY_ENTITY)
+	public List<DslEntity> getEntities() {
+		return new ListBuilder<DslEntity>()
 				.add(CONSTRAINT_ENTITY)
 				.add(FORMATTER_ENTITY)
 				//---
 				.add(DOMAIN_ENTITY)
-				.add(DT_FIELD_ENTITY)
-				.add(FT_COMPUTED_FIELD_ENTITY)
+				.add(FRAGMENT_ENTITY)
 				.add(DT_DEFINITION_ENTITY)
 				.add(ASSOCIATION_ENTITY)
 				.add(ASSOCIATION_NN_ENTITY)

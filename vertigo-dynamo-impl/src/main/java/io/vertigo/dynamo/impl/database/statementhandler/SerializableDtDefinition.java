@@ -24,6 +24,7 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.lang.Assertion;
@@ -58,7 +59,6 @@ final class SerializableDtDefinition implements Serializable {
 		//synchronizer, car lasy loading
 		if (dtDefinition == null) {
 			final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(DT_DYNAMIC)
-					.withPersistent(false)
 					.withDynamic(true);
 
 			for (final SerializableDtField field : fields) {
@@ -75,7 +75,7 @@ final class SerializableDtDefinition implements Serializable {
 		final Map<DataType, Domain> map = new EnumMap<>(DataType.class);
 		//Initialisation de la map.
 		for (final DataType dataType : dataTypes) {
-			final Domain domain = new Domain("DO_DYN", dataType);
+			final Domain domain = new DomainBuilder("DO_DYN", dataType).build();
 			map.put(dataType, domain);
 		}
 		return map;

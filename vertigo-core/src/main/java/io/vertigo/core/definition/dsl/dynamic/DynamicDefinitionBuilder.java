@@ -20,7 +20,7 @@ package io.vertigo.core.definition.dsl.dynamic;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.lang.Builder;
 
 /**
@@ -28,7 +28,7 @@ import io.vertigo.lang.Builder;
  * @author  pchretien
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
-	Entity getEntity();
+	DslEntity getEntity();
 
 	/**
 	 * @param packageName Package name
@@ -43,7 +43,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	DynamicDefinitionBuilder addBody(DynamicDefinition dynamicDefinition);
 
 	/**
-	 * @param fieldName Name of the field 
+	 * @param fieldName Name of the field
 	 * @param value Valeur de la propriété
 	 * @return this builder
 	 */
@@ -52,26 +52,26 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
 	 * La définition n'est connue que par sa référence, son nom.
-	 * @param fieldName Name of the field 
+	 * @param fieldName Name of the field
 	 * @param definitionName Name of the definition
 	 * @return this builder
 	 */
-	DynamicDefinitionBuilder addDefinition(final String fieldName, final String definitionName);
+	DynamicDefinitionBuilder addDefinitionLink(final String fieldName, final String definitionName);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.
 	 * La définition n'est connue que par sa référence, son nom.
-	 * @param fieldName Name of the field 
+	 * @param fieldName Name of the field
 	 * @param definitionNames  list of the names of the dedinitions
 	 * @return this builder
 	 */
-	DynamicDefinitionBuilder addAllDefinitions(final String fieldName, final List<String> definitionNames);
+	DynamicDefinitionBuilder addAllDefinitionLinks(final String fieldName, final List<String> definitionNames);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
-	 * @param fieldName Name of the field 
+	 * @param fieldName Name of the field
 	 * @param definition Définition
 	 * @return this builder
 	 */
-	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinition definition);
+	DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition);
 }

@@ -23,6 +23,6 @@ package io.vertigo.dynamo.domain.model;
  *
  * @author npiedeloup, pchretien
  */
-public interface KeyConcept extends DtObject {
+public interface KeyConcept extends Entity {
 	//
 }

@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -31,20 +32,20 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * List Function powered with index engine.
  * @author npiedeloup (5 janv. 2015 10:47:08)
  * @param <D> Object type
  */
-public final class IndexFilterFunction<D extends DtObject> implements DtListFunction<D> {
+public final class IndexFilterFunction<D extends DtObject> implements UnaryOperator<DtList<D>> {
 
+	private static final int DEFAULT_MAX_ROWS = 250;
 	private String keywords;
 	private Collection<DtField> searchedFields = Collections.emptyList();
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
-	private int top = 250;
+	private int top = DEFAULT_MAX_ROWS;
 
 	private final IndexPlugin indexPlugin;
 	private Boolean sortDesc;
@@ -116,6 +117,6 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 		Assertion.checkNotNull(dtc);
 		//-----
 		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
-		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Option.<DtField> empty(), dtc);
+		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.<DtField> empty(), dtc);
 	}
 }

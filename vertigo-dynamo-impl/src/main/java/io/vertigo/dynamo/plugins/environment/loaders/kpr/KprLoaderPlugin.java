@@ -21,8 +21,10 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +33,6 @@ import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
@@ -46,7 +47,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	private static final String KPR_EXTENSION = ".kpr";
 	private static final String KSP_EXTENSION = ".ksp";
 	private final ResourceManager resourceManager;
-	private final String charset;
+	private final Charset charset;
 
 	/**
 	 * Constructor.
@@ -55,12 +56,12 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param encoding encoding des KSP
 	 */
 	@Inject
-	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Option<String> encoding) {
+	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = encoding.orElse("ISO-8859-1");
+		charset = Charset.forName(encoding.orElse("ISO-8859-1"));
 	}
 
 	/** {@inheritDoc} */
@@ -70,7 +71,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
 		final URL kprURL = resourceManager.resolve(resourcePath);
-		for (final URL url : getKspFiles(kprURL, resourceManager)) {
+		for (final URL url : getKspFiles(kprURL, charset, resourceManager)) {
 			final KspLoader loader = new KspLoader(url, charset);
 			loader.load(dynamicModelrepository);
 		}
@@ -82,17 +83,17 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param kprURL fichier KPR
 	 * @return List liste des fichiers KSP.
 	 */
-	private static List<URL> getKspFiles(final URL kprURL, final ResourceManager resourceManager) {
+	private static List<URL> getKspFiles(final URL kprURL, final Charset charset, final ResourceManager resourceManager) {
 		try {
-			return doGetKspFiles(kprURL, resourceManager);
+			return doGetKspFiles(kprURL, charset, resourceManager);
 		} catch (final Exception e) {
 			throw new WrappedException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
 		}
 	}
 
-	private static List<URL> doGetKspFiles(final URL kprURL, final ResourceManager resourceManager) throws Exception {
+	private static List<URL> doGetKspFiles(final URL kprURL, final Charset charset, final ResourceManager resourceManager) throws Exception {
 		final List<URL> kspFiles = new ArrayList<>();
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream()))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream(), charset))) {
 			String path = kprURL.getPath();
 			path = path.substring(0, path.lastIndexOf('/'));
 
@@ -104,7 +105,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 					final URL url = new URL(kprURL.getProtocol() + ':' + path + '/' + fileName);
 					if (fileName.endsWith(KPR_EXTENSION)) {
 						// kpr
-						kspFiles.addAll(getKspFiles(url, resourceManager));
+						kspFiles.addAll(getKspFiles(url, charset, resourceManager));
 					} else if (fileName.endsWith(KSP_EXTENSION)) {
 						// ksp
 						kspFiles.add(url);

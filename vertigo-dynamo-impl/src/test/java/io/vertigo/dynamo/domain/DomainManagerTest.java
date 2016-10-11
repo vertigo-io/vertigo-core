@@ -25,6 +25,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -35,10 +36,9 @@ public class DomainManagerTest {
 	@Test
 	public void testCreateDtDefinition() {
 		try (AutoCloseableApp app = new AutoCloseableApp(new AppConfigBuilder().build())) {
-			final Domain domain = new Domain("DO_NAME", DataType.String);
+			final Domain domain = new DomainBuilder("DO_NAME", DataType.String).build();
 
 			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
-					.withPersistent(false)
 					.withDynamic(true)
 					.addDataField("NAME", "nom du film", domain, true, true, false, false)
 					.build();

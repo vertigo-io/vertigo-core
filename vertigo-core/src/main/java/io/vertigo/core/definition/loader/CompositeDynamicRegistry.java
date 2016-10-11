@@ -24,8 +24,8 @@ import java.util.List;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -36,7 +36,7 @@ import io.vertigo.lang.WrappedException;
  */
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
-	private final EntityGrammar grammar;
+	private final DslGrammar grammar;
 	private final List<DynamicDefinition> rootDynamicDefinitions;
 
 	/**
@@ -46,7 +46,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//-----
-		dynamicRegistries = new ArrayList<DynamicRegistry>(dynamicRegistryPlugins);
+		dynamicRegistries = new ArrayList<>(dynamicRegistryPlugins);
 		//Création de la grammaire.
 		grammar = createGrammar();
 
@@ -56,23 +56,18 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		}
 	}
 
-	private EntityGrammar createGrammar() {
-		final List<Entity> entities = new ArrayList<>();
+	private DslGrammar createGrammar() {
+		final List<DslEntity> entities = new ArrayList<>();
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new EntityGrammar() {
+		return () -> entities;
 
-			@Override
-			public List<Entity> getEntities() {
-				return entities;
-			}
-		};
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public EntityGrammar getGrammar() {
+	public DslGrammar getGrammar() {
 		return grammar;
 	}
 
@@ -86,7 +81,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
-		if (!xdefinition.getEntity().isRoot()) {
+		if (!xdefinition.getEntity().isProvided()) {
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
 			dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
 		}

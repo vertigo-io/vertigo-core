@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -32,6 +33,8 @@ import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
+import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
@@ -39,7 +42,6 @@ import org.apache.lucene.search.Query;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
@@ -52,7 +54,7 @@ final class RamLuceneQueryFactory {
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Optional<DtField> boostedField) throws IOException {
 		final Query filteredQuery;
 		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, boostedField);
 		if (!listFilters.isEmpty()) {
@@ -63,35 +65,35 @@ final class RamLuceneQueryFactory {
 		return filteredQuery;
 	}
 
-	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Option<DtField> boostedField) throws IOException {
+	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DtField> searchedFieldList, final Optional<DtField> boostedField) throws IOException {
 		if (StringUtil.isEmpty(keywords)) {
 			return new MatchAllDocsQuery();
 		}
 		//-----
-		final BooleanQuery query = new BooleanQuery();
+		final Builder queryBuilder = new BooleanQuery.Builder();
 		for (final DtField dtField : searchedFieldList) {
-			final Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
+			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
-				queryWord.setBoost(4);
+				queryWord = new BoostQuery(queryWord, 4);
 			}
-			query.add(queryWord, BooleanClause.Occur.SHOULD);
+			queryBuilder.add(queryWord, BooleanClause.Occur.SHOULD);
 		}
-		return query;
+		return queryBuilder.build();
 	}
 
 	private static Query createFilteredQuery(final Analyzer queryAnalyser, final Query keywordsQuery, final List<ListFilter> filters) {
-		final BooleanQuery query = new BooleanQuery();
-		query.add(keywordsQuery, BooleanClause.Occur.MUST);
+		final Builder queryBuilder = new BooleanQuery.Builder()
+				.add(keywordsQuery, BooleanClause.Occur.MUST);
 
 		for (final ListFilter filter : filters) {
 			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 			try {
-				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
+				queryBuilder.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
 				throw new WrappedException("Erreur lors de la création du filtrage de la requete", e);
 			}
 		}
-		return query;
+		return queryBuilder.build();
 	}
 
 	private static boolean isExclusion(final ListFilter listFilter) {
@@ -100,7 +102,7 @@ final class RamLuceneQueryFactory {
 	}
 
 	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords) throws IOException {
-		final BooleanQuery query = new BooleanQuery();
+		final Builder queryBuilder = new BooleanQuery.Builder();
 		final Reader reader = new StringReader(keywords);
 		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
 			tokenStream.reset();
@@ -109,13 +111,13 @@ final class RamLuceneQueryFactory {
 				while (tokenStream.incrementToken()) {
 					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
 					final PrefixQuery termQuery = new PrefixQuery(new Term(fieldName, term));
-					query.add(termQuery, BooleanClause.Occur.MUST);
+					queryBuilder.add(termQuery, BooleanClause.Occur.MUST);
 				}
 			} finally {
 				reader.reset();
 				tokenStream.end();
 			}
 		}
-		return query;
+		return queryBuilder.build();
 	}
 }

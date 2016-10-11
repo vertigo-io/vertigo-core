@@ -40,6 +40,7 @@ limitations under the License. -->
 
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
+		<module>vertigo-dynamo-plugin-elasticsearch_1_7</module>
 		
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>

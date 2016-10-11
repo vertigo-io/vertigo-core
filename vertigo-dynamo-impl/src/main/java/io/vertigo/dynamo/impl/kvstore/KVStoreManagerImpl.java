@@ -20,12 +20,12 @@ package io.vertigo.dynamo.impl.kvstore;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -87,7 +87,7 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(final String collection, final String id, final Class<C> clazz) {
+	public <C> Optional<C> find(final String collection, final String id, final Class<C> clazz) {
 		return getKVStorePlugin(collection).find(collection, id, clazz);
 	}
 

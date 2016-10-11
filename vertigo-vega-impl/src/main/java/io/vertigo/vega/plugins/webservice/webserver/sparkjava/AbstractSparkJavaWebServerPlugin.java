@@ -19,9 +19,9 @@
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -33,11 +33,12 @@ import spark.Spark;
  */
 abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
-	private final Option<String> apiPrefix;
+	private final Optional<String> apiPrefix;
 
-	public AbstractSparkJavaWebServerPlugin(final Option<String> apiPrefix) {
+	public AbstractSparkJavaWebServerPlugin(final Optional<String> apiPrefix) {
 		Assertion.checkNotNull(apiPrefix);
-		Assertion.checkArgument(!apiPrefix.isPresent() || apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
+		Assertion.when(apiPrefix.isPresent())
+				.check(() -> apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
 		//-----
 		this.apiPrefix = apiPrefix;
 	}
@@ -50,33 +51,39 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(apiPrefix, webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
+			final String routePath = convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath());
+			final String acceptType = webServiceDefinition.getAcceptType();
+			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
 				case GET:
-					Spark.get(sparkJavaRoute);
+					Spark.get(routePath, acceptType, sparkJavaRoute);
 					break;
 				case POST:
-					Spark.post(sparkJavaRoute);
+					Spark.post(routePath, acceptType, sparkJavaRoute);
 					break;
 				case PUT:
-					Spark.put(sparkJavaRoute);
+					Spark.put(routePath, acceptType, sparkJavaRoute);
 					break;
 				case PATCH:
-					Spark.patch(sparkJavaRoute);
+					Spark.patch(routePath, acceptType, sparkJavaRoute);
 					break;
 				case DELETE:
-					Spark.delete(sparkJavaRoute);
+					Spark.delete(routePath, acceptType, sparkJavaRoute);
 					break;
 				default:
 					throw new UnsupportedOperationException();
 			}
 			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
-
 		}
 		if (corsProtected) {
 			final SparkJavaOptionsRoute sparkJavaOptionsRoute = new SparkJavaOptionsRoute(handlerChain);
-			Spark.options(sparkJavaOptionsRoute);
+			Spark.options("*", sparkJavaOptionsRoute);
 		}
+	}
 
+	private static String convertJaxRsPathToSpark(final String path) {
+		return path.replaceAll("\\(", "%28")
+				.replaceAll("\\)", "%29")
+				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

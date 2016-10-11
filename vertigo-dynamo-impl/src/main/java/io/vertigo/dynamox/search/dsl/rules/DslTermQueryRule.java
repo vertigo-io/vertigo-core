@@ -19,73 +19,67 @@
 package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
+import java.util.Optional;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.OptionRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
-import io.vertigo.commons.parser.WordRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegWordRule;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
-import io.vertigo.lang.Option;
 
 /**
  * Parsing rule for query.
  * (preQuery)(term)(postQuery)
  * @author npiedeloup
  */
-final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "query";
+final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
+
+	DslTermQueryRule() {
+		super(createMainRule(), "query");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected Rule<List<?>> createMainRule() {
-		final Rule<Choice> escapeModeRule = new FirstOfRule(
-				new TermRule("?(removeReserved)"), //choice 0
-				new TermRule("?(escapeReserved)")); //choice 1
+	private static PegRule<List<Object>> createMainRule() {
+		final PegRule<PegChoice> escapeModeRule = PegRules.choice(
+				PegRules.term("?(removeReserved)"), //choice 0
+				PegRules.term("?(escapeReserved)")); //choice 1
 
-		final Rule<List<?>> defaultValueRule = new SequenceRule(
-				new TermRule("!("),
-				new WordRule(false, ")", WordRule.Mode.REJECT),//1
-				new TermRule(")"));
+		final PegRule<List<Object>> defaultValueRule = PegRules.sequence(
+				PegRules.term("!("),
+				PegRules.word(false, ")", PegWordRule.Mode.REJECT, "[^)]"), //1
+				PegRules.term(")"));
 
-		final Rule<List<?>> termRule = new SequenceRule(
+		final PegRule<List<Object>> termRule = PegRules.sequence(
 				DslSyntaxRules.TERM_MARK,
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.WORD, //2
 				DslSyntaxRules.POST_MODIFIER_VALUE, //3
 				DslSyntaxRules.TERM_MARK,
-				new OptionRule<>(escapeModeRule), //5
-				new OptionRule<>(defaultValueRule)); //6
+				PegRules.optional(escapeModeRule), //5
+				PegRules.optional(defaultValueRule)); //6
 
-		return new SequenceRule(
-				DslSyntaxRules.SPACES,//0
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//1
+		return PegRules.sequence(
+				DslSyntaxRules.SPACES, //0
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				termRule, //2
-				DslSyntaxRules.POST_MODIFIER_VALUE); //3);
+				DslSyntaxRules.POST_MODIFIER_VALUE); //3
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslTermQuery handle(final List<?> parsing) {
+	protected DslTermQuery handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String preQuery = (String) parsing.get(1);
 
-		final List<?> term = (List<?>) parsing.get(2);
+		final List<Object> term = (List<Object>) parsing.get(2);
 		final String preTerm = (String) term.get(1);
 		final String termField = (String) term.get(2);
 		final String postTerm = (String) term.get(3);
-		final Option<Choice> escapeRule = (Option<Choice>) term.get(5);
+		final Optional<PegChoice> escapeRule = (Optional<PegChoice>) term.get(5);
 		final EscapeMode escapeMode;
 		if (escapeRule.isPresent()) {
-			switch (escapeRule.get().getValue()) {
+			switch (escapeRule.get().getChoiceIndex()) {
 				case 0:
 					escapeMode = EscapeMode.remove;
 					break;
@@ -93,17 +87,17 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<?>> {
 					escapeMode = EscapeMode.escape;
 					break;
 				default:
-					throw new IllegalArgumentException("case " + escapeRule.get().getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + escapeRule.get().getChoiceIndex() + " not implemented");
 			}
 		} else {
 			escapeMode = EscapeMode.none;
 		}
-		final Option<List<?>> defaultRule = (Option<List<?>>) term.get(6);
-		final Option<String> defaultValue;
+		final Optional<List<Object>> defaultRule = (Optional<List<Object>>) term.get(6);
+		final Optional<String> defaultValue;
 		if (defaultRule.isPresent()) {
-			defaultValue = Option.ofNullable((String) defaultRule.get().get(1));
+			defaultValue = Optional.ofNullable((String) defaultRule.get().get(1));
 		} else {
-			defaultValue = Option.empty();
+			defaultValue = Optional.empty();
 		}
 
 		final String postQuery = (String) parsing.get(3);

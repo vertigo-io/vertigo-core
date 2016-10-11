@@ -20,7 +20,7 @@ package io.vertigo.core.spaces.component.data;
 
 import io.vertigo.lang.Plugin;
 
-public class DummyPlugin implements Plugin {
+public final class DummyPlugin implements Plugin {
 
 	public long timeMillis() {
 		return System.currentTimeMillis();

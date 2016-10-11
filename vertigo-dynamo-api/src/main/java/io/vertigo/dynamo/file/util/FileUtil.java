@@ -24,6 +24,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
+
+import io.vertigo.lang.Assertion;
 
 /**
  * Utilitaire de gestion des fichiers et flux associés.
@@ -31,9 +34,14 @@ import java.io.OutputStream;
  * @author npiedeloup
  */
 public final class FileUtil {
+
+	private static final String USER_CHECK_ERROR_MSG = "User try to use illegal fileName";
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
+	private static final String KEY_USER_HOME = "\\$\\{" + USER_HOME + "\\}";
+	private static final String KEY_USER_DIR = "\\$\\{" + USER_DIR + "\\}";
+	private static final String KEY_JAVA_IO_TMPDIR = "\\$\\{" + JAVA_IO_TMPDIR + "\\}";
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -105,7 +113,7 @@ public final class FileUtil {
 			extension = "";
 			// null dans la version cvs précédente
 		} else {
-			extension = fileName.substring(index + 1).toLowerCase();
+			extension = fileName.substring(index + 1).toLowerCase(Locale.ENGLISH);
 		}
 		return extension;
 	}
@@ -117,8 +125,29 @@ public final class FileUtil {
 	 */
 	public static String translatePath(final String path) {
 		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
+				.replaceAll(KEY_USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
+				.replaceAll(KEY_USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
+				.replaceAll(KEY_JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
+	}
+
+	/**
+	 * Check a filePath send by a user.
+	 * @param userPath Path to check
+	 */
+	public static void checkUserPath(final String userPath) {
+		Assertion.checkArgument(!userPath.contains("..")
+				&& userPath.indexOf((char) 0) == -1, //char 0
+				USER_CHECK_ERROR_MSG);
+	}
+
+	/**
+	 * Check a filename send by a user.
+	 * @param userFileName FileName to check
+	 */
+	public static void checkUserFileName(final String userFileName) {
+		Assertion.checkArgument(userFileName.indexOf('\\') == -1 //Windows path_separator
+				&& userFileName.indexOf('/') == -1 //Linux path_separator
+				&& userFileName.indexOf((char) 0) == -1, //char 0
+				USER_CHECK_ERROR_MSG);
 	}
 }

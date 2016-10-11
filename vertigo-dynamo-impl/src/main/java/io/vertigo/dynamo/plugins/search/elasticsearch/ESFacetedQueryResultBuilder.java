@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
@@ -51,6 +52,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VSystemException;
 
 //vérifier
 /**
@@ -110,7 +112,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultCluster, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(), resultCluster, resultHighlights, searchQuery);
 
 	}
 
@@ -122,7 +124,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			//Cas des facettes par 'range'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final Bucket value = multiBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+				final Bucket value = getBucketByKey(multiBuckets, facetRange.getListFilter().getFilterValue());
 				populateCluster(value, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
@@ -130,7 +132,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
 			for (final Bucket value : multiBuckets.getBuckets()) {
-				final String term = value.getKey();
+				final String term = value.getKeyAsString();
 				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
 				facetValue = new FacetValue(term, new ListFilter(query), label);
@@ -138,6 +140,15 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			}
 		}
 		return resultCluster;
+	}
+
+	private static Bucket getBucketByKey(final MultiBucketsAggregation multiBuckets, final String facetName) {
+		for (final Bucket bucket : multiBuckets.getBuckets()) {
+			if (bucket.getKeyAsString().equals(facetName)) {
+				return bucket;
+			}
+		}
+		throw new VSystemException("No facet {0} found in result", facetName);
 	}
 
 	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
@@ -203,7 +214,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 		FacetValue facetValue;
 		for (final Bucket value : multiBuckets.getBuckets()) {
-			final String term = value.getKey();
+			final String term = value.getKeyAsString();
 			final MessageText label = new MessageText(term, null);
 			final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
 			facetValue = new FacetValue(term, new ListFilter(query), label);
@@ -217,7 +228,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getListFilter().getFilterValue());
 			rangeValues.put(facetRange, value.getDocCount());
 		}
 		return new Facet(facetDefinition, rangeValues);

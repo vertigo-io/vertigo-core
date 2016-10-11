@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -68,18 +68,18 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		eventBusManager.register(this);
 	}
 
-	private <D extends DtObject> LuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		//TODO : gestion du cache a revoir... et le lien avec le CacheStore.
 		//L'index devrait être interrogé par le Broker ? on pourrait alors mettre en cache dans le DataCache.
 		final DtListURI dtcUri = fullDtc.getURI();
 		final boolean useCache = dtcUri != null; //no cache if no URI
-		LuceneIndex<D> index;
+		RamLuceneIndex<D> index;
 		if (useCache) {
 			final String indexName = "INDEX_" + dtcUri.urn();
 			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
-			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 1800, 3600));
-			index = LuceneIndex.class.cast(cacheManager.get(cacheContext, indexName));
+			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 30 * 60, 60 * 60));
+			index = RamLuceneIndex.class.cast(cacheManager.get(cacheContext, indexName));
 			if (index == null) {
 				index = createIndex(fullDtc, storeValue);
 				cacheManager.put(getIndexCacheContext(fullDtc.getDefinition()), indexName, index);
@@ -94,7 +94,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return "IndexCache:" + dtDefinition.getName();
 	}
 
-	private static <D extends DtObject> LuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private static <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition());
@@ -104,10 +104,11 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc) {
+	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState,
+			final Optional<DtField> boostedField, final DtList<D> dtc) {
 		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
-			final LuceneIndex<D> index = indexList(dtc, false);
+			final RamLuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);
 		} catch (final IOException e) {
 			throw new WrappedException("Erreur d'indexation", e);

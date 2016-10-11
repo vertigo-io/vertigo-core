@@ -335,7 +335,9 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //16
 				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //17
 				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //18
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //8
+				{ "+DATE_SESSION:[* to #date1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00.000Z\"}" }, //19
+				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00.000Z\" TO *}" }, //20
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //21
 		};
 		testObjectFixedQuery(testQueries);
 	}

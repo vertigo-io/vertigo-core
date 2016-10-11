@@ -20,14 +20,14 @@ package io.vertigo.dynamo.store.criteria;
 
 import java.io.Serializable;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 
 /**
  * Critère générique.
  *
  * @author pchretien
- * @param <D> type de l'objet
+ * @param <E> the type of entity
  */
-public interface Criteria<D extends DtObject> extends Serializable {
+public interface Criteria<E extends Entity> extends Serializable {
 	//Définir les méthodes
 }

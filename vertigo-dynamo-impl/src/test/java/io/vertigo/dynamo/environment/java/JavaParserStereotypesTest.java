@@ -33,11 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
  */
 public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "managers-test.xml", "managers-test-stereotypes.xml" };
-	}
-
 	private DtDefinition getDtDefinition(final String urn) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, DtDefinition.class);
@@ -72,13 +67,21 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	 * Test du stereotype Data
 	 */
 	@Test
-	public void testStereotypeData() {
+	public void testStereotypeEntity() {
 		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
 		Assert.assertNotNull(dtDefinitionAttachment);
-		Assert.assertEquals(DtStereotype.Data, dtDefinitionAttachment.getStereotype());
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
 
 		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
 		Assert.assertNotNull(dtDefinitionCommandValidation);
-		Assert.assertEquals(DtStereotype.Data, dtDefinitionCommandValidation.getStereotype());
+		Assert.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
+	}
+
+	@Test
+	public void testStereotypeData() {
+		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_COMMAND_CRITERIA");
+		Assert.assertNotNull(dtDefinitionAttachment);
+		Assert.assertEquals(DtStereotype.ValueObject, dtDefinitionAttachment.getStereotype());
+
 	}
 }

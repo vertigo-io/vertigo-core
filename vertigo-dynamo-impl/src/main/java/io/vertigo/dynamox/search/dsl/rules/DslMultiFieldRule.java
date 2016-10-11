@@ -21,10 +21,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 import io.vertigo.dynamox.search.dsl.model.DslMultiField;
 
@@ -33,22 +32,24 @@ import io.vertigo.dynamox.search.dsl.model.DslMultiField;
  * //(preMultiField)[(fields)+,](postMultiField)
  * @author npiedeloup
  */
-final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	protected Rule<List<?>> createMainRule() {
-		final Rule<List<List<?>>> otherFieldsRule = new ManyRule<>(
-				new SequenceRule(
+final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<Object>> {
+	DslMultiFieldRule() {
+		super(createMainRule());
+	}
+
+	private static PegRule<List<Object>> createMainRule() {
+		final PegRule<List<List<Object>>> otherFieldsRule = PegRules.zeroOrMore(
+				PegRules.sequence(
 						DslSyntaxRules.SPACES,
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
 						new DslFieldRule() //3
-				), true);
+		), false);
 
-		return new SequenceRule(
+		return PegRules.sequence(
 				DslSyntaxRules.ARRAY_START,
 				DslSyntaxRules.SPACES,
-				new DslFieldRule(),//2
+				new DslFieldRule(), //2
 				otherFieldsRule, //3
 				DslSyntaxRules.SPACES,
 				DslSyntaxRules.ARRAY_END);
@@ -56,7 +57,7 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiField handle(final List<?> parsing) {
+	protected DslMultiField handle(final List<Object> parsing) {
 		final String preMultiField = "";//(String) parsing.get(0);
 		final List<DslField> fields = new ArrayList<>();
 		//---
@@ -64,8 +65,8 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<?>> {
 		final DslField firstField = (DslField) parsing.get(2);
 		fields.add(firstField);
 		//On récupère le produit de la règle many
-		final List<List<?>> many = (List<List<?>>) parsing.get(3);
-		for (final List<?> row : many) {
+		final List<List<Object>> many = (List<List<Object>>) parsing.get(3);
+		for (final List<Object> row : many) {
 			fields.add((DslField) row.get(3));
 		}
 		//---

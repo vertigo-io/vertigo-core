@@ -3,7 +3,7 @@
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 	</boot>
@@ -30,10 +30,10 @@
 	
 	<module name="myApp" api="false">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />			
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
 		</definitions>
 		
-		<component class="io.vertigo.dynamock.domain.car.CarSearchLoader"/>
+		<component class="io.vertigo.dynamo.search.data.domain.CarSearchLoader"/>
 	</module>
 </config>

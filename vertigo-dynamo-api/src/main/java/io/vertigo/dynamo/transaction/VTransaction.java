@@ -73,5 +73,5 @@ public interface VTransaction {
 	 *
 	 * @param function the function to execute afterCompletion
 	 */
-	void addAfterCompletion(final VTransactionSynchronization function);
+	void addAfterCompletion(final VTransactionAfterCompletionFunction function);
 }

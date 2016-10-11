@@ -56,9 +56,10 @@ public final class CatalogWebServices implements WebServices {
 				sb.append(" /*")
 						.append(webServiceDefinition.getDoc())
 						.append("*/")
-						.append("\n");
+						.append('\n');
 			}
-			sb.append(webServiceDefinition.getVerb().name()).append(" ")
+			sb.append(webServiceDefinition.getVerb().name())
+					.append(' ')
 					.append(webServiceDefinition.getPath())
 					.append(" (");
 			String sep = "";
@@ -67,7 +68,7 @@ public final class CatalogWebServices implements WebServices {
 				sb.append(webServiceParam);
 				sep = ", ";
 			}
-			sb.append(")");
+			sb.append(')');
 			final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
 			if (!void.class.isAssignableFrom(webServiceDefinition.getMethod().getReturnType())) {
 				sb.append(" -> ");
@@ -82,14 +83,14 @@ public final class CatalogWebServices implements WebServices {
 	private static void appendTypeToString(final StringBuilder sb, final Type returnType) {
 		if (returnType instanceof ParameterizedType) {
 			sb.append(((ParameterizedType) returnType).getRawType())
-					.append("<");
+					.append('<');
 			String sep = "";
 			for (final Type typeArgument : ((ParameterizedType) returnType).getActualTypeArguments()) {
 				sb.append(sep);
 				appendTypeToString(sb, typeArgument);
 				sep = ",";
 			}
-			sb.append(">");
+			sb.append('>');
 		} else if (returnType instanceof Class) {
 			sb.append(((Class) returnType).getSimpleName());
 		} else {

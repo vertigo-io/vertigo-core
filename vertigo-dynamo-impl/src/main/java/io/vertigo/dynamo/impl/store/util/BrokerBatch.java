@@ -26,16 +26,16 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 
 /**
  * Interface pour permettre des opérations avec des collections.
  *
- * @param <D> Type d'objet métier.
+ * @param <E> the type of entity
  * @param <P> Type de la clef primaire.
  * @author jmforhan
  */
-public interface BrokerBatch<D extends DtObject, P> {
+public interface BrokerBatch<E extends Entity, P> {
 
 	/**
 	 * Récupère la liste des objets correspondant à des ids. On n'assure pas l'ordre de la liste par rapport à l'ordre des
@@ -45,7 +45,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param idList liste des identifiants
 	 * @return Liste des objets correspondants.
 	 */
-	DtList<D> getList(final DtDefinition dtDefinition, Collection<P> idList);
+	DtList<E> getList(final DtDefinition dtDefinition, Collection<P> idList);
 
 	/**
 	 * Récupère la liste des objets correspondant à des ids et retourne sous forme de map entre la clé primaire et l'objet
@@ -55,7 +55,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param idList liste des identifiants
 	 * @return map entre index et l'objet associé.
 	 */
-	Map<P, D> getMap(final DtDefinition dtDefinition, Collection<P> idList);
+	Map<P, E> getMap(final DtDefinition dtDefinition, Collection<P> idList);
 
 	/**
 	 * Récupère la liste des objets associé à une collection de clé étrangère.
@@ -65,7 +65,7 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param <O> type de la valeur de sélection
 	 * @return Liste des objets correspondants.
 	 */
-	<O> DtList<D> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
+	<O> DtList<E> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
 
 	/**
 	 * Récupère la liste des objets associé à une collection de clé étrangère et la retourne sous forme de Map dont la clé est
@@ -76,5 +76,5 @@ public interface BrokerBatch<D extends DtObject, P> {
 	 * @param <O> type de la valeur de sélection
 	 * @return map entre valeur de sélection et objet associé.
 	 */
-	<O> Map<O, DtList<D>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
+	<O> Map<O, DtList<E>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value);
 }

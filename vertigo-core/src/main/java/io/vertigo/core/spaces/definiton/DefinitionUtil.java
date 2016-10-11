@@ -18,6 +18,8 @@
  */
 package io.vertigo.core.spaces.definiton;
 
+import java.util.Locale;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -67,7 +69,7 @@ public final class DefinitionUtil {
 	 * Checks if the name of a definition is valid for the specified type.
 	 * If not an exception is thrown.
 	 * @param definitionName Name of the definition
-	 * @param definitionClass Type of the definition 
+	 * @param definitionClass Type of the definition
 	 */
 	public static void checkName(final String definitionName, final Class<? extends Definition> definitionClass) {
 		Assertion.checkArgNotEmpty(definitionName);
@@ -76,7 +78,7 @@ public final class DefinitionUtil {
 		final String prefix = DefinitionUtil.getPrefix(definitionClass);
 		Assertion.checkArgument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix);
 		Assertion.checkArgument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné");
-		Assertion.checkArgument(definitionName.toUpperCase().equals(definitionName), "La définition {0} doit être en majuscules", definitionName);
+		Assertion.checkArgument(definitionName.toUpperCase(Locale.ENGLISH).equals(definitionName), "La définition {0} doit être en majuscules", definitionName);
 		Assertion.checkArgument(Definition.REGEX_DEFINITION_URN.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_URN);
 	}
 

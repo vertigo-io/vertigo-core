@@ -38,8 +38,8 @@ public final class DslMultiExpression {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(preBody).append(block ? "(" : "");
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody).append(block ? "(" : "");
 		for (final DslExpression expression : expressions) {
 			sb.append(expression);
 		}

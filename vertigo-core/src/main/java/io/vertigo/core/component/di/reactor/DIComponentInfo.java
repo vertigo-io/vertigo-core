@@ -39,6 +39,7 @@ import io.vertigo.util.ListBuilder;
  */
 final class DIComponentInfo {
 	private final String id;
+	private final Class<?> implClass;
 	private final Collection<DIDependency> dependencies;
 
 	/**
@@ -54,6 +55,7 @@ final class DIComponentInfo {
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
+		this.implClass = implClass;
 		dependencies = buildDependencies(implClass, params);
 	}
 
@@ -75,8 +77,7 @@ final class DIComponentInfo {
 	@Override
 	public String toString() {
 		//Utilisé pour afficher les messages d'erreurs lors du calcul des DI
-
-		return id;
+		return id + "<" + implClass.getSimpleName() + ">";
 	}
 
 	/*

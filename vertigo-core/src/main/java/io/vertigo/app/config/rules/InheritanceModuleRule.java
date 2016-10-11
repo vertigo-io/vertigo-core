@@ -46,15 +46,10 @@ public final class InheritanceModuleRule implements ModuleRule {
 	@Override
 	public void check(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			Class<?> clazz;
-			if (componentConfig.getApiClass().isPresent()) {
-				//if component is defined by an api, then we check that api respects the rule.
-				clazz = componentConfig.getApiClass().get();
-			} else {
-				clazz = componentConfig.getImplClass();
-			}
+			final Class<?> clazz = componentConfig.getApiClass().orElse(componentConfig.getImplClass());
 			if (!superClass.isAssignableFrom(clazz)) {
-				throw new VSystemException("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName());
+				throw new VSystemException("Inheritance rule : all components of module '{0}' must inherit class : '{1}'. Component '{2}' doesn't respect this rule.",
+						moduleConfig, superClass.getSimpleName(), componentConfig);
 			}
 		}
 	}

@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
@@ -25,7 +27,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Main analytics manager implementation.
@@ -40,7 +41,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * @param agentPlugin Agent plugin used to report execution.
 	 */
 	@Inject
-	public AnalyticsManagerImpl(final Option<AnalyticsAgentPlugin> agentPlugin) {
+	public AnalyticsManagerImpl(final Optional<AnalyticsAgentPlugin> agentPlugin) {
 		Assertion.checkNotNull(agentPlugin);
 		//-----
 		analyticsAgent = agentPlugin.orElse(new DummyAgentPlugin());

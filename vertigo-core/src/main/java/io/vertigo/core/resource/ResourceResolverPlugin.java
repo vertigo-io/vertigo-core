@@ -19,8 +19,8 @@
 package io.vertigo.core.resource;
 
 import java.net.URL;
+import java.util.Optional;
 
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -31,7 +31,7 @@ public interface ResourceResolverPlugin extends Plugin {
 	/**
 	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
 	 * @param resource Url de la ressource(chaîne de caractères)
-	 * @return URL associée à la ressource 
+	 * @return URL associée à la ressource
 	 */
-	Option<URL> resolve(String resource);
+	Optional<URL> resolve(String resource);
 }

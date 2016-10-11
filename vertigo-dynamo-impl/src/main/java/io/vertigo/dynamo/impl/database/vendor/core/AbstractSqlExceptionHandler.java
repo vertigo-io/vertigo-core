@@ -43,6 +43,7 @@ import io.vertigo.util.StringUtil;
  */
 public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
 
+	private static final int ERROR_CODE_LENGTH = 6;
 	private static final Logger LOGGER = Logger.getLogger(AbstractSqlExceptionHandler.class);
 
 	/**
@@ -77,7 +78,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		final int i2 = msg.indexOf("</text>", i1);
 
 		if (i1 > -1 && i2 > -1) {
-			msg = msg.substring(i1 + 6, i2);
+			msg = msg.substring(i1 + ERROR_CODE_LENGTH, i2);
 		}
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
 		throw new VUserException(new MessageText(msg, null));

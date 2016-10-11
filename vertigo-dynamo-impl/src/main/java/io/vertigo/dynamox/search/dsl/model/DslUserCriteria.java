@@ -102,13 +102,13 @@ public final class DslUserCriteria {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder()
+		return new StringBuilder()
 				.append(preMissingPart)
 				.append(overridedFieldName)
 				.append(overridedPreModifier)
 				.append(criteriaWord)
 				.append(overridedPostModifier)
-				.append(postMissingPart);
-		return sb.toString();
+				.append(postMissingPart)
+				.toString();
 	}
 }

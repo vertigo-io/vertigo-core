@@ -23,13 +23,15 @@ import javax.servlet.MultipartConfigElement;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
-import spark.utils.SparkUtils;
 
 /**
  * Filter to configure MultipartConfigElement for Jetty Request.
  * @author npiedeloup
  */
-public final class JettyMultipartConfig extends Filter {
+public final class JettyMultipartConfig implements Filter {
+	private static final long MAX_PARTS_SIZE = 30 * 1024 * 1024L;
+	private static final int MAX_NB_PARTS = 5;
+	private static final int MAX_PART_SIZE_IN_MEMORY = 50 * 1024;
 	private static final String JETTY_CONFIG_ATTRIBUTE = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT;//"org.eclipse.multipartConfig";
 	private final MultipartConfigElement multipartConfigElement;
 
@@ -38,8 +40,7 @@ public final class JettyMultipartConfig extends Filter {
 	 * @param tempPath path for uploaded tempfiles
 	 */
 	public JettyMultipartConfig(final String tempPath) {
-		super(SparkUtils.ALL_PATHS, "*/*");
-		multipartConfigElement = new MultipartConfigElement(tempPath, 30 * 1024 * 1024L, 5 * 30 * 1024 * 1024L, 50 * 1024);
+		multipartConfigElement = new MultipartConfigElement(tempPath, MAX_PARTS_SIZE, MAX_NB_PARTS * MAX_PARTS_SIZE, MAX_PART_SIZE_IN_MEMORY);
 	}
 
 	/** {@inheritDoc} */

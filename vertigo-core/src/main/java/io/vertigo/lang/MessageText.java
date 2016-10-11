@@ -60,7 +60,8 @@ public final class MessageText implements Serializable {
 	 * @param params paramètres de la ressource
 	 */
 	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkArgument(!StringUtil.isEmpty(defaultMsg) || key != null, "La clé ou le message dot être renseigné");
+		Assertion.when(StringUtil.isEmpty(defaultMsg))
+				.check(() -> key != null, "La clé ou le message dot être renseigné");
 		//params n'est null que si l'on passe explicitement null
 		//dans ce cas on le transforme en en tableau vide.
 		//-----

@@ -18,8 +18,9 @@
  */
 package io.vertigo.dynamox.search.dsl.model;
 
+import java.util.Optional;
+
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Term query definition.
@@ -46,7 +47,7 @@ public final class DslTermQuery implements DslQuery {
 	private final String termField;
 	private final String postTerm;
 	private final EscapeMode escapeMode;
-	private final Option<String> defaultValue;
+	private final Optional<String> defaultValue;
 	private final String postBody;
 
 	/**
@@ -58,7 +59,7 @@ public final class DslTermQuery implements DslQuery {
 	 * @param defaultValue Optional default value (used if null or empty criteria)
 	 * @param postTerm String after body
 	 */
-	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final EscapeMode escapeMode, final Option<String> defaultValue, final String postBody) {
+	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final EscapeMode escapeMode, final Optional<String> defaultValue, final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(preTerm);
 		Assertion.checkNotNull(termField);
@@ -120,7 +121,7 @@ public final class DslTermQuery implements DslQuery {
 	/**
 	 * @return defaultValue
 	 */
-	public Option<String> getDefaultValue() {
+	public Optional<String> getDefaultValue() {
 		return defaultValue;
 	}
 

@@ -20,7 +20,6 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.lang.Option;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -32,22 +31,19 @@ import spark.Route;
  * Webservice Route for Spark.
  * @author npiedeloup
  */
-final class SparkJavaRoute extends Route {
+final class SparkJavaRoute implements Route {
 
 	private static final Logger LOGGER = Logger.getLogger(SparkJavaRoute.class);
-
 	private final WebServiceDefinition webServiceDefinition;
 	private final HandlerChain handlerChain;
 	private final String defaultContentCharset;
 
 	/**
-	 * @param apiPrefix General prefix for all api
 	 * @param webServiceDefinition webServiceDefinition
 	 * @param handlerChain handlerChain
 	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	SparkJavaRoute(final Option<String> apiPrefix, final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
-		super(convertJaxRsPathToSpark(apiPrefix.orElse("") + webServiceDefinition.getPath()), webServiceDefinition.getAcceptType());
+	SparkJavaRoute(final WebServiceDefinition webServiceDefinition, final HandlerChain handlerChain, final String defaultContentCharset) {
 		this.webServiceDefinition = webServiceDefinition;
 		this.handlerChain = handlerChain;
 		this.defaultContentCharset = defaultContentCharset;
@@ -63,11 +59,5 @@ final class SparkJavaRoute extends Route {
 			LOGGER.error(th);
 			return th.getMessage();
 		}
-	}
-
-	private static String convertJaxRsPathToSpark(final String path) {
-		return path.replaceAll("\\(", "%28")
-				.replaceAll("\\)", "%29")
-				.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

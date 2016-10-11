@@ -28,7 +28,7 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -62,12 +62,13 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 
 	private void setOutParameters(final SqlPreparedStatement statement) throws SQLException {
 		// gestion de generatedKey
-		final DtObject dto = (DtObject) getValue("DTO");
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		final Entity entity = (Entity) getValue("DTO");
+
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 
 		final Object id = statement.getGeneratedKey(idField.getName(), idField.getDomain());
-		idField.getDataAccessor().setValue(dto, id);
+		idField.getDataAccessor().setValue(entity, id);
 	}
 
 	/** {@inheritDoc} */

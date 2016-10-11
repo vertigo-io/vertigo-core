@@ -18,8 +18,9 @@
  */
 package io.vertigo.dynamox.search.dsl.model;
 
+import java.util.Optional;
+
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Single Expression Definition.
@@ -28,8 +29,8 @@ import io.vertigo.lang.Option;
  */
 public final class DslExpression {
 	private final String preBody; //Spaces like
-	private final Option<DslField> field;
-	private final Option<DslMultiField> multiField;
+	private final Optional<DslField> field;
+	private final Optional<DslMultiField> multiField;
 
 	private final DslQuery query;
 	private final String postBody; //Spaces like
@@ -42,7 +43,7 @@ public final class DslExpression {
 	 * @param postBody String after body
 	 */
 	public DslExpression(final String preBody,
-			final Option<DslField> field, final Option<DslMultiField> multiField,
+			final Optional<DslField> field, final Optional<DslMultiField> multiField,
 			final DslQuery query,
 			final String postBody) {
 		Assertion.checkNotNull(preBody);
@@ -65,11 +66,11 @@ public final class DslExpression {
 				.append(preBody);
 		if (field.isPresent()) {
 			sb.append(field.get())
-					.append(":");
+					.append(':');
 		}
 		if (multiField.isPresent()) {
 			sb.append(multiField.get())
-					.append(":");
+					.append(':');
 		}
 		sb.append(query)
 				.append(postBody);
@@ -86,7 +87,7 @@ public final class DslExpression {
 	/**
 	 * @return optional Field
 	 */
-	public Option<DslField> getField() {
+	public Optional<DslField> getField() {
 		return field;
 	}
 
@@ -94,7 +95,7 @@ public final class DslExpression {
 	 * @return optional MultiField
 	 */
 
-	public Option<DslMultiField> getMultiField() {
+	public Optional<DslMultiField> getMultiField() {
 		return multiField;
 	}
 

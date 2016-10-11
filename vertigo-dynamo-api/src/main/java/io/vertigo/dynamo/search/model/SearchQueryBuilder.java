@@ -19,7 +19,9 @@
 package io.vertigo.dynamo.search.model;
 
 import java.util.List;
+import java.util.Optional;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -27,7 +29,6 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 /**
  * @author pchretien
@@ -121,9 +122,22 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		return this;
 	}
 
+	/**
+	 * Add a clustering of result by Facet.
+	 * @param clusteringFacetName facet used to cluster data
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withFacetClustering(final String clusteringFacetName) {
+		Assertion.checkArgNotEmpty(clusteringFacetName);
+		//-----
+		final FacetDefinition clusteringFacetDefinition = Home.getApp().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
+		withFacetClustering(clusteringFacetDefinition);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(Option.ofNullable(myFacetedQuery), myListFilter, Option.ofNullable(mySecurityListFilter), myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(Optional.ofNullable(myFacetedQuery), myListFilter, Optional.ofNullable(mySecurityListFilter), myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
 	}
 }

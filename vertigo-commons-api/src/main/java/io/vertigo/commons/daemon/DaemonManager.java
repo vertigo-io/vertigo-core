@@ -19,6 +19,7 @@
 package io.vertigo.commons.daemon;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import io.vertigo.lang.Manager;
 
@@ -38,9 +39,10 @@ public interface DaemonManager extends Manager {
 	/**
 	 * Registers a daemon.
 	 * @param name the name of the daemon
-	 * @param daemonClass the daemon class (must be public)
+	 * @param daemonSupplier the daemon supplier
 	 * @param periodInSeconds the execution period in seconds
 	 * @param constructorArgs the daemon constructor args
 	 */
-	void registerDaemon(String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs);
+	void registerDaemon(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds);
+
 }

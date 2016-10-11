@@ -79,12 +79,11 @@ final class WhereInPreProcessor {
 	}
 
 	private TaskAttribute obtainInTaskAttribute(final String attributeName) {
-		for (final TaskAttribute attribute : inTaskAttributes.keySet()) {
-			if (attribute.getName().equals(attributeName)) {
-				return attribute;
-			}
-		}
-		throw new IllegalStateException(StringUtil.format("Attribute {0} not found.", attributeName));
+		return inTaskAttributes.keySet()
+				.stream()
+				.filter(attribute -> attribute.getName().equals(attributeName))
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException(StringUtil.format("Attribute {0} not found.", attributeName)));
 	}
 
 	private String doEvaluate(final String sqlQuery) {
@@ -124,14 +123,14 @@ final class WhereInPreProcessor {
 							.append(separator)
 							.append(IN_CHAR)
 							.append(inputParamName)
-							.append(".")
+							.append('.')
 							.append(String.valueOf(listObject.indexOf(dto)))
-							.append(".")
+							.append('.')
 							.append(pkFieldName)
 							.append(IN_CHAR);
 					separator = ",";
 					//-----
-					if (moreThanOneWhereIn && index != listObject.size() && index % NB_MAX_WHERE_IN_ITEM == 0) {
+					if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
 						buildQuery
 								.append(isNotIn ? ") AND " : ") OR ")
 								.append(fkFieldName)
@@ -141,9 +140,9 @@ final class WhereInPreProcessor {
 					//-----
 					index++;
 				}
-				buildQuery.append(")");
+				buildQuery.append(')');
 				if (moreThanOneWhereIn) {
-					buildQuery.append(")");
+					buildQuery.append(')');
 				}
 			}
 		}

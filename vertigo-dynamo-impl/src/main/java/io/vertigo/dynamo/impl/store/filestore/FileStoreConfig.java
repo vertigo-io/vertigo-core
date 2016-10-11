@@ -31,7 +31,6 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class FileStoreConfig {
-	private static final String MAIN_FILE_STORE_NAME = "main";
 
 	/** Map des stores utilisés spécifiquement */
 	private final Map<String, FileStorePlugin> fileStoresMap = new HashMap<>();
@@ -47,7 +46,6 @@ public final class FileStoreConfig {
 			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
 			Assertion.checkState(previous == null, "FileStorePlugin {0}, was already registered", name);
 		}
-		Assertion.checkArgument(fileStoresMap.isEmpty() || fileStoresMap.get(MAIN_FILE_STORE_NAME) != null, "No {0} FileStorePlugin was set. Configure one and only one FileStorePlugin with name ''{0}''.", MAIN_FILE_STORE_NAME);
 	}
 
 	/**

@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 
@@ -64,11 +64,11 @@ public interface DataStorePlugin extends Plugin {
 	 * Peut-être null.
 	 *
 	 * @param uri URI de l'objet à charger
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<D extends DtObject> D read(DtDefinition dtDefinition, URI<D> uri);
+	<E extends Entity> E read(DtDefinition dtDefinition, URI<E> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -77,9 +77,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -88,9 +88,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -99,9 +99,9 @@ public interface DataStorePlugin extends Plugin {
 	 * @param uri URI de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <E> the type of entity
 	 */
-	<D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -111,29 +111,17 @@ public interface DataStorePlugin extends Plugin {
 	* No object with the same id must have been created previously.
 	*
 	* @param dtDefinition Definition
-	* @param dto Object to create
+	* @param entity Object to create
 	*/
-	void create(DtDefinition dtDefinition, DtObject dto);
+	void create(DtDefinition dtDefinition, Entity entity);
 
 	/**
 	* Updates an object.
 	* This object must have an id.
 	* @param dtDefinition Definition
-	* @param dto Object to update
+	* @param entity Object to update
 	*/
-	void update(DtDefinition dtDefinition, DtObject dto);
-
-	/**
-	* Merges an object.
-	* Strategy to create or update this object depends on the state of the database.
-	*
-	*  - If  this object is already created : update
-	*  - If  this object is not found : create
-	*
-	* @param dtDefinition Definition
-	* @param dto Object to merge
-	*/
-	void merge(DtDefinition dtDefinition, DtObject dto);
+	void update(DtDefinition dtDefinition, Entity entity);
 
 	/**
 	 * Deletes an object identified by an uri.
@@ -148,8 +136,8 @@ public interface DataStorePlugin extends Plugin {
 	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
-	 * @param <D> Object type
+	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<D extends DtObject> D readForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<E extends Entity> E readForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }

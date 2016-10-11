@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -56,7 +56,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	public WebServiceParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
 		//-----
-		optional = WebServiceTypeUtil.isAssignableFrom(Option.class, paramType);
+		optional = WebServiceTypeUtil.isAssignableFrom(Optional.class, paramType);
 		if (optional) {
 			//si option, le type du paramètre est le sub type
 			final Type[] typeArguments = ((ParameterizedType) paramType).getActualTypeArguments();

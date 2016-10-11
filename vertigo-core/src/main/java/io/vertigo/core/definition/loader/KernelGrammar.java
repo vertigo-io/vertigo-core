@@ -21,29 +21,28 @@ package io.vertigo.core.definition.loader;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityBuilder;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 
 /**
  * @author pchretien
  */
-public final class KernelGrammar implements EntityGrammar {
-	/** Mot-clé des MetaDefinitions de DataType. */
-	private static final String DATA_TYPE_META_DEFINITION = "DataType";
-
-	/**Type Primitif.*/
-	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).withRoot().build();
+public final class KernelGrammar implements DslGrammar {
+	/**the data types are provided by the language (String, Integer...) */
+	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType")
+			.withProvided()
+			.build();
 
 	/**
 	 * @return Type primitif.
 	 */
-	public static Entity getDataTypeEntity() {
+	public static DslEntity getDataTypeEntity() {
 		return DATA_TYPE_ENTITY;
 	}
 
 	@Override
-	public List<Entity> getEntities() {
+	public List<DslEntity> getEntities() {
 		return Collections.singletonList(DATA_TYPE_ENTITY);
 	}
 }

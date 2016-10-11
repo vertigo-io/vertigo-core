@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,6 +34,7 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -41,13 +43,13 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -57,11 +59,7 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien, npiedeloup, skerdudou
  */
 public final class FsFileStorePlugin implements FileStorePlugin {
-	private static final String DEFAULT_STORE_NAME = "main";
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
-	private static final String USER_HOME = "user.home";
-	private static final String USER_DIR = "user.dir";
-	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -101,7 +99,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public FsFileStorePlugin(@Named("name") final Option<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
+	public FsFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);
@@ -109,19 +107,12 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
-		this.name = name.orElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 		readOnly = false;
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
-		documentRoot = translatePath(path);
+		documentRoot = FileUtil.translatePath(path);
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
-	}
-
-	private static String translatePath(final String path) {
-		return path
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
@@ -134,7 +125,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI<Entity> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 
 		// récupération du fichier
@@ -161,8 +152,8 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		}
 	}
 
-	private DtObject createFileInfoDto(final FileInfo fileInfo) {
-		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
+	private Entity createFileInfoEntity(final FileInfo fileInfo) {
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
@@ -177,7 +168,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
+			final URI<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().read(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
@@ -199,7 +190,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getStoreManager().getDataStore().create(fileInfoDto);
 
@@ -225,7 +216,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
-		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 
@@ -243,7 +234,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
@@ -258,7 +249,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private URI<DtObject> createDtObjectURI(final FileInfoURI uri) {
+	private URI<Entity> createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
@@ -271,11 +262,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param fileInfoDefinition Definition de FileInfo
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
-	private DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
+	private Entity createFileInfoEntity(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return DtObjectUtil.createDtObject(storeDtDefinition);
+		return DtObjectUtil.createEntity(storeDtDefinition);
 	}
 
 	/**

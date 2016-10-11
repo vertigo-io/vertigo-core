@@ -20,11 +20,10 @@ package io.vertigo.app.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Option;
 
 /**
  * The componentconfig class defines the configuration of a component.
@@ -40,7 +39,7 @@ import io.vertigo.lang.Option;
 public final class ComponentConfig {
 	private final String id;
 	private final Class<? extends Component> implClass;
-	private final Option<Class<? extends Component>> apiClass;
+	private final Optional<Class<? extends Component>> apiClass;
 	private final Map<String, String> params;
 	private final boolean elastic;
 
@@ -50,14 +49,15 @@ public final class ComponentConfig {
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(final String id, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.checkArgument(!apiClass.isPresent() || Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.when(apiClass.isPresent()).check(() -> Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
-		id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		this.id = id;
 		this.elastic = elastic;
 		//-----
 		this.apiClass = apiClass;
@@ -75,7 +75,7 @@ public final class ComponentConfig {
 	/**
 	 * @return api of the component
 	 */
-	public Option<Class<? extends Component>> getApiClass() {
+	public Optional<Class<? extends Component>> getApiClass() {
 		return apiClass;
 	}
 

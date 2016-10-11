@@ -14,6 +14,79 @@
 	<!-- ====================================================================== -->
 	<!-- Generation des classes de tests                                        -->
 	<!-- ====================================================================== -->
+	<target name="0.9.2 to 0.9.3" description="Usefull renames from 0.9.2 to 0.9.3">
+			<echo message="Renamed in *.java : io.vertigo.lang.Option to java.util.Optional" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.lang.Option" value="java.util.Optional">
+				 <include name="**/*.java" />
+			</replace>
+			<echo message="Renamed in *.java : Option&lt; to Optional&lt;" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="Option&lt;" value="Optional&lt;">
+				 <include name="**/*.java" />
+			</replace>
+			<echo message="Renamed in *.java : Option. to Optional." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="Option." value="Optional.">
+					<include name="**/*.java" />
+			</replace>
+			<echo message="Replace in *.ksp persistent: &quot;false&quot;,\n(\t)+key to field" />
+			<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+					<fileset dir="${src.path}">
+						<include name="**/*.ksp"/>
+					</fileset>
+					<regexp pattern="persistent\s*:\s*&quot;false&quot;(,)?\s*\n(\s+)key " />
+					<substitution expression="field " />
+			</replaceregexp>
+			<echo message="Replace in *.ksp persistent: &quot;false&quot;,\n(\t)+field to field" />
+			<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+					<fileset dir="${src.path}">
+						<include name="**/*.ksp"/>
+					</fileset>
+					<regexp pattern="persistent\s*:\s*&quot;false&quot;(,)?\s*\n(\s+)field " />
+					<substitution expression="field " />
+			</replaceregexp>
+			<echo message="Replace in *.java &lt;D extends DtObject&gt; URI&lt;D&gt; to &lt;E extends Entity&gt; URI&lt;E&gt;" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="&lt;D extends DtObject&gt; URI&lt;D&gt;" value="&lt;E extends Entity&gt; URI&lt;E&gt;">
+					<include name="**/*.java" />
+			</replace>
+		
+			<echo message="Replace in *SearchLoader.java super(taskManager); to super(taskManager, transactionManager);" />
+			<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+					<fileset dir="${src.path}">
+						<include name="**/*SearchLoader.java"/>
+					</fileset>
+					<regexp pattern="\)\s+\{\s*\n(\s+)super\(taskManager\);" />
+					<substitution expression=", final VTransactionManager transactionManager) {${line.separator}\1super(taskManager, transactionManager);" />
+			</replaceregexp>
+		
+			<echo message="Replace in *SearchLoader.java import io.vertigo.dynamo.task.TaskManager; to import io.vertigo.dynamo.task.TaskManager;\nimport io.vertigo.dynamo.transaction.VTransactionManager;" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="import io.vertigo.dynamo.task.TaskManager;" value="import io.vertigo.dynamo.task.TaskManager;${line.separator}import io.vertigo.dynamo.transaction.VTransactionManager;">
+					<include name="**/*SearchLoader.java" />
+			</replace>	
+		
+			<echo message="Replace in *SearchLoader.java loadData(final List&lt;URI&lt;?&gt;&gt; to loadData(final SearchChunk&lt;?&gt; searchChunk) { final List&lt;URI&lt;?&gt;&gt; uris = searchChunk.getAllURIs();" />
+			<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+					<fileset dir="${src.path}">
+						<include name="**/*SearchLoader.java"/>
+					</fileset>
+					<regexp pattern="loadData\(\n?\s*final\s+List&lt;URI&lt;([A-Za-z0-9]+)&gt;&gt;\s+([A-Za-z0-9]+)\)\s+\{\s+\n(\s+)" />
+					<substitution expression="loadData(final SearchChunk&lt;\1&gt; searchChunk) \{${line.separator}\3final List&lt;URI&lt;\1&gt;&gt; \2 = searchChunk.getAllURIs();${line.separator}\3" />
+			</replaceregexp>	
+			
+			<echo message="Replace in *SearchLoader.java import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition; to import io.vertigo.dynamo.search.metamodel.SearchChunk;\\nimport io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;" />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;" value="import io.vertigo.dynamo.search.metamodel.SearchChunk;${line.separator}import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;">
+					<include name="**/*SearchLoader.java" />
+			</replace>
+			<echo message="Replace in *.xml io.vertigo.quarto.impl.export. to io.vertigo.quarto.impl.export." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.quarto.impl.export." value="io.vertigo.quarto.impl.export.">
+					<include name="**/*.xml" />
+			</replace>
+			<echo message="Replace in *.xml io.vertigo.quarto.plugins.export. to io.vertigo.quarto.plugins.export." />
+			<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.quarto.plugins.export." value="io.vertigo.quarto.plugins.export.">
+					<include name="**/*.xml" />
+			</replace>
+		
+		
+		</target>
+	
 	<target name="0.9.1 to 0.9.2" description="Usefull renames from 0.9.1 to 0.9.2">
 		<echo message="Renamed in *.java : Option.some( to Option.of(" />
 		<replace dir="${src.path}" encoding="${src.encoding}" token="Option.some(" value="Option.of(">

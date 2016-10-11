@@ -19,6 +19,7 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -26,7 +27,6 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.VSecurityException;
@@ -58,7 +58,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @param methodCORSFilter Method CORS Allowed
 	 */
 	@Inject
-	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
+	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Optional<String> originCORSFilter, @Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
@@ -76,7 +76,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		putCorsResponseHeaders(request, response);
 		if ("OPTIONS".equalsIgnoreCase(request.raw().getMethod())) { //if Options request, we stop here
-			response.status(200);
+			response.status(HttpServletResponse.SC_OK);
 			response.type("application/json;charset=UTF-8");
 			return "";
 		}

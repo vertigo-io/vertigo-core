@@ -28,12 +28,12 @@ import io.vertigo.lang.Assertion;
 /**
  * Implementation d'une liste filtré par un Criteria.
  * @author dchallas
- * @param <D> Type de DtObject
+ * @param <E> the type of entity
  */
-public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
+public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private static final long serialVersionUID = 7926630153187124165L;
 	private final Integer maxRows;
-	private final Criteria<D> criteria;
+	private final Criteria<E> criteria;
 
 	/**
 	 * Constructeur.
@@ -41,7 +41,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	 * @param criteria critere //null = no criteria
 	 * @param maxRows Nombre de ligne max //null = ALL
 	 */
-	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
+	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		super(dtDefinition);
 		this.criteria = criteria;
 		this.maxRows = maxRows;
@@ -50,7 +50,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	/**
 	 * @return Criteres de la liste
 	 */
-	public Criteria<D> getCriteria() {
+	public Criteria<E> getCriteria() {
 		return criteria;
 	}
 
@@ -67,10 +67,10 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <D extends DtObject> Criteria<D> createCriteria(final DtObject dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
 		Assertion.checkNotNull(dtoCriteria);
 		//-----
-		final FilterCriteriaBuilder<D> filterCriteriaBuilder = new FilterCriteriaBuilder<>();
+		final FilterCriteriaBuilder<E> filterCriteriaBuilder = new FilterCriteriaBuilder<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
 		for (final DtField field : dtDefinition.getFields()) {

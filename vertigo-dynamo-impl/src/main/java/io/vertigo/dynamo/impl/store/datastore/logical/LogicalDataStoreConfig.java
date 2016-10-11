@@ -24,21 +24,20 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 /**
  * This class defines how the dataSpaces are mapped to the physical stores.
- * A dataSpace is a set of collections. 
+ * A dataSpace is a set of collections.
  * A dataSpace has a name.
  * A dataSpace can have one dataStore.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class LogicalDataStoreConfig {
 	/**
-	 * Map (collection-dataStorePlugin). 
+	 * Map (collection-dataStorePlugin).
 	 * This map defines the dataStore for each collection */
 	private final Map<String, DataStorePlugin> dataStorePluginsMap;
 
@@ -55,14 +54,13 @@ public final class LogicalDataStoreConfig {
 			final DataStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
 			Assertion.checkState(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
-		Assertion.checkNotNull(pluginsMap.get(DtDefinitionBuilder.DEFAULT_DATA_SPACE), "No " + DtDefinitionBuilder.DEFAULT_DATA_SPACE + " DataStorePlugin was set. Configure one and only one DataStorePlugin with name '" + DtDefinitionBuilder.DEFAULT_DATA_SPACE + "'.");
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}
 
 	/**
 	 * Provides a 'DataStorePlugin' for the specified 'DtDefinition'.
 	 * Each DtDefinition is mapped to a collection.
-	 * @param dtDefinition the DtDefinition 
+	 * @param dtDefinition the DtDefinition
 	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
 	public DataStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {

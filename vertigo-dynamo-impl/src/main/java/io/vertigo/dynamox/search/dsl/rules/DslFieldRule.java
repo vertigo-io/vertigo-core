@@ -20,9 +20,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslField;
 
 /**
@@ -30,20 +30,22 @@ import io.vertigo.dynamox.search.dsl.model.DslField;
  * (preField)(fieldName)(postField):
  * @author npiedeloup
  */
-final class DslFieldRule extends AbstractRule<DslField, List<?>> {
+final class DslFieldRule extends AbstractRule<DslField, List<Object>> {
 
-	/** {@inheritDoc} */
-	@Override
-	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
+	DslFieldRule() {
+		super(createMainRule());
+	}
+
+	private static PegRule<List<Object>> createMainRule() {
+		return PegRules.sequence(
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.WORD, //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslField handle(final List<?> parsing) {
+	protected DslField handle(final List<Object> parsing) {
 		final String preField = (String) parsing.get(0);
 		final String fieldName = (String) parsing.get(1);
 		final String postField = (String) parsing.get(2);

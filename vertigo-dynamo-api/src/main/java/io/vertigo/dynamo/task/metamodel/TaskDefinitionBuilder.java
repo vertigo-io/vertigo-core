@@ -20,13 +20,13 @@ package io.vertigo.dynamo.task.metamodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 /**
  * Builder of taskDefinition.
@@ -144,11 +144,11 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return new TaskDefinition(
 				myTaskDefinitionName,
 				myPackageName,
-				myDataSpace == null ? DtDefinitionBuilder.DEFAULT_DATA_SPACE : myDataSpace,
+				myDataSpace == null ? StoreManager.MAIN_DATA_SPACE_NAME : myDataSpace,
 				myTaskEngineClass,
 				myRequest,
 				myInTaskAttributes,
-				Option.ofNullable(myOutTaskAttribute));
+				Optional.ofNullable(myOutTaskAttribute));
 	}
 
 }

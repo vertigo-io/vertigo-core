@@ -18,21 +18,18 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.AppListener;
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * Manager of all the daemons.
@@ -49,14 +46,9 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		Home.getApp().registerAppListener(new AppListener() {
-
-			/** {@inheritDoc} */
-			@Override
-			public void onPostStart() {
-				DaemonManagerImpl.this.startAllDaemons();
-				appStarted = true;
-			}
+		Home.getApp().registerPostStartFunction(() -> {
+			DaemonManagerImpl.this.startAllDaemons();
+			appStarted = true;
 		});
 	}
 
@@ -68,10 +60,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerDaemon(final String name, final Class<? extends Daemon> daemonClass, final int periodInSeconds, final Object... constructorArgs) {
+	public void registerDaemon(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
 		//-----
-		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonClass, periodInSeconds, constructorArgs);
+		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonSupplier, periodInSeconds);
 		daemonInfos.add(daemonInfo);
 	}
 
@@ -107,10 +99,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * @return Daemon
 	 */
 	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
-		final Constructor<? extends Daemon> constructor = findConstructor(daemonInfo.getDaemonClass(), daemonInfo.getConstructorArgs());
-		final Daemon daemon = ClassUtil.newInstance(constructor, daemonInfo.getConstructorArgs());
-		Injector.injectMembers(daemon, Home.getApp().getComponentSpace());
-		return daemon;
+		return daemonInfo.getDaemonSupplier().get();
 	}
 
 	/**
@@ -120,18 +109,5 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		for (final DaemonInfo daemonInfo : daemonInfos) {
 			startDaemon(daemonInfo);
 		}
-	}
-
-	private static <T extends Daemon> Constructor<T> findConstructor(final Class<T> clazz, final Object[] args) {
-		Assertion.checkNotNull(clazz);
-		//-----
-		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
-		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
-		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
-		Assertion.checkArgument(constructors[0].getParameterTypes().length == args.length, "Les paramètres passés ne sont pas compatible avec ceux du constructeur sur {0}.", clazz.getName());
-		Assertion.checkArgument(constructors[0].getAnnotation(Inject.class) == null, "Le constructeur des daemons ne support pas @Inject, utiliser @Inject sur les attributs d'instance sur {0}.", clazz.getName());
-		//-----
-		//On a un et un seul constructeur.
-		return constructors[0];
 	}
 }

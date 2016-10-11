@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -26,7 +27,6 @@ import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Critères de recherche.
@@ -36,13 +36,13 @@ public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
 	private final ListFilter queryListFilter;
-	private final Option<ListFilter> securityListFilter;
+	private final Optional<ListFilter> securityListFilter;
 
 	//Informations optionnelles pour booster la pertinence des documents plus récent (null si inutilisé)
 	private final String boostedDocumentDateFieldName;
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
-	private final Option<FacetedQuery> facetedQuery;
+	private final Optional<FacetedQuery> facetedQuery;
 	private final DefinitionReference<FacetDefinition> clusteringFacetDefinitionRef;
 
 	/**
@@ -55,14 +55,18 @@ public final class SearchQuery implements Serializable {
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter queryListFilter, final Option<ListFilter> securityListFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final Optional<FacetedQuery> facetedQuery, final ListFilter queryListFilter, final Optional<ListFilter> securityListFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(queryListFilter);
 		Assertion.checkNotNull(securityListFilter);
-		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
-		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
-		Assertion.checkArgument(numDaysOfBoostRefDocument == null || numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
-		Assertion.checkArgument(mostRecentBoost == null || mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.when(boostedDocumentDateField != null)
+				.check(() -> numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
+		Assertion.when(boostedDocumentDateField == null)
+				.check(() -> numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
+		Assertion.when(numDaysOfBoostRefDocument != null)
+				.check(() -> numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.when(mostRecentBoost != null)
+				.check(() -> mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
 		this.facetedQuery = facetedQuery;
 		this.queryListFilter = queryListFilter;
@@ -77,7 +81,7 @@ public final class SearchQuery implements Serializable {
 	 * Facets informations.
 	 * @return facetedQuery.
 	 */
-	public Option<FacetedQuery> getFacetedQuery() {
+	public Optional<FacetedQuery> getFacetedQuery() {
 		return facetedQuery;
 	}
 
@@ -93,7 +97,7 @@ public final class SearchQuery implements Serializable {
 	 * Filtre correspondant aux critères de sécurité.
 	 * @return Valeur du filtre
 	 */
-	public Option<ListFilter> getSecurityListFilter() {
+	public Optional<ListFilter> getSecurityListFilter() {
 		return securityListFilter;
 	}
 

@@ -61,8 +61,7 @@ public final class WebServiceParam {
 	public enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class),
 		//UiListState(UiListState.class),
-		Request(HttpServletRequest.class),
-		Response(HttpServletResponse.class), ;
+		Request(HttpServletRequest.class), Response(HttpServletResponse.class),;
 
 		private Class<?> implicitType;
 
@@ -98,9 +97,11 @@ public final class WebServiceParam {
 	 */
 	WebServiceParam(final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, optional, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
-		Assertion.checkArgument(paramType != WebServiceParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
+		Assertion.when(paramType == WebServiceParamType.Implicit)
+				.check(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
-		Assertion.checkArgument(!name.isEmpty() || (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
+		Assertion.when(name.isEmpty())
+				.check(() -> (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
 	private static boolean isImplicitParam(final String testedName) {

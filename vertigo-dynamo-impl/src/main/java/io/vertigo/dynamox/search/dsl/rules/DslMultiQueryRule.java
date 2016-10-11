@@ -21,12 +21,10 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
 
@@ -35,44 +33,35 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  * (preMultiQuery)\((queries|rangeQuery|fixedQuery|multiQuery|)+\)(postMultiQuery)
  * @author npiedeloup
  */
-final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
+final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> {
 	private static final int MAX_DEPTH = 3;
-	private final int level;
 
 	/**
 	 * Constructor.
 	 */
 	DslMultiQueryRule() {
-		level = 0;
+		this(0);
 	}
 
 	private DslMultiQueryRule(final int level) {
-		this.level = level;
+		super(createMainRule(level), "multiQuery-" + level);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "multiQuery";
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected Rule<List<?>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule(final int level) {
 		if (level > MAX_DEPTH) {
-			return (Rule<List<?>>) DslSyntaxRules.DEPTH_OVERFLOW;
+			return (PegRule<List<Object>>) DslSyntaxRules.DEPTH_OVERFLOW;
 		}
 
-		final Rule<Choice> queriesRule = new FirstOfRule(//"single or multiple")
+		final PegRule<PegChoice> queriesRule = PegRules.choice(//"single or multiple")
 				new DslTermQueryRule(), //0
 				new DslRangeQueryRule(), //1
 				new DslMultiQueryRule(level + 1), //2
 				new DslFixedQueryRule() //3
 		);
 
-		final Rule<List<Choice>> manyQueriesRule = new ManyRule<>(queriesRule, false);
-		return new SequenceRule(
-				DslSyntaxRules.PRE_MODIFIER_VALUE,//0
+		final PegRule<List<PegChoice>> manyQueriesRule = PegRules.oneOrMore(queriesRule, false);
+		return PegRules.sequence(
+				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.BLOCK_START,
 				manyQueriesRule, //2
 				DslSyntaxRules.BLOCK_END,
@@ -81,13 +70,13 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<?>> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslBlockQuery handle(final List<?> parsing) {
+	protected DslBlockQuery handle(final List<Object> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final List<DslQuery> queryDefinitions = new ArrayList<>();
 		final String postQuery = (String) parsing.get(4);
-		final List<Choice> manyQueries = (List<Choice>) parsing.get(2);
-		for (final Choice item : manyQueries) {
-			queryDefinitions.add((DslQuery) item.getResult());
+		final List<PegChoice> manyQueries = (List<PegChoice>) parsing.get(2);
+		for (final PegChoice item : manyQueries) {
+			queryDefinitions.add((DslQuery) item.getValue());
 		}
 		return new DslBlockQuery(preQuery, queryDefinitions, postQuery);
 	}

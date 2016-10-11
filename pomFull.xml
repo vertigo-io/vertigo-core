@@ -20,7 +20,7 @@ limitations under the License. -->
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.2-SNAPSHOT</version>
+		<version>0.9.3-SNAPSHOT</version>
 		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 	
@@ -40,6 +40,7 @@ limitations under the License. -->
 
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
+		<module>vertigo-dynamo-plugin-elasticsearch_1_7</module>
 		
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
@@ -47,19 +48,19 @@ limitations under the License. -->
 		<module>vertigo-tempo-api</module>
 		<module>vertigo-tempo-impl</module>
 		
-		<module>vertigo-quarto</module>
+		<module>..\vertigo-quarto</module>
 		
-		<module>vertigo-studio</module>
+		<module>..\vertigo-studio</module>
 
-		<module>vertigo-struts2</module>
+		<module>..\vertigo-struts2</module>
 		
-		<module>vertigo-shell</module>
+		<module>..\vertigo-shell</module>
 		
-		<module>vertigo-stella</module>
+		<module>..\vertigo-stella</module>
 		
 		<module>vertigo-bundle</module>
 
-		<module>vertigo-extensions</module>
+		<module>..\vertigo-extensions</module>
 	</modules>
 	
 	<scm>

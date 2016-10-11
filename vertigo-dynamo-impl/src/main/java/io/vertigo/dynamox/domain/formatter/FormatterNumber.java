@@ -56,10 +56,10 @@ public class FormatterNumber implements Formatter {
 	/**
 	 * Constructor.
 	 * This formatter requires one arg that is a pattern.
-	 * This pattern is used 
+	 * This pattern is used
 	 *  - to format a string into a number
-	 *  - to format a number into a string 
-	 *   
+	 *  - to format a number into a string
+	 *
 	 * @param args args used to initialize the formatter
 	 */
 	public FormatterNumber(final String args) {
@@ -70,7 +70,7 @@ public class FormatterNumber implements Formatter {
 	}
 
 	/**
-	 * @return Pattern 
+	 * @return Pattern
 	 */
 	public final String getPattern() {
 		return pattern;
@@ -79,7 +79,7 @@ public class FormatterNumber implements Formatter {
 	/**
 	 * @param args args
 	 */
-	protected void initParameters(final String args) {
+	protected final void initParameters(final String args) {
 		Assertion.checkNotNull(args);
 		//-----
 		pattern = args;
@@ -105,7 +105,7 @@ public class FormatterNumber implements Formatter {
 	}
 
 	private static void checkType(final DataType dataType) {
-		Assertion.checkArgument(dataType == DataType.BigDecimal || dataType == DataType.Double || dataType == DataType.Integer || dataType == DataType.Long, "FormatterNumber ne s'applique qu'aux Nombres");
+		Assertion.checkArgument(dataType.isNumber(), "FormatterNumber ne s'applique qu'aux Nombres");
 	}
 
 	/** {@inheritDoc} */
@@ -128,25 +128,16 @@ public class FormatterNumber implements Formatter {
 			 */
 			sValue = cleanStringNumber(sValue, decimalFormatSymbols);
 
-			switch (dataType) {
-				case BigDecimal:
-					return new BigDecimal(sValue);
-				case Double:
-					return Double.valueOf(sValue);
-				case Integer:
-					return toInteger(sValue);
-				case Long:
-					return Long.valueOf(sValue);
-				case Boolean:
-				case DataStream:
-				case Date:
-				case DtList:
-				case DtObject:
-				case String:
-					throw new IllegalArgumentException("Type unsupported : " + dataType);
-				default:
-					throw new IllegalArgumentException("Type unknown : " + dataType);
+			if (dataType == DataType.BigDecimal) {
+				return new BigDecimal(sValue);
+			} else if (dataType == DataType.Double) {
+				return Double.valueOf(sValue);
+			} else if (dataType == DataType.Integer) {
+				return toInteger(sValue);
+			} else if (dataType == DataType.Long) {
+				return Long.valueOf(sValue);
 			}
+			throw new IllegalArgumentException("Type unsupported : " + dataType);
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
 			throw new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED, e);
@@ -191,7 +182,7 @@ public class FormatterNumber implements Formatter {
 		String result = sValue;
 		// 1 >> On supprime les blancs. (simples et insécables)
 		if (groupCharUsed == ' ' || groupCharUsed == (char) 160) {
-			result = result.replace((char) 160, ' '); //aussi rapide que l'indexOf si absend
+			result = result.replace((char) 160, ' '); //aussi rapide que l'indexOf si absent
 			result = StringUtil.replace(result, " ", "");
 		} else if (result.indexOf(groupCharUsed) != -1) {
 			// 2 >> On supprime les séparateurs de milliers.
@@ -199,8 +190,7 @@ public class FormatterNumber implements Formatter {
 		}
 
 		// 3 >> On remplace le séparateur décimal par des '.'
-		result = result.replace(decimalCharUsed, '.');
-		return result;
+		return result.replace(decimalCharUsed, '.');
 	}
 
 	/** {@inheritDoc} */
@@ -208,36 +198,14 @@ public class FormatterNumber implements Formatter {
 	public final String valueToString(final Object objValue, final DataType dataType) {
 		checkType(dataType);
 		//-----
-		String decimalString = null;
 		if (objValue == null) {
-			decimalString = "";
-		} else {
-			switch (dataType) {
-				case BigDecimal:
-				case Double:
-					decimalString = createNumberFormat().format(objValue);
-					break;
-				case Integer:
-				case Long:
-					if (pattern == null) {
-						// on ne passe surtout pas pas un formatter interne java
-						// pour les perfs et conserver des identifiants en un seul morceau
-						decimalString = objValue.toString();
-					} else {
-						decimalString = createNumberFormat().format(objValue);
-					}
-					break;
-				case Boolean:
-				case DataStream:
-				case Date:
-				case DtList:
-				case DtObject:
-				case String:
-					throw new IllegalArgumentException("Type unsupported" + dataType);
-				default:
-					throw new IllegalArgumentException("Type unknown : " + dataType);
-			}
+			return "";
 		}
-		return decimalString;
+		if (pattern == null && (dataType == DataType.Integer || dataType == DataType.Long)) {
+			// on ne passe surtout pas pas un formatter interne java
+			// pour les perfs et conserver des identifiants en un seul morceau
+			return objValue.toString();
+		}
+		return createNumberFormat().format(objValue);
 	}
 }

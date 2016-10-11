@@ -28,18 +28,18 @@ import io.vertigo.lang.Plugin;
 
 /**
  * Create proxy-reference from component's instance.
- * Proxy reference implements aspects (AOP). 
- * 
+ * Proxy reference implements aspects (AOP).
+ *
  * @author pchretien
  */
 public interface AopPlugin extends Plugin {
 
 	/**
 	 * Create a proxy-reference.
-	 * 
+	 *
 	 * @param instance Component's instance
-	 * @param joinPoints List of joinPoints 
+	 * @param joinPoints List of joinPoints
 	 * @return  Proxy-Reference
 	 */
-	Component create(final Component instance, Map<Method, List<Aspect>> joinPoints);
+	<C extends Component> C create(final C instance, Map<Method, List<Aspect>> joinPoints);
 }

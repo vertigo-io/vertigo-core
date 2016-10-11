@@ -123,13 +123,13 @@ public final class VegaFeatures extends Features {
 		if (tokensEnabled) {
 			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
+					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.addParam("collection", tokenCollection)
 					.endComponent();
 		}
 		if (miscEnabled) {
 			getModuleConfigBuilder()
-					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)

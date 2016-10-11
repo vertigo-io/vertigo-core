@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.impl.kvstore;
 
 import java.util.List;
+import java.util.Optional;
 
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -74,7 +74,7 @@ public interface KVStorePlugin extends Plugin {
 	 * @param clazz the type of the searched element
 	 * @return the option
 	 */
-	<C> Option<C> find(String collection, String id, Class<C> clazz);
+	<C> Optional<C> find(String collection, String id, Class<C> clazz);
 
 	/**
 	 * Finds all elements contained inside the specified collection.

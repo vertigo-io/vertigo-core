@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.kvstore;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.lang.Manager;
-import io.vertigo.lang.Option;
 
 /**
 * Key Value Store.
@@ -79,7 +79,7 @@ public interface KVStoreManager extends Manager {
 	 * @param clazz the type of the searched element
 	 * @return the option
 	 */
-	<C> Option<C> find(String collection, String id, Class<C> clazz);
+	<C> Optional<C> find(String collection, String id, Class<C> clazz);
 
 	/**
 	 * Finds all elements contained inside the specified collection.	 *

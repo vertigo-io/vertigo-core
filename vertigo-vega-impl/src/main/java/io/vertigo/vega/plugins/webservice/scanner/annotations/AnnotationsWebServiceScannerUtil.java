@@ -23,10 +23,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -85,7 +85,7 @@ public final class AnnotationsWebServiceScannerUtil {
 		//-----
 		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
 		for (final Method method : webServicesClass.getMethods()) {
-			final Option<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
+			final Optional<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
 			if (webServiceDefinition.isPresent()) {
 				webServiceDefinitions.add(webServiceDefinition.get());
 			}
@@ -93,7 +93,7 @@ public final class AnnotationsWebServiceScannerUtil {
 		return webServiceDefinitions;
 	}
 
-	private static Option<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
+	private static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
 		final WebServiceDefinitionBuilder builder = new WebServiceDefinitionBuilder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
@@ -144,9 +144,9 @@ public final class AnnotationsWebServiceScannerUtil {
 				builder.addWebServiceParam(webServiceParam);
 			}
 			//---
-			return Option.of(builder.build());
+			return Optional.of(builder.build());
 		}
-		return Option.empty();
+		return Optional.empty();
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {

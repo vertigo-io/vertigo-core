@@ -20,9 +20,10 @@ package io.vertigo.app.config.xml;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
@@ -45,8 +46,8 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	* Append Config of a set of modules.
 	 * @param relativeRootClass Class used to access files in a relative way.
 	* @param xmlModulesParams properties used to configure the app
-	* @param xmlModulesFileNames fileNames of the different xml files 
-	* 
+	* @param xmlModulesFileNames fileNames of the different xml files
+	*
 	* @return this builder
 	*/
 	public XMLAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final String... xmlModulesFileNames) {
@@ -54,10 +55,10 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		Assertion.checkNotNull(xmlModulesParams);
 		Assertion.checkNotNull(xmlModulesFileNames);
 		//-----
-		final List<URL> xmlModulesAsUrls = new ArrayList<>();
-		for (final String xmlModulesFileName : xmlModulesFileNames) {
-			xmlModulesAsUrls.add(createURL(xmlModulesFileName, relativeRootClass));
-		}
+		final List<URL> xmlModulesAsUrls = Stream.of(xmlModulesFileNames)
+				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
+				.collect(Collectors.toList());
+
 		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
 		return this;
 	}

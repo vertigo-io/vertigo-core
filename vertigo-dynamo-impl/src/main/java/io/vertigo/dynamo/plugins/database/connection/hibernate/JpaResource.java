@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public class JpaResource implements VTransactionResource {
+public final class JpaResource implements VTransactionResource {
 	private final EntityManager em;
 	private final EntityTransaction tx;
 

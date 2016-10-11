@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamox.search.dsl.rules;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.TermRule;
-import io.vertigo.commons.parser.WordRule;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.PegWordRule;
 
 /**
  *
@@ -44,66 +44,52 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final Rule<?> SPACES = new WordRule(true, WHITE_SPACE, WordRule.Mode.ACCEPT, "_");
+	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
 
 	/** array start. */
-	static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
+	static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
 	/** array end. */
-	static final Rule<String> ARRAY_END = new TermRule("]");
+	static final PegRule<String> ARRAY_END = PegRules.term("]");
 	/** array separator. */
-	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
+	static final PegRule<String> ARRAY_SEPARATOR = PegRules.term(",");
 
 	/** block start. */
-	static final Rule<String> BLOCK_START = new TermRule("(");
+	static final PegRule<String> BLOCK_START = PegRules.term("(");
 	/** block end. */
-	static final Rule<String> BLOCK_END = new TermRule(")");
+	static final PegRule<String> BLOCK_END = PegRules.term(")");
 
 	/** term mark. */
-	static final Rule<String> TERM_MARK = new TermRule("#");
+	static final PegRule<String> TERM_MARK = PegRules.term("#");
 	/** field end. */
-	static final Rule<String> FIELD_END = new TermRule(":");
+	static final PegRule<String> FIELD_END = PegRules.term(":");
 
 	/** premodifier. */
-	static final Rule<String> PRE_MODIFIER_VALUE = new WordRule(true, PRE_MODIFIER + WHITE_SPACE, WordRule.Mode.ACCEPT, "PREM");
+	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "[~+-*?\" \t\n\r]*");
 	/** postmodifier. */
-	static final Rule<String> POST_MODIFIER_VALUE = new WordRule(true, POST_MODIFIER, WordRule.Mode.ACCEPT, "POSTM");
+	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
 
 	//Il faut gérer le caractère d'évitement.
 	/** word. */
-	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DEL");
+	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final Rule<String> FIXED_WORD = new WordRule(false, WHITE_SPACE + "]),", WordRule.Mode.REJECT, "!_");
+	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
 
 	/** depth overflow. */
-	static final Rule<?> DEPTH_OVERFLOW = new Rule<Void>() {
+	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();
+
+	private static class DepthOverflowRule implements PegRule<Void> {
 
 		@Override
 		public String getExpression() {
-			return "<depth overflow>";
+			return "'depthOverflow'";
 		}
 
 		@Override
-		public Parser<Void> createParser() {
-			return new Parser<Void>() {
-				/**
-				 * @return Mot trouvé par la règle
-				 */
-				@Override
-				public Void get() {
-					return null;
-				}
-
-				/** {@inheritDoc} */
-				@Override
-				public int parse(final String text, final int start) throws NotFoundException {
-					throw new NotFoundException(text, start, null, "Too deep", getExpression());
-				}
-
-			};
+		public PegResult<Void> parse(final String text, final int start) throws PegNoMatchFoundException {
+			throw new PegNoMatchFoundException(text, start, null, "Too deep", getExpression());
 		}
-
-	};
+	}
 
 	private DslSyntaxRules() {
 		//Classe sans état

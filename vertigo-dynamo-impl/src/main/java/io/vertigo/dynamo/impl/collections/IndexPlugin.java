@@ -20,13 +20,13 @@ package io.vertigo.dynamo.impl.collections;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -45,5 +45,6 @@ public interface IndexPlugin extends Plugin {
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
-	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState, final Option<DtField> boostedField, final DtList<D> dtc);
+	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState,
+			final Optional<DtField> boostedField, final DtList<D> dtc);
 }

@@ -35,16 +35,16 @@ import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * JsonSerializer of FacetedQueryResult.
- * 
- * Format : 
+ *
+ * Format :
  * {
  *   list = [ { <<indexObject>> }, { <<indexObject>> } , ...],
  *   facets = { FCT_ONE = { term1=12, term2=10, ...}, FCT_TWO = { term20=15, term21=8, ...} },
  *   totalCount = 10045
  * }
- * 
+ *
  * @author npiedeloup
- * @Deprecated Use FacetedQueryResultJsonSerializerV2 instead
+ * @deprecated Use last FacetedQueryResultJsonSerializer instead.
  */
 @Deprecated
 final class FacetedQueryResultJsonSerializerV1 implements JsonSerializer<FacetedQueryResult<?, ?>> {

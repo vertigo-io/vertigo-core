@@ -83,7 +83,7 @@ public final class FormatterBoolean implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public Boolean stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
@@ -98,17 +98,17 @@ public final class FormatterBoolean implements Formatter {
 	 * @throws FormatterException Erreur de parsing
 	 */
 	private Boolean stringToBoolean(final String booleanString) throws FormatterException {
-		final Boolean booleanValue;
+		final Boolean result;
 		if (null == booleanString) {
-			booleanValue = null;
+			result = null;
 		} else if ("true".equals(booleanString) || "1".equals(booleanString) || truePattern.equals(booleanString)) {
-			booleanValue = Boolean.TRUE;
+			result = Boolean.TRUE;
 		} else if ("false".equals(booleanString) || "0".equals(booleanString) || falsePattern.equals(booleanString)) {
-			booleanValue = Boolean.FALSE;
+			result = Boolean.FALSE;
 		} else {
 			throw new FormatterException(Resources.DYNAMOX_BOOLEAN_NOT_FORMATTED);
 		}
-		return booleanValue;
+		return result;
 	}
 
 	/**

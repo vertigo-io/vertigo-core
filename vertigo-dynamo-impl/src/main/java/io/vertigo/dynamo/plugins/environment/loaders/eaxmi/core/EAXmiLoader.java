@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -107,7 +108,7 @@ public final class EAXmiLoader implements XmlLoader {
 	private static XmlClass createClass(final EAXmiObject obj) {
 		LOG.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
-		final String code = obj.getName().toUpperCase();
+		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
 		final String packageName = obj.getParent().getPackageName();
 		final String stereotype = obj.getStereotype();
 
@@ -128,7 +129,7 @@ public final class EAXmiLoader implements XmlLoader {
 	}
 
 	private static XmlAttribute createAttribute(final EAXmiObject obj, final boolean isPK) {
-		final String code = obj.getName().toUpperCase();
+		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
 		final String label = obj.getLabel();
 		final boolean persistent = true;
 
@@ -159,7 +160,7 @@ public final class EAXmiLoader implements XmlLoader {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
 
-		final String code = obj.getName().toUpperCase();
+		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
 		final String packageName = obj.getParent().getPackageName();
 
 		final String multiplicityA = obj.getRoleAMultiplicity();
@@ -172,8 +173,8 @@ public final class EAXmiLoader implements XmlLoader {
 		//Le code du role est déduit du libellé.
 
 		//Attention pamc inverse dans oom les déclarations des objets !!
-		final String codeA = objectA.getName().toUpperCase();
-		final String codeB = objectB.getName().toUpperCase();
+		final String codeA = objectA.getName().toUpperCase(Locale.ENGLISH);
+		final String codeB = objectB.getName().toUpperCase(Locale.ENGLISH);
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)

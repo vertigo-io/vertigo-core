@@ -25,16 +25,13 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityField;
-import io.vertigo.core.definition.dsl.entity.EntityLink;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
+import io.vertigo.core.definition.dsl.entity.DslEntityLink;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
@@ -49,78 +46,75 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<?>> {
-	private final DynamicDefinitionRepository dynamicModelRepository;
-	private final Entity entity;
+public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<Object>> {
 
 	/**
 	 * Constructeur.
-	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final Entity entity) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	public DslDefinitionBodyRule(final DslEntity entity) {
+		super(createMainRule(entity), entity.getName() + "Body");
+	}
+
+	private static PegRule<List<Object>> createMainRule(final DslEntity entity) {
 		Assertion.checkNotNull(entity);
-		//-----
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.entity = entity;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "definition<" + entity.getName() + ">";
-	}
-
-	@Override
-	protected Rule<List<?>> createMainRule() {
 		final List<String> attributeNames = new ArrayList<>();
 
-		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
+		final List<PegRule<?>> innerDefinitionRules = new ArrayList<>();
 
-		for (final EntityField attribute : entity.getAttributes()) {
-			final String attributeName = attribute.getName();
-			attributeNames.add(attributeName);
-			Entity entityAttribute = attribute.getType() instanceof Entity ? Entity.class.cast(attribute.getType()) : EntityLink.class.cast(attribute.getType()).getEntity();
-			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, entityAttribute));
+		for (final DslEntityField dslEntityField : entity.getFields()) {
+			attributeNames.add(dslEntityField.getName());
+
+			final DslEntity dslEntity;
+			if (dslEntityField.getType() instanceof DslEntity) {
+				dslEntity = DslEntity.class.cast(dslEntityField.getType());
+			} else if (dslEntityField.getType() instanceof DslEntityLink) {
+				dslEntity = DslEntityLink.class.cast(dslEntityField.getType()).getEntity();
+			} else {
+				//case property
+				dslEntity = null;
+			}
+			if (dslEntity != null) {
+				innerDefinitionRules.add(new DslInnerDefinitionRule(dslEntityField.getName(), dslEntity));
+			}
 		}
 
-		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getPropertyNames());
+		final DslPropertyDeclarationRule propertyDeclarationRule = new DslPropertyDeclarationRule(entity.getPropertyNames());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
-		final FirstOfRule firstOfRule = new FirstOfRule(
-				xPropertyEntryRule, // 0
+		final PegRule<PegChoice> firstOfRule = PegRules.choice(
+				propertyDeclarationRule, // 0
 				xDefinitionEntryRule, // 1
-				new FirstOfRule(innerDefinitionRules),//2,
+				PegRules.choice(innerDefinitionRules), //2,
 				SPACES);
 
-		final ManyRule<Choice> manyRule = new ManyRule<>(firstOfRule, true);
-		return new SequenceRule(
+		final PegRule<List<PegChoice>> manyRule = PegRules.zeroOrMore(firstOfRule, false);
+		return PegRules.sequence(
 				OBJECT_START,
 				SPACES,
-				manyRule,//2
+				manyRule, //2
 				SPACES,
 				OBJECT_END);
 	}
 
 	@Override
-	protected DslDefinitionBody handle(final List<?> parsing) {
-		final List<Choice> many = (List<Choice>) parsing.get(2);
+	protected DslDefinitionBody handle(final List<Object> parsing) {
+		final List<PegChoice> many = (List<PegChoice>) parsing.get(2);
 
 		final List<DslDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();
 		final List<DslPropertyEntry> fieldPropertyEntries = new ArrayList<>();
-		for (final Choice item : many) {
-			switch (item.getValue()) {
+		for (final PegChoice item : many) {
+			switch (item.getChoiceIndex()) {
 				case 0:
 					//Soit on est en présence d'une propriété standard
-					final DslPropertyEntry propertyEntry = (DslPropertyEntry) item.getResult();
+					final DslPropertyEntry propertyEntry = (DslPropertyEntry) item.getValue();
 					fieldPropertyEntries.add(propertyEntry);
 					break;
 				case 1:
-					final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) item.getResult();
+					final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) item.getValue();
 					fieldDefinitionEntries.add(xDefinitionEntry);
 					break;
 				case 2:
-					final Choice subTuple = (Choice) item.getResult();
-					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getResult());
+					final PegChoice subTuple = (PegChoice) item.getValue();
+					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getValue());
 					break;
 				case 3:
 					break;

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.app.config.rules.APIModuleRule;
@@ -29,21 +30,20 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
  * A module has a name.
- * A module is composed of 
- *  - components & plugins 
+ * A module is composed of
+ *  - components & plugins
  *  - aspects
  *  - definitions (defined by resources or providers)
  *
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	//In the case of the boot module	
+	//In the case of the boot module
 	private final boolean boot;
 	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
@@ -58,7 +58,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	 * Constructor of the boot module.
-	 * @param appConfigBuilder the builder of the appConfig 
+	 * @param appConfigBuilder the builder of the appConfig
 	 */
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkNotNull(appConfigBuilder);
@@ -70,7 +70,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	 * Constructor of a module.
-	 * @param appConfigBuilder the builder of the appConfig 
+	 * @param appConfigBuilder the builder of the appConfig
 	 * @param name Name of the module
 	 */
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
@@ -115,7 +115,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Adds definitions defined by a resource file. 
+	 * Adds definitions defined by a resource file.
 	 * @param resourceType Type of the resource
 	 * @param resourcePath Path of the resource
 	* @return this builder
@@ -134,7 +134,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> of(apiClass), Component.class, true);
+		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), Component.class, true);
 	}
 
 	/**
@@ -158,23 +158,23 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	* Begins the builder of a component.
-	* Component is added when you close the builder uising end() method. 
+	* Component is added when you close the builder uising end() method.
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> empty(), implClass, false);
+		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass, false);
 	}
 
 	/**
 	* Begins the builder of a component.
 	* @param apiClass api of the component
-	* Component is added when you close the builder uising end() method. 
+	* Component is added when you close the builder uising end() method.
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return doBeginComponent(Option.<Class<? extends Component>> of(apiClass), implClass, false);
+		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass, false);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
-	private ComponentConfigBuilder doBeginComponent(final Option<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
+	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
 		myComponentConfigBuilders.add(componentConfigBuilder);
 		return componentConfigBuilder;
@@ -195,7 +195,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public AppConfigBuilder endModule() {
 		if (boot) {
-			// we don't close the module	
+			// we don't close the module
 		} else {
 			myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
 		}
@@ -222,8 +222,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return pluginConfigBuilder;
 	}
 
-	private List<PluginConfig> buildPluginConfigs() {
-		final List<PluginConfig> pluginConfigs = new ArrayList<>();
+	private List<ComponentConfig> buildPluginConfigs() {
+		final List<ComponentConfig> pluginConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
 		int index = 1;
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
@@ -250,20 +250,19 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 			moduleRules.add(new APIModuleRule());
 		}
 		//-----
-		final List<ComponentConfig> componentConfig = new ArrayList<>();
+		final List<ComponentConfig> componentConfigs = new ArrayList<>();
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
-			componentConfig.add(componentConfigBuilder.build());
+			componentConfigs.add(componentConfigBuilder.build());
 		}
 
 		//creation of the pluginConfigs
-		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
+		componentConfigs.addAll(buildPluginConfigs());
 
 		final ModuleConfig moduleConfig = new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
 				myDefinitionResourceConfigs,
-				componentConfig,
-				pluginConfigs,
+				componentConfigs,
 				myAspectConfigs,
 				moduleRules);
 

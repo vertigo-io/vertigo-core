@@ -21,7 +21,7 @@ package io.vertigo.core.component.aop.data;
 /**
  * @author prahmoune
  */
-public class MyException extends Exception {
+public final class MyException extends Exception {
 
 	private static final long serialVersionUID = 5924343359294722683L;
 

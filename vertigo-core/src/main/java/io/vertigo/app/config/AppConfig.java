@@ -23,14 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.app.Logo;
 import io.vertigo.lang.Assertion;
 
 /**
  * The AppConfig class defines the config.
- * The app is built from this config. 
- *  
- * AppConfig must be created using the AppConfigBuilder. 
+ * The app is built from this config.
+ *
+ * AppConfig must be created using the AppConfigBuilder.
  * @author pchretien
  */
 public final class AppConfig {
@@ -52,7 +51,7 @@ public final class AppConfig {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the config of the boot
 	 */
 	public BootConfig getBootConfig() {
@@ -67,8 +66,8 @@ public final class AppConfig {
 	}
 
 	/**
-	 * 
-	 * @return List of the config of the initializers 
+	 *
+	 * @return List of the config of the initializers
 	 */
 	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
 		return initializers;
@@ -83,7 +82,6 @@ public final class AppConfig {
 	 */
 	public void print(final PrintStream out) {
 		Assertion.checkNotNull(out);
-		Logo.printCredits(out);
 		doPrint(out);
 	}
 
@@ -93,7 +91,7 @@ public final class AppConfig {
 	 */
 	private void doPrint(final PrintStream out) {
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
-		printComponent(out, "modules", "components", null);
+		printComponent(out, "modules", "components", "plugins");
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
 		printModule(out, bootConfig.getBootModuleConfig());
 		for (final ModuleConfig moduleConfig : modules) {
@@ -106,7 +104,8 @@ public final class AppConfig {
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		String moduleName = moduleConfig.getName();
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			printComponent(out, moduleName, (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName(), null);
+			final String componentClassName = (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName();
+			printComponent(out, moduleName, componentClassName, null);
 			moduleName = null;
 		}
 	}

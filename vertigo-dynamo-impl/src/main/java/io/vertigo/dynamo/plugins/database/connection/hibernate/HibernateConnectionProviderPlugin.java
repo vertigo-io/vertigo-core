@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +27,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 import org.hibernate.Session;
-import org.hibernate.jdbc.ReturningWork;
 
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -36,7 +35,6 @@ import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProvid
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -56,7 +54,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	 */
 	@Inject
 	public HibernateConnectionProviderPlugin(
-			@Named("name") final Option<String> name,
+			@Named("name") final Optional<String> name,
 			@Named("persistenceUnit") final String persistenceUnit,
 			@Named("dataBaseName") final String dataBaseName,
 			final VTransactionManager transactionManager) {
@@ -74,17 +72,13 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
-		return session.doReturningWork(new ReturningWork<SqlConnection>() {
-			@Override
-			public SqlConnection execute(final Connection connection) throws SQLException {
-				return new SqlConnection(connection, getDataBase(), false);
-			}
-		});
+		return session.doReturningWork((final Connection connection) -> new SqlConnection(connection, getDataBase(), false));
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnection obtainConnection() throws SQLException {
+	public SqlConnection obtainConnection() {
 		final EntityManager em = obtainJpaResource().getEntityManager();
 		return obtainWrappedConnection(em);
 	}

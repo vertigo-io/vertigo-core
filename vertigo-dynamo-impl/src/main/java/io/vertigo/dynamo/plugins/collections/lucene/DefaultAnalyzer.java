@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import java.io.Reader;
 import java.util.Arrays;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -30,7 +29,6 @@ import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.analysis.util.ElisionFilter;
-import org.apache.lucene.util.Version;
 
 /**
  * Classe d'analyse des chaïnes de caractères.
@@ -50,7 +48,7 @@ final class DefaultAnalyzer extends Analyzer {
 
 	/** Builds an analyzer with the given stop words. */
 	private DefaultAnalyzer(final String[] stopWords) {
-		this.stopWords = StopFilter.makeStopSet(Version.LUCENE_40, stopWords);
+		this.stopWords = StopFilter.makeStopSet(stopWords);
 	}
 
 	/**
@@ -60,19 +58,19 @@ final class DefaultAnalyzer extends Analyzer {
 	   *         StandardFilter, StopFilter, FrenchStemFilter and LowerCaseFilter
 	   */
 	@Override
-	protected TokenStreamComponents createComponents(final String fieldName, final Reader reader) {
+	protected TokenStreamComponents createComponents(final String fieldName) {
 		/* initialisation du token */
-		final Tokenizer source = new StandardTokenizer(Version.LUCENE_40, reader);
+		final Tokenizer source = new StandardTokenizer();
 		//-----
 		/* on retire les élisions*/
-		final CharArraySet elisionSet = new CharArraySet(Version.LUCENE_40, Arrays.asList(LuceneConstants.ELISION_ARTICLES), true);
+		final CharArraySet elisionSet = new CharArraySet(Arrays.asList(LuceneConstants.ELISION_ARTICLES), true);
 		TokenStream filter = new ElisionFilter(source, elisionSet);
 		/* on retire article adjectif */
-		filter = new StopFilter(Version.LUCENE_40, filter, stopWords);
+		filter = new StopFilter(filter, stopWords);
 		/* on retire les accents */
 		filter = new ASCIIFoldingFilter(filter);
 		/* on met en minuscule */
-		filter = new LowerCaseFilter(Version.LUCENE_40, filter);
+		filter = new LowerCaseFilter(filter);
 		return new TokenStreamComponents(source, filter);
 	}
 }

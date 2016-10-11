@@ -19,8 +19,8 @@
 package io.vertigo.persona.impl.security;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -32,7 +32,6 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -90,12 +89,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	private LocaleProvider createLocaleProvider() {
-		return new LocaleProvider() {
-			@Override
-			public Locale getCurrentLocale() {
-				final Option<UserSession> userSession = getCurrentUserSession();
-				return userSession.isPresent() ? userSession.get().getLocale() : null;
-			}
+		return () -> {
+			final Optional<UserSession> userSession = getCurrentUserSession();
+			return userSession.isPresent() ? userSession.get().getLocale() : null;
 		};
 	}
 
@@ -119,9 +115,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	@Override
-	public <U extends UserSession> Option<U> getCurrentUserSession() {
+	public <U extends UserSession> Optional<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
-		return Option.ofNullable(userSession);
+		return Optional.ofNullable(userSession);
 	}
 
 	/** {@inheritDoc} */
@@ -152,7 +148,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	public boolean isAuthorized(final String resource, final String operation) {
 		// Note: il s'agit d'une implementation naïve non optimisee,
 		// réalisée pour valider le modèle
-		final Option<UserSession> userSessionOption = getCurrentUserSession();
+		final Optional<UserSession> userSessionOption = getCurrentUserSession();
 
 		if (!userSessionOption.isPresent()) {
 			//Si il n'y a pas de session alors pas d'autorisation.
@@ -160,21 +156,13 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		}
 		final UserSession userSession = userSessionOption.get();
 		final Map<String, String> securityKeys = userSessionOption.get().getSecurityKeys();
-		for (final Role role : userSession.getRoles()) {
-			if (isAuthorized(role, resource, operation, securityKeys)) {
-				return true;
-			}
-		}
-		return false;
+		return userSession.getRoles().stream()
+				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
 	}
 
 	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, String> securityKeys) {
-		for (final Permission permission : role.getPermissions()) {
-			if (isAuthorized(permission, resource, operation, securityKeys)) {
-				return true;
-			}
-		}
-		return false;
+		return role.getPermissions().stream()
+				.anyMatch(permission -> isAuthorized(permission, resource, operation, securityKeys));
 	}
 
 	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, String> securityKeys) {
@@ -191,7 +179,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		int nextIndex = filter.indexOf("${", previousIndex);
 		while (nextIndex >= 0) {
 			personalFilter.append(filter.substring(previousIndex, nextIndex));
-			final int endIndex = filter.indexOf("}", nextIndex + "${".length());
+			final int endIndex = filter.indexOf('}', nextIndex + "${".length());
 			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
 			final String key = filter.substring(nextIndex + "${".length(), endIndex);
 			final String securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/

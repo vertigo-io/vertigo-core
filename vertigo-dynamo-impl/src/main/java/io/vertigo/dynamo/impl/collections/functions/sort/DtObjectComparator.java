@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
+import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
@@ -28,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
@@ -147,7 +149,8 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, dataStore, mdFieldSort);
 	}
 
-	private static final class DefaultComparator implements Comparator<Object> {
+	private static final class DefaultComparator implements Comparator<Object>, Serializable {
+		private static final long serialVersionUID = -1281179009146979671L;
 		private final boolean sortDesc;
 
 		DefaultComparator(final boolean sortDesc) {
@@ -175,7 +178,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
+			final URI<Entity> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
 				dto = dataStore.read(uri);

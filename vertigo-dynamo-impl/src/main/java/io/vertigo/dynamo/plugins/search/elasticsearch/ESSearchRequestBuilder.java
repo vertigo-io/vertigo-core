@@ -20,14 +20,13 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.exp.ExponentialDecayFunctionBuilder;
@@ -38,6 +37,7 @@ import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
+import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -54,7 +54,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 //vérifier
 /**
@@ -63,7 +62,10 @@ import io.vertigo.lang.Option;
  */
 final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
+	private static final int HIGHLIGHTER_NUM_OF_FRAGMENTS = 3;
+	private static final boolean ACCEPT_UNMAPPED_SORT_FIELD = false; //utile uniquement pour la recherche multi type
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
+	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -133,10 +135,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		Assertion.checkNotNull(myIndexDefinition, "You must set IndexDefinition");
 		Assertion.checkNotNull(mySearchQuery, "You must set SearchQuery");
 		Assertion.checkNotNull(myListState, "You must set ListState");
+		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
+				.check(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder);
-		appendFacetDefinition(mySearchQuery, searchRequestBuilder);
+		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState);
 		return searchRequestBuilder;
 	}
 
@@ -145,37 +150,56 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
 		if (myListState.getSortFieldName().isPresent()) {
-			final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
-			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
-					.ignoreUnmapped(true)
-					.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
-			searchRequestBuilder.addSort(sortBuilder);
+			searchRequestBuilder.addSort(getFieldSortBuilder(myIndexDefinition, myListState));
 		}
 	}
 
+	private static FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
+		final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
+		final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
+				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
+
+		if (ACCEPT_UNMAPPED_SORT_FIELD) {
+			//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
+			final IndexType indexType = IndexType.readIndexType(sortField.getDomain());
+			final String sortType = indexType.getIndexDataType();
+			sortBuilder.unmappedType(sortType);
+		}
+		return sortBuilder;
+	}
+
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
-		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		final BoolQueryBuilder mainBoolQueryBuilder = QueryBuilders.boolQuery();
+
+		//on ajoute les critères de la recherche AVEC impact sur le score
+		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		mainBoolQueryBuilder.must(queryBuilder);
+
+		//on ajoute les filtres de sécurité SANS impact sur le score
 		if (searchQuery.getSecurityListFilter().isPresent()) {
-			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
+			final QueryBuilder securityFilterBuilder = translateToQueryBuilder(searchQuery.getSecurityListFilter().get());
+			mainBoolQueryBuilder.filter(securityFilterBuilder);
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
 		}
 
-		if (searchQuery.isBoostMostRecent()) {
-			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
-		}
+		//on ajoute les filtres des facettes SANS impact sur le score
 		if (searchQuery.getFacetedQuery().isPresent() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
-			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
-				filterBuilder.add(translateToFilterBuilder(facetQuery));
+				mainBoolQueryBuilder.filter(translateToQueryBuilder(facetQuery));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
+		}
+
+		final QueryBuilder requestQueryBuilder;
+		if (searchQuery.isBoostMostRecent()) {
+			requestQueryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
+		} else {
+			requestQueryBuilder = mainBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(queryBuilder)
+				.setQuery(requestQueryBuilder)
 				//.setHighlighterFilter(true) //We don't highlight the security filter
-				.setHighlighterNumOfFragments(3)
+				.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
 				.addHighlightedField("*");
 	}
 
@@ -183,7 +207,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1D));
 	}
 
-	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
+	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
@@ -191,11 +215,17 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
 
 			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
-			aggregationBuilder.subAggregation(
-					AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-							.setSize(TOPHITS_SUBAGGREGATION_SIZE)
-							.setHighlighterNumOfFragments(3)
-							.addHighlightedField("*"));
+			final TopHitsBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
+					.setSize(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
+					.setFrom(myListState.getSkipRows())
+					.setHighlighterNumOfFragments(3)
+					.addHighlightedField("*");
+
+			if (myListState.getSortFieldName().isPresent()) {
+				topHitsBuilder.addSort(getFieldSortBuilder(myIndexDefinition, myListState));
+			}
+
+			aggregationBuilder.subAggregation(topHitsBuilder);
 			//We fetch source, because it's our only source to create result list
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
@@ -214,11 +244,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	}
 
 	private static AggregationBuilder<?> facetToAggregationBuilder(final FacetDefinition facetDefinition) {
-		//Récupération des noms des champs correspondant aux facettes.
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {
 			return rangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
+		return termFacetToAggregationBuilder(facetDefinition, dtField);
+	}
+
+	private static AggregationBuilder<?> termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
 		final Order facetOrder;
 		switch (facetDefinition.getOrder()) {
@@ -233,7 +266,6 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown facetOrder :" + facetDefinition.getOrder());
-
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
@@ -256,7 +288,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.filter(filterValue, FilterBuilders.queryFilter(QueryBuilders.queryStringQuery(filterValue)));
+			filters.filter(filterValue, QueryBuilders.queryStringQuery(filterValue));
 		}
 		return filters;
 	}
@@ -268,8 +300,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-			final Option<Double> minValue = convertToDouble(parsedFilter[3]);
-			final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
+			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
+			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
 			if (!minValue.isPresent()) {
 				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
 			} else if (!maxValue.isPresent()) {
@@ -302,14 +334,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return dateRangeBuilder;
 	}
 
-	private static Option<Double> convertToDouble(final String valueToConvert) {
+	private static Optional<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
-			return Option.empty();//pas de test
+			return Optional.empty();//pas de test
 		}
 		//--
 		final Double result = Double.valueOf(stringValue);
-		return Option.of(result);
+		return Optional.of(result);
 	}
 
 	/**
@@ -336,7 +368,4 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
 	}
 
-	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
-		return FilterBuilders.queryFilter(translateToQueryBuilder(query));
-	}
 }

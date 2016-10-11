@@ -51,11 +51,11 @@ public final class DslBlockQuery implements DslQuery {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append("(");
+				.append(preBody).append('(');
 		for (final DslQuery query : queries) {
 			sb.append(query);
 		}
-		sb.append(")").append(postBody);
+		sb.append(')').append(postBody);
 		return sb.toString();
 	}
 

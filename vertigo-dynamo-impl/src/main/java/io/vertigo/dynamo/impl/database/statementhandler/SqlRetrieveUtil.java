@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
@@ -57,7 +58,7 @@ final class SqlRetrieveUtil {
 		if (resultMetaData.isDtObject()) {
 			return retrieveDtObject(resultMetaData, mapping, resultSet);
 		}
-		return retrieveDtList(resultMetaData, mapping, resultSet);
+		return retrieveEntityList(resultMetaData, mapping, resultSet);
 	}
 
 	private static SqlQueryResult retrieveDtObject(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
@@ -65,7 +66,7 @@ final class SqlRetrieveUtil {
 		return new SqlQueryResult(dto, dto != null ? 1 : 0);
 	}
 
-	private static SqlQueryResult retrieveDtList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static SqlQueryResult retrieveEntityList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, resultMetaData);
 		return new SqlQueryResult(dtc, dtc.size());
 	}
@@ -98,10 +99,8 @@ final class SqlRetrieveUtil {
 			}
 			return dto;
 		}
+		//no result
 		return null;
-		//On est dans le cas de récupération d'un objet, pas de résultat
-		//throw new NoObjectFoundException();
-
 	}
 
 	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
@@ -117,7 +116,7 @@ final class SqlRetrieveUtil {
 		final DtField[] fields = new DtField[columnNames.length];
 		for (int i = 0; i < fields.length; i++) {
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			final DtField f = resultMetaData.getDtDefinition().getField(columnNames[i].toUpperCase());
+			final DtField f = resultMetaData.getDtDefinition().getField(columnNames[i].toUpperCase(Locale.ENGLISH));
 			Assertion.checkNotNull(f);
 			fields[i] = f;
 		}

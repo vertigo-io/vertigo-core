@@ -19,11 +19,12 @@
 package io.vertigo.dynamo.impl.collections;
 
 import java.util.Collection;
+import java.util.function.UnaryOperator;
 
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.functions.index.IndexFilterFunction;
 import io.vertigo.lang.Assertion;
@@ -87,7 +88,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListFunction<D> build() {
+	public UnaryOperator<DtList<D>> build() {
 		return indexFilterFunction;
 	}
 }

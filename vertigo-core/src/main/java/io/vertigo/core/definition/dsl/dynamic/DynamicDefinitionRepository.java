@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.vertigo.core.definition.dsl.entity.Entity;
-import io.vertigo.core.definition.dsl.entity.EntityGrammar;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -49,7 +49,7 @@ public final class DynamicDefinitionRepository {
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
 	private final DynamicRegistry registry;
-	private final EntityGrammar grammar;
+	private final DslGrammar grammar;
 
 	/**
 	 * Constructeur.
@@ -65,7 +65,7 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * @return Grammar
 	 */
-	public EntityGrammar getGrammar() {
+	public DslGrammar getGrammar() {
 		return grammar;
 	}
 
@@ -83,7 +83,7 @@ public final class DynamicDefinitionRepository {
 	 *  -Soit la clé n'existe pas
 	 *  -Soit la clé existe mais sans aucune définition
 	 *  -Soit la clé raméne une définition.
-	 *  
+	 *
 	 * @param definitionName Name of the definition
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
@@ -98,7 +98,7 @@ public final class DynamicDefinitionRepository {
 
 	/**
 	 * Résolution des références de définitions.
-	 * @param definitionSpace Space where all the definitions are stored 
+	 * @param definitionSpace Space where all the definitions are stored
 	 */
 	public void solve(final DefinitionSpace definitionSpace) {
 		Assertion.checkNotNull(definitionSpace);
@@ -119,7 +119,7 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
 		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
 			DynamicValidator.check(xdefinition);
-			if (!xdefinition.getEntity().isRoot()) {
+			if (!xdefinition.getEntity().isProvided()) {
 				//The definition identified as root are not registered.
 				final Definition definition = registry.createDefinition(definitionSpace, xdefinition);
 				definitionSpace.put(definition);
@@ -160,7 +160,7 @@ public final class DynamicDefinitionRepository {
 	 * @param entity entity
 	 * @return Nouvelle Définition
 	 */
-	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final Entity entity, final String packageName) {
+	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final DslEntity entity, final String packageName) {
 		return new DynamicDefinitionImpl(definitionName, entity).withPackageName(packageName);
 	}
 

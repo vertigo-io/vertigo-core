@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.Entity;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -45,6 +45,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public abstract class XmlLoaderPlugin implements LoaderPlugin {
+	private static final int MAX_COLUMN_LENGTH = 30;
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
 
@@ -83,43 +84,42 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlClass clazz) {
-		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
+		final DslEntity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
-				.addPropertyValue(KspProperty.PERSISTENT, true)
 				.addPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.ID, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.ID, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute);
-			dtDefinitionBuilder.addDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlAttribute attribute) {
-		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
+		final DslEntity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
 				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
-				.addDefinition("domain", attribute.getDomain())
+				.addDefinitionLink("domain", attribute.getDomain())
 				.build();
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final XmlAssociation association, final DynamicDefinitionRepository dynamicModelrepository) {
-		final Entity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
-		final Entity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
+		final DslEntity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
+		final DslEntity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
 
-		final String name = association.getCode().toUpperCase();
+		final String name = association.getCode().toUpperCase(Locale.ENGLISH);
 
 		//On regarde si on est dans le cas d'une association simple ou multiple
 		final boolean isAssociationNN = AssociationUtil.isMultiple(association.getMultiplicityA()) && AssociationUtil.isMultiple(association.getMultiplicityB());
-		final Entity dynamicMetaDefinition;
+		final DslEntity dynamicMetaDefinition;
 		if (isAssociationNN) {
 			dynamicMetaDefinition = associationNNEntity;
 		} else {
@@ -137,8 +137,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 				.addPropertyValue(KspProperty.LABEL_B, association.getRoleLabelB())
 				.addPropertyValue(KspProperty.ROLE_B, XmlUtil.french2Java(association.getRoleLabelB()))
 				//---
-				.addDefinition("dtDefinitionA", getDtDefinitionName(association.getCodeA()))
-				.addDefinition("dtDefinitionB", getDtDefinitionName(association.getCodeB()));
+				.addDefinitionLink("dtDefinitionA", getDtDefinitionName(association.getCodeA()))
+				.addDefinitionLink("dtDefinitionB", getDtDefinitionName(association.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
@@ -191,8 +191,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On raccourci le nom de la clé étrangère.
-		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
-			fkFieldName = fkFieldName.substring(0, 30);
+		if (fkFieldName.length() > MAX_COLUMN_LENGTH) { // 30 est le max de dynamo (et de Oracle)
+			fkFieldName = fkFieldName.substring(0, MAX_COLUMN_LENGTH);
 			while (fkFieldName.endsWith("_")) {
 				fkFieldName = fkFieldName.substring(0, fkFieldName.length() - 1);
 			}

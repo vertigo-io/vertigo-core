@@ -29,35 +29,39 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
-import io.vertigo.dynamo.database.data.Movie;
+import io.vertigo.dynamo.database.data.domain.Movie;
+import io.vertigo.dynamo.database.data.domain.MovieInfo;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  *
  * @author pchretien
  */
-public class DataBaseManagerTest extends AbstractTestCaseJU4 {
+public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String TITLE_MOVIE_1 = "citizen kane";
 	private static final String TITLE_MOVIE_2 = "vertigo";
 	private static final String TITLE_MOVIE_3 = "gone girl";
 	private static final String TITLE_MOVIE_4 = "Jurassic Park";
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
+	private DefinitionSpace definitionSpace;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+		definitionSpace = getApp().getDefinitionSpace();
 	}
 
 	@Override
@@ -65,6 +69,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "shutdown;");
+		definitionSpace = null;
 	}
 
 	@Test
@@ -116,9 +121,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
-	public void testSelectList() throws Exception {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		//On crée les données
+	public void testSelectEntities() throws Exception {
 		createDatas();
 		//----
 		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTC", Domain.class);
@@ -136,6 +139,19 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	@Test
+	public void testSelectSimpleObjects() throws Exception {
+		createDatas();
+		//----
+		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_INFO_DTC", Domain.class);
+		final SqlQueryResult result = executeQuery(domain, "select title from movie");
+
+		Assert.assertEquals(3, result.getSQLRowCount());
+
+		final DtList<MovieInfo> movieInfos = (DtList<MovieInfo>) result.getValue();
+		Assert.assertEquals(3, movieInfos.size());
+	}
+
 	private static void checkTitle(final long id, final String title) {
 		if (id == 1) {
 			Assert.assertEquals(TITLE_MOVIE_1, title);
@@ -148,11 +164,8 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectObject() throws Exception {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		//On crée les données
 		createDatas();
 		//----
 		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
@@ -179,10 +192,9 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectPrimitive() throws Exception {
-		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
+		final Domain domain = new DomainBuilder("DO_INTEGER", DataType.Integer).build();
 		final SqlQueryResult result = executeQuery(domain, "select count(*) from movie");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
@@ -194,7 +206,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_LIB", DataType.String);
+		final Domain domain = new DomainBuilder("DO_LIB", DataType.String).build();
 		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
@@ -203,8 +215,6 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testTwoDataSource() throws Exception {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		//On crée les données dans main
 		createDatas();
 
 		setupSecondary();
@@ -222,7 +232,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 				connection.commit();
 			}
 			//----
-			final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
+			final Domain domain = new DomainBuilder("DO_INTEGER", DataType.Integer).build();
 			final Domain movieDomain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
 
 			final SqlQueryResult result2 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
@@ -240,13 +250,13 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	protected void setupSecondary() throws Exception {
+	private void setupSecondary() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
 	}
 
-	protected void shutdownSecondaryDown() throws Exception {
+	private void shutdownSecondaryDown() throws Exception {
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		execCallableStatement(connection, "shutdown;");
@@ -258,24 +268,24 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_TEST", DataType.DtList);
+		final Domain domain = new DomainBuilder("DO_TEST", DataType.DtList).build();
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
-		final DtList<DtObject> dynMovies = (DtList<DtObject>) result.getValue();
+		final DtList<Entity> dynMovies = (DtList<Entity>) result.getValue();
 		Assert.assertEquals(3, dynMovies.size());
 
-		for (final DtObject dynMovie : dynMovies) {
+		for (final Entity dynMovie : dynMovies) {
 			final long id = (Long) getValue(dynMovie, "ID");
 			final String title = (String) getValue(dynMovie, "TITLE");
 			checkTitle(id, title);
 		}
 	}
 
-	private static Object getValue(final DtObject dto, final String fieldName) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+	private static Object getValue(final Entity entity, final String fieldName) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField dtField = dtDefinition.getField(fieldName);
-		return dtField.getDataAccessor().getValue(dto);
+		return dtField.getDataAccessor().getValue(entity);
 	}
 
 }

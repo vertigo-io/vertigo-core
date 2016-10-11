@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -50,7 +51,6 @@ import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.DateUtil;
 
@@ -81,9 +81,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
-	public FsFullFileStorePlugin(@Named("name") final Option<String> name, @Named("path") final String path,
+	public FsFullFileStorePlugin(@Named("name") final Optional<String> name, @Named("path") final String path,
 			final FileManager fileManager, final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Option<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
@@ -97,7 +97,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		documentRoot = FileUtil.translatePath(path);
 		//-----
 		if (purgeDelayMinutes.isPresent()) {
-			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, PurgeTempFileDaemon.class, 5 * 60, purgeDelayMinutes.get(), documentRoot);
+			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60);
 		}
 	}
 

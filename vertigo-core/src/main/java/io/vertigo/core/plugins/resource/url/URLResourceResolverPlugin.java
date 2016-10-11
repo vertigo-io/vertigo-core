@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 import io.vertigo.core.resource.ResourceResolverPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Résolution des URL par le standard java.net.URL.
@@ -36,14 +36,14 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<URL> resolve(final String resource) {
+	public Optional<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		//-----
 		try {
 			final URL url = new URL(resource);
-			return checkUrlAvailable(url) ? Option.of(url) : Option.<URL> empty();
+			return checkUrlAvailable(url) ? Optional.of(url) : Optional.<URL> empty();
 		} catch (final MalformedURLException e) {
-			return Option.empty();
+			return Optional.empty();
 		}
 	}
 

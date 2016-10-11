@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -163,7 +163,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		final EncodedType encodedType = findEncodedType(result);
 		final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 		if (encodedType.getEncoderType() != EncoderType.JSON) {
-			contentType.append(";").append(encodedType.obtainContentType());
+			contentType.append(';').append(encodedType.obtainContentType());
 		}
 		response.type(contentType.toString());
 		return writeValue(result, response, webServiceDefinition);
@@ -200,7 +200,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 
 	private static boolean hasComplexTypeMeta(final DtList<?> dtList) {
 		for (final String entry : dtList.getMetaDataNames()) {
-			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
+			final Optional<Serializable> value = dtList.getMetaData(entry, Serializable.class);
 			if (value.isPresent()) {
 				final Class<?> metaClass = value.get().getClass();
 				if (!(metaClass.isPrimitive()
@@ -234,10 +234,10 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 				sb.append(sep);
 				final String encodedValue = writeValue(entry.getValue(), response, webServiceDefinition);
-				sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
+				sb.append('\"').append(entry.getKey()).append("\":").append(encodedValue).append("");
 				sep = ", ";
 			}
-			sb.append("}");
+			sb.append('}');
 			return sb.toString();
 		} else if (value instanceof ExtendedObject<?>) {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
@@ -251,7 +251,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		if (list instanceof DtList) {
 			final DtList<?> dtList = (DtList<?>) list;
 			for (final String entry : dtList.getMetaDataNames()) {
-				final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
+				final Optional<Serializable> value = dtList.getMetaData(entry, Serializable.class);
 				if (value.isPresent()) {
 					if (value.get() instanceof String) {
 						response.header(entry, (String) value.get()); //TODO escape somethings ?
@@ -266,7 +266,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	private static Map<String, Serializable> getListMetas(final DtList<?> dtList) {
 		final Map<String, Serializable> metaDatas = new HashMap<>();
 		for (final String entry : dtList.getMetaDataNames()) {
-			final Option<Serializable> value = dtList.getMetaData(entry, Serializable.class);
+			final Optional<Serializable> value = dtList.getMetaData(entry, Serializable.class);
 			if (value.isPresent()) {
 				metaDatas.put(entry, value.get());
 			}

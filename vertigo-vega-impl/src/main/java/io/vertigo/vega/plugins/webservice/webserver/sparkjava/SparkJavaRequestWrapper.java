@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -157,7 +158,7 @@ final class SparkJavaRequestWrapper extends Request {
 	private String getContentCharset() {
 		final Matcher m = CHARSET_PATTERN.matcher(contentType());
 		if (m.find()) {
-			return m.group(1).trim().toUpperCase();
+			return m.group(1).trim().toUpperCase(Locale.ENGLISH);
 		}
 		return defaultContentCharset;
 	}

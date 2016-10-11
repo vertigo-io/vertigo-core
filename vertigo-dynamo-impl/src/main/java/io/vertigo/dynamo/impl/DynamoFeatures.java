@@ -39,7 +39,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 
 /**
  * Defines dynamo features.
- * 
+ *
  * @author pchretien
  */
 public final class DynamoFeatures extends Features {
@@ -60,6 +60,7 @@ public final class DynamoFeatures extends Features {
 				.addComponent(TaskManager.class, TaskManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
+
 	}
 
 	public DynamoFeatures withStore() {

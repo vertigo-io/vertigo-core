@@ -53,9 +53,8 @@
 
 	<module name="myApp" api="false">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/searchIndex.kpr" />			
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
 		</definitions>
 		<component class="io.vertigo.dynamo.search.withstore.CarSearchLoader"/>
 	</module>

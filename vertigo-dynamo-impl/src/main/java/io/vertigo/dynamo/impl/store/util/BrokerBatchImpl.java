@@ -52,7 +52,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -64,11 +64,11 @@ import io.vertigo.lang.Assertion;
 /**
  * Implémentation du broker fonctionnant par lot.
  *
- * @param <D> Type d'objet métier.
+ * @param <E> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  * @author jmforhan
  */
-final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> {
+final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -90,11 +90,11 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> getList(final DtDefinition dtDefinition, final Collection<P> idList) {
+	public DtList<E> getList(final DtDefinition dtDefinition, final Collection<P> idList) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(idList);
 		//-----
-		final DtList<D> dtc = new DtList<>(dtDefinition);
+		final DtList<E> dtc = new DtList<>(dtDefinition);
 		// On regarde s'il y a quelquechose à faire
 		if (idList.isEmpty()) {
 			// Rien à faire
@@ -104,17 +104,17 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 		final DtField idField = dtDefinition.getIdField().get();
 		for (final P id : idList) {
 			Assertion.checkNotNull(id);
-			final D dto = (D) DtObjectUtil.createDtObject(dtDefinition);
-			idField.getDataAccessor().setValue(dto, id);
-			dtc.add(dto);
+			final E entity = (E) DtObjectUtil.createDtObject(dtDefinition);
+			idField.getDataAccessor().setValue(entity, id);
+			dtc.add(entity);
 		}
 		return getList(dtDefinition, idField.getName(), dtc);
 	}
 
-	private DtList<D> getList(final DtDefinition dtDefinition, final String fieldName, final DtList<D> dtc) {
+	private DtList<E> getList(final DtDefinition dtDefinition, final String fieldName, final DtList<E> dtc) {
 		// On splitte la collection par paquet
-		final Set<DtList<D>> set = new HashSet<>();
-		DtList<D> tmp = null;
+		final Set<DtList<E>> set = new HashSet<>();
+		DtList<E> tmp = null;
 		for (int i = 0; i < dtc.size(); i++) {
 			if (i % GET_LIST_PAQUET_SIZE == 0) {
 				tmp = new DtList<>(dtc.getDefinition());
@@ -155,13 +155,13 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 				.build();
 
 		// On exécute par paquet
-		final DtList<D> ret = new DtList<>(dtDefinition);
-		for (final DtList<D> paq : set) {
+		final DtList<E> ret = new DtList<>(dtDefinition);
+		for (final DtList<E> paq : set) {
 			/* Création de la tache. */
 			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
 					.addValue(inDtcName, paq);
 			// Exécution de la tache
-			final DtList<D> result = taskManager
+			final DtList<E> result = taskManager
 					.execute(taskBuilder.build())
 					.getResult();
 			ret.addAll(result);
@@ -171,26 +171,26 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<P, D> getMap(final DtDefinition dtDefinition, final Collection<P> idList) {
+	public Map<P, E> getMap(final DtDefinition dtDefinition, final Collection<P> idList) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(idList);
 		//-----
 		final DtField idField = dtDefinition.getIdField().get();
-		final Map<P, D> map = new HashMap<>();
-		for (final D dto : getList(dtDefinition, idList)) {
-			map.put((P) idField.getDataAccessor().getValue(dto), dto);
+		final Map<P, E> map = new HashMap<>();
+		for (final E entity : getList(dtDefinition, idList)) {
+			map.put((P) idField.getDataAccessor().getValue(entity), entity);
 		}
 		return map;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> DtList<D> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
+	public <O> DtList<E> getListByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(fieldName);
 		//-----
 		Assertion.checkNotNull(value);
-		final DtList<D> dtc = new DtList<>(dtDefinition);
+		final DtList<E> dtc = new DtList<>(dtDefinition);
 		// On regarde s'il y a quelquechose à faire
 		if (value.isEmpty()) {
 			// Rien à faire
@@ -200,28 +200,28 @@ final class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P> 
 		final DtField field = dtDefinition.getField(fieldName);
 		for (final O sel : value) {
 			Assertion.checkNotNull(sel);
-			final D dto = (D) DtObjectUtil.createDtObject(dtDefinition);
-			field.getDataAccessor().setValue(dto, sel);
-			dtc.add(dto);
+			final E entity = (E) DtObjectUtil.createDtObject(dtDefinition);
+			field.getDataAccessor().setValue(entity, sel);
+			dtc.add(entity);
 		}
 		return getList(dtDefinition, field.getName(), dtc);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> Map<O, DtList<D>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
+	public <O> Map<O, DtList<E>> getMapByField(final DtDefinition dtDefinition, final String fieldName, final Collection<O> value) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(fieldName);
 		//-----
 		final DtField field = dtDefinition.getField(fieldName);
-		final Map<O, DtList<D>> map = new HashMap<>();
-		for (final D dto : getListByField(dtDefinition, fieldName, value)) {
-			final O key = (O) field.getDataAccessor().getValue(dto);
+		final Map<O, DtList<E>> map = new HashMap<>();
+		for (final E entity : getListByField(dtDefinition, fieldName, value)) {
+			final O key = (O) field.getDataAccessor().getValue(entity);
 			if (!map.containsKey(key)) {
-				final DtList<D> dtc = new DtList<>(dtDefinition);
+				final DtList<E> dtc = new DtList<>(dtDefinition);
 				map.put(key, dtc);
 			}
-			map.get(key).add(dto);
+			map.get(key).add(entity);
 		}
 		return map;
 	}

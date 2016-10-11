@@ -25,7 +25,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.dynamo.transaction.VTransactionSynchronization;
+import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
@@ -34,7 +34,7 @@ import io.vertigo.lang.VSystemException;
  *
  * @author skerdudou
  */
-final class FileActionDelete implements VTransactionSynchronization {
+final class FileActionDelete implements VTransactionAfterCompletionFunction {
 	private static final Logger LOG = Logger.getLogger(FileActionDelete.class.getName());
 
 	private final File file;

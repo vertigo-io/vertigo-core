@@ -22,7 +22,7 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.StoreEvent;
@@ -31,7 +31,6 @@ import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionSynchronization;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -70,67 +69,54 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D readForUpdate(final URI<D> uri) {
+	public <E extends Entity> E readForUpdate(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final D value = getPhysicalStore(dtDefinition).<D> readForUpdate(dtDefinition, uri);
+		final E value = getPhysicalStore(dtDefinition).<E> readForUpdate(dtDefinition, uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.Update, uri);
 		return value;
 	}
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
-		transactionManager.getCurrentTransaction().addAfterCompletion(new VTransactionSynchronization() {
-			@Override
-			public void afterCompletion(final boolean txCommitted) {
-				if (txCommitted) {//send event only is tx successful
-					eventBusManager.post(new StoreEvent(evenType, uri));
-				}
-			}
-		});
+		transactionManager.getCurrentTransaction().addAfterCompletion(
+				(final boolean txCommitted) -> {
+					if (txCommitted) {//send event only is tx successful
+						eventBusManager.post(new StoreEvent(evenType, uri));
+					}
+				});
 	}
 
 	//--- Transactionnal Event
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtObject dto) {
-		Assertion.checkNotNull(dto);
+	public void create(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtObject dto) {
-		Assertion.checkNotNull(dto);
+	public void update(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(dto)));
+		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtObject dto) {
-		Assertion.checkNotNull(dto);
-		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
-		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(dto)));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI<? extends Entity> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -141,21 +127,21 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D read(final URI<D> uri) {
+	public <E extends Entity> E read(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = cacheDataStore.<D> load(uri);
+		final E entity = cacheDataStore.<E> load(uri);
 		//-----
-		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
-		return dto;
+		Assertion.checkNotNull(entity, "L''objet {0} n''a pas été trouvé", uri);
+		return entity;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtListURI uri) {
+	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<D> dtc = cacheDataStore.loadList(uri);
+		final DtList<E> dtc = cacheDataStore.loadList(uri);
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

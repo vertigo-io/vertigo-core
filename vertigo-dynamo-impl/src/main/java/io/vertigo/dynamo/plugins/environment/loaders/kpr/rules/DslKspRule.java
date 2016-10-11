@@ -22,15 +22,15 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegChoice;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRule.Dummy;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -44,7 +44,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DslKspRule extends AbstractRule<Void, List<?>> {
+public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 	private final DynamicDefinitionRepository dynamicModelrepository;
 
 	/**
@@ -52,53 +52,51 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 	 * @param dynamicModelrepository Grammaire
 	 */
 	public DslKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
-		super();
-		Assertion.checkNotNull(dynamicModelrepository);
-		//-----
+		super(createMainRule(dynamicModelrepository.getGrammar()), "Ksp");
 		this.dynamicModelrepository = dynamicModelrepository;
-
 	}
 
-	@Override
-	protected Rule<List<?>> createMainRule() {
-		final Rule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
-		final Rule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
-		final Rule<Choice> firstOfRule = new FirstOfRule(//"definition or template")
+	private static PegRule<List<Object>> createMainRule(final DslGrammar grammar) {
+		Assertion.checkNotNull(grammar);
+		//-----
+		final PegRule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", grammar);
+		final PegRule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", grammar);
+		final PegRule<PegChoice> declarationChoiceRule = PegRules.choice(//"definition or template")
 				definitionRule, //0
 				templateRule //1
 		);
-		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
-		return new SequenceRule(
+		final PegRule<List<PegChoice>> declarationChoicesRule = PegRules.zeroOrMore(declarationChoiceRule, true);
+		return PegRules.sequence(
 				SPACES,
-				new DslPackageRule(),//1
+				new DslPackageDeclarationRule(), //1
 				SPACES,
-				manyRule); //3
+				declarationChoicesRule); //3
 	}
 
 	@Override
-	protected Void handle(final List<?> parsing) {
+	protected Dummy handle(final List<Object> parsing) {
 		final String packageName = (String) parsing.get(1);
-		final List<Choice> tuples = (List<Choice>) parsing.get(3);
+		final List<PegChoice> declarationChoices = (List<PegChoice>) parsing.get(3);
 
-		for (final Choice item : tuples) {
+		for (final PegChoice declarationChoice : declarationChoices) {
 			//Tant qu'il y a du texte, il doit correspondre
 			// - à des définitions qui appartiennent toutes au même package.
 			// - à des gestion de droits.
-			switch (item.getValue()) {
+			switch (declarationChoice.getChoiceIndex()) {
 				case 0:
 					//On positionne le Package
-					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) item.getResult();
+					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) declarationChoice.getValue();
 					dynamicDefinition.withPackageName(packageName);
-					handleDefinitionRule((DynamicDefinition) item.getResult());
+					handleDefinitionRule((DynamicDefinition) declarationChoice.getValue());
 					break;
 				case 1:
-					handleTemplateRule((DynamicDefinition) item.getResult());
+					handleTemplateRule((DynamicDefinition) declarationChoice.getValue());
 					break;
 				default:
-					throw new IllegalArgumentException("case " + item.getValue() + " not implemented");
+					throw new IllegalArgumentException("case " + declarationChoice.getChoiceIndex() + " not implemented");
 			}
 		}
-		return null;
+		return Dummy.INSTANCE;
 	}
 
 	private void handleTemplateRule(final DynamicDefinition dynamicDefinition) {

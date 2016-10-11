@@ -18,12 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.transport;
 
+import java.net.InetSocketAddress;
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
@@ -31,7 +33,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP. Utilisation du client Transport simple, sans
@@ -65,7 +66,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	@Inject
 	public ESTransportSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("envIndex") final String envIndex,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
-			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager,
+			@Named("config.file") final Optional<String> configFile, @Named("node.name") final Optional<String> nodeName, final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
@@ -84,13 +85,13 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	/** {@inheritDoc} */
 	@Override
 	protected Client createClient() {
-		client = new TransportClient(buildNodeSettings());
+		client = TransportClient.builder().settings(buildNodeSettings()).build();
 		for (final String serverName : serversNames) {
 			final String[] serverNameSplit = serverName.split(":");
 			Assertion.checkArgument(serverNameSplit.length == 2,
 					"La déclaration du serveur doit être au format host:port ({0}", serverName);
 			final int port = Integer.parseInt(serverNameSplit[1]);
-			client.addTransportAddress(new InetSocketTransportAddress(serverNameSplit[0], port));
+			client.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(serverNameSplit[0], port)));
 		}
 		return client;
 	}
@@ -103,7 +104,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return ImmutableSettings.settingsBuilder().put("node.name", nodeName)
+		return Settings.settingsBuilder().put("node.name", nodeName)
 				// .put("node.data", false)
 				// .put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")

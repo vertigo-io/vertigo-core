@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 
@@ -41,13 +41,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final DtObject dto) {
+	public void create(final DtDefinition dtDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtDefinition dtDefinition, final DtObject dto) {
+	public void update(final DtDefinition dtDefinition, final Entity entity) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -59,19 +59,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
-		throw new UnsupportedOperationException();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <D extends DtObject> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
 }

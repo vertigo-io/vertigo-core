@@ -24,6 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
@@ -68,23 +69,23 @@ public final class CacheData {
 	 * Récupération d'un objet potentiellement mis en cache
 	 * @param uri URI du DTO
 	 * @return null ou DTO
-	 * @param <D> Dt type
+	 * @param <E> the type of entity
 	 */
-	<D extends DtObject> D getDtObject(final URI<D> uri) {
+	<E extends Entity> E getDtObject(final URI<E> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
-		return (D) cacheManager.get(getContext(dtDefinition), uri);
+		return (E) cacheManager.get(getContext(dtDefinition), uri);
 	}
 
 	/**
 	 * Mise à jour du cache pour un type d'objet.
-	 * @param dto DTO
+	 * @param entity entity
 	 */
-	void putDtObject(final DtObject dto) {
-		Assertion.checkNotNull(dto);
+	void putDtObject(final Entity entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final String context = getContext(DtObjectUtil.findDtDefinition(dto));
+		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
-		cacheManager.put(context, createURI(dto), dto);
+		cacheManager.put(context, entity.getURI(), entity);
 	}
 
 	/**
@@ -103,23 +104,17 @@ public final class CacheData {
 	 * Mise à jour du cache pour un type d'objet.
 	 * @param dtc DTC
 	 */
-	void putDtList(final DtList<?> dtc) {
+	void putDtList(final DtList<? extends Entity> dtc) {
 		Assertion.checkNotNull(dtc);
 		//-----
 		final String context = getContext(dtc.getDefinition());
 
 		//1.On met à jour les objets
-		for (final DtObject dto : dtc) {
-			cacheManager.put(context, createURI(dto), dto);
+		for (final Entity entity : dtc) {
+			cacheManager.put(context, entity.getURI(), entity);
 		}
 		//2.Puis on met à jour la liste racine : pour que la liste ne soit pas evincée par les objets
 		cacheManager.put(context, dtc.getURI(), dtc);
-	}
-
-	private static <D extends DtObject> URI<D> createURI(final D dto) {
-		Assertion.checkNotNull(dto);
-		//-----
-		return new URI<>(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
 	/**

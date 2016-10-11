@@ -23,8 +23,8 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.commons.peg.PegResult;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionEntryRule;
 
@@ -32,85 +32,78 @@ public final class DslDefinitionEntryRuleTest {
 	private static final DslDefinitionEntryRule MAIN = new DslDefinitionEntryRule(Arrays.asList(new String[] { "myFirstProperty", "myLastProperty" }));
 
 	@Test
-	public void test0() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
+	public void test0() throws PegNoMatchFoundException {
 		final String text = "myFirstProperty : [BLEU ], non reconnu";
-		final int end = parser.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = parser.get();
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
-		Assert.assertEquals(text.length() - " non reconnu".length(), end);
+		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
 	}
 
 	@Test
-	public void test1() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
+	public void test1() throws PegNoMatchFoundException {
 		final String text = "myFirstProperty : [BLEU, VerT, ROUGE, T_REX ], non reconnu";
-		final int end = parser.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = parser.get();
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(4, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
-		Assert.assertEquals(text.length() - " non reconnu".length(), end);
+		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
 
 	}
 
 	@Test
-	public void test2() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
+	public void test2() throws PegNoMatchFoundException {
 		final String text = "myLastProperty : [ ],";
-		final int end = parser.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = parser.get();
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
+
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(0, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertEquals(text.length(), end);
+		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
-	public void test3() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
+	public void test3() throws PegNoMatchFoundException {
 		final String text = "myFirstProperty    :    [BLEU,VerT,    ROUGE    ]";
-		final int end = parser.parse(text, 0);
-		final DslDefinitionEntry xDefinitionEntry = parser.get();
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(3, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
-		Assert.assertEquals(text.length(), end);
+		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
-	public void test4() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
+	public void test4() throws PegNoMatchFoundException {
 		final String text = "myFirstProperty : BLEU,";
-		final int end = parser.parse("myFirstProperty : BLEU,", 0);
-		final DslDefinitionEntry xDefinitionEntry = parser.get();
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
+		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
 		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
-		Assert.assertEquals(text.length(), end);
+		Assert.assertEquals(text.length(), cursor.getIndex());
 	}
 
-	@Test(expected = NotFoundException.class)
-	public void testFail1() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
-		final String text = "myLastProperty : [BLEU;"; //on ne ferme pas l'accolade
-		/*final int end =*/parser.parse(text, 0);
-		Assert.fail();
+	@Test(expected = PegNoMatchFoundException.class)
+	public void testFail1() throws PegNoMatchFoundException {
+		final String text = "myLastProperty : [BLEU;";
+		//on ne ferme pas l'accolade
+		final PegResult<DslDefinitionEntry> cursor = MAIN
+				.parse(text, 0);
 	}
 
-	@Test(expected = NotFoundException.class)
-	public void testFail2() throws NotFoundException {
-		final Parser<DslDefinitionEntry> parser = MAIN.createParser();
-		//---
-		final String text = "myUnknownProperty : BLEU"; //on positionne un nom erroné de propriété
-		/*final int end =*/parser.parse(text, 0);
-		Assert.fail();
+	@Test(expected = PegNoMatchFoundException.class)
+	public void testFail2() throws PegNoMatchFoundException {
+		final String text = "myUnknownProperty : BLEU";
+		//on positionne un nom erroné de propriété
+		MAIN.parse(text, 0);
 	}
 }

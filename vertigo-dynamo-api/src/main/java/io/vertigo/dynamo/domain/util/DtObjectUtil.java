@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.util;
 
+import java.util.stream.Collectors;
+
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -30,6 +32,8 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -63,28 +67,32 @@ public final class DtObjectUtil {
 		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
 	}
 
-	/**
-	 * Returns the 'id' of a 'DtObject'.
-	 * @return the id of the specified 'DtObject'
-	 */
-	public static Object getId(final DtObject dto) {
-		Assertion.checkNotNull(dto);
-		//-----
-		final DtDefinition dtDefinition = findDtDefinition(dto);
-		final DtField idField = dtDefinition.getIdField().get();
-		return idField.getDataAccessor().getValue(dto);
+	public static Entity createEntity(final DtDefinition dtDefinition) {
+		return Entity.class.cast(createDtObject(dtDefinition));
 	}
 
 	/**
-	 * Récupération d'une URI de DTO.
-	 * On récupère l'URI d'un DTO à partir de sa classe et sa clée.
-	 * @param dtObjectClass Class du DTO
+	 * Returns the 'id' of a 'DtObject'.
+	 * @param entity the entity
+	 * @return the id of the specified 'DtObject'
+	 */
+	public static Object getId(final Entity entity) {
+		Assertion.checkNotNull(entity);
+		//-----
+		final DtDefinition dtDefinition = findDtDefinition(entity);
+		final DtField idField = dtDefinition.getIdField().get();
+		return idField.getDataAccessor().getValue(entity);
+	}
+
+	/**
+	 * Creates the uri of the entity
+	 * @param entityClass the class of the entity
 	 * @param uriValue key value
-	 * @param <D> DtObject type
+	 * @param <E> the type of entity
 	 * @return URI du DTO
 	 */
-	public static <D extends DtObject> URI<D> createURI(final Class<D> dtObjectClass, final Object uriValue) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
+	public static <E extends Entity> URI<E> createURI(final Class<E> entityClass, final Object uriValue) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		return new URI<>(dtDefinition, uriValue);
 	}
 
@@ -97,14 +105,14 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <D extends DtObject> URI<D> createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
+	public static <E extends Entity> URI<E> createURI(final Entity entity, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
@@ -115,7 +123,7 @@ public final class DtObjectUtil {
 		final DtField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
-		final Object id = fkField.getDataAccessor().getValue(dto);
+		final Object id = fkField.getDataAccessor().getValue(entity);
 		if (id == null) {
 			return null;
 		}
@@ -124,46 +132,61 @@ public final class DtObjectUtil {
 
 	/**
 	 * Récupération d'une URI de Collection à partir d'un dto
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
-		return new DtListURIForSimpleAssociation(associationDefinition, createURI(dto), roleName);
+		return new DtListURIForSimpleAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
 	 * Récupération d'une URI de Collection à partir d'un dto
-	 * @param dto DtObject
+	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
-		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
-		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
+		return new DtListURIForNNAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
 	 * Creates an URI from an existing object.
-	 * @param dto Object
+	 * @param entity Object
 	 * @return this object URI
 	 */
-	public static <D extends DtObject> URI<D> createURI(final D dto) {
-		Assertion.checkNotNull(dto);
+	public static <E extends Entity> URI<E> createURI(final E entity) {
+		Assertion.checkNotNull(entity);
 		//-----
-		final DtDefinition dtDefinition = findDtDefinition(dto);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
+		final DtDefinition dtDefinition = findDtDefinition(entity);
+		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
+	}
+
+	/**
+	 * Creates an URI of entity from an existing fragment.
+	 * @param fragment fragment
+	 * @return related entity URI
+	 */
+	public static <E extends Entity, F extends Fragment<E>> URI<E> createEntityURI(final F fragment) {
+		Assertion.checkNotNull(fragment);
+		//-----
+		final DtDefinition dtDefinition = findDtDefinition(fragment);
+		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
+		final DtField idField = entityDtDefinition.getIdField().get();
+		final Object idValue = idField.getDataAccessor().getValue(fragment);
+		return new URI<>(entityDtDefinition, idValue);
 	}
 
 	/**
@@ -174,20 +197,11 @@ public final class DtObjectUtil {
 	public static String toString(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		final StringBuilder stringBuilder = new StringBuilder()
-				.append(findDtDefinition(dto).getName())
-				.append('(');
-		boolean first = true;
-		for (final DtField dtField : findDtDefinition(dto).getFields()) {
-			if (!first) {
-				stringBuilder.append(", ");
-			}
-			stringBuilder.append(dtField.getName()).append('=');
-			stringBuilder.append(dtField.getDataAccessor().getValue(dto));
-			first = false;
-		}
-		stringBuilder.append(')');
-		return stringBuilder.toString();
+		return findDtDefinition(dto).getFields()
+				.stream()
+				.filter(dtField -> dtField.getType() != DtField.FieldType.COMPUTED)
+				.map(dtField -> (dtField.getName() + '=' + dtField.getDataAccessor().getValue(dto)))
+				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
 	}
 
 	/**

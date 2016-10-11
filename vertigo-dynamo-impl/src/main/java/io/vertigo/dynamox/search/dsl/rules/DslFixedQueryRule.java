@@ -20,9 +20,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.parser.AbstractRule;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.peg.AbstractRule;
+import io.vertigo.commons.peg.PegRule;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
 
 /**
@@ -30,24 +30,21 @@ import io.vertigo.dynamox.search.dsl.model.DslFixedQuery;
  * (fixedQuery)
  * @author npiedeloup
  */
-final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<?>> {
-	/** {@inheritDoc} */
-	@Override
-	public String getExpression() {
-		return "fixedQuery";
+final class DslFixedQueryRule extends AbstractRule<DslFixedQuery, List<Object>> {
+
+	DslFixedQueryRule() {
+		super(createMainRule(), "fixedQuery");
+	}
+
+	private static PegRule<List<Object>> createMainRule() {
+		return PegRules.sequence(
+				DslSyntaxRules.SPACES, //0
+				DslSyntaxRules.FIXED_WORD); //1
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(
-				DslSyntaxRules.SPACES,//0
-				DslSyntaxRules.FIXED_WORD);//1
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected DslFixedQuery handle(final List<?> parsing) {
+	protected DslFixedQuery handle(final List<Object> parsing) {
 		final String preSpaces = (String) parsing.get(0);
 		final String fixedQuery = (String) parsing.get(1);
 		return new DslFixedQuery(DslUtil.concat(preSpaces, fixedQuery));

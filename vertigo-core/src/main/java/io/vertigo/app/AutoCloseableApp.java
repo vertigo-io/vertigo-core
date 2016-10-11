@@ -63,7 +63,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final ComponentSpace componentSpace;
 
 	//à remplacer par event ??
-	private final List<AppListener> appListeners = new ArrayList<>();
+	private final List<Runnable> postStartFunctions = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -98,6 +98,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
 			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
+				Logo.printCredits(System.out);
 				appConfig.print(System.out);
 			}
 			//-----4. post-Initialize all components
@@ -115,16 +116,16 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public void registerAppListener(final AppListener appListener) {
+	public void registerPostStartFunction(final Runnable postStartFunction) {
 		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
-		Assertion.checkNotNull(appListener);
+		Assertion.checkNotNull(postStartFunction);
 		//-----
-		appListeners.add(appListener);
+		postStartFunctions.add(postStartFunction);
 	}
 
 	private void appPostStart() {
-		for (final AppListener appListener : appListeners) {
-			appListener.onPostStart();
+		for (final Runnable postStartFunction : postStartFunctions) {
+			postStartFunction.run();
 		}
 	}
 
@@ -180,7 +181,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
-			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()), "The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
+			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
+					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
 			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
 			componentInitializer.init();
 		}

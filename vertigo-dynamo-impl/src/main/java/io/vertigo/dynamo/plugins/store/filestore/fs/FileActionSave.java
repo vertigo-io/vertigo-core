@@ -29,7 +29,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.transaction.VTransactionSynchronization;
+import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -39,7 +39,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author skerdudou
  */
-final class FileActionSave implements VTransactionSynchronization {
+final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private static final String EXT_NEW = "toSave";
 	private static final char EXT_SEPARATOR = '.';
 	private static final Logger LOG = Logger.getLogger(FileActionSave.class.getName());
@@ -114,7 +114,9 @@ final class FileActionSave implements VTransactionSynchronization {
 	private void doRollback() {
 		// on ne fait pas de ménage si on a eu une erreur
 		if (txNewFile.exists()) {
-			txNewFile.delete();
+			if (!txNewFile.delete()) {
+				LOG.error("Can't rollback and delete file : " + txNewFile.getAbsolutePath());
+			}
 		}
 	}
 }

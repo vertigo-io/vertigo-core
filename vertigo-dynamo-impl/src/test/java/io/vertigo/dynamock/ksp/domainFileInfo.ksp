@@ -1,9 +1,0 @@
-package io.vertigo.dynamock.domain.fileinfo
-
-create FileInfo FI_FILE_INFO_STD {
-	storeName : "main"
-}
-
-create FileInfo FI_FILE_INFO_TEMP {
-	storeName : "temp"
-}

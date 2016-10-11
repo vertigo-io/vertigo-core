@@ -46,9 +46,9 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 public interface App {
 
 	/**
-	 * @param appListener Listener of AppLifeCycle
+	 * @param postStartFunction Runnable function post start
 	 */
-	void registerAppListener(final AppListener appListener);
+	void registerPostStartFunction(final Runnable postStartFunction);
 
 	/**
 	 * @return Start Date in milliseconds
@@ -71,4 +71,5 @@ public interface App {
 	 * @return the componentSpace
 	 */
 	ComponentSpace getComponentSpace();
+
 }

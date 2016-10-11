@@ -50,11 +50,9 @@ public final class ClassPathWebServiceLoaderPlugin implements LoaderPlugin {
 	public void load(final String classPathPrefix, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(classPathPrefix);
 		//-----
-		final Iterable<Class<? extends WebServices>> classes = getWebServicesClasses(classPathPrefix);
 		//--Enregistrement des fichiers java annotés
-		for (final Class<? extends WebServices> webServicesClass : classes) {
-			scanWebServices(webServicesClass);
-		}
+		getWebServicesClasses(classPathPrefix)
+				.forEach(webServicesClass -> scanWebServices(webServicesClass));
 	}
 
 	/**

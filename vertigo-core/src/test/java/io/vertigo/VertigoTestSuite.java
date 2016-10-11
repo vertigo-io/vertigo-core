@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
+import io.vertigo.core.component.aop.Aspect2Test;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
@@ -35,10 +36,10 @@ import io.vertigo.core.param.xml.XmlParamManagerTest;
 import io.vertigo.core.resource.ResourceManagerTest;
 import io.vertigo.core.spaces.component.ComponentSpace2Test;
 import io.vertigo.core.spaces.component.ComponentSpace3Test;
+import io.vertigo.core.spaces.component.ComponentSpace4Test;
 import io.vertigo.core.spaces.component.ComponentSpaceTest;
 import io.vertigo.core.spaces.definition.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
-import io.vertigo.lang.OptionTest;
 import io.vertigo.lang.TuplesTest;
 import io.vertigo.util.BeanUtilTest;
 import io.vertigo.util.ClassUtilTest;
@@ -59,15 +60,16 @@ import io.vertigo.util.StringUtilTest;
 		ComponentSpaceTest.class,
 		ComponentSpace2Test.class,
 		ComponentSpace3Test.class,
+		ComponentSpace4Test.class,
 		InjectorTest.class,
 		ReactorTest.class,
 		//Boot
 		AppConfigTest.class,
 		AppConfig2Test.class,
 		AspectTest.class,
+		Aspect2Test.class,
 		//Lang
 		AssertionTest.class,
-		OptionTest.class,
 		TuplesTest.class,
 		//Util
 		BeanUtilTest.class,

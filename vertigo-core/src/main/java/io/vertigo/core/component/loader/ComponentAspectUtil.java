@@ -20,14 +20,15 @@ package io.vertigo.core.component.loader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectAnnotation;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -51,55 +52,51 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static Map<Method, List<Aspect>> createJoinPoints(final ComponentConfig componentConfig, final Collection<Aspect> aspects) {
-		Assertion.checkNotNull(componentConfig);
+	static Map<Method, List<Aspect>> createJoinPoints(final Class<?> implClass, final Collection<Aspect> aspects) {
+		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(aspects);
 		//-----
-		final Map<Method, List<Aspect>> joinPoints = new HashMap<>();
-		for (final Aspect aspect : aspects) {
+		//1 - Annotated class
+		final List<Aspect> classBasedInterceptors = Stream.of(implClass.getAnnotations())
+				//we consider class based annotations  : AspectAnnotation
+				.filter(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))
+				//for all this kind of AspectAnnotation we search THE corresponding aspect
+				.map(annotation -> findAspect(annotation, aspects))
+				.collect(Collectors.toList());
 
-			// On récupère ttes les méthodes matchant pour l'aspect concerné
-			// puis on crée la liste des intercepteurs
-			for (final Method method : getMatchingMethods(aspect, componentConfig.getImplClass())) {
-				List<Aspect> interceptors = joinPoints.get(method);
-				if (interceptors == null) {
-					interceptors = new ArrayList<>();
-					joinPoints.put(method, interceptors);
-				}
-				interceptors.add(aspect);
+		//2 - Annotated methods
+		final Map<Method, List<Aspect>> joinPoints = new HashMap<>();
+		for (final Method method : implClass.getMethods()) {
+			final List<Aspect> methodBasedInterceptors = Stream.of(method.getAnnotations())
+					//we consider all methods annotated with AspectAnnotation
+					.filter(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))
+					//for all this kind of AspectAnnotation we search THE corresponding aspect
+					.map(annotation -> findAspect(annotation, aspects))
+					.collect(Collectors.toList());
+
+			if (!classBasedInterceptors.isEmpty()
+					&& !Object.class.equals(method.getDeclaringClass())) {
+				//we add all class based interceptors on "no-object" methods
+				methodBasedInterceptors.addAll(classBasedInterceptors);
+			}
+			if (!methodBasedInterceptors.isEmpty()) {
+				//there is at least on aspect on this method
+				joinPoints.put(method, methodBasedInterceptors);
 			}
 		}
 		return joinPoints;
+
 	}
 
-	/*
-	 * We are looking all tagged methods to be intercepted.
-	 * AspectConfig defines strategy to find these methods in a class.
-	 */
-	private static Collection<Method> getMatchingMethods(final Aspect aspect, final Class<?> implClass) {
-		final Class<?> annotationType = aspect.getAnnotationType();
-		final Collection<Method> methods = new ArrayList<>();
-		// aspect au niveau classe
-		for (final Annotation annotation : implClass.getAnnotations()) {
-			if (annotation.annotationType().equals(annotationType)) {
-				for (final Method method : implClass.getMethods()) {
-					// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
-					if (!Object.class.equals(method.getDeclaringClass())) {
-						//On ne veut pas des méthodes de Object
-						methods.add(method);
-					}
-				}
-			}
-		}
+	private static Aspect findAspect(final Annotation annotation, final Collection<Aspect> aspects) {
+		Assertion.checkNotNull(annotation);
+		// --
+		return aspects
+				.stream()
+				.filter(aspect -> annotation.annotationType().equals(aspect.getAnnotationType()))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("An aspect may be missing : Unresolved methods join points on aspect : " + annotation));
 
-		// aspect au niveau méthode
-		for (final Method method : implClass.getMethods()) {
-			for (final Annotation annotation : method.getAnnotations()) {
-				if (annotation.annotationType().equals(annotationType)) {
-					methods.add(method);
-				}
-			}
-		}
-		return methods;
 	}
+
 }

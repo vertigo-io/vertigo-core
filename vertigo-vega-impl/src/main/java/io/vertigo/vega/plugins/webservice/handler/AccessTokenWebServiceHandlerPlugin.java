@@ -19,12 +19,12 @@
 package io.vertigo.vega.plugins.webservice.handler;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -70,7 +70,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
-			final Option<Serializable> tokenData = tokenManager.get(accessTokenKey);
+			final Optional<Serializable> tokenData = tokenManager.get(accessTokenKey);
 			if (!tokenData.isPresent()) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}

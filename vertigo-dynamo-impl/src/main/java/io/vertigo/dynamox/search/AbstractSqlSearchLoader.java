@@ -40,6 +40,9 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamo.transaction.Transactional;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
@@ -56,48 +59,58 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructor.
 	 * @param taskManager Task manager
 	 */
 	@Inject
-	public AbstractSqlSearchLoader(final TaskManager taskManager) {
+	public AbstractSqlSearchLoader(final TaskManager taskManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(transactionManager);
 		// -----
 		this.taskManager = taskManager;
+		this.transactionManager = transactionManager;
+	}
+
+	protected final VTransactionManager getTransactionManager() {
+		return transactionManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
+	@Transactional
 	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
-		final DtField idField = dtDefinition.getIdField().get();
-		final String idFieldName = idField.getName();
-		final String request = getNextIdsSqlQuery(tableName, idFieldName);
+		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final String tableName = getTableName(dtDefinition);
+			final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
+			final DtField idField = dtDefinition.getIdField().get();
+			final String idFieldName = idField.getName();
+			final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(dtDefinition.getDataSpace())
-				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getDomain(), true)
-				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
-				.build();
+			final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+					.withEngine(TaskEngineSelect.class)
+					.withDataSpace(dtDefinition.getDataSpace())
+					.withRequest(request)
+					.addInAttribute(idFieldName, idField.getDomain(), true)
+					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
+					.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
-				.addValue(idFieldName, lastId)
-				.build();
+			final Task task = new TaskBuilder(taskDefinition)
+					.addValue(idFieldName, lastId)
+					.build();
 
-		final DtList<S> resultDtc = taskManager
-				.execute(task)
-				.getResult();
+			final DtList<S> resultDtc = taskManager
+					.execute(task)
+					.getResult();
 
-		final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
-		for (final S dto : resultDtc) {
-			uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+			final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
+			for (final S dto : resultDtc) {
+				uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+			}
+			return uris;
 		}
-		return uris;
 	}
 
 	/**
@@ -110,11 +123,15 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		final StringBuilder request = new StringBuilder()
 				.append(" select " + pkFieldName + " from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
+				.append(" where ")
+				.append(pkFieldName)
+				.append(" > #")
+				.append(pkFieldName)
+				.append('#');
 		final String sqlQueryFilter = getSqlQueryFilter();
 		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
-			request.append("and (").append(sqlQueryFilter).append(")");
+			request.append("and (").append(sqlQueryFilter).append(')');
 		}
 		request.append(" order by " + pkFieldName + " ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
@@ -153,7 +170,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @return Nom de la table
 	 */
 	protected static final String getTableName(final DtDefinition dtDefinition) {
-		return dtDefinition.getLocalName();
+		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
 }

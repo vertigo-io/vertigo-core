@@ -19,13 +19,14 @@
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Filtre sur champ=valeur.
@@ -33,15 +34,15 @@ import io.vertigo.lang.Option;
  * @param <D> Type du DtObject
  * @param <C> Type du champs filtré
  */
-public final class DtListRangeFilter<D extends DtObject, C extends Comparable> implements DtListFilter<D>, Serializable {
+public final class DtListRangeFilter<D extends DtObject, C extends Comparable> implements Predicate<D>, Serializable {
 	private static final long serialVersionUID = 3469510250178487305L;
 	/** Nom du champ. */
 	private final String fieldName;
 
 	private final C minValue;
 	private final C maxValue;
-	private final boolean isMinInclude;
-	private final boolean isMaxInclude;
+	private final boolean isMinIncluded;
+	private final boolean isMaxIncluded;
 
 	/** Champ concerné. */
 	private transient DtField dtField;
@@ -55,7 +56,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 	 * @param isMaxInclude Si valeur max incluse
 	 *
 	 */
-	public DtListRangeFilter(final String fieldName, final Option<C> minValue, final Option<C> maxValue, final boolean isMinInclude, final boolean isMaxInclude) {
+	public DtListRangeFilter(final String fieldName, final Optional<C> minValue, final Optional<C> maxValue, final boolean isMinInclude, final boolean isMaxInclude) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(minValue);
 		Assertion.checkNotNull(maxValue);
@@ -63,8 +64,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		this.fieldName = fieldName;
 		this.minValue = minValue.orElse(null); //On remet a null (car Option non serializable)
 		this.maxValue = maxValue.orElse(null); //On remet a null (car Option non serializable)
-		this.isMinInclude = isMinInclude;
-		this.isMaxInclude = isMaxInclude;
+		this.isMinIncluded = isMinInclude;
+		this.isMaxIncluded = isMaxInclude;
 
 		//-----
 		// On vérifie le caractère serializable, car il est difficile de gérer cette propriété par les generics de bout en bout
@@ -78,7 +79,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final D dto) {
+	public boolean test(final D dto) {
 		getDtField(dto);
 		return accept(dtField.getDataAccessor().getValue(dto));
 	}
@@ -98,7 +99,8 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		final Comparable comparableValue = Comparable.class.cast(value);
 		final int minValueCompare = minValue != null ? comparableValue.compareTo(minValue) : 1; //si empty=>* : toujours ok
 		final int maxValueCompare = maxValue != null ? comparableValue.compareTo(maxValue) : -1; //si empty=>* : toujours ok
-		return (isMinInclude ? minValueCompare >= 0 : minValueCompare > 0) //supérieur (ou egale) au min
-				&& (isMaxInclude ? maxValueCompare <= 0 : maxValueCompare < 0); //inférieur (ou egale) au max
+		return (isMinIncluded ? (minValueCompare >= 0) : (minValueCompare > 0)) //supérieur (ou egale) au min
+				&&
+				(isMaxIncluded ? (maxValueCompare <= 0) : (maxValueCompare < 0)); //inférieur (ou egale) au max
 	}
 }

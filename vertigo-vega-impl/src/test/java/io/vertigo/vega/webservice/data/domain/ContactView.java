@@ -25,10 +25,8 @@ import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
-@DtDefinition(persistent = false)
 public final class ContactView implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 

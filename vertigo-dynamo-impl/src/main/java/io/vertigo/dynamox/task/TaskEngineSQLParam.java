@@ -89,30 +89,39 @@ final class TaskEngineSQLParam {
 	 * @param in If the param is in
 	 */
 	TaskEngineSQLParam(final String betweenCar, final boolean in) {
-		String newAttributeName = betweenCar;
-		String newfieldName = null;
-		Integer dtcRowNumber = null;
+		final String newAttributeName;
+		final String newfieldName;
+		final Integer dtcRowNumber;
 
-		final int indexOfFirstPoint = newAttributeName.indexOf('.');
+		final int indexOfFirstPoint = betweenCar.indexOf('.');
 		if (indexOfFirstPoint > -1) {
-			final int indexOfLastPoint = newAttributeName.lastIndexOf('.');
+			final int indexOfLastPoint = betweenCar.lastIndexOf('.');
 			// cas du DTO/DTC
 			// exemple : DTO_PERSONNE.NOM
-			newAttributeName = newAttributeName.substring(0, indexOfFirstPoint);
+			newAttributeName = betweenCar.substring(0, indexOfFirstPoint);
 			newfieldName = betweenCar.substring(indexOfLastPoint + 1);
-			// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
-			// qui doit être un entier >= 0
-			// exemple : DTC_PERSONNE.12.Nom
+
 			if (indexOfFirstPoint != indexOfLastPoint) {
+				// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
+				// qui doit être un entier >= 0
+				// exemple : DTC_PERSONNE.12.Nom
 				final String betweenPoints = betweenCar.substring(indexOfFirstPoint + 1, indexOfLastPoint);
 				dtcRowNumber = parseDtcRowNumber(betweenCar, betweenPoints);
+			} else {
+				dtcRowNumber = null;
 			}
+		} else {
+			//Cas du input natif (ex: CODE)
+			newAttributeName = betweenCar;
+			dtcRowNumber = null;
+			newfieldName = null;
 		}
+
 		//-----
 		// Le paramètre n'est pas encore indexé
 		Assertion.checkNotNull(newAttributeName);
 		// Si le numéro de ligne est renseignée alors le champ doit l'être aussi
-		Assertion.checkNotNull(dtcRowNumber == null || newfieldName != null);
+		Assertion.when(dtcRowNumber != null).check(() -> newfieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 		//-----
 		attributeName = newAttributeName;
 		this.in = in;
@@ -150,14 +159,14 @@ final class TaskEngineSQLParam {
 	 * @return Paramètre de type liste.(DTC)
 	 */
 	boolean isList() {
-		return !isPrimitive() && rowNumber != null;
+		return rowNumber != null && !isPrimitive();
 	}
 
 	/**
 	 * @return Paramètre de type Objet.(DTO)
 	 */
 	boolean isObject() {
-		return !isPrimitive() && rowNumber == null;
+		return rowNumber == null && !isPrimitive();
 	}
 
 	/**

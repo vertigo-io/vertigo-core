@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.database.connection.c3p0;
 
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,13 +34,12 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
 /**
  * If there is no datasource, you have to use a simple connection provider.
- * 
+ *
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
  */
 public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
@@ -54,7 +54,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 	 */
 	@Inject
 	public C3p0ConnectionProviderPlugin(
-			@Named("name") final Option<String> name,
+			@Named("name") final Optional<String> name,
 			@Named("dataBaseClass") final String dataBaseClass,
 			@Named("jdbcDriver") final String jdbcDriver,
 			@Named("jdbcUrl") final String jdbcUrl) {

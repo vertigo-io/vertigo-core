@@ -22,11 +22,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Named;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -131,7 +131,7 @@ public final class DIDependency {
 	}
 
 	private static boolean isOption(final Class<?> type) {
-		return Option.class.isAssignableFrom(type);
+		return Optional.class.isAssignableFrom(type);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {

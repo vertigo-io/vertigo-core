@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,6 @@ import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -94,7 +94,8 @@ public final class Injector {
 			final Object injected = getInjected(container, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
-			Assertion.checkState(field.getType().isPrimitive() || null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
+			Assertion.when(!field.getType().isPrimitive())
+					.check(() -> null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
 		}
 	}
@@ -113,10 +114,10 @@ public final class Injector {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
+				return Optional.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
-			return Option.empty();
+			return Optional.empty();
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();

@@ -37,7 +37,7 @@ import io.vertigo.dynamox.domain.constraint.ConstraintStringLength;
  *
  * @author pchretien
  */
-public class ConstraintTest extends AbstractTestCaseJU4 {
+public final class ConstraintTest extends AbstractTestCaseJU4 {
 	//private ConstraintNotNull constraintNotNull;
 
 	private ConstraintBigDecimal constraintBigDecimal;

@@ -23,7 +23,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +34,6 @@ import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;
@@ -86,101 +85,8 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 	private final List<JsonSerializer> jsonWriters = new ArrayList<>();
 
 	/**
-	 * encodeType.
-	 * jgarnier le 20/05/2015 : les content-type ne doivent pas contenir de ":" mais des "=" pour les paramètres.
-	 * http://www.w3.org/Protocols/rfc1341/4_Content-Type.html : Content-Type := type "/" subtype *[";" parameter]
-	 * avec : parameter := attribute "=" value
-	 */
-	enum EncoderType {
-
-		/** Type JSON simple */
-		JSON(""),
-		/** Type JSON UiContext */
-		JSON_UI_CONTEXT("json+uicontext"),
-		/** Type JSON list */
-		JSON_LIST("json+list=%s"),
-		/** Type JSON entity */
-		JSON_ENTITY("json+entity=%s");
-
-		private final String HAS_META_MARKER = "+meta";
-		private final Pattern contentTypePattern;
-		private final String contentType;
-
-		private EncoderType(final String contentType) {
-			this.contentType = contentType;
-			contentTypePattern = Pattern.compile(contentType.replaceAll("%s", ".+"));
-		}
-
-		/**
-		 * @param entityName Entity name
-		 * @param meta has meta
-		 * @return contentType
-		 */
-		public String createContentType(final String entityName, final boolean meta) {
-			return String.format(contentType, entityName) + (meta ? HAS_META_MARKER : "");
-		}
-
-		/**
-		 * @param testedContentType contentType to test
-		 * @return If testedContentType is 'this' EncoderType
-		 */
-		public boolean isContentType(final String testedContentType) {
-			return contentTypePattern.matcher(testedContentType).find();
-		}
-	}
-
-	/**
-	 * EncodedType : encoderType + hasMeta + entityName.
-	 */
-	static class EncodedType {
-		private final EncoderType encoderType;
-		private final boolean meta;
-		private final String entityName;
-
-		/**
-		 * constructor.
-		 * @param encoderType encoderType
-		 * @param meta has meta
-		 * @param entityName entityName
-		 */
-		EncodedType(final EncoderType encoderType, final boolean meta, final String entityName) {
-			this.encoderType = encoderType;
-			this.meta = meta;
-			this.entityName = entityName;
-		}
-
-		/**
-		 * @return encoderType
-		 */
-		public EncoderType getEncoderType() {
-			return encoderType;
-		}
-
-		/**
-		 * @return contentType
-		 */
-		public boolean hasMeta() {
-			return meta;
-		}
-
-		/**
-		 * @return entityName
-		 */
-		public String getEntityName() {
-			return entityName;
-		}
-
-		/**
-		 * @return contentType
-		 */
-		public String obtainContentType() {
-			return encoderType.createContentType(entityName, meta);
-		}
-	}
-
-	/**
-	 * @param jsonReaderEngine jsonReaderEngine
-	 */
+	* @param jsonReaderEngine jsonReaderEngine
+	*/
 	@Inject
 	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonReaderEngine);
@@ -263,7 +169,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 			if (webServiceParam.isOptional()) {
 				final Object paramValue = routeContext.getParamValue(webServiceParam);
-				routeContext.setParamValue(webServiceParam, Option.ofNullable(paramValue));
+				routeContext.setParamValue(webServiceParam, Optional.ofNullable(paramValue));
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {

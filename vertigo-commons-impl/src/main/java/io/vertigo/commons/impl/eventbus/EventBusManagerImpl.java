@@ -41,19 +41,15 @@ public final class EventBusManagerImpl implements EventBusManager {
 	public void post(final Event event) {
 		Assertion.checkNotNull(event);
 		//-----
-		boolean emitted = false;
-		for (final EventBusSubscription subscription : subscriptions) {
-			if (subscription.accept(event)) {
-				subscription.getListener().onEvent(event);
-				emitted = true;
-			}
-		}
+		final long emitted = subscriptions.stream()
+				.filter(subscription -> subscription.accept(event))
+				.peek(subscription -> subscription.getListener().onEvent(event))
+				.count();
 
 		//manages dead event
-		if (!emitted) {
-			for (final EventListener deadEventlistener : deadEventListeners) {
-				deadEventlistener.onEvent(event);
-			}
+		if (emitted == 0) {
+			deadEventListeners.stream()
+					.forEach(deadEventlistener -> deadEventlistener.onEvent(event));
 		}
 	}
 
@@ -63,7 +59,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 		Assertion.checkNotNull(suscriberInstance);
 		//-----
 		int count = 0;
-		//1. search all methods 
+		//1. search all methods
 		for (final Method method : ClassUtil.getAllMethods(suscriberInstance.getClass(), EventSuscriber.class)) {
 			Assertion.checkArgument(void.class.equals(method.getReturnType()), "suscriber's methods  of class {0} must be void instead of {1}", suscriberInstance.getClass(), method.getReturnType());
 			Assertion.checkArgument(method.getName().startsWith("on"), "suscriber's methods of class {0} must start with on", suscriberInstance.getClass());
@@ -73,13 +69,8 @@ public final class EventBusManagerImpl implements EventBusManager {
 			//2. For each method register a listener
 			count++;
 			method.setAccessible(true);
-			register((Class<? extends Event>) method.getParameterTypes()[0], new EventListener() {
-				/** {@inheritDoc} */
-				@Override
-				public void onEvent(final Event event) {
-					ClassUtil.invoke(suscriberInstance, method, event);
-				}
-			});
+			register((Class<? extends Event>) method.getParameterTypes()[0],
+					event -> ClassUtil.invoke(suscriberInstance, method, event));
 		}
 		//3. Check that there is almost one suscriber on this object.
 		Assertion.checkState(count > 0, "no suscriber found on class {0}", suscriberInstance.getClass());

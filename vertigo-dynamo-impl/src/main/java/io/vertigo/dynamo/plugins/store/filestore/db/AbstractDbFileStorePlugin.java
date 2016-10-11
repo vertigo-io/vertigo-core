@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.store.filestore.db;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import javax.inject.Named;
 
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -45,7 +45,6 @@ import io.vertigo.lang.Option;
  * @author pchretien, npiedeloup
  */
 abstract class AbstractDbFileStorePlugin {
-	private static final String DEFAULT_STORE_NAME = "main";
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
 
 	/**
@@ -58,11 +57,11 @@ abstract class AbstractDbFileStorePlugin {
 	 * Constructeur.
 	 * @param name Store name
 	 */
-	AbstractDbFileStorePlugin(@Named("name") final Option<String> name) {
+	AbstractDbFileStorePlugin(@Named("name") final Optional<String> name) {
 		Assertion.checkNotNull(name);
 		//-----
 		readOnly = false;
-		this.name = name.orElse(DEFAULT_STORE_NAME);
+		this.name = name.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 	}
 
 	/**

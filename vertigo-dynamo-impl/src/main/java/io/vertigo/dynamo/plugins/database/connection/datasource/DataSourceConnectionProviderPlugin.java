@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.datasource;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
@@ -53,7 +53,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	 */
 	@Inject
 	public DataSourceConnectionProviderPlugin(
-			@Named("name") final Option<String> name,
+			@Named("name") final Optional<String> name,
 			@Named("classname") final String dataBaseName,
 			@Named("source") final String dataSource) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));

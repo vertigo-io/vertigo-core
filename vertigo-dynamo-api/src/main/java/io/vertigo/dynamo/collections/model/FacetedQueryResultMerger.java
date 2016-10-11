@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -36,7 +37,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
-import io.vertigo.lang.Option;
 
 /**
  * Search faceted result merger.
@@ -51,37 +51,15 @@ import io.vertigo.lang.Option;
 public final class FacetedQueryResultMerger<R extends DtObject, S> implements Builder<FacetedQueryResult<R, S>> {
 
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
-	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new HashMap<>();
+	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
 
-	private Option<FacetDefinition> clusterFacetDefinition = Option.<FacetDefinition> empty();
-	private final Option<FacetedQuery> facetedQuery;
-	private final DtList<R> results;
-	private final S source;
-
-	/**
-	 * Constructeur.
-	 * @param firstResult First facetedQueryResult used for facet, source and result list's type
-	 * @param firstResultcode Facet code for first result
-	 * @param firstResultFilter SearchQuery filter for first result
-	 * @param firstResultLabel Default string label for first result
-	 * @param firstResultLabelKey MessageKey label for first result
-	 */
-	public FacetedQueryResultMerger(final FacetedQueryResult<?, S> firstResult,  final String firstResultcode, final String firstResultFilter, final String firstResultLabel, final MessageKey firstResultLabelKey) {
-		Assertion.checkNotNull(firstResult);
-		Assertion.checkArgNotEmpty(firstResultFilter);
-		Assertion.checkArgument(firstResultLabelKey != null || firstResultLabel != null, "You must set a label for firstResult when merging result");
-		//-----
-		//On garde les infos qui sont basés sur le premier élément
-		facetedQuery = firstResult.getFacetedQuery();
-		results = new DtList(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
-		source = firstResult.getSource();
-
-		with(firstResult, firstResultcode, firstResultFilter, firstResultLabel, firstResultLabelKey);
-	}
+	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
+	private FacetedQueryResult<?, S> firstResult;
 
 	/**
 	 * Merger should create a facet for this cluster.
 	 * @param result Result to merge
+	 * @param resultcode Code for result
 	 * @param resultFilter SearchQuery filter for result
 	 * @param resultLabel Default string label for result
 	 * @param resultLabelKey MessageKey label for result
@@ -91,7 +69,12 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
-		Assertion.checkArgument(resultLabelKey != null || resultLabel != null, "You must set a label when merging result");
+		Assertion.when(resultLabelKey == null)
+				.check(() -> resultLabel != null, "You must set a label of all result when merging result");
+		//-----
+		if (firstResult == null) {
+			firstResult = result;
+		}
 		//-----
 		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
 		if (otherFacetValue == null) {
@@ -116,15 +99,16 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
-		final FacetDefinition facetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionName, results.getDefinition().getFields().get(0), new MessageText("cluster", null), FacetOrder.definition);
-		clusterFacetDefinition = Option.of(facetDefinition);
+		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public FacetedQueryResult<R, S> build() {
-		Assertion.checkArgument(otherResults.size() > 1, "You need at least 2 FacetedQueryResults in order to merge them");
+		Assertion.checkArgument(otherResults.size() > 0, "You need at least one FacetedQueryResult in order to build a FacetedQueryResult");
+		//On accepte de ne pas avoir de FacetedQueryResults pour les cas ou les resultats sont filtrés par la sécurité, certains éléments à merger sont peut-être absent.
+
 		//-----
 		long totalCount = 0;
 		final Map<FacetValue, DtList<R>> clustersDtc = new LinkedHashMap<>(otherResults.size());
@@ -155,10 +139,18 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			//TODO merge highlights
 		}
 
-		if (clusterFacetDefinition.isPresent()) {
-			final Facet clusterFacet = new Facet(clusterFacetDefinition.get(), clustersCount);
+		//On garde les infos qui sont basés sur le premier élément
+		final Optional<FacetedQuery> facetedQuery = firstResult.getFacetedQuery();
+		final DtList<R> results = new DtList<>(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
+		final S source = firstResult.getSource();
+		FacetDefinition clusterFacetDefinition = null;
+
+		if (facetDefinitionNameOpt.isPresent()) {
+			clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0),
+					new MessageText("cluster", null), FacetOrder.definition);
+			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);
 		}
-		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, clustersDtc, highlights, source);
+		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, Optional.ofNullable(clusterFacetDefinition), clustersDtc, highlights, source);
 	}
 }
