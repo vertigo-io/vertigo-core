@@ -106,7 +106,9 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	/** {@inheritDoc} */
 	@Override
 	public FacetedQueryResult<R, S> build() {
-		Assertion.checkArgument(otherResults.size() > 1, "You need at least 2 FacetedQueryResults in order to merge them");
+		Assertion.checkArgument(otherResults.size() > 0, "You need at least one FacetedQueryResult in order to build a FacetedQueryResult");
+		//On accepte de ne pas avoir de FacetedQueryResults pour les cas ou les resultats sont filtrés par la sécurité, certains éléments à merger sont peut-être absent.
+
 		//-----
 		long totalCount = 0;
 		final Map<FacetValue, DtList<R>> clustersDtc = new LinkedHashMap<>(otherResults.size());
