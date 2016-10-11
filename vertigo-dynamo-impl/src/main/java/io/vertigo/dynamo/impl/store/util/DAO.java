@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.store.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -177,7 +178,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 *
 	 * @param uri URI de l'objet à récupérer
 	 * @param fragmentClass Fragment class
-	 * @return D Fragment recherché
+	 * @return F Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
 		final E dto = dataStore.<E> read(uri);
@@ -237,11 +238,45 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
+	 * Find one and only one object matching the criteria.
+	 * If there are many results or no result an exception is thrown
+	 * @param criteria the filter criteria
+	 * @return  the result
+	 */
+	public final E find(final Criteria<E> criteria) {
+		return findOptional(criteria)
+				.orElseThrow(() -> new NullPointerException("No data found"));
+	}
+
+	/**
+	 * Find one or zero object matching the criteria.
+	 * If there are many results an exception is thrown
+	 * @param criteria the filter criteria
+	 * @return  the optional result
+	 */
+	public final Optional<E> findOptional(final Criteria<E> criteria) {
+		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, 2));
+		Assertion.checkState(list.size() <= 1, "Too many results");
+		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+	}
+
+	/**
 	 * @param criteria Critére de recherche NOT NULL
 	 * @param maxRows Nombre maximum de ligne
 	 * @return DtList<D> récupéré NOT NUL
+	 * @deprecated Use findAll instead
 	 */
+	@Deprecated
 	public final DtList<E> getList(final Criteria<E> criteria, final int maxRows) {
+		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+	}
+
+	/**
+	 * @param criteria Thr criteria
+	 * @param maxRows Max rows
+	 * @return DtList<D> result NOT NULL
+	 */
+	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
 		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
