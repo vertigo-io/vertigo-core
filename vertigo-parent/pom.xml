@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- vertigo - simple java starter
 
 Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
@@ -20,7 +20,7 @@ limitations under the License. -->
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.9.4-SNAPSHOT</version>
+	<version>0.9.3</version>
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -45,7 +45,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.9.1-SNAPSHOT</tag>
+		<tag>vertigo-0.9.3</tag>
 	</scm>
 
 	<developers>
