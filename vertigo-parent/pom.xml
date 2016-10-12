@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- vertigo - simple java starter
 
 Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
@@ -30,7 +30,7 @@ limitations under the License. -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>0.9.3-SNAPSHOT</vertigo.version>
+		<vertigo.version>0.9.3</vertigo.version>
 	</properties>
 
 	<licenses>
