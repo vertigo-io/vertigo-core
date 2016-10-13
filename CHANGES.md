@@ -18,20 +18,20 @@ __In Bold__ : Potential compatibility problems
 * __[Core] Added aspect on plugins + checked unmanaged aspect__
 * [Core] Added fluent assertion when( ... ).check(...)
 * [Core] Better message for DSL Solver unknown definitions error
-*	[Core] Clearer message in case of unresolved names
-*	[Commons] Refactored base64 codec to use jdk
+* [Core] Clearer message in case of unresolved names
+* [Commons] Refactored base64 codec to use jdk
 * __[Dynamo] Split DtObject as Entity (persistent) and simple DtObject (non persistent)_
-*	__[Dynamo] Added fragment of entity__
+*  __[Dynamo] Added fragment of entity__
 * [Dynamo] Added support to unmapped sort field
-*	[Dynamo] Fixed #60. Use DtListState maxRows and skipRows when clustering result. (limited to 100 elements per group)
-*	[Dynamo] Fixed ElasticSearch must have a dataType for simple properties type (String, long, BigDecimal,...)
-*	[Dynamo] Fixed search indexType with optional analyzer
-*	[Dynamo] Refactor DSL parser (Ksp loader)
-*	[Dynamo] Removed property about persistence from dtDefinition
-*	[Dynamo] StoreManager only deals with entities
-*	__[Dynamo] Added maven module to support ElasticSearch 1.7__
-*	__[Dynamo] Updated ElasticSearch to 2.3.5 and Lucene to 5.5.0__
-*	__[Dynamo] Updated FacetedQueryResult JsonSerializer to Focus v3__
+* [Dynamo] Fixed #60. Use DtListState maxRows and skipRows when clustering result. (limited to 100 elements per group)
+* [Dynamo] Fixed ElasticSearch must have a dataType for simple properties type (String, long, BigDecimal,...)
+* [Dynamo] Fixed search indexType with optional analyzer
+* [Dynamo] Refactor DSL parser (Ksp loader)
+* [Dynamo] Removed property about persistence from dtDefinition
+* [Dynamo] StoreManager only deals with entities
+* __[Dynamo] Added maven module to support ElasticSearch 1.7__
+* __[Dynamo] Updated ElasticSearch to 2.3.5 and Lucene to 5.5.0__
+* __[Dynamo] Updated FacetedQueryResult JsonSerializer to Focus v3__
 * [Dynamo] Added FK to Entity in Fragments
 * [Dynamo] Added sort of elements inner a search cluster. Fix #73
 * [Dynamo] Fix #73 for ElasticSearch 1.7
@@ -43,7 +43,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Renamed stereotype Data to ValueObject (always default sterotype)
 * [Dynamo] Updated DataStore and DAO to load and update Fragments
 * [Dynamo] DtListProcessor is now typed
-*	[Vega] __Fixed check selected facet by code instead of label__
+* [Vega] __Fixed check selected facet by code instead of label__
 * [Vega] Fixed serialization of FacetedQueryResult, removed facet and group if 0 elements (for emptied scope added as facets)
 * [Vega] Updated FacetedQueryResultJson as discuss in #69
 * [Vega] __Updated spark from 1.1.1 to 2.5 (jdk8/lambda)__
@@ -63,27 +63,27 @@ __In Bold__ : Potential compatibility problems
 * [Core] Splitted App and autoCloseable (should use new AutoCloseableApp in unit tests
 * __[Dynamo] Renamed DAOBroker to DAO__
 * [Dynamo] Fixed #57 in DslListFilterBuilder, and other pb
-*	[Dynamo] isNumber() on dataType
+* [Dynamo] isNumber() on dataType
 * __[Dynamo] Renamed CRUD methods__ (get => read , getList => findAll)
 * [Dynamo] Made selectForUpdate overridable, and specialized selectForUpdate for Ms SqlServer
 * [Dynamo] Fixed missing parenthesis in result with DslListFilterBuilder for some multi fields syntax
 * __[Dynamo] Search FacetedQueryResult json v3 (#59)__ (use `searchApiVersion` param on `GoogleJsonEngine` component to select api version)
 * [Dynamo] Fixed Berkeley remove too old elements
-*	[Dynamo] Fixed HsqlDb rownum
+*  [Dynamo] Fixed HsqlDb rownum
 * [Dynamo] Fixed bad cached list size, when rowmax was used
 * __[Dynamo] Removed deprecated getConnectionProvider__
 * [Dynamo] Renamed methods : `toUrn` to `urn`
 * [Dynamo] Create URI public on `DtObjectUtil`
 * [Dynamo] Preserve stacktrace if Search Exception
 * [Dynamo] Fixed #63 - Errors in JpaDataStore
-*	[Dynamo] Fixed #66 Retry indexation 5 times of dirty elements in case of error
+*  [Dynamo] Fixed #66 Retry indexation 5 times of dirty elements in case of error
 * [Vega] Invalidate session when newly created session throws VSecurityException
 * [Vega] Added token tests for anonymous users
 * [Vega] Fixed Swagger Api for errors
-*	[Vega] Added test for String in body
+* [Vega] Added test for String in body
 * [Vega] Fixed preflight Options (misspelled header name)
-*	[Vega] Fixed #64 : concat hashcode to truncated name
-*	[Vega] Added global prefix for Spark route (param `apiPrefix` of `SparkJavaServletFilterWebServerPlugin`)
+* [Vega] Fixed #64 : concat hashcode to truncated name
+* [Vega] Added global prefix for Spark route (param `apiPrefix` of `SparkJavaServletFilterWebServerPlugin`)
 * [Vega] Added Highlight for search results in FacetedQueryResult json v4
 
 Release 0.9.1 - 2016/02/05
@@ -97,7 +97,7 @@ __In Bold__ : Potential compatibility problems
 * [All] Updated FormatterException to a checkedException
 * [Commons] Refactored Analytics, added AnalyticsTracker to replace module listeners
 * [Commons] Refactored Daemon
-* [Commons] Refactored cache to use CacheConfig instead of Modifiable interface	
+* [Commons] Refactored cache to use CacheConfig instead of Modifiable interface  
 * [Commons] Renamed EventManager to EventBusManager
 * __[Core] Removed initClass on component in managers.xml__
 * __[Core] Removed inheritance on module in managers.xml__
@@ -159,7 +159,7 @@ __In Bold__ : Potential compatibility problems
 * [Vega] Fixed SwaggerAPI
 * [Vega] Fixed contentType while preflight Cors request
 * [Vega] Fixed requests not mark as succeeded
-* [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2			
+* [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2      
 * [Vega] Removed nullLast and ignorecase in DtListState
 * [Vega] Renamed WebServiceIntrospector to WebServiceScanner
 
@@ -174,11 +174,11 @@ __In Bold__ : Potential compatibility problems
 * [Core] Detect prefix boot. to resolved env properties
 * __[Core] Refactored initializers (not generics anymore, should use @Inject)__
 * [Vega] Fixed routes order : /x/* are now after more specialized routes
-*	__[Dynamo] Renamed DslXxxDefinition to DslXxx and removed deprecated RegExpListFilterBuilder__
+*  __[Dynamo] Renamed DslXxxDefinition to DslXxx and removed deprecated RegExpListFilterBuilder__
 * [Dynamo] Replaced RegExpListFilterBuilder by Dsl ones
 * [Vega] Made VSecurityException runtime and using MessageText
 * __[Vega] Added DtList deserializer support. WARN : no constraints check__
-*	[Dynamo] Fixed delete order for TwoTablesDbFileStorePlugin
+*  [Dynamo] Fixed delete order for TwoTablesDbFileStorePlugin
 * [Core] Replaced componentSpace and definitionSpace accesses by Home.getApp().xx instead of Home.xx
 * [Core] Changed syntax for params in config => '${xx}' instead of 'conf:xx' or '{xx}'
 * [Core] Added method addAll with array on ListBuilder
@@ -191,7 +191,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Splitted KVStoreManager from StoreManager
 * [Dynamo] Added DataStoreName on DT and TK to allow multiple databases
 * [Dynamo] Refactored Search : indices by conf for env, uses types for clustering documents
-* [Dynamo] Fixed tests : DefinitionSpace no more injectable	
+* [Dynamo] Fixed tests : DefinitionSpace no more injectable  
 * [Dynamo] Fixed managers.xml, add locales on boot tag
 * [Dynamo] Fixed search listFilterBuilder range 'to' to 'TO' ES keywords must be uppercase
 * [Dynamo] Renamed cores to envIndex on ElasticSearch plugins
@@ -258,7 +258,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Added DtObjectUtil.createUri by class and id
 * [Dynamo] Fixed search reindex count
 * [Studio] Removed Constants to generate a pretty code
-* [Studio] Task has 0 or 1 result	
+* [Studio] Task has 0 or 1 result  
 * [Studio] Fixed if report file already exist
 * [Quarto] Error msg clearer
 * [Struts2] Fixed stacking previous state of layout in tags (allow div tree, use it carefully :))
@@ -346,7 +346,7 @@ Use indexType : "analyzerName:dataTypeName" in domain declaration in KSP
 * [Struts2] Fixed an error when escaping caracters in JSON
 * [Struts2] Select multiple : listCssClass
 * [Vega] TokenManager optionnal in JsonConverterHandler
-*	[Vega] Fixed content-type name : now use '=' instead of ':'
+*  [Vega] Fixed content-type name : now use '=' instead of ':'
 * [Vega] Updated Swagger-ui to 2.1.0
 * [Vega] Added support of FacetedQueryResult in WebService
 * [Vega] Started expand jsonConverterHandlerPlugin into simplier JsonConverter per type
@@ -387,7 +387,7 @@ Release 0.7.4 - 2015/03/12
 * [Dynamo] Fixed searchQuery serializable
 * [Dynamo] Added search clusering by facet, and FacetQuery is now optionnal, SearchQuery serializable
 * [Dynamo] Fixed WhereIn with lowercase column name
-*	[Dynamo] Fixed user exception detection/extraction
+*  [Dynamo] Fixed user exception detection/extraction
 * [Dynamo] Updated ElasticSearch configFile
 * [Struts2] Fixed readonly multi select
 * [Struts2] Added assert uiMdList used with MasterData DtDefinition
@@ -482,8 +482,8 @@ A big version :)
 * [Dynamo] Moved search public api from SearchServicePlugin to SearchManager
 * [Dynamo] Added possibility to override FormatterDefault rendering
 * [Dynamo] Added fluent style with ExportBuilder, PropertiesBuilder
-* [Dynamo] DtField is a DtFieldName	
-* [Dynamo] Refactored ElasticSearch plugins	
+* [Dynamo] DtField is a DtFieldName  
+* [Dynamo] Refactored ElasticSearch plugins  
 * [Dynamo] **Work** is migrated to tempo
 * [Vega] Fixed swagger contextPath, nnerBody params, inline test POST services
 * [Vega] Moved DtListDelta and UiListDelta
@@ -497,9 +497,9 @@ A big version :)
 * [Struts2] Fixed index dto with FK bind to MDL
 * [Struts2] Fixed #9, added a unique uriList when list put in context, and no cache for list without uri
 * [Struts2] Multiple select in simple_read
-* [Struts2] Added autocompleter popinURL	
+* [Struts2] Added autocompleter popinURL  
 * [Struts2 Vega] Fixed file download Content-Disposition
-* [Struts2] Changed layout table behaviour	: now can include div in order to declare a single cell
+* [Struts2] Changed layout table behaviour  : now can include div in order to declare a single cell
 
 Release 0.6.2 - 2014/10/27
 ----------------------

@@ -20,7 +20,7 @@ limitations under the License. -->
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.3-SNAPSHOT</version>
+		<version>0.9.4-SNAPSHOT</version>
 		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 	
