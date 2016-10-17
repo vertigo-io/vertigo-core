@@ -32,14 +32,8 @@ public final class VegaSparkFilter extends SparkFilter {
 	/** {@inheritDoc} */
 	@Override
 	protected SparkApplication getApplication(final FilterConfig filterConfig) {
-		return new SparkApplication() {
-
-			/** {@inheritDoc} */
-			@Override
-			public void init() {
-				// nothing
-			}
-
+		return () -> {
+			/*no specific initialization*/
 		};
 	}
 }

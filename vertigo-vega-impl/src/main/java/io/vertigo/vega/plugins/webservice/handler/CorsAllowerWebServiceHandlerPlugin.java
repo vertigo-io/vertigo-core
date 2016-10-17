@@ -18,9 +18,10 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -115,11 +116,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	}
 
 	private static Set<String> parseStringToSet(final String param) {
-		final String[] values = param.split(",");
-		final Set<String> parsedConfig = new HashSet<>(values.length);
-		for (final String value : values) {
-			parsedConfig.add(value.trim());
-		}
-		return parsedConfig;
+		return Arrays.stream(param.split(","))
+				.map(value -> value.trim())
+				.collect(Collectors.toSet());
 	}
 }

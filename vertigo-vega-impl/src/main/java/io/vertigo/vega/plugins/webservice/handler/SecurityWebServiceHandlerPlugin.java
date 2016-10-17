@@ -39,7 +39,6 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
-
 	private final VSecurityManager securityManager;
 
 	/**

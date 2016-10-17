@@ -21,9 +21,10 @@ package io.vertigo.vega.plugins.webservice.scanner.annotations;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -83,14 +84,11 @@ public final class AnnotationsWebServiceScannerUtil {
 	public static List<WebServiceDefinition> scanWebService(final Class<? extends WebServices> webServicesClass) {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
-		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>();
-		for (final Method method : webServicesClass.getMethods()) {
-			final Optional<WebServiceDefinition> webServiceDefinition = buildWebServiceDefinition(method);
-			if (webServiceDefinition.isPresent()) {
-				webServiceDefinitions.add(webServiceDefinition.get());
-			}
-		}
-		return webServiceDefinitions;
+		return Arrays.stream(webServicesClass.getMethods())
+				.map(method -> buildWebServiceDefinition(method))
+				.filter(webServiceDefinitionOptional -> webServiceDefinitionOptional.isPresent())
+				.map(webServiceDefinitionOptional -> webServiceDefinitionOptional.get())
+				.collect(Collectors.toList());
 	}
 
 	private static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
@@ -185,20 +183,14 @@ public final class AnnotationsWebServiceScannerUtil {
 	}
 
 	private static ImplicitParam getImplicitParam(final Type paramType) {
-		for (final ImplicitParam implicitParam : ImplicitParam.values()) {
-			if (implicitParam.getImplicitType().equals(paramType)) {
-				return implicitParam;
-			}
-		}
-		return null;
+		return Arrays.stream(ImplicitParam.values())
+				.filter(implicitParam -> implicitParam.getImplicitType().equals(paramType))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("no paramType found"));
 	}
 
 	private static boolean isImplicitParam(final Type paramType) {
-		for (final ImplicitParam implicitParam : ImplicitParam.values()) {
-			if (implicitParam.getImplicitType().equals(paramType)) {
-				return true;
-			}
-		}
-		return false;
+		return Arrays.stream(ImplicitParam.values())
+				.anyMatch(implicitParam -> implicitParam.getImplicitType().equals(paramType));
 	}
 }
