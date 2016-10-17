@@ -72,12 +72,9 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		if (webServiceDefinition.isServerSideSave()) {
 			return true;
 		}
-		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
-			if (webServiceParam.isNeedServerSideToken()) {
-				return true;
-			}
-		}
-		return false;
+		return webServiceDefinition.getWebServiceParams()
+				.stream()
+				.anyMatch(webServiceParam -> webServiceParam.isNeedServerSideToken());
 	}
 
 	/** {@inheritDoc}  */

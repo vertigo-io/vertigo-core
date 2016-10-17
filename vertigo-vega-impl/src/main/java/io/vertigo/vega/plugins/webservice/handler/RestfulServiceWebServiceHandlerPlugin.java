@@ -98,12 +98,9 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 			}
 			return serviceArgs;
 		}
-		final Object[] serviceArgs = new Object[webServiceDefinition.getWebServiceParams().size()];
-		int i = 0;
-		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
-			serviceArgs[i] = routeContext.getParamValue(webServiceParam);
-			i++;
-		}
-		return serviceArgs;
+		return webServiceDefinition.getWebServiceParams()
+				.stream()
+				.map(webServiceParam -> routeContext.getParamValue(webServiceParam))
+				.toArray();
 	}
 }
