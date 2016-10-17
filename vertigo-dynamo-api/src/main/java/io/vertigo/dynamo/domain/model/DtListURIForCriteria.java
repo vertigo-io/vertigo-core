@@ -32,6 +32,9 @@ import io.vertigo.lang.Assertion;
  */
 public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private static final long serialVersionUID = 7926630153187124165L;
+
+	private static final String CRITERIA_PREFIX = "CRITERIA";
+
 	private final Integer maxRows;
 	private final Criteria<E> criteria;
 
@@ -55,7 +58,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	}
 
 	/**
-	 * @return Nombre de ligne max
+	 * @return Nombre de lignes max
 	 */
 	public Integer getMaxRows() {
 		return maxRows;
@@ -87,4 +90,14 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 		}
 		return filterCriteriaBuilder.build();
 	}
+
+	@Override
+	public String buildUrn() {
+		final String sizeUrn = (getMaxRows() != null) ? D2A_SEPARATOR + String.valueOf(getMaxRows()) : D2A_SEPARATOR + "ALL";
+		if (getCriteria() == null) {
+			return CRITERIA_PREFIX + sizeUrn;
+		}
+		return CRITERIA_PREFIX + sizeUrn + D2A_SEPARATOR + +getCriteria().hashCode();
+	}
+
 }

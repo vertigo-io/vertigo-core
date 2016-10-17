@@ -34,10 +34,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 public final class DtListURIForMasterData extends DtListURI {
 	private static final long serialVersionUID = -7808114745411163474L;
 
+	/** the code that identifies a masterData. */
 	private final String code;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dtDefinition Définition de la liste de référentiel
 	 * @param code Code de la liste de référence. Tous les codes commencent par MDL_.
 	 */
@@ -47,12 +48,11 @@ public final class DtListURIForMasterData extends DtListURI {
 		this.code = code;
 	}
 
-	/**
-	 * Code de la liste de référence (identifiant).
-	 * Une liste de référence est au type de liste de référence ce qu'un DTO est à un DT.
-	 * @return Code de la liste de référence.
-	 */
-	public String getCode() {
-		return code;
+	@Override
+	public String buildUrn() {
+		if (code == null) {
+			return getDtDefinition().getName();
+		}
+		return getDtDefinition().getName() + D2A_SEPARATOR + code;
 	}
 }
