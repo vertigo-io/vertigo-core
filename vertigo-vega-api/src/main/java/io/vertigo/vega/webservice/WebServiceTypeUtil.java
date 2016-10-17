@@ -20,6 +20,7 @@ package io.vertigo.vega.webservice;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 /**
  * WebService Type helper.
@@ -60,12 +61,8 @@ public final class WebServiceTypeUtil {
 			return false;
 		} else if (testedType instanceof ParameterizedType) {
 			final Type[] typeArguments = ((ParameterizedType) testedType).getActualTypeArguments();
-			for (final Type typeArgument : typeArguments) {
-				if (isAssignableFrom(innerClass, typeArgument)) {
-					return true;
-				}
-			}
-			return false;
+			return Arrays.stream(typeArguments)
+					.anyMatch(typeArgument -> isAssignableFrom(innerClass, typeArgument));
 		}
 		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
 	}

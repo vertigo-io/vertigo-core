@@ -34,8 +34,6 @@ public final class DtObjectErrors {
 	private final List<MessageText> objectErrors = new ArrayList<>();
 	private final Map<String, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 
-	// ==========================================================================
-
 	public boolean hasError() {
 		return !objectErrors.isEmpty() || !fieldsErrors.isEmpty();
 	}

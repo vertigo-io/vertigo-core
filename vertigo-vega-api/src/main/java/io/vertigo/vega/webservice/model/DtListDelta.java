@@ -20,6 +20,7 @@ package io.vertigo.vega.webservice.model;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Delta operations on List.
@@ -32,6 +33,10 @@ public final class DtListDelta<D extends DtObject> {
 	private final DtList<D> dtListDeletes;
 
 	public DtListDelta(final DtList<D> dtListCreates, final DtList<D> dtListUpdates, final DtList<D> dtListDeletes) {
+		Assertion.checkNotNull(dtListCreates);
+		Assertion.checkNotNull(this.dtListUpdates);
+		Assertion.checkNotNull(dtListDeletes);
+		//---
 		this.dtListCreates = dtListCreates;
 		this.dtListUpdates = dtListUpdates;
 		this.dtListDeletes = dtListDeletes;

@@ -21,6 +21,7 @@ package io.vertigo.vega.webservice.metamodel;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -105,12 +106,8 @@ public final class WebServiceParam {
 	}
 
 	private static boolean isImplicitParam(final String testedName) {
-		for (final ImplicitParam existingParam : ImplicitParam.values()) {
-			if (existingParam.name().equals(testedName)) {
-				return true;
-			}
-		}
-		return false;
+		return Arrays.stream(ImplicitParam.values())
+				.anyMatch(implicitParam -> implicitParam.name().equals(testedName));
 	}
 
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
