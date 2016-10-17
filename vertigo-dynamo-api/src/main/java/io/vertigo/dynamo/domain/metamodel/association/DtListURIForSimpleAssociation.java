@@ -36,4 +36,9 @@ public final class DtListURIForSimpleAssociation extends DtListURIForAssociation
 	public AssociationSimpleDefinition getAssociationDefinition() {
 		return associationSimpleDefinitionRef.get();
 	}
+
+	@Override
+	public String buildUrn() {
+		return getAssociationDefinition().getName() + D2A_SEPARATOR + getRoleName() + D2A_SEPARATOR + getSource().urn();
+	}
 }

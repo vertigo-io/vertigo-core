@@ -37,4 +37,9 @@ public final class DtListURIForNNAssociation extends DtListURIForAssociation<Ass
 		return associationNNDefinitionRef.get();
 	}
 
+	@Override
+	public String buildUrn() {
+		return getAssociationDefinition().getName() + D2A_SEPARATOR + getRoleName() + D2A_SEPARATOR + getSource().urn();
+	}
+
 }

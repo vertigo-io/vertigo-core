@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -36,16 +34,15 @@ public abstract class DtListURI implements Serializable {
 	/**
 	 * Expression régulière vérifiée par les URN.
 	 */
-	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
+	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 	private static final long serialVersionUID = -1L;
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
-	private static final char D2A_SEPARATOR = '@';
-	private static final String CRITERIA_PREFIX = "CRITERIA";
+	protected static final char D2A_SEPARATOR = '@';
 
 	/**
 	 * URN de la ressource (Nom complet)
 	 */
-	private transient String urn;
+	private final String urn;
 
 	/**
 	 * Constructeur.
@@ -53,6 +50,8 @@ public abstract class DtListURI implements Serializable {
 	 */
 	public DtListURI(final DtDefinition dtDefinition) {
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		urn = buildUrn();
+		Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
 	}
 
 	/**
@@ -85,83 +84,22 @@ public abstract class DtListURI implements Serializable {
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
 	 */
-	public final synchronized String urn() {
-		//synchronized car appellée par des traitements métiers (notament le dataStore)
-		if (urn == null) {
-			urn = writeURN(this);
-			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
-		}
+	public final String urn() {
 		return urn;
 	}
 
+	/**
+	 * Builds a urn from all the params.
+	 * @param uri Uri to encode
+	 * @return Urn
+	 */
+	protected abstract String buildUrn();
+
 	/** {@inheritDoc} */
+
 	@Override
 	public final String toString() {
 		//on surcharge le toString car il est utilisé dans les logs d'erreur. et celui par défaut utilise le hashcode.
 		return "urn[" + getClass().getName() + "]::" + urn();
-	}
-
-	/**
-	 * @param uri Uri to encode
-	 * @return Urn
-	 */
-	private static String writeURN(final DtListURI uri) {
-		if (uri instanceof DtListURIForNNAssociation) {
-			return writeDtListURNForNNAssociation(DtListURIForNNAssociation.class.cast(uri));
-		} else if (uri instanceof DtListURIForSimpleAssociation) {
-			return writeDtListURNForSimpleAssociation(DtListURIForSimpleAssociation.class.cast(uri));
-		} else if (uri instanceof DtListURIForMasterData) {
-			return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
-		} else if (uri instanceof DtListURIForCriteria) {
-			return writeDtListURNForDtCriteria(DtListURIForCriteria.class.cast(uri));
-		}
-		throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
-	}
-
-	/**
-	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-	 *
-	 * @param uri URI à transcrire
-	 * @return URN
-	 */
-	private static String writeDtListURNForNNAssociation(final DtListURIForNNAssociation uri) {
-		return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().urn();
-	}
-
-	/**
-	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-	 *
-	 * @param uri URI à transcrire
-	 * @return URN
-	 */
-	private static String writeDtListURNForSimpleAssociation(final DtListURIForSimpleAssociation uri) {
-		return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().urn();
-	}
-
-	/**
-	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-	 *
-	 * @param uri URI à transcrire
-	 * @return URN
-	 */
-	private static String writeDtListURNForMasterData(final DtListURIForMasterData uri) {
-		if (uri.getCode() == null) {
-			return uri.getDtDefinition().getName();
-		}
-		return uri.getDtDefinition().getName() + D2A_SEPARATOR + uri.getCode();
-	}
-
-	/**
-	 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-	 *
-	 * @param uri URI à transcrire
-	 * @return URN
-	 */
-	private static String writeDtListURNForDtCriteria(final DtListURIForCriteria<?> uri) {
-		final String sizeUrn = (uri.getMaxRows() != null) ? D2A_SEPARATOR + String.valueOf(uri.getMaxRows()) : D2A_SEPARATOR + "ALL";
-		if (uri.getCriteria() == null) {
-			return CRITERIA_PREFIX + sizeUrn;
-		}
-		return CRITERIA_PREFIX + sizeUrn + D2A_SEPARATOR + +uri.getCriteria().hashCode();
 	}
 }
