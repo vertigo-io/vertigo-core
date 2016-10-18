@@ -34,7 +34,7 @@ public final class DtListDelta<D extends DtObject> {
 
 	public DtListDelta(final DtList<D> dtListCreates, final DtList<D> dtListUpdates, final DtList<D> dtListDeletes) {
 		Assertion.checkNotNull(dtListCreates);
-		Assertion.checkNotNull(this.dtListUpdates);
+		Assertion.checkNotNull(dtListUpdates);
 		Assertion.checkNotNull(dtListDeletes);
 		//---
 		this.dtListCreates = dtListCreates;
