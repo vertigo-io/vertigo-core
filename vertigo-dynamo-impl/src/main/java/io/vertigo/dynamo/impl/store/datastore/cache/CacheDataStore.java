@@ -122,8 +122,7 @@ public final class CacheDataStore {
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
-		dtc.setURI(listUri);
-		return dtc;
+		return new DtList(dtc, listUri);
 	}
 
 	private <E extends Entity> DtList<E> loadMDList(final DtListURIForMasterData uri) {
