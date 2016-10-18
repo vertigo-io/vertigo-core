@@ -46,7 +46,7 @@ public final class FilterCriteriaBuilder<E extends Entity> implements Builder<Fi
 	 * @param value Valeur du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<E> withFilter(final DtFieldName fieldName, final Object value) {
+	public FilterCriteriaBuilder<E> addFilter(final DtFieldName fieldName, final Object value) {
 		return addFilter(fieldName.name(), value);
 	}
 
@@ -57,7 +57,7 @@ public final class FilterCriteriaBuilder<E extends Entity> implements Builder<Fi
 	 * @param prefix Préfix du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<E> withPrefix(final DtFieldName fieldName, final String prefix) {
+	public FilterCriteriaBuilder<E> addPrefix(final DtFieldName fieldName, final String prefix) {
 		return withPrefix(fieldName.name(), prefix);
 	}
 
