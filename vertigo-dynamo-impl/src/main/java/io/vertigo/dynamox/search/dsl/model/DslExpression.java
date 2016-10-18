@@ -29,8 +29,8 @@ import io.vertigo.lang.Assertion;
  */
 public final class DslExpression {
 	private final String preBody; //Spaces like
-	private final Optional<DslField> field;
-	private final Optional<DslMultiField> multiField;
+	private final Optional<DslField> fieldOptional;
+	private final Optional<DslMultiField> multiFieldOptional;
 
 	private final DslQuery query;
 	private final String postBody; //Spaces like
@@ -53,8 +53,8 @@ public final class DslExpression {
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;
-		this.field = field;
-		this.multiField = multiField;
+		fieldOptional = field;
+		multiFieldOptional = multiField;
 		this.query = query;
 		this.postBody = postBody;
 	}
@@ -62,18 +62,10 @@ public final class DslExpression {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder()
-				.append(preBody);
-		if (field.isPresent()) {
-			sb.append(field.get())
-					.append(':');
-		}
-		if (multiField.isPresent()) {
-			sb.append(multiField.get())
-					.append(':');
-		}
-		sb.append(query)
-				.append(postBody);
+		final StringBuilder sb = new StringBuilder(preBody);
+		fieldOptional.ifPresent(field -> sb.append(field).append(':'));
+		multiFieldOptional.ifPresent(multiField -> sb.append(multiField).append(':'));
+		sb.append(query).append(postBody);
 		return sb.toString();
 	}
 
@@ -88,7 +80,7 @@ public final class DslExpression {
 	 * @return optional Field
 	 */
 	public Optional<DslField> getField() {
-		return field;
+		return fieldOptional;
 	}
 
 	/**
@@ -96,7 +88,7 @@ public final class DslExpression {
 	 */
 
 	public Optional<DslMultiField> getMultiField() {
-		return multiField;
+		return multiFieldOptional;
 	}
 
 	/**
