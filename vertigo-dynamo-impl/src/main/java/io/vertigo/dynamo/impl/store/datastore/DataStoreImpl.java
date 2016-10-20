@@ -141,10 +141,10 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<E> dtc = cacheDataStore.loadList(uri);
+		final DtList<E> list = cacheDataStore.findAll(uri);
 		//-----
-		Assertion.checkNotNull(dtc);
-		return dtc;
+		Assertion.checkNotNull(list);
+		return list;
 	}
 
 	/** {@inheritDoc} */
