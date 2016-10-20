@@ -129,7 +129,7 @@ public final class Attachment implements Entity {
 			}
 		}
 		if (command == null) {
-			command = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+			command = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return command;
 	}

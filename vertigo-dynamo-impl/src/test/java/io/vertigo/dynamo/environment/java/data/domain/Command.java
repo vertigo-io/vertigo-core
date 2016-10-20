@@ -134,7 +134,7 @@ public final class Command implements KeyConcept {
 			}
 		}
 		if (commandType == null) {
-			commandType = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+			commandType = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return commandType;
 	}
@@ -170,7 +170,7 @@ public final class Command implements KeyConcept {
 			}
 		}
 		if (city == null) {
-			city = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+			city = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return city;
 	}

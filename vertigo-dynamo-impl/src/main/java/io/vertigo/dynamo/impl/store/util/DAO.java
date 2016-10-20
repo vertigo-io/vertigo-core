@@ -170,7 +170,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Object recherché
 	 */
 	public final E get(final URI<E> uri) {
-		return dataStore.<E> read(uri);
+		return dataStore.<E> readOne(uri);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return F Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
-		final E dto = dataStore.<E> read(uri);
+		final E dto = dataStore.<E> readOne(uri);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
 		for (final DtField fragmentField : fragmentDefinition.getFields()) {

@@ -72,23 +72,24 @@ public final class CacheDataStore {
 	 * @param uri Element uri
 	 * @return Element by uri
 	 */
-	public <E extends Entity> E load(final URI<E> uri) {
+	public <E extends Entity> E loadOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		E dto;
+		E entity;
 		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
 			// - Prise en compte du cache
-			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 			// - Prise en compte du cache
-			if (dto == null) {
+			if (entity == null) {
 				//Cas ou le dto représente un objet non mis en cache
-				dto = this.<E> reload(dtDefinition, uri);
+				entity = this.<E> reload(dtDefinition, uri);
 			}
 		} else {
-			dto = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
 		}
-		return dto;
+		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
+		return entity;
 	}
 
 	private synchronized <E extends Entity> E reload(final DtDefinition dtDefinition, final URI<E> uri) {

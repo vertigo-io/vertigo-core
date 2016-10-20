@@ -127,12 +127,12 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E read(final URI<E> uri) {
+	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> load(uri);
+		final E entity = cacheDataStore.<E> loadOne(uri);
 		//-----
-		Assertion.checkNotNull(entity, "L''objet {0} n''a pas été trouvé", uri);
+		Assertion.checkNotNull(entity);
 		return entity;
 	}
 

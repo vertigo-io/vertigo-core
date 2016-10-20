@@ -48,7 +48,7 @@ public interface DataStore {
 	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<E extends Entity> E read(final URI<E> uri);
+	<E extends Entity> E readOne(final URI<E> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
