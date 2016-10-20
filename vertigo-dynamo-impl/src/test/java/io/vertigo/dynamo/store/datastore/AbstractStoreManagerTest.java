@@ -204,7 +204,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_COUNT_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutAttribute("count", new DomainBuilder("DO_COUNT", DataType.Long).build())
+				.withOutAttributeRequired("count", new DomainBuilder("DO_COUNT", DataType.Long).build())
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
@@ -228,7 +228,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
-				.addInAttribute("DTO_CAR", doCar, true)
+				.addInAttributeRequired("DTO_CAR", doCar)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -246,7 +246,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
-				.withOutAttribute("dtc", doCarList)
+				.withOutAttributeRequired("dtc", doCarList)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

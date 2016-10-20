@@ -445,10 +445,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute("PARAM_1", doInteger, true)
-				.addInAttribute("PARAM_2", doInteger, false)
-				.addInAttribute("PARAM_3", doInteger, false)
-				.withOutAttribute("dtc", doSuperHeroes)
+				.addInAttributeRequired("PARAM_1", doInteger)
+				.addInAttributeOptional("PARAM_2", doInteger)
+				.addInAttributeOptional("PARAM_3", doInteger)
+				.withOutAttributeRequired("dtc", doSuperHeroes)
 				.build();
 	}
 
@@ -461,8 +461,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTO_SUPER_HERO, doSupeHero, true)
-				.withOutAttribute("dtc", doSupeHeroes)
+				.addInAttributeRequired(DTO_SUPER_HERO, doSupeHero)
+				.withOutAttributeRequired("dtc", doSupeHeroes)
 				.build();
 	}
 
@@ -474,8 +474,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTC_SUPER_HERO_IN, doSupeHeroes, true)
-				.withOutAttribute("dtc", doSupeHeroes)
+				.addInAttributeRequired(DTC_SUPER_HERO_IN, doSupeHeroes)
+				.withOutAttributeRequired("dtc", doSupeHeroes)
 				.build();
 	}
 

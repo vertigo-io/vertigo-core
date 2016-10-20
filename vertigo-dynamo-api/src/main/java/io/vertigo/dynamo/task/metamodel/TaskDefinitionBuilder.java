@@ -115,13 +115,21 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
+	private TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, required);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
+	}
+
+	public TaskDefinitionBuilder addInAttributeRequired(final String attributeName, final Domain domain) {
+		return addInAttribute(attributeName, domain, true);
+	}
+
+	public TaskDefinitionBuilder addInAttributeOptional(final String attributeName, final Domain domain) {
+		return addInAttribute(attributeName, domain, false);
 	}
 
 	/**
@@ -138,11 +146,11 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain) {
+	public TaskDefinitionBuilder withOutAttributeRequired(final String attributeName, final Domain domain) {
 		return withOutAttribute(attributeName, domain, true);
 	}
 
-	public TaskDefinitionBuilder withOptionalOutAttribute(final String attributeName, final Domain domain) {
+	public TaskDefinitionBuilder withOutAttributeOptional(final String attributeName, final Domain domain) {
 		return withOutAttribute(attributeName, domain, false);
 	}
 

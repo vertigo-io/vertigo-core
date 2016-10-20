@@ -150,8 +150,8 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dtDef.getDataSpace())
 				.withRequest(request)
-				.addInAttribute(inDtcName, dtcDomain, true)
-				.withOutAttribute("out", dtcDomain)
+				.addInAttributeRequired(inDtcName, dtcDomain)
+				.withOutAttributeRequired("out", dtcDomain)
 				.build();
 
 		// On exécute par paquet
