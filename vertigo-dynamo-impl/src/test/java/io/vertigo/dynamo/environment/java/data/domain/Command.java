@@ -127,9 +127,7 @@ public final class Command implements KeyConcept {
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (commandType != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(commandType);
-			if (!fkURI.urn().equals(uri.urn())) {
+			if (!fkURI.equals(commandType.getURI())) {
 				commandType = null;
 			}
 		}
@@ -163,9 +161,7 @@ public final class Command implements KeyConcept {
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (city != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(city);
-			if (!fkURI.urn().equals(uri.urn())) {
+			if (!fkURI.equals(city.getURI())) {
 				city = null;
 			}
 		}
