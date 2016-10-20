@@ -69,14 +69,16 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readForUpdate(final URI<E> uri) {
+	public <E extends Entity> E readOneForUpdate(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final E value = getPhysicalStore(dtDefinition).<E> readForUpdate(dtDefinition, uri);
+		final E entity = getPhysicalStore(dtDefinition).<E> readNullableForUpdate(dtDefinition, uri);
+		//-----
+		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
 		fireAfterCommit(StoreEvent.Type.Update, uri);
-		return value;
+		return entity;
 	}
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
@@ -130,9 +132,9 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> readOne(uri);
+		final E entity = cacheDataStore.<E> readNullable(uri);
 		//-----
-		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
 	}
 

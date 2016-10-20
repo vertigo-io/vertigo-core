@@ -131,12 +131,11 @@ public interface DataStorePlugin extends Plugin {
 
 	/**
 	 * Load for update.
-	 * Can be null.
 	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
 }

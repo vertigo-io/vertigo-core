@@ -72,7 +72,7 @@ public final class CacheDataStore {
 	 * @param uri Element uri
 	 * @return Element by uri
 	 */
-	public <E extends Entity> E readOne(final URI<E> uri) {
+	public <E extends Entity> E readNullable(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -88,7 +88,6 @@ public final class CacheDataStore {
 		} else {
 			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
 		}
-		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
 	}
 

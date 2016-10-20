@@ -65,7 +65,7 @@ public interface DataStore {
 	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<E extends Entity> E readForUpdate(URI<E> uri);
+	<E extends Entity> E readOneForUpdate(URI<E> uri);
 
 	/**
 	* Create an object.

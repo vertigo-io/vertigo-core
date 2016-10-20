@@ -725,7 +725,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			storeManager.getDataStore().readForUpdate(car.getURI());
+			storeManager.getDataStore().readOneForUpdate(car.getURI());
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}
