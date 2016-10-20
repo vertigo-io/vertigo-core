@@ -78,7 +78,11 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
 				taskDefinitionBuilder.addInAttribute(attributeName, domain, required.booleanValue());
 			} else {
-				taskDefinitionBuilder.withOutAttribute(attributeName, domain, required.booleanValue());
+				if (required.booleanValue()) {
+					taskDefinitionBuilder.withOutAttribute(attributeName, domain);
+				} else {
+					taskDefinitionBuilder.withOptionalOutAttribute(attributeName, domain);
+				}
 			}
 		}
 		return taskDefinitionBuilder.build();

@@ -204,7 +204,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_COUNT_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutAttribute("count", new DomainBuilder("DO_COUNT", DataType.Long).build(), true)
+				.withOutAttribute("count", new DomainBuilder("DO_COUNT", DataType.Long).build())
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
@@ -246,7 +246,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
-				.withOutAttribute("dtc", doCarList, true)
+				.withOutAttribute("dtc", doCarList)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

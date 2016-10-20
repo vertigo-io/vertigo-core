@@ -195,7 +195,7 @@ final class BrokerNNImpl implements BrokerNN {
 			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), true);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
+		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
 		/* Création de la tache. */

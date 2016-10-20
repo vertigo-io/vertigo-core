@@ -132,10 +132,18 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
+	private TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
 		//-----
 		myOutTaskAttribute = new TaskAttribute(attributeName, domain, required);
 		return this;
+	}
+
+	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain) {
+		return withOutAttribute(attributeName, domain, true);
+	}
+
+	public TaskDefinitionBuilder withOptionalOutAttribute(final String attributeName, final Domain domain) {
+		return withOutAttribute(attributeName, domain, false);
 	}
 
 	/** {@inheritDoc} */

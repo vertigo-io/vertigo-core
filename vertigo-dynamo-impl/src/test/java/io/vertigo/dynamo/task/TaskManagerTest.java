@@ -184,7 +184,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.addInAttribute(ATTR_IN_INT_1, doInteger, true)
 				.addInAttribute(ATTR_IN_INT_2, doInteger, true)
 				.addInAttribute(ATTR_IN_INT_3, doInteger, true)
-				.withOutAttribute(ATTR_OUT, doInteger, true)
+				.withOutAttribute(ATTR_OUT, doInteger)
 				.build();
 	}
 

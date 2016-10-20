@@ -58,7 +58,7 @@ public final class FilterCriteriaBuilder<E extends Entity> implements Builder<Fi
 	 * @return Builder
 	 */
 	public FilterCriteriaBuilder<E> addPrefix(final DtFieldName fieldName, final String prefix) {
-		return withPrefix(fieldName.name(), prefix);
+		return addPrefix(fieldName.name(), prefix);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public final class FilterCriteriaBuilder<E extends Entity> implements Builder<Fi
 	 * @param prefix Préfix du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<E> withPrefix(final String fieldName, final String prefix) {
+	public FilterCriteriaBuilder<E> addPrefix(final String fieldName, final String prefix) {
 		Assertion.checkNotNull(prefix);
 		check(fieldName);
 		//-----
