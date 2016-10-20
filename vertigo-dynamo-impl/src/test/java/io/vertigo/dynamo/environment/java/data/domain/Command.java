@@ -125,13 +125,7 @@ public final class Command implements KeyConcept {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (commandType != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(commandType.getURI())) {
-				commandType = null;
-			}
-		}
-		if (commandType == null) {
+		if (commandType == null || !fkURI.equals(commandType.getURI())) {
 			commandType = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return commandType;
@@ -159,13 +153,7 @@ public final class Command implements KeyConcept {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (city != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(city.getURI())) {
-				city = null;
-			}
-		}
-		if (city == null) {
+		if (city == null || !fkURI.equals(city.getURI())) {
 			city = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return city;
