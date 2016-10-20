@@ -72,7 +72,7 @@ public final class CacheDataStore {
 	 * @param uri Element uri
 	 * @return Element by uri
 	 */
-	public <E extends Entity> E loadOne(final URI<E> uri) {
+	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -83,16 +83,16 @@ public final class CacheDataStore {
 			// - Prise en compte du cache
 			if (entity == null) {
 				//Cas ou le dto représente un objet non mis en cache
-				entity = this.<E> reload(dtDefinition, uri);
+				entity = this.<E> reloadNullable(dtDefinition, uri);
 			}
 		} else {
-			entity = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
 		}
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
 	}
 
-	private synchronized <E extends Entity> E reload(final DtDefinition dtDefinition, final URI<E> uri) {
+	private synchronized <E extends Entity> E reloadNullable(final DtDefinition dtDefinition, final URI<E> uri) {
 		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
@@ -101,8 +101,10 @@ public final class CacheDataStore {
 			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			entity = getPhysicalStore(dtDefinition).read(dtDefinition, uri);
-			cacheDataStoreConfig.getDataCache().putDtObject(entity);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
+			if (entity != null) {
+				cacheDataStoreConfig.getDataCache().putDtObject(entity);
+			}
 		}
 		return entity;
 	}

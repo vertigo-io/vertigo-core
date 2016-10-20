@@ -61,14 +61,13 @@ public interface DataStorePlugin extends Plugin {
 
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
-	 * Peut-être null.
 	 *
 	 * @param uri URI de l'objet à charger
 	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E read(DtDefinition dtDefinition, URI<E> uri);
+	<E extends Entity> E readNullable(DtDefinition dtDefinition, URI<E> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.

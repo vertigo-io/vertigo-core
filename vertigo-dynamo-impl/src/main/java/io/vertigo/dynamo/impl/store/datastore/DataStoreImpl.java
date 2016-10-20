@@ -130,7 +130,7 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> loadOne(uri);
+		final E entity = cacheDataStore.<E> readOne(uri);
 		//-----
 		Assertion.checkNotNull(entity);
 		return entity;
