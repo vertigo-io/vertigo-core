@@ -42,7 +42,7 @@ public abstract class DtListURI implements Serializable {
 	/**
 	 * URN de la ressource (Nom complet)
 	 */
-	private final String urn;
+	private String urn;
 
 	/**
 	 * Constructeur.
@@ -50,8 +50,6 @@ public abstract class DtListURI implements Serializable {
 	 */
 	public DtListURI(final DtDefinition dtDefinition) {
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		urn = buildUrn();
-		Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
 	}
 
 	/**
@@ -84,7 +82,11 @@ public abstract class DtListURI implements Serializable {
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
 	 */
-	public final String urn() {
+	public synchronized final String urn() {
+		if (urn == null) {
+			urn = buildUrn();
+			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
+		}
 		return urn;
 	}
 
