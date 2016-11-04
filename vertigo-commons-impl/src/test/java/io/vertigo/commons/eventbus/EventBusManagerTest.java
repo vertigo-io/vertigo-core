@@ -18,9 +18,10 @@
  */
 package io.vertigo.commons.eventbus;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -58,21 +59,21 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 		eventBusManager.post(new WhiteColorEvent());
 		eventBusManager.post(new RedColorEvent());
 
-		Assert.assertEquals(1, mySuscriber1.getBlueCount());
-		Assert.assertEquals(1, mySuscriber1.getRedCount());
-		Assert.assertEquals(3, mySuscriber1.getCount());
+		assertEquals(1, mySuscriber1.getBlueCount());
+		assertEquals(1, mySuscriber1.getRedCount());
+		assertEquals(3, mySuscriber1.getCount());
 
-		Assert.assertEquals(1, mySuscriber2.getBlueCount());
-		Assert.assertEquals(1, mySuscriber2.getRedCount());
-		Assert.assertEquals(3, mySuscriber2.getCount());
+		assertEquals(1, mySuscriber2.getBlueCount());
+		assertEquals(1, mySuscriber2.getRedCount());
+		assertEquals(3, mySuscriber2.getCount());
 
-		Assert.assertEquals(0, deadEvents);
+		assertEquals(0, deadEvents);
 	}
 
 	@Test
 	public void testDeadEvent() {
-		Assert.assertEquals(0, deadEvents);
+		assertEquals(0, deadEvents);
 		eventBusManager.post(new DummyEvent());
-		Assert.assertEquals(1, deadEvents);
+		assertEquals(1, deadEvents);
 	}
 }

@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.codec.hash;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractEncoderTest;
@@ -53,6 +54,6 @@ public final class HashCodecSha256Test extends AbstractEncoderTest<Encoder<byte[
 	public void testEncode() {
 		//Caractères simples sans encodage
 		//256 bits attendus soit 32 Octets
-		Assert.assertEquals(32, codec.encode(TEXT.getBytes()).length);
+		assertEquals(32, codec.encode(TEXT.getBytes()).length);
 	}
 }

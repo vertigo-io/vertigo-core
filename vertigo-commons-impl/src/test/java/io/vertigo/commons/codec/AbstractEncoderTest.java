@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.codec;
 
-import javax.inject.Inject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
+import javax.inject.Inject;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
@@ -72,7 +72,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 
 	protected final void checkEncode(final S value, final T expectedEncodedValue) {
 		final T encodedValue = codec.encode(value);
-		Assert.assertEquals(expectedEncodedValue, encodedValue);
+		assertEquals(expectedEncodedValue, encodedValue);
 		checkEncodedValue(encodedValue);
 	}
 

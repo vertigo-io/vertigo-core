@@ -18,9 +18,11 @@
  */
 package io.vertigo.commons.daemon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -37,22 +39,22 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testSimple() throws Exception {
 		DaemonStat daemonStat = daemonManager.getStats().get(0);
-		Assert.assertEquals(0, daemonStat.getCount());
-		Assert.assertEquals(0, daemonStat.getFailures());
-		Assert.assertEquals(0, daemonStat.getSuccesses());
-		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
+		assertEquals(0, daemonStat.getCount());
+		assertEquals(0, daemonStat.getFailures());
+		assertEquals(0, daemonStat.getSuccesses());
+		assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
-		Assert.assertEquals(0, fakeComponent.getExecutionCount());
+		assertEquals(0, fakeComponent.getExecutionCount());
 		// -----
 		Thread.sleep(5000); //soit deux execs
 
 		daemonStat = daemonManager.getStats().get(0);
-		Assert.assertEquals(2, daemonStat.getCount());
-		Assert.assertEquals(1, daemonStat.getFailures());
-		Assert.assertEquals(1, daemonStat.getSuccesses());
-		Assert.assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
+		assertEquals(2, daemonStat.getCount());
+		assertEquals(1, daemonStat.getFailures());
+		assertEquals(1, daemonStat.getSuccesses());
+		assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
-		Assert.assertTrue(fakeComponent.getExecutionCount() > 0);
+		assertTrue(fakeComponent.getExecutionCount() > 0);
 
 	}
 

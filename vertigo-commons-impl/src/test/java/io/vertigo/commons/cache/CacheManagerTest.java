@@ -18,13 +18,17 @@
  */
 package io.vertigo.commons.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -61,7 +65,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		cacheManager.put(CONTEXT, KEY, value);
 		final Object retrieve = cacheManager.get(CONTEXT, KEY);
 		//On vérifie qu'il s'agit du même objet.
-		Assert.assertEquals(value, retrieve);
+		assertEquals(value, retrieve);
 	}
 
 	/**
@@ -71,8 +75,8 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	public void testRemove1() {
 		testPut1();
 		// vérification de suppression d'un element
-		Assert.assertTrue(cacheManager.remove(CONTEXT, KEY));
-		Assert.assertNull(cacheManager.get(CONTEXT, KEY));
+		assertTrue(cacheManager.remove(CONTEXT, KEY));
+		assertNull(cacheManager.get(CONTEXT, KEY));
 	}
 
 	/**
@@ -82,7 +86,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	public void testClear() {
 		testPut1();
 		cacheManager.clear(CONTEXT);
-		Assert.assertNull(cacheManager.get(CONTEXT, KEY));
+		assertNull(cacheManager.get(CONTEXT, KEY));
 	}
 
 	/**
@@ -92,7 +96,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	public void testClearAll() {
 		testPut1();
 		cacheManager.clearAll();
-		Assert.assertNull(cacheManager.get(CONTEXT, KEY));
+		assertNull(cacheManager.get(CONTEXT, KEY));
 	}
 
 	/**
@@ -110,20 +114,20 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
@@ -145,20 +149,20 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			Assert.assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_RO, key));
 		}
 		//assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
