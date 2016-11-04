@@ -18,7 +18,10 @@
  */
 package io.vertigo.core.component.aop;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -37,23 +40,23 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	@Test
 	public final void testNo() {
 		final Computer computer = getApp().getComponentSpace().resolve(Computer.class);
-		Assert.assertEquals(66, computer.no(66));
+		assertEquals(66, computer.no(66));
 	}
 
 	@Test
 	public final void testOneMoreOnMethod() {
 		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
-		Assert.assertEquals(6, comp.sum(2, 3));
+		assertEquals(6, comp.sum(2, 3));
 	}
 
 	@Test
 	public final void testOneMoreOnClass() {
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
-		Assert.assertEquals(11, f.getValue(10));
-		Assert.assertEquals(12, f.getValue2(10));
-		Assert.assertEquals(22, f.getValue3(10));
+		assertEquals(11, f.getValue(10));
+		assertEquals(12, f.getValue2(10));
+		assertEquals(22, f.getValue3(10));
 
 	}
 
@@ -61,44 +64,44 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	public final void testOneMoreTenMore() {
 		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
-		Assert.assertEquals(17, comp.multi(2, 3));
+		assertEquals(17, comp.multi(2, 3));
 	}
 
 	@Override
 	protected void doAfterTearDown() throws Exception {
 		if (a != null) {
-			Assert.assertTrue(a.isInitialized());
-			Assert.assertTrue(a.isFinalized());
+			assertTrue(a.isInitialized());
+			assertTrue(a.isFinalized());
 		}
 		if (b != null) {
-			Assert.assertTrue(b.isInitialized());
-			Assert.assertTrue(b.isFinalized());
+			assertTrue(b.isInitialized());
+			assertTrue(b.isFinalized());
 		}
 		if (c != null) {
-			Assert.assertTrue(c.isInitialized());
-			Assert.assertTrue(c.isFinalized());
+			assertTrue(c.isInitialized());
+			assertTrue(c.isFinalized());
 		}
 	}
 
 	@Test
 	public void testNonProxiedWithAnnotation() {
 		a = getApp().getComponentSpace().resolve("a", A.class);
-		Assert.assertTrue(a.isInitialized());
-		Assert.assertFalse(a.isFinalized());
+		assertTrue(a.isInitialized());
+		assertFalse(a.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithInterface() {
 		b = getApp().getComponentSpace().resolve(B.class);
-		Assert.assertTrue(b.isInitialized());
-		Assert.assertFalse(b.isFinalized());
+		assertTrue(b.isInitialized());
+		assertFalse(b.isFinalized());
 	}
 
 	@Test
 	public void testProxyWithObjectInterface() {
 		c = getApp().getComponentSpace().resolve("c", C.class);
-		Assert.assertTrue(c.isInitialized());
-		Assert.assertFalse(c.isFinalized());
+		assertTrue(c.isInitialized());
+		assertFalse(c.isFinalized());
 	}
 
 	@Test(expected = MyException.class)

@@ -18,9 +18,10 @@
  */
 package io.vertigo.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public final class MapBuilderTest {
@@ -33,8 +34,8 @@ public final class MapBuilderTest {
 				.unmodifiable()
 				.build();
 
-		Assert.assertEquals(3, map.size());
-		Assert.assertEquals(2, map.get("two").intValue());
+		assertEquals(3, map.size());
+		assertEquals(2, map.get("two").intValue());
 	}
 
 	@Test
@@ -46,7 +47,7 @@ public final class MapBuilderTest {
 				.build();
 
 		map.put("nine", 9);
-		Assert.assertEquals(4, map.size());
+		assertEquals(4, map.size());
 	}
 
 	@Test(expected = Exception.class)

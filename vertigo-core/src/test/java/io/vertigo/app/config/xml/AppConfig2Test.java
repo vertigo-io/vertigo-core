@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config.xml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Properties;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
@@ -36,12 +38,12 @@ public final class AppConfig2Test {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			Assert.assertEquals(app, app);
-			Assert.assertTrue(app.getComponentSpace().contains("bioManager"));
+			assertEquals(app, app);
+			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
+			assertEquals(366, res);
+			assertTrue(bioManager.isActive());
 		}
 	}
 }

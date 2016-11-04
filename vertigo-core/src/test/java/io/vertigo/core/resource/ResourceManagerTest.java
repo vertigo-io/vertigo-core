@@ -18,11 +18,12 @@
  */
 package io.vertigo.core.resource;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URL;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -64,6 +65,6 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	public void testResourceSelector() {
 		final String expected = "io/vertigo/core/resource/hello.properties";
 		final URL url = resourceManager.resolve(expected);
-		Assert.assertTrue(url.getPath().indexOf(expected) != -1);
+		assertTrue(url.getPath().indexOf(expected) != -1);
 	}
 }

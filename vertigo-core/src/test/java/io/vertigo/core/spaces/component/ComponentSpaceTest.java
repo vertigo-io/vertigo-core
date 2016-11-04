@@ -18,7 +18,9 @@
  */
 package io.vertigo.core.spaces.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
@@ -56,8 +58,8 @@ public final class ComponentSpaceTest {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
+			assertEquals(366, res);
+			assertTrue(bioManager.isActive());
 		}
 	}
 

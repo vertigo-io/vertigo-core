@@ -18,9 +18,12 @@
  */
 package io.vertigo.core.param;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -35,7 +38,7 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1() {
 		final String value = paramManager.getStringValue("server.host");
-		Assert.assertEquals("wiki", value);
+		assertEquals("wiki", value);
 	}
 
 	@Test(expected = Exception.class)
@@ -46,7 +49,7 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test3() {
 		final int value = paramManager.getIntValue("server.port");
-		Assert.assertEquals(8080, value);
+		assertEquals(8080, value);
 	}
 
 	@Test(expected = Exception.class)
@@ -57,13 +60,13 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test5() {
 		final boolean value = paramManager.getBooleanValue("server.active");
-		Assert.assertTrue(value);
+		assertTrue(value);
 	}
 
 	@Test
 	public void test6() {
 		final boolean value = paramManager.getBooleanValue("server.verbose");
-		Assert.assertFalse(value);
+		assertFalse(value);
 	}
 
 	@Test(expected = Exception.class)

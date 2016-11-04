@@ -18,12 +18,14 @@
  */
 package io.vertigo.core.locale;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.Serializable;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -65,7 +67,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testDefaultDisplay() {
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
-		Assert.assertEquals("bonjour", helloTxt.getDisplay());
+		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
 	@Test
@@ -74,19 +76,19 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		localeManager.override("io.vertigo.core.locale.data.popular-guide", CityGuide.values());
 
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
-		Assert.assertEquals("salut", helloTxt.getDisplay());
+		assertEquals("salut", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testMessage() {
-		Assert.assertEquals("bonjour", localeManager.getMessage(CityGuide.HELLO, Locale.FRANCE));
-		Assert.assertEquals("guten tag", localeManager.getMessage(CityGuide.HELLO, Locale.GERMANY));
-		Assert.assertEquals("hello", localeManager.getMessage(CityGuide.HELLO, Locale.ENGLISH));
+		assertEquals("bonjour", localeManager.getMessage(CityGuide.HELLO, Locale.FRANCE));
+		assertEquals("guten tag", localeManager.getMessage(CityGuide.HELLO, Locale.GERMANY));
+		assertEquals("hello", localeManager.getMessage(CityGuide.HELLO, Locale.ENGLISH));
 	}
 
 	@Test
 	public void testCurrentLocale() {
-		Assert.assertEquals(Locale.FRANCE, localeManager.getCurrentLocale());
+		assertEquals(Locale.FRANCE, localeManager.getCurrentLocale());
 	}
 
 	@Test
@@ -97,16 +99,16 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return Locale.GERMANY;
 			}
 		});
-		Assert.assertEquals(Locale.GERMANY, localeManager.getCurrentLocale());
+		assertEquals(Locale.GERMANY, localeManager.getCurrentLocale());
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
-		Assert.assertEquals("guten tag", helloTxt.getDisplay());
+		assertEquals("guten tag", helloTxt.getDisplay());
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnknown() {
 		//On vérifie que l'on ne connait pas le japonais
-		Assert.assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE));
+		assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE));
 	}
 
 	@Test
@@ -119,7 +121,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		});
 		//On vérifie que l'on ne connait pas le japonais et que l'on retombe sur la langue par défaut
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
-		Assert.assertEquals("bonjour", helloTxt.getDisplay());
+		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
 	@Test
@@ -135,9 +137,9 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return "HELLO";
 			}
 		};
-		Assert.assertEquals("bonjour", localeManager.getMessage(key, Locale.FRANCE));
-		Assert.assertEquals("guten tag", localeManager.getMessage(key, Locale.GERMANY));
-		Assert.assertEquals("hello", localeManager.getMessage(key, Locale.ENGLISH));
+		assertEquals("bonjour", localeManager.getMessage(key, Locale.FRANCE));
+		assertEquals("guten tag", localeManager.getMessage(key, Locale.GERMANY));
+		assertEquals("hello", localeManager.getMessage(key, Locale.ENGLISH));
 	}
 
 	@Test
@@ -151,7 +153,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 			}
 		};
 		final MessageText helloTxt = new MessageText("bonjour par défaut", key);
-		Assert.assertEquals("bonjour par défaut", helloTxt.getDisplay());
+		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
 	@Test
@@ -165,7 +167,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 			}
 		};
 		final MessageText helloTxt = new MessageText(key);
-		Assert.assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
+		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 	}
 
 	@Test
@@ -180,21 +182,21 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		};
 		final Serializable param = null;
 		MessageText helloTxt = new MessageText(key);
-		Assert.assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
+		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 
 		helloTxt = new MessageText(key, param);
-		Assert.assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
+		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText(key, null);
-		//		Assert.assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
+		//		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		helloTxt = new MessageText(key, null, null);
-		Assert.assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
+		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
 		helloTxt = new MessageText("default", null);
-		Assert.assertEquals("default", helloTxt.getDisplay());
+		assertEquals("default", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText("default", null, null);
-		//		Assert.assertEquals("default", helloTxt.getDisplay());
+		//		assertEquals("default", helloTxt.getDisplay());
 	}
 }

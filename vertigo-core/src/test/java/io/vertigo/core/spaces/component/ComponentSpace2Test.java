@@ -18,9 +18,11 @@
  */
 package io.vertigo.core.spaces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -39,13 +41,13 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Test
 	public void testCalcul() {
 		final int res = bioManager.add(1, 2, 3);
-		Assert.assertEquals(366, res);
+		assertEquals(366, res);
 	}
 
 	//On vérifie que les composants ont bien été démarrés
 	@Test
 	public void testActive() {
-		Assert.assertTrue(bioManager.isActive());
+		assertTrue(bioManager.isActive());
 	}
 
 	@Override

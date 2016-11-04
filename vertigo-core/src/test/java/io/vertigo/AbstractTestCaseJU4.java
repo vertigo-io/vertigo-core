@@ -18,11 +18,12 @@
  */
 package io.vertigo;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
 import io.vertigo.app.App;
@@ -129,7 +130,7 @@ public abstract class AbstractTestCaseJU4 {
 		if (manager instanceof Describable) {
 			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
 			for (final ComponentInfo componentInfo : componentInfos) {
-				Assert.assertNotNull(componentInfo);
+				assertNotNull(componentInfo);
 			}
 		}
 	}

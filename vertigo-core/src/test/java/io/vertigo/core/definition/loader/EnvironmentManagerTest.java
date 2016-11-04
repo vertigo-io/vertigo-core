@@ -27,8 +27,8 @@ import static io.vertigo.core.definition.loader.PersonGrammar.MALE;
 import static io.vertigo.core.definition.loader.PersonGrammar.NAME;
 import static io.vertigo.core.definition.loader.PersonGrammar.POSTAL_CODE;
 import static io.vertigo.core.definition.loader.PersonGrammar.STREET;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -79,7 +79,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 		dynamicDefinitionRepository.addDefinition(personDefinition);
 
 		dynamicDefinitionRepository.solve(definitionSpace);
-		Assert.assertNotNull(personDefinition);
+		assertNotNull(personDefinition);
 	}
 
 	@Test(expected = ClassCastException.class)

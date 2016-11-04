@@ -18,7 +18,8 @@
  */
 package io.vertigo.util;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -42,21 +43,21 @@ public final class BeanUtilTest {
 	public void testgetAuthor() {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
-		Assert.assertEquals("Murakami", BeanUtil.getValue(book, "author"));
+		assertEquals("Murakami", BeanUtil.getValue(book, "author"));
 	}
 
 	@Test(expected = Exception.class)
 	public void testFailgetAuthor() {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
-		Assert.assertEquals("Murakami", BeanUtil.getValue(book, "creator"));
+		assertEquals("Murakami", BeanUtil.getValue(book, "creator"));
 	}
 
 	@Test
 	public void testsetAuthor() {
 		final Book book = new Book();
 		BeanUtil.setValue(book, "author", "Mishima");
-		Assert.assertEquals("Mishima", BeanUtil.getValue(book, "author"));
+		assertEquals("Mishima", BeanUtil.getValue(book, "author"));
 	}
 
 	@Test(expected = Exception.class)

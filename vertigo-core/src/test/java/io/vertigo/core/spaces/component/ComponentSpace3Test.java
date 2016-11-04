@@ -18,7 +18,8 @@
  */
 package io.vertigo.core.spaces.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
@@ -37,12 +38,12 @@ public final class ComponentSpace3Test {
 		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(true);
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
-			Assert.assertEquals(4, functionManager.compute("x+1", 3));
-			Assert.assertEquals(6, functionManager.compute("2x", 3));
-			Assert.assertEquals(15, functionManager.compute("4x+3", 3));
-			Assert.assertEquals(1, functionManager.compute("0x+1", 3));
-			Assert.assertEquals(-7, functionManager.compute("x-10", 3));
-			Assert.assertEquals(-9, functionManager.computeAll(3));
+			assertEquals(4, functionManager.compute("x+1", 3));
+			assertEquals(6, functionManager.compute("2x", 3));
+			assertEquals(15, functionManager.compute("4x+3", 3));
+			assertEquals(1, functionManager.compute("0x+1", 3));
+			assertEquals(-7, functionManager.compute("x-10", 3));
+			assertEquals(-9, functionManager.computeAll(3));
 		}
 	}
 
@@ -51,7 +52,7 @@ public final class ComponentSpace3Test {
 		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(false);
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
-			Assert.assertEquals(26, functionManager.computeAll(3));
+			assertEquals(26, functionManager.computeAll(3));
 		}
 	}
 
@@ -60,12 +61,12 @@ public final class ComponentSpace3Test {
 		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(true);
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
-			Assert.assertEquals(4, functionManager.compute("x+1", 3));
-			Assert.assertEquals(6, functionManager.compute("2x", 3));
-			Assert.assertEquals(15, functionManager.compute("4x+3", 3));
-			Assert.assertEquals(1, functionManager.compute("0x+1", 3));
-			Assert.assertEquals(-7, functionManager.compute("x-10", 3));
-			Assert.assertEquals(-9, functionManager.computeAll(3));
+			assertEquals(4, functionManager.compute("x+1", 3));
+			assertEquals(6, functionManager.compute("2x", 3));
+			assertEquals(15, functionManager.compute("4x+3", 3));
+			assertEquals(1, functionManager.compute("0x+1", 3));
+			assertEquals(-7, functionManager.compute("x-10", 3));
+			assertEquals(-9, functionManager.computeAll(3));
 		}
 	}
 
@@ -74,7 +75,7 @@ public final class ComponentSpace3Test {
 		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(false);
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
-			Assert.assertEquals(26, functionManager.computeAll(3));
+			assertEquals(26, functionManager.computeAll(3));
 		}
 	}
 

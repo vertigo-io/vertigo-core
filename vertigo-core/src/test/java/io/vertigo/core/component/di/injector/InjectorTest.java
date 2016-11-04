@@ -18,12 +18,15 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.core.component.di.DIException;
@@ -131,7 +134,6 @@ public final class InjectorTest {
 		container.put("a", a);
 		final B2 b2 = Injector.newInstance(B2.class, container);
 		nop(b2);
-		Assert.fail();
 	}
 
 	@Test
@@ -140,7 +142,7 @@ public final class InjectorTest {
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
 		final B b = Injector.newInstance(B.class, container);
-		Assert.assertEquals(a, b.getA());
+		assertEquals(a, b.getA());
 	}
 
 	@Test
@@ -150,11 +152,11 @@ public final class InjectorTest {
 		container.put("a", a);
 		container.put("p3", new P3());
 		E e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isPresent());
-		Assert.assertEquals(a, e.getA().get());
-		Assert.assertFalse(e.getB().isPresent());
-		Assert.assertEquals(0, e.getPPlugins().size());
-		Assert.assertEquals(0, e.getP2Plugins().size());
+		assertTrue(e.getA().isPresent());
+		assertEquals(a, e.getA().get());
+		assertFalse(e.getB().isPresent());
+		assertEquals(0, e.getPPlugins().size());
+		assertEquals(0, e.getP2Plugins().size());
 		//-----
 		container.put("p", new P());
 		container.put("p#1", new P());
@@ -162,11 +164,11 @@ public final class InjectorTest {
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
 		e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isPresent());
-		Assert.assertEquals(a, e.getA().get());
-		Assert.assertFalse(e.getB().isPresent());
-		Assert.assertEquals(2, e.getPPlugins().size());
-		Assert.assertEquals(3, e.getP2Plugins().size());
+		assertTrue(e.getA().isPresent());
+		assertEquals(a, e.getA().get());
+		assertFalse(e.getB().isPresent());
+		assertEquals(2, e.getPPlugins().size());
+		assertEquals(3, e.getP2Plugins().size());
 	}
 
 	@Test
@@ -178,11 +180,11 @@ public final class InjectorTest {
 		container.put("param2", "test2");
 		container.put("param3", "test3");
 		final F f = Injector.newInstance(F.class, container);
-		Assert.assertEquals(f.getA(), a);
-		Assert.assertEquals(f.getParam1(), "test1");
-		Assert.assertEquals(f.getParam2(), "test2");
-		Assert.assertTrue(f.getParam3().isPresent());
-		Assert.assertEquals(f.getParam3().get(), "test3");
-		Assert.assertFalse(f.getParam4().isPresent());
+		assertEquals(f.getA(), a);
+		assertEquals(f.getParam1(), "test1");
+		assertEquals(f.getParam2(), "test2");
+		assertTrue(f.getParam3().isPresent());
+		assertEquals(f.getParam3().get(), "test3");
+		assertFalse(f.getParam4().isPresent());
 	}
 }
