@@ -18,17 +18,24 @@
  */
 package io.vertigo.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.expectThrows;
+
 import java.util.Calendar;
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
-* Test de l'utilitaitre de manipulation des dates.
-*
-* @author pchretien
-*/
+ * Test de l'utilitaitre de manipulation des dates.
+ *
+ * @author pchretien
+ */
+@RunWith(JUnitPlatform.class)
 public final class DateUtilTest {
 
 	@Test
@@ -36,7 +43,7 @@ public final class DateUtilTest {
 		final Date date = DateUtil.newDate();
 		final Date dateTime = DateUtil.newDateTime();
 
-		Assert.assertEquals(date, new DateBuilder(dateTime).build());
+		assertEquals(date, new DateBuilder(dateTime).build());
 	}
 
 	private static void assertEqualsWithChgtHeure(final long expected, final long actual) {
@@ -44,7 +51,7 @@ public final class DateUtilTest {
 		if (gap != 0) {
 			gap = Math.abs(gap) - 3600 * 1000;
 		}
-		Assert.assertEquals(0L, gap);
+		assertEquals(0L, gap);
 
 	}
 
@@ -74,7 +81,7 @@ public final class DateUtilTest {
 		final Date date2 = new DateBuilder(now).addSeconds(68).toDateTime();
 		final long elapsed = date2.getTime() - now.getTime();
 		final long expected = 68L * 1000;
-		Assert.assertEquals(expected, elapsed);
+		Assertions.assertEquals(expected, elapsed);
 	}
 
 	@Test
@@ -83,7 +90,7 @@ public final class DateUtilTest {
 		final Date date2 = new DateBuilder(now).addMinutes(68).toDateTime();
 		final long elapsed = date2.getTime() - now.getTime();
 		final long expected = 68L * 60 * 1000;
-		Assert.assertEquals(expected, elapsed);
+		assertEquals(expected, elapsed);
 	}
 
 	@Test
@@ -92,7 +99,7 @@ public final class DateUtilTest {
 		final Date date2 = new DateBuilder(now).addHours(28).toDateTime();
 		final long elapsed = date2.getTime() - now.getTime();
 		final long expected = 28L * 60 * 60 * 1000;
-		Assert.assertEquals(expected, elapsed);
+		assertEquals(expected, elapsed);
 	}
 
 	@Test
@@ -100,7 +107,7 @@ public final class DateUtilTest {
 		final Date now = new Date();
 		final Date date2 = new DateBuilder(now).addWeeks(4).toDateTime();
 		final Date date3 = new DateBuilder(now).addDays(4 * 7).toDateTime();
-		Assert.assertEquals(date2, date3);
+		assertEquals(date2, date3);
 	}
 
 	@Test
@@ -108,7 +115,7 @@ public final class DateUtilTest {
 		final Date now = new Date();
 		final Date date2 = new DateBuilder(now).addMonths(2 * 12).toDateTime();
 		final Date date3 = new DateBuilder(now).addYears(2).toDateTime();
-		Assert.assertEquals(date2, date3);
+		assertEquals(date2, date3);
 	}
 
 	//Multi add
@@ -117,7 +124,7 @@ public final class DateUtilTest {
 		final Date now = new Date();
 		final Date date2 = new DateBuilder(now).addDays(28).addYears(2).build();
 		final Date date3 = new DateBuilder(now).addDays(28).addMonths(2 * 12).build();
-		Assert.assertEquals(date2, date3);
+		assertEquals(date2, date3);
 	}
 
 	//Date
@@ -126,13 +133,13 @@ public final class DateUtilTest {
 		final Date now = new Date();
 		final Date date = new DateBuilder(now).addDays(28).addYears(2).addMonths(2).toDateTime();
 		final Date date2 = new DateBuilder(now).addDays(28).addYears(2).addMonths(2).build();
-		Assert.assertNotSame(date, date2);
+		Assertions.assertNotSame(date, date2);
 		final Date date3 = new DateBuilder(date).build();
-		Assert.assertEquals(date2, date3);
-		Assert.assertEquals(0, date3.getHours());
-		Assert.assertEquals(0, date3.getMinutes());
-		Assert.assertEquals(0, date3.getSeconds());
-		Assert.assertEquals(0, date3.getSeconds());
+		assertEquals(date2, date3);
+		assertEquals(0, date3.getHours());
+		assertEquals(0, date3.getMinutes());
+		assertEquals(0, date3.getSeconds());
+		assertEquals(0, date3.getSeconds());
 	}
 
 	//Date : on vérifie que la date est bien positionnée à Minuit.
@@ -142,10 +149,10 @@ public final class DateUtilTest {
 		final Date date = new DateBuilder(now).addDays(28).addYears(2).addMonths(2).build();
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		Assert.assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
-		Assert.assertEquals(0, calendar.get(Calendar.MINUTE));
-		Assert.assertEquals(0, calendar.get(Calendar.SECOND));
-		Assert.assertEquals(0, calendar.get(Calendar.MILLISECOND));
+		assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
+		assertEquals(0, calendar.get(Calendar.MINUTE));
+		assertEquals(0, calendar.get(Calendar.SECOND));
+		assertEquals(0, calendar.get(Calendar.MILLISECOND));
 	}
 
 	@Test
@@ -153,7 +160,7 @@ public final class DateUtilTest {
 		final Date today = DateUtil.newDate();
 		final Date date2 = new DateBuilder(today).addDays(48).toDateTime();
 		final int days = DateUtil.daysBetween(today, date2);
-		Assert.assertEquals(48, days);
+		assertEquals(48, days);
 	}
 
 	@Test
@@ -163,7 +170,7 @@ public final class DateUtilTest {
 		final Date startDate = new DateBuilder(calendar.getTime()).build();
 		final Date date2 = new DateBuilder(startDate).addDays(48).build();
 		final int days = DateUtil.daysBetween(startDate, date2);
-		Assert.assertEquals(48, days);
+		assertEquals(48, days);
 	}
 
 	@Test
@@ -173,15 +180,17 @@ public final class DateUtilTest {
 		final Date startDate = new DateBuilder(calendar.getTime()).build();
 		final Date date2 = new DateBuilder(startDate).addDays(48).build();
 		final int days = DateUtil.daysBetween(startDate, date2);
-		Assert.assertEquals(48, days);
+		assertEquals(48, days);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testDaysBetweenDateTimeError() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).addMinutes(48).addDays(48).toDateTime();
-		final int days = DateUtil.daysBetween(now, date2);
-		nop(days);
+		expectThrows(IllegalArgumentException.class, ()->{
+			final int days = DateUtil.daysBetween(now, date2);
+			nop(days);
+		});
 	}
 
 	private static void nop(final int days) {
@@ -192,49 +201,51 @@ public final class DateUtilTest {
 	public void testCompareDateLower() {
 		final Date today = DateUtil.newDate();
 		final Date date2 = new DateBuilder(today).addDays(20).toDateTime();
-		Assert.assertTrue(DateUtil.compareDate(today, date2) < 0);
+		assertTrue(DateUtil.compareDate(today, date2) < 0);
 	}
 
 	@Test
 	public void testCompareDateGreater() {
 		final Date today = DateUtil.newDate();
 		final Date date2 = new DateBuilder(today).addDays(-20).toDateTime();
-		Assert.assertTrue(DateUtil.compareDate(today, date2) > 0);
+		assertTrue(DateUtil.compareDate(today, date2) > 0);
 	}
 
 	@Test
 	public void testCompareDateEquals() {
 		final Date today = DateUtil.newDate();
 		final Date date2 = new DateBuilder(today).toDateTime();
-		Assert.assertTrue(DateUtil.compareDate(today, date2) == 0);
+		assertTrue(DateUtil.compareDate(today, date2) == 0);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCompareDateError() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).toDateTime();
-		final int compare = DateUtil.compareDate(now, date2);
-		nop(compare);
+		expectThrows(IllegalArgumentException.class, ()->{
+			final int compare = DateUtil.compareDate(now, date2);
+			nop(compare);
+		});
 	}
 
 	@Test
 	public void testCompareDateTimeLower() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).addMinutes(20).toDateTime();
-		Assert.assertTrue(DateUtil.compareDateTime(now, date2) < 0);
+		assertTrue(DateUtil.compareDateTime(now, date2) < 0);
 	}
 
 	@Test
 	public void testCompareDateTimeGreater() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).addMinutes(-20).toDateTime();
-		Assert.assertTrue(DateUtil.compareDateTime(now, date2) > 0);
+		assertTrue(DateUtil.compareDateTime(now, date2) > 0);
 	}
 
 	@Test
 	public void testCompareDateTimeEquals() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).toDateTime();
-		Assert.assertTrue(DateUtil.compareDateTime(now, date2) == 0);
+		assertTrue(DateUtil.compareDateTime(now, date2) == 0);
 	}
 }

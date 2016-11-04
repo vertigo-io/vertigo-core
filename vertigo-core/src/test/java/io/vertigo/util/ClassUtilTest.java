@@ -18,6 +18,11 @@
  */
 package io.vertigo.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -32,8 +37,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
@@ -43,6 +49,7 @@ import io.vertigo.lang.VUserException;
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class ClassUtilTest {
 	private static void nop(final Object o) {
 		//NOP
@@ -52,7 +59,7 @@ public final class ClassUtilTest {
 	public void testNewInstance() {
 		final String className = StringBuilder.class.getCanonicalName();
 		final Object created = ClassUtil.newInstance(className);
-		Assert.assertEquals(StringBuilder.class, created.getClass());
+		assertEquals(StringBuilder.class, created.getClass());
 	}
 
 	@Test
@@ -60,91 +67,104 @@ public final class ClassUtilTest {
 		final String className = StringBuilder.class.getCanonicalName();
 		final StringBuilder created = ClassUtil.newInstance(className, StringBuilder.class);
 		nop(created);
-		Assert.assertEquals(StringBuilder.class, created.getClass());
+		assertEquals(StringBuilder.class, created.getClass());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testNewInstanceWithTypeError() {
-		final String className = StringBuilder.class.getCanonicalName() + ".";
-		final StringBuilder created = ClassUtil.newInstance(className, StringBuilder.class);
-		nop(created);
+		assertThrows(Exception.class, (() -> {
+			final String className = StringBuilder.class.getCanonicalName() + ".";
+			final StringBuilder created = ClassUtil.newInstance(className, StringBuilder.class);
+			nop(created);
+
+		}));
 	}
 
 	@Test
 	public void testNewInstanceWithClasss() {
 		final Object created = ClassUtil.newInstance(StringBuilder.class);
-		Assert.assertEquals(StringBuilder.class, created.getClass());
+		assertEquals(StringBuilder.class, created.getClass());
 	}
 
 	@Test
 	public void testFindConstructor() {
 		final Constructor<StringBuilder> constructor = ClassUtil.findConstructor(StringBuilder.class, new Class[] { String.class });
-		Assert.assertEquals(constructor.getDeclaringClass(), StringBuilder.class);
+		assertEquals(constructor.getDeclaringClass(), StringBuilder.class);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testFindConstructorWithError() {
-		final Constructor<StringBuilder> constructor = ClassUtil.findConstructor(StringBuilder.class, new Class[] { Date.class });
-		nop(constructor);
+		assertThrows(Exception.class, (() -> {
+			final Constructor<StringBuilder> constructor = ClassUtil.findConstructor(StringBuilder.class, new Class[] { Date.class });
+			nop(constructor);
+		}));
 	}
 
 	@Test
 	public void testNewInstanceWithConstructor() {
 		final Constructor<StringBuilder> constructor = ClassUtil.findConstructor(StringBuilder.class, new Class[] { String.class });
 		final StringBuilder created = ClassUtil.newInstance(constructor, new Object[] { "Hello" });
-		Assert.assertEquals("Hello", created.toString());
+		assertEquals("Hello", created.toString());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testNewInstanceFail() {
-		final String className = StringBuilder.class.getCanonicalName() + ".";
-		final Object created = ClassUtil.newInstance(className);
-		nop(created);
+		assertThrows(Exception.class, (() -> {
+			final String className = StringBuilder.class.getCanonicalName() + ".";
+			final Object created = ClassUtil.newInstance(className);
+			nop(created);
+		}));
 	}
 
 	@Test
 	public void testClassForName() {
 		final String className = StringBuilder.class.getCanonicalName();
-		Assert.assertEquals(StringBuilder.class, ClassUtil.classForName(className));
+		assertEquals(StringBuilder.class, ClassUtil.classForName(className));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testClassForNameFail() {
-		final String className = StringBuilder.class.getCanonicalName() + ".";
-		final Class<?> clazz = ClassUtil.classForName(className);
-		nop(clazz);
+		assertThrows(Exception.class, (() -> {
+			final String className = StringBuilder.class.getCanonicalName() + ".";
+			final Class<?> clazz = ClassUtil.classForName(className);
+			nop(clazz);
+		}));
 	}
 
 	@Test
 	public void testClassForNameWithType() {
 		final String className = StringBuilder.class.getCanonicalName();
-		Assert.assertEquals(StringBuilder.class, ClassUtil.classForName(className, StringBuilder.class));
+		assertEquals(StringBuilder.class, ClassUtil.classForName(className, StringBuilder.class));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testClassForNameWithTypeFail() {
-		final String className = StringBuilder.class.getCanonicalName() + ".";
-		final Class<?> clazz = ClassUtil.classForName(className, StringBuilder.class);
-		nop(clazz);
+		assertThrows(Exception.class, (() -> {
+			final String className = StringBuilder.class.getCanonicalName() + ".";
+			final Class<?> clazz = ClassUtil.classForName(className, StringBuilder.class);
+			nop(clazz);
+		}));
 	}
 
 	@Test
 	public void testClassForNameWithSuperType() {
 		final String className = StringBuilder.class.getCanonicalName();
-		Assert.assertEquals(StringBuilder.class, ClassUtil.classForName(className, Serializable.class));
+		assertEquals(StringBuilder.class, ClassUtil.classForName(className, Serializable.class));
 	}
 
 	@Test
 	public void testFindMethod() {
 		final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", new Class[] { String.class });
 		nop(method);
-		Assert.assertEquals("lastIndexOf", method.getName());
+		assertEquals("lastIndexOf", method.getName());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testFindMethodWithError() {
-		final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", new Class[] { Date.class });
-		nop(method);
+		assertThrows(Exception.class, (() -> {
+			final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", new Class[] { Date.class });
+			nop(method);
+		}));
 	}
 
 	@Test
@@ -157,7 +177,7 @@ public final class ClassUtilTest {
 				found = true;
 			}
 		}
-		Assert.assertTrue(found);
+		assertTrue(found);
 	}
 
 	@Test
@@ -165,13 +185,13 @@ public final class ClassUtilTest {
 		final MyInjected myInjected = new MyInjected();
 		Field field;
 		field = getField(MyInjected.class, "myLong");
-		Assert.assertEquals(1L, ClassUtil.get(myInjected, field));
+		assertEquals(1L, ClassUtil.get(myInjected, field));
 		//---
 		field = getField(MyInjected.class, "myPrivateLong");
-		Assert.assertEquals(2L, ClassUtil.get(myInjected, field));
+		assertEquals(2L, ClassUtil.get(myInjected, field));
 		//---
 		field = getField(MyInjected.class, "myFinalLong");
-		Assert.assertEquals(3L, ClassUtil.get(myInjected, field));
+		assertEquals(3L, ClassUtil.get(myInjected, field));
 	}
 
 	@Test
@@ -181,36 +201,40 @@ public final class ClassUtilTest {
 		//---
 		field = getField(MyInjected.class, "myLong");
 		ClassUtil.set(myInjected, field, 10L);
-		Assert.assertEquals(10L, ClassUtil.get(myInjected, field));
+		assertEquals(10L, ClassUtil.get(myInjected, field));
 		//---
 		field = getField(MyInjected.class, "myPrivateLong");
 		ClassUtil.set(myInjected, field, 20L);
-		Assert.assertEquals(20L, ClassUtil.get(myInjected, field));
+		assertEquals(20L, ClassUtil.get(myInjected, field));
 		//---
 		field = getField(MyInjected.class, "myFinalLong");
 		ClassUtil.set(myInjected, field, 30L);
-		Assert.assertEquals(30L, ClassUtil.get(myInjected, field));
+		assertEquals(30L, ClassUtil.get(myInjected, field));
 	}
 
 	@Test
 	public void testInvoke() {
 		final Method addMethod = ClassUtil.findMethod(MyMath.class, "add", new Class[] { long.class, long.class });
 		final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
-		Assert.assertEquals(Long.valueOf(10L), result);
+		assertEquals(Long.valueOf(10L), result);
 	}
 
-	@Test(expected = ArithmeticException.class)
+	@Test
 	public void testInvokeWithError() {
-		final Method divMethod = ClassUtil.findMethod(MyMath.class, "div", new Class[] { long.class, long.class });
-		final Object result = ClassUtil.invoke(new MyMath(), divMethod, 4L, 0L);
-		nop(result);
+		assertThrows(ArithmeticException.class, (() -> {
+			final Method divMethod = ClassUtil.findMethod(MyMath.class, "div", new Class[] { long.class, long.class });
+			final Object result = ClassUtil.invoke(new MyMath(), divMethod, 4L, 0L);
+			nop(result);
+		}));
 	}
 
-	@Test(expected = VUserException.class)
+	@Test
 	public void testInvokeWithException() {
-		final Method addMethod = ClassUtil.findMethod(MyMath.class, "kuser", new Class[] { long.class, long.class });
-		final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
-		nop(result);
+		assertThrows(VUserException.class, (() -> {
+			final Method addMethod = ClassUtil.findMethod(MyMath.class, "kuser", new Class[] { long.class, long.class });
+			final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
+			nop(result);
+		}));
 	}
 
 	@Test
@@ -218,48 +242,52 @@ public final class ClassUtilTest {
 		Field field;
 		//---
 		field = MyGenerics.class.getField("myOption");
-		Assert.assertEquals(Long.class, ClassUtil.getGeneric(field));
+		assertEquals(Long.class, ClassUtil.getGeneric(field));
 		//---
 		field = MyGenerics.class.getField("myList");
-		Assert.assertEquals(Long.class, ClassUtil.getGeneric(field));
+		assertEquals(Long.class, ClassUtil.getGeneric(field));
 		//---
 		field = MyGenerics.class.getField("myList3");
-		Assert.assertEquals(Map.class, ClassUtil.getGeneric(field));
+		assertEquals(Map.class, ClassUtil.getGeneric(field));
 	}
 
-	@Test(expected = Exception.class)
-	public void testGenericWithError() throws SecurityException, NoSuchFieldException {
-		final Field field = MyGenerics.class.getField("myList2");
-		final Class<?> generic = ClassUtil.getGeneric(field);
-		nop(generic);
+	@Test
+	public void testGenericWithError() throws SecurityException {
+		assertThrows(Exception.class, (() -> {
+			final Field field = MyGenerics.class.getField("myList2");
+			final Class<?> generic = ClassUtil.getGeneric(field);
+			nop(generic);
+		}));
 	}
 
 	@Test
 	public void testMethodParameterGeneric() throws NoSuchMethodException, SecurityException {
 		final Method method = MyGenerics.class.getMethod("setOption", Optional.class);
 		//---
-		Assert.assertEquals(Long.class, ClassUtil.getGeneric(method, 0));
+		assertEquals(Long.class, ClassUtil.getGeneric(method, 0));
 	}
 
 	@Test
 	public void testConstructorParameterGeneric() throws NoSuchMethodException, SecurityException {
 		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Optional.class, List.class, List.class, List.class);
 		//---
-		Assert.assertEquals(Long.class, ClassUtil.getGeneric(constructor, 0));
+		assertEquals(Long.class, ClassUtil.getGeneric(constructor, 0));
 		//---
-		Assert.assertEquals(Long.class, ClassUtil.getGeneric(constructor, 1));
+		assertEquals(Long.class, ClassUtil.getGeneric(constructor, 1));
 		//---
-		//Assert.assertEquals(Long.class, ClassUtil.getGeneric(constructor, 2));
+		//assertEquals(Long.class, ClassUtil.getGeneric(constructor, 2));
 		//---
-		Assert.assertEquals(Map.class, ClassUtil.getGeneric(constructor, 3));
+		assertEquals(Map.class, ClassUtil.getGeneric(constructor, 3));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testConstructorParameterGenericWithError() throws NoSuchMethodException, SecurityException {
 		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Optional.class, List.class, List.class, List.class);
 		//---
-		final Class<?> generic = ClassUtil.getGeneric(constructor, 2);
-		nop(generic);
+		assertThrows(Exception.class, (() -> {
+			final Class<?> generic = ClassUtil.getGeneric(constructor, 2);
+			nop(generic);
+		}));
 	}
 
 	@Test
@@ -270,9 +298,9 @@ public final class ClassUtilTest {
 		final String[] injectedFieldNames = { "publicValue2", "protectedValue2", "packageValue2", "privateValue2" };
 		fields = ClassUtil.getAllFields(MyBean.class, Inject.class);
 
-		Assert.assertEquals(injectedFieldNames.length, fields.size());
+		assertEquals(injectedFieldNames.length, fields.size());
 		for (final Field field : fields) {
-			Assert.assertEquals(injectedFieldNames[i], field.getName());
+			assertEquals(injectedFieldNames[i], field.getName());
 			i++;
 		}
 		//--
@@ -280,9 +308,9 @@ public final class ClassUtilTest {
 		final String[] deprectatedFieldNames = { "publicValue1" };
 		fields = ClassUtil.getAllFields(MyBean.class, Deprecated.class);
 
-		Assert.assertEquals(deprectatedFieldNames.length, fields.size());
+		assertEquals(deprectatedFieldNames.length, fields.size());
 		for (final Field field : fields) {
-			Assert.assertEquals(deprectatedFieldNames[i], field.getName());
+			assertEquals(deprectatedFieldNames[i], field.getName());
 			i++;
 		}
 		//--
@@ -290,9 +318,9 @@ public final class ClassUtilTest {
 		final String[] injectedFieldNames2 = { "privateValue4", "publicValue2", "protectedValue2", "packageValue2", "privateValue2" };
 		fields = ClassUtil.getAllFields(MySubBean.class, Inject.class);
 
-		Assert.assertEquals(injectedFieldNames2.length, fields.size());
+		assertEquals(injectedFieldNames2.length, fields.size());
 		for (final Field field : fields) {
-			Assert.assertEquals(injectedFieldNames2[i], field.getName());
+			assertEquals(injectedFieldNames2[i], field.getName());
 			i++;
 		}
 	}
@@ -304,8 +332,8 @@ public final class ClassUtilTest {
 		declaredInterfaces.add(MyInterface1.class);
 		interfaces = ClassUtil.getAllInterfaces(MyBean.class);
 		//--
-		Assert.assertEquals(declaredInterfaces.size(), interfaces.size());
-		Assert.assertEquals(declaredInterfaces, interfaces);
+		assertEquals(declaredInterfaces.size(), interfaces.size());
+		assertEquals(declaredInterfaces, interfaces);
 
 		final Set<Class<?>> inheritedInterfaces = new HashSet<>();
 		inheritedInterfaces.add(MyInterface2.class);
@@ -314,8 +342,8 @@ public final class ClassUtilTest {
 		inheritedInterfaces.add(MyInterface1.class);
 		interfaces = ClassUtil.getAllInterfaces(MySubBean.class);
 		//--
-		Assert.assertEquals(inheritedInterfaces.size(), interfaces.size());
-		Assert.assertEquals(inheritedInterfaces, interfaces);
+		assertEquals(inheritedInterfaces.size(), interfaces.size());
+		assertEquals(inheritedInterfaces, interfaces);
 	}
 
 	@Test
@@ -323,40 +351,41 @@ public final class ClassUtilTest {
 		Method method;
 		//---
 		method = MyPojo.class.getDeclaredMethod("getValue1");
-		Assert.assertEquals("value1", ClassUtil.getPropertyName(method));
+		assertEquals("value1", ClassUtil.getPropertyName(method));
 		//---
 		method = MyPojo.class.getDeclaredMethod("getValueCamelCase");
-		Assert.assertEquals("valueCamelCase", ClassUtil.getPropertyName(method));
+		assertEquals("valueCamelCase", ClassUtil.getPropertyName(method));
 		//---
 		method = MyPojo.class.getDeclaredMethod("isValue2");
-		Assert.assertEquals("value2", ClassUtil.getPropertyName(method));
+		assertEquals("value2", ClassUtil.getPropertyName(method));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testGetPropertyNameSetterWithError() throws NoSuchMethodException, SecurityException {
-		Method method;
-		//---
-		method = MyPojo.class.getDeclaredMethod("setValue1", Long.class);
-		final String name = ClassUtil.getPropertyName(method);
-		nop(name);
+		final Method method = MyPojo.class.getDeclaredMethod("setValue1", Long.class);
+		assertThrows(Exception.class, (() -> {
+			final String name = ClassUtil.getPropertyName(method);
+			nop(name);
+		}));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testGetPropertyNameIsWithError() throws NoSuchMethodException, SecurityException {
-		Method method;
-		//---
-		method = MyPojo.class.getDeclaredMethod("isValueLong");
-		final String name = ClassUtil.getPropertyName(method);
-		nop(name);
+		final Method method = MyPojo.class.getDeclaredMethod("isValueLong");
+
+		assertThrows(Exception.class, (() -> {
+			final String name = ClassUtil.getPropertyName(method);
+			nop(name);
+		}));
 	}
 
-	@Test(expected = Exception.class)
-	public void testGetPropertyNameHasWithError() throws NoSuchMethodException, SecurityException {
-		Method method;
-		//---
-		method = MyPojo.class.getDeclaredMethod("hasValue2");
-		final String name = ClassUtil.getPropertyName(method);
-		nop(name);
+	@Test
+	public void testGetPropertyNameHasWithError() throws SecurityException {
+		assertThrows(Exception.class, (() -> {
+			final Method method = MyPojo.class.getDeclaredMethod("hasValue2");
+			final String name = ClassUtil.getPropertyName(method);
+			nop(name);
+		}));
 	}
 
 	public static final class MyInjected {
@@ -484,7 +513,7 @@ public final class ClassUtilTest {
 				return field;
 			}
 		}
-		Assert.fail("field " + fieldName + " non trouvé dans " + clazz.getSimpleName());
+		fail("field " + fieldName + " non trouvé dans " + clazz.getSimpleName());
 		return null;
 	}
 
