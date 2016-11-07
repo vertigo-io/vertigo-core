@@ -19,27 +19,32 @@
 package io.vertigo.dynamo.database.statement;
 
 /**
- * Résultat d'un select.
+ * The result of a sql query
  * @author pchretien
  */
 public final class SqlQueryResult {
 	private final Object value;
 	private final int sqlRowCount;
 
+	/**
+	 * Constructor.
+	 * @param value the result of the query (a simple object or a list)
+	 * @param sqlRowCount the number of rows read in the database to execute the query
+	 */
 	public SqlQueryResult(final Object value, final int sqlRowCount) {
-		this.value = value; //Peut être null
+		this.value = value; //may be null
 		this.sqlRowCount = sqlRowCount;
 	}
 
 	/**
-	 * @return Objet ou liste résultat 
+	 * @return the result of the query (a simple object or a list)
 	 */
 	public Object getValue() {
 		return value;
 	}
 
 	/**
-	 * @return Nombre de ligne lues en base.
+	 * @return the number of rows read in the database to execute the query
 	 */
 	public int getSQLRowCount() {
 		return sqlRowCount;

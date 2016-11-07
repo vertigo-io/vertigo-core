@@ -27,15 +27,15 @@ import io.vertigo.lang.Builder;
 /**
  * This builder allows you to build a DtList using fluent style.
  * @author pchretien
- * 
- * @param<D> type of objects in this list
+ *
+ * @param <D> the type of objects in this list
  */
 public final class DtListBuilder<D extends DtObject> implements Builder<DtList<D>> {
 	private final DtList<D> list;
 
 	/**
 	 * Constructor.
-	 * @param dtObjectClass type of the object, defined by its class
+	 * @param dtObjectClass the type of the object, defined by its class
 	 */
 	public DtListBuilder(final Class<D> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
@@ -55,8 +55,8 @@ public final class DtListBuilder<D extends DtObject> implements Builder<DtList<D
 	}
 
 	/**
-	 * Add an new object
-	 * @param value object 
+	 * Adds an new object
+	 * @param value object
 	 * @return this builder
 	 */
 	public DtListBuilder<D> add(final D value) {
@@ -67,8 +67,8 @@ public final class DtListBuilder<D extends DtObject> implements Builder<DtList<D
 	}
 
 	/**
-	 * Add an list of objects
-	 * @param values list of objects 
+	 * Adds a list of objects
+	 * @param values list of objects
 	 * @return this builder
 	 */
 	public DtListBuilder<D> addAll(final DtList<D> values) {
