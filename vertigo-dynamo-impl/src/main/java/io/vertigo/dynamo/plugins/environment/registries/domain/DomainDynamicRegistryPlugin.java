@@ -286,7 +286,13 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 *
 	 * @param fields List
 	 */
-	private static void populateIdDtField(final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
+	private static void populateIdDtField(
+			final DefinitionSpace definitionSpace,
+			final DtDefinitionBuilder dtDefinitionBuilder,
+			final List<DynamicDefinition> fields,
+			final String sortFieldName,
+			final String displayFieldName) {
+
 		for (final DynamicDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--
@@ -306,7 +312,12 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 *
 	 * @param fields List
 	 */
-	private static void populateDataDtField(final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
+	private static void populateDataDtField(final DefinitionSpace definitionSpace,
+			final DtDefinitionBuilder dtDefinitionBuilder,
+			final List<DynamicDefinition> fields,
+			final String sortFieldName,
+			final String displayFieldName) {
+
 		for (final DynamicDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--
@@ -333,7 +344,13 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 *
 	 * @param fields List
 	 */
-	private static void populateComputedDtField(final DefinitionSpace definitionSpace, final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
+	private static void populateComputedDtField(
+			final DefinitionSpace definitionSpace,
+			final DtDefinitionBuilder dtDefinitionBuilder,
+			final List<DynamicDefinition> fields,
+			final String sortFieldName,
+			final String displayFieldName) {
+
 		for (final DynamicDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--

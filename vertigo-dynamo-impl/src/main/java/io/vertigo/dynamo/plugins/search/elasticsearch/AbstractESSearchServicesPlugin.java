@@ -277,7 +277,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.endObject();
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
-			final Set<DtField> copyToFields = indexDefinition.getIndexCopyToFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				//if (!copyToFields.contains(dtField)) {
