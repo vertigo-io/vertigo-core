@@ -181,10 +181,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttributeRequired(ATTR_IN_INT_1, doInteger)
-				.addInAttributeRequired(ATTR_IN_INT_2, doInteger)
-				.addInAttributeRequired(ATTR_IN_INT_3, doInteger)
-				.withOutAttributeRequired(ATTR_OUT, doInteger)
+				.addInRequired(ATTR_IN_INT_1, doInteger)
+				.addInRequired(ATTR_IN_INT_2, doInteger)
+				.addInRequired(ATTR_IN_INT_3, doInteger)
+				.withOutRequired(ATTR_OUT, doInteger)
 				.build();
 	}
 
