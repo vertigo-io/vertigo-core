@@ -23,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
@@ -34,6 +36,7 @@ import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
 
+@RunWith(JUnitPlatform.class)
 public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Inject
 	private BioManager bioManager;

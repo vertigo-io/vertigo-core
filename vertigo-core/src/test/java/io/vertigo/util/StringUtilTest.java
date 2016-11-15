@@ -22,12 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * Test de l'utilitaitre de manipulation des strings.
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class StringUtilTest {
 	private static final String XXX_YYY_ZZZ = "XXX_YYY_ZZZ";
 
@@ -54,24 +58,28 @@ public final class StringUtilTest {
 		assertEquals("azertyuiop", StringUtil.replace("azertyuiop", "ZZ", "Y"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testStringReplaceWithNull() {
-		StringUtil.replace((String) null, "YY", "Y");
+		Assertions.assertThrows(NullPointerException.class,
+				() -> StringUtil.replace((String) null, "YY", "Y"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testStringReplaceWithNullOldString() {
-		StringUtil.replace("azertYYuiop", null, "Y");
+		Assertions.assertThrows(NullPointerException.class,
+				() -> StringUtil.replace("azertYYuiop", null, "Y"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testStringReplaceWithEmptyOldString() {
-		StringUtil.replace("azertYYuiop", "", "Y");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> StringUtil.replace("azertYYuiop", "", "Y"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testStringReplaceWithNullNewString() {
-		StringUtil.replace("azertYYuiop", "YY", null);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> StringUtil.replace("azertYYuiop", "YY", null));
 	}
 
 	@Test
@@ -89,14 +97,16 @@ public final class StringUtilTest {
 		assertEquals("X2Yyy", StringUtil.constToUpperCamelCase("X_2_YYY"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCaseTransformWithErrors() {
-		StringUtil.constToLowerCamelCase("XXX_YYY12_PPP");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> StringUtil.constToLowerCamelCase("XXX_YYY12_PPP"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCaseTransformWithErrors2() {
-		StringUtil.constToLowerCamelCase("XXX_YYY_12PPP");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> StringUtil.constToLowerCamelCase("XXX_YYY_12PPP"));
 	}
 
 	@Test
@@ -174,14 +184,16 @@ public final class StringUtilTest {
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour ''{0}' monde", "le"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testformatWithNull() {
-		StringUtil.format(null);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> StringUtil.format(null));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testformatWithError() {
-		//Si on oublie de fermer une parenthèse
-		StringUtil.format("bonjour {0 monde", "le");
+		Assertions.assertThrows(Exception.class,
+				//Si on oublie de fermer une parenthèse
+				() -> StringUtil.format("bonjour {0 monde", "le"));
 	}
 }

@@ -27,7 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
@@ -45,6 +48,7 @@ import io.vertigo.lang.Container;
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class InjectorTest {
 	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();
@@ -105,35 +109,42 @@ public final class InjectorTest {
 		nop(a);
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testBFail() {
-		final B b = Injector.newInstance(B.class, new Container() {
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final B b = Injector.newInstance(B.class, new Container() {
 
-			@Override
-			public boolean contains(final String id) {
-				return false;
-			}
+						@Override
+						public boolean contains(final String id) {
+							return false;
+						}
 
-			@Override
-			public <T> T resolve(final String id, final Class<T> componentClass) {
-				return null;
-			}
+						@Override
+						public <T> T resolve(final String id, final Class<T> componentClass) {
+							return null;
+						}
 
-			@Override
-			public Set<String> keySet() {
-				return Collections.EMPTY_SET;
-			}
-		});
-		nop(b);
+						@Override
+						public Set<String> keySet() {
+							return Collections.EMPTY_SET;
+						}
+					});
+					nop(b);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testB2() {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
-		final B2 b2 = Injector.newInstance(B2.class, container);
-		nop(b2);
+
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final B2 b2 = Injector.newInstance(B2.class, container);
+					nop(b2);
+				});
 	}
 
 	@Test

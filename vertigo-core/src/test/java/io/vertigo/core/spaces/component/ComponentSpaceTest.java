@@ -21,7 +21,10 @@ package io.vertigo.core.spaces.component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
@@ -34,6 +37,7 @@ import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
 
+@RunWith(JUnitPlatform.class)
 public final class ComponentSpaceTest {
 
 	@Test
@@ -63,7 +67,7 @@ public final class ComponentSpaceTest {
 		}
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testHome2() {
 		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
@@ -84,9 +88,12 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			//
-		}
+		Assertions.assertThrows(RuntimeException.class,
+				() -> {
+					try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+						//
+					}
+				});
 	}
 
 	@Test

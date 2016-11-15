@@ -26,7 +26,10 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
@@ -38,6 +41,7 @@ import io.vertigo.lang.MessageText;
 /**
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private LocaleManager localeManager;
@@ -58,10 +62,11 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testDictionary() {
-		//On ne charge pas deux fois un dictionnaire
-		localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values());
+		Assertions.assertThrows(IllegalStateException.class,
+				//On ne charge pas deux fois un dictionnaire
+				() -> localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values()));
 	}
 
 	@Test
@@ -105,10 +110,11 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testUnknown() {
-		//On vérifie que l'on ne connait pas le japonais
-		assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE));
+		Assertions.assertThrows(IllegalArgumentException.class,
+				//On vérifie que l'on ne connait pas le japonais
+				() -> assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE)));
 	}
 
 	@Test

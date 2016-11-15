@@ -24,7 +24,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
@@ -46,23 +49,30 @@ import io.vertigo.core.component.di.data.P3;
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class ReactorTest {
 	private static void nop(final Object o) {
 		//NOP
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIdArgument() {
-		final DIReactor reactor = new DIReactor()
-				.addComponent(null, A.class);
-		nop(reactor);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> {
+					final DIReactor reactor = new DIReactor()
+							.addComponent(null, A.class);
+					nop(reactor);
+				});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testClassArgument() {
-		final DIReactor reactor = new DIReactor()
-				.addComponent("a", null);
-		nop(reactor);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> {
+					final DIReactor reactor = new DIReactor()
+							.addComponent("a", null);
+					nop(reactor);
+				});
 	}
 
 	@Test
@@ -165,44 +175,56 @@ public final class ReactorTest {
 		assertEquals("b", list.get(0));
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMissing() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("c", C.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("c", C.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyCyclic() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("c", C.class)
-				.addComponent("D", D.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("c", C.class)
+							.addComponent("D", D.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMultiple() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("b", B.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("b", B.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMultiple2() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addParent("b")
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addParent("b")
+							.proceed();
+					nop(list);
+				});
 	}
 }

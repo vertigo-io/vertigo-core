@@ -20,19 +20,26 @@ package io.vertigo.core.component.aop;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 
+@RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public final void testLoadComponentsWithoutDeclaredAspects() {
-		try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
-			//nop
-		}
+		Assertions.assertThrows(IllegalStateException.class,
+				() -> {
+					try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
+						//nop
+					}
+				});
 	}
 
 	private AppConfig buildAppConfig() {

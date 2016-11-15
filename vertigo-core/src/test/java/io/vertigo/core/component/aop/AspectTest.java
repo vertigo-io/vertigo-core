@@ -22,7 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.component.aop.data.MyException;
@@ -32,6 +35,7 @@ import io.vertigo.core.component.aop.data.components.C;
 import io.vertigo.core.component.aop.data.components.Computer;
 import io.vertigo.core.component.aop.data.components.F;
 
+@RunWith(JUnitPlatform.class)
 public final class AspectTest extends AbstractTestCaseJU4 {
 	private A a;
 	private B b;
@@ -104,15 +108,21 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 		assertFalse(c.isFinalized());
 	}
 
-	@Test(expected = MyException.class)
-	public void testBeanMyException() throws MyException {
-		a = getApp().getComponentSpace().resolve("a", A.class);
-		a.throwMyException();
+	@Test
+	public void testBeanMyException() {
+		Assertions.assertThrows(MyException.class,
+				() -> {
+					a = getApp().getComponentSpace().resolve("a", A.class);
+					a.throwMyException();
+				});
 	}
 
-	@Test(expected = MyException.class)
-	public void testProxyWithInterfaceMyException() throws MyException {
-		b = getApp().getComponentSpace().resolve("b", B.class);
-		b.throwMyException();
+	@Test
+	public void testProxyWithInterfaceMyException() {
+		Assertions.assertThrows(MyException.class,
+				() -> {
+					b = getApp().getComponentSpace().resolve("b", B.class);
+					b.throwMyException();
+				});
 	}
 }

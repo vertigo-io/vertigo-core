@@ -23,8 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitPlatform.class)
 public final class DateQueryParserUtilTest {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Long DIFF_MS = 5 * 1000L;
@@ -36,37 +40,42 @@ public final class DateQueryParserUtilTest {
 	}
 
 	/** Test le keyword now avec une erreur. */
-	@Test(expected = Exception.class)
+	@Test
 	public void testWithError0() {
-		DateUtil.parse("now+", DATE_PATTERN);
+		Assertions.assertThrows(Exception.class,
+				() -> DateUtil.parse("now+", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
-	@Test(expected = Exception.class)
+	@Test
 	public void testWithError1() {
-		//an explicit  number must be defined
-		DateUtil.parse("now+DAY", DATE_PATTERN);
+		Assertions.assertThrows(Exception.class,
+				//an explicit  number must be defined
+				() -> DateUtil.parse("now+DAY", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
-	@Test(expected = Exception.class)
+	@Test
 	public void testWithError2() {
-		//Day must be in upperCase : DAY
-		DateUtil.parse("now+1Day", DATE_PATTERN);
+		Assertions.assertThrows(Exception.class,
+				//Day must be in upperCase : DAY
+				() -> DateUtil.parse("now+1Day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
-	@Test(expected = Exception.class)
+	@Test
 	public void testWithError3() {
-		//day is not a calendar unit
-		DateUtil.parse("now+1day", DATE_PATTERN);
+		Assertions.assertThrows(Exception.class,
+				//day is not a calendar unit
+				() -> DateUtil.parse("now+1day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
-	@Test(expected = Exception.class)
+	@Test
 	public void testWithError4() {
-		//D is not a calendar unit even if d is valid
-		DateUtil.parse("now+1D", DATE_PATTERN);
+		Assertions.assertThrows(Exception.class,
+				//D is not a calendar unit even if d is valid
+				() -> DateUtil.parse("now+1D", DATE_PATTERN));
 	}
 
 	/**

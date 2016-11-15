@@ -29,7 +29,10 @@ import static io.vertigo.core.definition.loader.PersonGrammar.POSTAL_CODE;
 import static io.vertigo.core.definition.loader.PersonGrammar.STREET;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
@@ -39,6 +42,7 @@ import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
+@RunWith(JUnitPlatform.class)
 public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -82,14 +86,17 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 		assertNotNull(personDefinition);
 	}
 
-	@Test(expected = ClassCastException.class)
+	@Test
 	public void badTypeTest() {
-		final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
-				.addPropertyValue(STREET, "1, rue du louvre")
-				.addPropertyValue(POSTAL_CODE, 75008)
-				.addPropertyValue(CITY, "Paris")
-				.build();
-		dynamicDefinitionRepository.addDefinition(address1Definition);
+		Assertions.assertThrows(ClassCastException.class,
+				() -> {
+					final DynamicDefinition address1Definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+							.addPropertyValue(STREET, "1, rue du louvre")
+							.addPropertyValue(POSTAL_CODE, 75008)
+							.addPropertyValue(CITY, "Paris")
+							.build();
+					dynamicDefinitionRepository.addDefinition(address1Definition);
+				});
 
 	}
 }

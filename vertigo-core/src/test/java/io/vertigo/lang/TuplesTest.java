@@ -23,13 +23,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * Tuples.
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class TuplesTest {
 	@Test
 	public void testTuple2() {
