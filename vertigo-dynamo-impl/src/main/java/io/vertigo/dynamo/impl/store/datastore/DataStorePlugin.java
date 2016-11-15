@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.store.criteria2.Criteria2;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -106,20 +107,20 @@ public interface DataStorePlugin extends Plugin {
 	//=============================== WRITE ====================================
 	//==========================================================================
 	/**
-	* Creates an object.
-	* No object with the same id must have been created previously.
-	*
-	* @param dtDefinition Definition
-	* @param entity Object to create
-	*/
+	 * Creates an object.
+	 * No object with the same id must have been created previously.
+	 *
+	 * @param dtDefinition Definition
+	 * @param entity Object to create
+	 */
 	void create(DtDefinition dtDefinition, Entity entity);
 
 	/**
-	* Updates an object.
-	* This object must have an id.
-	* @param dtDefinition Definition
-	* @param entity Object to update
-	*/
+	 * Updates an object.
+	 * This object must have an id.
+	 * @param dtDefinition Definition
+	 * @param entity Object to update
+	 */
 	void update(DtDefinition dtDefinition, Entity entity);
 
 	/**
@@ -138,4 +139,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @return D Object value.
 	 */
 	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
+
+	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows);
+
 }

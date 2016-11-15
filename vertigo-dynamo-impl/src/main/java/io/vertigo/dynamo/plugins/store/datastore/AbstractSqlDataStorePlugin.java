@@ -46,6 +46,8 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria2.Ctx;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -56,11 +58,12 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.
-  *
+ *
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
@@ -168,8 +171,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttributeRequired(idFieldName, idField.getDomain())
-				.withOutAttributeOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
+				.addInRequired(idFieldName, idField.getDomain())
+				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -216,8 +219,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttributeRequired(fkFieldName, fkField.getDomain())
-				.withOutAttributeRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.addInRequired(fkFieldName, fkField.getDomain())
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
 		final URI uri = dtcUri.getSource();
@@ -284,14 +287,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withRequest(request);
 		//IN, obligatoire
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			taskDefinitionBuilder.addInAttributeRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
+			taskDefinitionBuilder.addInRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			taskDefinitionBuilder.addInAttributeRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
+			taskDefinitionBuilder.addInRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutAttributeRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
 		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
@@ -451,8 +454,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttributeRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
-				.withOutAttributeRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
+				.addInRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
+				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -495,8 +498,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttributeRequired(idFieldName, idField.getDomain())
-				.withOutAttributeRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
+				.addInRequired(idFieldName, idField.getDomain())
+				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -530,7 +533,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.withOutAttributeRequired("count", countDomain)
+				.withOutRequired("count", countDomain)
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -558,9 +561,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttributeRequired(idFieldName, idField.getDomain())
+				.addInRequired(idFieldName, idField.getDomain())
 				//IN, obligatoire
-				.withOutAttributeOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
+				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -587,4 +590,52 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.append(" for update ")
 				.toString();
 	}
+
+	@Override
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(criteria);
+		//-----
+		final String tableName = getTableName(dtDefinition);
+		final String requestedFields = getRequestedField(dtDefinition);
+		final String taskName = "TK_TEST2";
+		final String request = createLoadAllLikeQuery(tableName, requestedFields, criteria);
+		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
+		final String where = tuple.getVal1();
+		final Ctx ctx = tuple.getVal2();
+
+		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request);
+		//IN, obligatoire
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
+		}
+		//OUT, obligatoire
+		final TaskDefinition taskDefinition = taskDefinitionBuilder
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.build();
+
+		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
+		}
+		return taskManager
+				.execute(taskBuilder.build())
+				.getResult();
+	}
+
+	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final String requestedFields, final Criteria2<E> criteria /*, final Integer maxRows*/) {
+		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
+
+		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
+				.append(" from ").append(tableName)
+				.append(" where ").append(tuple.getVal1());
+		//		if (maxRows != null) {
+		//			appendMaxRows(sep, request, maxRows);
+		//		}
+		return request.toString();
+	}
+
 }

@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.criteria2.Criterions;
 import io.vertigo.lang.VSystemException;
 
 /**
@@ -30,6 +31,18 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
+	public enum CarFields implements Criterions<Car> {
+		ID ,
+		MAKE,
+		//		MODEL,
+		//		DESCRIPTION,
+		YEAR,
+		//		KILO,
+		//		PRICE,
+		//		CONSOMMATION,
+		MOTOR_TYPE,
+		//		FAM_ID;
+	}
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

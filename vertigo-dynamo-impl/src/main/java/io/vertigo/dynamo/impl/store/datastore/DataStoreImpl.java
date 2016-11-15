@@ -29,6 +29,7 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.criteria2.Criteria2;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
@@ -154,4 +155,11 @@ public final class DataStoreImpl implements DataStore {
 	public int count(final DtDefinition dtDefinition) {
 		return getPhysicalStore(dtDefinition).count(dtDefinition);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria2<E> criteria){
+		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
+	}
+
 }

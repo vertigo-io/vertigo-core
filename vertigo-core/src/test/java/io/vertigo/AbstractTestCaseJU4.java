@@ -25,6 +25,8 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
@@ -48,6 +50,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception exception
 	 */
+	@BeforeEach
 	@Before
 	public final void setUp() throws Exception {
 		app = new AutoCloseableApp(buildAppConfig());
@@ -65,6 +68,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Exception
 	 */
+	@AfterEach
 	@After
 	public final void tearDown() throws Exception {
 		try {
