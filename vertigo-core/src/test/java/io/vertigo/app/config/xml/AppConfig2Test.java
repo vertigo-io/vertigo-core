@@ -23,12 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.component.data.BioManager;
 
+@RunWith(JUnitPlatform.class)
 public final class AppConfig2Test {
 	@Test
 	public void HomeTest() {

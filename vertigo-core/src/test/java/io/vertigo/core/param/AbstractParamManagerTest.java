@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 
@@ -41,9 +42,10 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 		assertEquals("wiki", value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test2() {
-		paramManager.getStringValue("server.wrong");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getStringValue("server.wrong"));
 	}
 
 	@Test
@@ -52,9 +54,10 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(8080, value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test4() {
-		paramManager.getIntValue("server.active");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getIntValue("server.active"));
 	}
 
 	@Test
@@ -69,8 +72,9 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 		assertFalse(value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test7() {
-		paramManager.getBooleanValue("server.port");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getBooleanValue("server.port"));
 	}
 }

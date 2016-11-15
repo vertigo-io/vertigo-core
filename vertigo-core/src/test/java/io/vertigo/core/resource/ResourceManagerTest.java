@@ -24,7 +24,10 @@ import java.net.URL;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
@@ -34,6 +37,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 /**
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ResourceManager resourceManager;
@@ -50,15 +54,17 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 		// @formatter:on
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullResource() {
-		resourceManager.resolve(null);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> resourceManager.resolve(null));
 
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testEmptyResource() {
-		resourceManager.resolve("nothing");
+		Assertions.assertThrows(RuntimeException.class,
+				() -> resourceManager.resolve("nothing"));
 	}
 
 	@Test
