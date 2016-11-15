@@ -1,0 +1,27 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+	</boot>
+
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+	</module>
+
+	<module name="vertigo-dynamo">
+		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
+
+	</module>
+	<module name="myApp">
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamo/store/data/executionWfileinfo.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
+		</definitions>
+	</module>
+
+</config>

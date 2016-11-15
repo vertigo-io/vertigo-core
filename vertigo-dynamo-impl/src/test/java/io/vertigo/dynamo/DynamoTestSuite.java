@@ -61,6 +61,8 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.criteria2.predicate.PredicateCriteriaTest;
+import io.vertigo.dynamo.store.datastore.criteria2.sql.SqlCriteriaTest;
 import io.vertigo.dynamo.store.datastore.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
@@ -140,6 +142,10 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		VTransactionBeforeAfterCommitTest.class,
 		//x
 		DslListFilterBuilderTest.class,
+
+		//Criteria
+		SqlCriteriaTest.class,
+		PredicateCriteriaTest.class
 
 })
 public final class DynamoTestSuite {
