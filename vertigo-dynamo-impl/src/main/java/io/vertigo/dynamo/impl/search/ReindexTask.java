@@ -131,7 +131,7 @@ final class ReindexTask implements Runnable {
 	}
 
 	private ListFilter urisToListFilter(final Set<URI<? extends KeyConcept>> removedUris) {
-		final String indexIdFieldName = searchIndexDefinition.getIndexDtDefinition().getIdField().get().getName();
+		final String indexIdFieldName = searchIndexDefinition.getKeyConceptDtDefinition().getIdField().get().getName();
 		final String filterValue = removedUris
 				.stream()
 				.map(uri -> String.valueOf(uri.getId()))
