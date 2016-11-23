@@ -62,6 +62,7 @@ public interface DataStore {
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
+	 * Fire an update event for this uri on eventbus after commit.
 	 * @param <E> the type of entity
 	 * @param uri URI of object
 	 * @return object to update
