@@ -149,6 +149,13 @@ public final class SimplerTestWebServices implements WebServices {
 		return contact;
 	}
 
+	//PUT is indempotent : ID obligatoire
+	@PUT("/contactUrl99")
+	public Contact testWsUrl99(final Contact contact) {
+		//200
+		return contact;
+	}
+
 	//@POST is non-indempotent
 	@POST("/contact")
 	public Contact createContact( //create POST method -> 201 instead of 200 by convention

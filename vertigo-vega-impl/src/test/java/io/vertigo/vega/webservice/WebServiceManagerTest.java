@@ -547,6 +547,18 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testWsUrlError() {
+		final String[] testOkJson = { "{ \"firstName\" : \"test\" }", "{ firstName : \"test\" }", "{ 'firstName' : \"test\" }", "{\n\t\"firstName\" : \"test\"\n}" };
+		for (final String testJson : testOkJson) {
+			loggedAndExpect(given().body(testJson))
+					.body("firstName", Matchers.equalTo("test"))
+					.statusCode(HttpStatus.SC_OK)
+					.when()
+					.put("/test/contactUrl99");
+		}
+	}
+
+	@Test
 	public void testPutContact() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 

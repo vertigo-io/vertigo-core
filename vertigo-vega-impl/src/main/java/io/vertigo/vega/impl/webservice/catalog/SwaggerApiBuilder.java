@@ -382,7 +382,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		}
 		if (!bodyParameter.isEmpty()) {
 			final String[] splittedDefinitionName = webServiceDefinition.getName().split("\\$");
-			final String bodyName = StringUtil.constToUpperCamelCase(splittedDefinitionName[0].replaceAll("_+", "_")) + "$" + splittedDefinitionName[1] + "Body";
+			final String bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "$" + splittedDefinitionName[1] + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
