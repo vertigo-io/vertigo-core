@@ -18,33 +18,13 @@
  */
 package io.vertigo.vega.webservice.validation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
 
 /**
  * Class d'enregistrement des messages.
  * @author npiedeloup
  */
-public final class UiMessageStack {
-
-	private final List<String> globalErrors = new ArrayList<>();
-	private final List<String> globalWarnings = new ArrayList<>();
-	private final List<String> globalInfos = new ArrayList<>();
-	private final List<String> globalSuccess = new ArrayList<>();
-
-	private final Map<String, List<String>> fieldErrors = new HashMap<>();
-	private final Map<String, List<String>> fieldWarnings = new HashMap<>();
-	private final Map<String, List<String>> fieldInfos = new HashMap<>();
-
-	private final Map<String, Map<String, List<String>>> objectFieldErrors = new HashMap<>();
-	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
-	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
+public interface UiMessageStack {
 
 	/**
 	 * Niveau du message.
@@ -61,170 +41,61 @@ public final class UiMessageStack {
 		SUCCESS;
 	}
 
-	@JsonExclude
-	private final transient UiContextResolver uiContextResolver;
-
-	/**
-	 * Constructor.
-	 * @param uiContextResolver Resolver object to contextKey in request
-	 */
-	public UiMessageStack(final UiContextResolver uiContextResolver) {
-		Assertion.checkNotNull(uiContextResolver);
-		//-----
-		this.uiContextResolver = uiContextResolver;
-	}
-
 	/**
 	 * Ajoute un message.
 	 * @param level Niveau de message
 	 * @param message Message
 	 */
-	public void addGlobalMessage(final Level level, final String message) {
-		switch (level) {
-			case ERROR:
-				globalErrors.add(message);
-				break;
-			case WARNING:
-				globalWarnings.add(message);
-				break;
-			case INFO:
-				globalInfos.add(message);
-				break;
-			case SUCCESS:
-				globalSuccess.add(message);
-				break;
-			default:
-				throw new UnsupportedOperationException("Unknowned level");
-		}
-	}
+	void addGlobalMessage(final Level level, final String message);
 
 	/**
 	 * @param message Message d'erreur
 	 */
-	public void error(final String message) {
-		addGlobalMessage(Level.ERROR, message);
-	}
+	void error(final String message);
 
 	/**
 	 * @param message Message d'alerte
 	 */
-	public void warning(final String message) {
-		addGlobalMessage(Level.WARNING, message);
-	}
+	void warning(final String message);
 
 	/**
 	 * @param message Message d'info
 	 */
-	public void info(final String message) {
-		addGlobalMessage(Level.INFO, message);
-	}
+	void info(final String message);
 
 	/**
 	 * @param message Message d'info
 	 */
-	public void success(final String message) {
-		addGlobalMessage(Level.SUCCESS, message);
-	}
+	void success(final String message);
 
 	/**
 	 * @param message Message d'erreur
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public void error(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.ERROR, message, uiContextResolver.resolveContextKey(dto), fieldName);
-	}
+	void error(final String message, final DtObject dto, final String fieldName);
 
 	/**
 	 * @param message Message d'alerte
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public void warning(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.WARNING, message, uiContextResolver.resolveContextKey(dto), fieldName);
-	}
+	void warning(final String message, final DtObject dto, final String fieldName);
 
 	/**
 	 * @param message Message d'info
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public void info(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.INFO, message, uiContextResolver.resolveContextKey(dto), fieldName);
-	}
+	void info(final String message, final DtObject dto, final String fieldName);
 
-	/**
-	 * @param level Message level
-	 * @param message Message text
-	 * @param contextKey contextKey in request
-	 * @param fieldName field name
-	 */
-	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
-		if (contextKey.isEmpty()) {
-			addFieldMessage(level, message, fieldName);
-		} else {
-			addObjectFieldMessage(level, message, contextKey, fieldName);
-		}
-	}
+	void addFieldMessage(Level level, String message, DtObject dtObject, String fieldName);
 
-	private void addFieldMessage(final Level level, final String message, final String fieldName) {
-		final Map<String, List<String>> fieldMessageMap;
-		switch (level) {
-			case ERROR:
-				fieldMessageMap = fieldErrors;
-				break;
-			case WARNING:
-				fieldMessageMap = fieldWarnings;
-				break;
-			case INFO:
-				fieldMessageMap = fieldInfos;
-				break;
-			case SUCCESS: //unsupported for fields
-			default:
-				throw new UnsupportedOperationException("Unknowned level");
-		}
-		final String fieldKey = fieldName;
-		List<String> messages = fieldMessageMap.get(fieldKey);
-		if (messages == null) {
-			messages = new ArrayList<>();
-			fieldMessageMap.put(fieldKey, messages);
-		}
-		messages.add(message);
-	}
-
-	private void addObjectFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
-		final Map<String, Map<String, List<String>>> fieldMessageMap;
-		switch (level) {
-			case ERROR:
-				fieldMessageMap = objectFieldErrors;
-				break;
-			case WARNING:
-				fieldMessageMap = objectFieldWarnings;
-				break;
-			case INFO:
-				fieldMessageMap = objectFieldInfos;
-				break;
-			case SUCCESS: //unsupported for fields
-			default:
-				throw new UnsupportedOperationException("Unknowned level");
-		}
-		Map<String, List<String>> objectMessages = fieldMessageMap.get(contextKey);
-		if (objectMessages == null) {
-			objectMessages = new HashMap<>();
-			fieldMessageMap.put(contextKey, objectMessages);
-		}
-		List<String> messages = objectMessages.get(fieldName);
-		if (messages == null) {
-			messages = new ArrayList<>();
-			objectMessages.put(fieldName, messages);
-		}
-		messages.add(message);
-	}
+	void addFieldMessage(Level level, String message, String contextKey, String fieldName);
 
 	/**
 	 * @return if there are errors in this stack.
 	 */
-	public boolean hasErrors() {
-		return !globalErrors.isEmpty() || !fieldErrors.isEmpty() || !objectFieldErrors.isEmpty();
-	}
+	public boolean hasErrors();
+
 }

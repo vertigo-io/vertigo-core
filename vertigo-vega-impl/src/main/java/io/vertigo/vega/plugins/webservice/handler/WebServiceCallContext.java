@@ -22,12 +22,13 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.vega.engines.webservice.json.UiList;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiObject;
+import io.vertigo.vega.engines.webservice.json.RestUiObject;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.validation.RestUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import spark.Request;
@@ -54,7 +55,7 @@ public final class WebServiceCallContext {
 		this.response = response;
 		this.webServiceDefinition = webServiceDefinition;
 		uiContextResolver = new UiContextResolver();
-		request.attribute(UI_MESSAGE_STACK, new UiMessageStack(uiContextResolver));
+		request.attribute(UI_MESSAGE_STACK, new RestUiMessageStack(uiContextResolver));
 	}
 
 	/**
@@ -108,7 +109,7 @@ public final class WebServiceCallContext {
 	 * @param webServiceParam param name
 	 * @param uiObject param value
 	 */
-	public void registerUiObject(final WebServiceParam webServiceParam, final UiObject uiObject) {
+	public void registerUiObject(final WebServiceParam webServiceParam, final RestUiObject uiObject) {
 		request.attribute(webServiceParam.getFullName(), uiObject);
 	}
 
@@ -146,7 +147,7 @@ public final class WebServiceCallContext {
 	 * @param contextKeyMap Map of elements contextKey
 	 */
 	public void registerUpdatedDtList(final WebServiceParam webServiceParam, final DtList dtList, final Map<String, DtObject> contextKeyMap) {
-		final UiList<?> uiList = (UiList<?>) request.attribute(webServiceParam.getFullName());
+		final UiListModifiable<?> uiList = (UiListModifiable<?>) request.attribute(webServiceParam.getFullName());
 		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
 			uiContextResolver.register(entry.getKey(), entry.getValue());
 		}

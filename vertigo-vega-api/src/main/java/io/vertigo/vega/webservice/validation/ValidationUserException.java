@@ -18,73 +18,82 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 /**
-* @author npiedeloup
-*/
+ * Validation exception on a object's field.
+ * @author npiedeloup (16 janv. 2015 15:03:33)
+ */
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
 	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = new MessageText("Il y a des erreurs, vous devez corriger votre saisie :", null);
 
-	private final boolean oneField;
-	private final DtObject dto;
-	private final String fieldName;
+	private final List<UiError> uiErrors = new ArrayList<>();
 
 	/**
-	 * Exception to launch already fill UiMessageStack.
+	 * @param uiErrors Ui errors
 	 */
 	public ValidationUserException() {
-		super(VALIDATE_ERROR_MESSAGE_TEXT);
-		oneField = false;
-		dto = null;
-		fieldName = null;
+		this(Collections.<UiError> emptyList());
 	}
 
 	/**
-	 * Create a UserException on a field.
+	 * @param uiErrors Ui errors
+	 */
+	public ValidationUserException(final List<UiError> uiErrors) {
+		super(VALIDATE_ERROR_MESSAGE_TEXT);
+		this.uiErrors.addAll(uiErrors);
+	}
+
+	/**
+	 * Create a UserException on a field
 	 * @param messageText Message text
 	 * @param dto object
 	 * @param fieldName field
 	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final DtFieldName fieldName) {
-		this(messageText, StringUtil.constToLowerCamelCase(fieldName.name()), dto);
+		this(messageText, fieldName.name(), dto);
 	}
 
 	/**
-	 * Create a UserException on a field.
+	 * Create a UserException on a field
 	 * @param messageText Message text
 	 * @param dto object
 	 * @param fieldName fieldName in CamelCase
 	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
-		this(messageText, fieldName, dto);
+		this(messageText, StringUtil.camelToConstCase(fieldName), dto);
 	}
 
-	private ValidationUserException(final MessageText messageText, final String fieldName, final DtObject dto) {
+	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
 		super(messageText);
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
-		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
-		Assertion.checkArgument(fieldName.indexOf('_') == -1, "Le nom du champs doit être en camelCase ({0}).", fieldName);
+		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
 		//-----
-		oneField = true;
-		this.dto = dto;
-		this.fieldName = fieldName;
+		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
+		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 
-	/**
-	 * @param uiMessageStack UiMessageStack to fill
-	 */
 	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
-		if (oneField) {
-			uiMessageStack.error(getMessage(), dto, fieldName);
-		} //else : already in UiMessageStack
+		for (final UiError uiError : uiErrors) {
+			if (uiError.getDtObject() != null) {
+				uiMessageStack.error(uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
+			} else {
+				uiMessageStack.error(uiError.getErrorMessage().getDisplay());
+			}
+		}
 	}
 
 }

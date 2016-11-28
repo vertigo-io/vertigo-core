@@ -40,11 +40,11 @@ import io.vertigo.util.StringUtil;
  * ParameterizedType use for UiObject.
  * @author npiedeloup
  */
-final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<RestUiObject<D>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+	public RestUiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final JsonObject jsonObject = json.getAsJsonObject();
@@ -66,7 +66,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 			}
 			throw new JsonSyntaxException("Received Json's fields doesn't match " + dtoClass.getSimpleName() + " ones : " + jsonEntry);
 		}
-		final UiObject<D> uiObject = new UiObject<>(inputDto, modifiedFields);
+		final RestUiObject<D> uiObject = new RestUiObject<>(inputDto, modifiedFields);
 		if (jsonObject.has(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)) {
 			uiObject.setServerSideToken(jsonObject.get(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 		}

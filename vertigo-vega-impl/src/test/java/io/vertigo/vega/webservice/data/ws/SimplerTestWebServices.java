@@ -264,7 +264,7 @@ public final class SimplerTestWebServices implements WebServices {
 		//offset + range ?
 		//code 200
 		if (contactFrom != null) {
-			throw new ValidationUserException(new MessageText("Process validation error", null), contactFrom, "firstname");
+			throw new ValidationUserException(new MessageText("Process validation error", null), contactFrom, "firstName");
 		}
 		return Collections.emptyList();
 	}
@@ -360,7 +360,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;

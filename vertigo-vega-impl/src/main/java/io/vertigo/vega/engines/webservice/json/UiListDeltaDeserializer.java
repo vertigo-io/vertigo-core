@@ -42,23 +42,23 @@ final class UiListDeltaDeserializer<D extends DtObject> implements JsonDeseriali
 	public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
-		final Type uiObjectType = new KnownParameterizedType(UiObject.class, dtoClass);
+		final Type uiObjectType = new KnownParameterizedType(RestUiObject.class, dtoClass);
 		final JsonObject jsonObject = json.getAsJsonObject();
 
-		final Map<String, UiObject<D>> collCreates = parseUiObjectMap(jsonObject, "collCreates", uiObjectType, context);
-		final Map<String, UiObject<D>> collUpdates = parseUiObjectMap(jsonObject, "collUpdates", uiObjectType, context);
-		final Map<String, UiObject<D>> collDeletes = parseUiObjectMap(jsonObject, "collDeletes", uiObjectType, context);
+		final Map<String, RestUiObject<D>> collCreates = parseUiObjectMap(jsonObject, "collCreates", uiObjectType, context);
+		final Map<String, RestUiObject<D>> collUpdates = parseUiObjectMap(jsonObject, "collUpdates", uiObjectType, context);
+		final Map<String, RestUiObject<D>> collDeletes = parseUiObjectMap(jsonObject, "collDeletes", uiObjectType, context);
 
 		return new UiListDelta<>(dtoClass, collCreates, collUpdates, collDeletes);
 	}
 
-	private Map<String, UiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
-		final Map<String, UiObject<D>> uiObjectMap = new HashMap<>();
+	private Map<String, RestUiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
+		final Map<String, RestUiObject<D>> uiObjectMap = new HashMap<>();
 		final JsonObject jsonUiObjectMap = jsonObject.getAsJsonObject(propertyName);
 		if (jsonUiObjectMap != null) {
 			for (final Entry<String, JsonElement> entry : jsonUiObjectMap.entrySet()) {
 				final String entryName = entry.getKey();
-				final UiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
+				final RestUiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
 				uiObjectMap.put(entryName, inputDto);
 			}
 		}

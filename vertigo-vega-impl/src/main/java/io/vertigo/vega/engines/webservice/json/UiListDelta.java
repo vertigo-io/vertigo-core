@@ -36,9 +36,9 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  */
 public final class UiListDelta<D extends DtObject> implements Serializable {
 	private static final long serialVersionUID = 1592171971937013208L;
-	private final Map<String, UiObject<D>> collCreates;
-	private final Map<String, UiObject<D>> collUpdates;
-	private final Map<String, UiObject<D>> collDeletes;
+	private final Map<String, RestUiObject<D>> collCreates;
+	private final Map<String, RestUiObject<D>> collUpdates;
+	private final Map<String, RestUiObject<D>> collDeletes;
 
 	private final Class<D> objectType;
 
@@ -49,7 +49,7 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	 * @param collUpdates Map of updated inputs
 	 * @param collDeletes Map of removed inputs
 	 */
-	UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
+	UiListDelta(final Class<D> objectType, final Map<String, RestUiObject<D>> collCreates, final Map<String, RestUiObject<D>> collUpdates, final Map<String, RestUiObject<D>> collDeletes) {
 		Assertion.checkNotNull(objectType);
 		Assertion.checkNotNull(collCreates);
 		Assertion.checkNotNull(collUpdates);
@@ -71,21 +71,21 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	/**
 	 * @return Created uiObjects by client id
 	 */
-	public Map<String, UiObject<D>> getCreatesMap() {
+	public Map<String, RestUiObject<D>> getCreatesMap() {
 		return collCreates;
 	}
 
 	/**
 	 * @return Updated uiObjects by client id
 	 */
-	public Map<String, UiObject<D>> getUpdatesMap() {
+	public Map<String, RestUiObject<D>> getUpdatesMap() {
 		return collUpdates;
 	}
 
 	/**
 	 * @return Deleted uiObject by client id
 	 */
-	public Map<String, UiObject<D>> getDeletesMap() {
+	public Map<String, RestUiObject<D>> getDeletesMap() {
 		return collDeletes;
 	}
 
@@ -105,9 +105,9 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 		return new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
 	}
 
-	private DtList<D> mergeAndCheckInput(final Map<String, UiObject<D>> uiObjectMap, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
+	private DtList<D> mergeAndCheckInput(final Map<String, RestUiObject<D>> uiObjectMap, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		final DtList<D> dtList = new DtList<>(objectType);
-		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
+		for (final Map.Entry<String, RestUiObject<D>> entry : uiObjectMap.entrySet()) {
 			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
 			final D dto = entry.getValue().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			dtList.add(dto);

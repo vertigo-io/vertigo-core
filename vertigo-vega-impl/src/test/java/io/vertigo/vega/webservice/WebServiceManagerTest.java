@@ -806,7 +806,7 @@ public final class WebServiceManagerTest {
 				.build();
 
 		loggedAndExpect(given().body(fullBody))
-				.body("objectFieldErrors.contactFrom.firstname", Matchers.contains("Process validation error"))
+				.body("objectFieldErrors.contactFrom.firstName", Matchers.contains("Process validation error"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/innerBodyValidationErrors");
@@ -1311,7 +1311,8 @@ public final class WebServiceManagerTest {
 		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia", isAuto);
 	}
 
-	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
+	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken,
+			final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(loggedSessionFilter);
 		final String wsUrl = isAuto ? "/test/_searchAutoPagined" : "/test/_searchQueryPagined";
 		if (top != null) {
@@ -1713,7 +1714,8 @@ public final class WebServiceManagerTest {
 		return newContact;
 	}
 
-	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address, final String email, final String... tels) {
+	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address,
+			final String email, final String... tels) {
 		return new MapBuilder<String, Object>()
 				.putNullable("conId", conId)
 				.put("honorificCode", honorific)
