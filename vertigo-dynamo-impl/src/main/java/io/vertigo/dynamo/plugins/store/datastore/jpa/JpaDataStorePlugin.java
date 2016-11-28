@@ -19,9 +19,11 @@
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,9 +58,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteria;
 import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria2.Ctx;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -70,6 +75,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class JpaDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
+
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
@@ -215,35 +221,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getFragment().orElse(dtDefinition).getClassSimpleName();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
-		final StringBuilder sb = new StringBuilder()
-				.append("LIST_")
-				.append(tableName);
-		//s'il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
-		if (filter.getFilterMap().size() + filter.getPrefixMap().size() <= 1) {
-			String sep = "_BY_";
-			for (final String filterName : filter.getFilterMap().keySet()) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-			sep = "_PREFIXED_ON_";
-			for (final String filterName : filter.getPrefixMap().keySet()) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-		} else {
-			sb.append("_BY_CRITERIA");
-		}
-		String result = sb.toString();
-		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
-		}
-
-		return result;
-	}
-
 	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria) {
 		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
 		String sep = " where ";
@@ -269,6 +246,38 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			sep = " and ";
 		}
 		return request.toString();
+	}
+
+	@Override
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(criteria);
+		//-----
+		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
+		//-----
+		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
+		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
+			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+			final String tableName = getTableName(dtDefinition);
+			final String request = createLoadAllLikeQuery(tableName, criteria);
+			final Ctx ctx = criteria.toSql().getVal2();
+
+			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
+			//IN, obligatoire
+			for (final String attributeName : ctx.getAttributeNames()) {
+				q.setParameter(attributeName, ctx.getAttributeValue(attributeName));
+			}
+			if (maxRows != null) {
+				q.setMaxResults(maxRows);
+			}
+
+			final List<E> results = q.getResultList();
+			final DtList<E> dtc = new DtList<>(dtDefinition);
+			dtc.addAll(results);
+			tracker.setMeasure("nbSelectedRow", dtc.size())
+					.markAsSucceeded();
+			return dtc;
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -422,6 +431,49 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final SQLException sqle = (SQLException) t;
 		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
 		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+	}
+
+	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final Criteria2<E> criteria /*, final Integer maxRows*/) {
+		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
+
+		final StringBuilder request = new StringBuilder("select t ")
+				.append(" from ").append(tableName).append(" t")
+				.append(" where ").append(tuple.getVal1().replaceAll("#([A-Z_0-9]+)#", ":$1"));
+		return request.toString();
+	}
+
+	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
+		final Set<String> criteriaFieldNames = new HashSet<String>();
+		criteriaFieldNames.addAll(filter.getFilterMap().keySet());
+		criteriaFieldNames.addAll(filter.getPrefixMap().keySet());
+		return getListTaskName(tableName, criteriaFieldNames);
+	}
+
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> filter) {
+		return getListTaskName(tableName, filter.toSql().getVal2().getAttributeNames());
+	}
+
+	private static <E extends Entity> String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
+		final StringBuilder sb = new StringBuilder()
+				.append("LIST_")
+				.append(tableName);
+
+		//si il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
+		if (criteriaFieldNames.size() <= 1) {
+			String sep = "_BY_";
+			for (final String filterName : criteriaFieldNames) {
+				sb.append(sep);
+				sb.append(filterName);
+				sep = "_AND_";
+			}
+		} else {
+			sb.append("_BY_CRITERIA");
+		}
+		String result = sb.toString();
+		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
+			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
+		}
+		return result;
 	}
 
 }
