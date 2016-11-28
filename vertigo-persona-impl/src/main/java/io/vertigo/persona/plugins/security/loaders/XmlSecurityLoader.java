@@ -18,24 +18,25 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Named;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.util.StringUtil;
+import io.vertigo.util.XMLUtil;
 
 /**
  * Plugin XML chargeant la registry à partir d'un fichier XML
@@ -88,89 +89,35 @@ final class XmlSecurityLoader {
 	}
 
 	void load() {
-		final Element root = XmlSecurityLoader.create(authURL, "/io/vertigo/persona/security/authorisation-config_1_0.dtd");
-
-		// Permission
-		final List<Element> permissions = root.elements(PERMISSION_KEY);
-		for (final Element permissionElement : permissions) {
-			final Permission permission = createPermission(permissionElement);
-			Home.getApp().getDefinitionSpace().put(permission);
-		}
-		// Role
-		final List<Element> roleKeys = root.elements(ROLE_KEY);
-		for (final Element roleElement : roleKeys) {
-			final Role role = createRole(roleElement);
-			Home.getApp().getDefinitionSpace().put(role);
-		}
-	}
-
-	/**
-	 * Reads an XML file and creates the root element
-	 * @param url the url of the xml file to be read
-	 * @return the root element
-	 */
-	//repris de XMLUtil 6.1.18
-	private static Element create(final URL url, final String dtdResource) {
-		Assertion.checkArgNotEmpty(dtdResource);
-		//-----
-		final EntityResolver entityResolver = new ClassPathEntityResolver(dtdResource);
-		return createDocument(url, entityResolver).getRootElement();
-	}
-
-	//repris de XMLUtil 6.1.18
-	private static Document createDocument(final URL url, final EntityResolver entityResolver) {
-		Assertion.checkNotNull(url);
+		Assertion.checkNotNull(authURL);
 		//-----
 		try {
-			final SAXReader builder = new SAXReader(true);
-			builder.setEntityResolver(entityResolver);
-			return builder.read(url.openStream());
-		} catch (final Exception e) {
-			throw new WrappedException("Erreur durant la lecture du fichier XML " + url, e);
+			doLoadXML(authURL);
+		} catch (final ParserConfigurationException pce) {
+			throw new WrappedException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", authURL.getPath()), pce);
+		} catch (final SAXException se) {
+			throw new WrappedException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", authURL.getPath()), se);
+		} catch (final IOException ioe) {
+			throw new WrappedException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", authURL.getPath()), ioe);
 		}
 	}
 
-	private static Permission createPermission(final Element permissionElement) {
-		Assertion.checkNotNull(permissionElement);
-		//-----
-		final String id = permissionElement.attributeValue(ID_KEY);
-		final String operation = permissionElement.attributeValue(OPERATION_KEY);
-		final String filter = permissionElement.attributeValue(FILTER_KEY);
-		//-----
-		return new Permission(id, operation, filter);
+	private static void doLoadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
+		xsdValidate(configURL);
+		//---
+
+		final XmlSecurityHandler handler = new XmlSecurityHandler(Home.getApp().getDefinitionSpace());
+		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+		final SAXParser saxParser = factory.newSAXParser();
+		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);
 	}
 
-	private static Role createRole(final Element roleElement) {
-		Assertion.checkNotNull(roleElement);
-		//-----
-		final String name = roleElement.attributeValue(NAME_KEY);
-		//-----
-		final String description = roleElement.attributeValue(DESCRIPTION_KEY);
-		//-----
-		final List<Permission> permissions = new ArrayList<>();
-		final List<Element> xps = roleElement.elements(PERMISSION_KEY);
-		for (final Element element : xps) {
-			final String permissionRef = element.attributeValue(REF_KEY);
-			//-----
-			final Permission permission = Home.getApp().getDefinitionSpace().resolve(permissionRef, Permission.class);
-			//-----
-			permissions.add(permission);
-		}
-		return new Role(name, description, permissions);
+	private static void xsdValidate(final URL configURL) {
+		//--- validation XSD
+		final URL xsd = VSecurityManager.class.getResource("vertigo-security_1_0.xsd");
+		XMLUtil.validateXmlByXsd(configURL, xsd);
+		//--- fin validation XSD
 	}
-
-	private static final class ClassPathEntityResolver implements EntityResolver {
-		private final String dtdResource;
-
-		ClassPathEntityResolver(final String dtdResource) {
-			this.dtdResource = dtdResource;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public InputSource resolveEntity(final String publicId, final String systemId) {
-			return new InputSource(getClass().getResourceAsStream(dtdResource));
-		}
-	}
-
 }
