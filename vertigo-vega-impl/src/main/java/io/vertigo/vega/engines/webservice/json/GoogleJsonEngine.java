@@ -160,8 +160,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Type paramType) {
-		final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
+	public <D extends DtObject> RestUiObject<D> uiObjectFromJson(final String json, final Type paramType) {
+		final Type typeOfDest = createParameterizedType(RestUiObject.class, paramType);
 		return gson.fromJson(json, typeOfDest);
 	}
 
@@ -175,9 +175,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Type paramType) {
+	public <D extends DtObject> UiListModifiable<D> uiListFromJson(final String json, final Type paramType) {
 		final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
-		final Type typeOfDest = createParameterizedType(UiList.class, dtoClass);
+		final Type typeOfDest = createParameterizedType(UiListModifiable.class, dtoClass);
 		return gson.fromJson(json, typeOfDest);
 	}
 
@@ -195,7 +195,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 				final Serializable value;
 				if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
-					final Type typeOfDest = new KnownParameterizedType(UiObject.class, paramType);
+					final Type typeOfDest = new KnownParameterizedType(RestUiObject.class, paramType);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
@@ -203,7 +203,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtList.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
-					final Type typeOfDest = new KnownParameterizedType(UiList.class, dtoClass);
+					final Type typeOfDest = new KnownParameterizedType(UiListModifiable.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
 					value = (Serializable) gson.fromJson(jsonSubElement, paramType);
@@ -333,9 +333,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
 					//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
-					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
+					.registerTypeAdapter(RestUiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
-					.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
+					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())

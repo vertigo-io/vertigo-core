@@ -31,6 +31,7 @@ import io.vertigo.lang.MessageText;
  * @author pchretien, npiedeloup
  */
 public final class DtObjectErrors {
+
 	private final List<MessageText> objectErrors = new ArrayList<>();
 	private final Map<String, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 
@@ -42,7 +43,7 @@ public final class DtObjectErrors {
 		return fieldsErrors.containsKey(fieldName);
 	}
 
-	void clearErrors(final String fieldName) {
+	public void clearErrors(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		//-----
 		fieldsErrors.remove(fieldName);

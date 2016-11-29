@@ -85,7 +85,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiObject filled with a DtObject partially filled and the accessToken if present
 	 */
-	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
+	<D extends DtObject> RestUiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObjectExtended.
@@ -123,6 +123,6 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiList filled with DtObjects list partially filled and the accessToken if present
 	 */
-	<D extends DtObject> UiList<D> uiListFromJson(String json, Type paramType);
+	<D extends DtObject> UiListModifiable<D> uiListFromJson(String json, Type paramType);
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -32,22 +33,29 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
+public final class UiListModifiable<D extends DtObject> extends ArrayList<RestUiObject<D>> implements UiList<D> {
 	private static final long serialVersionUID = -8008715790791553036L;
 	private final Class<D> objectType;
 
 	/**
 	 * @param objectType Object type
 	 */
-	UiList(final Class<D> objectType) {
+	UiListModifiable(final Class<D> objectType) {
 		this.objectType = objectType;
 	}
 
 	/**
 	 * @return Object type
 	 */
+	@Override
 	public Class<D> getObjectType() {
 		return objectType;
+	}
+
+	@Override
+	public void checkFormat(final UiMessageStack uiMessageStack) {
+		stream().forEach((uiObject) -> uiObject.checkFormat(uiMessageStack));
+
 	}
 
 	/**
@@ -56,11 +64,12 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 	 * @param uiMessageStack Message stack to update
 	 * @return Updated and validated business object
 	 */
+	@Override
 	public DtList<D> mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
 		//-----
 		final DtList<D> dtList = new DtList<>(objectType);
-		for (final UiObject<D> element : this) {
+		for (final RestUiObject<D> element : this) {
 			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
 			final D dto = element.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			dtList.add(dto);
@@ -78,4 +87,5 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 	public int hashCode() {
 		return System.identityHashCode(this);
 	}
+
 }

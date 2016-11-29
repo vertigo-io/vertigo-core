@@ -24,7 +24,7 @@ import java.util.Map;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
-* @author npiedeloup 
+* @author npiedeloup
 */
 public final class UiContextResolver {
 	private final Map<DtObject, String> dtObjectDictionary = new HashMap<>();

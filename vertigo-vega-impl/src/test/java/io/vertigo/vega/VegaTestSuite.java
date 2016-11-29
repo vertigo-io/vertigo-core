@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.vega.impl.servlet.filter.AbstractFilterTest;
 import io.vertigo.vega.webservice.WebServiceManagerTest;
 
 /**
@@ -30,7 +31,7 @@ import io.vertigo.vega.webservice.WebServiceManagerTest;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class })
+@SuiteClasses({ WebServiceManagerTest.class, AbstractFilterTest.class })
 public final class VegaTestSuite {
 	//
 }

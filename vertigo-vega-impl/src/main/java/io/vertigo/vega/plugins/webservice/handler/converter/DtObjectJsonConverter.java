@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiObject;
+import io.vertigo.vega.engines.webservice.json.RestUiObject;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 
@@ -60,12 +60,12 @@ public final class DtObjectJsonConverter implements JsonConverter {
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
-		final UiObject<DtObject> uiObject;
+		final RestUiObject<DtObject> uiObject;
 		if (input instanceof String) {
 			uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
-			uiObject = (UiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());
+			uiObject = (RestUiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());
 			Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", webServiceParam);
 			objectPath = webServiceParam.getName();
 		} else {
