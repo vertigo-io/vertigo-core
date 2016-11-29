@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.environment.loaders.java;
 
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
@@ -119,6 +118,10 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
+		final String simpleName = clazz.getSimpleName();
+		final String packageName = clazz.getPackage().getName();
+		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+
 		String fragmentOf = null;
 		if (Fragment.class.isAssignableFrom(clazz)) {
 			//Fragments
@@ -128,29 +131,34 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 					break;
 				}
 			}
+			parseFragment(clazz, fragmentOf, dtDefinitionName, packageName, dynamicModelrepository);
+		} else {
+			final DtStereotype stereotype = parseStereotype(clazz);
+			parseDtDefinition(clazz, stereotype, dtDefinitionName, packageName, dynamicModelrepository);
 		}
-		parseDtDefinition(clazz, fragmentOf, dynamicModelrepository);
+
 	}
 
-	private static void parseDtDefinition(
-			final Class<?> clazz,
-			final String fragmentOf,
-			final DynamicDefinitionRepository dynamicModelRepository) {
-		final String simpleName = clazz.getSimpleName();
-		final String packageName = clazz.getPackage().getName();
+	private static void parseFragment(final Class<?> clazz, final String fragmentOf, final String dtDefinitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY, packageName)
+				.addDefinitionLink("from", fragmentOf);
 
-		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
+	}
 
-		final DtStereotype stereotype = parseStereotype(clazz);
-
+	private static void parseDtDefinition(final Class<?> clazz, final DtStereotype stereotype, final String dtDefinitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
-				.addPropertyValue(STEREOTYPE, stereotype.name())
-				.addPropertyValue(FRAGMENT_OF, fragmentOf);
+				.addPropertyValue(STEREOTYPE, stereotype.name());
 
 		// Only Persistent stereotypes have a dataspace => Fragment got it from parent
 		if (stereotype.isPersistent()) {
 			dtDefinitionBuilder.addPropertyValue(DATA_SPACE, parseDataSpaceAnnotation(clazz));
 		}
+		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
+	}
+
+	private static void parseDynamicDefinitionBuilder(final Class<?> clazz, final DynamicDefinitionBuilder dtDefinitionBuilder, final DynamicDefinitionRepository dynamicModelRepository) {
+		final String packageName = clazz.getPackage().getName();
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -171,6 +179,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			//On regarde si il s'agit d'une associations
 			parseAssociationDefinition(dynamicModelRepository, method, packageName);
 		}
+
 		final DynamicDefinition dtDefinition = dtDefinitionBuilder.build();
 		dynamicModelRepository.addDefinition(dtDefinition);
 	}
