@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import io.vertigo.dynamo.environment.java.data.domain.Attachment;
 import io.vertigo.dynamo.environment.java.data.domain.City;
+import io.vertigo.dynamo.environment.java.data.domain.CityFragment;
 import io.vertigo.dynamo.environment.java.data.domain.Command;
 import io.vertigo.dynamo.environment.java.data.domain.CommandCriteria;
 import io.vertigo.dynamo.environment.java.data.domain.CommandType;
@@ -41,6 +42,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		Attachment(Attachment.class),
 		/** Objet de données City. */
 		City(City.class),
+		/** Objet de données CityFragment. */
+		CityFragment(CityFragment.class),
 		/** Objet de données Command. */
 		Command(Command.class),
 		/** Objet de données CommandCriteria. */

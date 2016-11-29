@@ -51,13 +51,27 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatter().getFormatterClassName());
 	}
 
-	public void testFamille() {
+	@Test
+	public void testCommand() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DT_FAMILLE", DtDefinition.class);
+		final DtDefinition dtDefinition = definitionSpace.resolve("DT_COMMAND", DtDefinition.class);
 		Assert.assertTrue(dtDefinition.isPersistent());
-		Assert.assertEquals("io.vertigo.dynamock.domain.famille.Famille", dtDefinition.getClassCanonicalName());
-		Assert.assertEquals("io.vertigo.dynamock.domain.famille", dtDefinition.getPackageName());
-		Assert.assertEquals("Famille", dtDefinition.getClassSimpleName());
+		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain.Command", dtDefinition.getClassCanonicalName());
+		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
+		Assert.assertEquals("Command", dtDefinition.getClassSimpleName());
+	}
+
+	@Test
+	public void testCityFragment() {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DtDefinition dtDefinition = definitionSpace.resolve("DT_CITY_FRAGMENT", DtDefinition.class);
+		Assert.assertFalse(dtDefinition.isPersistent());
+		Assert.assertTrue(dtDefinition.getFragment().isPresent());
+		Assert.assertTrue("City".equals(dtDefinition.getFragment().get().getClassSimpleName()));
+		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain.CityFragment", dtDefinition.getClassCanonicalName());
+		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
+		Assert.assertEquals("CityFragment", dtDefinition.getClassSimpleName());
+		Assert.assertTrue("City".equals(dtDefinition.getField("CIT_ID").getFkDtDefinition().getClassSimpleName()));
 	}
 
 	//	@Test
