@@ -22,12 +22,12 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.RestUiObject;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.RestUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -109,7 +109,7 @@ public final class WebServiceCallContext {
 	 * @param webServiceParam param name
 	 * @param uiObject param value
 	 */
-	public void registerUiObject(final WebServiceParam webServiceParam, final RestUiObject uiObject) {
+	public void registerUiObject(final WebServiceParam webServiceParam, final UiObject uiObject) {
 		request.attribute(webServiceParam.getFullName(), uiObject);
 	}
 

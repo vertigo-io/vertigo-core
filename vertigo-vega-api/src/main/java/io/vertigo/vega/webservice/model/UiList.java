@@ -20,6 +20,7 @@ package io.vertigo.vega.webservice.model;
 
 import java.util.List;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -30,9 +31,11 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-public interface UiList<D extends DtObject> {
+public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 
 	Class<D> getObjectType();
+
+	DtDefinition getDtDefinition();
 
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.

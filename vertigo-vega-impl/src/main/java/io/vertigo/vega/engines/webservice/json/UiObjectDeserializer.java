@@ -35,16 +35,17 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiObject.
  * @author npiedeloup
  */
-final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<RestUiObject<D>> {
+final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public RestUiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+	public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final JsonObject jsonObject = json.getAsJsonObject();
@@ -66,7 +67,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 			}
 			throw new JsonSyntaxException("Received Json's fields doesn't match " + dtoClass.getSimpleName() + " ones : " + jsonEntry);
 		}
-		final RestUiObject<D> uiObject = new RestUiObject<>(inputDto, modifiedFields);
+		final UiObject<D> uiObject = new RestUiObject<>(inputDto, modifiedFields);
 		if (jsonObject.has(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)) {
 			uiObject.setServerSideToken(jsonObject.get(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 		}
