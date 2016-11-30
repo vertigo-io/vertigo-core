@@ -38,10 +38,14 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 	public Optional<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		//-----
-		try {
-			return Optional.ofNullable(new File(resource).toURI().toURL());
-		} catch (final MalformedURLException e) {
-			return Optional.empty();
+		final File file = new File(resource);
+		if (file.exists() && file.canRead()) {
+			try {
+				return Optional.ofNullable(file.toURI().toURL());
+			} catch (final MalformedURLException e) {
+				return Optional.empty();
+			}
 		}
+		return Optional.empty();
 	}
 }
