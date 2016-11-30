@@ -110,6 +110,7 @@ public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/**
 	 * @return Server Side Token , null if none
 	 */
+	@Override
 	public String getServerSideToken() {
 		return serverSideToken;
 	}
@@ -117,6 +118,7 @@ public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/**
 	 * @param serverSideToken Server Side Token
 	 */
+	@Override
 	public void setServerSideToken(final String serverSideToken) {
 		this.serverSideToken = serverSideToken;
 	}
@@ -132,6 +134,7 @@ public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/**
 	 * @param serverSideDto Object keep server side
 	 */
+	@Override
 	public void setServerSideObject(final D serverSideDto) {
 		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
 		//-----

@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.webservice.model;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -27,7 +29,9 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup (16 sept. 2014 18:13:55)
  * @param <D> Object type
  */
-public final class DtListDelta<D extends DtObject> {
+public final class DtListDelta<D extends DtObject> implements Serializable {
+	private static final long serialVersionUID = -5002177631553042497L;
+
 	private final DtList<D> dtListCreates;
 	private final DtList<D> dtListUpdates;
 	private final DtList<D> dtListDeletes;

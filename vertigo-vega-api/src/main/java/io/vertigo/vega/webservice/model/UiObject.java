@@ -88,4 +88,10 @@ public interface UiObject<D extends DtObject> extends Serializable {
 
 	D getServerSideObject();
 
+	void setServerSideObject(D dtObject);
+
+	String getServerSideToken();
+
+	void setServerSideToken(String asString);
+
 }

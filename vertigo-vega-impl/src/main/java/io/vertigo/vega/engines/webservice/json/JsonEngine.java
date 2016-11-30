@@ -25,6 +25,7 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Component;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Convert Object to Json, and json to Object.
@@ -85,7 +86,7 @@ public interface JsonEngine extends Component {
 	 * @param paramType Object type
 	 * @return UiObject filled with a DtObject partially filled and the accessToken if present
 	 */
-	<D extends DtObject> RestUiObject<D> uiObjectFromJson(String json, Type paramType);
+	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObjectExtended.

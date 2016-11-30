@@ -32,9 +32,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.RestUiObject;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -42,6 +41,7 @@ import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
+import io.vertigo.vega.webservice.model.UiObject;
 import spark.Request;
 import spark.Response;
 
@@ -83,8 +83,8 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		for (final WebServiceParam webServiceParam : routeContext.getWebServiceDefinition().getWebServiceParams()) {
 			if (webServiceParam.isNeedServerSideToken()) {
 				final Object webServiceValue = routeContext.getParamValue(webServiceParam);
-				if (webServiceValue instanceof RestUiObject) {
-					readServerSideUiObject((RestUiObject<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+				if (webServiceValue instanceof UiObject) {
+					readServerSideUiObject((UiObject<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else if (webServiceValue instanceof UiListModifiable) {
 					readServerSideUiList((UiListModifiable<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else if (webServiceValue instanceof UiListDelta) {
@@ -107,7 +107,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		return returnValue;
 	}
 
-	private void readServerSideUiObject(final RestUiObject<DtObject> uiObject, final boolean consumeServerSideToken) {
+	private void readServerSideUiObject(final UiObject<DtObject> uiObject, final boolean consumeServerSideToken) {
 		final String accessToken = uiObject.getServerSideToken();
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
@@ -125,8 +125,8 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		uiObject.setServerSideObject((DtObject) serverSideObject.get());
 	}
 
-	private void readServerSideUiList(final Collection<RestUiObject<DtObject>> uiList, final boolean consumeServerSideToken) {
-		for (final RestUiObject<DtObject> entry : uiList) {
+	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) {
+		for (final UiObject<DtObject> entry : uiList) {
 			readServerSideUiObject(entry, consumeServerSideToken);
 		}
 	}
