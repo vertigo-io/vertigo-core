@@ -79,7 +79,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 
 	@Override
 	protected UiObject<D> createUiObject(final D dto) {
-		return new RestUiObject<>(dto, Collections.emptySet());
+		return new VegaUiObject<>(dto, Collections.emptySet());
 	}
 
 }

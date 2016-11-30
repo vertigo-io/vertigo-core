@@ -28,7 +28,7 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiObject;
-import io.vertigo.vega.webservice.validation.RestUiMessageStack;
+import io.vertigo.vega.webservice.validation.VegaUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import spark.Request;
@@ -55,7 +55,7 @@ public final class WebServiceCallContext {
 		this.response = response;
 		this.webServiceDefinition = webServiceDefinition;
 		uiContextResolver = new UiContextResolver();
-		request.attribute(UI_MESSAGE_STACK, new RestUiMessageStack(uiContextResolver));
+		request.attribute(UI_MESSAGE_STACK, new VegaUiMessageStack(uiContextResolver));
 	}
 
 	/**

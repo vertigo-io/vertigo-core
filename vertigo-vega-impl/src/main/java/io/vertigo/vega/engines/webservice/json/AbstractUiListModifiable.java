@@ -118,7 +118,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		Assertion.checkNotNull(uiObject);
 		Assertion.checkState(bufferUiObjects.contains(uiObject), "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
 		// ---
-		return ".get(" + indexOf(uiObject) + ")";
+		return inputKey + ".get(" + indexOf(uiObject) + ")";
 	}
 
 	/**
@@ -225,7 +225,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		Assertion.checkNotNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
-			if (bufferUiObjects.get(i).getServerSideObject().equals(dtObject)) {
+			if (dtObject.equals(bufferUiObjects.get(i).getServerSideObject())) {
 				return i;
 			}
 		}
@@ -244,7 +244,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//1. check Error => KUserException
 		//on valide les éléments internes
 		for (final UiObject<D> uiObject : bufferUiObjects) {
-			uiObject.setInputKey(inputKey + findContextKey(uiObject));
+			uiObject.setInputKey(findContextKey(uiObject));
 			uiObject.checkFormat(uiMessageStack);
 		}
 	}

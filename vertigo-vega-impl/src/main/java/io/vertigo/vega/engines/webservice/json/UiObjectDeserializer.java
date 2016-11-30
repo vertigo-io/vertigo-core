@@ -67,7 +67,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 			}
 			throw new JsonSyntaxException("Received Json's fields doesn't match " + dtoClass.getSimpleName() + " ones : " + jsonEntry);
 		}
-		final UiObject<D> uiObject = new RestUiObject<>(inputDto, modifiedFields);
+		final UiObject<D> uiObject = new VegaUiObject<>(inputDto, modifiedFields);
 		if (jsonObject.has(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)) {
 			uiObject.setServerSideToken(jsonObject.get(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 		}

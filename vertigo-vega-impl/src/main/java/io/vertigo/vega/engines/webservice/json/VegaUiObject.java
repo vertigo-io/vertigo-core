@@ -53,7 +53,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
-public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
+public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/**
@@ -87,7 +87,7 @@ public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @param inputDto partial object translated from input
 	 * @param modifiedFields modified fieldNames
 	 */
-	public RestUiObject(final D inputDto, final Set<String> modifiedFields) {
+	public VegaUiObject(final D inputDto, final Set<String> modifiedFields) {
 		Assertion.checkNotNull(inputDto, "inputObject can't be null");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
 		//Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");

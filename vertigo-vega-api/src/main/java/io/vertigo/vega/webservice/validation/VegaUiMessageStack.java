@@ -31,7 +31,7 @@ import io.vertigo.lang.JsonExclude;
  * Class d'enregistrement des messages.
  * @author npiedeloup
  */
-public final class RestUiMessageStack implements UiMessageStack {
+public final class VegaUiMessageStack implements UiMessageStack {
 
 	private final List<String> globalErrors = new ArrayList<>();
 	private final List<String> globalWarnings = new ArrayList<>();
@@ -53,7 +53,7 @@ public final class RestUiMessageStack implements UiMessageStack {
 	 * Constructor.
 	 * @param uiContextResolver Resolver object to contextKey in request
 	 */
-	public RestUiMessageStack(final UiContextResolver uiContextResolver) {
+	public VegaUiMessageStack(final UiContextResolver uiContextResolver) {
 		Assertion.checkNotNull(uiContextResolver);
 		//-----
 		this.uiContextResolver = uiContextResolver;
