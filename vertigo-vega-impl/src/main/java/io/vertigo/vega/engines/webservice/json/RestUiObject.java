@@ -187,7 +187,6 @@ public class RestUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
-	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override

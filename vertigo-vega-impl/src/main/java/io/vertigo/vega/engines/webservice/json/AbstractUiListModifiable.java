@@ -158,7 +158,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	}
 
 	/**
-	 * @param dto Element to add
+	 * @param uiObject Element to add
 	 * @return true (as specified by Collection.add)
 	 */
 	@Override
@@ -177,6 +177,9 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		return result;
 	}
 
+	/**
+	 * @return DtListDelta
+	 */
 	public DtListDelta<D> getDtListDelta() {
 		Assertion.checkNotNull(dtListDelta);
 		//

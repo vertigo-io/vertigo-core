@@ -43,13 +43,14 @@ public final class ValidationUserException extends VUserException {
 	private final List<UiError> uiErrors = new ArrayList<>();
 
 	/**
-	 * @param uiErrors Ui errors
+	 * Constructor.
 	 */
 	public ValidationUserException() {
 		this(Collections.<UiError> emptyList());
 	}
 
 	/**
+	 * Constructor.
 	 * @param uiErrors Ui errors
 	 */
 	public ValidationUserException(final List<UiError> uiErrors) {
@@ -77,15 +78,9 @@ public final class ValidationUserException extends VUserException {
 		this(messageText, StringUtil.camelToConstCase(fieldName), dto);
 	}
 
-	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
-		super(messageText);
-		Assertion.checkNotNull(dto, "L'objet est obligatoire");
-		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
-		//-----
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
-		uiErrors.add(new UiError(dto, dtField, messageText));
-	}
-
+	/**
+	 * @param uiMessageStack Message stack to populate with this current exception
+	 */
 	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiErrors) {
 			if (uiError.getDtObject() != null) {
@@ -96,4 +91,12 @@ public final class ValidationUserException extends VUserException {
 		}
 	}
 
+	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
+		super(messageText);
+		Assertion.checkNotNull(dto, "L'objet est obligatoire");
+		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
+		//-----
+		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
+		uiErrors.add(new UiError(dto, dtField, messageText));
+	}
 }
