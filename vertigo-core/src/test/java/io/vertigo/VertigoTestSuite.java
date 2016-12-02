@@ -46,6 +46,7 @@ import io.vertigo.util.ClassUtilTest;
 import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
 import io.vertigo.util.MapBuilderTest;
+import io.vertigo.util.SelectorTest;
 import io.vertigo.util.StringUtilTest;
 
 /**
@@ -76,6 +77,7 @@ import io.vertigo.util.StringUtilTest;
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
 		DateUtilTest.class,
+		SelectorTest.class,
 		StringUtilTest.class,
 		MapBuilderTest.class,
 		//--Params
@@ -88,6 +90,7 @@ import io.vertigo.util.StringUtilTest;
 		//Locales
 		LocaleManagerTest.class
 })
+
 public final class VertigoTestSuite {
 	//
 }

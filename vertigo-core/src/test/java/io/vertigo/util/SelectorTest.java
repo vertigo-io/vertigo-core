@@ -1,0 +1,108 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.util;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+
+import javax.inject.Named;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.util.Selector.ClassConditions;
+import io.vertigo.util.Selector.MethodConditions;
+import io.vertigo.util.data.SA;
+import io.vertigo.util.data.SAnnotationA;
+import io.vertigo.util.data.SB;
+
+/**
+ * Junit test of the Selector Class.
+ * @author pchretien
+ */
+@RunWith(JUnitPlatform.class)
+public final class SelectorTest {
+
+	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.util.data";
+
+	@Test
+	public void testAdd() {
+		Assertions.assertEquals(1, new Selector().add(SA.class).findClasses().size());
+	}
+
+	@Test
+	public void testIncludeTree() {
+		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE).findClasses();
+		// ---
+		Assertions.assertEquals(3, result.size());
+	}
+
+	@Test
+	public void testAnnotation() {
+		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.annotatedWith(Named.class))
+				.findClasses();
+		// ---
+		Assertions.assertEquals(1, result.size());
+	}
+
+	@Test
+	public void testSubtype() {
+		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.subTypeOf(Component.class))
+				.findClasses();
+		// ---
+		Assertions.assertEquals(2, result.size());
+	}
+
+	@Test
+	public void testMethodAnnotation() {
+		final Collection<Tuple2<Class, Method>> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+				.filter(MethodConditions.annotatedWith(SAnnotationA.class))
+				.findMethods();
+		// ---
+		Assertions.assertEquals(1, result.size());
+	}
+
+	@Test
+	public void testOr() {
+		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.annotatedWith(Named.class)
+						.or(ClassConditions.subTypeOf(SB.class)))
+				.findClasses();
+		// ---
+		Assertions.assertEquals(2, result.size());
+	}
+
+	@Test
+	public void testUsageException() {
+		Assertions.assertThrows(IllegalStateException.class, () -> testException());
+	}
+
+	private void testException() {
+		new Selector().includeTree(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.annotatedWith(Named.class))
+				.add(SA.class)
+				.findClasses();
+	}
+}
