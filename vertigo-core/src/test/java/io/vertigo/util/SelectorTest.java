@@ -20,6 +20,7 @@ package io.vertigo.util;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Named;
 
@@ -45,20 +46,39 @@ public final class SelectorTest {
 
 	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.util.data";
 
+	//-----
+	//---From
+	//-----
 	@Test
-	public void testAdd() {
+	public void testFromOneClass() {
 		Assertions.assertEquals(1, new Selector().from(SA.class).findClasses().size());
 	}
 
 	@Test
-	public void testIncludeTree() {
+	public void testFromClasses() {
+		final List<Class> classes = new ListBuilder<Class>().add(SA.class).add(SB.class).build();
+		Assertions.assertEquals(2, new Selector().from(classes).findClasses().size());
+	}
+
+	@Test
+	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
 		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
-	public void testAnnotation() {
+	public void testFromSupplier() {
+		final Collection<Class> result = new Selector().from(() -> new ListBuilder<Class>().add(SA.class).add(SB.class).build()).findClasses();
+		// ---
+		Assertions.assertEquals(2, result.size());
+	}
+
+	//-----
+	//---Filter
+	//-----
+	@Test
+	public void testFilterByClassAnnotation() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(Named.class))
@@ -68,7 +88,7 @@ public final class SelectorTest {
 	}
 
 	@Test
-	public void testSubtype() {
+	public void testFilterBySubtype() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
@@ -78,7 +98,7 @@ public final class SelectorTest {
 	}
 
 	@Test
-	public void testMethodAnnotation() {
+	public void testFilterByMethodAnnotation() {
 		final Collection<Tuple2<Class, Method>> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterMethods(MethodConditions.annotatedWith(SAnnotationA.class))
@@ -87,6 +107,19 @@ public final class SelectorTest {
 		Assertions.assertEquals(1, result.size());
 	}
 
+	@Test
+	public void testFilterByInterface() {
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
+				.filterClasses(ClassConditions.interfaces())
+				.findClasses();
+		// ---
+		Assertions.assertEquals(2, result.size());
+	}
+
+	//-----
+	//---Logical operators
+	//-----
 	@Test
 	public void testOr() {
 		final Collection<Class> result = new Selector()
@@ -110,16 +143,6 @@ public final class SelectorTest {
 	}
 
 	@Test
-	public void testInterface() {
-		final Collection<Class> result = new Selector()
-				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.interfaces())
-				.findClasses();
-		// ---
-		Assertions.assertEquals(2, result.size());
-	}
-
-	@Test
 	public void testNot() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
@@ -129,12 +152,14 @@ public final class SelectorTest {
 		Assertions.assertEquals(1, result.size());
 	}
 
+	//--- from -> filter -> find
 	@Test
 	public void testUsageException() {
 		Assertions.assertThrows(IllegalStateException.class, () -> testException());
 	}
 
 	private void testException() {
+		//We want to check that all 'from" clauses must be put together
 		new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(Named.class))
