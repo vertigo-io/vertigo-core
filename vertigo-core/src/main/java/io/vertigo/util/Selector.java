@@ -2,10 +2,8 @@ package io.vertigo.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -36,8 +34,8 @@ import io.vertigo.lang.Tuples.Tuple2;
 public final class Selector {
 	private final Map<String, Class> scope = new HashMap<>();
 
-	private final List<MethodConditions> methodConditions = new ArrayList<>();
-	private final List<ClassConditions> classConditions = new ArrayList<>();
+	private  Predicate<Method> methodPredicate= (m) -> true ;
+	private Predicate<Class>  classPredicate = (c) -> true;
 
 	private boolean scoped;
 
@@ -68,14 +66,14 @@ public final class Selector {
 	public Selector filter(final MethodConditions methodCondition) {
 		scoped = true;
 		// ---
-		methodConditions.add(methodCondition);
+		methodPredicate = methodPredicate.and(methodCondition.getPredicate());
 		return this;
 	}
 
 	public Selector filter(final ClassConditions classCondition) {
 		scoped = true;
 		// ---
-		classConditions.add(classCondition);
+		classPredicate = classPredicate.and(classCondition.getPredicate());
 		return this;
 	}
 
@@ -84,26 +82,18 @@ public final class Selector {
 				.map((final Tuple2<Class, Method> tuple) -> tuple.getVal1()))
 				.distinct()
 				.collect(Collectors.toList());
-
 	}
 
 	public Collection<Class> findClasses() {
-		final Predicate<Class> allPredicate = classConditions.stream()
-				.map(classCondition -> classCondition.getPredicate())
-				.reduce((method) -> true, (predicate1, predicate2) -> predicate1.and(predicate2));
-
 		return scope.values().stream()
-				.filter(allPredicate)
+				.filter(classPredicate)
 				.collect(Collectors.toList());
 	}
 
 	public Collection<Tuple2<Class, Method>> findMethods() {
-		final Predicate<Method> allMethodPredicate = methodConditions.stream()
-				.map(classCondition -> classCondition.getPredicate())
-				.reduce((method) -> true, (predicate1, predicate2) -> predicate1.and(predicate2));
 		return scope.values().stream()
 				.flatMap((clazz) -> Stream.of(clazz.getDeclaredMethods()))
-				.filter(allMethodPredicate)
+				.filter(methodPredicate)
 				.map((method) -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
 
@@ -176,5 +166,4 @@ public final class Selector {
 			return new ClassConditions(classCondition.getPredicate().or(predicate));
 		}
 	}
-
 }
