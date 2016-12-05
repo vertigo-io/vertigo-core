@@ -30,17 +30,17 @@ import io.vertigo.lang.Tuples.Tuple2;
  * 3 - find your classes or methods.
  *
  * @author mlaroche
- *
  */
 public final class Selector {
 	private final Map<String, Class> scope = new HashMap<>();
 
-	private Predicate<Method> methodPredicate = (m) -> true;
-	private Predicate<Class> classPredicate = (c) -> true;
+	private Predicate<Method> methodPredicates = (m) -> true;
+	private Predicate<Class> classPredicates = (c) -> true;
 
 	private boolean scoped;
 
 	private void checkScope() {
+
 		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
 	}
 
@@ -76,33 +76,34 @@ public final class Selector {
 		return this;
 	}
 
-	public Selector filter(final MethodConditions methodCondition) {
-		Assertion.checkNotNull(methodCondition);
+	public Selector filterMethods(final Predicate<Method> methodPredicate) {
+		Assertion.checkNotNull(methodPredicate);
 		scoped = true;
 		// ---
-		methodPredicate = methodPredicate.and(methodCondition.getPredicate());
+		methodPredicates = methodPredicates.and(methodPredicate);
 		return this;
 	}
 
-	public Selector filter(final ClassConditions classCondition) {
-		Assertion.checkNotNull(classCondition);
+	public Selector filterClasses(final Predicate<Class> classPredicate) {
+		Assertion.checkNotNull(classPredicate);
 		scoped = true;
 		// ---
-		classPredicate = classPredicate.and(classCondition.getPredicate());
+		classPredicates = classPredicates.and(classPredicate);
 		return this;
 	}
 
 	public Collection<Class> findClasses() {
 		return scope.values()
 				.stream()
-				.filter(classPredicate)
+				.filter(classPredicates)
+				//TODO : ça coute trop cher !
 				.filter((clazz) -> {
 					if (clazz.getDeclaredMethods().length == 0) {
 						// no declaring method so we keep it
 						return true;
 					}
 					// methods are declared so we check if a method match the requirements
-					return Stream.of(clazz.getDeclaredMethods()).anyMatch(methodPredicate);
+					return Stream.of(clazz.getDeclaredMethods()).anyMatch(methodPredicates);
 				})
 				.collect(Collectors.toList());
 	}
@@ -110,12 +111,11 @@ public final class Selector {
 	public Collection<Tuple2<Class, Method>> findMethods() {
 		return scope.values()
 				.stream()
-				.filter(classPredicate)
+				.filter(classPredicates)
 				.flatMap((clazz) -> Stream.of(clazz.getDeclaredMethods()))
-				.filter(methodPredicate)
+				.filter(methodPredicates)
 				.map((method) -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
-
 	}
 
 	/**
@@ -124,34 +124,10 @@ public final class Selector {
 	 *
 	 */
 	public static final class MethodConditions {
-		private final Predicate<Method> predicate;
-
-		private MethodConditions(final Predicate<Method> predicate) {
-			Assertion.checkNotNull(predicate);
-			//---
-			this.predicate = predicate;
-		}
-
-		Predicate<Method> getPredicate() {
-			return predicate;
-		}
-
-		public static MethodConditions annotatedWith(final Class<? extends Annotation> annotationClass) {
+		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
-			return new MethodConditions((method) -> method.getAnnotationsByType(annotationClass).length > 0);
-		}
-
-		public MethodConditions or(final MethodConditions methodCondition) {
-			Assertion.checkNotNull(methodCondition);
-			//---
-			return new MethodConditions(methodCondition.getPredicate().or(predicate));
-		}
-
-		public static MethodConditions not(final MethodConditions methodCondition) {
-			Assertion.checkNotNull(methodCondition);
-			//---
-			return new MethodConditions(methodCondition.getPredicate().negate());
+			return (method) -> method.getAnnotationsByType(annotationClass).length > 0;
 		}
 	}
 
@@ -161,44 +137,20 @@ public final class Selector {
 	 *
 	 */
 	public static final class ClassConditions {
-		private final Predicate<Class> predicate;
-
-		private ClassConditions(final Predicate<Class> predicate) {
-			Assertion.checkNotNull(predicate);
-			//---
-			this.predicate = predicate;
-		}
-
-		Predicate<Class> getPredicate() {
-			return predicate;
-		}
-
-		public static ClassConditions annotatedWith(final Class<? extends Annotation> annotationClass) {
+		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
-			return new ClassConditions((clazz) -> clazz.getAnnotationsByType(annotationClass).length > 0);
+			return (clazz) -> clazz.getAnnotationsByType(annotationClass).length > 0;
 		}
 
-		public static ClassConditions subTypeOf(final Class clazz) {
+		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.checkNotNull(clazz);
 			//---
-			return new ClassConditions((subtype) -> clazz.isAssignableFrom(subtype));
+			return (subtype) -> clazz.isAssignableFrom(subtype);
 		}
 
-		public static ClassConditions isInterface() {
-			return new ClassConditions((clazz) -> clazz.isInterface());
-		}
-
-		public ClassConditions or(final ClassConditions classCondition) {
-			Assertion.checkNotNull(classCondition);
-			//---
-			return new ClassConditions(classCondition.getPredicate().or(predicate));
-		}
-
-		public static ClassConditions not(final ClassConditions classCondition) {
-			Assertion.checkNotNull(classCondition);
-			//---
-			return new ClassConditions(classCondition.getPredicate().negate());
+		public static Predicate<Class> interfaces() {
+			return (clazz) -> clazz.isInterface();
 		}
 	}
 }
