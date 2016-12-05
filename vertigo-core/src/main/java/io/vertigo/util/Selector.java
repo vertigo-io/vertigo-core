@@ -32,10 +32,11 @@ import io.vertigo.lang.Tuples.Tuple2;
  * @author mlaroche
  */
 public final class Selector {
+	private static final Predicate ALWAYS_TRUE = (o) -> true;
 	private final Map<String, Class> scope = new HashMap<>();
 
-	private Predicate<Method> methodPredicates = (m) -> true;
-	private Predicate<Class> classPredicates = (c) -> true;
+	private Predicate<Method> methodPredicates = ALWAYS_TRUE;
+	private Predicate<Class> classPredicates = ALWAYS_TRUE;
 
 	private boolean scoped;
 
@@ -96,10 +97,12 @@ public final class Selector {
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
-				//TODO : ça coute trop cher !
 				.filter((clazz) -> {
-					if (clazz.getDeclaredMethods().length == 0) {
-						// no declaring method so we keep it
+					//We don't want to load all declared methods if we don't care
+					if (methodPredicates == ALWAYS_TRUE || clazz.getDeclaredMethods().length == 0) {
+						// no methodPredicate
+						// or no declaring method
+						// so we keep it
 						return true;
 					}
 					// methods are declared so we check if a method match the requirements
