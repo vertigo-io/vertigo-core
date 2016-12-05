@@ -40,25 +40,29 @@ public final class Selector {
 
 	private boolean scoped;
 
-	public Selector from(final Supplier<Collection<Class>> classesSuplier) {
-		Assertion.checkNotNull(classesSuplier);
+	private void checkScope() {
 		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
-		// ---
-		from(classesSuplier.get());
-		return this;
 	}
 
 	public Selector from(final Class clazz) {
 		Assertion.checkNotNull(clazz);
-		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
+		checkScope();
 		// ---
 		scope.put(clazz.getName(), clazz);
 		return this;
 	}
 
+	public Selector from(final Supplier<Collection<Class>> classesSupplier) {
+		Assertion.checkNotNull(classesSupplier);
+		checkScope();
+		// ---
+		from(classesSupplier.get());
+		return this;
+	}
+
 	public Selector from(final Collection<Class> classes) {
 		Assertion.checkNotNull(classes);
-		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
+		checkScope();
 		// ---
 		classes.forEach((clazz) -> from(clazz));
 		return this;
@@ -66,13 +70,14 @@ public final class Selector {
 
 	public Selector from(final String packageName) {
 		Assertion.checkArgNotEmpty(packageName);
-		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
+		checkScope();
 		// ---
 		new Reflections(packageName, new SubTypesScanner(false)).getAllTypes().forEach(className -> from(ClassUtil.classForName(className)));
 		return this;
 	}
 
 	public Selector filter(final MethodConditions methodCondition) {
+		Assertion.checkNotNull(methodCondition);
 		scoped = true;
 		// ---
 		methodPredicate = methodPredicate.and(methodCondition.getPredicate());
@@ -80,6 +85,7 @@ public final class Selector {
 	}
 
 	public Selector filter(final ClassConditions classCondition) {
+		Assertion.checkNotNull(classCondition);
 		scoped = true;
 		// ---
 		classPredicate = classPredicate.and(classCondition.getPredicate());
@@ -87,7 +93,8 @@ public final class Selector {
 	}
 
 	public Collection<Class> findClasses() {
-		return scope.values().stream()
+		return scope.values()
+				.stream()
 				.filter(classPredicate)
 				.filter((clazz) -> {
 					if (clazz.getDeclaredMethods().length == 0) {
@@ -96,11 +103,13 @@ public final class Selector {
 					}
 					// methods are declared so we check if a method match the requirements
 					return Stream.of(clazz.getDeclaredMethods()).anyMatch(methodPredicate);
-				}).collect(Collectors.toList());
+				})
+				.collect(Collectors.toList());
 	}
 
 	public Collection<Tuple2<Class, Method>> findMethods() {
-		return scope.values().stream()
+		return scope.values()
+				.stream()
 				.filter(classPredicate)
 				.flatMap((clazz) -> Stream.of(clazz.getDeclaredMethods()))
 				.filter(methodPredicate)

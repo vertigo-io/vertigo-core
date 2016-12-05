@@ -59,7 +59,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testAnnotation() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class))
 				.findClasses();
 		// ---
@@ -68,7 +69,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testSubtype() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
@@ -77,7 +79,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testMethodAnnotation() {
-		final Collection<Tuple2<Class, Method>> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Tuple2<Class, Method>> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(MethodConditions.annotatedWith(SAnnotationA.class))
 				.findMethods();
 		// ---
@@ -86,7 +89,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testOr() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class)
 						.or(ClassConditions.subTypeOf(SB.class)))
 				.findClasses();
@@ -96,7 +100,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testAnd() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class))
 				.filter(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
@@ -106,7 +111,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testInterface() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.isInterface())
 				.findClasses();
 		// ---
@@ -115,7 +121,8 @@ public final class SelectorTest {
 
 	@Test
 	public void testNot() {
-		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.not(ClassConditions.isInterface()))
 				.findClasses();
 		// ---
@@ -128,7 +135,8 @@ public final class SelectorTest {
 	}
 
 	private void testException() {
-		new Selector().from(TEST_CLASSES_PACKAGE)
+		new Selector()
+				.from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class))
 				.from(SA.class)
 				.findClasses();
