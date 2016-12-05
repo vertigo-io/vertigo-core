@@ -119,6 +119,6 @@ public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 		//-----
 		//By Convention only the second plugin of a defined type is tagged by its index #nn
 		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
-		return new ComponentConfig(pluginId, Optional.empty(), myPluginImplClass, false, myParams);
+		return new ComponentConfig(pluginId, Optional.empty(), myPluginImplClass, myParams);
 	}
 }

@@ -37,10 +37,9 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 	private final Optional<Class<? extends Component>> apiClass;
 	private final Class<? extends Component> implClass;
-	private final boolean elastic;
 	private final Map<String, String> myParams = new HashMap<>();
 
-	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
+	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
@@ -48,7 +47,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.moduleConfigBuilder = moduleConfigBuilder;
 		this.apiClass = apiClass;
 		this.implClass = implClass;
-		this.elastic = elastic;
 	}
 
 	/**
@@ -71,7 +69,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	@Override
 	public ComponentConfig build() {
 		final String id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
-		return new ComponentConfig(id, apiClass, implClass, elastic, myParams);
+		return new ComponentConfig(id, apiClass, implClass, myParams);
 	}
 
 	/**

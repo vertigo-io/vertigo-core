@@ -41,7 +41,6 @@ public final class ComponentConfig {
 	private final Class<? extends Component> implClass;
 	private final Optional<Class<? extends Component>> apiClass;
 	private final Map<String, String> params;
-	private final boolean elastic;
 
 	/**
 	 * Constructor.
@@ -49,7 +48,7 @@ public final class ComponentConfig {
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(final String id, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(final String id, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final Map<String, String> params) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
@@ -58,7 +57,6 @@ public final class ComponentConfig {
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
-		this.elastic = elastic;
 		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;
@@ -91,10 +89,6 @@ public final class ComponentConfig {
 	 */
 	public Map<String, String> getParams() {
 		return params;
-	}
-
-	public boolean isElastic() {
-		return elastic;
 	}
 
 	@Override

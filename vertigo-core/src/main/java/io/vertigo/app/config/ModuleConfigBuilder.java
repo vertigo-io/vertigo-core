@@ -129,15 +129,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Adds a distributed component.
-	* @param apiClass api of the component
-	* @return  the builder of the component
-	*/
-	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), Component.class, true);
-	}
-
-	/**
 	 * Add a component.
 	 * @param implClass impl of the component
 	 * @return this builder
@@ -163,7 +154,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass, false);
+		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass);
 	}
 
 	/**
@@ -174,7 +165,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return  the builder of the component
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass, false);
+		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass);
 	}
 
 	/**
@@ -183,8 +174,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
-	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
-		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
+	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
+		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass);
 		myComponentConfigBuilders.add(componentConfigBuilder);
 		return componentConfigBuilder;
 	}
