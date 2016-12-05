@@ -47,19 +47,19 @@ public final class SelectorTest {
 
 	@Test
 	public void testAdd() {
-		Assertions.assertEquals(1, new Selector().add(SA.class).findClasses().size());
+		Assertions.assertEquals(1, new Selector().from(SA.class).findClasses().size());
 	}
 
 	@Test
 	public void testIncludeTree() {
-		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE).findClasses();
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
 		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
 	public void testAnnotation() {
-		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class))
 				.findClasses();
 		// ---
@@ -68,7 +68,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testSubtype() {
-		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
@@ -77,7 +77,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testMethodAnnotation() {
-		final Collection<Tuple2<Class, Method>> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+		final Collection<Tuple2<Class, Method>> result = new Selector().from(TEST_CLASSES_PACKAGE)
 				.filter(MethodConditions.annotatedWith(SAnnotationA.class))
 				.findMethods();
 		// ---
@@ -86,7 +86,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testOr() {
-		final Collection<Class> result = new Selector().includeTree(TEST_CLASSES_PACKAGE)
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class)
 						.or(ClassConditions.subTypeOf(SB.class)))
 				.findClasses();
@@ -95,14 +95,42 @@ public final class SelectorTest {
 	}
 
 	@Test
+	public void testAnd() {
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.annotatedWith(Named.class))
+				.filter(ClassConditions.subTypeOf(Component.class))
+				.findClasses();
+		// ---
+		Assertions.assertEquals(1, result.size());
+	}
+
+	@Test
+	public void testInterface() {
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.isInterface())
+				.findClasses();
+		// ---
+		Assertions.assertEquals(2, result.size());
+	}
+
+	@Test
+	public void testNot() {
+		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE)
+				.filter(ClassConditions.not(ClassConditions.isInterface()))
+				.findClasses();
+		// ---
+		Assertions.assertEquals(1, result.size());
+	}
+
+	@Test
 	public void testUsageException() {
 		Assertions.assertThrows(IllegalStateException.class, () -> testException());
 	}
 
 	private void testException() {
-		new Selector().includeTree(TEST_CLASSES_PACKAGE)
+		new Selector().from(TEST_CLASSES_PACKAGE)
 				.filter(ClassConditions.annotatedWith(Named.class))
-				.add(SA.class)
+				.from(SA.class)
 				.findClasses();
 	}
 }
