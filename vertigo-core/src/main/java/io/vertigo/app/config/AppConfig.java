@@ -93,7 +93,7 @@ public final class AppConfig {
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
 		printComponent(out, "modules", "components", "plugins");
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
-		printModule(out, bootConfig.getBootModuleConfig());
+		printComponents(out, "boot", bootConfig.getComponentConfigs());
 		for (final ModuleConfig moduleConfig : modules) {
 			out.println("+-------------------------+------------------------+----------------------------------------------+");
 			printModule(out, moduleConfig);
@@ -102,11 +102,15 @@ public final class AppConfig {
 	}
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
-		String moduleName = moduleConfig.getName();
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
+		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
+	}
+
+	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {
+		boolean first = true;
+		for (final ComponentConfig componentConfig : componentConfigs) {
 			final String componentClassName = (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName();
-			printComponent(out, moduleName, componentClassName, null);
-			moduleName = null;
+			printComponent(out, first ? moduleName : null, componentClassName, null);
+			first = false;
 		}
 	}
 

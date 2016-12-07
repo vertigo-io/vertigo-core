@@ -88,7 +88,7 @@ public final class ModuleConfig {
 	/**
 	 * @return Nom du module.
 	 */
-	String getName() {
+	public String getName() {
 		return name;
 	}
 

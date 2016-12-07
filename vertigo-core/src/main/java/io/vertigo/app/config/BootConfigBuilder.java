@@ -111,7 +111,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfig build() {
 		return new BootConfig(
 				myLogConfigOption,
-				myBootModuleConfig,
+				myBootModuleConfig.getComponentConfigs(),
 				myAopPlugin,
 				mySilence);
 	}

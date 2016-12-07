@@ -51,54 +51,49 @@ public final class ComponentLoader {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
+	private final ComponentSpace componentSpace;
 
 	/**
 	 * Constructor.
+	 * @param componentSpace Space where all the components are stored
 	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
 	@Inject
-	public ComponentLoader(final AopPlugin aopPlugin) {
+	public ComponentLoader(final ComponentSpace componentSpace, final AopPlugin aopPlugin) {
+		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
+		this.componentSpace = componentSpace;
 		this.aopPlugin = aopPlugin;
 	}
 
 	/**
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
 	 *
-	 * @param componentSpace Space where all the components are stored
-	 * @param paramManager Manager of params
-	 * @param moduleConfigs Configs of modules to add.
+	 * @param moduleConfigs the config of the module to add.
 	 */
-	public void injectAllComponents(final ComponentSpace componentSpace, final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
+		final ParamManager paramManager = componentSpace.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(componentSpace, Optional.of(paramManager), moduleConfig);
+			injectComponents(Optional.of(paramManager), moduleConfig.getName(), moduleConfig.getComponentConfigs());
+			injectAspects(moduleConfig.getAspectConfigs());
 		}
 	}
 
 	/**
-	 * Add all the components depending on the boot module.
-	 * @param componentSpace Space where all the components are stored
-	 * @param bootModuleConfig Configs of the boot module
+	 * Adds all the components defined by theur configs.
+	 * @param paramManagerOption the optional manager of params
+	 * @param moduleName the name of the module
+	 * @param componentConfigs the configs of the components
 	 */
-	public void injectBootComponents(final ComponentSpace componentSpace, final ModuleConfig bootModuleConfig) {
-		doInjectComponents(componentSpace, Optional.<ParamManager> empty(), bootModuleConfig);
-		Assertion.checkArgument(bootModuleConfig.getAspectConfigs().isEmpty(), "boot module can't contain aspects");
-		Assertion.checkArgument(bootModuleConfig.getDefinitionProviderConfigs().isEmpty(), "boot module can't contain definitions");
-		Assertion.checkArgument(bootModuleConfig.getDefinitionResourceConfigs().isEmpty(), "boot module can't contain definitions");
-		//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-	}
-
-	private void injectComponent(final ComponentSpace componentSpace, final Optional<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		doInjectComponents(componentSpace, paramManagerOption, moduleConfig);
-		doInjectAspects(componentSpace, moduleConfig);
-	}
-
-	private void doInjectComponents(final ComponentSpace componentSpace, final Optional<ParamManager> paramManagerOption, final ModuleConfig moduleConfig) {
+	public void injectComponents(final Optional<ParamManager> paramManagerOption, final String moduleName, final List<ComponentConfig> componentConfigs) {
+		Assertion.checkNotNull(componentSpace);
+		Assertion.checkNotNull(paramManagerOption);
+		Assertion.checkNotNull(moduleName);
+		Assertion.checkNotNull(componentConfigs);
+		//---
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
@@ -106,7 +101,7 @@ public final class ComponentLoader {
 		}
 
 		//Map des composants définis par leur id
-		final Map<String, ComponentConfig> componentConfigById = moduleConfig.getComponentConfigs()
+		final Map<String, ComponentConfig> componentConfigById = componentConfigs
 				.stream()
 				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
 				.collect(Collectors.toMap(ComponentConfig::getId, Function.identity()));
@@ -132,7 +127,7 @@ public final class ComponentLoader {
 
 		//---
 		//--Search for unuseds plugins
-		final List<String> unusedPluginIds = moduleConfig.getComponentConfigs()
+		final List<String> unusedPluginIds = componentConfigs
 				.stream()
 				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
 				//only plugins are considered
@@ -142,26 +137,26 @@ public final class ComponentLoader {
 				.collect(Collectors.toList());
 
 		if (!unusedPluginIds.isEmpty()) {
-			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", unusedPluginIds, moduleConfig);
+			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", unusedPluginIds, moduleName);
 		}
 	}
 
-	private void doInjectAspects(final Container container, final ModuleConfig moduleConfig) {
+	private void injectAspects(final List<AspectConfig> aspectConfigs) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(container, moduleConfig)) {
+		for (final Aspect aspect : findAspects(componentSpace, aspectConfigs)) {
 			registerAspect(aspect);
 		}
 	}
 
 	/**
 	 * Find all aspects declared inside a module
-	 * @param moduleConfig Module
+	 * @param aspectConfigs the list of all aspects inside the module
 	 * @return aspects (and its config)
 	 */
-	private static List<Aspect> findAspects(final Container container, final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
+	private static List<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
+		Assertion.checkNotNull(aspectConfigs);
 		//-----
-		return moduleConfig.getAspectConfigs()
+		return aspectConfigs
 				.stream()
 				.map(aspectConfig -> createAspect(container, aspectConfig))
 				.collect(Collectors.toList());

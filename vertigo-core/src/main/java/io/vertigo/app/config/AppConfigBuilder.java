@@ -49,17 +49,16 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public AppConfigBuilder() {
 		myBootConfigBuilder = new BootConfigBuilder(this);
-		myBootModuleConfigBuilder =
-				myBootConfigBuilder.beginBootModule().withNoAPI()
-						.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-						.addComponent(ParamManager.class, ParamManagerImpl.class)
-						.addComponent(DefinitionLoader.class);
+		myBootModuleConfigBuilder = myBootConfigBuilder.beginBootModule().withNoAPI()
+				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addComponent(ParamManager.class, ParamManagerImpl.class)
+				.addComponent(DefinitionLoader.class);
 	}
 
 	/**
 	 * Opens the boot module.
-	 * There is exactly one BootConfig per AppConfig.  
-	 * 
+	 * There is exactly one BootConfig per AppConfig.
+	 *
 	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
 	 * @return this builder
 	 */
@@ -103,7 +102,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	/**
 	 * Adds a new module.
 	 * @param name Name of the module
-	 * @return the module builder 
+	 * @return the module builder
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
 		return new ModuleConfigBuilder(this, name);
@@ -112,7 +111,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	/**
 	 * Begins a new module defined by its features.
 	 * @param featuresClass Type of features
-	 * @return the module builder 
+	 * @return the module builder
 	 */
 	public <F extends Features> F beginModule(final Class<F> featuresClass) {
 		final F features = ClassUtil.newInstance(featuresClass);

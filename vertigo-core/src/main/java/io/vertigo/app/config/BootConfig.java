@@ -18,6 +18,7 @@
  */
 package io.vertigo.app.config;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
@@ -35,7 +36,7 @@ public final class BootConfig {
 	@JsonExclude
 	private final AopPlugin aopPlugin;
 
-	private final ModuleConfig bootModuleConfig;
+	private final List<ComponentConfig> componentConfigs;
 
 	/**
 	 * Constructor.
@@ -44,15 +45,15 @@ public final class BootConfig {
 	 */
 	BootConfig(
 			final Optional<LogConfig> logConfigOption,
-			final ModuleConfig bootModuleConfig,
+			final List<ComponentConfig> componentConfigs,
 			final AopPlugin aopPlugin,
 			final boolean silence) {
 		Assertion.checkNotNull(logConfigOption);
-		Assertion.checkNotNull(bootModuleConfig);
+		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
 		this.logConfigOption = logConfigOption;
-		this.bootModuleConfig = bootModuleConfig;
+		this.componentConfigs = componentConfigs;
 		this.silence = silence;
 		this.aopPlugin = aopPlugin;
 	}
@@ -65,11 +66,10 @@ public final class BootConfig {
 	}
 
 	/**
-	 *
-	 * @return the config of the boot consireded as a module
+	 * @return Liste des configurations de composants.
 	 */
-	public ModuleConfig getBootModuleConfig() {
-		return bootModuleConfig;
+	public List<ComponentConfig> getComponentConfigs() {
+		return componentConfigs;
 	}
 
 	/**

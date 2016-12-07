@@ -20,6 +20,7 @@ package io.vertigo.app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -86,16 +87,18 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopPlugin());
+			final ComponentLoader componentLoader = new ComponentLoader(componentSpace, appConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
-			componentLoader.injectBootComponents(componentSpace, appConfig.getBootConfig().getBootModuleConfig());
+
+			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
+			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot", appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions
 			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);
 			definitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
 
 			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
+			componentLoader.injectAllComponentsAndAspects(appConfig.getModuleConfigs());
 			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
 				Logo.printCredits(System.out);
