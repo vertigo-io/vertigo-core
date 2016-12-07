@@ -56,6 +56,10 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 */
 	String getInputKey();
 
+	String getInputValue(String fieldName);
+
+	void setInputValue(String fieldName, String stringValue);
+
 	/**
 	 * @return the version stored in the server.
 	 */

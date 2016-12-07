@@ -293,8 +293,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 				.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public String getStringValue(final String fieldName) {
+	public String getInputValue(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkArgument(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
 		//-----
@@ -311,8 +312,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void setStringValue(final String fieldName, final String stringValue) {
+	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(stringValue, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName);
 		//-----
@@ -350,7 +352,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		// 3) soit on check et on lance une Runtime si erreur (comme dans DtObject)
 		//100924 NPI : choix retenu 1
 		doSetTypedValue(dtField, value);
-		inputBuffer.put(fieldName, getStringValue(fieldName));
+		inputBuffer.put(fieldName, getInputValue(fieldName));
 	}
 
 	/**

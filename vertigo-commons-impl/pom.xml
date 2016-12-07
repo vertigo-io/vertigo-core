@@ -47,7 +47,12 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.2</version> <!-- pour EhCachePlugin -->
+			<version>2.10.3</version> <!-- pour EhCachePlugin -->
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.21</version> <!-- pour EhCachePlugin -->
+		</dependency>		
 	</dependencies>
 </project>
