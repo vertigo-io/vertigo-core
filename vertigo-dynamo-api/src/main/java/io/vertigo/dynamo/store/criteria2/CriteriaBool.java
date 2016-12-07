@@ -5,11 +5,11 @@ import java.util.function.Predicate;
 import io.vertigo.dynamo.domain.model.Entity;
 
 public interface CriteriaBool<E extends Entity> {
-	public default CriteriaExpression<E> and(final CriteriaBool<E> criterion) {
+	default CriteriaExpression<E> and(final CriteriaBool<E> criterion) {
 		return CriteriaExpression.and(this, criterion);
 	}
 
-	public default CriteriaExpression<E> or(final CriteriaBool<E> criterion) {
+	default CriteriaExpression<E> or(final CriteriaBool<E> criterion) {
 		return CriteriaExpression.or(this, criterion);
 	}
 

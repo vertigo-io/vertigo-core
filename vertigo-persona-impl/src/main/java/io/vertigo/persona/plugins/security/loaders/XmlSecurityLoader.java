@@ -64,16 +64,6 @@ import io.vertigo.util.XMLUtil;
  * @author prahmoune
  */
 final class XmlSecurityLoader {
-
-	private static final String OPERATION_KEY = "operation";
-	private static final String PERMISSION_KEY = "permission";
-	private static final String ROLE_KEY = "role";
-
-	private static final String ID_KEY = "id";
-	private static final String REF_KEY = "ref";
-	private static final String NAME_KEY = "name";
-	private static final String FILTER_KEY = "filter";
-	private static final String DESCRIPTION_KEY = "description";
 	private final URL authURL;
 
 	/**
