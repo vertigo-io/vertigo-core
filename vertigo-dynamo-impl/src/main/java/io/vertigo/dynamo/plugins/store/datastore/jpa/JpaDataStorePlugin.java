@@ -443,7 +443,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
-		final Set<String> criteriaFieldNames = new HashSet<String>();
+		final Set<String> criteriaFieldNames = new HashSet<>();
 		criteriaFieldNames.addAll(filter.getFilterMap().keySet());
 		criteriaFieldNames.addAll(filter.getPrefixMap().keySet());
 		return getListTaskName(tableName, criteriaFieldNames);
