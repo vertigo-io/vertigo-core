@@ -90,11 +90,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public VegaUiObject(final D inputDto, final Set<String> modifiedFields) {
 		Assertion.checkNotNull(inputDto, "inputObject can't be null");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
-		//Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
-		for (final DtField dtField : getDtDefinition().getFields()) {
+		for (final DtField dtField : dtDefinitionRef.get().getFields()) {
 			camel2ConstIndex.put(StringUtil.constToLowerCamelCase(dtField.getName()), dtField.getName());
 			const2CamelIndex.put(dtField.getName(), StringUtil.constToLowerCamelCase(dtField.getName()));
 		}
@@ -286,7 +285,12 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "uiObject(modified:" + inputBuffer.keySet() + " over dto:" + serverSideDto.toString() + ")";
+		return new StringBuilder("uiObject(modified:")
+				.append(inputBuffer.keySet())
+				.append(" over dto:")
+				.append(serverSideDto.toString())
+				.append(")")
+				.toString();
 	}
 
 	@Override
@@ -303,7 +307,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			final Formatter formatter = domain.getFormatter();
 			return formatter.valueToString(value, domain.getDataType());
 		}
-		return null; //TODO : Les liste et les objets ne sont pas gérés
+		return null; // Les liste et les objets ne sont pas gérés
 
 	}
 
@@ -332,12 +336,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		return type.cast(doGetTypedValue(fieldName));
 	}
 
-	/**
-	 * Permet de forcer la valeur de l'uiObject depuis l'action.
-	 * Réinitialise les erreurs.
-	 * @param fieldName Nom du champs
-	 * @param value Valeur du champs
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#setTypedValue(java.lang.String, java.io.Serializable)
 	 */
+	@Override
 	public void setTypedValue(final String fieldName, final Serializable value) {
 		final DtField dtField = getDtField(fieldName);
 		isChecked = false;
@@ -408,56 +410,50 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		dtField.getDataAccessor().setValue(inputDto, typedValue);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getInteger(java.lang.String)
 	 */
+	@Override
 	public Integer getInteger(final String fieldName) {
 		return getTypedValue(fieldName, Integer.class);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getLong(java.lang.String)
 	 */
+	@Override
 	public Long getLong(final String fieldName) {
 		return getTypedValue(fieldName, Long.class);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	* @throws IllegalAccessError Si le champs possède une erreur de formatage
-	  */
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getString(java.lang.String)
+	 */
+	@Override
 	public String getString(final String fieldName) {
 		return getTypedValue(fieldName, String.class);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getBoolean(java.lang.String)
 	 */
+	@Override
 	public Boolean getBoolean(final String fieldName) {
 		return getTypedValue(fieldName, Boolean.class);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getDate(java.lang.String)
 	 */
+	@Override
 	public Date getDate(final String fieldName) {
 		return getTypedValue(fieldName, Date.class);
 	}
 
-	/**
-	 * @param fieldName Nom du champs
-	 * @return Valeur typée
-	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.model.UiObject#getBigDecimal(java.lang.String)
 	 */
+	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
 		return getTypedValue(fieldName, BigDecimal.class);
 	}

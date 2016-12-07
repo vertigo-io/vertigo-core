@@ -18,13 +18,15 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * Class d'enregistrement des messages.
  * @author npiedeloup
  */
-public interface UiMessageStack {
+public interface UiMessageStack extends Serializable {
 
 	/**
 	 * Niveau du message.

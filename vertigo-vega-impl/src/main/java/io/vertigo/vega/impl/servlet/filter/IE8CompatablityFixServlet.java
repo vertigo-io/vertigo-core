@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import io.vertigo.lang.Assertion;
 
 /**
+ * @deprecated
  * Filter qui permet de gérer la compatibilité avec IE8, en ajoutant le header X-UA-Compatible dans les responses.
  * @author npiedeloup
  */

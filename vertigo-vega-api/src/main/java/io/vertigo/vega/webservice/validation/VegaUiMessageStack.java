@@ -33,6 +33,8 @@ import io.vertigo.lang.JsonExclude;
  */
 public final class VegaUiMessageStack implements UiMessageStack {
 
+	private static final long serialVersionUID = -2650689827844300786L;
+
 	private final List<String> globalErrors = new ArrayList<>();
 	private final List<String> globalWarnings = new ArrayList<>();
 	private final List<String> globalInfos = new ArrayList<>();
@@ -146,6 +148,9 @@ public final class VegaUiMessageStack implements UiMessageStack {
 		addFieldMessage(Level.INFO, message, dto, fieldName);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.validation.UiMessageStack#addFieldMessage(io.vertigo.vega.webservice.validation.UiMessageStack.Level, java.lang.String, io.vertigo.dynamo.domain.model.DtObject, java.lang.String)
+	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
 		addFieldMessage(level, message, uiContextResolver.resolveContextKey(dto), fieldName);

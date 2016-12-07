@@ -40,7 +40,7 @@ public final class SetCharsetEncodingFilter implements Filter {
 
 	/** {@inheritDoc} */
 	@Override
-	public void init(final FilterConfig filterConfig) throws ServletException {
+	public void init(final FilterConfig filterConfig) {
 		charset = filterConfig.getInitParameter("charset");
 		Assertion.checkArgNotEmpty(charset);
 	}

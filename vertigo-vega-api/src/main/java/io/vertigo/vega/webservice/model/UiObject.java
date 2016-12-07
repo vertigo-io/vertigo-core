@@ -19,6 +19,8 @@
 package io.vertigo.vega.webservice.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +42,11 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public interface UiObject<D extends DtObject> extends Serializable {
 
 	/**
+	 * @return DtDefinition de l'objet métier
+	 */
+	DtDefinition getDtDefinition();
+
+	/**
 	 * @param inputKey Object reference keep in this request context (for error handling)
 	 */
 	void setInputKey(final String inputKey);
@@ -49,14 +56,20 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 */
 	String getInputKey();
 
-	String getStringValue(String fieldName);
-
-	void setStringValue(String fieldName, String stringValue);
+	/**
+	 * @return the version stored in the server.
+	 */
+	D getServerSideObject();
 
 	/**
-	 * @return DtDefinition de l'objet métier
+	 * Affect the server's version.
+	 * @param dtObject the objet held by the server
 	 */
-	DtDefinition getDtDefinition();
+	void setServerSideObject(D dtObject);
+
+	String getServerSideToken();
+
+	void setServerSideToken(String asString);
 
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
@@ -79,6 +92,9 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 */
 	boolean isModified(final String fieldName);
 
+	/**
+	 * @return if object is modified (anyfield)
+	 */
 	boolean isModified();
 
 	/**
@@ -86,12 +102,61 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 */
 	Set<String> getModifiedFields();
 
-	D getServerSideObject();
+	/**
+	 * Get the value in the buffer.
+	 * @param fieldName name of the field (camelCase)
+	 * @return the value in the buffer
+	 */
+	String getStringValue(String fieldName);
 
-	void setServerSideObject(D dtObject);
+	/**
+	 * Set the value in the buffer.
+	 * @param fieldName name of the field (camelCase)
+	 * @param stringValue the value as String
+	 */
+	void setStringValue(String fieldName, String stringValue);
 
-	String getServerSideToken();
+	/**
+	 * Set a typed value in the buffer.
+	 * @param fieldName name of the field (camelCase)
+	 * @param value the typed value
+	 */
+	void setTypedValue(String fieldName, Serializable value);
 
-	void setServerSideToken(String asString);
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	public Integer getInteger(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	public Long getLong(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	  */
+	public String getString(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	public Boolean getBoolean(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	public Date getDate(String fieldName);
+
+	/**
+	 * @param fieldName Nom du champs
+	 * @return Valeur typée
+	 */
+	public BigDecimal getBigDecimal(String fieldName);
 
 }

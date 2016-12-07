@@ -45,6 +45,11 @@ public final class Selector {
 		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
 	}
 
+	/**
+	 * Add a class to the scope.
+	 * @param clazz the class to add
+	 * @return the selector
+	 */
 	public Selector from(final Class clazz) {
 		Assertion.checkNotNull(clazz);
 		checkScope();
@@ -53,6 +58,11 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Add a collection of class to the scope provided by the given supplier.
+	 * @param classesSupplier a supplier of classes
+	 * @return the selector
+	 */
 	public Selector from(final Supplier<Collection<Class>> classesSupplier) {
 		Assertion.checkNotNull(classesSupplier);
 		checkScope();
@@ -61,6 +71,11 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Add a collection of class to the scope.
+	 * @param classes a supplier of classes
+	 * @return the selector
+	 */
 	public Selector from(final Collection<Class> classes) {
 		Assertion.checkNotNull(classes);
 		checkScope();
@@ -69,6 +84,11 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Add all the classes with a package prefix in the scope.
+	 * @param packageName the root package
+	 * @return the selector
+	 */
 	public Selector from(final String packageName) {
 		Assertion.checkArgNotEmpty(packageName);
 		checkScope();
@@ -77,6 +97,11 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Filter method with a predicate.
+	 * @param methodPredicate the predicate
+	 * @return the selector
+	 */
 	public Selector filterMethods(final Predicate<Method> methodPredicate) {
 		Assertion.checkNotNull(methodPredicate);
 		scoped = true;
@@ -85,6 +110,11 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Filter classes with a predicate.
+	 * @param classPredicate the predicate
+	 * @return the selector
+	 */
 	public Selector filterClasses(final Predicate<Class> classPredicate) {
 		Assertion.checkNotNull(classPredicate);
 		scoped = true;
@@ -93,6 +123,10 @@ public final class Selector {
 		return this;
 	}
 
+	/**
+	 * Find the classes matching the requirements and with method matching the requirements.
+	 * @return the classes matching the selector
+	 */
 	public Collection<Class> findClasses() {
 		return scope.values()
 				.stream()
@@ -111,6 +145,10 @@ public final class Selector {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Find the methods matching the requirements and with method matching the requirements.
+	 * @return the classes matching the selector
+	 */
 	public Collection<Tuple2<Class, Method>> findMethods() {
 		return scope.values()
 				.stream()
@@ -127,6 +165,12 @@ public final class Selector {
 	 *
 	 */
 	public static final class MethodConditions {
+
+		/**
+		 * Build a predicate to check if the method is Annotated.
+		 * @param annotationClass the annotation
+		 * @return the predicate
+		 */
 		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
@@ -140,18 +184,33 @@ public final class Selector {
 	 *
 	 */
 	public static final class ClassConditions {
+
+		/**
+		 * Build a predicate to check if the classe is Annotated.
+		 * @param annotationClass the annotation
+		 * @return the predicate
+		 */
 		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
 			return (clazz) -> clazz.getAnnotationsByType(annotationClass).length > 0;
 		}
 
+		/**
+		 * Build a predicate to check if the classe is a subtype of the given class.
+		 * @param clazz the annotation
+		 * @return the predicate
+		 */
 		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.checkNotNull(clazz);
 			//---
 			return (subtype) -> clazz.isAssignableFrom(subtype);
 		}
 
+		/**
+		 * Build a predicate to check if the classe is an interface.
+		 * @return the predicate
+		 */
 		public static Predicate<Class> interfaces() {
 			return (clazz) -> clazz.isInterface();
 		}

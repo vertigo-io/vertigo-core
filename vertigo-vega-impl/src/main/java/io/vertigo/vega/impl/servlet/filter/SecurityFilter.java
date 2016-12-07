@@ -65,7 +65,7 @@ public final class SecurityFilter extends AbstractFilter {
 	public void doInit() {
 		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
-		checkRequestAccess = Boolean.valueOf(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
+		checkRequestAccess = Boolean.parseBoolean(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
 	}
 
 	/** {@inheritDoc} */
@@ -74,7 +74,8 @@ public final class SecurityFilter extends AbstractFilter {
 		doSecurityFilter(!isUrlMatch(req, noAuthentificationPattern), req, res, chain);
 	}
 
-	private void doSecurityFilter(final boolean needsAuthentification, final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+	private void doSecurityFilter(final boolean needsAuthentification, final ServletRequest request, final ServletResponse response, final FilterChain chain)
+			throws IOException, ServletException {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 		final boolean hasSession = httpRequest.getSession(false) != null;

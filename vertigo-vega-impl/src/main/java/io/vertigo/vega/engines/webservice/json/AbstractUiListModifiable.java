@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,6 +49,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	private static final long serialVersionUID = -8398542301760300787L;
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	private final Class<D> objectType;
 
 	private final String inputKey;
 
@@ -74,8 +76,9 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		this.inputKey = inputKey;
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		this.objectType = (Class<D>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
 		// ---
-		uiListDelta = new UiListDelta<>(getObjectType(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
 		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
 		bufferUiObjects = new ArrayList<>(dtList.size());
 		rebuildBuffer();
@@ -86,7 +89,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 */
 	@Override
 	public Class<D> getObjectType() {
-		return (Class<D>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
+		return objectType;
 	}
 
 	protected abstract UiObject<D> createUiObject(final D dto);
@@ -128,7 +131,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	public boolean remove(final UiObject<D> dto) {
 		final boolean result = bufferUiObjects.remove(dto);
 		if (result) {
-			if (uiListDelta.getCreatesMap().containsValue(contains(dto.getInputKey()))) {
+			if (uiListDelta.getCreatesMap().containsKey(dto.getInputKey())) {
 				//Si on supprime (remove) un objet déjà ajouté (add),
 				//alors il suffit de l'enlever de la liste des éléments ajoutés.
 				uiListDelta.getCreatesMap().remove(dto.getInputKey());
@@ -323,6 +326,9 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		/** {@inheritDoc} */
 		@Override
 		public UiObject<D> next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 			checkForComodification();
 			final UiObject<D> next = get(currentIndex);
 			currentIndex++;
