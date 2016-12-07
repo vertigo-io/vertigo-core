@@ -51,7 +51,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 					ARRAY_SEPARATOR,
 					SPACES,
 					WORD //2
-	), false);
+			), false);
 
 	//{ XXXXX (,XXXX)+ }
 	private static final PegRule<List<Object>> NON_EMPTY_LIST = PegRules.sequence(//"Liste non vide"
@@ -61,12 +61,11 @@ public final class DslWordsRule extends AbstractRule<List<String>, PegChoice> {
 			MANY_WORDS, // 3
 			SPACES,
 			ARRAY_END);
+	static final PegRule<List<String>> WORDS = new DslWordsRule();
 
 	public DslWordsRule() {
 		super(createMainRule(), "Words");
 	}
-
-	static final PegRule<List<String>> WORDS = new DslWordsRule();
 
 	// {} | { XXXXX (,XXXX)+ }
 	private static PegRule<PegChoice> createMainRule() {
