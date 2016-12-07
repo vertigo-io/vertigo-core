@@ -108,7 +108,7 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 				case eq:
 					return value1.equals(value);
 				case neq:
-					return value1 != value;
+					return !value1.equals(value);
 				case gt:
 					return value1.compareTo(value) < 0;
 				case gte:

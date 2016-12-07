@@ -453,7 +453,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return getListTaskName(tableName, filter.toSql().getVal2().getAttributeNames());
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
+	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
 		final StringBuilder sb = new StringBuilder()
 				.append("LIST_")
 				.append(tableName);
