@@ -37,7 +37,7 @@ final class DslBooleanOperatorRule extends AbstractRule<String, List<Object>> {
 		super(createMainRule(), "boolOperator");
 	}
 
-	private static final PegRule<List<Object>> createMainRule() {
+	private static PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
 				PegRules.choice(//"single or multiple") //1

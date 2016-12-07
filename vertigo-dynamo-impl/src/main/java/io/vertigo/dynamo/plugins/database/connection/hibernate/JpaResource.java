@@ -72,7 +72,7 @@ public final class JpaResource implements VTransactionResource {
 	/**
 	 * @return EntityManager of this resource
 	 */
-	public final EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return em;
 	}
 }
