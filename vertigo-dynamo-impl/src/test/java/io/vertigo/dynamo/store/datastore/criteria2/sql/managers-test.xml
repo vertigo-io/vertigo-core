@@ -25,16 +25,19 @@
 
 	<module name="vertigo-dynamo">
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.database.connection.hibernate.HibernateConnectionProviderPlugin">
-				<param name="dataBaseName" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
-				<param name="persistenceUnit" value="JpaTest" />
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
+				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
+				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
 			</plugin>
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" >
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.jpa.JpaDataStorePlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
+				<param name="sequencePrefix" value="SEQ_" />
+			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin">
 				<param name="storeDtName" value="DT_VX_FILE_INFO"/>
 			</plugin>
