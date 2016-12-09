@@ -22,6 +22,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.ModuleConfigBuilder;
@@ -40,6 +41,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	//Global Params
 	private final XMLModulesParams params;
 
+	private BootConfigBuilder bootConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
@@ -75,7 +77,8 @@ final class XMLModulesHandler extends DefaultHandler {
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
 			case boot:
-				moduleConfigBuilder = null;
+				bootConfigBuilder.endBoot();
+				bootConfigBuilder = null;
 				break;
 			case module:
 				moduleConfigBuilder.endModule();
@@ -106,8 +109,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
 		switch (TagName.valueOf(qName)) {
 			case boot:
+				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
-				moduleConfigBuilder = appConfigBuilder.beginBootModule(locales);
+				bootConfigBuilder = appConfigBuilder
+						.beginBoot()
+						.withLocales(locales);
 				break;
 			case module:
 				current = TagName.module;

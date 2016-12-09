@@ -67,14 +67,13 @@ public final class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule("fr")
+			.beginBoot()
+				.withLocales("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addPlugin(SecurityResourceLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(DomainDynamicRegistryPlugin.class)
-			.endModule()
-			.beginBoot()
 				.silently()
 			.endBoot()
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()

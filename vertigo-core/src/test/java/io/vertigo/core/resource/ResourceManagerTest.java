@@ -47,9 +47,10 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-			.endModule()
+			.endBoot()
 			.build();
 		// @formatter:on
 	}

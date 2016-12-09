@@ -38,12 +38,13 @@ public final class PropertiesParamManagerTest extends AbstractParamManagerTest {
 
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.beginPlugin( PropertiesParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/properties/app-config.properties")
 				.endPlugin()
-			.endModule()
+			.endBoot()
 			.build();
 		// @formatter:on
 	}

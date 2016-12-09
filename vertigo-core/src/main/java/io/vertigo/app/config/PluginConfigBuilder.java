@@ -35,25 +35,26 @@ import io.vertigo.util.StringUtil;
  * A plugin is a way to parameterize a component.
   *
  * @author npiedeloup, pchretien
+ * @param <B> the type of the parent
  */
-public final class PluginConfigBuilder implements Builder<ComponentConfig> {
+public final class PluginConfigBuilder<B extends Builder> implements Builder<ComponentConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final Map<String, String> myParams = new HashMap<>();
-	private final ModuleConfigBuilder myModuleConfigBuilder;
+	private final B myParentConfigBuilder;
 	private final String pluginType;
 	private Integer myIndex;
 
 	/**
 	 * Constructor.
-	 * @param moduleConfigBuilder the builder of the module
+	 * @param parentConfigBuilder the builder of the parent
 	 * @param pluginImplClass impl of the plugin
 	 */
-	PluginConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
-		Assertion.checkNotNull(moduleConfigBuilder);
+	PluginConfigBuilder(final B parentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
+		Assertion.checkNotNull(parentConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;
-		myModuleConfigBuilder = moduleConfigBuilder;
+		myParentConfigBuilder = parentConfigBuilder;
 		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
 	}
 
@@ -94,7 +95,7 @@ public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 	 * @param paramValue the value of the param
 	 * @return this builder
 	 */
-	public PluginConfigBuilder addParam(final String paramName, final String paramValue) {
+	public PluginConfigBuilder<B> addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
 		//paramValue can be null
 		//-----
@@ -108,8 +109,8 @@ public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 	 * Ends this config of plugin.
 	 * @return the builder of the module
 	 */
-	public ModuleConfigBuilder endPlugin() {
-		return myModuleConfigBuilder;
+	public B endPlugin() {
+		return myParentConfigBuilder;
 	}
 
 	/** {@inheritDoc} */

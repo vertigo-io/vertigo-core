@@ -20,10 +20,8 @@ package io.vertigo.app.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import io.vertigo.app.config.rules.APIModuleRule;
 import io.vertigo.core.component.aop.Aspect;
@@ -31,6 +29,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
+import io.vertigo.util.ListBuilder;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
@@ -43,30 +42,16 @@ import io.vertigo.lang.Plugin;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	//In the case of the boot module
-	private final boolean boot;
 	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
-	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
+	private final List<PluginConfigBuilder> myPluginConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
-
-	/**
-	 * Constructor of the boot module.
-	 * @param appConfigBuilder the builder of the appConfig
-	 */
-	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
-		Assertion.checkNotNull(appConfigBuilder);
-		//-----
-		myName = "boot";
-		boot = true;
-		myAppConfigBuilder = appConfigBuilder;
-	}
 
 	/**
 	 * Constructor of a module.
@@ -78,7 +63,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
-		boot = false;
 		myName = name;
 		myAppConfigBuilder = appConfigBuilder;
 	}
@@ -153,7 +137,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
-	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
+	public ComponentConfigBuilder<ModuleConfigBuilder> beginComponent(final Class<? extends Component> implClass) {
 		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass);
 	}
 
@@ -164,7 +148,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @param implClass impl of the component
 	* @return  the builder of the component
 	*/
-	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
+	public ComponentConfigBuilder<ModuleConfigBuilder> beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
 		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass);
 	}
 
@@ -185,11 +169,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return the builder of this app
 	 */
 	public AppConfigBuilder endModule() {
-		if (boot) {
-			// we don't close the module
-		} else {
-			myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
-		}
+		myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
 		return myAppConfigBuilder;
 	}
 
@@ -207,29 +187,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param pluginImplClass impl of the plugin
 	 * @return  the builder of the plugin
 	 */
-	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {
+	public PluginConfigBuilder<ModuleConfigBuilder> beginPlugin(final Class<? extends Plugin> pluginImplClass) {
 		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
-		plugins.add(pluginConfigBuilder);
+		myPluginConfigBuilders.add(pluginConfigBuilder);
 		return pluginConfigBuilder;
-	}
-
-	private List<ComponentConfig> buildPluginConfigs() {
-		final List<ComponentConfig> pluginConfigs = new ArrayList<>();
-		final Set<String> pluginTypes = new HashSet<>();
-		int index = 1;
-		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
-			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
-			if (added) {
-				//If added, its the first plugin to this type.
-				pluginConfigBuilder.withIndex(0);
-			} else {
-				pluginConfigBuilder.withIndex(index);
-				index++;
-			}
-
-			pluginConfigs.add(pluginConfigBuilder.build());
-		}
-		return pluginConfigs;
 	}
 
 	/** {@inheritDoc} */
@@ -241,13 +202,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 			moduleRules.add(new APIModuleRule());
 		}
 		//-----
-		final List<ComponentConfig> componentConfigs = new ArrayList<>();
-		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
-			componentConfigs.add(componentConfigBuilder.build());
-		}
-
-		//creation of the pluginConfigs
-		componentConfigs.addAll(buildPluginConfigs());
+		final List<ComponentConfig> componentConfigs = new ListBuilder<ComponentConfig>()
+				.addAll(ConfigUtil.buildComponentConfigs(myComponentConfigBuilders))
+				.addAll(ConfigUtil.buildPluginConfigs(myPluginConfigBuilders))
+				.build();
 
 		final ModuleConfig moduleConfig = new ModuleConfig(
 				myName,

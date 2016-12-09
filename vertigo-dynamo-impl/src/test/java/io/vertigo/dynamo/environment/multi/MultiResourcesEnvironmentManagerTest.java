@@ -103,12 +103,13 @@ public final class MultiResourcesEnvironmentManagerTest {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginBootModule("fr")
+			.beginBoot()
+				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
 				.addPlugin(DomainDynamicRegistryPlugin.class)
-			.endModule();
+			.endBoot();
 		// @formatter:on
 	}
 }

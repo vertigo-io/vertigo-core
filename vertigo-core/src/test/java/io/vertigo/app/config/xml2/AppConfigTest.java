@@ -44,12 +44,13 @@ public final class AppConfigTest {
 
 		//@formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.beginPlugin(XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/app/config/xml2/basic-app-config.xml")
 				.endPlugin()
-			.endModule()
+			.endBoot()
 
 			.beginModule("bio")
 			.addComponent(BioManager.class, BioManagerImpl.class)

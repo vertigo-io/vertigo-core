@@ -38,14 +38,14 @@ public final class XmlParamManagerTest extends AbstractParamManagerTest {
 		final String locales = "fr_FR";
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.beginPlugin( XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/xml/basic-app-config.xml")
 				.endPlugin()
-			.endModule()
+			.endBoot()
 			.build();
 		// @formatter:on
 	}
-
 }

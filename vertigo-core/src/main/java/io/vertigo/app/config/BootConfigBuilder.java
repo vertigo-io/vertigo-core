@@ -18,12 +18,24 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.definition.loader.DefinitionLoader;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleManagerImpl;
+import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.param.ParamManagerImpl;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Plugin;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Configuration.
@@ -35,7 +47,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
-	private ModuleConfig myBootModuleConfig; //required
+	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
+	private final List<PluginConfigBuilder> myPluginConfigBuilders = new ArrayList<>();
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -44,6 +57,20 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		Assertion.checkNotNull(appConfigBuilder);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
+	}
+
+	/**
+	 * Opens the boot module.
+	 * There is exactly one BootConfig per AppConfig.
+	 *
+	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @return this builder
+	 */
+	public BootConfigBuilder withLocales(final String locales) {
+		beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+				.addParam("locales", locales)
+				.endComponent();
+		return this;
 	}
 
 	/**
@@ -68,25 +95,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * @return Module config builder
-	 */
-	ModuleConfigBuilder beginBootModule() {
-		return new ModuleConfigBuilder(appConfigBuilder);
-	}
-
-	/**
-	 * @param moduleConfig Module config
-	 * @return this builder
-	 */
-	BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		Assertion.checkState(myBootModuleConfig == null, "moduleConfig is already completed");
-		//-----
-		myBootModuleConfig = moduleConfig;
-		return this;
-	}
-
-	/**
 	 * @param aopPlugin AopPlugin
 	 * @return this builder
 	 */
@@ -105,13 +113,75 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
+	* Begins the builder of a component.
+	* Component is added when you close the builder uising end() method.
+	* @param implClass impl of the component
+	* @return  the builder of the component
+	*/
+	private ComponentConfigBuilder<BootConfigBuilder> beginComponent(final Class<? extends Component> implClass) {
+		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass);
+	}
+
+	/**
+	* Begins the builder of a component.
+	* @param apiClass api of the component
+	* Component is added when you close the builder uising end() method.
+	* @param implClass impl of the component
+	* @return  the builder of the component
+	*/
+	private ComponentConfigBuilder<BootConfigBuilder> beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
+		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass);
+	}
+
+	/**
+	* Adds a component defined by an api and an implementation.
+	* @param apiClass api of the component
+	* @param implClass impl of the component
+	* @return  the builder of the component
+	*/
+	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
+		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass);
+		myComponentConfigBuilders.add(componentConfigBuilder);
+		return componentConfigBuilder;
+	}
+
+	/**
+	 * Adds a plugin defined by its implementation.
+	 * @param pluginImplClass  impl of the plugin
+	 * @return this builder
+	 */
+	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass) {
+		return beginPlugin(pluginImplClass).endPlugin();
+	}
+
+	/**
+	 * Begins the builder of a plugin.
+	 * @param pluginImplClass impl of the plugin
+	 * @return  the builder of the plugin
+	 */
+	public PluginConfigBuilder<BootConfigBuilder> beginPlugin(final Class<? extends Plugin> pluginImplClass) {
+		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
+		myPluginConfigBuilders.add(pluginConfigBuilder);
+		return pluginConfigBuilder;
+	}
+
+	/**
 	 * @return BootConfig
 	 */
 	@Override
 	public BootConfig build() {
+		beginComponent(ResourceManager.class, ResourceManagerImpl.class).endComponent()
+				.beginComponent(ParamManager.class, ParamManagerImpl.class).endComponent()
+				.beginComponent(DefinitionLoader.class).endComponent();
+
+		final List<ComponentConfig> componentConfigs = new ListBuilder<ComponentConfig>()
+				.addAll(ConfigUtil.buildComponentConfigs(myComponentConfigBuilders))
+				.addAll(ConfigUtil.buildPluginConfigs(myPluginConfigBuilders))
+				.build();
+
 		return new BootConfig(
 				myLogConfigOption,
-				myBootModuleConfig.getComponentConfigs(),
+				componentConfigs,
 				myAopPlugin,
 				mySilence);
 	}

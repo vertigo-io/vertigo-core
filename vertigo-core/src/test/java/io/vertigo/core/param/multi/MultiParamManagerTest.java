@@ -40,7 +40,8 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.beginPlugin(XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config.xml")
@@ -54,7 +55,7 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 				.beginPlugin(XmlParamPlugin.class)
 					.addParam("url", "io/vertigo/core/param/multi/app-config2.xml")
 				.endPlugin()
-			.endModule()
+			.endBoot()
 			.build();
 		// @formatter:on
 	}

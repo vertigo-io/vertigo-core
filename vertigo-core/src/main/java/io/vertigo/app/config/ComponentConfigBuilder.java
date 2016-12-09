@@ -31,20 +31,21 @@ import io.vertigo.lang.Component;
  * Paramétrage de l'application.
  *
  * @author npiedeloup, pchretien
+ * @param <B> the type of the parent builder
  */
-public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
+public final class ComponentConfigBuilder<B extends Builder> implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-	private final ModuleConfigBuilder moduleConfigBuilder;
+	private final B parentConfigBuilder;
 	private final Optional<Class<? extends Component>> apiClass;
 	private final Class<? extends Component> implClass;
 	private final Map<String, String> myParams = new HashMap<>();
 
-	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
-		Assertion.checkNotNull(moduleConfigBuilder);
+	ComponentConfigBuilder(final B parentConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
+		Assertion.checkNotNull(parentConfigBuilder);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.moduleConfigBuilder = moduleConfigBuilder;
+		this.parentConfigBuilder = parentConfigBuilder;
 		this.apiClass = apiClass;
 		this.implClass = implClass;
 	}
@@ -55,7 +56,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param paramValue Value of the param
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
+	public ComponentConfigBuilder<B> addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
 		//paramValue can be null
 		//-----
@@ -73,10 +74,10 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	}
 
 	/**
-	 * close this component config and returns to the module config.
-	 * @return the builder of the moduleConfig
+	 * Close this component config and returns to the parent config.
+	 * @return the builder of the parent config
 	 */
-	public ModuleConfigBuilder endComponent() {
-		return moduleConfigBuilder;
+	public B endComponent() {
+		return parentConfigBuilder;
 	}
 }

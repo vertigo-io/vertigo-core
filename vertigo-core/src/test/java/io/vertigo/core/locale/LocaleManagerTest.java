@@ -52,7 +52,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		final String locales = "fr_FR, en , de_DE";
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales).endModule()
+			.beginBoot().withLocales(locales).endBoot()
 			.build();
 		// @formatter:on
 	}
