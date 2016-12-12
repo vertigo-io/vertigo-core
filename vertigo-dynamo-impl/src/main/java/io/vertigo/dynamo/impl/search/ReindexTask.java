@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
@@ -81,7 +82,8 @@ final class ReindexTask implements Runnable {
 			} catch (final Exception e) {
 				LOGGER.error("Update index error, skip " + dirtyElementsCount + " elements (" + reindexUris + ")", e);
 			} finally {
-				LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
+				LOGGER.log(dirtyElementsCount > 0 ? Level.INFO : Level.DEBUG,
+						"Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
 			}
 		} while (dirtyElementsCount > 0);
 
