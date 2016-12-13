@@ -56,10 +56,6 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 */
 	String getInputKey();
 
-	String getInputValue(String fieldName);
-
-	void setInputValue(String fieldName, String stringValue);
-
 	/**
 	 * @return the version stored in the server.
 	 */
@@ -111,14 +107,14 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 * @param fieldName name of the field (camelCase)
 	 * @return the value in the buffer
 	 */
-	String getStringValue(String fieldName);
+	String getInputValue(String fieldName);
 
 	/**
 	 * Set the value in the buffer.
 	 * @param fieldName name of the field (camelCase)
 	 * @param stringValue the value as String
 	 */
-	void setStringValue(String fieldName, String stringValue);
+	void setInputValue(String fieldName, String stringValue);
 
 	/**
 	 * Set a typed value in the buffer.
