@@ -157,6 +157,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {
+		dbFile.mkdirs();
 		final EnvironmentConfig fsEnvironmentConfig = new EnvironmentConfig()
 				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "false")
 				.setReadOnly(readOnly)

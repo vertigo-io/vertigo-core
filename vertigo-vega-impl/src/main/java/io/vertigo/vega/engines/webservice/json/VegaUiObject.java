@@ -259,7 +259,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 	}
 
-	protected DtField getDtField(final String camelField) {
+	protected final DtField getDtField(final String camelField) {
 		return getDtDefinition().getField(camel2ConstIndex.get(camelField));
 	}
 
@@ -288,7 +288,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		return new StringBuilder("uiObject(modified:")
 				.append(inputBuffer.keySet())
 				.append(" over dto:")
-				.append(serverSideDto.toString())
+				.append(serverSideDto)
 				.append(")")
 				.toString();
 	}
@@ -342,7 +342,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @see io.vertigo.vega.webservice.model.UiObject#setTypedValue(java.lang.String, java.io.Serializable)
 	 */
 	@Override
-	public void setTypedValue(final String fieldName, final Serializable value) {
+	public final void setTypedValue(final String fieldName, final Serializable value) {
 		final DtField dtField = getDtField(fieldName);
 		isChecked = false;
 
@@ -417,7 +417,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public Integer getInteger(final String fieldName) {
-		return getTypedValue(fieldName, Integer.class);
+		return getTypedValue(getCamelCase(fieldName), Integer.class);
 	}
 
 	/* (non-Javadoc)
@@ -425,7 +425,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public Long getLong(final String fieldName) {
-		return getTypedValue(fieldName, Long.class);
+		return getTypedValue(getCamelCase(fieldName), Long.class);
 	}
 
 	/* (non-Javadoc)
@@ -433,7 +433,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public String getString(final String fieldName) {
-		return getTypedValue(fieldName, String.class);
+		return getTypedValue(getCamelCase(fieldName), String.class);
 	}
 
 	/* (non-Javadoc)
@@ -441,7 +441,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public Boolean getBoolean(final String fieldName) {
-		return getTypedValue(fieldName, Boolean.class);
+		return getTypedValue(getCamelCase(fieldName), Boolean.class);
 	}
 
 	/* (non-Javadoc)
@@ -449,7 +449,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public Date getDate(final String fieldName) {
-		return getTypedValue(fieldName, Date.class);
+		return getTypedValue(getCamelCase(fieldName), Date.class);
 	}
 
 	/* (non-Javadoc)
@@ -457,7 +457,14 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
-		return getTypedValue(fieldName, BigDecimal.class);
+		return getTypedValue(getCamelCase(fieldName), BigDecimal.class);
+	}
+
+	private static String getCamelCase(final String fieldName) {
+		if (Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_")) {
+			return fieldName;
+		}
+		return StringUtil.constToLowerCamelCase(fieldName);
 	}
 
 }

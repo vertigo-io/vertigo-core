@@ -76,7 +76,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		this.inputKey = inputKey;
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
-		this.objectType = (Class<D>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
+		this.objectType = (Class<D>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
 		dtListDelta = new DtListDelta<>(new DtList<>(dtDefinition), new DtList<>(dtDefinition), new DtList<>(dtDefinition));
