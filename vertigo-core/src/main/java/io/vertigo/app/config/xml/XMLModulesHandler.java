@@ -56,19 +56,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		config,
-		boot,
-		module,
-		init,
+		config, boot, module, init,
 		//---
-		definitions,
-		resource,
-		provider,
+		definitions, resource, provider,
 		//---
-		component,
-		plugin,
-		param,
-		aspect,
+		component, plugin, param, aspect,
 		//-----
 		initializer
 	}
@@ -145,7 +137,11 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
-				pluginConfigBuilder = moduleConfigBuilder.beginPlugin(pluginImplClass);
+				if (bootConfigBuilder != null) {
+					pluginConfigBuilder = bootConfigBuilder.beginPlugin(pluginImplClass);
+				} else {
+					pluginConfigBuilder = moduleConfigBuilder.beginPlugin(pluginImplClass);
+				}
 				break;
 			case provider:
 				final String definitionProviderClassName = attrs.getValue("className");
