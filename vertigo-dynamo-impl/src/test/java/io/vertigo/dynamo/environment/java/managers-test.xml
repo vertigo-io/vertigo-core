@@ -3,7 +3,7 @@
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin2" />
+		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	</boot >
