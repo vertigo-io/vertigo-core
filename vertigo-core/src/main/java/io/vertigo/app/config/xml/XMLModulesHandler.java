@@ -56,11 +56,19 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		config, boot, module, init,
+		config,
+		boot,
+		module,
+		init,
 		//---
-		definitions, resource, provider,
+		definitions,
+		resource,
+		provider,
 		//---
-		component, plugin, param, aspect,
+		component,
+		plugin,
+		param,
+		aspect,
 		//-----
 		initializer
 	}
