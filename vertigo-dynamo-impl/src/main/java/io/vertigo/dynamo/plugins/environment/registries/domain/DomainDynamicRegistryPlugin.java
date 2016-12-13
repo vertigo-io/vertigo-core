@@ -475,7 +475,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/** {@inheritDoc} */
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelRepository) {
-		if (xdefinition.getEntity().equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
+		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(xdefinition.getEntity())
+				|| DomainGrammar.FRAGMENT_ENTITY.equals(xdefinition.getEntity())) {
 			//Dans le cas des DT on ajoute les domaines
 			dynamicModelRepository.addDefinition(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
 			dynamicModelRepository.addDefinition(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
