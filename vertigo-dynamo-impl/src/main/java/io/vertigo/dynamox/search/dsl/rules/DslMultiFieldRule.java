@@ -44,7 +44,7 @@ final class DslMultiFieldRule extends AbstractRule<DslMultiField, List<Object>> 
 						DslSyntaxRules.ARRAY_SEPARATOR,
 						DslSyntaxRules.SPACES,
 						new DslFieldRule() //3
-		), false);
+				), false);
 
 		return PegRules.sequence(
 				DslSyntaxRules.ARRAY_START,

@@ -32,7 +32,7 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
 	public enum CarFields implements Criterions<Car> {
-		ID ,
+		ID,
 		MAKE,
 		//		MODEL,
 		//		DESCRIPTION,
@@ -43,6 +43,7 @@ public final class Car implements KeyConcept {
 		MOTOR_TYPE,
 		//		FAM_ID;
 	}
+
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

@@ -158,7 +158,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria2<E> criteria){
+	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria2<E> criteria) {
 		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
 	}
 
