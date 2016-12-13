@@ -53,6 +53,7 @@ public final class VegaFeatures extends Features {
 
 	private boolean tokensEnabled;
 	private String tokenCollection;
+	private String searchApiVersion;
 	private boolean miscEnabled;
 	private boolean securityEnabled;
 	private String apiPrefix;
@@ -89,6 +90,11 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
+	public VegaFeatures withSearchApiVersion(final String searchApiVersion) {
+		this.searchApiVersion = searchApiVersion;
+		return this;
+	}
+
 	public VegaFeatures withEmbeddedServer(final int port) {
 		final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
 				.addParam("port", Integer.toString(port));
@@ -103,7 +109,6 @@ public final class VegaFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.withNoAPI()
-				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
@@ -114,6 +119,15 @@ public final class VegaFeatures extends Features {
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
+		if (searchApiVersion != null) {
+			getModuleConfigBuilder().beginComponent(JsonEngine.class, GoogleJsonEngine.class)
+					.addParam("searchApiVersion", searchApiVersion)
+					.endComponent();
+		} else {
+			getModuleConfigBuilder()
+					.addComponent(JsonEngine.class, GoogleJsonEngine.class);
+		}
+
 		if (securityEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
