@@ -52,11 +52,12 @@ import io.vertigo.vega.webservice.WebServiceManager;
 public final class VegaFeatures extends Features {
 
 	private boolean tokensEnabled;
-	private String tokenCollection;
-	private String searchApiVersion;
+	private String myTokens;
+	private String mySearchApiVersion;
 	private boolean miscEnabled;
 	private boolean securityEnabled;
-	private String apiPrefix;
+	private String myApiPrefix;
+	private Integer myPort;
 
 	public VegaFeatures() {
 		super("vega");
@@ -67,11 +68,11 @@ public final class VegaFeatures extends Features {
 		//rien
 	}
 
-	public VegaFeatures withTokens(final String collection) {
-		Assertion.checkArgNotEmpty(collection);
+	public VegaFeatures withTokens(final String tokens) {
+		Assertion.checkArgNotEmpty(tokens);
 		//-----
 		tokensEnabled = true;
-		tokenCollection = collection;
+		myTokens = tokens;
 		return this;
 	}
 
@@ -85,23 +86,18 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
-	public VegaFeatures withApiPrefix(final String prefix) {
-		apiPrefix = prefix;
+	public VegaFeatures withApiPrefix(final String apiPrefix) {
+		myApiPrefix = apiPrefix;
 		return this;
 	}
 
 	public VegaFeatures withSearchApiVersion(final String searchApiVersion) {
-		this.searchApiVersion = searchApiVersion;
+		this.mySearchApiVersion = searchApiVersion;
 		return this;
 	}
 
 	public VegaFeatures withEmbeddedServer(final int port) {
-		final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-				.addParam("port", Integer.toString(port));
-		if (apiPrefix != null) {
-			pluginConfigBuilder.addParam("apiPrefix", apiPrefix);
-		}
-		pluginConfigBuilder.endPlugin();
+		this.myPort = port;
 		return this;
 	}
 
@@ -119,9 +115,10 @@ public final class VegaFeatures extends Features {
 				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
-		if (searchApiVersion != null) {
-			getModuleConfigBuilder().beginComponent(JsonEngine.class, GoogleJsonEngine.class)
-					.addParam("searchApiVersion", searchApiVersion)
+		if (mySearchApiVersion != null) {
+			getModuleConfigBuilder()
+					.beginComponent(JsonEngine.class, GoogleJsonEngine.class)
+					.addParam("searchApiVersion", mySearchApiVersion)
 					.endComponent();
 		} else {
 			getModuleConfigBuilder()
@@ -135,17 +132,28 @@ public final class VegaFeatures extends Features {
 					.addPlugin(SecurityWebServiceHandlerPlugin.class);
 		}
 		if (tokensEnabled) {
-			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
+			getModuleConfigBuilder()
+					.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("collection", tokenCollection)
+					.addParam("collection", myTokens)
 					.endComponent();
 		}
 		if (miscEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
+		if (myPort != null) {
+			final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder()
+					.beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
+					.addParam("port", Integer.toString(myPort));
+			if (myApiPrefix != null) {
+				pluginConfigBuilder.addParam("apiPrefix", myApiPrefix);
+			}
+			pluginConfigBuilder.endPlugin();
+		}
+
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
 				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
 	}
