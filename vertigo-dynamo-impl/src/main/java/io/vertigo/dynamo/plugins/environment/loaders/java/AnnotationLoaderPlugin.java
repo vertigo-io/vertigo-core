@@ -146,7 +146,12 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
 	}
 
-	private static void parseDtDefinition(final Class<?> clazz, final DtStereotype stereotype, final String dtDefinitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDtDefinition(
+			final Class<?> clazz,
+			final DtStereotype stereotype,
+			final String dtDefinitionName,
+			final String packageName,
+			final DynamicDefinitionRepository dynamicModelRepository) {
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, stereotype.name());
 

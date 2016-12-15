@@ -32,7 +32,7 @@ import io.vertigo.lang.Tuples.Tuple2;
  * @author mlaroche
  */
 public final class Selector {
-	private static final Predicate ALWAYS_TRUE = (o) -> true;
+	private static final Predicate ALWAYS_TRUE = o -> true;
 	private final Map<String, Class> scope = new HashMap<>();
 
 	private Predicate<Method> methodPredicates = ALWAYS_TRUE;
@@ -80,7 +80,7 @@ public final class Selector {
 		Assertion.checkNotNull(classes);
 		checkScope();
 		// ---
-		classes.forEach((clazz) -> from(clazz));
+		classes.forEach(clazz -> from(clazz));
 		return this;
 	}
 
@@ -165,6 +165,9 @@ public final class Selector {
 	 *
 	 */
 	public static final class MethodConditions {
+		private MethodConditions() {
+			//stateless
+		}
 
 		/**
 		 * Build a predicate to check if the method is Annotated.
@@ -184,6 +187,9 @@ public final class Selector {
 	 *
 	 */
 	public static final class ClassConditions {
+		private ClassConditions() {
+			//stateless
+		}
 
 		/**
 		 * Build a predicate to check if the classe is Annotated.

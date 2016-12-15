@@ -10,8 +10,8 @@ import io.vertigo.lang.Assertion;
 
 public final class CriteriaExpression<E extends Entity> implements CriteriaBool<E> {
 	private enum CriteriaOperator {
-		or, //(2),
-		and;//(2);
+		OR, //(2),
+		AND;//(2);
 		//	not(1);
 		//---
 		//		private final int arity;
@@ -71,20 +71,20 @@ public final class CriteriaExpression<E extends Entity> implements CriteriaBool<
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
 			switch (criteria.getOperator()) {
-				case and:
-					return new CriteriaExpression<>(CriteriaOperator.and, criteria.operands, rightOperand);
-				case or:
+				case AND:
+					return new CriteriaExpression<>(CriteriaOperator.AND, criteria.operands, rightOperand);
+				case OR:
 					//the most complex case !  a+b*c => a + (b*c)
 					final CriteriaBool<E>[] leftOperands = new CriteriaBool[criteria.operands.length - 1];
 					for (int i = 0; i < (criteria.operands.length - 1); i++) {
 						leftOperands[i] = criteria.operands[i];
 					}
-					return new CriteriaExpression<>(CriteriaOperator.or, leftOperands, and(criteria.operands[criteria.operands.length - 1], rightOperand));
+					return new CriteriaExpression<>(CriteriaOperator.OR, leftOperands, and(criteria.operands[criteria.operands.length - 1], rightOperand));
 				default:
 					throw new IllegalStateException();
 			}
 		}
-		return new CriteriaExpression<>(CriteriaOperator.and, leftOperand, rightOperand);
+		return new CriteriaExpression<>(CriteriaOperator.AND, leftOperand, rightOperand);
 	}
 
 	public static <E extends Entity> CriteriaExpression<E> or(final CriteriaBool<E> leftOperand, final CriteriaBool<E> rightOperand) {
@@ -95,19 +95,19 @@ public final class CriteriaExpression<E extends Entity> implements CriteriaBool<
 		//		then +(exp.operands, c)
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
-			if (criteria.getOperator() == CriteriaOperator.or) {
-				return new CriteriaExpression<>(CriteriaOperator.or, criteria.operands, rightOperand);
+			if (criteria.getOperator() == CriteriaOperator.OR) {
+				return new CriteriaExpression<>(CriteriaOperator.OR, criteria.operands, rightOperand);
 			}
 		}
-		return new CriteriaExpression<>(CriteriaOperator.or, leftOperand, rightOperand);
+		return new CriteriaExpression<>(CriteriaOperator.OR, leftOperand, rightOperand);
 	}
 
 	@Override
 	public Predicate<E> toPredicate() {
 		final BinaryOperator<Predicate<E>> accumulator;
-		if (operator == CriteriaOperator.or) {
+		if (operator == CriteriaOperator.OR) {
 			accumulator = Predicate::or;
-		} else if (operator == CriteriaOperator.and) {
+		} else if (operator == CriteriaOperator.AND) {
 			accumulator = Predicate::and;
 		} else {
 			throw new IllegalAccessError();
