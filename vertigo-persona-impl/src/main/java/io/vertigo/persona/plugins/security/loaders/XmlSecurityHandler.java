@@ -33,13 +33,13 @@ import io.vertigo.persona.security.metamodel.Role;
  * @author  pchretien
  */
 final class XmlSecurityHandler extends DefaultHandler {
-	enum TagName {
+	private enum TagName {
 		authorisationConfig,
 		permission,
 		role;
 	}
 
-	enum AttrsName {
+	private enum AttrsName {
 		id,
 		operation,
 		filter,

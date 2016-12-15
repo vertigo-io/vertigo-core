@@ -97,9 +97,7 @@ public final class EAXmiLoader implements XmlLoader {
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
 				final XmlAssociation associationXmi = createAssociation(obj);
-				if (associationXmi != null) {
-					listBuilder.add(associationXmi);
-				}
+				listBuilder.add(associationXmi);
 			}
 		}
 		return listBuilder.unmodifiable().build();

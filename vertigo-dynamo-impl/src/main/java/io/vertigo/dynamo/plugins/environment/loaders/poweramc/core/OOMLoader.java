@@ -84,9 +84,7 @@ public final class OOMLoader implements XmlLoader {
 		for (final OOMObject obj : map.values()) {
 			if (obj.getType() == OOMType.Association) {
 				final XmlAssociation associationOOM = createAssociation(obj);
-				if (associationOOM != null) {
-					listBuilder.add(associationOOM);
-				}
+				listBuilder.add(associationOOM);
 			}
 		}
 		return listBuilder.unmodifiable().build();
