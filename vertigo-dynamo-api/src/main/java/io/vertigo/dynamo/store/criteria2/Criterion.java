@@ -11,7 +11,8 @@ import io.vertigo.lang.Assertion;
 public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 	private final DtFieldName dtFieldName;
 	private final CriterionOperator criterionOperator;
-	private final Comparable value1, value2;
+	private final Comparable value1;
+	private final Comparable value2;
 
 	Criterion(final DtFieldName dtFieldName, final CriterionOperator criterionOperator) {
 		Assertion.checkNotNull(dtFieldName);
@@ -73,7 +74,6 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 			case isNull:
 				return dtFieldName + " is null";
 			case eq:
-
 				return dtFieldName + " = #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case neq:
 				return dtFieldName + " != #" + ctx.attributeName(dtFieldName, value1) + "#";
@@ -96,34 +96,36 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 
 	@Override
 	public Predicate<E> toPredicate() {
-		return (final E entity) -> {
-			final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
-			final Object value = entitytDefinition.getField(dtFieldName).getDataAccessor().getValue(entity);
+		return entity -> test(entity);
+	}
 
-			switch (criterionOperator) {
-				case isNotNull:
-					return value != null;
-				case isNull:
-					return value == null;
-				case eq:
-					return value1.equals(value);
-				case neq:
-					return !value1.equals(value);
-				case gt:
-					return value1.compareTo(value) < 0;
-				case gte:
-					return value1.compareTo(value) <= 0;
-				case lt:
-					return value1.compareTo(value) > 0;
-				case lte:
-					return value1.compareTo(value) >= 0;
-				case between:
-					return value1.compareTo(value) <= 0 && value2.compareTo(value) >= 0;
-				case startsWith:
-					return String.class.cast(value).startsWith((String) value1);
-				default:
-					throw new IllegalAccessError();
-			}
-		};
+	private boolean test(final E entity) {
+		final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
+		final Object value = entitytDefinition.getField(dtFieldName).getDataAccessor().getValue(entity);
+
+		switch (criterionOperator) {
+			case isNotNull:
+				return value != null;
+			case isNull:
+				return value == null;
+			case eq:
+				return value1.equals(value);
+			case neq:
+				return !value1.equals(value);
+			case gt:
+				return value1.compareTo(value) < 0;
+			case gte:
+				return value1.compareTo(value) <= 0;
+			case lt:
+				return value1.compareTo(value) > 0;
+			case lte:
+				return value1.compareTo(value) >= 0;
+			case between:
+				return value1.compareTo(value) <= 0 && value2.compareTo(value) >= 0;
+			case startsWith:
+				return String.class.cast(value).startsWith((String) value1);
+			default:
+				throw new IllegalAccessError();
+		}
 	}
 }
