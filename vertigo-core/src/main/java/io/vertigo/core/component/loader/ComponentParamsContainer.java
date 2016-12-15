@@ -65,6 +65,7 @@ final class ComponentParamsContainer implements Container {
 		//-----
 		unusedKeys.remove(id);
 		final Object value = getParamValue(id, clazz);
+		Assertion.checkNotNull(value, "Le paramètre '{0}' de type '{1}' est null", id, clazz.getSimpleName());
 		final Class<O> type = ClassUtil.box(clazz);
 		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
 		return type.cast(value);
