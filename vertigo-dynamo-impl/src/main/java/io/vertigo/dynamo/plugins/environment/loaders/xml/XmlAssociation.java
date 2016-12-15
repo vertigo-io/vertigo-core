@@ -53,7 +53,17 @@ public final class XmlAssociation {
 	/**
 	 * Constructeur.
 	 */
-	public XmlAssociation(final String code, final String packageName, final String multiplicityA, final String multiplicityB, final String roleLabelA, final String roleLabelB, final String codeA, final String codeB, final boolean navigabilityA, final boolean navigabilityB) {
+	public XmlAssociation(
+			final String code,
+			final String packageName,
+			final String multiplicityA,
+			final String multiplicityB,
+			final String roleLabelA,
+			final String roleLabelB,
+			final String codeA,
+			final String codeB,
+			final boolean navigabilityA,
+			final boolean navigabilityB) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkArgNotEmpty(multiplicityA);

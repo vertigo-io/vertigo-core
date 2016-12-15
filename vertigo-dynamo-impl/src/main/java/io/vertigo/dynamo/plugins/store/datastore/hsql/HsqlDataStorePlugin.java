@@ -70,7 +70,11 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param sequencePrefix the prefix used by the sequence
 	 */
 	@Inject
-	public HsqlDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public HsqlDataStorePlugin(
+			@Named("name") final Optional<String> nameOption,
+			@Named("connectionName") final Optional<String> connectionName,
+			@Named("sequencePrefix") final String sequencePrefix,
+			final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

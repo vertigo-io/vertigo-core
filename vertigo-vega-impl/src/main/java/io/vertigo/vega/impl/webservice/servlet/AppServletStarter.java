@@ -52,7 +52,7 @@ final class AppServletStarter {
 
 	/** Servlet listener */
 	private final AppServletListener appServletListener = new AppServletListener();
-	private AutoCloseableApp app = null;
+	private AutoCloseableApp app;
 
 	/**
 	 * Initialize and start Vertigo Home.

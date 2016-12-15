@@ -48,7 +48,11 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public OracleDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public OracleDataStorePlugin(
+			@Named("name") final Optional<String> nameOption,
+			@Named("connectionName") final Optional<String> connectionName,
+			@Named("sequencePrefix") final String sequencePrefix,
+			final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

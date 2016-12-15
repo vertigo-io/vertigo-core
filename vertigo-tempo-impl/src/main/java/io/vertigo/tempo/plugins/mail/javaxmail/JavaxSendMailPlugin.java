@@ -76,7 +76,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private final Optional<String> mailLogin;
 	private final Optional<String> mailPassword;
 	/** Compteur de mails envoyés. */
-	private int mailSent = 0;
+	private int mailSent;
 
 	/**
 	 * Crée le plugin d'envoie de mail.

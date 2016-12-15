@@ -47,7 +47,10 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public SqlServerDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, final TaskManager taskManager) {
+	public SqlServerDataStorePlugin(
+			@Named("name") final Optional<String> nameOption,
+			@Named("connectionName") final Optional<String> connectionName,
+			final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 	}
 

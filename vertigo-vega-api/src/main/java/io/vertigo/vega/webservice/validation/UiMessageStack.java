@@ -98,6 +98,6 @@ public interface UiMessageStack extends Serializable {
 	/**
 	 * @return if there are errors in this stack.
 	 */
-	public boolean hasErrors();
+	boolean hasErrors();
 
 }

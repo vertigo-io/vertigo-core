@@ -30,7 +30,7 @@ import javax.servlet.ServletInputStream;
  */
 class FilterServletInputStream extends ServletInputStream {
 	private final InputStream in;
-	private boolean finished = false;
+	private boolean finished;
 
 	/**
 	 * Constructeur.

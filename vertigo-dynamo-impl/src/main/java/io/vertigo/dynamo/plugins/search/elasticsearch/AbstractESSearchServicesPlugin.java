@@ -77,7 +77,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final String indexName;
 	private final Set<String> types = new HashSet<>();
 	private final URL configFile;
-	private boolean indexSettingsValid = false;
+	private boolean indexSettingsValid;
 
 	/**
 	 * Constructeur.

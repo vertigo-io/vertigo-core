@@ -58,7 +58,7 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private Optional<Pattern> noAuthentificationPattern;
 
-	private boolean checkRequestAccess = false;
+	private boolean checkRequestAccess;
 
 	/** {@inheritDoc} */
 	@Override

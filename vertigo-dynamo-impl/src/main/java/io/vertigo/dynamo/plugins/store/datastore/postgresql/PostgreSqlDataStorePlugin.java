@@ -47,7 +47,11 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	 * @param taskManager the taskManager
 	 */
 	@Inject
-	public PostgreSqlDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, @Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+	public PostgreSqlDataStorePlugin(
+			@Named("name") final Optional<String> nameOption,
+			@Named("connectionName") final Optional<String> connectionName,
+			@Named("sequencePrefix") final String sequencePrefix,
+			final TaskManager taskManager) {
 		super(nameOption, connectionName, taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----

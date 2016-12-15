@@ -7,7 +7,7 @@ import java.util.Set;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 public final class Ctx {
-	private int i = 0;
+	private int i;
 	private final Map<String, Object> attributeValues = new HashMap<>();
 	private final Map<String, DtFieldName> attributeNames = new HashMap<>();
 
