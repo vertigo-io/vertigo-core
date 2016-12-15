@@ -45,7 +45,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	/**
 	 * Constructor.
 	 *
-	 * @param taskDefinitionName Name (TK_XXX_YYY)
+	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
 	 */
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
@@ -69,7 +69,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param request Request used to configure the task. (ldap request, sql request...)
+	 * @param request the request used to configure the task. (ldap request, sql request...)
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
@@ -83,7 +83,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param packageName Name of the package
+	 * @param packageName the name of the package
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
@@ -122,10 +122,26 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
+	/**
+	 * Adds a required input attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param required if attribute is required
+	 * @return this builder
+	 */
 	public TaskDefinitionBuilder addInRequired(final String attributeName, final Domain domain) {
 		return addInAttribute(attributeName, domain, true);
 	}
 
+	/**
+	 * Adds an optional input attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param required if attribute is required
+	 * @return this builder
+	 */
 	public TaskDefinitionBuilder addInOptional(final String attributeName, final Domain domain) {
 		return addInAttribute(attributeName, domain, false);
 	}
@@ -144,10 +160,26 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		return this;
 	}
 
+	/**
+	 * Adds a required output attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param required if attribute is required
+	 * @return this builder
+	 */
 	public TaskDefinitionBuilder withOutRequired(final String attributeName, final Domain domain) {
 		return withOutAttribute(attributeName, domain, true);
 	}
 
+	/**
+	 * Adds an optional output attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @param required if attribute is required
+	 * @return this builder
+	 */
 	public TaskDefinitionBuilder withOutOptional(final String attributeName, final Domain domain) {
 		return withOutAttribute(attributeName, domain, false);
 	}
