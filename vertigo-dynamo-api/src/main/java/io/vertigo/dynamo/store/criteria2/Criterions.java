@@ -29,6 +29,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is equal to the value
+	 * @param value the value
 	 */
 	default Criterion<E> isEqualTo(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.EQ, value);
@@ -36,6 +37,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is not equal to the value
+	 * @param value the value
 	 */
 	default Criterion<E> isNotEqualTo(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.NEQ, value);
@@ -43,6 +45,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is greater than the value
+	 * @param value the value
 	 */
 	default Criterion<E> isGreaterThan(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.GT, value);
@@ -50,6 +53,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is greater than or equal to the value
+	 * @param value the value
 	 */
 	default Criterion<E> isGreaterThanOrEqualTo(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.GTE, value);
@@ -57,6 +61,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is less than the value
+	 * @param value the value
 	 */
 	default Criterion<E> isLessThan(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.LT, value);
@@ -64,6 +69,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is less than or equal to the value
+	 * @param value the value
 	 */
 	default Criterion<E> isLessThanOrEqualTo(final Comparable value) {
 		return new Criterion<>(this, CriterionOperator.LTE, value);
@@ -71,6 +77,7 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return starts with the value
+	 * @param value the value
 	 */
 
 	default Criterion<E> startsWith(final String value) {
@@ -79,6 +86,8 @@ public interface Criterions<E extends Entity> extends DtFieldName {
 
 	/**
 	 * @return is between min and max
+	 * @param min the min value
+	 * @param max the max value
 	 */
 	default Criterion<E> isBetween(final Comparable min, final Comparable max) {
 		return new Criterion<>(this, CriterionOperator.BETWEEN, min, max);
