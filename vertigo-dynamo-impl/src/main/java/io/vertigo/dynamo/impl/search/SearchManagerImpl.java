@@ -223,6 +223,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
+		Assertion.checkNotNull(searchIndexDefinition); //Test pour Sonar
 		Assertion.checkNotNull(searchIndexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
