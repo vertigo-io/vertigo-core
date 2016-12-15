@@ -51,18 +51,6 @@ public final class DynamoFeatures extends Features {
 		super("dynamo");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
-				.addComponent(FileManager.class, FileManagerImpl.class)
-				.addComponent(TaskManager.class, TaskManagerImpl.class)
-				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
-				.addAspect(VTransactionAspect.class);
-
-	}
-
 	public DynamoFeatures withStore() {
 		getModuleConfigBuilder()
 				.addComponent(StoreManager.class, StoreManagerImpl.class);
@@ -81,5 +69,17 @@ public final class DynamoFeatures extends Features {
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
 				.addPlugin(searchServicesPluginClass);
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
+				.addComponent(FileManager.class, FileManagerImpl.class)
+				.addComponent(TaskManager.class, TaskManagerImpl.class)
+				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(VTransactionAspect.class);
+
 	}
 }

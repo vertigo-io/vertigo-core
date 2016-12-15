@@ -47,19 +47,9 @@ public final class CommonsFeatures extends Features {
 		super("commons");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
-				.addComponent(CodecManager.class, CodecManagerImpl.class)
-				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
-				.addComponent(EventBusManager.class, EventBusManagerImpl.class);
-	}
-
 	/**
 	 * Activates script.
-	 * 
+	 *
 	 * @return these features
 	 */
 	public CommonsFeatures withScript() {
@@ -71,7 +61,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates caches.
-	 * 
+	 *
 	 * @param cachePluginClass the cache plugin
 	 * @return these features
 	 */
@@ -80,5 +70,15 @@ public final class CommonsFeatures extends Features {
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
 				.beginPlugin(cachePluginClass).endPlugin();
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
+				.addComponent(CodecManager.class, CodecManagerImpl.class)
+				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
+				.addComponent(EventBusManager.class, EventBusManagerImpl.class);
 	}
 }

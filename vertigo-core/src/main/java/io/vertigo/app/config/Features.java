@@ -18,43 +18,29 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * Defines a module by its features.
  * @author pchretien
  */
-public abstract class Features {
-	private final String name;
-	private ModuleConfigBuilder moduleConfigBuilder;
+public abstract class Features implements Builder<ModuleConfig> {
+	private final ModuleConfigBuilder moduleConfigBuilder;
 
 	protected Features(final String name) {
-		Assertion.checkArgNotEmpty(name);
-		//-----
-		this.name = name;
+		moduleConfigBuilder = new ModuleConfigBuilder(name);
 	}
 
-	public final void init(final AppConfigBuilder appConfigBuilder) {
-		Assertion.checkNotNull(appConfigBuilder);
-		Assertion.checkState(moduleConfigBuilder == null, "appConfigBuilder is alreay defined");
-		//---
-		moduleConfigBuilder = appConfigBuilder.beginModule(name);
-		setUp();
-	}
+	protected abstract void buildFeatures();
 
-	protected abstract void setUp();
-
-	public ModuleConfigBuilder getModuleConfigBuilder() {
+	public final ModuleConfigBuilder getModuleConfigBuilder() {
 		return moduleConfigBuilder;
 	}
 
-	protected void buildFeatures() {
-		//overrided if needed
-	}
-
-	public final AppConfigBuilder endModule() {
+	@Override
+	public final ModuleConfig build() {
 		buildFeatures();
-		return moduleConfigBuilder.endModule();
+		return moduleConfigBuilder.build();
 	}
 
 }

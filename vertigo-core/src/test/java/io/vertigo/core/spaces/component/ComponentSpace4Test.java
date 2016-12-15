@@ -29,6 +29,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.component.data.StartedManager;
 import io.vertigo.core.spaces.component.data.StartedManagerImpl;
 import io.vertigo.core.spaces.component.data.StartedManagerInitializer;
@@ -43,9 +44,9 @@ public final class ComponentSpace4Test {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginModule("Started")
+			.addModule(new ModuleConfigBuilder("Started")
 				.addComponent(StartedManager.class, StartedManagerImpl.class)
-			.endModule()
+				.build())
 			.addInitializer(StartedManagerInitializer.class)
 		.build();
 		// @formatter:on

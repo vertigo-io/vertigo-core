@@ -24,7 +24,7 @@ import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Defines persona features.
- * 
+ *
  * @author pchretien
  */
 public final class PersonaFeatures extends Features {
@@ -34,13 +34,6 @@ public final class PersonaFeatures extends Features {
 	 */
 	public PersonaFeatures() {
 		super("persona");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		//		getModuleConfigBuilder()
-		//				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class);
 	}
 
 	/**
@@ -53,5 +46,12 @@ public final class PersonaFeatures extends Features {
 				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
 				.addParam("userSessionClassName", userSessionClass.getName());
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		//		getModuleConfigBuilder()
+		//				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class);
 	}
 }

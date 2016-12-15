@@ -25,6 +25,8 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.Features;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.aop.Aspect;
@@ -70,7 +72,9 @@ final class XMLModulesHandler extends DefaultHandler {
 		param,
 		aspect,
 		//-----
-		initializer
+		initializer,
+		//----
+		feature
 	}
 
 	@Override
@@ -81,7 +85,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				bootConfigBuilder = null;
 				break;
 			case module:
-				moduleConfigBuilder.endModule();
+				appConfigBuilder.addModule(moduleConfigBuilder.build());
 				moduleConfigBuilder = null;
 				break;
 			case component:
@@ -100,7 +104,8 @@ final class XMLModulesHandler extends DefaultHandler {
 			case config:
 			case init:
 			case initializer:
-				//non géré
+			case feature:
+				//nothing to do
 			default:
 		}
 	}
@@ -119,7 +124,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
-				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
+				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
 				if (api != null && !Boolean.parseBoolean(api)) {
 					moduleConfigBuilder.withNoAPI();
 				}
@@ -174,6 +179,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String aspectImplClassStr = attrs.getValue("class");
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
+				break;
+			case feature:
+				final String featureClassStr = attrs.getValue("class");
+				final ModuleConfig moduleConfigByFeatures = ClassUtil.newInstance(featureClassStr, Features.class).build();
+				appConfigBuilder.addModule(moduleConfigByFeatures);
 				break;
 			case definitions:
 			case config:

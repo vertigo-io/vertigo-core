@@ -25,7 +25,10 @@
 		<xs:complexType>
 	    	<xs:sequence>
 	        	<xs:element name="boot" type="bootType" minOccurs="0" maxOccurs="1"/>
-	        	<xs:element name="module" type="moduleType" minOccurs="0" maxOccurs="unbounded"/>
+	        	<xs:choice minOccurs="0" maxOccurs="unbounded">
+	        		<xs:element name="module" type="moduleType" minOccurs="0" maxOccurs="1"/>
+	        		<xs:element name="feature" type="featureType" minOccurs="0" maxOccurs="1"/>
+	        	</xs:choice>
 	        	<xs:element name="init" type="initType" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -98,6 +101,9 @@
 	</xs:complexType>
 
 	<xs:complexType name="initializerType">
+		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="featureType">
 		<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>
 	

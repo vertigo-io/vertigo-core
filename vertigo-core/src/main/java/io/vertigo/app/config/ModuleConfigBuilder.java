@@ -19,7 +19,6 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +41,6 @@ import io.vertigo.util.ListBuilder;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
@@ -54,17 +52,14 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private boolean myHasApi = true; //par défaut on a une api.
 
 	/**
-	 * Constructor of a module.
-	 * @param appConfigBuilder the builder of the appConfig
+	 * Constructor.
 	 * @param name Name of the module
 	 */
-	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
-		Assertion.checkNotNull(appConfigBuilder);
+	public ModuleConfigBuilder(final String name) {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		myName = name;
-		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	/**
@@ -162,15 +157,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass);
 		myComponentConfigBuilders.add(componentConfigBuilder);
 		return componentConfigBuilder;
-	}
-
-	/**
-	 * Ends the current module config.
-	 * @return the builder of this app
-	 */
-	public AppConfigBuilder endModule() {
-		myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
-		return myAppConfigBuilder;
 	}
 
 	/**

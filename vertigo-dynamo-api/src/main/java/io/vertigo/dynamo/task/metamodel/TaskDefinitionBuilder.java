@@ -127,7 +127,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInRequired(final String attributeName, final Domain domain) {
@@ -139,7 +138,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInOptional(final String attributeName, final Domain domain) {
@@ -165,7 +163,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutRequired(final String attributeName, final Domain domain) {
@@ -177,7 +174,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutOptional(final String attributeName, final Domain domain) {

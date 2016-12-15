@@ -25,6 +25,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,7 +49,9 @@ public final class MultiResourcesEnvironmentManagerTest {
 	@Test
 	public void testFirst() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr").endModule()
+				.addModule(new ModuleConfigBuilder("myApp")
+						.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+						.build())
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
@@ -61,10 +64,10 @@ public final class MultiResourcesEnvironmentManagerTest {
 	public void testMergedResources() {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp")
+				.addModule(new ModuleConfigBuilder("myApp")
 					.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
-				.endModule()
+					.build())
 			.build();
 		// @formatter:on
 
@@ -80,10 +83,10 @@ public final class MultiResourcesEnvironmentManagerTest {
 	public void testSplittedModules() {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp")
+				.addModule(new ModuleConfigBuilder("myApp")
 				.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
-				.endModule()
+				.build())
 			.build();
 		// @formatter:on
 

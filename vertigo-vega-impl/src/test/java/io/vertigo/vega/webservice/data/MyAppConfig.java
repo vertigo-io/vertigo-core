@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -76,9 +77,13 @@ public final class MyAppConfig {
 				.addPlugin(DomainDynamicRegistryPlugin.class)
 				.silently()
 			.endBoot()
-			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(CommonsFeatures.class).withCache(MemoryCachePlugin.class).endModule()
-			.beginModule(DynamoFeatures.class)
+			.addModule(new PersonaFeatures()
+				.withUserSession(TestUserSession.class)
+				.build())
+			.addModule(new CommonsFeatures()
+					.withCache(MemoryCachePlugin.class)
+					.build())
+			.addModule(new DynamoFeatures()
 				.withStore()
 				.getModuleConfigBuilder()
 				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
@@ -89,18 +94,20 @@ public final class MyAppConfig {
 					.addParam("collections", "tokens")
 					.addParam("timeToLiveSeconds", "120")
 				.endPlugin()
-			.endModule()
-			.beginModule(VegaFeatures.class)
+				.build())
+			.addModule(new VegaFeatures()
 				.withTokens("tokens")
 				.withSecurity()
 				.withMisc()
 				.withEmbeddedServer(WS_PORT)
-			.endModule()
+				.build())
 			//-----
-			.beginModule("dao-app").withNoAPI()
+			.addModule(new ModuleConfigBuilder("dao-app")
+				.withNoAPI()
 				.addComponent(ContactDao.class)
-			.endModule()
-			.beginModule("webservices-app").withNoAPI()
+				.build())
+			.addModule(new ModuleConfigBuilder("webservices-app")
+				.withNoAPI()
 				.addComponent(ComponentCmdWebServices.class)
 				.addComponent(CommonWebServices.class)
 				.addComponent(ContactsWebServices.class)
@@ -108,11 +115,11 @@ public final class MyAppConfig {
 				.addComponent(AdvancedTestWebServices.class)
 				.addComponent(AnonymousTestWebServices.class)
 				.addComponent(FileDownloadWebServices.class)
-			.endModule()
-			.beginModule("myApp")
+				.build())
+			.addModule(new ModuleConfigBuilder("myApp")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
-			.endModule()
+				.build())
 		.build();
 		// @formatter:on
 	}

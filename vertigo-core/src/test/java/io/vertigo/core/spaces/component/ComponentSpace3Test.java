@@ -28,6 +28,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.component.data.FunctionManager;
 import io.vertigo.core.spaces.component.data.FunctionManager1Impl;
 import io.vertigo.core.spaces.component.data.FunctionManager2Impl;
@@ -98,7 +99,7 @@ public final class ComponentSpace3Test {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginModule("Function")
+			.addModule(new ModuleConfigBuilder("Function")
 				.addComponent(FunctionManager.class, implClass)
 				.beginPlugin(FunctionPlugin.class)
 					.addParam("name", "x+1")
@@ -125,7 +126,7 @@ public final class ComponentSpace3Test {
 					.addParam("a", "1")
 					.addParam("b", "-10")
 				.endPlugin()
-			.endModule()
+				.build())
 		.build();
 		// @formatter:on
 	}

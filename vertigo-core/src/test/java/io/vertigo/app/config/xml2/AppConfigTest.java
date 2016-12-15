@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.spaces.component.data.BioManager;
@@ -52,15 +53,15 @@ public final class AppConfigTest {
 				.endPlugin()
 			.endBoot()
 
-			.beginModule("bio")
-			.addComponent(BioManager.class, BioManagerImpl.class)
-			.beginComponent(MathManager.class, MathManagerImpl.class)
-				.addParam("start", "${math.test.start}")
-			.endComponent()
-			.beginPlugin(MathPlugin.class)
-				.addParam("factor", "20")
-			.endPlugin()
-			.endModule()
+			.addModule(new ModuleConfigBuilder("bio")
+				.addComponent(BioManager.class, BioManagerImpl.class)
+				.beginComponent(MathManager.class, MathManagerImpl.class)
+					.addParam("start", "${math.test.start}")
+				.endComponent()
+				.beginPlugin(MathPlugin.class)
+					.addParam("factor", "20")
+				.endPlugin()
+				.build())
 			.build();
 		//@formatter:on
 

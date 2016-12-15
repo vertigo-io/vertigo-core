@@ -24,7 +24,6 @@ import java.util.List;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -65,35 +64,15 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Adds a list of ModuleConfig.
-	 * @param moduleConfigs list of moduleConfig
+	 * Adds a a moduleConfig.
+	 * @param moduleConfig the moduleConfig
 	 * @return this builder
 	 */
-	public AppConfigBuilder addAllModules(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
+	public AppConfigBuilder addModule(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
 		//-----
-		myModuleConfigListBuilder.addAll(moduleConfigs);
+		myModuleConfigListBuilder.add(moduleConfig);
 		return this;
-	}
-
-	/**
-	 * Adds a new module.
-	 * @param name Name of the module
-	 * @return the module builder
-	 */
-	public ModuleConfigBuilder beginModule(final String name) {
-		return new ModuleConfigBuilder(this, name);
-	}
-
-	/**
-	 * Begins a new module defined by its features.
-	 * @param featuresClass Type of features
-	 * @return the module builder
-	 */
-	public <F extends Features> F beginModule(final Class<F> featuresClass) {
-		final F features = ClassUtil.newInstance(featuresClass);
-		features.init(this);
-		return features;
 	}
 
 	/**

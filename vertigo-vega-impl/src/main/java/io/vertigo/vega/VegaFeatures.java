@@ -63,11 +63,6 @@ public final class VegaFeatures extends Features {
 		super("vega");
 	}
 
-	@Override
-	protected void setUp() {
-		//rien
-	}
-
 	public VegaFeatures withTokens(final String tokens) {
 		Assertion.checkArgNotEmpty(tokens);
 		//-----
@@ -92,15 +87,16 @@ public final class VegaFeatures extends Features {
 	}
 
 	public VegaFeatures withSearchApiVersion(final String searchApiVersion) {
-		this.mySearchApiVersion = searchApiVersion;
+		mySearchApiVersion = searchApiVersion;
 		return this;
 	}
 
 	public VegaFeatures withEmbeddedServer(final int port) {
-		this.myPort = port;
+		myPort = port;
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()

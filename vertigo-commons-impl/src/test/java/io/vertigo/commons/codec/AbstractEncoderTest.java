@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 
 /**
@@ -41,13 +42,11 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		// @formatter:off
 		return new AppConfigBuilder()
-			.beginModule("commons").
-				addComponent(CodecManager.class, CodecManagerImpl.class)
-			.endModule()
-			.build();
-		// @formatter:on
+				.addModule(new ModuleConfigBuilder("commons")
+						.addComponent(CodecManager.class, CodecManagerImpl.class)
+						.build())
+				.build();
 	}
 
 	protected abstract C obtainCodec(CodecManager inCodecManager);

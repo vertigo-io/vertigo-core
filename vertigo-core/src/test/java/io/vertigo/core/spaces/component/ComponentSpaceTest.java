@@ -30,6 +30,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.DummyPlugin;
@@ -47,7 +48,7 @@ public final class ComponentSpaceTest {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginModule("Bio")
+			.addModule(new ModuleConfigBuilder("Bio")
 				.addComponent(BioManager.class, BioManagerImpl.class)
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
@@ -55,7 +56,7 @@ public final class ComponentSpaceTest {
 				.beginPlugin( MathPlugin.class)
 					.addParam("factor", "20")
 				.endPlugin()
-			.endModule()
+				.build())
 		.build();
 		// @formatter:on
 
@@ -74,7 +75,7 @@ public final class ComponentSpaceTest {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginModule("Bio")
+			.addModule(new ModuleConfigBuilder("Bio")
 				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
 				//This plugin DummyPlugin is not used By BioManager !!
 				.addPlugin(DummyPlugin.class)
@@ -84,7 +85,7 @@ public final class ComponentSpaceTest {
 				.beginPlugin( MathPlugin.class)
 					.addParam("factor", "20")
 				.endPlugin()
-			.endModule()
+				.build())
 		.build();
 		// @formatter:on
 
@@ -103,17 +104,17 @@ public final class ComponentSpaceTest {
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 			.endBoot()
-			.beginModule("Bio-core")
+			.addModule(new ModuleConfigBuilder("Bio-core")
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.addParam("start", "100")
 				.endComponent()
 				.beginPlugin( MathPlugin.class)
 					.addParam("factor", "20")
 				.endPlugin()
-			.endModule()
-			.beginModule("Bio-spe") //This module depends of Bio-core module
+				.build())
+			.addModule(new ModuleConfigBuilder("Bio-spe") //This module depends of Bio-core module
 				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
-			.endModule()
+				.build())
 		.build();
 		// @formatter:on
 
