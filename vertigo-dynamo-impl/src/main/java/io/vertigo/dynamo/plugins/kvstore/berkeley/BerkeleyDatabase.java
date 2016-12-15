@@ -49,12 +49,11 @@ import io.vertigo.lang.WrappedException;
  */
 final class BerkeleyDatabase {
 	private static final Logger LOGGER = Logger.getLogger(BerkeleyDatabase.class);
-	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 200;
 	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
 	private final TupleBinding<Serializable> dataBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
-	private final Database database;
+	private Database database;
 
 	/**
 	 * Constructor.
@@ -213,21 +212,18 @@ final class BerkeleyDatabase {
 	 * Clear this database.
 	 */
 	public void clear() {
-		final DatabaseEntry theKey = new DatabaseEntry();
-		final DatabaseEntry theData = new DatabaseEntry();
-		try (final Cursor cursor = database.openCursor(null, null)) {
-			while (cursor.getNext(theKey, theData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-				database.delete(null, theKey);
-			}
-		} catch (final DatabaseException e) {
-			throw new WrappedException("clear failed", e);
-		}
+		final String dataBaseName = database.getDatabaseName();
+		database.close();
+		database.getEnvironment().truncateDatabase(null, dataBaseName, false);
+		database = database.getEnvironment().openDatabase(null, dataBaseName, database.getConfig());
+		database.getEnvironment().cleanLog();
 	}
 
 	/**
 	 * Remove too old elements.
+	 * @param maxRemovedTooOldElements max elements too removed
 	 */
-	public void removeTooOldElements() {
+	public void removeTooOldElements(final int maxRemovedTooOldElements) {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
 		int checked = 0;
@@ -236,7 +232,7 @@ final class BerkeleyDatabase {
 			try (Cursor cursor = database.openCursor(transaction, null)) {
 				//Les elements sont parcouru dans l'ordre d'insertion (sans lock) (donc globalement les plus vieux en premier)
 				//dès qu'on en trouve un trop récent, on stop
-				while (checked < MAX_REMOVED_TOO_OLD_ELEMENTS && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
+				while (checked < maxRemovedTooOldElements && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
 					final Serializable value = readTimedDataSafely(foundKey, foundData);
 					if (value == null) {//null si erreur de lecture, ou si trop vieux
 						cursor.delete();

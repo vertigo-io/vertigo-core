@@ -304,6 +304,25 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		return new UiListModifiableIterator();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof AbstractUiListModifiable)) {
+			return false;
+		}
+		final AbstractUiListModifiable<D> other = AbstractUiListModifiable.class.cast(o);
+		return bufferUiObjects.equals(other.bufferUiObjects);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		return bufferUiObjects.hashCode();
+	}
+
 	/** innerclass, volontairement non static */
 	class UiListModifiableIterator implements Iterator<UiObject<D>> {
 		private final int expectedSize;
