@@ -51,6 +51,10 @@ import io.vertigo.util.ListBuilder;
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
+	//cleaner : 500 elements every minutes -> 250 simultaneous users (took about 50ms)
+	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 500;
+	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
+
 	private final List<BerkeleyCollectionConfig> collectionConfigs;
 	private final List<String> collectionNames;
 
@@ -152,14 +156,17 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
 		}
 
-		final int purgePeriodSeconds = 15 * 60;
-		daemonManager.registerDaemon("purgeBerkeleyKVStore", () -> new RemoveTooOldElementsDaemon(this), purgePeriodSeconds);
+		daemonManager.registerDaemon("purgeBerkeleyKVStore", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS);
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {
 		dbFile.mkdirs();
 		final EnvironmentConfig fsEnvironmentConfig = new EnvironmentConfig()
 				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "false")
+				//The cleaner will keep the total disk space utilization percentage above this value.
+				.setConfigParam(EnvironmentConfig.CLEANER_MIN_UTILIZATION, "90")
+				//A log file will be cleaned if its utilization percentage is below this value, irrespective of total utilization.
+				.setConfigParam(EnvironmentConfig.CLEANER_MIN_FILE_UTILIZATION, "50")
 				.setReadOnly(readOnly)
 				.setAllowCreate(!readOnly)
 				.setTransactional(!readOnly);
@@ -182,6 +189,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			for (final BerkeleyDatabase berkeleyDatabase : databases.values()) {
 				berkeleyDatabase.getDatabase().close();
 			}
+			fsEnvironment.cleanLog(); //we make some cleaning
 		} finally {
 			if (fsEnvironment != null) {
 				fsEnvironment.close();
@@ -236,10 +244,11 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	/**
 	 * Remove too old elements.
+	 * @param maxRemovedTooOldElements max elements too removed
 	 */
-	void removeTooOldElements() {
+	void removeTooOldElements(final int maxRemovedTooOldElements) {
 		for (final String collection : collectionNames) {
-			getDatabase(collection).removeTooOldElements();
+			getDatabase(collection).removeTooOldElements(maxRemovedTooOldElements);
 		}
 	}
 
@@ -252,13 +261,17 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		private static final Logger LOGGER = Logger.getLogger(BerkeleyKVStorePlugin.class);
 
 		private final BerkeleyKVStorePlugin berkeleyKVDataStorePlugin;
+		private final int maxRemovedTooOldElements;
 
 		/**
 		 * @param berkeleyKVDataStorePlugin This plugin
-		 */
-		public RemoveTooOldElementsDaemon(final BerkeleyKVStorePlugin berkeleyKVDataStorePlugin) {
+		 * @param maxRemovedTooOldElements max elements too removed
+		*/
+		public RemoveTooOldElementsDaemon(final int maxRemovedTooOldElements, final BerkeleyKVStorePlugin berkeleyKVDataStorePlugin) {
 			Assertion.checkNotNull(berkeleyKVDataStorePlugin);
+			Assertion.checkArgument(maxRemovedTooOldElements > 0 && maxRemovedTooOldElements < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 			//------
+			this.maxRemovedTooOldElements = maxRemovedTooOldElements;
 			this.berkeleyKVDataStorePlugin = berkeleyKVDataStorePlugin;
 		}
 
@@ -266,7 +279,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		@Override
 		public void run() {
 			try {
-				berkeleyKVDataStorePlugin.removeTooOldElements();
+				berkeleyKVDataStorePlugin.removeTooOldElements(maxRemovedTooOldElements);
 			} catch (final DatabaseException dbe) {
 				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
 			}
