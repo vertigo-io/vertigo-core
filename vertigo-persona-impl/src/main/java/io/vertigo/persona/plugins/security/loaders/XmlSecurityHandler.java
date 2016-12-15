@@ -34,11 +34,19 @@ import io.vertigo.persona.security.metamodel.Role;
  */
 final class XmlSecurityHandler extends DefaultHandler {
 	enum TagName {
-		autorisationConfig, permission, role;
+		authorisationConfig,
+		permission,
+		role;
 	}
 
 	enum AttrsName {
-		id, operation, filter, description, permission, name, ref;
+		id,
+		operation,
+		filter,
+		description,
+		permission,
+		name,
+		ref;
 	}
 
 	private final DefinitionSpace definitionSpace;
@@ -54,7 +62,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
 		switch (TagName.valueOf(qName)) {
-			case autorisationConfig:
+			case authorisationConfig:
 				break;
 			case permission:
 				currentPermission = createPermission(attrs);
@@ -69,7 +77,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
-			case autorisationConfig:
+			case authorisationConfig:
 				break;
 			case permission:
 				if (currentRole != null) {

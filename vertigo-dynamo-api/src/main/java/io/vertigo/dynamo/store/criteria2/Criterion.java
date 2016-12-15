@@ -69,25 +69,25 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 	@Override
 	public String toSql(final Ctx ctx) {
 		switch (criterionOperator) {
-			case isNotNull:
+			case IS_NOT_NULL:
 				return dtFieldName + " is not null";
-			case isNull:
+			case IS_NULL:
 				return dtFieldName + " is null";
-			case eq:
+			case EQ:
 				return dtFieldName + " = #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case neq:
+			case NEQ:
 				return dtFieldName + " != #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case gt:
+			case GT:
 				return dtFieldName + " > #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case gte:
+			case GTE:
 				return dtFieldName + " >= #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case lt:
+			case LT:
 				return dtFieldName + " < #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case lte:
+			case LTE:
 				return dtFieldName + " <= #" + ctx.attributeName(dtFieldName, value1) + "#";
-			case between:
+			case BETWEEN:
 				return "(" + dtFieldName + " >= #" + ctx.attributeName(dtFieldName, value1) + "# and " + dtFieldName + " <= #" + ctx.attributeName(dtFieldName, value2) + "# )";
-			case startsWith:
+			case STARTS_WITH:
 				return dtFieldName + " like  #" + ctx.attributeName(dtFieldName, value1) + "# || " + "'%%'";
 			default:
 				throw new IllegalAccessError();
@@ -104,25 +104,25 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 		final Object value = entitytDefinition.getField(dtFieldName).getDataAccessor().getValue(entity);
 
 		switch (criterionOperator) {
-			case isNotNull:
+			case IS_NOT_NULL:
 				return value != null;
-			case isNull:
+			case IS_NULL:
 				return value == null;
-			case eq:
+			case EQ:
 				return value1.equals(value);
-			case neq:
+			case NEQ:
 				return !value1.equals(value);
-			case gt:
+			case GT:
 				return value1.compareTo(value) < 0;
-			case gte:
+			case GTE:
 				return value1.compareTo(value) <= 0;
-			case lt:
+			case LT:
 				return value1.compareTo(value) > 0;
-			case lte:
+			case LTE:
 				return value1.compareTo(value) >= 0;
-			case between:
+			case BETWEEN:
 				return value1.compareTo(value) <= 0 && value2.compareTo(value) >= 0;
-			case startsWith:
+			case STARTS_WITH:
 				return String.class.cast(value).startsWith((String) value1);
 			default:
 				throw new IllegalAccessError();

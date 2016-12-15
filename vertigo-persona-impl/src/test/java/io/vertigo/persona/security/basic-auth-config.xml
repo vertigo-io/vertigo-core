@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<autorisationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<authorisationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="vertigo-security_1_0.xsd">
 	<!--  Permissions -->	
 	<permission id="PRM_READ_ALL_PRODUCTS" operation="READ" filter="/products/.*" description="Lire tous les produits"/>		
@@ -27,4 +27,4 @@
   		<!--permission type="read" filter="/product/*"  -->
   		<permission ref="PRM_READ_MY_FAMILLE"/>
   	</role>
-</autorisationConfig>
+</authorisationConfig>

@@ -127,36 +127,36 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	public Integer getInteger(String fieldName);
+	Integer getInteger(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	public Long getLong(String fieldName);
+	Long getLong(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	  */
-	public String getString(String fieldName);
+	String getString(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	public Boolean getBoolean(String fieldName);
+	Boolean getBoolean(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	public Date getDate(String fieldName);
+	Date getDate(String fieldName);
 
 	/**
 	 * @param fieldName Nom du champs
 	 * @return Valeur typée
 	 */
-	public BigDecimal getBigDecimal(String fieldName);
+	BigDecimal getBigDecimal(String fieldName);
 
 }

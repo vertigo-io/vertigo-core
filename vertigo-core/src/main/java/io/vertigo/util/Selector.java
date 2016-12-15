@@ -177,7 +177,7 @@ public final class Selector {
 		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
-			return (method) -> method.getAnnotationsByType(annotationClass).length > 0;
+			return method -> method.getAnnotationsByType(annotationClass).length > 0;
 		}
 	}
 
@@ -199,7 +199,7 @@ public final class Selector {
 		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.checkNotNull(annotationClass);
 			//---
-			return (clazz) -> clazz.getAnnotationsByType(annotationClass).length > 0;
+			return clazz -> clazz.getAnnotationsByType(annotationClass).length > 0;
 		}
 
 		/**
@@ -210,7 +210,7 @@ public final class Selector {
 		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.checkNotNull(clazz);
 			//---
-			return (subtype) -> clazz.isAssignableFrom(subtype);
+			return subtype -> clazz.isAssignableFrom(subtype);
 		}
 
 		/**
@@ -218,7 +218,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Class> interfaces() {
-			return (clazz) -> clazz.isInterface();
+			return clazz -> clazz.isInterface();
 		}
 	}
 }
