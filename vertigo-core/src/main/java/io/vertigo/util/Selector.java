@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeElementsScanner;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples.Tuple2;
@@ -93,7 +93,12 @@ public final class Selector {
 		Assertion.checkArgNotEmpty(packageName);
 		checkScope();
 		// ---
-		new Reflections(packageName, new SubTypesScanner(false)).getAllTypes().forEach(className -> from(ClassUtil.classForName(className)));
+		new Reflections(packageName,
+				new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false))
+						.getStore()
+						.get(TypeElementsScanner.class.getSimpleName())
+						.keys()
+						.forEach(className -> from(ClassUtil.classForName(className)));
 		return this;
 	}
 
