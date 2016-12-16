@@ -20,6 +20,7 @@ package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.Param;
+import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -139,12 +140,13 @@ public final class VegaFeatures extends Features {
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
 		if (myPort != null) {
-			getModuleConfigBuilder()
-					.addPlugin(SparkJavaEmbeddedWebServerPlugin.class,
-							Param.create("port", Integer.toString(myPort)));
+			PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(SparkJavaEmbeddedWebServerPlugin.class);
+			pluginConfigBuilder.addParam(Param.create("port", Integer.toString(myPort)));
 			if (myApiPrefix != null) {
-				pluginConfigBuilder.addParam("apiPrefix", myApiPrefix);
+				pluginConfigBuilder.addParam(Param.create("apiPrefix", myApiPrefix));
 			}
+			getModuleConfigBuilder().addPlugin(pluginConfigBuilder);
+
 		}
 
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
