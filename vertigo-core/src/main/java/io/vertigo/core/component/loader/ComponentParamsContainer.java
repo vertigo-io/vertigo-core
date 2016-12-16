@@ -31,7 +31,7 @@ import io.vertigo.util.ClassUtil;
 
 /**
  * This container contains params initialized with String.
- * Method getUnusedKeys allows to identify phantom params.
+ * Method getUnusedKeys allows to identify 'phantom' params.
  *
  * @author pchretien
  */
@@ -61,13 +61,13 @@ final class ComponentParamsContainer implements Container {
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
-		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
+		Assertion.checkState(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
 		final Object value = getParamValue(id, clazz);
-		Assertion.checkNotNull(value, "Le paramètre '{0}' de type '{1}' est null", id, clazz.getSimpleName());
+		Assertion.checkNotNull(value, "param '{0}' of type '{1}' is required", id, clazz.getSimpleName());
 		final Class<O> type = ClassUtil.box(clazz);
-		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
+		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "component/param '{0}' of type '{1}' , expected type '{2}'", id, value.getClass(), clazz);
 		return type.cast(value);
 	}
 

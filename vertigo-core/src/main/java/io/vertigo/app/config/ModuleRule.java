@@ -23,6 +23,7 @@ package io.vertigo.app.config;
  *
  * @author pchretien
  */
+@FunctionalInterface
 public interface ModuleRule {
 	/**
 	 * Check the rule on a module.

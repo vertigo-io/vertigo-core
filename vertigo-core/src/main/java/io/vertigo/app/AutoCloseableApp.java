@@ -44,13 +44,13 @@ import io.vertigo.lang.WrappedException;
 public final class AutoCloseableApp implements App, AutoCloseable {
 	private enum State {
 		/** Components are starting*/
-		starting,
+		STARTING,
 		/** Components are started*/
-		active,
+		ACTIVE,
 		/** Components are stopping*/
-		stopping,
+		STOPPING,
 		/** App is closed, good bye !*/
-		closed
+		CLOSED
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
@@ -76,7 +76,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		start = System.currentTimeMillis();
 		this.appConfig = appConfig;
 		Home.setApp(this);
-		state = State.starting;
+		state = State.STARTING;
 		//-----
 		//-----0. Boot (considered as a Module)
 		final Boot boot = new Boot(appConfig.getBootConfig());
@@ -109,7 +109,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//-----5. Start
 			appStart();
 			//-----
-			state = State.active;
+			state = State.ACTIVE;
 			//-----6. AfterStart (application is active)
 			appPostStart();
 		} catch (final Exception e) {
@@ -120,7 +120,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public void registerPostStartFunction(final Runnable postStartFunction) {
-		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
+		Assertion.checkArgument(State.STARTING.equals(state), "Applisteners can't be registered at runtime");
 		Assertion.checkNotNull(postStartFunction);
 		//-----
 		postStartFunctions.add(postStartFunction);
@@ -147,8 +147,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	@Override
 	public void close() {
 		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-		Assertion.checkState(state == State.active || state == State.starting, "App with a state '{0}' can not be be closed", state);
-		state = State.stopping;
+		Assertion.checkState(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
+		state = State.STOPPING;
 		//-----
 		try {
 			appStop();
@@ -157,7 +157,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//Quel que soit l'état, on part en échec de l'arrét.
 			throw new WrappedException("an error occured when stopping", e);
 		} finally {
-			state = State.closed;
+			state = State.CLOSED;
 			Home.setApp(null);
 		}
 	}
