@@ -56,6 +56,13 @@ public final class DynamoFeatures extends Features {
 		super("dynamo");
 	}
 
+	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(SearchManager.class, SearchManagerImpl.class)
+				.addPlugin(searchServicesPluginClass, params);
+		return this;
+	}
+
 	public DynamoFeatures withStore() {
 		getModuleConfigBuilder()
 				.addComponent(StoreManager.class, StoreManagerImpl.class);

@@ -33,7 +33,7 @@ public abstract class Features implements Builder<ModuleConfig> {
 
 	protected abstract void buildFeatures();
 
-	public final ModuleConfigBuilder getModuleConfigBuilder() {
+	protected final ModuleConfigBuilder getModuleConfigBuilder() {
 		return moduleConfigBuilder;
 	}
 
