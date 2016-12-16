@@ -95,7 +95,7 @@ final class DynamicValidator {
 		for (final String propertyName : entityPropertyNames) {
 			final DslEntityField entityField = myEntity.getField(propertyName);
 
-			if ((entityField.getCardinality() == Cardinality.one)
+			if ((entityField.getCardinality() == Cardinality.ONE)
 					&& (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle

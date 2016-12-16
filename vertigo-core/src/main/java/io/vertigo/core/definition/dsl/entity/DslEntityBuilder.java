@@ -71,7 +71,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 * @return this builder
 	 */
 	public DslEntityBuilder addRequiredField(final String fieldName, final DslEntityFieldType type) {
-		return addField(fieldName, type, Cardinality.one);
+		return addField(fieldName, type, Cardinality.ONE);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 * @return this builder
 	 */
 	public DslEntityBuilder addOptionalField(final String fieldName, final DslEntityFieldType type) {
-		return addField(fieldName, type, Cardinality.optional);
+		return addField(fieldName, type, Cardinality.OPTIONAL);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 */
 	public DslEntityBuilder addManyFields(final String fieldName, final DslEntity entity) {
 		//Only Entities may be multiple
-		return addField(fieldName, entity, Cardinality.many);
+		return addField(fieldName, entity, Cardinality.MANY);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 */
 	public DslEntityBuilder addManyFields(final String fieldName, final DslEntityLink entityLink) {
 		//Only Entities or  Link may be multiple
-		return addField(fieldName, entityLink, Cardinality.many);
+		return addField(fieldName, entityLink, Cardinality.MANY);
 	}
 
 	/**

@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 
 /**
- * Critère générique.
+ * This class defines criteria on an entity.
  *
  * @author pchretien
  * @param <E> the type of entity

@@ -102,6 +102,6 @@ public final class ComponentConfig {
 	@Override
 	/** {@inheritDoc} */
 	public String toString() {
-		return getId();
+		return id;
 	}
 }
