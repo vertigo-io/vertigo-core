@@ -153,4 +153,13 @@
 		</dependency-->
 		<!--/exporter-->
 	</dependencies>
+	
+	<!-- repo pour com.sleepycat.je:5.0.84 -->
+	<repositories>
+	    <repository>
+	      <id>boundless</id>
+	      <name>boundless</name>
+	      <url>http://repo.boundlessgeo.com/main</url>
+	    </repository>
+	  </repositories>
 </project>
