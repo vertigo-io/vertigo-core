@@ -31,9 +31,8 @@ import io.vertigo.lang.Component;
  * This class allows to configure a component step by step.
  *
  * @author npiedeloup, pchretien
- * @param <B> the type of the parent builder
  */
-public final class ComponentConfigBuilder<B extends Builder> implements Builder<ComponentConfig> {
+public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
 	private final Optional<Class<? extends Component>> optionalApiClass;
 	private final Class<? extends Component> implClass;
@@ -52,7 +51,7 @@ public final class ComponentConfigBuilder<B extends Builder> implements Builder<
 	 * @param param the param
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder<B> addParam(final Param param) {
+	public ComponentConfigBuilder addParam(final Param param) {
 		Assertion.checkNotNull(param);
 		//-----
 		myParams.add(param);
