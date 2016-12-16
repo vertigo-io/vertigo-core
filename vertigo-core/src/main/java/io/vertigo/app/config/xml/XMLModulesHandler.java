@@ -173,7 +173,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
-				final String paramValue = attrs.getValue("value");
+				final String paramValue = evalParamValue(attrs.getValue("value"));
 				final Param param = Param.create(paramName, paramValue);
 				if (current == TagName.plugin) {
 					pluginConfigBuilder.addParam(param);
