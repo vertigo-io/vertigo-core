@@ -51,8 +51,8 @@ import io.vertigo.util.ListBuilder;
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
-	//cleaner : 500 elements every minutes -> 250 simultaneous users (took about 50ms)
-	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 500;
+	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
+	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 1000;
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
 
 	private final List<BerkeleyCollectionConfig> collectionConfigs;
