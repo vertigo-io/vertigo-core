@@ -68,7 +68,7 @@ public final class CommonsFeatures extends Features {
 	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass) {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
-				.beginPlugin(cachePluginClass).endPlugin();
+				.addPlugin(cachePluginClass);
 		return this;
 	}
 

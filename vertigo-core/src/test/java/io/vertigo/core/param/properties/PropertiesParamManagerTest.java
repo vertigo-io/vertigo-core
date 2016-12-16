@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -41,9 +42,8 @@ public final class PropertiesParamManagerTest extends AbstractParamManagerTest {
 			.beginBoot()
 				.withLocales(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.beginPlugin( PropertiesParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/properties/app-config.properties")
-				.endPlugin()
+				.addPlugin( PropertiesParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/properties/app-config.properties"))
 			.endBoot()
 			.build();
 		// @formatter:on

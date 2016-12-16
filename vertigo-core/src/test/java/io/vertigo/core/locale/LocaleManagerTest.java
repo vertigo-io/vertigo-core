@@ -50,11 +50,11 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//les locales doivent être séparées par des virgules
 		final String locales = "fr_FR, en , de_DE";
-		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBoot().withLocales(locales).endBoot()
-			.build();
-		// @formatter:on
+				.beginBoot()
+				.withLocales(locales)
+				.endBoot()
+				.build();
 	}
 
 	@Override

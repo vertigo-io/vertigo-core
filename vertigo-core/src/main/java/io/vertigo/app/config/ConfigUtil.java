@@ -4,22 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
 final class ConfigUtil {
 	private ConfigUtil() {
 		//
-	}
-
-	static List<ComponentConfig> buildComponentConfigs(final List<ComponentConfigBuilder> componentConfigBuilders) {
-		Assertion.checkNotNull(componentConfigBuilders);
-		//---
-		return componentConfigBuilders
-				.stream()
-				.map(componentConfigBuilder -> componentConfigBuilder.build())
-				.collect(Collectors.toList());
 	}
 
 	static List<ComponentConfig> buildPluginConfigs(final List<PluginConfigBuilder> pluginConfigBuilders) {

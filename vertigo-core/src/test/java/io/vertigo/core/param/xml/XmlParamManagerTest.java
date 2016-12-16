@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -41,9 +42,8 @@ public final class XmlParamManagerTest extends AbstractParamManagerTest {
 			.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.beginPlugin( XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/xml/basic-app-config.xml")
-				.endPlugin()
+				.addPlugin( XmlParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/xml/basic-app-config.xml"))
 			.endBoot()
 			.build();
 		// @formatter:on

@@ -31,6 +31,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.DummyPlugin;
@@ -43,22 +44,18 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome() {
-		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.addModule(new ModuleConfigBuilder("Bio")
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.beginComponent(MathManager.class, MathManagerImpl.class)
-					.addParam("start", "100")
-				.endComponent()
-				.beginPlugin( MathPlugin.class)
-					.addParam("factor", "20")
-				.endPlugin()
-				.build())
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new ModuleConfigBuilder("Bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "100"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
@@ -70,24 +67,20 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome2() {
-		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.addModule(new ModuleConfigBuilder("Bio")
-				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
-				//This plugin DummyPlugin is not used By BioManager !!
-				.addPlugin(DummyPlugin.class)
-				.beginComponent(MathManager.class, MathManagerImpl.class)
-					.addParam("start", "100")
-				.endComponent()
-				.beginPlugin( MathPlugin.class)
-					.addParam("factor", "20")
-				.endPlugin()
-				.build())
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new ModuleConfigBuilder("Bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						//This plugin DummyPlugin is not used By BioManager !!
+						.addPlugin(DummyPlugin.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "100"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.build();
 
 		Assertions.assertThrows(RuntimeException.class,
 				() -> {
@@ -99,24 +92,20 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome3() {
-		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.addModule(new ModuleConfigBuilder("Bio-core")
-				.beginComponent(MathManager.class, MathManagerImpl.class)
-					.addParam("start", "100")
-				.endComponent()
-				.beginPlugin( MathPlugin.class)
-					.addParam("factor", "20")
-				.endPlugin()
-				.build())
-			.addModule(new ModuleConfigBuilder("Bio-spe") //This module depends of Bio-core module
-				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
-				.build())
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new ModuleConfigBuilder("Bio-core")
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "100"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.addModule(new ModuleConfigBuilder("Bio-spe") //This module depends of Bio-core module
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.build())
+				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			//

@@ -19,10 +19,12 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
@@ -47,7 +49,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
-	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
+	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfigBuilder> myPluginConfigBuilders = new ArrayList<>();
 
 	/**
@@ -67,9 +69,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder withLocales(final String locales) {
-		beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				.addParam("locales", locales)
-				.endComponent();
+		addComponent(
+				LocaleManager.class,
+				LocaleManagerImpl.class,
+				Param.create("locales", locales));
 		return this;
 	}
 
@@ -113,56 +116,55 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	* Begins the builder of a component.
-	* Component is added when you close the builder uising end() method.
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	private ComponentConfigBuilder<BootConfigBuilder> beginComponent(final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass);
-	}
-
-	/**
-	* Begins the builder of a component.
-	* @param apiClass api of the component
-	* Component is added when you close the builder uising end() method.
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	private ComponentConfigBuilder<BootConfigBuilder> beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass);
+	* Adds a component defined by an implementation.
+	 * @param implClass impl of the component
+	 * @param params the list of params
+	 */
+	public void addComponent(final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(implClass);
+		myComponentConfigs.add(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
 	}
 
 	/**
 	* Adds a component defined by an api and an implementation.
-	* @param apiClass api of the component
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
-		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass);
-		myComponentConfigBuilders.add(componentConfigBuilder);
-		return componentConfigBuilder;
+	 * @param apiClass api of the component
+	 * @param implClass impl of the component
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(apiClass);
+		myComponentConfigs.add(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+		return this;
 	}
 
 	/**
 	 * Adds a plugin defined by its implementation.
 	 * @param pluginImplClass  impl of the plugin
+	 * @param params the list of params
 	 * @return this builder
 	 */
-	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass) {
-		return beginPlugin(pluginImplClass).endPlugin();
+	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		return addPlugin(new PluginConfigBuilder(pluginImplClass).addAllParams(params));
 	}
 
 	/**
-	 * Begins the builder of a plugin.
-	 * @param pluginImplClass impl of the plugin
-	 * @return  the builder of the plugin
+	 * Adds a plugin defined by its builder.
+	 * @param pluginConfigBuilder  the builder of the plugin
+	 * @return this builder
 	 */
-	public PluginConfigBuilder<BootConfigBuilder> beginPlugin(final Class<? extends Plugin> pluginImplClass) {
-		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
+	public BootConfigBuilder addPlugin(final PluginConfigBuilder pluginConfigBuilder) {
+		Assertion.checkNotNull(pluginConfigBuilder);
+		//---
 		myPluginConfigBuilders.add(pluginConfigBuilder);
-		return pluginConfigBuilder;
+		return this;
 	}
 
 	/**
@@ -170,12 +172,12 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	@Override
 	public BootConfig build() {
-		beginComponent(ResourceManager.class, ResourceManagerImpl.class).endComponent()
-				.beginComponent(ParamManager.class, ParamManagerImpl.class).endComponent()
-				.beginComponent(DefinitionLoader.class).endComponent();
+		addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addComponent(ParamManager.class, ParamManagerImpl.class)
+				.addComponent(DefinitionLoader.class);
 
 		final List<ComponentConfig> componentConfigs = new ListBuilder<ComponentConfig>()
-				.addAll(ConfigUtil.buildComponentConfigs(myComponentConfigBuilders))
+				.addAll(myComponentConfigs)
 				.addAll(ConfigUtil.buildPluginConfigs(myPluginConfigBuilders))
 				.build();
 

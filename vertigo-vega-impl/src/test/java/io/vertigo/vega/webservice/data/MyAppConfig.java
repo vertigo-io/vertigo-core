@@ -24,6 +24,7 @@ import java.util.Iterator;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -87,13 +88,11 @@ public final class MyAppConfig {
 				.withStore()
 				.getModuleConfigBuilder()
 				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
-				.beginPlugin(PostgreSqlDataStorePlugin.class)
-					.addParam("sequencePrefix","SEQ_")
-				.endPlugin()
-				.beginPlugin(DelayedMemoryKVStorePlugin.class)
-					.addParam("collections", "tokens")
-					.addParam("timeToLiveSeconds", "120")
-				.endPlugin()
+				.addPlugin(PostgreSqlDataStorePlugin.class, 
+					Param.create("sequencePrefix","SEQ_"))
+				.addPlugin(DelayedMemoryKVStorePlugin.class, 
+					Param.create("collections", "tokens"),
+					Param.create("timeToLiveSeconds", "120"))
 				.build())
 			.addModule(new VegaFeatures()
 				.withTokens("tokens")

@@ -31,6 +31,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.MathManager;
@@ -56,18 +57,14 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		// @formatter:off
 		return new AppConfigBuilder()
-		.addModule(new ModuleConfigBuilder("bio")
-			.addComponent(BioManager.class, BioManagerImpl.class)
-			.beginComponent(MathManager.class, MathManagerImpl.class)
-				.addParam("start", "100")
-			.endComponent()
-			.beginPlugin(MathPlugin.class)
-				.addParam("factor", "20")
-			.endPlugin()
-			.build())
-		.build();
-		// @formatter:on
+				.addModule(new ModuleConfigBuilder("bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "100"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.build();
 	}
 }

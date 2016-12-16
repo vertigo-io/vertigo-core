@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
@@ -38,25 +39,19 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 	protected AppConfig buildAppConfig() {
 		final String locales = "fr_FR";
 
-		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLocales(locales)
-				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config.xml")
-				.endPlugin()
-				.beginPlugin( PropertiesParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config.properties")
-				.endPlugin()
-				.beginPlugin( PropertiesParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config2.properties")
-				.endPlugin()
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/multi/app-config2.xml")
-				.endPlugin()
-			.endBoot()
-			.build();
-		// @formatter:on
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(XmlParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/multi/app-config.xml"))
+				.addPlugin(PropertiesParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/multi/app-config.properties"))
+				.addPlugin(PropertiesParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/multi/app-config2.properties"))
+				.addPlugin(XmlParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/multi/app-config2.xml"))
+				.endBoot()
+				.build();
 	}
 }

@@ -18,8 +18,8 @@
  */
 package io.vertigo.app.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
@@ -28,56 +28,41 @@ import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 
 /**
- * Paramétrage de l'application.
+ * This class allows to configure a component step by step.
  *
  * @author npiedeloup, pchretien
  * @param <B> the type of the parent builder
  */
 public final class ComponentConfigBuilder<B extends Builder> implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-	private final B parentConfigBuilder;
-	private final Optional<Class<? extends Component>> apiClass;
+	private final Optional<Class<? extends Component>> optionalApiClass;
 	private final Class<? extends Component> implClass;
-	private final Map<String, String> myParams = new HashMap<>();
+	private final List<Param> myParams = new ArrayList<>();
 
-	ComponentConfigBuilder(final B parentConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass) {
-		Assertion.checkNotNull(parentConfigBuilder);
-		Assertion.checkNotNull(apiClass);
+	public ComponentConfigBuilder(final Optional<Class<? extends Component>> optionalApiClass, final Class<? extends Component> implClass) {
+		Assertion.checkNotNull(optionalApiClass);
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.parentConfigBuilder = parentConfigBuilder;
-		this.apiClass = apiClass;
+		this.optionalApiClass = optionalApiClass;
 		this.implClass = implClass;
 	}
 
 	/**
-	 * Add a param to this component config.
-	 * @param paramName Name of the param
-	 * @param paramValue Value of the param
+	 * Adds a param to this component config.
+	 * @param param the param
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder<B> addParam(final String paramName, final String paramValue) {
-		Assertion.checkArgNotEmpty(paramName);
-		//paramValue can be null
+	public ComponentConfigBuilder<B> addParam(final Param param) {
+		Assertion.checkNotNull(param);
 		//-----
-		if (paramValue != null) {
-			myParams.put(paramName, paramValue);
-		}
+		myParams.add(param);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final String id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
-		return new ComponentConfig(id, apiClass, implClass, myParams);
-	}
-
-	/**
-	 * Close this component config and returns to the parent config.
-	 * @return the builder of the parent config
-	 */
-	public B endComponent() {
-		return parentConfigBuilder;
+		final String id = optionalApiClass.isPresent() ? DIAnnotationUtil.buildId(optionalApiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		return new ComponentConfig(id, optionalApiClass, implClass, myParams);
 	}
 }

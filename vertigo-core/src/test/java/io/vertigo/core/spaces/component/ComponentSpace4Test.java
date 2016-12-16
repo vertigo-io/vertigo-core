@@ -39,17 +39,15 @@ public final class ComponentSpace4Test {
 
 	@Test
 	public void testStartedComponent() {
-		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.addModule(new ModuleConfigBuilder("Started")
-				.addComponent(StartedManager.class, StartedManagerImpl.class)
-				.build())
-			.addInitializer(StartedManagerInitializer.class)
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new ModuleConfigBuilder("Started")
+						.addComponent(StartedManager.class, StartedManagerImpl.class)
+						.build())
+				.addInitializer(StartedManagerInitializer.class)
+				.build();
 		final StartedManager startedManager;
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			startedManager = app.getComponentSpace().resolve(StartedManager.class);

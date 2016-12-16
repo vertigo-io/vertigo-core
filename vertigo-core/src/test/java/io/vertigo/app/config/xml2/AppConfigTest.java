@@ -29,6 +29,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.spaces.component.data.BioManager;
@@ -43,27 +44,22 @@ public final class AppConfigTest {
 	public void HomeTest() {
 		final String locales = "fr_FR";
 
-		//@formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.beginPlugin(XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/app/config/xml2/basic-app-config.xml")
-				.endPlugin()
-			.endBoot()
+				.addPlugin(XmlParamPlugin.class,
+						Param.create("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
+				.endBoot()
 
-			.addModule(new ModuleConfigBuilder("bio")
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.beginComponent(MathManager.class, MathManagerImpl.class)
-					.addParam("start", "${math.test.start}")
-				.endComponent()
-				.beginPlugin(MathPlugin.class)
-					.addParam("factor", "20")
-				.endPlugin()
-				.build())
-			.build();
-		//@formatter:on
+				.addModule(new ModuleConfigBuilder("bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "${math.test.start}"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);

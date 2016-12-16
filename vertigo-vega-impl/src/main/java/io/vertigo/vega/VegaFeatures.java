@@ -19,7 +19,7 @@
 package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
@@ -113,9 +113,8 @@ public final class VegaFeatures extends Features {
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
 		if (mySearchApiVersion != null) {
 			getModuleConfigBuilder()
-					.beginComponent(JsonEngine.class, GoogleJsonEngine.class)
-					.addParam("searchApiVersion", mySearchApiVersion)
-					.endComponent();
+					.addComponent(JsonEngine.class, GoogleJsonEngine.class,
+							Param.create("searchApiVersion", mySearchApiVersion));
 		} else {
 			getModuleConfigBuilder()
 					.addComponent(JsonEngine.class, GoogleJsonEngine.class);
@@ -132,22 +131,20 @@ public final class VegaFeatures extends Features {
 					.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
-					.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("collection", myTokens)
-					.endComponent();
+					.addComponent(TokenManager.class, TokenManagerImpl.class,
+							Param.create("collection", myTokens));
 		}
 		if (miscEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
 		if (myPort != null) {
-			final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder()
-					.beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-					.addParam("port", Integer.toString(myPort));
+			getModuleConfigBuilder()
+					.addPlugin(SparkJavaEmbeddedWebServerPlugin.class,
+							Param.create("port", Integer.toString(myPort)));
 			if (myApiPrefix != null) {
 				pluginConfigBuilder.addParam("apiPrefix", myApiPrefix);
 			}
-			pluginConfigBuilder.endPlugin();
 		}
 
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)

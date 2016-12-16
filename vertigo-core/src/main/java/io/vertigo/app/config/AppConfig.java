@@ -108,7 +108,9 @@ public final class AppConfig {
 	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {
 		boolean first = true;
 		for (final ComponentConfig componentConfig : componentConfigs) {
-			final String componentClassName = (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName();
+			final String componentClassName = componentConfig.getApiClass()
+					.orElse(componentConfig.getImplClass())
+					.getSimpleName();
 			printComponent(out, first ? moduleName : null, componentClassName, null);
 			first = false;
 		}

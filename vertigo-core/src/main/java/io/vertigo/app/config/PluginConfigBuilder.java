@@ -18,9 +18,9 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
@@ -35,26 +35,21 @@ import io.vertigo.util.StringUtil;
  * A plugin is a way to parameterize a component.
   *
  * @author npiedeloup, pchretien
- * @param <B> the type of the parent
  */
-public final class PluginConfigBuilder<B extends Builder> implements Builder<ComponentConfig> {
+public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
-	private final Map<String, String> myParams = new HashMap<>();
-	private final B myParentConfigBuilder;
+	private final List<Param> myParams = new ArrayList<>();
 	private final String pluginType;
 	private Integer myIndex;
 
 	/**
 	 * Constructor.
-	 * @param parentConfigBuilder the builder of the parent
 	 * @param pluginImplClass impl of the plugin
 	 */
-	PluginConfigBuilder(final B parentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
-		Assertion.checkNotNull(parentConfigBuilder);
+	public PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;
-		myParentConfigBuilder = parentConfigBuilder;
 		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
 	}
 
@@ -91,26 +86,26 @@ public final class PluginConfigBuilder<B extends Builder> implements Builder<Com
 
 	/**
 	 * Adds a param to this plugin.
-	 * @param paramName the name of the param
-	 * @param paramValue the value of the param
+	 * @param params the list of params
 	 * @return this builder
 	 */
-	public PluginConfigBuilder<B> addParam(final String paramName, final String paramValue) {
-		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
-		//paramValue can be null
+	public PluginConfigBuilder addAllParams(final Param... params) {
+		Assertion.checkNotNull(params);
 		//-----
-		if (paramValue != null) {
-			myParams.put(paramName, paramValue);
-		}
+		myParams.addAll(Arrays.asList(params));
 		return this;
 	}
 
 	/**
-	 * Ends this config of plugin.
-	 * @return the builder of the module
+	 * Adds a param to this plugin.
+	 * @param param the param
+	 * @return this builder
 	 */
-	public B endPlugin() {
-		return myParentConfigBuilder;
+	public PluginConfigBuilder addParam(final Param param) {
+		Assertion.checkNotNull(param);
+		//-----
+		myParams.add(param);
+		return this;
 	}
 
 	/** {@inheritDoc} */
@@ -120,6 +115,10 @@ public final class PluginConfigBuilder<B extends Builder> implements Builder<Com
 		//-----
 		//By Convention only the second plugin of a defined type is tagged by its index #nn
 		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
-		return new ComponentConfig(pluginId, Optional.empty(), myPluginImplClass, myParams);
+		return new ComponentConfig(
+				pluginId,
+				Optional.empty(),
+				myPluginImplClass,
+				myParams);
 	}
 }
