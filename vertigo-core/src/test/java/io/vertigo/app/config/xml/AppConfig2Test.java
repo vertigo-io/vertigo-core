@@ -40,6 +40,21 @@ public final class AppConfig2Test {
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
+		testBioManager(appConfig);
+	}
+
+	@Test
+	public void FeatureTest() {
+
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), "bio-features.xml")
+				.build();
+
+		testBioManager(appConfig);
+
+	}
+
+	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));
