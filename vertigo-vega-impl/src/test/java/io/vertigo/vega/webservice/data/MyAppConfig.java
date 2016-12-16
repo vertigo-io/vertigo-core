@@ -29,8 +29,6 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
-import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -86,13 +84,12 @@ public final class MyAppConfig {
 					.build())
 			.addModule(new DynamoFeatures()
 				.withStore()
-				.getModuleConfigBuilder()
-				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
-				.addPlugin(PostgreSqlDataStorePlugin.class, 
+				.withKVStore()
+				.addKVStorePlugin(DelayedMemoryKVStorePlugin.class, 
+						Param.create("collections", "tokens"),
+						Param.create("timeToLiveSeconds", "120"))
+				.addDataStorePlugin(PostgreSqlDataStorePlugin.class, 
 					Param.create("sequencePrefix","SEQ_"))
-				.addPlugin(DelayedMemoryKVStorePlugin.class, 
-					Param.create("collections", "tokens"),
-					Param.create("timeToLiveSeconds", "120"))
 				.build())
 			.addModule(new VegaFeatures()
 				.withTokens("tokens")

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.Param;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -26,12 +27,16 @@ import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
+import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.impl.transaction.VTransactionAspect;
 import io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl;
+import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
@@ -57,10 +62,33 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures withSQL(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass) {
+	public DynamoFeatures addDataStorePlugin(Class<? extends DataStorePlugin> dataStorePlugin, Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class)
-				.addPlugin(connectionProviderPluginClass);
+				.addPlugin(dataStorePlugin, params);
+		return this;
+	}
+
+	public DynamoFeatures withKVStore() {
+		getModuleConfigBuilder()
+				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class);
+		return this;
+	}
+
+	public DynamoFeatures addKVStorePlugin(Class<? extends KVStorePlugin> kvStorePlugin, Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(kvStorePlugin, params);
+		return this;
+	}
+
+	public DynamoFeatures withSqlDataBase() {
+		getModuleConfigBuilder()
+				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
+		return this;
+	}
+
+	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(connectionProviderPluginClass, params);
 		return this;
 	}
 
