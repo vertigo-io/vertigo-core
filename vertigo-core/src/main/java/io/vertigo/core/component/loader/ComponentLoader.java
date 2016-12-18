@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
+import io.vertigo.app.config.ConfigUtil;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
@@ -42,6 +43,7 @@ import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ListBuilder;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
@@ -77,7 +79,11 @@ public final class ComponentLoader {
 		//-----
 		final ParamManager paramManager = componentSpace.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponents(Optional.of(paramManager), moduleConfig.getName(), moduleConfig.getComponentConfigs());
+			injectComponents(Optional.of(paramManager), moduleConfig.getName(),
+					new ListBuilder<ComponentConfig>()
+							.addAll(moduleConfig.getComponentConfigs())
+							.addAll(ConfigUtil.buildConfigs(moduleConfig.getPluginConfigs()))
+							.build());
 			injectAspects(moduleConfig.getAspectConfigs());
 		}
 	}

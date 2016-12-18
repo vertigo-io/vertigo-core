@@ -30,7 +30,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ListBuilder;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
@@ -46,7 +45,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String myName;
 
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
-	private final List<PluginConfigBuilder> myPluginConfigBuilders = new ArrayList<>();
+	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
@@ -153,13 +152,13 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	* Adds a plugin  defined by its config.
-	 * @param pluginConfigBuilder the config of the plugin
+	 * @param pluginConfig the plugin-config
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addPlugin(final PluginConfigBuilder pluginConfigBuilder) {
-		Assertion.checkNotNull(pluginConfigBuilder);
+	public ModuleConfigBuilder addPlugin(final PluginConfig pluginConfig) {
+		Assertion.checkNotNull(pluginConfig);
 		//---
-		myPluginConfigBuilders.add(pluginConfigBuilder);
+		myPluginConfigs.add(pluginConfig);
 		return this;
 	}
 
@@ -170,7 +169,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return this.addPlugin(new PluginConfigBuilder(pluginImplClass).addAllParams(params));
+		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
 	/** {@inheritDoc} */
@@ -182,16 +181,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 			moduleRules.add(new APIModuleRule());
 		}
 		//-----
-		final List<ComponentConfig> componentConfigs = new ListBuilder<ComponentConfig>()
-				.addAll(myComponentConfigs)
-				.addAll(ConfigUtil.buildPluginConfigs(myPluginConfigBuilders))
-				.build();
-
 		final ModuleConfig moduleConfig = new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
 				myDefinitionResourceConfigs,
-				componentConfigs,
+				myComponentConfigs,
+				myPluginConfigs,
 				myAspectConfigs,
 				moduleRules);
 

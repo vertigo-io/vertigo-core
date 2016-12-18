@@ -3,34 +3,39 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.lang.Assertion;
 
-final class ConfigUtil {
+public final class ConfigUtil {
 	private ConfigUtil() {
 		//
 	}
 
-	static List<ComponentConfig> buildPluginConfigs(final List<PluginConfigBuilder> pluginConfigBuilders) {
-		Assertion.checkNotNull(pluginConfigBuilders);
+	public static List<ComponentConfig> buildConfigs(final List<PluginConfig> pluginConfigs) {
+		Assertion.checkNotNull(pluginConfigs);
 		//---
-		final List<ComponentConfig> pluginConfigs = new ArrayList<>();
+		final List<ComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
+
 		int index = 1;
-		for (final PluginConfigBuilder pluginConfigBuilder : pluginConfigBuilders) {
-			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
+		for (final PluginConfig pluginConfig : pluginConfigs) {
+			final boolean added = pluginTypes.add(pluginConfig.getPluginType());
+			final String id;
 			if (added) {
-				//If added, its the first plugin to this type.
-				pluginConfigBuilder.withIndex(0);
+				id = pluginConfig.getPluginType();
 			} else {
-				pluginConfigBuilder.withIndex(index);
+				id = pluginConfig.getPluginType() + '#' + index;
 				index++;
 			}
-
-			pluginConfigs.add(pluginConfigBuilder.build());
+			componentConfigs.add(
+					new ComponentConfig(id,
+							Optional.empty(),
+							pluginConfig.getImplClass(),
+							pluginConfig.getParams()));
 		}
-		return pluginConfigs;
+		return componentConfigs;
 	}
 
 }

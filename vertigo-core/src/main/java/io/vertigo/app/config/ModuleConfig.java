@@ -41,6 +41,7 @@ public final class ModuleConfig {
 	private final List<DefinitionProviderConfig> definitionProviders;
 	private final List<DefinitionResourceConfig> definitionResources;
 	private final List<ComponentConfig> components;
+	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
@@ -49,12 +50,14 @@ public final class ModuleConfig {
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<DefinitionResourceConfig> definitionResourceConfigs,
 			final List<ComponentConfig> componentConfigs,
+			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
+		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
 		//-----
@@ -62,6 +65,7 @@ public final class ModuleConfig {
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
+		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
@@ -75,12 +79,22 @@ public final class ModuleConfig {
 	}
 
 	/**
-	 * @return Liste des configurations de composants.
+	 * @return the list of the component-configs
 	 */
 	public List<ComponentConfig> getComponentConfigs() {
 		return components;
 	}
 
+	/**
+	 * @return the list of the plugin-configs
+	 */
+	public List<PluginConfig> getPluginConfigs() {
+		return plugins;
+	}
+
+	/**
+	 * @return the list of the aspect-configs
+	 */
 	public List<AspectConfig> getAspectConfigs() {
 		return aspects;
 	}

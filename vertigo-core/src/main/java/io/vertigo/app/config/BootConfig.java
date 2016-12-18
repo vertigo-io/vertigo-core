@@ -37,6 +37,7 @@ public final class BootConfig {
 	private final AopPlugin aopPlugin;
 
 	private final List<ComponentConfig> componentConfigs;
+	private final List<PluginConfig> pluginConfigs;
 
 	/**
 	 * Constructor.
@@ -46,14 +47,17 @@ public final class BootConfig {
 	BootConfig(
 			final Optional<LogConfig> logConfigOption,
 			final List<ComponentConfig> componentConfigs,
+			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
 			final boolean silence) {
 		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(componentConfigs);
+		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
 		this.logConfigOption = logConfigOption;
 		this.componentConfigs = componentConfigs;
+		this.pluginConfigs = pluginConfigs;
 		this.silence = silence;
 		this.aopPlugin = aopPlugin;
 	}
@@ -66,10 +70,17 @@ public final class BootConfig {
 	}
 
 	/**
-	 * @return Liste des configurations de composants.
+	 * @return the list of component-configs
 	 */
 	public List<ComponentConfig> getComponentConfigs() {
 		return componentConfigs;
+	}
+
+	/**
+	 * @return the list of plugin-configs
+	 */
+	public List<PluginConfig> getPluginConfigs() {
+		return pluginConfigs;
 	}
 
 	/**

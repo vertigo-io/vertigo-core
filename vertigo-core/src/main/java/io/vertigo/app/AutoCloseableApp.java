@@ -25,7 +25,9 @@ import java.util.Optional;
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.app.config.ConfigUtil;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.loader.DefinitionLoader;
@@ -36,6 +38,7 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ListBuilder;
 
 /**
  * The app class is the core of vertigo.
@@ -91,7 +94,11 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot", appConfig.getBootConfig().getComponentConfigs());
+			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot",
+					new ListBuilder<ComponentConfig>()
+							.addAll(appConfig.getBootConfig().getComponentConfigs())
+							.addAll(ConfigUtil.buildConfigs(appConfig.getBootConfig().getPluginConfigs()))
+							.build());
 
 			//-----1. Load all definitions
 			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);

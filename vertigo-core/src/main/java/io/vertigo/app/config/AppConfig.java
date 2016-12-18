@@ -85,24 +85,30 @@ public final class AppConfig {
 		doPrint(out);
 	}
 
+	private void doPrintLine(final PrintStream out) {
+		out.println("+-------------------------+------------------------+----------------------------------------------+");
+	}
+
 	/**
 	 * Affiche dans la console le logo.
 	 * @param out Flux de sortie des informations
 	 */
 	private void doPrint(final PrintStream out) {
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
+		doPrintLine(out);
 		printComponent(out, "modules", "components", "plugins");
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
+		doPrintLine(out);
 		printComponents(out, "boot", bootConfig.getComponentConfigs());
+		printComponents(out, "boot", ConfigUtil.buildConfigs(bootConfig.getPluginConfigs()));
 		for (final ModuleConfig moduleConfig : modules) {
-			out.println("+-------------------------+------------------------+----------------------------------------------+");
+			doPrintLine(out);
 			printModule(out, moduleConfig);
 		}
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
+		doPrintLine(out);
 	}
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
+		printComponents(out, moduleConfig.getName(), ConfigUtil.buildConfigs(moduleConfig.getPluginConfigs()));
 	}
 
 	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {

@@ -97,9 +97,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case plugin:
 				if (bootConfigBuilder != null) {
-					bootConfigBuilder.addPlugin(pluginConfigBuilder);
+					bootConfigBuilder.addPlugin(pluginConfigBuilder.build());
 				} else {
-					moduleConfigBuilder.addPlugin(pluginConfigBuilder);
+					moduleConfigBuilder.addPlugin(pluginConfigBuilder.build());
 				}
 				pluginConfigBuilder = null;
 				break;

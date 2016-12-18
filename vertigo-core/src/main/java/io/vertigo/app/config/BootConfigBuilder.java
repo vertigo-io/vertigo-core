@@ -37,7 +37,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Configuration.
@@ -50,7 +49,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
-	private final List<PluginConfigBuilder> myPluginConfigBuilders = new ArrayList<>();
+	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -152,18 +151,18 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return addPlugin(new PluginConfigBuilder(pluginImplClass).addAllParams(params));
+		return addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
 	/**
 	 * Adds a plugin defined by its builder.
-	 * @param pluginConfigBuilder  the builder of the plugin
+	 * @param pluginConfig the plugin-config
 	 * @return this builder
 	 */
-	public BootConfigBuilder addPlugin(final PluginConfigBuilder pluginConfigBuilder) {
-		Assertion.checkNotNull(pluginConfigBuilder);
+	public BootConfigBuilder addPlugin(final PluginConfig pluginConfig) {
+		Assertion.checkNotNull(pluginConfig);
 		//---
-		myPluginConfigBuilders.add(pluginConfigBuilder);
+		myPluginConfigs.add(pluginConfig);
 		return this;
 	}
 
@@ -176,14 +175,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				.addComponent(ParamManager.class, ParamManagerImpl.class)
 				.addComponent(DefinitionLoader.class);
 
-		final List<ComponentConfig> componentConfigs = new ListBuilder<ComponentConfig>()
-				.addAll(myComponentConfigs)
-				.addAll(ConfigUtil.buildPluginConfigs(myPluginConfigBuilders))
-				.build();
-
 		return new BootConfig(
 				myLogConfigOption,
-				componentConfigs,
+				myComponentConfigs,
+				myPluginConfigs,
 				myAopPlugin,
 				mySilence);
 	}

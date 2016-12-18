@@ -21,14 +21,10 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * The pluginConfigBuilder defines the configuration of a plugin.
@@ -36,11 +32,9 @@ import io.vertigo.util.StringUtil;
   *
  * @author npiedeloup, pchretien
  */
-public final class PluginConfigBuilder implements Builder<ComponentConfig> {
+public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final List<Param> myParams = new ArrayList<>();
-	private final String pluginType;
-	private Integer myIndex;
 
 	/**
 	 * Constructor.
@@ -50,38 +44,6 @@ public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;
-		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
-	}
-
-	void withIndex(final int index) {
-		myIndex = index;
-	}
-
-	String getPluginType() {
-		return pluginType;
-	}
-
-	/*
-	 * We are looking for the type of the plugin.
-	 * This type is the first objector interface that inherits from then 'plugin' interface.
-	 */
-	private static String getType(final Class<? extends Plugin> pluginImplClass) {
-		//We are seeking the first and unique Object that extends Plugin.
-		//This Interface defines the type of the plugin.
-
-		for (final Class intf : ClassUtil.getAllInterfaces(pluginImplClass)) {
-			if (Arrays.asList(intf.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(intf);
-			}
-		}
-		//We have found nothing among the interfaces.
-		//we are drilling the classes to look for a class that inherits the plugin.
-		for (Class currentClass = pluginImplClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
-			if (Arrays.asList(currentClass.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(currentClass);
-			}
-		}
-		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + pluginImplClass);
 	}
 
 	/**
@@ -110,14 +72,8 @@ public final class PluginConfigBuilder implements Builder<ComponentConfig> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ComponentConfig build() {
-		Assertion.checkNotNull(myIndex, "an index is required to define an id");
-		//-----
-		//By Convention only the second plugin of a defined type is tagged by its index #nn
-		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
-		return new ComponentConfig(
-				pluginId,
-				Optional.empty(),
+	public PluginConfig build() {
+		return new PluginConfig(
 				myPluginImplClass,
 				myParams);
 	}
