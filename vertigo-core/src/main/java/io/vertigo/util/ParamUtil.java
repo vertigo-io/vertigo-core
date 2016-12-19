@@ -12,35 +12,33 @@ public final class ParamUtil {
 	}
 
 	public static <O> O parse(final String paramName, final Class<O> paramType, final String paramValue) {
+		return (O) doParse(paramName, paramType, paramValue);
+	}
+
+	private static Object doParse(final String paramName, final Class<?> paramType, final String paramValue) {
 		Assertion.checkNotNull(paramName);
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(paramValue);
 		//-----
-		Object parsed;
 		try {
-
 			if (String.class.equals(paramType)) {
-				parsed = paramValue;
-			} else if (Boolean.class.equals(paramType)) {
-				parsed = toBoolean(paramName, paramValue);
-			} else if (boolean.class.equals(paramType)) {
-				parsed = toBoolean(paramName, paramValue);
+				return paramValue;
+			} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
+				return toBoolean(paramName, paramValue);
 			} else if (Integer.class.equals(paramType)) {
-				parsed = Integer.valueOf(paramValue);
+				return Integer.valueOf(paramValue);
 			} else if (int.class.equals(paramType)) {
-				parsed = Integer.parseInt(paramValue);
+				return Integer.parseInt(paramValue);
 			} else if (Long.class.equals(paramType)) {
-				parsed = Long.valueOf(paramValue);
+				return Long.valueOf(paramValue);
 			} else if (long.class.equals(paramType)) {
-				parsed = Long.parseLong(paramValue);
+				return Long.parseLong(paramValue);
 			} else {
 				throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 			}
 		} catch (final Exception e) {
 			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into '{2}'", paramName, paramValue, paramType);
 		}
-
-		return (O) parsed;
 	}
 
 	private static boolean toBoolean(final String paramName, final String paramValue) {

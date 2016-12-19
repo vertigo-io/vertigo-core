@@ -77,9 +77,9 @@ public final class ComponentLoader {
 	public void injectAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
-		final ParamManager paramManager = componentSpace.resolve(ParamManager.class);
+		final Optional<ParamManager> optionalParamManager = Optional.of(componentSpace.resolve(ParamManager.class));
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponents(Optional.of(paramManager), moduleConfig.getName(),
+			injectComponents(optionalParamManager, moduleConfig.getName(),
 					new ListBuilder<ComponentConfig>()
 							.addAll(moduleConfig.getComponentConfigs())
 							.addAll(ConfigUtil.buildConfigs(moduleConfig.getPluginConfigs()))
@@ -137,7 +137,7 @@ public final class ComponentLoader {
 				.stream()
 				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
 				//only plugins are considered
-				.map(pluginConfig -> pluginConfig.getId())
+				.map(ComponentConfig::getId)
 				//used keys are removed
 				.filter(pluginId -> !componentContainer.getUsedKeys().contains(pluginId))
 				.collect(Collectors.toList());
