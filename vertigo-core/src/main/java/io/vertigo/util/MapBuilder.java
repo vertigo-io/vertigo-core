@@ -28,19 +28,20 @@ import io.vertigo.lang.Builder;
 /**
  * The MapBuilder class allows to build a map.
  * The map can be immutable using unmodifiable().
- * Several put() methods exist to cover the frequent cases. 
- *   
+ * Several put() methods exist to cover the frequent cases.
+ *
  * @author pchretien
- * @param <K> the type of keys 
+ * @param <K> the type of keys
  * @param <V> the type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
-	private Map<K, V> map = new HashMap<>();
+	private final Map<K, V> map = new HashMap<>();
+	private boolean unmodifiable;
 
 	/**
 	 * Adds key-value.
 	 * If the same value exists then an exception is thrown.
-	 *  
+	 *
 	 * @param key Key
 	 * @param value Value not null
 	 * @return this builder
@@ -69,7 +70,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return this;
 	}
 
-	/** 
+	/**
 	 * Adds nullable key-value.
 	 * @param key Key
 	 * @param value Value nullable
@@ -89,13 +90,13 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 * @return this builder
 	 */
 	public MapBuilder<K, V> unmodifiable() {
-		this.map = Collections.unmodifiableMap(map);
+		unmodifiable = true;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<K, V> build() {
-		return map;
+		return unmodifiable ? Collections.unmodifiableMap(map) : map;
 	}
 }

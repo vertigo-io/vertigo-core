@@ -29,11 +29,12 @@ import io.vertigo.lang.Builder;
 /**
  * The ListBuilder class allows to build a list.
  * @author pchretien
- * 
+ *
  * @param <X> the type of elements in the list
  */
 public final class ListBuilder<X> implements Builder<List<X>> {
-	private List<X> list = new ArrayList<>();
+	private final List<X> list = new ArrayList<>();
+	private boolean unmodifiable;
 
 	/**
 	 * Adds a value in the list.
@@ -68,12 +69,12 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 * @return this builder
 	 */
 	public ListBuilder<X> unmodifiable() {
-		this.list = Collections.unmodifiableList(list);
+		this.unmodifiable = true;
 		return this;
 	}
 
 	@Override
 	public List<X> build() {
-		return list;
+		return unmodifiable ? Collections.unmodifiableList(list) : list;
 	}
 }
