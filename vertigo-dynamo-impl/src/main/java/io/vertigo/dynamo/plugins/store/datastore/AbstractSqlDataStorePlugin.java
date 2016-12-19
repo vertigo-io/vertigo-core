@@ -599,15 +599,15 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String requestedFields = getRequestedField(dtDefinition);
 		final String taskName = "TK_TEST2";
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, criteria);
 		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
 		final String where = tuple.getVal1();
-		final Ctx ctx = tuple.getVal2();
-
+		final String request = createLoadAllLikeQuery(tableName, requestedFields, where);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request);
+
+		final Ctx ctx = tuple.getVal2();
 		//IN, obligatoire
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
@@ -626,12 +626,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final String requestedFields, final Criteria2<E> criteria /*, final Integer maxRows*/) {
-		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
-
+	private static String createLoadAllLikeQuery(final String tableName, final String requestedFields, final String where /*, final Integer maxRows*/) {
 		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
 				.append(" from ").append(tableName)
-				.append(" where ").append(tuple.getVal1());
+				.append(" where ").append(where);
 		//		if (maxRows != null) {
 		//			appendMaxRows(sep, request, maxRows);
 		//		}

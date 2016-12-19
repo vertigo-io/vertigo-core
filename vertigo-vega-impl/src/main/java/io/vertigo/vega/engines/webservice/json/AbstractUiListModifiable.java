@@ -310,7 +310,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		if (o == this) {
 			return true;
 		}
-		if (!(o instanceof AbstractUiListModifiable)) {
+		if (o == null || this.getClass() != o.getClass()) {
 			return false;
 		}
 		final AbstractUiListModifiable<D> other = AbstractUiListModifiable.class.cast(o);
