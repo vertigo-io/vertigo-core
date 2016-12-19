@@ -138,7 +138,6 @@ public abstract class AbstractCodec implements Codec<String, String> {
 		//autant de place  que la longueur de la chaine à décoder.
 		sb.ensureCapacity(sb.length() + len);
 
-		Character decodedChar;
 		for (int i = 0; i < len; i++) {
 			final char c = s.charAt(i);
 			// petite optimisation (qui represente 90% des cas...
@@ -147,25 +146,10 @@ public abstract class AbstractCodec implements Codec<String, String> {
 			} else {
 				//On a trouvé le caractère d'échappement
 				//On cherche le caractère de fin d'échappement
-				int j = 0;
-				do {
-					j++;
-					//Tant que l'on n'a pas trouvé le caractère de fin
-					//ou dépassé le nombre de caractères max d'encodage ou que l'on est arrivé à la fin.
-				} while (j < replaceByMaxSize && i + j < len && s.charAt(i + j) != endEscape);
+				final int j = indexOfEndEscape(i, s, len);
 				//s'il on ne trouve pas la fin on passe, sinon on remplace
 				if (j < replaceByMaxSize && i + j < len) {
-					//La chaine encodée se trouve entre l'indice i et l'indice i+j
-					//On l'extrait et on cherche le caractère qu'elle représente.
-					final String stringToDecode = s.substring(i, i + j + 1);
-					decodedChar = replaceByMap.get(stringToDecode);
-					if (decodedChar != null) {
-						sb.append(decodedChar);//on a trouvé un caractère
-					} else if (!shouldEncode(c, 0, stringToDecode)) {
-						sb.append(stringToDecode);//si le caractère ne devait pas être encodé, on n'essai pas de le décoder.
-					} else {
-						throw new IllegalArgumentException("décodage non trouvé pour " + stringToDecode);
-					}
+					replaceCodecChar(sb, s, i, c, j);
 					i += j;
 				} else {
 					sb.append(s.substring(i, i + j));
@@ -173,6 +157,30 @@ public abstract class AbstractCodec implements Codec<String, String> {
 				}
 			}
 		}
+	}
+
+	private void replaceCodecChar(final StringBuilder sb, final String s, final int i, final char c, final int j) {
+		//La chaine encodée se trouve entre l'indice i et l'indice i+j
+		//On l'extrait et on cherche le caractère qu'elle représente.
+		final String stringToDecode = s.substring(i, i + j + 1);
+		final Character decodedChar = replaceByMap.get(stringToDecode);
+		if (decodedChar != null) {
+			sb.append(decodedChar);//on a trouvé un caractère
+		} else if (!shouldEncode(c, 0, stringToDecode)) {
+			sb.append(stringToDecode);//si le caractère ne devait pas être encodé, on n'essai pas de le décoder.
+		} else {
+			throw new IllegalArgumentException("décodage non trouvé pour " + stringToDecode);
+		}
+	}
+
+	private int indexOfEndEscape(final int i, final String s, final int len) {
+		int j = 0;
+		do {
+			j++;
+			//Tant que l'on n'a pas trouvé le caractère de fin
+			//ou dépassé le nombre de caractères max d'encodage ou que l'on est arrivé à la fin.
+		} while (j < replaceByMaxSize && i + j < len && s.charAt(i + j) != endEscape);
+		return j;
 	}
 
 	/**
