@@ -70,7 +70,11 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	 * @param daemonManager Manager des daemons
 	 */
 	@Inject
-	public RateLimitingWebServiceHandlerPlugin(final VSecurityManager securityManager, final DaemonManager daemonManager, @Named("windowSeconds") final Optional<Integer> windowSeconds, @Named("limitValue") final Optional<Long> limitValue) {
+	public RateLimitingWebServiceHandlerPlugin(
+			final VSecurityManager securityManager,
+			final DaemonManager daemonManager,
+			@Named("windowSeconds") final Optional<Integer> windowSeconds,
+			@Named("limitValue") final Optional<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);

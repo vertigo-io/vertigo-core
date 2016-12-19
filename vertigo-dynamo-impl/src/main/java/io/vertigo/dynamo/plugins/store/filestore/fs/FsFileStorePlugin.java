@@ -99,7 +99,12 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public FsFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
+	public FsFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("storeDtName") final String storeDtDefinitionName,
+			@Named("path") final String path,
+			final VTransactionManager transactionManager,
+			final FileManager fileManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);

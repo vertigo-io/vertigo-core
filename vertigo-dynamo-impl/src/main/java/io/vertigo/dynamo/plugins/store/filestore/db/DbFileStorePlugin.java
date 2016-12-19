@@ -66,7 +66,10 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
-	public DbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
+	public DbFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("storeDtName") final String storeDtDefinitionName,
+			final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);

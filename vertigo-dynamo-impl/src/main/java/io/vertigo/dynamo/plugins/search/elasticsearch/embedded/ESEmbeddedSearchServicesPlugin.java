@@ -59,9 +59,13 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 * @param configFile Fichier de configuration des indexs
 	 */
 	@Inject
-	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("envIndex") final String envIndex,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Optional<String> configFile,
-			final CodecManager codecManager, final ResourceManager resourceManager) {
+	public ESEmbeddedSearchServicesPlugin(
+			@Named("home") final String elasticSearchHome,
+			@Named("envIndex") final String envIndex,
+			@Named("rowsPerQuery") final int rowsPerQuery,
+			@Named("config.file") final Optional<String> configFile,
+			final CodecManager codecManager,
+			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----

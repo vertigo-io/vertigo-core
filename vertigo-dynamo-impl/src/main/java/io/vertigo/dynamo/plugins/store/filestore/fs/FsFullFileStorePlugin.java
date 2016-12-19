@@ -81,9 +81,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
-	public FsFullFileStorePlugin(@Named("name") final Optional<String> name, @Named("path") final String path,
-			final FileManager fileManager, final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+	public FsFullFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("path") final String path,
+			final FileManager fileManager,
+			final VTransactionManager transactionManager,
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
+			final DaemonManager daemonManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);

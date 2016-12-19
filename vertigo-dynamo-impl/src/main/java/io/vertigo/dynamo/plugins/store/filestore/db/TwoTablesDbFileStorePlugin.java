@@ -68,7 +68,11 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 * @param fileManager Files manager
 	 */
 	@Inject
-	public TwoTablesDbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeMetaDataDtName") final String storeMetaDataDtDefinitionName, @Named("storeFileDtName") final String storeFileDtDefinitionName, final FileManager fileManager) {
+	public TwoTablesDbFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("storeMetaDataDtName") final String storeMetaDataDtDefinitionName,
+			@Named("storeFileDtName") final String storeFileDtDefinitionName,
+			final FileManager fileManager) {
 		super(name);
 		Assertion.checkNotNull(fileManager);
 		//-----

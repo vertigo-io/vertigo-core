@@ -37,7 +37,9 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 	 * @param port Server port
 	 */
 	@Inject
-	public SparkJavaEmbeddedWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix, @Named("port") final int port) {
+	public SparkJavaEmbeddedWebServerPlugin(
+			@Named("apiPrefix") final Optional<String> apiPrefix,
+			@Named("port") final int port) {
 		super(apiPrefix);
 		Spark.port(port);
 		//---

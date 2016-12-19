@@ -91,10 +91,15 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
 	 */
 	@Inject
-	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol,
-			@Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode,
-			@Named("developmentMailTo") final String developmentMailTo, @Named("port") final Optional<Integer> mailPort,
-			@Named("login") final Optional<String> mailLogin, @Named("pwd") final Optional<String> mailPassword) {
+	public JavaxSendMailPlugin(
+			final FileManager fileManager,
+			@Named("storeProtocol") final String mailStoreProtocol,
+			@Named("host") final String mailHost,
+			@Named("developmentMode") final boolean developmentMode,
+			@Named("developmentMailTo") final String developmentMailTo,
+			@Named("port") final Optional<Integer> mailPort,
+			@Named("login") final Optional<String> mailLogin,
+			@Named("pwd") final Optional<String> mailPassword) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);

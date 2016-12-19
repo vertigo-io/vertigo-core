@@ -59,7 +59,9 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @param methodCORSFilter Method CORS Allowed
 	 */
 	@Inject
-	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Optional<String> originCORSFilter, @Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
+	public CorsAllowerWebServiceHandlerPlugin(
+			@Named("originCORSFilter") final Optional<String> originCORSFilter,
+			@Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
