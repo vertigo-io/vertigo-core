@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ParamUtil;
 
 /**
  * Standard implementation of the paramManager.
@@ -40,8 +39,6 @@ public final class ParamManagerImpl implements ParamManager {
 	/** Regexp paramName. */
 	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+)*");
 	private final List<ParamPlugin> paramPlugins;
-	private static final String TRUE = "true";
-	private static final String FALSE = "false";
 
 	/**
 	 * Constructor.
@@ -66,22 +63,7 @@ public final class ParamManagerImpl implements ParamManager {
 		Assertion.checkNotNull(paramType);
 		//-----
 		final String paramValue = doGetParamValueAsString(paramName);
-		return (C) cast(paramName, ClassUtil.box(paramType), paramValue);
-	}
-
-	private static Object cast(final String paramName, final Class<?> paramType, final String paramValue) {
-		Assertion.checkArgument(!paramType.isPrimitive(), "only non primitive types are accepted");
-		//-----
-		if (String.class.equals(paramType)) {
-			return paramValue;
-		} else if (Boolean.class.equals(paramType)) {
-			return toBoolean(paramName, paramValue);
-		} else if (Integer.class.equals(paramType)) {
-			return toInteger(paramName, paramValue);
-		} else if (Long.class.equals(paramType)) {
-			return toLong(paramName, paramValue);
-		}
-		throw new IllegalArgumentException("type '" + paramType + "' unsupported");
+		return ParamUtil.parse(paramName, paramType, paramValue);
 	}
 
 	/** {@inheritDoc} */
@@ -93,19 +75,19 @@ public final class ParamManagerImpl implements ParamManager {
 	/** {@inheritDoc} */
 	@Override
 	public int getIntValue(final String paramName) {
-		return toInteger(paramName, doGetParamValueAsString(paramName));
+		return getValue(paramName, int.class);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public long getLongValue(final String paramName) {
-		return toLong(paramName, doGetParamValueAsString(paramName));
+		return getValue(paramName, long.class);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean getBooleanValue(final String paramName) {
-		return toBoolean(paramName, doGetParamValueAsString(paramName));
+		return getValue(paramName, boolean.class);
 	}
 
 	/**
@@ -122,28 +104,5 @@ public final class ParamManagerImpl implements ParamManager {
 			}
 		}
 		throw new IllegalArgumentException("param '" + paramName + "' not found");
-	}
-
-	private static boolean toBoolean(final String paramName, final String paramValue) {
-		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
-			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'boolean'", paramName, paramValue);
-		}
-		return Boolean.parseBoolean(paramValue);
-	}
-
-	private static int toInteger(final String paramName, final String paramValue) {
-		try {
-			return Integer.parseInt(paramValue);
-		} catch (final NumberFormatException e) {
-			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into 'Integer'", paramName, paramValue);
-		}
-	}
-
-	private static long toLong(final String paramName, final String paramValue) {
-		try {
-			return Long.parseLong(paramValue);
-		} catch (final NumberFormatException e) {
-			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into 'Long'", paramName, paramValue);
-		}
 	}
 }

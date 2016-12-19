@@ -27,7 +27,7 @@ import java.util.Set;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ParamUtil;
 
 /**
  * This container contains params initialized with String.
@@ -64,11 +64,7 @@ final class ComponentParamsContainer implements Container {
 		Assertion.checkState(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
-		final Object value = getParamValue(id, clazz);
-		Assertion.checkNotNull(value, "param '{0}' of type '{1}' is required", id, clazz.getSimpleName());
-		final Class<O> type = ClassUtil.box(clazz);
-		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "component/param '{0}' of type '{1}' , expected type '{2}'", id, value.getClass(), clazz);
-		return type.cast(value);
+		return getParamValue(id, clazz);
 	}
 
 	/** {@inheritDoc} */
@@ -83,7 +79,7 @@ final class ComponentParamsContainer implements Container {
 	 * @param paramType Type du paramètre attendu
 	 * @return Valeur sous forme texte du paramètre
 	 */
-	private Object getParamValue(final String paramName, final Class<?> paramType) {
+	private <O> O getParamValue(final String paramName, final Class<O> paramType) {
 		Assertion.checkNotNull(paramName);
 		Assertion.checkNotNull(paramType);
 		//-----
@@ -93,22 +89,7 @@ final class ComponentParamsContainer implements Container {
 			return paramManagerOption.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
 					.getValue(property, paramType);
 		}
-		return cast(paramName, ClassUtil.box(paramType), paramValue);
-	}
-
-	private static Object cast(final String paramName, final Class<?> paramType, final String value) {
-		Assertion.checkArgument(!paramType.isPrimitive(), "only non primitive types are accepted for param " + paramName + " of type " + paramType);
-		//-----
-		if (String.class.equals(paramType)) {
-			return value;
-		} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
-			return Boolean.valueOf(value);
-		} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
-			return Integer.valueOf(value);
-		} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
-			return Long.valueOf(value);
-		}
-		throw new IllegalArgumentException("type '" + paramType + "' unsupported");
+		return ParamUtil.parse(paramName, paramType, paramValue);
 	}
 
 	/*
