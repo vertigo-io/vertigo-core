@@ -8,8 +8,10 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
-public final class CriteriaExpression<E extends Entity> implements CriteriaBool<E> {
-	private enum CriteriaOperator {
+final class CriteriaExpression<E extends Entity> extends Criteria2<E> {
+	private static final long serialVersionUID = 8301054336845536973L;
+
+	enum CriteriaOperator {
 		OR, //(2),
 		AND;//(2);
 		//	not(1);
@@ -27,79 +29,35 @@ public final class CriteriaExpression<E extends Entity> implements CriteriaBool<
 	}
 
 	private final CriteriaOperator operator;
-	private final CriteriaBool<E>[] operands;
+	private final Criteria2<E>[] operands;
 
-	private CriteriaExpression(final CriteriaOperator operator, final CriteriaBool<E>[] leftOperands, final CriteriaBool<E> rightOperand) {
+	CriteriaExpression(final CriteriaOperator operator, final Criteria2<E>[] leftOperands, final Criteria2<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperands);
 		//---
 		this.operator = operator;
 		final int size = leftOperands.length + 1;
-		this.operands = new CriteriaBool[size];
+		this.operands = new Criteria2[size];
 		for (int i = 0; i < leftOperands.length; i++) {
 			this.operands[i] = leftOperands[i];
 		}
 		this.operands[size - 1] = rightOperand;
 	}
 
-	private CriteriaExpression(final CriteriaOperator operator, final CriteriaBool<E> leftOperand, final CriteriaBool<E> rightOperand) {
+	CriteriaExpression(final CriteriaOperator operator, final Criteria2<E> leftOperand, final Criteria2<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperand);
 		//---
 		this.operator = operator;
-		this.operands = new CriteriaBool[] { leftOperand, rightOperand };
+		this.operands = new Criteria2[] { leftOperand, rightOperand };
 	}
 
-	public CriteriaOperator getOperator() {
+	CriteriaOperator getOperator() {
 		return operator;
 	}
 
-	public CriteriaBool<E>[] getOperands() {
+	Criteria2<E>[] getOperands() {
 		return operands;
-	}
-
-	//=========================================================
-	//=========================================================
-	//=========================================================
-	//Comment gérer la prorité des opérations ?
-	public static <E extends Entity> CriteriaExpression<E> and(final CriteriaBool<E> leftOperand, final CriteriaBool<E> rightOperand) {
-		//if exp*c
-		//	when a*b*c
-		//		then *(exp.operands, c)
-		//	when a+b*c
-		//		then +(exp.operands.left, *(exp.operands.left, c))
-		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
-			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
-			switch (criteria.getOperator()) {
-				case AND:
-					return new CriteriaExpression<>(CriteriaOperator.AND, criteria.operands, rightOperand);
-				case OR:
-					//the most complex case !  a+b*c => a + (b*c)
-					final CriteriaBool<E>[] leftOperands = new CriteriaBool[criteria.operands.length - 1];
-					for (int i = 0; i < (criteria.operands.length - 1); i++) {
-						leftOperands[i] = criteria.operands[i];
-					}
-					return new CriteriaExpression<>(CriteriaOperator.OR, leftOperands, and(criteria.operands[criteria.operands.length - 1], rightOperand));
-				default:
-					throw new IllegalStateException();
-			}
-		}
-		return new CriteriaExpression<>(CriteriaOperator.AND, leftOperand, rightOperand);
-	}
-
-	public static <E extends Entity> CriteriaExpression<E> or(final CriteriaBool<E> leftOperand, final CriteriaBool<E> rightOperand) {
-		//if exp+c
-		//	when a*b+c
-		//		then +(exp, c)
-		//	when a+b+c
-		//		then +(exp.operands, c)
-		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
-			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
-			if (criteria.getOperator() == CriteriaOperator.OR) {
-				return new CriteriaExpression<>(CriteriaOperator.OR, criteria.operands, rightOperand);
-			}
-		}
-		return new CriteriaExpression<>(CriteriaOperator.OR, leftOperand, rightOperand);
 	}
 
 	@Override
@@ -120,7 +78,7 @@ public final class CriteriaExpression<E extends Entity> implements CriteriaBool<
 	}
 
 	@Override
-	public String toSql(final Ctx ctx) {
+	String toSql(final Ctx ctx) {
 		return Arrays.stream(operands)
 				.map(operand -> operand.toSql(ctx))
 				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));

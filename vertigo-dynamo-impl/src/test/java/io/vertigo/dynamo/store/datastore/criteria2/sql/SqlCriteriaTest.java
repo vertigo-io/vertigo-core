@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.CriteriaBool;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.datastore.criteria2.ICriteriaTest;
@@ -159,9 +158,9 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICrite
 	}
 
 	@Override
-	public void assertCriteria(final long expected, final CriteriaBool<Car> criteriaBool) {
+	public void assertCriteria(final long expected, final Criteria2<Car> criteria) {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final long count = storeManager.getDataStore().find(dtDefinitionCar, new Criteria2(criteriaBool)).size();
+			final long count = storeManager.getDataStore().find(dtDefinitionCar, criteria).size();
 			Assert.assertEquals(expected, count);
 		}
 	}

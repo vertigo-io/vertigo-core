@@ -455,8 +455,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return getListTaskName(tableName, criteriaFieldNames);
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> filter) {
-		return getListTaskName(tableName, filter.toSql().getVal2().getAttributeNames());
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> criteria) {
+		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
 	}
 
 	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {

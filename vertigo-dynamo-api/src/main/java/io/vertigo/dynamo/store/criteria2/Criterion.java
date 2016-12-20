@@ -8,7 +8,8 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
-public final class Criterion<E extends Entity> implements CriteriaBool<E> {
+final class Criterion<E extends Entity> extends Criteria2<E> {
+	private static final long serialVersionUID = -7797854063455062775L;
 	private final DtFieldName dtFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Comparable value1;
@@ -50,24 +51,8 @@ public final class Criterion<E extends Entity> implements CriteriaBool<E> {
 		this.value2 = value2;
 	}
 
-	public CriterionOperator getOperator() {
-		return criterionOperator;
-	}
-
-	public DtFieldName getDtFieldName() {
-		return dtFieldName;
-	}
-
-	public Object getValue1() {
-		return value1;
-	}
-
-	public Object getValue2() {
-		return value2;
-	}
-
 	@Override
-	public String toSql(final Ctx ctx) {
+	String toSql(final Ctx ctx) {
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
 				return dtFieldName + " is not null";

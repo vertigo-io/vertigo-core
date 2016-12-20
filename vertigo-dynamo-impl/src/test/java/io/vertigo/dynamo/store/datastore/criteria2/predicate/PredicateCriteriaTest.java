@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.CriteriaBool;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.datastore.criteria2.ICriteriaTest;
@@ -46,15 +45,15 @@ public final class PredicateCriteriaTest extends AbstractTestCaseJU4 implements 
 		carDataBase.loadDatas();
 	}
 
-	private static Predicate<Car> predicate(final CriteriaBool<Car> criteriaBool) {
-		return new Criteria2(criteriaBool).toPredicate();
+	private static Predicate<Car> predicate(final Criteria2<Car> criteria) {
+		return criteria.toPredicate();
 	}
 
 	@Override
-	public void assertCriteria(final long expected, final CriteriaBool<Car> criteriaBool) {
+	public void assertCriteria(final long expected, final Criteria2<Car> criteria) {
 		final long count = carDataBase.getAllCars()
 				.stream()
-				.filter(predicate(criteriaBool))
+				.filter(predicate(criteria))
 				.count();
 		assertEquals(expected, count);
 	}

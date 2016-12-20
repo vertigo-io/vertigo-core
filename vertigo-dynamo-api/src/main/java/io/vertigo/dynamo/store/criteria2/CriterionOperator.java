@@ -1,6 +1,6 @@
 package io.vertigo.dynamo.store.criteria2;
 
-public enum CriterionOperator {
+enum CriterionOperator {
 	IS_NULL(0),
 	IS_NOT_NULL(0),
 	EQ(1),
@@ -18,7 +18,7 @@ public enum CriterionOperator {
 		this.arity = arity;
 	}
 
-	public int getArity() {
+	int getArity() {
 		return arity;
 	}
 
