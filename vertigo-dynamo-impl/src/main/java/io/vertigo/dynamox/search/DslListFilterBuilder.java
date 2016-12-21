@@ -376,19 +376,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				criteriaOnDefinitionField++;
 				final DslMultiField dslMultiField = expressionDefinition.getMultiField().get();
 				query.append(userCriteria.getPreMissingPart());
-				final List<DslExpression> monoFieldExpressionDefinitions = new ArrayList<>();
-				for (final DslField dslField : dslMultiField.getFields()) {
-					final DslField monoFieldDefinition = new DslField(
-							firstNotEmpty(dslField.getPreBody(), dslMultiField.getPreBody()),
-							dslField.getFieldName(),
-							"");
-					final DslExpression monoFieldExpressionDefinition = new DslExpression(
-							monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-							Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
-							new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
-							firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
-					monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);
-				}
+				final List<DslExpression> monoFieldExpressionDefinitions = flattenMultiToMonoFieldExpressionDefinition(dslTermDefinition, userCriteria, criteriaValue, dslMultiField);
 				final DslMultiExpression monoFieldMultiExpressionDefinition = new DslMultiExpression(
 						firstNotEmpty(userCriteria.getOverridedPreModifier(), dslTermDefinition.getPreTerm()), true,
 						monoFieldExpressionDefinitions, Collections.<DslMultiExpression> emptyList(),
@@ -400,16 +388,37 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				criteriaOnDefinitionField++;
 				query.append(userCriteria.getPreMissingPart());
 				if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
-					query.append(criteriaValue.toUpperCase(Locale.ENGLISH)); //toUpperCase car ES n'interprete pas correctement en lowercase
+					query.append(criteriaValue.toUpperCase(Locale.ROOT)); //toUpperCase car ES n'interprete pas correctement en lowercase
 				} else {
-					query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
-							.append(criteriaValue)
-							.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
+					appendStandardCriteriaValue(query, dslTermDefinition, userCriteria, criteriaValue);
 				}
 				query.append(userCriteria.getPostMissingPart());
 			}
 		}
 		return criteriaOnDefinitionField > 1; //useBlock if more than 1 criteria
+	}
+
+	private static void appendStandardCriteriaValue(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue) {
+		query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
+				.append(criteriaValue)
+				.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
+	}
+
+	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue, final DslMultiField dslMultiField) {
+		final List<DslExpression> monoFieldExpressionDefinitions = new ArrayList<>();
+		for (final DslField dslField : dslMultiField.getFields()) {
+			final DslField monoFieldDefinition = new DslField(
+					firstNotEmpty(dslField.getPreBody(), dslMultiField.getPreBody()),
+					dslField.getFieldName(),
+					"");
+			final DslExpression monoFieldExpressionDefinition = new DslExpression(
+					monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
+					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
+					new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
+					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
+			monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);
+		}
+		return monoFieldExpressionDefinitions;
 	}
 
 	private static String firstNotEmpty(final String... elements) {
