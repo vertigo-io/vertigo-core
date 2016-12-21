@@ -40,31 +40,19 @@ final class XmlUtil {
 		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
 		//-----
 		final StringBuilder suffix = new StringBuilder();
-		int i = 1;
 		char c;
-		c = stripAccents(str.charAt(0));
-		suffix.append(Character.toUpperCase(c));
-
-		final int length = str.length();
-		while (i < length) {
+		boolean upperNextChar = true;
+		for (int i = 0; i < str.length(); i++) {
 			c = str.charAt(i);
 			//On considère blanc, et ' comme des séparateurs de mots.
 			if (c == ' ' || c == '\'') {
-				if (i + 1 < length) {
-					c = stripAccents(str.charAt(i + 1));
-					if (Character.isLetterOrDigit(c)) {
-						suffix.append(Character.toUpperCase(c));
-					}
-					i += 2;
-				} else {
-					i++; // évitons boucle infinie
-				}
+				upperNextChar = true;
 			} else {
 				c = stripAccents(c);
 				if (Character.isLetterOrDigit(c)) {
-					suffix.append(c);
+					suffix.append(upperNextChar ? Character.toUpperCase(c) : c);
 				}
-				i++;
+				upperNextChar = false;
 			}
 		}
 		return suffix.toString();
