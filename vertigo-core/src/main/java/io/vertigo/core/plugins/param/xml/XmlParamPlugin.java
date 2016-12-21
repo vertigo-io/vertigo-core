@@ -21,7 +21,6 @@ package io.vertigo.core.plugins.param.xml;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
@@ -45,8 +45,8 @@ import io.vertigo.util.XMLUtil;
  * Parser XML du paramétrage de la config.
  * @author  pchretien
  */
-public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<HomeConfigBuilder>*/
-	private final Map<String, String> params;
+public final class XmlParamPlugin implements ParamPlugin {
+	private final Map<String, Param> params;
 
 	/**
 	 * Constructeur
@@ -64,16 +64,16 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<String> getValue(final String paramName) {
+	public Optional<Param> getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.get(paramName)) : Optional.<String> empty();
+		return Optional.<Param> ofNullable(params.get(paramName));
 	}
 
 	/**
 	 * Charge une configuration, et complète celle existante.
 	 */
-	private static Map<String, String> readXML(final URL configURL) {
+	private static Map<String, Param> readXML(final URL configURL) {
 		Assertion.checkNotNull(configURL);
 		//-----
 		try {
@@ -87,18 +87,16 @@ public final class XmlParamPlugin implements ParamPlugin { /*implements Loader<H
 		}
 	}
 
-	private static Map<String, String> doReadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
+	private static Map<String, Param> doReadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
 		xsdValidate(configURL);
 		//---
-		final Map<String, String> tmpConfigs = new HashMap<>();
-
-		final XmlConfigHandler handler = new XmlConfigHandler(tmpConfigs);
+		final XmlConfigHandler handler = new XmlConfigHandler();
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);
-		return tmpConfigs;
+		return handler.getParams();
 	}
 
 	private static void xsdValidate(final URL configURL) {

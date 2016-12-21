@@ -38,43 +38,43 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void test1() {
-		final String value = paramManager.getStringValue("server.host");
+		final String value = paramManager.getParam("server.host").getValueAsString();
 		assertEquals("wiki", value);
 	}
 
 	@Test
 	public void test2() {
 		Assertions.assertThrows(Exception.class,
-				() -> paramManager.getStringValue("server.wrong"));
+				() -> paramManager.getParam("server.wrong").getValueAsString());
 	}
 
 	@Test
 	public void test3() {
-		final int value = paramManager.getIntValue("server.port");
+		final int value = paramManager.getParam("server.port").getValueAsInt();
 		assertEquals(8080, value);
 	}
 
 	@Test
 	public void test4() {
 		Assertions.assertThrows(Exception.class,
-				() -> paramManager.getIntValue("server.active"));
+				() -> paramManager.getParam("server.active").getValueAsInt());
 	}
 
 	@Test
 	public void test5() {
-		final boolean value = paramManager.getBooleanValue("server.active");
+		final boolean value = paramManager.getParam("server.active").getValueAsBoolean();
 		assertTrue(value);
 	}
 
 	@Test
 	public void test6() {
-		final boolean value = paramManager.getBooleanValue("server.verbose");
+		final boolean value = paramManager.getParam("server.verbose").getValueAsBoolean();
 		assertFalse(value);
 	}
 
 	@Test
 	public void test7() {
 		Assertions.assertThrows(Exception.class,
-				() -> paramManager.getBooleanValue("server.port"));
+				() -> paramManager.getParam("server.port").getValueAsBoolean());
 	}
 }

@@ -18,11 +18,13 @@
  */
 package io.vertigo.core.plugins.param.xml;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -33,13 +35,11 @@ final class XmlConfigHandler extends DefaultHandler {
 		config, path, param;
 	}
 
-	private final Map<String, String> params;
+	private final Map<String, Param> params;
 	private String currentPath;
 
-	XmlConfigHandler(final Map<String, String> params) {
-		Assertion.checkNotNull(params);
-		//-----
-		this.params = params;
+	XmlConfigHandler() {
+		this.params = new HashMap<>();
 	}
 
 	@Override
@@ -54,7 +54,8 @@ final class XmlConfigHandler extends DefaultHandler {
 				final String paramName = attrs.getValue("name").trim();
 				Assertion.checkArgument(!paramName.endsWith("."), "a path must not be ended with a point");
 				final String paramValue = attrs.getValue("value").trim();
-				params.put(currentPath + "." + paramName, paramValue);
+				final Param param = Param.create(currentPath + "." + paramName, paramValue);
+				params.put(param.getName(), param);
 				break;
 			default:
 		}
@@ -73,4 +74,7 @@ final class XmlConfigHandler extends DefaultHandler {
 		}
 	}
 
+	Map<String, Param> getParams() {
+		return params;
+	}
 }

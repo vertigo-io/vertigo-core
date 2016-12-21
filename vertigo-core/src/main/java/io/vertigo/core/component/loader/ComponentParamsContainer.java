@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.util.ParamUtil;
 
 /**
  * This container contains params initialized with String.
@@ -64,7 +64,7 @@ final class ComponentParamsContainer implements Container {
 		Assertion.checkState(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
-		return getParamValue(id, clazz);
+		return getParam(id).getValue(clazz);
 	}
 
 	/** {@inheritDoc} */
@@ -76,20 +76,18 @@ final class ComponentParamsContainer implements Container {
 	/**
 	 * Récupération d'un paramètre typé par son nom.
 	 * @param paramName Nom du paramètre
-	 * @param paramType Type du paramètre attendu
 	 * @return Valeur sous forme texte du paramètre
 	 */
-	private <O> O getParamValue(final String paramName, final Class<O> paramType) {
+	private Param getParam(final String paramName) {
 		Assertion.checkNotNull(paramName);
-		Assertion.checkNotNull(paramType);
 		//-----
 		final String paramValue = params.get(paramName);
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
 			return paramManagerOption.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
-					.getValue(property, paramType);
+					.getParam(property);
 		}
-		return ParamUtil.parse(paramName, paramType, paramValue);
+		return Param.create(paramName, paramValue);
 	}
 
 	/*

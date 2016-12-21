@@ -20,6 +20,7 @@ package io.vertigo.core.param;
 
 import java.util.Optional;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -34,5 +35,5 @@ public interface ParamPlugin extends Plugin {
 	 * @param paramName Param's name
 	 * @return Value of the param
 	 */
-	Optional<String> getValue(String paramName);
+	Optional<Param> getParam(String paramName);
 }

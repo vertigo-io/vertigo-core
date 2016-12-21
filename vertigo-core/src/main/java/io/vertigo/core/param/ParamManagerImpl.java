@@ -19,30 +19,25 @@
 package io.vertigo.core.param;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ParamUtil;
 
 /**
- * Standard implementation of the paramManager.
+ * This class implements the default paramManager.
  *
- * The strategy to access params is defined in a list of plugins.
+ * The strategy to access params is defined by a list of plugins.
  *
- *
- * @author pchretien, npiedeloup, prahmoune
+ * @author pchretien, npiedeloup
  */
 public final class ParamManagerImpl implements ParamManager {
-	/** Regexp paramName. */
-	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+)*");
 	private final List<ParamPlugin> paramPlugins;
 
 	/**
 	 * Constructor.
-	 * @param paramPlugins List of plugins
+	 * @param paramPlugins the list of plugins
 	 */
 	@Inject
 	public ParamManagerImpl(final List<ParamPlugin> paramPlugins) {
@@ -51,58 +46,17 @@ public final class ParamManagerImpl implements ParamManager {
 		this.paramPlugins = paramPlugins;
 	}
 
-	private static void checkParamName(final String paramName) {
+	/** {@inheritDoc} */
+	@Override
+	public Param getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
-		Assertion.checkArgument(REGEX_PARAM_NAME.matcher(paramName).matches(), "param '{0}' must match pattern {1}", paramName, REGEX_PARAM_NAME);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <C> C getValue(final String paramName, final Class<C> paramType) {
-		checkParamName(paramName);
-		Assertion.checkNotNull(paramType);
 		//-----
-		final String paramValue = doGetParamValueAsString(paramName);
-		return ParamUtil.parse(paramName, paramType, paramValue);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getStringValue(final String paramName) {
-		return getValue(paramName, String.class);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int getIntValue(final String paramName) {
-		return getValue(paramName, int.class);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getLongValue(final String paramName) {
-		return getValue(paramName, long.class);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean getBooleanValue(final String paramName) {
-		return getValue(paramName, boolean.class);
-	}
-
-	/**
-	 * @param paramName param's name
-	 * @return Value of the param
-	 */
-	private String doGetParamValueAsString(final String paramName) {
-		checkParamName(paramName);
-		//-----
-		for (final ParamPlugin paramPlugin : paramPlugins) {
-			final Optional<String> value = paramPlugin.getValue(paramName);
-			if (value.isPresent()) {
-				return value.get();
-			}
-		}
-		throw new IllegalArgumentException("param '" + paramName + "' not found");
+		return paramPlugins
+				.stream()
+				.map(paramPlugin -> paramPlugin.getParam(paramName))
+				.filter(optionalParam -> optionalParam.isPresent())
+				.map(optionalParam -> optionalParam.get())
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
 	}
 }

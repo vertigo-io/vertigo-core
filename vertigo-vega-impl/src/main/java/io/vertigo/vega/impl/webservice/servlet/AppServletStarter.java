@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.Param;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -65,7 +66,7 @@ final class AppServletStarter {
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Map<String, String> webAppConf = createWebParams(servletContext);
+			final Map<String, Param> webAppConf = createWebParams(servletContext);
 			WebAppContextParamPlugin.setParams(webAppConf);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
@@ -106,11 +107,11 @@ final class AppServletStarter {
 	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppParamPlugin du ParamManager.
 	 * @return Properties
 	 */
-	private static Map<String, String> createWebParams(final ServletContext servletContext) {
+	private static Map<String, Param> createWebParams(final ServletContext servletContext) {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
-		final Map<String, String> webParams = new HashMap<>();
+		final Map<String, Param> webParams = new HashMap<>();
 		String name;
 		/*
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
@@ -118,7 +119,7 @@ final class AppServletStarter {
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
-			webParams.put(name, servletContext.getInitParameter(name));
+			webParams.put(name, Param.create(name, servletContext.getInitParameter(name)));
 		}
 		return webParams;
 	}
