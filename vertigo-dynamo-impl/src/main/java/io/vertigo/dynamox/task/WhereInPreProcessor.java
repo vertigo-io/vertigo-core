@@ -113,34 +113,7 @@ final class WhereInPreProcessor {
 				if (moreThanOneWhereIn) {
 					buildQuery.append("( ");
 				}
-				buildQuery.append(fkFieldName);
-				buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
-				//-----
-				String separator = "";
-				int index = 1;
-				for (final DtObject dto : listObject) {
-					buildQuery
-							.append(separator)
-							.append(IN_CHAR)
-							.append(inputParamName)
-							.append('.')
-							.append(String.valueOf(listObject.indexOf(dto)))
-							.append('.')
-							.append(pkFieldName)
-							.append(IN_CHAR);
-					separator = ",";
-					//-----
-					if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
-						buildQuery
-								.append(isNotIn ? ") AND " : ") OR ")
-								.append(fkFieldName)
-								.append(isNotIn ? " NOT IN (" : " IN (");
-						separator = "";
-					}
-					//-----
-					index++;
-				}
-				buildQuery.append(')');
+				appendValuesToSqlQuery(buildQuery, fkFieldName, pkFieldName, inputParamName, isNotIn, listObject, moreThanOneWhereIn);
 				if (moreThanOneWhereIn) {
 					buildQuery.append(')');
 				}
@@ -150,5 +123,36 @@ final class WhereInPreProcessor {
 
 		buildQuery.append(sqlQuery.substring(lastMatchOffset));
 		return buildQuery.toString();
+	}
+
+	private static void appendValuesToSqlQuery(final StringBuilder buildQuery, final String fkFieldName, final String pkFieldName, final String inputParamName, final boolean isNotIn, final DtList<?> listObject, final boolean moreThanOneWhereIn) {
+		buildQuery.append(fkFieldName);
+		buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
+		//-----
+		String separator = "";
+		int index = 1;
+		for (final DtObject dto : listObject) {
+			buildQuery
+					.append(separator)
+					.append(IN_CHAR)
+					.append(inputParamName)
+					.append('.')
+					.append(String.valueOf(listObject.indexOf(dto)))
+					.append('.')
+					.append(pkFieldName)
+					.append(IN_CHAR);
+			separator = ",";
+			//-----
+			if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
+				buildQuery
+						.append(isNotIn ? ") AND " : ") OR ")
+						.append(fkFieldName)
+						.append(isNotIn ? " NOT IN (" : " IN (");
+				separator = "";
+			}
+			//-----
+			index++;
+		}
+		buildQuery.append(')');
 	}
 }
