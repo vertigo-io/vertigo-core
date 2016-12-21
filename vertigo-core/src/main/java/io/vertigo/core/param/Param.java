@@ -1,4 +1,4 @@
-package io.vertigo.app.config;
+package io.vertigo.core.param;
 
 import java.util.regex.Pattern;
 

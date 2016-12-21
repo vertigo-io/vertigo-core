@@ -26,6 +26,7 @@ import java.util.Optional;
 import io.vertigo.app.config.rules.APIModuleRule;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;

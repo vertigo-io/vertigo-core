@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.param;
 
-import io.vertigo.app.config.Param;
 import io.vertigo.lang.Manager;
 
 /**
