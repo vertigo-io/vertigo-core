@@ -32,8 +32,8 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.Param;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;

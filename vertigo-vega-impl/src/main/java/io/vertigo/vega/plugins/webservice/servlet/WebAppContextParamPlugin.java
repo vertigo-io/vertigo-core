@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.webservice.servlet;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.app.config.Param;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
 

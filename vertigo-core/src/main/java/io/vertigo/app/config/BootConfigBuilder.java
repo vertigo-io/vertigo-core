@@ -28,6 +28,7 @@ import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamManagerImpl;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
