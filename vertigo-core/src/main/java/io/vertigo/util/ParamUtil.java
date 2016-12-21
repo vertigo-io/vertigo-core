@@ -25,14 +25,10 @@ public final class ParamUtil {
 				return paramValue;
 			} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
 				return toBoolean(paramName, paramValue);
-			} else if (Integer.class.equals(paramType)) {
+			} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
 				return Integer.valueOf(paramValue);
-			} else if (int.class.equals(paramType)) {
-				return Integer.parseInt(paramValue);
-			} else if (Long.class.equals(paramType)) {
+			} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
 				return Long.valueOf(paramValue);
-			} else if (long.class.equals(paramType)) {
-				return Long.parseLong(paramValue);
 			} else {
 				throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 			}
@@ -41,10 +37,10 @@ public final class ParamUtil {
 		}
 	}
 
-	private static boolean toBoolean(final String paramName, final String paramValue) {
+	private static Boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
 			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'boolean'", paramName, paramValue);
 		}
-		return Boolean.parseBoolean(paramValue);
+		return Boolean.valueOf(paramValue);
 	}
 }
