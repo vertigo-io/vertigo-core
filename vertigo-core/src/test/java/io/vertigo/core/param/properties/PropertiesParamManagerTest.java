@@ -23,8 +23,8 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.AbstractParamManagerTest;
-import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 

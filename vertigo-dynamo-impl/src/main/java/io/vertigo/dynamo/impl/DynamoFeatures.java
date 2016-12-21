@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.file.FileManager;

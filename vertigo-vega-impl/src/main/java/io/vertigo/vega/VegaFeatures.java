@@ -19,8 +19,8 @@
 package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.Param;
 import io.vertigo.app.config.PluginConfig;
-import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;

@@ -19,7 +19,7 @@
 package io.vertigo.persona.impl.security;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 

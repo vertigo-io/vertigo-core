@@ -20,6 +20,7 @@ package io.vertigo.core.param;
 
 import java.util.Optional;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Plugin;
 
 /**

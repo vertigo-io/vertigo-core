@@ -33,7 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;

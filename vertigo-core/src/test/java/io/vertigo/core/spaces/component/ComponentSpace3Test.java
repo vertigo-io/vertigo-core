@@ -29,7 +29,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.spaces.component.data.FunctionManager;
 import io.vertigo.core.spaces.component.data.FunctionManager1Impl;
 import io.vertigo.core.spaces.component.data.FunctionManager2Impl;

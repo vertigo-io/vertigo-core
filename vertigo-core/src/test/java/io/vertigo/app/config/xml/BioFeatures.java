@@ -1,7 +1,7 @@
 package io.vertigo.app.config.xml;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.MathManager;

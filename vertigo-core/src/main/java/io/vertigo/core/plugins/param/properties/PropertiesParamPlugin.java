@@ -27,7 +27,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.core.param.Param;
+import io.vertigo.app.config.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;

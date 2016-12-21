@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.config.Param;
 import io.vertigo.lang.Assertion;
 
 /**
