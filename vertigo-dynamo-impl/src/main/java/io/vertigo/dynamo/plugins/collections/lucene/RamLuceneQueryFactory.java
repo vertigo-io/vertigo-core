@@ -38,6 +38,8 @@ import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.spans.SpanFirstQuery;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -110,8 +112,10 @@ final class RamLuceneQueryFactory {
 				final CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
 				while (tokenStream.incrementToken()) {
 					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
-					final PrefixQuery termQuery = new PrefixQuery(new Term(fieldName, term));
-					queryBuilder.add(termQuery, BooleanClause.Occur.MUST);
+					final PrefixQuery prefixQuery = new PrefixQuery(new Term(fieldName, term));
+					queryBuilder.add(prefixQuery, BooleanClause.Occur.MUST);
+					final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new SpanMultiTermQueryWrapper<>(prefixQuery), 1);
+					queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
 				}
 			} finally {
 				reader.reset();

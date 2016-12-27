@@ -254,7 +254,7 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	private static void addIndexed(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
 		final IndexableField textField = new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
-		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase(Locale.ENGLISH)));
+		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase(Locale.ROOT)));
 		document.add(textField);
 		document.add(sortedDocValuesField);
 	}
