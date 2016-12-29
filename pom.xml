@@ -24,7 +24,7 @@ limitations under the License. -->
 		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 	
-	<artifactId>vertigo-reactor</artifactId>
+	<artifactId>vertigo</artifactId>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
 
