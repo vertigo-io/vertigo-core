@@ -155,12 +155,13 @@ public final class Selector {
 	 * @return the classes matching the selector
 	 */
 	public Collection<Tuple2<Class, Method>> findMethods() {
+
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
-				.flatMap((clazz) -> Stream.of(clazz.getDeclaredMethods()))
+				.flatMap(clazz -> Stream.<Method> of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
-				.map((method) -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
+				.map(method -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
 	}
 
