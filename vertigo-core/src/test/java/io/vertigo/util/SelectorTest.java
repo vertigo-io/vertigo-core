@@ -18,6 +18,7 @@
  */
 package io.vertigo.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -32,10 +33,12 @@ import org.junit.runner.RunWith;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.util.Selector.ClassConditions;
+import io.vertigo.util.Selector.FieldConditions;
 import io.vertigo.util.Selector.MethodConditions;
 import io.vertigo.util.data.SA;
 import io.vertigo.util.data.SAnnotationA;
 import io.vertigo.util.data.SB;
+import io.vertigo.util.data.SC;
 
 /**
  * Junit test of the Selector Class.
@@ -64,7 +67,7 @@ public final class SelectorTest {
 	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
-		Assertions.assertEquals(3, result.size());
+		Assertions.assertEquals(4, result.size());
 	}
 
 	@Test
@@ -117,6 +120,25 @@ public final class SelectorTest {
 		Assertions.assertEquals(2, result.size());
 	}
 
+	@Test
+	public void testFindFields() {
+		final Collection<Tuple2<Class, Field>> result = new Selector()
+				.from(SC.class)
+				.findFields();
+		// ---
+		Assertions.assertEquals(SC.class.getDeclaredFields().length, result.size());
+	}
+
+	@Test
+	public void testFindFieldsAnnotation() {
+		final Collection<Tuple2<Class, Field>> result = new Selector()
+				.from(SC.class)
+				.filterFields(FieldConditions.annotatedWith(SAnnotationA.class))
+				.findFields();
+		// ---
+		Assertions.assertEquals(1, result.size());
+	}
+
 	//-----
 	//---Logical operators
 	//-----
@@ -149,7 +171,7 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
 		// ---
-		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(2, result.size());
 	}
 
 	//--- from -> filter -> find

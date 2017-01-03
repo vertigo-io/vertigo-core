@@ -1,6 +1,7 @@
 package io.vertigo.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public final class Selector {
 
 	private Predicate<Method> methodPredicates = ALWAYS_TRUE;
 	private Predicate<Class> classPredicates = ALWAYS_TRUE;
+	private Predicate<Field> fieldPredicates = ALWAYS_TRUE;
 
 	private boolean scoped;
 
@@ -103,6 +105,19 @@ public final class Selector {
 	}
 
 	/**
+	 * Filter field with a predicate.
+	 * @param fieldPredicate the predicate
+	 * @return the selector
+	 */
+	public Selector filterFields(final Predicate<Field> fieldPredicate) {
+		Assertion.checkNotNull(fieldPredicate);
+		scoped = true;
+		// ---
+		fieldPredicates = fieldPredicates.and(fieldPredicate);
+		return this;
+	}
+
+	/**
 	 * Filter method with a predicate.
 	 * @param methodPredicate the predicate
 	 * @return the selector
@@ -136,17 +151,8 @@ public final class Selector {
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
-				.filter((clazz) -> {
-					//We don't want to load all declared methods if we don't care
-					if (methodPredicates == ALWAYS_TRUE || clazz.getDeclaredMethods().length == 0) {
-						// no methodPredicate
-						// or no declaring method
-						// so we keep it
-						return true;
-					}
-					// methods are declared so we check if a method match the requirements
-					return Stream.of(clazz.getDeclaredMethods()).anyMatch(methodPredicates);
-				})
+				.filter(filterClassesBasedOnMethods())
+				.filter(filterClassesBasedOnFields())
 				.collect(Collectors.toList());
 	}
 
@@ -159,10 +165,54 @@ public final class Selector {
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
-				.flatMap(clazz -> Stream.<Method> of(clazz.getDeclaredMethods()))
+				.filter(filterClassesBasedOnFields())
+				.flatMap((clazz) -> Stream.<Method> of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
 				.map(method -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Find the fields matching the requirements with the associatedClass.
+	 * @return the classes matching the selector
+	 */
+	public Collection<Tuple2<Class, Field>> findFields() {
+		return scope.values()
+				.stream()
+				.filter(classPredicates)
+				.filter(filterClassesBasedOnMethods())
+				.flatMap((clazz) -> Stream.<Field> of(clazz.getDeclaredFields()))
+				.filter(fieldPredicates)
+				.map((field) -> new Tuple2<>(Class.class.cast(field.getDeclaringClass()), field))
+				.collect(Collectors.toList());
+	}
+
+	private Predicate<Class> filterClassesBasedOnMethods() {
+		return clazz -> {
+			//We don't want to load all declared methods if we don't care
+			if (methodPredicates == ALWAYS_TRUE || clazz.getDeclaredMethods().length == 0) {
+				// no methodPredicate
+				// or no declaring method
+				// so we keep it
+				return true;
+			}
+			// methods are declared so we check if a method match the requirements
+			return Stream.of(clazz.getDeclaredMethods()).anyMatch(methodPredicates);
+		};
+	}
+
+	private Predicate<Class> filterClassesBasedOnFields() {
+		return clazz -> {
+			//We don't want to load all field if we don't care
+			if (fieldPredicates == ALWAYS_TRUE || clazz.getDeclaredFields().length == 0) {
+				// no fieldPredicates
+				// or no declaring field
+				// so we keep it
+				return true;
+			}
+			// fields are declared so we check if a field match the requirements
+			return Stream.of(clazz.getDeclaredFields()).anyMatch(fieldPredicates);
+		};
 	}
 
 	/**
@@ -184,6 +234,28 @@ public final class Selector {
 			Assertion.checkNotNull(annotationClass);
 			//---
 			return method -> method.getAnnotationsByType(annotationClass).length > 0;
+		}
+	}
+
+	/**
+	 * Condition for selecting a method.
+	 * @author mlaroche
+	 *
+	 */
+	public static final class FieldConditions {
+		private FieldConditions() {
+			//stateless
+		}
+
+		/**
+		 * Build a predicate to check if the field is Annotated.
+		 * @param annotationClass the annotation
+		 * @return the predicate
+		 */
+		public static Predicate<Field> annotatedWith(final Class<? extends Annotation> annotationClass) {
+			Assertion.checkNotNull(annotationClass);
+			//---
+			return field -> field.getAnnotationsByType(annotationClass).length > 0;
 		}
 	}
 

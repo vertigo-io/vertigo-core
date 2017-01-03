@@ -18,19 +18,18 @@
  */
 package io.vertigo.util.data;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import io.vertigo.core.component.aop.AspectAnnotation;
-
 /**
- * @author pchretien
+ * @author mlaroche
  */
-@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@AspectAnnotation
-public @interface SAnnotationA {
-	//
+public class SC {
+
+	@SAnnotationA
+	private String fieldOne;
+
+	private String fieldTwo;
+
+	void firstMethod() {
+		// nothing
+	}
+
 }

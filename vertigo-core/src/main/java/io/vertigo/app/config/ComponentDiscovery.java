@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
+import io.vertigo.lang.Plugin;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.ClassConditions;
 
@@ -45,6 +46,8 @@ public class ComponentDiscovery {
 		final Collection<Class> apiClasses = new Selector()
 				.from(components)
 				.filterClasses(ClassConditions.interfaces())
+				// we dont check api for plugins
+				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
 				.findClasses();
 		//Impl
 		final Collection<Class> implClasses = new Selector()
