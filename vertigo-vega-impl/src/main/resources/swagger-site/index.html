@@ -25,7 +25,7 @@
     $(function () {
       var url = window.location.search.match(/url=([^&]+)/);
       if (url && url.length > 1) {
-        URL = decodeURIComponent(url[1]);
+        url = decodeURIComponent(url[1]);
       } else {
         url = "../../swaggerApi";
       }
