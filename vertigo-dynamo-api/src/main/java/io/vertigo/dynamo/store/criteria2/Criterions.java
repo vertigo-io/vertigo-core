@@ -11,6 +11,9 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  * @param <E> the type of entity to test
  */
 public final class Criterions {
+	private Criterions() {
+		//stateless
+	}
 
 	/**
 	 * @return is null
