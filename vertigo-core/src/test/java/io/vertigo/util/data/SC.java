@@ -26,7 +26,7 @@ public class SC {
 	@SAnnotationA
 	private String fieldOne;
 
-	private String fieldTwo;
+	String fieldTwo;
 
 	void firstMethod() {
 		// nothing
