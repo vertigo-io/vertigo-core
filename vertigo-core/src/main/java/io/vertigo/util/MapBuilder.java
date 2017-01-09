@@ -21,6 +21,7 @@ package io.vertigo.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -35,7 +36,7 @@ import io.vertigo.lang.Builder;
  * @param <V> the type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
-	private final Map<K, V> map = new HashMap<>();
+	private final Map<K, V> myMap = new HashMap<>();
 	private boolean unmodifiable;
 
 	/**
@@ -50,8 +51,23 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
 		//-----
-		final Object previous = map.put(key, value);
+		final Object previous = myMap.put(key, value);
 		Assertion.checkArgument(previous == null, "Data with key '{0}' already registered", key);
+		return this;
+	}
+
+	/**
+	 * Adds a map of key-value.
+	 * Values are required.
+	 * @param map Map
+	 * @return this builder
+	 */
+	public MapBuilder<K, V> putAll(final Map<K, V> map) {
+		Assertion.checkNotNull(map);
+		//-----
+		for (final Entry<K, V> entry : map.entrySet()) {
+			put(entry.getKey(), entry.getValue());
+		}
 		return this;
 	}
 
@@ -66,7 +82,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
 		//-----
-		map.put(key, value);
+		myMap.put(key, value);
 		return this;
 	}
 
@@ -80,7 +96,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		//-----
 		if (value != null) {
-			map.put(key, value);
+			myMap.put(key, value);
 		}
 		return this;
 	}
@@ -97,6 +113,6 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	/** {@inheritDoc} */
 	@Override
 	public Map<K, V> build() {
-		return unmodifiable ? Collections.unmodifiableMap(map) : map;
+		return unmodifiable ? Collections.unmodifiableMap(myMap) : myMap;
 	}
 }

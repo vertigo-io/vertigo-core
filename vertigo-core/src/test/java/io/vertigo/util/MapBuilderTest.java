@@ -20,6 +20,7 @@ package io.vertigo.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -40,6 +41,20 @@ public final class MapBuilderTest {
 
 		assertEquals(3, map.size());
 		assertEquals(2, map.get("two").intValue());
+	}
+
+	@Test
+	public void testPutall() {
+		final Map<String, Integer> data = new HashMap<>();
+		data.put("one", 1);
+		data.put("two", 2);
+		data.put("three", 3);
+
+		final Map<String, Integer> map = new MapBuilder<String, Integer>()
+				.putAll(data)
+				.put("four", 4)
+				.build();
+		assertEquals(4, map.size());
 	}
 
 	@Test
