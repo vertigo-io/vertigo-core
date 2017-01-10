@@ -55,25 +55,25 @@ final class Criterion<E extends Entity> extends Criteria2<E> {
 	String toSql(final Ctx ctx) {
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
-				return dtFieldName + " is not null";
+				return dtFieldName.name() + " is not null";
 			case IS_NULL:
-				return dtFieldName + " is null";
+				return dtFieldName.name() + " is null";
 			case EQ:
-				return dtFieldName + " = #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " = #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case NEQ:
-				return dtFieldName + " != #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " != #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case GT:
-				return dtFieldName + " > #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " > #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case GTE:
-				return dtFieldName + " >= #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case LT:
-				return dtFieldName + " < #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " < #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case LTE:
-				return dtFieldName + " <= #" + ctx.attributeName(dtFieldName, value1) + "#";
+				return dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, value1) + "#";
 			case BETWEEN:
-				return "(" + dtFieldName + " >= #" + ctx.attributeName(dtFieldName, value1) + "# and " + dtFieldName + " <= #" + ctx.attributeName(dtFieldName, value2) + "# )";
+				return "(" + dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, value1) + "# and " + dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, value2) + "# )";
 			case STARTS_WITH:
-				return dtFieldName + " like  #" + ctx.attributeName(dtFieldName, value1) + "# || " + "'%%'";
+				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, value1) + "# || " + "'%%'";
 			default:
 				throw new IllegalAccessError();
 		}
@@ -97,6 +97,7 @@ final class Criterion<E extends Entity> extends Criteria2<E> {
 				return value1.equals(value);
 			case NEQ:
 				return !value1.equals(value);
+			//with Comparable(s)
 			case GT:
 				return value1.compareTo(value) < 0;
 			case GTE:
@@ -107,6 +108,7 @@ final class Criterion<E extends Entity> extends Criteria2<E> {
 				return value1.compareTo(value) >= 0;
 			case BETWEEN:
 				return value1.compareTo(value) <= 0 && value2.compareTo(value) >= 0;
+			//with String
 			case STARTS_WITH:
 				return String.class.cast(value).startsWith((String) value1);
 			default:

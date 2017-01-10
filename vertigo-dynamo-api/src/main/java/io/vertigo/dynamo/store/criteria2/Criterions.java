@@ -1,6 +1,9 @@
 package io.vertigo.dynamo.store.criteria2;
 
+import java.util.function.Predicate;
+
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.dynamo.domain.model.Entity;
 
 /**
  *
@@ -8,7 +11,6 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  *
  * @author pchretien
  *
- * @param <E> the type of entity to test
  */
 public final class Criterions {
 	private Criterions() {
@@ -93,5 +95,29 @@ public final class Criterions {
 	 */
 	public static Criteria2 isBetween(final DtFieldName dtFieldName, final Comparable min, final Comparable max) {
 		return new Criterion<>(dtFieldName, CriterionOperator.BETWEEN, min, max);
+	}
+
+	/**
+	 * An always true criteria.
+	 * @return true
+	 */
+	public static Criteria2 alwaysTrue() {
+		return new AlwaysTrueCriteria();
+	}
+
+	private static class AlwaysTrueCriteria extends Criteria2<Entity> {
+
+		private static final long serialVersionUID = 2967018427662007659L;
+
+		@Override
+		public Predicate<Entity> toPredicate() {
+			return (entity) -> true;
+		}
+
+		@Override
+		String toSql(final Ctx ctx) {
+			return "1=1";
+		}
+
 	}
 }

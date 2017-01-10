@@ -19,9 +19,7 @@
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -55,10 +53,8 @@ import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
 import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria2.Criterions;
 import io.vertigo.dynamo.store.criteria2.Ctx;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -66,7 +62,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Implémentation d'un Store Jpa.
@@ -79,7 +74,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
-	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
+	private static final Criteria2 EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private final String dataSpace;
 	private final String connectionName;
@@ -170,13 +165,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria<E> criteria = uri.getCriteria();
+		final Criteria2<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		Assertion.when(criteria != null)
-				.check(() -> criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
-		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
-		return doLoadList(dtDefinition, filterCriteria, maxRows);
+		final Criteria2<E> filterCriteria = (criteria == null ? EMPTY_CRITERIA : criteria);
+		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
 	/** {@inheritDoc} */
@@ -189,69 +182,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return entity;
 	}
 
-	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(filterCriteria);
-		//-----
-		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
-		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final String tableName = getTableName(dtDefinition);
-			final String request = createLoadAllLikeQuery(tableName, filterCriteria);
-
-			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
-			//IN, obligatoire
-			for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
-				q.setParameter(filterEntry.getKey(), filterEntry.getValue());
-			}
-			for (final Map.Entry<String, String> prefixEntry : filterCriteria.getPrefixMap().entrySet()) {
-				q.setParameter(prefixEntry.getKey(), prefixEntry.getValue());
-			}
-			if (maxRows != null) {
-				q.setMaxResults(maxRows);
-			}
-
-			final List<E> results = q.getResultList();
-			final DtList<E> dtc = new DtList<>(dtDefinition);
-			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size())
-					.markAsSucceeded();
-			return dtc;
-		}
-	}
-
 	private static String getTableName(final DtDefinition dtDefinition) {
 		// Warning jSQL is "almost case-insensitive"; that's why we have to keep the case of java objects
 		return dtDefinition.getFragment().orElse(dtDefinition).getClassSimpleName();
-	}
-
-	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria) {
-		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
-		String sep = " where ";
-		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
-			request.append(sep);
-			request.append("t.").append(camelFieldName);
-			if (filterCriteria.getFilterMap().get(fieldName) != null) {
-				request.append(" = :").append(fieldName);
-			} else {
-				request.append(" is null");
-			}
-			sep = " and ";
-		}
-		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
-			request.append(sep)
-					.append("t.")
-					.append(camelFieldName)
-					.append(" like concat(:")
-					.append(fieldName)
-					.append(",'%')");
-			sep = " and ";
-		}
-		return request.toString();
 	}
 
 	@Override
@@ -264,10 +197,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+			final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
 			final String tableName = getTableName(dtDefinition);
-			final String request = createLoadAllLikeQuery(tableName, criteria);
-			final Ctx ctx = criteria.toSql().getVal2();
+			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
+			final Ctx ctx = tuple.getVal2();
 			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
 			//IN, obligatoire
 			for (final String attributeName : ctx.getAttributeNames()) {
@@ -293,12 +227,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Object value = dtcUri.getSource().getId();
+		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		final FilterCriteria<E> filterCriteria = new FilterCriteriaBuilder<E>()
-				.addFilter(fkField.getName(), value)
-				.build();
-		return doLoadList(dtDefinition, filterCriteria, null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -439,20 +370,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
-	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final Criteria2<E> criteria /*, final Integer maxRows*/) {
-		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
-
+	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {
 		final StringBuilder request = new StringBuilder("select t ")
 				.append(" from ").append(tableName).append(" t")
-				.append(" where ").append(tuple.getVal1().replaceAll("#([A-Z_0-9]+)#", ":$1"));
+				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"));
 		return request.toString();
-	}
-
-	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
-		final Set<String> criteriaFieldNames = new HashSet<>();
-		criteriaFieldNames.addAll(filter.getFilterMap().keySet());
-		criteriaFieldNames.addAll(filter.getPrefixMap().keySet());
-		return getListTaskName(tableName, criteriaFieldNames);
 	}
 
 	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> criteria) {

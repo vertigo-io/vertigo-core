@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore;
 
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
@@ -43,10 +43,8 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
 import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria2.Criterions;
 import io.vertigo.dynamo.store.criteria2.Ctx;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -68,7 +66,7 @@ import io.vertigo.lang.VSystemException;
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
+	private static final Criteria2 EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -241,12 +239,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Object value = dtcUri.getSource().getId();
+		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		final FilterCriteria<E> filterCriteria = new FilterCriteriaBuilder<E>()
-				.addFilter(fkField.getName(), value)
-				.build();
-		return doLoadList(dtDefinition, filterCriteria, null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
 	}
 
 	/**
@@ -255,7 +250,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param request Buffer de la requete
 	 * @param maxRows Nombre de lignes max
 	 */
-	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
+	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
+		// TODO Auto-generated method stub
+
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -263,75 +261,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria<E> criteria = uri.getCriteria();
+		final Criteria2<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		Assertion.when(criteria != null)
-				.check(() -> criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
-		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
-		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
-	}
-
-	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(filterCriteria);
-		//-----
-		final String tableName = getTableName(dtDefinition);
-		final String requestedFields = getRequestedField(dtDefinition);
-		final String taskName = getListTaskName(tableName, filterCriteria);
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, filterCriteria, maxRows);
-
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(dataSpace)
-				.withRequest(request);
-		//IN, obligatoire
-		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			taskDefinitionBuilder.addInRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
-		}
-		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			taskDefinitionBuilder.addInRequired(fieldName, dtDefinition.getField(fieldName).getDomain());
-		}
-		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
-				.build();
-
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
-		for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
-			taskBuilder.addValue(filterEntry.getKey(), filterEntry.getValue());
-		}
-		for (final Map.Entry<String, String> prefixEntry : filterCriteria.getPrefixMap().entrySet()) {
-			taskBuilder.addValue(prefixEntry.getKey(), prefixEntry.getValue());
-		}
-
-		return taskManager
-				.execute(taskBuilder.build())
-				.getResult();
-	}
-
-	private <E extends Entity> String createLoadAllLikeQuery(final String tableName, final String requestedFields, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
-		final StringBuilder request = new StringBuilder("select ").append(requestedFields).append(" from ").append(tableName);
-		String sep = " where ";
-		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			request.append(sep);
-			request.append(fieldName);
-			if (filterCriteria.getFilterMap().get(fieldName) != null) {
-				request.append(" = #").append(fieldName).append('#');
-			} else {
-				request.append(" is null");
-			}
-			sep = " and ";
-		}
-		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			request.append(sep)
-					.append(fieldName).append(" like #").append(fieldName).append('#').append(getConcatOperator() + "'%%'");
-			sep = " and ";
-		}
-		if (maxRows != null) {
-			appendMaxRows(sep, request, maxRows);
-		}
-		return request.toString();
+		final Criteria2<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
+		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
 	protected String getConcatOperator() {
@@ -339,20 +273,19 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return " || ";
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
-		final StringBuilder sb = new StringBuilder(TASK.TK_SELECT.toString())
-				.append("_LIST_")
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> criteria) {
+		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
+	}
+
+	private static <E extends Entity> String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
+		final StringBuilder sb = new StringBuilder()
+				.append("LIST_")
 				.append(tableName);
+
 		//si il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
-		if (filter.getFilterMap().size() + filter.getPrefixMap().size() <= 1) {
+		if (criteriaFieldNames.size() <= 1) {
 			String sep = "_BY_";
-			for (final String filterName : filter.getFilterMap().keySet()) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-			sep = "_PREFIXED_ON_";
-			for (final String filterName : filter.getPrefixMap().keySet()) {
+			for (final String filterName : criteriaFieldNames) {
 				sb.append(sep);
 				sb.append(filterName);
 				sep = "_AND_";
@@ -362,8 +295,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		String result = sb.toString();
 		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			final int indexOfList = result.indexOf("_LIST_");
-			result = result.substring(0, indexOfList + "_LIST_".length()) + result.substring(indexOfList + "_LIST_".length() + result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
+			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 		return result;
 	}
@@ -601,7 +533,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = "TK_TEST2";
 		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
 		final String where = tuple.getVal1();
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, where);
+		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
@@ -626,13 +558,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private static String createLoadAllLikeQuery(final String tableName, final String requestedFields, final String where /*, final Integer maxRows*/) {
+	private String createLoadAllLikeQuery(final String tableName, final String requestedFields, final String where, final Integer maxRows) {
 		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
-				.append(" from ").append(tableName)
-				.append(" where ").append(where);
-		//		if (maxRows != null) {
-		//			appendMaxRows(sep, request, maxRows);
-		//		}
+				.append(" from ").append(tableName);
+		request.append(" where ").append(where);
+		if (maxRows != null) {
+			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
+			appendMaxRows(" and ", request, maxRows);
+		}
 		return request.toString();
 	}
 
