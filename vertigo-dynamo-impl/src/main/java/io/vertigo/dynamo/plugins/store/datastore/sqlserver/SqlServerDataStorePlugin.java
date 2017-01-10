@@ -78,7 +78,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.append(dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID)
-						.map(dtField -> dtField.getName())
+						.map(DtField::getName)
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
 				.append(") values ( ")
