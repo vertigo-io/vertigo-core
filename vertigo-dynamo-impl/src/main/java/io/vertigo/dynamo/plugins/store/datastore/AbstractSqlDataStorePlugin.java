@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.store.datastore;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
@@ -44,8 +43,8 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.store.criteria.CriteriaCtx;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -65,7 +64,6 @@ import io.vertigo.lang.VSystemException;
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
-	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
@@ -271,33 +269,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	protected String getConcatOperator() {
 		//default
 		return " || ";
-	}
-
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
-		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
-	}
-
-	private static <E extends Entity> String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
-		final StringBuilder sb = new StringBuilder()
-				.append("LIST_")
-				.append(tableName);
-
-		//si il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
-		if (criteriaFieldNames.size() <= 1) {
-			String sep = "_BY_";
-			for (final String filterName : criteriaFieldNames) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-		} else {
-			sb.append("_BY_CRITERIA");
-		}
-		String result = sb.toString();
-		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
-		}
-		return result;
 	}
 
 	//==========================================================================
