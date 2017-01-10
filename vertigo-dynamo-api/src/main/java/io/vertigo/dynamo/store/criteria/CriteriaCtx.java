@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.store.criteria2;
+package io.vertigo.dynamo.store.criteria;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
-public final class Ctx {
+public final class CriteriaCtx {
 	private int i;
 	private final Map<String, Object> attributeValues = new HashMap<>();
 	private final Map<String, DtFieldName> attributeNames = new HashMap<>();

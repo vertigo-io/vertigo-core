@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.store.criteria2;
+package io.vertigo.dynamo.store.criteria;
 
 import java.util.function.Predicate;
 
@@ -20,14 +20,14 @@ public final class Criterions {
 	/**
 	 * @return is null
 	 */
-	public static Criteria2 isNull(final DtFieldName dtFieldName) {
+	public static Criteria isNull(final DtFieldName dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NULL);
 	}
 
 	/**
 	 * @return is not null
 	 */
-	public static Criteria2 isNotNull(final DtFieldName dtFieldName) {
+	public static Criteria isNotNull(final DtFieldName dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NOT_NULL);
 	}
 
@@ -35,7 +35,7 @@ public final class Criterions {
 	 * @return is equal to the value
 	 * @param value the value
 	 */
-	public static Criteria2 isEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isEqualTo(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.EQ, value);
 	}
 
@@ -43,7 +43,7 @@ public final class Criterions {
 	 * @return is not equal to the value
 	 * @param value the value
 	 */
-	public static Criteria2 isNotEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isNotEqualTo(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.NEQ, value);
 	}
 
@@ -51,7 +51,7 @@ public final class Criterions {
 	 * @return is greater than the value
 	 * @param value the value
 	 */
-	public static Criteria2 isGreaterThan(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isGreaterThan(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.GT, value);
 	}
 
@@ -59,7 +59,7 @@ public final class Criterions {
 	 * @return is greater than or equal to the value
 	 * @param value the value
 	 */
-	public static Criteria2 isGreaterThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isGreaterThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.GTE, value);
 	}
 
@@ -67,7 +67,7 @@ public final class Criterions {
 	 * @return is less than the value
 	 * @param value the value
 	 */
-	public static Criteria2 isLessThan(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isLessThan(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.LT, value);
 	}
 
@@ -75,7 +75,7 @@ public final class Criterions {
 	 * @return is less than or equal to the value
 	 * @param value the value
 	 */
-	public static Criteria2 isLessThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static Criteria isLessThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.LTE, value);
 	}
 
@@ -84,7 +84,7 @@ public final class Criterions {
 	 * @param value the value
 	 */
 
-	public static Criteria2 startsWith(final DtFieldName dtFieldName, final String value) {
+	public static Criteria startsWith(final DtFieldName dtFieldName, final String value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.STARTS_WITH, value);
 	}
 
@@ -93,19 +93,27 @@ public final class Criterions {
 	 * @param min the min value
 	 * @param max the max value
 	 */
-	public static Criteria2 isBetween(final DtFieldName dtFieldName, final Comparable min, final Comparable max) {
+	public static Criteria isBetween(final DtFieldName dtFieldName, final Comparable min, final Comparable max) {
 		return new Criterion<>(dtFieldName, CriterionOperator.BETWEEN, min, max);
+	}
+
+	/**
+	 * @return is in a list of values
+	 * @param values list of allowed values
+	 */
+	public static Criteria in(final DtFieldName dtFieldName, final Comparable... values) {
+		return new Criterion<>(dtFieldName, CriterionOperator.IN, values);
 	}
 
 	/**
 	 * An always true criteria.
 	 * @return true
 	 */
-	public static Criteria2 alwaysTrue() {
+	public static Criteria alwaysTrue() {
 		return new AlwaysTrueCriteria();
 	}
 
-	private static class AlwaysTrueCriteria extends Criteria2<Entity> {
+	private static class AlwaysTrueCriteria extends Criteria<Entity> {
 
 		private static final long serialVersionUID = 2967018427662007659L;
 
@@ -115,7 +123,7 @@ public final class Criterions {
 		}
 
 		@Override
-		String toSql(final Ctx ctx) {
+		String toSql(final CriteriaCtx ctx) {
 			return "1=1";
 		}
 

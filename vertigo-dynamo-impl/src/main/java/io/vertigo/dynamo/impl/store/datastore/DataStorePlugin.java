@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -140,6 +140,6 @@ public interface DataStorePlugin extends Plugin {
 	 */
 	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
 
-	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows);
+	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows);
 
 }

@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.store.criteria2;
+package io.vertigo.dynamo.store.criteria;
 
 enum CriterionOperator {
 	IS_NULL(0),
@@ -10,7 +10,8 @@ enum CriterionOperator {
 	LT(1),
 	LTE(1),
 	STARTS_WITH(1),
-	BETWEEN(2);
+	BETWEEN(2),
+	IN(-1);// -1 is unbounded
 
 	private final int arity;
 

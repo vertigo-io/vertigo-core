@@ -21,8 +21,8 @@ package io.vertigo.dynamo.domain.model;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.Criterions;
+import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -36,7 +36,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private static final String CRITERIA_PREFIX = "CRITERIA";
 
 	private final Integer maxRows;
-	private final Criteria2<E> criteria;
+	private final Criteria<E> criteria;
 
 	/**
 	 * Constructeur.
@@ -44,7 +44,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	 * @param criteria critere //null = no criteria
 	 * @param maxRows Nombre de ligne max //null = ALL
 	 */
-	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		super(dtDefinition);
 		this.criteria = criteria;
 		this.maxRows = maxRows;
@@ -53,7 +53,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	/**
 	 * @return Criteres de la liste
 	 */
-	public Criteria2<E> getCriteria() {
+	public Criteria<E> getCriteria() {
 		return criteria;
 	}
 
@@ -70,12 +70,12 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	public static <E extends Entity> Criteria2<E> createCriteria(final DtObject dtoCriteria) {
+	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
 		Assertion.checkNotNull(dtoCriteria);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
-		Criteria2<E> criteria = null;
+		Criteria<E> criteria = null;
 		for (final DtField field : dtDefinition.getFields()) {
 			if (field.getType() != DtField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);

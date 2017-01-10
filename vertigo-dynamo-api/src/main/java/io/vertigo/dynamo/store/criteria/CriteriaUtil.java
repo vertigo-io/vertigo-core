@@ -1,7 +1,7 @@
-package io.vertigo.dynamo.store.criteria2;
+package io.vertigo.dynamo.store.criteria;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.store.criteria2.CriteriaExpression.CriteriaOperator;
+import io.vertigo.dynamo.store.criteria.CriteriaExpression.CriteriaOperator;
 
 final class CriteriaUtil {
 
@@ -10,7 +10,7 @@ final class CriteriaUtil {
 	}
 
 	//Comment gérer la prorité des opérations ?
-	static <E extends Entity> Criteria2<E> and(final Criteria2<E> leftOperand, final Criteria2<E> rightOperand) {
+	static <E extends Entity> Criteria<E> and(final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
 		//if exp*c
 		//	when a*b*c
 		//		then *(exp.operands, c)
@@ -23,7 +23,7 @@ final class CriteriaUtil {
 					return new CriteriaExpression<>(CriteriaOperator.AND, criteria.getOperands(), rightOperand);
 				case OR:
 					//the most complex case !  a+b*c => a + (b*c)
-					final Criteria2<E>[] leftOperands = new Criteria2[criteria.getOperands().length - 1];
+					final Criteria<E>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
 					for (int i = 0; i < (criteria.getOperands().length - 1); i++) {
 						leftOperands[i] = criteria.getOperands()[i];
 					}
@@ -35,7 +35,7 @@ final class CriteriaUtil {
 		return new CriteriaExpression<>(CriteriaOperator.AND, leftOperand, rightOperand);
 	}
 
-	static <E extends Entity> Criteria2<E> or(final Criteria2<E> leftOperand, final Criteria2<E> rightOperand) {
+	static <E extends Entity> Criteria<E> or(final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
 		//if exp+c
 		//	when a*b+c
 		//		then +(exp, c)

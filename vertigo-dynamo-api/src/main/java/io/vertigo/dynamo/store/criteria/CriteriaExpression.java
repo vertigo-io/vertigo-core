@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.store.criteria2;
+package io.vertigo.dynamo.store.criteria;
 
 import java.util.Arrays;
 import java.util.function.BinaryOperator;
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
-final class CriteriaExpression<E extends Entity> extends Criteria2<E> {
+final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = 8301054336845536973L;
 
 	enum CriteriaOperator {
@@ -29,34 +29,34 @@ final class CriteriaExpression<E extends Entity> extends Criteria2<E> {
 	}
 
 	private final CriteriaOperator operator;
-	private final Criteria2<E>[] operands;
+	private final Criteria<E>[] operands;
 
-	CriteriaExpression(final CriteriaOperator operator, final Criteria2<E>[] leftOperands, final Criteria2<E> rightOperand) {
+	CriteriaExpression(final CriteriaOperator operator, final Criteria<E>[] leftOperands, final Criteria<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperands);
 		//---
 		this.operator = operator;
 		final int size = leftOperands.length + 1;
-		this.operands = new Criteria2[size];
+		this.operands = new Criteria[size];
 		for (int i = 0; i < leftOperands.length; i++) {
 			this.operands[i] = leftOperands[i];
 		}
 		this.operands[size - 1] = rightOperand;
 	}
 
-	CriteriaExpression(final CriteriaOperator operator, final Criteria2<E> leftOperand, final Criteria2<E> rightOperand) {
+	CriteriaExpression(final CriteriaOperator operator, final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperand);
 		//---
 		this.operator = operator;
-		this.operands = new Criteria2[] { leftOperand, rightOperand };
+		this.operands = new Criteria[] { leftOperand, rightOperand };
 	}
 
 	CriteriaOperator getOperator() {
 		return operator;
 	}
 
-	Criteria2<E>[] getOperands() {
+	Criteria<E>[] getOperands() {
 		return operands;
 	}
 
@@ -78,7 +78,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria2<E> {
 	}
 
 	@Override
-	String toSql(final Ctx ctx) {
+	String toSql(final CriteriaCtx ctx) {
 		return Arrays.stream(operands)
 				.map(operand -> operand.toSql(ctx))
 				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));

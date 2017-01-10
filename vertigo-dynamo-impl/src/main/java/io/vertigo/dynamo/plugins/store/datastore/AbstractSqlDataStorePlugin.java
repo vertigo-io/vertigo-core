@@ -43,9 +43,9 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.Criterions;
-import io.vertigo.dynamo.store.criteria2.Ctx;
+import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.store.criteria.Criterions;
+import io.vertigo.dynamo.store.criteria.CriteriaCtx;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -66,7 +66,7 @@ import io.vertigo.lang.VSystemException;
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final Criteria2 EMPTY_CRITERIA = Criterions.alwaysTrue();
+	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -261,10 +261,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria2<E> criteria = uri.getCriteria();
+		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
 		//-----
-		final Criteria2<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
+		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
@@ -273,7 +273,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return " || ";
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> criteria) {
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
 		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
 	}
 
@@ -524,14 +524,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
 		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String requestedFields = getRequestedField(dtDefinition);
 		final String taskName = "TK_TEST2";
-		final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
+		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql();
 		final String where = tuple.getVal1();
 		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
@@ -539,7 +539,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request);
 
-		final Ctx ctx = tuple.getVal2();
+		final CriteriaCtx ctx = tuple.getVal2();
 		//IN, obligatoire
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());

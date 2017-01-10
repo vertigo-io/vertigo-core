@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
+import io.vertigo.dynamo.store.criteria.Criteria;
 
 /**
  * Defines the way to acces and store all the data.
@@ -97,6 +97,6 @@ public interface DataStore {
 	 * @param criteria criteria
 	 * @return list
 	 */
-	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria2<E> criteria);
+	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria);
 
 }

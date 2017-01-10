@@ -34,8 +34,8 @@ import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.Criterions;
+import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
@@ -243,7 +243,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Comparable value, final int maxRows) {
-		final Criteria2<E> criteria = Criterions.isEqualTo(dtFieldName, value);
+		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
 		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
@@ -255,7 +255,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param criteria the filter criteria
 	 * @return  the result
 	 */
-	public final E find(final Criteria2<E> criteria) {
+	public final E find(final Criteria<E> criteria) {
 		return findOptional(criteria)
 				.orElseThrow(() -> new NullPointerException("No data found"));
 	}
@@ -266,7 +266,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param criteria the filter criteria
 	 * @return  the optional result
 	 */
-	public final Optional<E> findOptional(final Criteria2<E> criteria) {
+	public final Optional<E> findOptional(final Criteria<E> criteria) {
 		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, 2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
@@ -277,7 +277,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param maxRows Max rows
 	 * @return DtList<D> result NOT NULL
 	 */
-	public final DtList<E> findAll(final Criteria2<E> criteria, final int maxRows) {
+	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
 		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 

@@ -53,9 +53,9 @@ import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria2.Criteria2;
-import io.vertigo.dynamo.store.criteria2.Criterions;
-import io.vertigo.dynamo.store.criteria2.Ctx;
+import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.store.criteria.Criterions;
+import io.vertigo.dynamo.store.criteria.CriteriaCtx;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
@@ -74,7 +74,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
-	private static final Criteria2 EMPTY_CRITERIA = Criterions.alwaysTrue();
+	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private final String dataSpace;
 	private final String connectionName;
@@ -165,10 +165,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
-		final Criteria2<E> criteria = uri.getCriteria();
+		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
 		//-----
-		final Criteria2<E> filterCriteria = (criteria == null ? EMPTY_CRITERIA : criteria);
+		final Criteria<E> filterCriteria = (criteria == null ? EMPTY_CRITERIA : criteria);
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
@@ -188,7 +188,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria2<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
 		//-----
@@ -197,11 +197,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, Ctx> tuple = criteria.toSql();
+			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql();
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
-			final Ctx ctx = tuple.getVal2();
+			final CriteriaCtx ctx = tuple.getVal2();
 			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
 			//IN, obligatoire
 			for (final String attributeName : ctx.getAttributeNames()) {
@@ -377,7 +377,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria2<E> criteria) {
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
 		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
 	}
 
