@@ -122,7 +122,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
-	protected static String getRequestedField(final DtDefinition dtDefinition) {
+	private static String getRequestedFields(final DtDefinition dtDefinition) {
 		if (dtDefinition.getFragment().isPresent()) {
 			return dtDefinition.getFields()
 					.stream()
@@ -154,7 +154,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
-		final String requestedFields = getRequestedField(dtDefinition);
+		final String requestedFields = getRequestedFields(dtDefinition);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
@@ -264,11 +264,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
-	}
-
-	protected String getConcatOperator() {
-		//default
-		return " || ";
 	}
 
 	//==========================================================================
@@ -455,7 +450,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
-		final String requestedFields = getRequestedField(dtDefinition);
+		final String requestedFields = getRequestedFields(dtDefinition);
 		final DtField idField = dtDefinition.getIdField().get();
 		final String idFieldName = idField.getName();
 		final String request = getSelectForUpdate(tableName, requestedFields, idFieldName);
@@ -500,7 +495,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(criteria);
 		//-----
 		final String tableName = getTableName(dtDefinition);
-		final String requestedFields = getRequestedField(dtDefinition);
+		final String requestedFields = getRequestedFields(dtDefinition);
 		final String taskName = "TK_TEST2";
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql();
 		final String where = tuple.getVal1();

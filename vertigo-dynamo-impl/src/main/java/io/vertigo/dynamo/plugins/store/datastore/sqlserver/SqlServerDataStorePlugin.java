@@ -62,11 +62,6 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		request.insert("select ".length(), " top " + maxRows + ' ');
 	}
 
-	@Override
-	protected String getConcatOperator() {
-		return " + ";
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	protected Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
