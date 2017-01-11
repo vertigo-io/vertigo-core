@@ -18,6 +18,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is null
 	 */
 	public static Criteria isNull(final DtFieldName dtFieldName) {
@@ -25,6 +26,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is not null
 	 */
 	public static Criteria isNotNull(final DtFieldName dtFieldName) {
@@ -32,6 +34,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is equal to the value
 	 * @param value the value
 	 */
@@ -40,6 +43,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is not equal to the value
 	 * @param value the value
 	 */
@@ -48,6 +52,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is greater than the value
 	 * @param value the value
 	 */
@@ -56,6 +61,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is greater than or equal to the value
 	 * @param value the value
 	 */
@@ -64,6 +70,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is less than the value
 	 * @param value the value
 	 */
@@ -72,6 +79,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is less than or equal to the value
 	 * @param value the value
 	 */
@@ -80,15 +88,16 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return starts with the value
 	 * @param value the value
 	 */
-
 	public static Criteria startsWith(final DtFieldName dtFieldName, final String value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.STARTS_WITH, value);
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is between min and max
 	 * @param min the min value
 	 * @param max the max value
@@ -98,6 +107,7 @@ public final class Criterions {
 	}
 
 	/**
+	 * @param dtFieldName the field
 	 * @return is in a list of values
 	 * @param values list of allowed values
 	 */
@@ -107,6 +117,7 @@ public final class Criterions {
 
 	/**
 	 * An always true criteria.
+	 * @param dtFieldName the field
 	 * @return true
 	 */
 	public static Criteria alwaysTrue() {
