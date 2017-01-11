@@ -31,13 +31,13 @@ public final class StoreEvent implements Event {
 	/**
 	 * Type of event.
 	 */
-	public static enum Type {
+	public enum Type {
 		/** Creation. */
-		Create,
+		CREATE,
 		/** Update. */
-		Update,
+		UPDATE,
 		/** Delete. */
-		Delete
+		DELETE
 	}
 
 	private final Type type;

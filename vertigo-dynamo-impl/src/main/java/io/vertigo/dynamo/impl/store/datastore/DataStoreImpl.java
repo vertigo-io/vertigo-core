@@ -78,7 +78,7 @@ public final class DataStoreImpl implements DataStore {
 		//-----
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, uri);
+		fireAfterCommit(StoreEvent.Type.UPDATE, uri);
 		return entity;
 	}
 
@@ -101,7 +101,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -113,7 +113,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.UPDATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -125,7 +125,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Delete, uri);
+		fireAfterCommit(StoreEvent.Type.DELETE, uri);
 	}
 
 	/** {@inheritDoc} */
