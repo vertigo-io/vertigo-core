@@ -3,6 +3,7 @@ package io.vertigo.dynamo.store.criteria;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Tuples;
 
@@ -19,11 +20,11 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 
 	public abstract Predicate<E> toPredicate();
 
-	abstract String toSql(final CriteriaCtx ctx);
+	abstract String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase);
 
-	public Tuples.Tuple2<String, CriteriaCtx> toSql() {
+	public Tuples.Tuple2<String, CriteriaCtx> toSql(final SqlDataBase sqlDataBase) {
 		final CriteriaCtx ctx = new CriteriaCtx();
-		final String sql = this.toSql(ctx);
+		final String sql = this.toSql(ctx, sqlDataBase);
 		return new Tuples.Tuple2<>(sql, ctx);
 
 	}

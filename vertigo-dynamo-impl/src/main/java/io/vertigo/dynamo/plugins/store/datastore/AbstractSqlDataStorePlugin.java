@@ -25,6 +25,7 @@ import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -64,6 +65,7 @@ import io.vertigo.lang.VSystemException;
  * @author  pchretien
  */
 public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
+	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
@@ -261,6 +263,53 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
+	}
+
+	@Override
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(criteria);
+		//-----
+		final String tableName = getTableName(dtDefinition);
+		final String requestedFields = getRequestedFields(dtDefinition);
+		final String taskName = getListTaskName(tableName);
+		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(getSqlDataBase());
+		final String where = tuple.getVal1();
+		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
+		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request);
+
+		final CriteriaCtx ctx = tuple.getVal2();
+		//IN, obligatoire
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
+		}
+		//OUT, obligatoire
+		final TaskDefinition taskDefinition = taskDefinitionBuilder
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.build();
+
+		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
+		}
+		return taskManager
+				.execute(taskBuilder.build())
+				.getResult();
+	}
+
+	private static <E extends Entity> String getListTaskName(final String tableName) {
+		final String fullName = new StringBuilder()
+				.append("LIST_")
+				.append(tableName)
+				.append("_BY_CRITERIA")
+				.toString();
+		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
+			return fullName.substring(fullName.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
+		}
+		return fullName;
 	}
 
 	//==========================================================================
@@ -486,41 +535,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(criteria);
-		//-----
-		final String tableName = getTableName(dtDefinition);
-		final String requestedFields = getRequestedFields(dtDefinition);
-		final String taskName = "TK_TEST2";
-		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql();
-		final String where = tuple.getVal1();
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(dataSpace)
-				.withRequest(request);
-
-		final CriteriaCtx ctx = tuple.getVal2();
-		//IN, obligatoire
-		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
-		}
-		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
-				.build();
-
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
-		for (final String attributeName : ctx.getAttributeNames()) {
-			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
-		}
-		return taskManager
-				.execute(taskBuilder.build())
-				.getResult();
-	}
-
 	private String createLoadAllLikeQuery(final String tableName, final String requestedFields, final String where, final Integer maxRows) {
 		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
 				.append(" from ").append(tableName);
@@ -530,6 +544,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			appendMaxRows(" and ", request, maxRows);
 		}
 		return request.toString();
+	}
+
+	protected SqlDataBase getSqlDataBase() {
+		// is there a better way?
+		final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
+		return sqlDataBaseManager.getConnectionProvider(getDataSpace()).getDataBase();
 	}
 
 }

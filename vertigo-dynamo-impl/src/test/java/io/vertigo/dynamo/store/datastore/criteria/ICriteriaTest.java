@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.store.datastore.criteria2;
+package io.vertigo.dynamo.store.datastore.criteria;
 
 import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MAKE;
 import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MOTOR_TYPE;

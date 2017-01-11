@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.criteria2.sql;
+package io.vertigo.dynamo.store.datastore.criteria.sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
-import io.vertigo.dynamo.store.datastore.criteria2.ICriteriaTest;
+import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;

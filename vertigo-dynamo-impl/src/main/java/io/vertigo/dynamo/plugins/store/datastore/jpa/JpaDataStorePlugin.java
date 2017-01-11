@@ -33,6 +33,7 @@ import javax.persistence.TypedQuery;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
@@ -194,10 +195,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
+		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria, getSqlDataBase());
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql();
+			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(getSqlDataBase());
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
@@ -377,8 +378,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
-		return getListTaskName(tableName, criteria.toSql().getVal2().getAttributeNames());
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria, final SqlDataBase sqlDataBase) {
+		return getListTaskName(tableName, criteria.toSql(sqlDataBase).getVal2().getAttributeNames());
 	}
 
 	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
@@ -402,6 +403,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 		return result;
+	}
+
+	private SqlDataBase getSqlDataBase() {
+		// is there a better way?
+		final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
+		return sqlDataBaseManager.getConnectionProvider(getDataSpace()).getDataBase();
 	}
 
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.criteria2.predicate;
+package io.vertigo.dynamo.store.datastore.criteria.predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +31,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
-import io.vertigo.dynamo.store.datastore.criteria2.ICriteriaTest;
+import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
 
 /**
  *

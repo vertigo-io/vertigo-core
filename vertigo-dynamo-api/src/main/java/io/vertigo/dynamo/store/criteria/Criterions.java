@@ -2,6 +2,7 @@ package io.vertigo.dynamo.store.criteria;
 
 import java.util.function.Predicate;
 
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 
@@ -117,7 +118,6 @@ public final class Criterions {
 
 	/**
 	 * An always true criteria.
-	 * @param dtFieldName the field
 	 * @return true
 	 */
 	public static Criteria alwaysTrue() {
@@ -134,7 +134,7 @@ public final class Criterions {
 		}
 
 		@Override
-		String toSql(final CriteriaCtx ctx) {
+		String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase) {
 			return "1=1";
 		}
 

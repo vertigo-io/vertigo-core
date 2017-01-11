@@ -43,4 +43,10 @@ public final class SqlServerDataBase implements SqlDataBase {
 	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getConcatOperator() {
+		return " + ";
+	}
 }

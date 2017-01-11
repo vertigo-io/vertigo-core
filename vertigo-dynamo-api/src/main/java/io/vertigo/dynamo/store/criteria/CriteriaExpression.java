@@ -5,6 +5,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
@@ -78,9 +79,9 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	}
 
 	@Override
-	String toSql(final CriteriaCtx ctx) {
+	String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase) {
 		return Arrays.stream(operands)
-				.map(operand -> operand.toSql(ctx))
+				.map(operand -> operand.toSql(ctx, sqlDataBase))
 				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));
 	}
 }
