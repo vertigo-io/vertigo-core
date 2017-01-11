@@ -56,10 +56,10 @@ final class EAXmiObject {
 	private static final String PROPERTY_MULTIPLICITY_LOWER_NAME = "lower";
 	private static final String PROPERTY_MULTIPLICITY_UPPER_NAME = "upper";
 
-	private static final String PROPERTY_CLASSE_A = "source";
-	private static final String PROPERTY_CLASSE_B = "target";
+	private static final String PROPERTY_CLASS_A = "source";
+	private static final String PROPERTY_CLASS_B = "target";
 	// On stocke les ids, les noms des classes seront misesp lus tard.
-	private static final String PROPERTY_CLASSE_NAME = "xmi:idref";
+	private static final String PROPERTY_CLASS_NAME = "xmi:idref";
 
 	// On évite de chercher les libellés/multiplicité dans les extrémités, on prend plutôt le résumé
 	private static final String PROPERTY_ROLE_MULTIPLICITY = "labels";
@@ -257,54 +257,72 @@ final class EAXmiObject {
 		Assertion.checkNotNull(propertyName);
 		//-----
 		//TODO : load stereotype from XMI
-		if (PROPERTY_NAME.equals(propertyName)) {
-			name = "";
-		} else if (PROPERTY_COMMENT.equals(propertyName)
-				|| PROPERTY_ALIAS.equals(propertyName)) {
-			label = attributes.getValue(PROPERTY_ALIAS_NAME);
-		} else if (PROPERTY_DOMAIN.equals(propertyName)) {
-			manageDomain(attributes);
-			// Même nom pour le domaine et les navigabilité
-			manageNavigability(attributes);
-		} else if (PROPERTY_ID.equals(propertyName)) {
-			// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
-			// On ne mets à jour que si on ne l'a pas fait.
-			final String valeur = attributes.getValue(PROPERTY_ALIAS_NAME);
-			isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
-		} else if (PROPERTY_MULTIPLICITY.equals(propertyName)) {
-			final String lower = attributes.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
-			final String upper = attributes.getValue(PROPERTY_MULTIPLICITY_UPPER_NAME);
-			multiplicity = lower + ".." + upper;
-		} else if (PROPERTY_ROLE_MULTIPLICITY.equals(propertyName)) {
-			manageMultiplicity(attributes);
-		} else if (PROPERTY_CLASSE_A.equals(propertyName)) {
-			final String value = attributes.getValue(PROPERTY_CLASSE_NAME);
-			if (value != null) {
-				classA = new XmlId(value);
-			}
-		} else if (PROPERTY_CLASSE_B.equals(propertyName)) {
-			final String valeur = attributes.getValue(PROPERTY_CLASSE_NAME);
-			if (valeur != null) {
-				classB = new XmlId(valeur);
-			}
+		switch (propertyName) {
+			case PROPERTY_NAME:
+				name = "";
+				break;
+			case PROPERTY_COMMENT:
+			case PROPERTY_ALIAS:
+				label = attributes.getValue(PROPERTY_ALIAS_NAME);
+				break;
+			case PROPERTY_DOMAIN:
+				manageDomain(attributes);
+				// Même nom pour le domaine et les navigabilité
+				manageNavigability(attributes);
+				break;
+			case PROPERTY_ID:
+				// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
+				// On ne mets à jour que si on ne l'a pas fait.
+				final String valeur = attributes.getValue(PROPERTY_ALIAS_NAME);
+				isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
+				break;
+			case PROPERTY_MULTIPLICITY:
+				final String lower = attributes.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
+				final String upper = attributes.getValue(PROPERTY_MULTIPLICITY_UPPER_NAME);
+				multiplicity = lower + ".." + upper;
+				break;
+			case PROPERTY_ROLE_MULTIPLICITY:
+				manageMultiplicity(attributes);
+				break;
+			case PROPERTY_CLASS_A:
+				final String classAName = attributes.getValue(PROPERTY_CLASS_NAME);
+				if (classAName != null) {
+					classA = new XmlId(classAName);
+				}
+				break;
+			case PROPERTY_CLASS_B:
+				final String classBName = attributes.getValue(PROPERTY_CLASS_NAME);
+				if (classBName != null) {
+					classB = new XmlId(classBName);
+				}
+				break;
+			default:
+				//On ne tient pas compte des autres propriétés
+				break;
 		}
-		//On ne tient pas compte des autres propriétés
 	}
 
 	private void manageNavigability(final Attributes attributes) {
 		final String value = attributes.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
-		if (PROPERTY_NAVIGABILITY_NONE.equals(value)) {
-			roleANavigability = false;
-			roleBNavigability = false;
-		} else if (PROPERTY_NAVIGABILITY_BI.equals(value)) {
-			roleANavigability = true;
-			roleBNavigability = true;
-		} else if (PROPERTY_NAVIGABILITY_AB.equals(value)) {
-			roleANavigability = false;
-			roleBNavigability = true;
-		} else if (PROPERTY_NAVIGABILITY_BA.equals(value)) {
-			roleANavigability = true;
-			roleBNavigability = false;
+		switch (value) {
+			case PROPERTY_NAVIGABILITY_NONE:
+				roleANavigability = false;
+				roleBNavigability = false;
+				break;
+			case PROPERTY_NAVIGABILITY_BI:
+				roleANavigability = true;
+				roleBNavigability = true;
+				break;
+			case PROPERTY_NAVIGABILITY_AB:
+				roleANavigability = false;
+				roleBNavigability = true;
+				break;
+			case PROPERTY_NAVIGABILITY_BA:
+				roleANavigability = true;
+				roleBNavigability = false;
+				break;
+			default:
+				throw new IllegalArgumentException(value + " is undefined");
 		}
 	}
 
