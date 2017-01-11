@@ -57,6 +57,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
+import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
@@ -158,11 +159,12 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final DtList<E> ret = new DtList<>(dtDefinition);
 		for (final DtList<E> paq : set) {
 			/* Création de la tache. */
-			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
-					.addValue(inDtcName, paq);
+			final Task task = new TaskBuilder(taskDefinition)
+					.addValue(inDtcName, paq)
+					.build();
 			// Exécution de la tache
 			final DtList<E> result = taskManager
-					.execute(taskBuilder.build())
+					.execute(task)
 					.getResult();
 			ret.addAll(result);
 		}

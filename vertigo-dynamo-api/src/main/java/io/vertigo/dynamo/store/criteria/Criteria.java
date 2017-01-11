@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 
 public abstract class Criteria<E extends Entity> implements Serializable {
@@ -23,6 +24,8 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	abstract String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase);
 
 	public Tuples.Tuple2<String, CriteriaCtx> toSql(final SqlDataBase sqlDataBase) {
+		Assertion.checkNotNull(sqlDataBase);
+		//---
 		final CriteriaCtx ctx = new CriteriaCtx();
 		final String sql = this.toSql(ctx, sqlDataBase);
 		return new Tuples.Tuple2<>(sql, ctx);
