@@ -126,7 +126,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		if (dtDefinition.getFragment().isPresent()) {
 			return dtDefinition.getFields()
 					.stream()
-					.map(dtField -> dtField.getName())
+					.map(DtField::getName)
 					.collect(Collectors.joining(", "));
 		}
 		return "*"; //all fields
@@ -248,10 +248,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param request Buffer de la requete
 	 * @param maxRows Nombre de lignes max
 	 */
-	protected void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		// TODO Auto-generated method stub
-
-	}
+	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
 
 	/** {@inheritDoc} */
 	@Override
