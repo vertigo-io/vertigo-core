@@ -87,8 +87,8 @@ final class RamLuceneQueryFactory {
 		final Builder queryBuilder = new BooleanQuery.Builder()
 				.add(keywordsQuery, BooleanClause.Occur.MUST);
 
+		final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 		for (final ListFilter filter : filters) {
-			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 			try {
 				queryBuilder.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
