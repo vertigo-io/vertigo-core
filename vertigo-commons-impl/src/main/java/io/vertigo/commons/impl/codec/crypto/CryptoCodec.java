@@ -46,7 +46,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		/**
 		 * Triple DES.
 		 */
-		TripleDES("DESede", 168),
+		TRIPLE_DES("DESede", 168),
 		/**
 		 * AES (256bits inacessible sans security policies :http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
 		 */

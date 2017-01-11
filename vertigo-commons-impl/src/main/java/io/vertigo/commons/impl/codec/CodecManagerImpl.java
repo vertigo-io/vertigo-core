@@ -88,7 +88,7 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 		super();
 		htmlCodec = new HtmlCodec();
 		//---
-		final CryptoCodec tmpTripleDESCodec = new CryptoCodec(CryptoCodec.Crypto.TripleDES);
+		final CryptoCodec tmpTripleDESCodec = new CryptoCodec(CryptoCodec.Crypto.TRIPLE_DES);
 		tripleDESCodec = new NullCodec<>(tmpTripleDESCodec);
 		componentInfos.addAll(tmpTripleDESCodec.getInfos());
 		//---
