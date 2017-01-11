@@ -83,7 +83,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final DtField idField = dtDefinition.getIdField().get();
+		final DtField idField = getIdField(dtDefinition);
 
 		final String tableName = getTableName(dtDefinition);
 

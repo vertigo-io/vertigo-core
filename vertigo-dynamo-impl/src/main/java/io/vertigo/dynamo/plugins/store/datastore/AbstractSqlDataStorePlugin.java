@@ -150,6 +150,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return taskManager;
 	}
 
+	protected static final DtField getIdField(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//---
+		return dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public final <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
@@ -157,7 +163,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
 		final String requestedFields = getRequestedFields(dtDefinition);
-		final DtField idField = dtDefinition.getIdField().get();
+		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
 				.append(" select ").append(requestedFields)
@@ -193,16 +199,16 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_SELECT + "_N_N_LIST_" + tableName + "_BY_URI";
 
 		//PK de la DtList recherchée
-		final String idFieldName = dtDefinition.getIdField().get().getName();
+		final String idFieldName = getIdField(dtDefinition).getName();
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-		final DtField joinDtField = joinDtDefinition.getIdField().get();
+		final DtField joinDtField = getIdField(joinDtDefinition);
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
-		final DtField fkField = associationNode.getDtDefinition().getIdField().get();
+		final DtField fkField = getIdField(associationNode.getDtDefinition());
 		final String fkFieldName = fkField.getName();
 
 		final String request = new StringBuilder(" select t.* from ")
@@ -241,7 +247,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField, value), null);
 	}
 
 	/**
@@ -300,7 +306,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName) {
+	private static String getListTaskName(final String tableName) {
 		final String fullName = new StringBuilder()
 				.append("LIST_")
 				.append(tableName)
@@ -355,7 +361,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	private static String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final DtField idField = dtDefinition.getIdField().get();
+		final DtField idField = getIdField(dtDefinition);
 		final StringBuilder request = new StringBuilder()
 				.append("update ").append(tableName).append(" set ");
 		String separator = "";
@@ -427,7 +433,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final DtField idField = dtDefinition.getIdField().get();
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(uri);
+		//---
+		final DtField idField = getIdField(dtDefinition);
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_DELETE + "_" + tableName;
 
@@ -497,7 +506,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
 		final String requestedFields = getRequestedFields(dtDefinition);
-		final DtField idField = dtDefinition.getIdField().get();
+		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
 		final String request = getSelectForUpdate(tableName, requestedFields, idFieldName);
 
