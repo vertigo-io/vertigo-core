@@ -307,8 +307,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static String getListTaskName(final String tableName) {
-		final String fullName = new StringBuilder()
-				.append("LIST_")
+		final String fullName = new StringBuilder(TASK.TK_SELECT.name())
+				.append("_LIST_")
 				.append(tableName)
 				.append("_BY_CRITERIA")
 				.toString();
@@ -515,7 +515,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired(idFieldName, idField.getDomain())
-				//IN, obligatoire
 				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
@@ -544,10 +543,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	private String createLoadAllLikeQuery(final String tableName, final String requestedFields, final String where, final Integer maxRows) {
+	private String createLoadAllLikeQuery(
+			final String tableName,
+			final String requestedFields,
+			final String where,
+			final Integer maxRows) {
 		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
-				.append(" from ").append(tableName);
-		request.append(" where ").append(where);
+				.append(" from ").append(tableName)
+				.append(" where ").append(where);
 		if (maxRows != null) {
 			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
 			appendMaxRows(" and ", request, maxRows);
@@ -556,7 +559,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	protected SqlDataBase getSqlDataBase() {
-		// is there a better way?
+		// is there a better way?  type name = new type();
 		final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
 		return sqlDataBaseManager.getConnectionProvider(getDataSpace()).getDataBase();
 	}

@@ -304,25 +304,27 @@ final class EAXmiObject {
 
 	private void manageNavigability(final Attributes attributes) {
 		final String value = attributes.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
-		switch (value) {
-			case PROPERTY_NAVIGABILITY_NONE:
-				roleANavigability = false;
-				roleBNavigability = false;
-				break;
-			case PROPERTY_NAVIGABILITY_BI:
-				roleANavigability = true;
-				roleBNavigability = true;
-				break;
-			case PROPERTY_NAVIGABILITY_AB:
-				roleANavigability = false;
-				roleBNavigability = true;
-				break;
-			case PROPERTY_NAVIGABILITY_BA:
-				roleANavigability = true;
-				roleBNavigability = false;
-				break;
-			default:
-				throw new IllegalArgumentException(value + " is undefined");
+		if (value != null) {
+			switch (value) {
+				case PROPERTY_NAVIGABILITY_NONE:
+					roleANavigability = false;
+					roleBNavigability = false;
+					break;
+				case PROPERTY_NAVIGABILITY_BI:
+					roleANavigability = true;
+					roleBNavigability = true;
+					break;
+				case PROPERTY_NAVIGABILITY_AB:
+					roleANavigability = false;
+					roleBNavigability = true;
+					break;
+				case PROPERTY_NAVIGABILITY_BA:
+					roleANavigability = true;
+					roleBNavigability = false;
+					break;
+				default:
+					throw new IllegalArgumentException(value + " is undefined");
+			}
 		}
 	}
 
