@@ -36,7 +36,8 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {
-		return getApp().getDefinitionSpace().resolve(urn, DtDefinition.class);
+		return getApp().getDefinitionSpace()
+				.resolve(urn, DtDefinition.class);
 	}
 
 	@Test

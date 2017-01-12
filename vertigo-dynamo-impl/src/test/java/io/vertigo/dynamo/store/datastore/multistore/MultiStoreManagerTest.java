@@ -34,6 +34,7 @@ import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Test de l'implémentation standard.
@@ -72,9 +73,10 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 	@Override
 	protected List<String> getCreateMainStoreRequests() {
 		//On retire famille du main store
-		final List<String> requests = getCreateCarRequests();
-		requests.addAll(getCreateFileInfoRequests());
-		return requests;
+		return new ListBuilder<String>()
+				.addAll(getCreateCarRequests())
+				.addAll(getCreateFileInfoRequests())
+				.build();
 	}
 
 	private List<String> getCreateOtherStoreRequests() {
