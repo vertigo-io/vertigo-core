@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.datastore.criteria.sql;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,6 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -36,14 +36,11 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
+import io.vertigo.dynamo.store.datastore.SqlUtil;
 import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -51,8 +48,6 @@ import io.vertigo.util.ListBuilder;
  */
 @RunWith(JUnitPlatform.class)
 public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICriteriaTest {
-	@Inject
-	private SqlDataBaseManager dataBaseManager;
 	@Inject
 	protected StoreManager storeManager;
 	@Inject
@@ -78,27 +73,23 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICrite
 		shutDown("TK_SHUT_DOWN", Optional.<String> empty());
 	}
 
-	protected void shutDown(final String taskName, final Optional<String> collectionOption) {
-		if (dataBaseManager != null) {
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-						.withEngine(TaskEngineProc.class)
-						.withRequest("shutdown;");
-				if (collectionOption.isPresent()) {
-					taskDefinitionBuilder.withDataSpace(collectionOption.get());
-				}
-				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
-				taskManager.execute(task);
-
-				//A chaque fin de test on arréte la base.
-				transaction.commit();
-			}
-		}
+	protected void shutDown(final String taskName, final Optional<String> optDataSpace) {
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				Collections.singletonList("shutdown;"),
+				taskName,
+				optDataSpace);
 	}
 
 	private void initMainStore() {
 		//A chaque test on recrée la table famille
-		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Optional.<String> empty());
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getCreateMainStoreRequests(),
+				"TK_INIT_MAIN",
+				Optional.<String> empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -108,22 +99,6 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICrite
 				storeManager.getDataStore().create(car);
 			}
 			transaction.commit();
-		}
-	}
-
-	protected void createDataBase(final List<String> requests, final String taskName, final Optional<String> collection) {
-		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final String request : requests) {
-				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-						.withEngine(TaskEngineProc.class)
-						.withRequest(request);
-				if (collection.isPresent()) {
-					taskDefinitionBuilder.withDataSpace(collection.get());
-				}
-				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
-				taskManager.execute(task);
-			}
 		}
 	}
 

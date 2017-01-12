@@ -21,6 +21,7 @@ package io.vertigo.dynamo.store.datastore;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -33,7 +34,6 @@ import org.junit.Test;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -73,8 +73,6 @@ import io.vertigo.util.ListBuilder;
  */
 public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private SqlDataBaseManager dataBaseManager;
-	@Inject
 	protected StoreManager storeManager;
 	@Inject
 	protected FileManager fileManager;
@@ -103,7 +101,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	protected void initMainStore() {
 		//A chaque test on recrée la table famille
-		createDataBase(getCreateMainStoreRequests(), "TK_INIT_MAIN", Optional.<String> empty());
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getCreateMainStoreRequests(),
+				"TK_INIT_MAIN",
+				Optional.<String> empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -114,22 +117,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				storeManager.getDataStore().create(car);
 			}
 			transaction.commit();
-		}
-	}
-
-	protected void createDataBase(final List<String> requests, final String taskName, final Optional<String> collection) {
-		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final String request : requests) {
-				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-						.withEngine(TaskEngineProc.class)
-						.withRequest(request);
-				if (collection.isPresent()) {
-					taskDefinitionBuilder.withDataSpace(collection.get());
-				}
-				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
-				taskManager.execute(task);
-			}
 		}
 	}
 
@@ -165,25 +152,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Optional.<String> empty());
-	}
-
-	protected void shutDown(final String taskName, final Optional<String> collectionOption) {
-		if (dataBaseManager != null) {
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
-						.withEngine(TaskEngineProc.class)
-						.withRequest("shutdown;");
-				if (collectionOption.isPresent()) {
-					taskDefinitionBuilder.withDataSpace(collectionOption.get());
-				}
-				final Task task = new TaskBuilder(taskDefinitionBuilder.build()).build();
-				taskManager.execute(task);
-
-				//A chaque fin de test on arréte la base.
-				transaction.commit();
-			}
-		}
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				Collections.singletonList("shutdown;"),
+				"TK_SHUT_DOWN",
+				Optional.<String> empty());
 	}
 
 	@Test
