@@ -19,7 +19,9 @@
 package io.vertigo.dynamo.impl.store.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
@@ -133,14 +135,28 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
-		final DtField idField = fragmentDefinition.getFragment().get().getIdField().get();
-		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor du fragment sur l'entity
+		final DtDefinition entityDefinition = fragmentDefinition.getFragment().get();
+		final Map<String, DtField> entityFields = indexFields(entityDefinition.getFields());
+		final DtField idField = entityDefinition.getIdField().get();
+		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
 		final E dto = get(entityId);
 		for (final DtField fragmentField : fragmentDefinition.getFields()) {
-			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
-			dataAccessor.setValue(dto, dataAccessor.getValue(fragment)); //etrange on utilise l'accessor du fragment sur l'entity
+			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
+			if (entityFields.containsKey(fragmentField.getName())) {
+				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
+				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.getName()).getDataAccessor();
+				entityDataAccessor.setValue(dto, fragmentDataAccessor.getValue(fragment));
+			}
 		}
 		return dto;
+	}
+
+	private static Map<String, DtField> indexFields(final List<DtField> fields) {
+		final Map<String, DtField> fieldsIndex = new HashMap<>();
+		for (final DtField field : fields) {
+			fieldsIndex.put(field.getName(), field);
+		}
+		return fieldsIndex;
 	}
 
 	/**
