@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
  * @author Emeric Vernat
  */
-abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
+public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
 	private final HttpServletResponse response;
@@ -138,10 +138,11 @@ abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.Htt
 	 */
 	@Override
 	public final PrintWriter getWriter() throws IOException {
-		if (stream != null) {
-			throw new IllegalStateException("getOutputStream() has already been called for this response");
-		}
 		if (writer == null) {
+			if (stream != null) {
+				throw new IllegalStateException("getOutputStream() has already been called for this response");
+			}
+
 			final ServletOutputStream outputStream = getOutputStream();
 			final String charEnc = getResponse().getCharacterEncoding();
 			// HttpServletResponse.getCharacterEncoding() shouldn't return null
