@@ -141,7 +141,7 @@ public final class VegaFeatures extends Features {
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
 		if (myPort != null) {
-			ListBuilder<Param> params = new ListBuilder<>();
+			final ListBuilder<Param> params = new ListBuilder<>();
 			params.add(Param.create("port", Integer.toString(myPort)));
 			if (myApiPrefix != null) {
 				params.add(Param.create("apiPrefix", myApiPrefix));
