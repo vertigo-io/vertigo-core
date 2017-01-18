@@ -42,13 +42,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.filter.session.SessionFilter;
-import com.jayway.restassured.parsing.Parser;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
-import com.jayway.restassured.specification.ResponseSpecification;
-
+import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
+import io.restassured.parsing.Parser;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
@@ -111,7 +110,8 @@ public final class WebServiceManagerTest {
 				.body("definitions", Matchers.notNullValue())
 				.body("definitions.size()", Matchers.greaterThanOrEqualTo(30)) //actually 37
 				.statusCode(HttpStatus.SC_OK)
-				.when().log().ifValidationFails()
+				.log().ifValidationFails()
+				.when()
 				.get("/swaggerApi");
 	}
 
