@@ -103,7 +103,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param connectionName the name of the connection
 	 * @param taskManager the taskManager
 	 */
-	protected AbstractSqlDataStorePlugin(final Optional<String> dataSpaceOption, final Optional<String> connectionName, final TaskManager taskManager) {
+	protected AbstractSqlDataStorePlugin(
+			final Optional<String> dataSpaceOption,
+			final Optional<String> connectionName,
+			final TaskManager taskManager) {
 		Assertion.checkNotNull(dataSpaceOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
@@ -547,6 +550,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			final String requestedFields,
 			final String where,
 			final Integer maxRows) {
+
 		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
 				.append(" from ").append(tableName)
 				.append(" where ").append(where);

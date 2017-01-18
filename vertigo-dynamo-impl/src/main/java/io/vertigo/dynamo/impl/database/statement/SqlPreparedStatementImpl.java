@@ -163,9 +163,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @return Valeur du paramètre
 	 */
 	final SqlParameter getParameter(final int index) {
-		final SqlParameter p = parameters.get(index);
-		Assertion.checkNotNull(p, "Le paramètre à l''index {0} n''a pas été enregistré préalablement !", index);
-		return p;
+		final SqlParameter parameter = parameters.get(index);
+		Assertion.checkNotNull(parameter, "Le paramètre à l''index {0} n''a pas été enregistré préalablement !", index);
+		return parameter;
 	}
 
 	/** {@inheritDoc}  */
