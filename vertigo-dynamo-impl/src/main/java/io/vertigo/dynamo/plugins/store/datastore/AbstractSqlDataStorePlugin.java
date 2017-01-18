@@ -362,19 +362,18 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	private static String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
-		final StringBuilder request = new StringBuilder()
-				.append("update ").append(tableName).append(" set ");
-		String separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			//On ne met à jour que les champs persistants hormis la PK
-			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID) {
-				request.append(separator);
-				request.append(dtField.getName()).append(" = #DTO.").append(dtField.getName()).append('#');
-				separator = ", ";
-			}
-		}
-		request.append(" where ").append(idField.getName()).append(" = #DTO.").append(idField.getName()).append('#');
-		return request.toString();
+
+		return new StringBuilder()
+				.append("update ").append(tableName).append(" set ")
+
+				.append(dtDefinition.getFields()
+						.stream()
+						.filter(dtField -> dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID)
+						.map(dtField -> dtField.getName() + " =#DTO." + dtField.getName() + '#')
+						.collect(Collectors.joining(", ")))
+				.append(" where ")
+				.append(idField.getName()).append(" = #DTO.").append(idField.getName()).append('#')
+				.toString();
 	}
 
 	/**
