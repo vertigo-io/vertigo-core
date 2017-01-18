@@ -25,11 +25,13 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
  * @author Emeric Vernat
  */
-public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
+public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper implements AutoCloseable {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
 	private final HttpServletResponse response;
@@ -48,11 +50,18 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 		return stream;
 	}
 
-	protected final void close() throws IOException {
-		if (writer != null) {
-			writer.close();
-		} else if (stream != null) {
-			stream.close();
+	/** {@inheritDoc} */
+	@Override
+	public final void close() throws IOException {
+		try {
+			if (writer != null) {
+				writer.close();
+			} else if (stream != null) {
+				stream.close();
+			}
+		} catch (final IOException e) {
+			Logger.getRootLogger().trace(e.getMessage(), e);
+			//ignore IOException : streams are already send
 		}
 	}
 

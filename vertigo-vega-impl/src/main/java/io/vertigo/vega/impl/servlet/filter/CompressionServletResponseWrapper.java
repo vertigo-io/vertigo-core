@@ -18,12 +18,8 @@
  */
 package io.vertigo.vega.impl.servlet.filter;
 
-import java.io.IOException;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
 
 /**
  * Implémentation de HttpServletResponseWrapper qui fonctionne avec le CompressionServletResponseStream.
@@ -33,7 +29,7 @@ class CompressionServletResponseWrapper extends AbstractHttpServletResponseWrapp
 	private final int compressionThreshold;
 
 	/**
-	 * Constructeur qui crée un adapteur de ServletResponse wrappant la response sp�cifi�e.
+	 * Constructeur qui crée un adapteur de ServletResponse wrappant la response spécifiée.
 	 * @param response javax.servlet.HttpServletResponse
 	 * @param compressionThreshold int
 	 */
@@ -49,17 +45,6 @@ class CompressionServletResponseWrapper extends AbstractHttpServletResponseWrapp
 	@Override
 	public ServletOutputStream createOutputStream() {
 		return new CompressionResponseStream((HttpServletResponse) getResponse(), compressionThreshold);
-	}
-
-	/**
-	 * Termine et ferme la response.
-	 */
-	public void finishResponse() {
-		try {
-			close();
-		} catch (final IOException e) {
-			Logger.getRootLogger().trace(e.getMessage(), e);
-		}
 	}
 
 	/**
