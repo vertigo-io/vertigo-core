@@ -25,7 +25,7 @@ import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -95,6 +95,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		TK_LOCK
 	}
 
+	private final SqlDialect sqlDialect;
 	private final TaskManager taskManager;
 
 	/**
@@ -106,14 +107,17 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	protected AbstractSqlDataStorePlugin(
 			final Optional<String> dataSpaceOption,
 			final Optional<String> connectionName,
-			final TaskManager taskManager) {
+			final TaskManager taskManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(dataSpaceOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		dataSpace = dataSpaceOption.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 		this.connectionName = connectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		this.taskManager = taskManager;
+		this.sqlDialect = sqlDataBaseManager.getConnectionProvider(this.connectionName).getDataBase().getSqlDialect();
 		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
 	}
 
@@ -282,7 +286,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String requestedFields = getRequestedFields(dtDefinition);
 		final String taskName = getListTaskName(tableName);
-		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(getSqlDataBase());
+		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
 		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
@@ -560,11 +564,4 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		return request.toString();
 	}
-
-	protected SqlDataBase getSqlDataBase() {
-		// is there a better way?  type name = new type();
-		final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
-		return sqlDataBaseManager.getConnectionProvider(getDataSpace()).getDataBase();
-	}
-
 }

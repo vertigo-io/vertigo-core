@@ -2,7 +2,7 @@ package io.vertigo.dynamo.store.criteria;
 
 import java.util.function.Predicate;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 
@@ -134,7 +134,7 @@ public final class Criterions {
 		}
 
 		@Override
-		String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase) {
+		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 			return "1=1";
 		}
 

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -74,8 +75,9 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 			@Named("name") final Optional<String> nameOption,
 			@Named("connectionName") final Optional<String> connectionName,
 			@Named("sequencePrefix") final String sequencePrefix,
-			final TaskManager taskManager) {
-		super(nameOption, connectionName, taskManager);
+			final TaskManager taskManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
+		super(nameOption, connectionName, taskManager, sqlDataBaseManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;

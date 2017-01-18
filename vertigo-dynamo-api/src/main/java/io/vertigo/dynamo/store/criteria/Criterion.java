@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -33,7 +33,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	}
 
 	@Override
-	String toSql(final CriteriaCtx ctx, final SqlDataBase sqlDataBase) {
+	String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
 				return dtFieldName.name() + " is not null";
@@ -54,7 +54,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case BETWEEN:
 				return "(" + dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "# and " + dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[1]) + "# )";
 			case STARTS_WITH:
-				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDataBase.getConcatOperator() + "'%%'";
+				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
 				final String paramValues = Stream.of(values)
 						.map(value -> prepareSqlInArgument(value))

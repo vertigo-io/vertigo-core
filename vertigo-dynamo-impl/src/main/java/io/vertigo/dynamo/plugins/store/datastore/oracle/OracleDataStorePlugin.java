@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractSqlDataStorePlugin;
@@ -53,8 +54,9 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 			@Named("name") final Optional<String> nameOption,
 			@Named("connectionName") final Optional<String> connectionName,
 			@Named("sequencePrefix") final String sequencePrefix,
-			final TaskManager taskManager) {
-		super(nameOption, connectionName, taskManager);
+			final TaskManager taskManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
+		super(nameOption, connectionName, taskManager, sqlDataBaseManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//-----
 		this.sequencePrefix = sequencePrefix;

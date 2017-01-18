@@ -34,10 +34,5 @@ public interface SqlDataBase {
 	 */
 	SqlMapping getSqlMapping();
 
-	/**
-	 * @return The operator for string concatenation.
-	 */
-	default String getConcatOperator() {
-		return " || ";
-	}
+	SqlDialect getSqlDialect();
 }

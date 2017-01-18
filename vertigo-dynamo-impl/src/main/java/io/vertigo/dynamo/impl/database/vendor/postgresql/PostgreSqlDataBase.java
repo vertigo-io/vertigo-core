@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 
@@ -30,6 +31,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
 public final class PostgreSqlDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new PostgreSqlExceptionHandler();
 	private final SqlMapping sqlMapping = new PostgresqlMapping();
+	private final SqlDialect sqlDialect = new PostgreSqlDialect();
 
 	/** {@inheritDoc} */
 	@Override
@@ -41,5 +43,10 @@ public final class PostgreSqlDataBase implements SqlDataBase {
 	@Override
 	public SqlMapping getSqlMapping() {
 		return sqlMapping;
+	}
+
+	@Override
+	public SqlDialect getSqlDialect() {
+		return sqlDialect;
 	}
 }
