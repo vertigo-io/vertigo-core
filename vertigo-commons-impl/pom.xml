@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-api</artifactId>
-		    <version>1.7.21</version> <!-- pour EhCachePlugin -->
+		    <version>1.7.22</version> <!-- pour EhCachePlugin -->
 		</dependency>		
 	</dependencies>
 </project>
