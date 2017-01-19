@@ -33,11 +33,11 @@ import javax.persistence.TypedQuery;
 
 import org.hibernate.exception.ConstraintViolationException;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -82,6 +82,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
 	private final AnalyticsManager analyticsManager;
+	private final SqlDialect sqlDialect;
 
 	/**
 	 * Constructor.
@@ -109,6 +110,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		this.analyticsManager = analyticsManager;
+		sqlDialect = dataBaseManager.getConnectionProvider(this.connectionName).getDataBase().getSqlDialect();
 	}
 
 	/** {@inheritDoc} */
@@ -195,10 +197,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria, getSqlDataBase());
+		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria, sqlDialect);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(getSqlDataBase());
+			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
@@ -378,8 +380,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria, final SqlDataBase sqlDataBase) {
-		return getListTaskName(tableName, criteria.toSql(sqlDataBase).getVal2().getAttributeNames());
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria, final SqlDialect sqlDialect) {
+		return getListTaskName(tableName, criteria.toSql(sqlDialect).getVal2().getAttributeNames());
 	}
 
 	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
@@ -403,12 +405,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 		return result;
-	}
-
-	private SqlDataBase getSqlDataBase() {
-		// is there a better way?
-		final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
-		return sqlDataBaseManager.getConnectionProvider(getDataSpace()).getDataBase();
 	}
 
 }
