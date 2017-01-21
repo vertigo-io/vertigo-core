@@ -54,9 +54,11 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
@@ -391,6 +393,17 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/**
+	 * @param insert Si opération de type insert
+	 * @return Classe du moteur de tache à utiliser
+	 */
+	private Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
+		if (insert && sqlDialect.generatedKeys()) {
+			return TaskEngineInsertWithGeneratedKeys.class;
+		}
+		return TaskEngineProc.class;
+	}
+
+	/**
 	 * @param entity Objet à persiter
 	 * @param insert Si opération de type insert (update sinon)
 	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
@@ -413,7 +426,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition, sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
-				.withEngine(sqlDialect.getTaskEngineClass(insert))
+				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))

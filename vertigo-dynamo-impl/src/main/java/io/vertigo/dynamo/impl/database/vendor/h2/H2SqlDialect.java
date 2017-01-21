@@ -5,9 +5,6 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 
 final class H2SqlDialect implements SqlDialect {
 
@@ -46,7 +43,7 @@ final class H2SqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		return insert ? TaskEngineInsertWithGeneratedKeys.class : TaskEngineProc.class;
+	public boolean generatedKeys() {
+		return true;
 	}
 }

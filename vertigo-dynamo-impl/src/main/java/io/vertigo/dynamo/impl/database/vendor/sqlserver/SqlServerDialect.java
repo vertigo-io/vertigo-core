@@ -5,9 +5,6 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
 
 final class SqlServerDialect implements SqlDialect {
@@ -47,12 +44,6 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		return insert ? TaskEngineInsertWithGeneratedKeys.class : TaskEngineProc.class;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public String createSelectForUpdateQuery(final String tableName, final String requestedFields, final String idFieldName) {
 		return new StringBuilder()
 				.append(" select ").append(requestedFields).append(" from ")
@@ -62,4 +53,9 @@ final class SqlServerDialect implements SqlDialect {
 				.toString();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean generatedKeys() {
+		return true;
+	}
 }

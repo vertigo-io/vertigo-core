@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.task.model.TaskEngine;
 
 public interface SqlDialect {
 	/**
@@ -32,16 +31,10 @@ public interface SqlDialect {
 
 	/**
 	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
-	 * @param request Buffer de la requete
-	 * @param maxRows Nombre de lignes max
+	 * @param query the sql query
+	 * @param maxRows max rows
 	 */
-	void appendMaxRows(final StringBuilder request, final Integer maxRows);
-
-	/**
-	 * @param insert Si opération de type insert
-	 * @return Classe du moteur de tache à utiliser
-	 */
-	Class<? extends TaskEngine> getTaskEngineClass(final boolean insert);
+	void appendMaxRows(final StringBuilder query, final Integer maxRows);
 
 	/**
 	 * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
@@ -58,4 +51,6 @@ public interface SqlDialect {
 				.append(" for update ")
 				.toString();
 	}
+
+	boolean generatedKeys();
 }

@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamox.task.TaskEngineProc;
 
 final class OracleDialect implements SqlDialect {
 	/** {@inheritDoc} */
@@ -54,13 +52,13 @@ final class OracleDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		return TaskEngineProc.class;
+	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
+		request.append(" and rownum <= ").append(maxRows);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" and rownum <= ").append(maxRows);
+	public boolean generatedKeys() {
+		return false;
 	}
 }

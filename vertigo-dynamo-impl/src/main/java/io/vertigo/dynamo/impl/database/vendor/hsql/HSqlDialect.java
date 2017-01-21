@@ -7,8 +7,6 @@ import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamox.task.TaskEngineProc;
 
 public final class HSqlDialect implements SqlDialect {
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
@@ -54,7 +52,8 @@ public final class HSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		return TaskEngineProc.class;
+	public boolean generatedKeys() {
+		return false;
 	}
+
 }
