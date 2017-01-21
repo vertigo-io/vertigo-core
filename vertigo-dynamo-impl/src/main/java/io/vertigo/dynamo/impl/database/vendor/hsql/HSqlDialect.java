@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.Entity;
 
 public final class HSqlDialect implements SqlDialect {
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
@@ -39,7 +38,7 @@ public final class HSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<String> createPrimaryKeyQuery(final Entity entity, final String tableName, final String sequencePrefix) {
+	public Optional<String> createPrimaryKeyQuery(final String tableName, final String sequencePrefix) {
 		final String sequenceName = sequencePrefix + tableName;
 		final String query = new StringBuilder("select next value for ").append(sequenceName).append("  as ")
 				.append(SEQUENCE_FIELD)

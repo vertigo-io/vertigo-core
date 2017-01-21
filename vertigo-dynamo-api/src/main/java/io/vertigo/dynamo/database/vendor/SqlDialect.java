@@ -3,7 +3,6 @@ package io.vertigo.dynamo.database.vendor;
 import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.Entity;
 
 public interface SqlDialect {
 	/**
@@ -17,7 +16,7 @@ public interface SqlDialect {
 	 * Prépare la PK si il n'y a pas de système de sequence.
 	 * @param entity Objet à sauvegarder (création ou modification)
 	 */
-	default Optional<String> createPrimaryKeyQuery(final Entity entity, final String tableName, final String sequencePrefix) {
+	default Optional<String> createPrimaryKeyQuery(final String tableName, final String sequencePrefix) {
 		return Optional.empty();
 	}
 

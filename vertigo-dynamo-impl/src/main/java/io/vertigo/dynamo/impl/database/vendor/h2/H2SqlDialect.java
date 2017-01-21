@@ -22,13 +22,13 @@ final class H2SqlDialect implements SqlDialect {
 				.append(dtDefinition.getFields()
 						.stream()
 						.filter(DtField::isPersistent)
-						.map(dtField -> mapField(dtDefinition, dtField, sequencePrefix, tableName))
+						.map(dtField -> mapField(dtField, sequencePrefix, tableName))
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();
 	}
 
-	private String mapField(final DtDefinition dtDefinition, final DtField dtField, final String sequencePrefix, final String tableName) {
+	private String mapField(final DtField dtField, final String sequencePrefix, final String tableName) {
 		if (dtField.getType() != DtField.FieldType.ID) {
 			return " #DTO." + dtField.getName() + '#';
 		}
