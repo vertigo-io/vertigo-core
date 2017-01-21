@@ -400,7 +400,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		if (insert) {
 			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
-			final Optional<String> optQuery = sqlDialect.preparePrimaryKey(entity, tableName, sequencePrefix);
+			final Optional<String> optQuery = sqlDialect.createPrimaryKeyQuery(entity, tableName, sequencePrefix);
 			if (optQuery.isPresent()) {
 				final long sequence = buildNextSequence(sequencePrefix + tableName, optQuery.get());
 				final DtField idField = dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
@@ -543,7 +543,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where ").append(where);
 		if (maxRows != null) {
 			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
-			sqlDialect.appendMaxRows(" and ", request, maxRows);
+			sqlDialect.appendMaxRows(request, maxRows);
 		}
 		return request.toString();
 	}

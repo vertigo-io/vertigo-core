@@ -35,13 +35,13 @@ public final class HSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
-		request.append(separator).append(" rownum() <= ").append(maxRows);
+	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
+		request.append(" and rownum() <= ").append(maxRows);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<String> preparePrimaryKey(final Entity entity, final String tableName, final String sequencePrefix) {
+	public Optional<String> createPrimaryKeyQuery(final Entity entity, final String tableName, final String sequencePrefix) {
 		final String sequenceName = sequencePrefix + tableName;
 		final String query = new StringBuilder("select next value for ").append(sequenceName).append("  as ")
 				.append(SEQUENCE_FIELD)

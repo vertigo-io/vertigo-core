@@ -39,7 +39,7 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
+	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
 		Assertion.checkArgument(request.indexOf("select ") == 0, "request doit commencer par select");
 		//-----
 		request.insert("select ".length(), " top " + maxRows + ' ');

@@ -40,7 +40,7 @@ final class H2SqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows) {
+	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
 		request.append(" limit ").append(maxRows);
 	}
 

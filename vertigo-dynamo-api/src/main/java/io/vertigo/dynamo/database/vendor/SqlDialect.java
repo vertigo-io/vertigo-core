@@ -18,7 +18,7 @@ public interface SqlDialect {
 	 * Prépare la PK si il n'y a pas de système de sequence.
 	 * @param entity Objet à sauvegarder (création ou modification)
 	 */
-	default Optional<String> preparePrimaryKey(final Entity entity, final String tableName, final String sequencePrefix) {
+	default Optional<String> createPrimaryKeyQuery(final Entity entity, final String tableName, final String sequencePrefix) {
 		return Optional.empty();
 	}
 
@@ -32,11 +32,10 @@ public interface SqlDialect {
 
 	/**
 	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
-	 * @param separator Séparateur de la close where à utiliser
 	 * @param request Buffer de la requete
 	 * @param maxRows Nombre de lignes max
 	 */
-	void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
+	void appendMaxRows(final StringBuilder request, final Integer maxRows);
 
 	/**
 	 * @param insert Si opération de type insert
@@ -59,5 +58,4 @@ public interface SqlDialect {
 				.append(" for update ")
 				.toString();
 	}
-
 }

@@ -33,7 +33,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
@@ -85,11 +85,10 @@ public final class MyAppConfig {
 			.addModule(new DynamoFeatures()
 				.withStore()
 				.withKVStore()
-				.addKVStorePlugin(DelayedMemoryKVStorePlugin.class, 
+				.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
 						Param.create("collections", "tokens"),
 						Param.create("timeToLiveSeconds", "120"))
-				.addDataStorePlugin(PostgreSqlDataStorePlugin.class, 
-					Param.create("sequencePrefix","SEQ_"))
+				.addDataStorePlugin(SqlDataStorePlugin.class)
 				.build())
 			.addModule(new VegaFeatures()
 				.withTokens("tokens")

@@ -19,20 +19,23 @@
 package io.vertigo.dynamo.database.vendor;
 
 /**
- * Base de données.
+ * this class defines the DataBase.
  *
  * @author pchretien
  */
 public interface SqlDataBase {
 	/**
-	 * @return Handler d'exception associé à la base de données.
+	 * @return the exception Handler.
 	 */
 	SqlExceptionHandler getSqlExceptionHandler();
 
 	/**
-	 * @return Mapping sql associé à la base de données
+	 * @return the mapping between the database and java
 	 */
 	SqlMapping getSqlMapping();
 
+	/**
+	 * @return the specific dialect used by the database.
+	 */
 	SqlDialect getSqlDialect();
 }
