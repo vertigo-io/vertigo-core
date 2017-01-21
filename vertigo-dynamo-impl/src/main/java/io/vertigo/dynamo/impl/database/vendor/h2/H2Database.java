@@ -28,7 +28,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
  *
  * @author jmainaud
  */
-public final class H2Database implements SqlDataBase {
+public final class H2DataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new H2SqlExceptionHandler();
 	private final SqlMapping sqlMapping = new H2Mapping();
 	private final SqlDialect sqlDialect = new H2SqlDialect();

@@ -16,10 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.store.datastore;
+package io.vertigo.dynamo.plugins.store.datastore.sql;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -51,7 +54,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -64,9 +66,10 @@ import io.vertigo.lang.VSystemException;
  *
  * @author  pchretien
  */
-public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
+public final class SqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
+	private static final String SEQUENCE_FIELD = "SEQUENCE";
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -74,6 +77,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	private final String dataSpace;
 
 	private final String connectionName;
+
+	private final String sequencePrefix;
 	/**
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
@@ -104,18 +109,22 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param connectionName the name of the connection
 	 * @param taskManager the taskManager
 	 */
-	protected AbstractSqlDataStorePlugin(
-			final Optional<String> dataSpaceOption,
-			final Optional<String> connectionName,
+	@Inject
+	public SqlDataStorePlugin(
+			@Named("dataSpace") final Optional<String> optDataSpace,
+			@Named("connectionName") final Optional<String> optConnectionName,
+			@Named("sequencePrefix") final Optional<String> optSequencePrefix,
 			final TaskManager taskManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
-		Assertion.checkNotNull(dataSpaceOption);
-		Assertion.checkNotNull(connectionName);
+		Assertion.checkNotNull(optDataSpace);
+		Assertion.checkNotNull(optConnectionName);
+		Assertion.checkNotNull(optSequencePrefix);
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
-		dataSpace = dataSpaceOption.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
-		this.connectionName = connectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		dataSpace = optDataSpace.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
+		connectionName = optConnectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		sequencePrefix = optSequencePrefix.orElse("SEQ_");
 		this.taskManager = taskManager;
 		this.sqlDialect = sqlDataBaseManager.getConnectionProvider(this.connectionName).getDataBase().getSqlDialect();
 		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
@@ -127,7 +136,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @param dtDefinition the dtDefinition
 	 * @return the name of the table
 	 */
-	protected static final String getTableName(final DtDefinition dtDefinition) {
+	private static final String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
@@ -153,11 +162,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return connectionName;
 	}
 
-	protected final TaskManager getTaskManager() {
-		return taskManager;
-	}
-
-	protected static final DtField getIdField(final DtDefinition dtDefinition) {
+	private static final DtField getIdField(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---
 		return dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
@@ -257,14 +262,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField, value), null);
 	}
 
-	/**
-	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
-	 * @param separator Séparateur de la close where à utiliser
-	 * @param request Buffer de la requete
-	 * @param maxRows Nombre de lignes max
-	 */
-	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
-
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
@@ -353,14 +350,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/**
-	 * Creates the insert request.
-	 *
-	 * @param dtDefinition the dtDefinition
-	 * @return the sql request
-	 */
-	protected abstract String createInsertQuery(final DtDefinition dtDefinition);
-
-	/**
 	 * Creates the update request.
 	 *
 	 * @param dtDefinition the dtDefinition
@@ -383,11 +372,23 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	/**
-	 * @param insert Si opération de type insert
-	 * @return Classe du moteur de tache à utiliser
-	 */
-	protected abstract Class<? extends TaskEngine> getTaskEngineClass(final boolean insert);
+	private final long buildNextSequence(final String sequenceName, final String query) {
+		final String taskName = TASK.TK_SELECT.name() + '_' + sequenceName;
+		final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withDataSpace(getDataSpace())
+				.withRequest(query)
+				.withOutRequired(SEQUENCE_FIELD, resultDomain)
+				.build();
+
+		final Task task = new TaskBuilder(taskDefinition).build();
+
+		return taskManager
+				.execute(task)
+				.getResult();
+	}
 
 	/**
 	 * @param entity Objet à persiter
@@ -395,19 +396,24 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
 	private boolean put(final Entity entity, final boolean insert) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		final String tableName = getTableName(dtDefinition);
 		if (insert) {
 			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
-			preparePrimaryKey(entity);
+			final Optional<String> optQuery = sqlDialect.preparePrimaryKey(entity, tableName, sequencePrefix);
+			if (optQuery.isPresent()) {
+				final long sequence = buildNextSequence(sequencePrefix + tableName, optQuery.get());
+				final DtField idField = dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
+				idField.getDataAccessor().setValue(entity, sequence);
+			}
 		}
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 
-		final String tableName = getTableName(dtDefinition);
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
 
-		final String request = insert ? createInsertQuery(dtDefinition) : createUpdateQuery(dtDefinition);
+		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition, sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
-				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
+				.withEngine(sqlDialect.getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
@@ -426,14 +432,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
 		}
 		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
-	}
-
-	/**
-	 * Prépare la PK si il n'y a pas de système de sequence.
-	 * @param entity Objet à sauvegarder (création ou modification)
-	 */
-	protected void preparePrimaryKey(final Entity entity) {
-		// rien par default
 	}
 
 	/** {@inheritDoc} */
@@ -470,7 +468,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new VSystemException("more tha one row has been deleted");
+			throw new VSystemException("more than one row has been deleted");
 		} else if (sqlRowCount == 0) {
 			throw new VSystemException("no row has been deleted");
 		}
@@ -514,7 +512,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String requestedFields = getRequestedFields(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
-		final String request = getSelectForUpdate(tableName, requestedFields, idFieldName);
+		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedFields, idFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -533,34 +531,19 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	/**
-	 * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
-	 * spécificités de la base de données utilisée..
-	 * @param tableName nom de la table
-	 * @param idFieldName nom de la clé primaire
-	 * @return select à exécuter.
-	 */
-	protected String getSelectForUpdate(final String tableName, final String requestedFields, final String idFieldName) {
-		return new StringBuilder()
-				.append(" select ").append(requestedFields)
-				.append(" from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
-				.append(" for update ")
-				.toString();
-	}
-
 	private String createLoadAllLikeQuery(
 			final String tableName,
 			final String requestedFields,
 			final String where,
 			final Integer maxRows) {
 
-		final StringBuilder request = new StringBuilder("select ").append(requestedFields)
+		final StringBuilder request = new StringBuilder("select ")
+				.append(requestedFields)
 				.append(" from ").append(tableName)
 				.append(" where ").append(where);
 		if (maxRows != null) {
 			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
-			appendMaxRows(" and ", request, maxRows);
+			sqlDialect.appendMaxRows(" and ", request, maxRows);
 		}
 		return request.toString();
 	}

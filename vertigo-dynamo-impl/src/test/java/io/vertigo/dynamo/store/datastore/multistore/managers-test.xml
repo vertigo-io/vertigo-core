@@ -41,13 +41,10 @@
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="sequencePrefix" value="SEQ_" />
-			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="name" value="otherStore" />
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin">
+				<param name="dataSpace" value="otherStore" />
 				<param name="connectionName" value="otherBase" />
-				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin">
 				<param name="name" value="temp"/>

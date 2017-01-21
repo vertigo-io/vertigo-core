@@ -44,9 +44,7 @@
 
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="sequencePrefix" value="SEQ_" />
-			</plugin>
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
 		</component>
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 	</module>
