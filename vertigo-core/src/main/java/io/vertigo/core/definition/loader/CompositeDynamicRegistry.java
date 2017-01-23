@@ -20,11 +20,11 @@ package io.vertigo.core.definition.loader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -57,12 +57,10 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	private DslGrammar createGrammar() {
-		final List<DslEntity> entities = new ArrayList<>();
-		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
-			entities.addAll(dynamicRegistry.getGrammar().getEntities());
-		}
-		return () -> entities;
-
+		return () -> dynamicRegistries
+				.stream()
+				.flatMap(dynamicRegistry -> dynamicRegistry.getGrammar().getEntities().stream())
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
@@ -101,13 +99,12 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	private DynamicRegistry lookUpDynamicRegistry(final DynamicDefinition xdefinition) {
-		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
-			//On regarde si la grammaire contient la métaDefinition.
-			if (dynamicRegistry.getGrammar().getEntities().contains(xdefinition.getEntity())) {
-				return dynamicRegistry;
-			}
-		}
-		//Si on n'a pas trouvé de définition c'est qu'il manque la registry.
-		throw new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc.");
+		//On regarde si la grammaire contient la métaDefinition.
+		return dynamicRegistries
+				.stream()
+				.filter(dynamicRegistry -> dynamicRegistry.getGrammar().getEntities().contains(xdefinition.getEntity()))
+				.findFirst()
+				//Si on n'a pas trouvé de définition c'est qu'il manque la registry.
+				.orElseThrow(() -> new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc."));
 	}
 }
