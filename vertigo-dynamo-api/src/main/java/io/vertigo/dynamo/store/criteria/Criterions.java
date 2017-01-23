@@ -138,5 +138,10 @@ public final class Criterions {
 			return "1=1";
 		}
 
+		@Override
+		String toHql(final CriteriaCtx ctx) {
+			return "1=1";
+		}
+
 	}
 }

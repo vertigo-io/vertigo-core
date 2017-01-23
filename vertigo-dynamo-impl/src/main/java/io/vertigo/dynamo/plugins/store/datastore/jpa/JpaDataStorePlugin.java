@@ -37,7 +37,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -80,9 +79,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	private final String dataSpace;
 	private final String connectionName;
 	private final VTransactionManager transactionManager;
-	private final SqlDataBaseManager dataBaseManager;
 	private final AnalyticsManager analyticsManager;
-	private final SqlDialect sqlDialect;
+	private final SqlDataBase sqlDataBase;
 
 	/**
 	 * Constructor.
@@ -108,9 +106,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		dataSpace = nameOption.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 		this.connectionName = connectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		this.transactionManager = transactionManager;
-		this.dataBaseManager = dataBaseManager;
+		sqlDataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
+		Assertion.checkState(sqlDataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", sqlDataBase.getClass());
+
 		this.analyticsManager = analyticsManager;
-		sqlDialect = dataBaseManager.getConnectionProvider(this.connectionName).getDataBase().getSqlDialect();
 	}
 
 	/** {@inheritDoc} */
@@ -130,9 +129,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private JpaResource obtainJpaResource() {
-		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
-		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
-		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
+		return ((JpaDataBase) sqlDataBase).obtainJpaResource(getCurrentTransaction());
 	}
 
 	/** récupère la transaction courante. */
@@ -197,10 +194,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria, sqlDialect);
+		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
+			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toHql();
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
@@ -369,8 +366,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			throw pse;
 		}
 		final SQLException sqle = (SQLException) t;
-		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
-		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+		sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
 	private static String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {
@@ -380,8 +376,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria, final SqlDialect sqlDialect) {
-		return getListTaskName(tableName, criteria.toSql(sqlDialect).getVal2().getAttributeNames());
+	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
+		return getListTaskName(tableName, criteria.toHql().getVal2().getAttributeNames());
 	}
 
 	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
