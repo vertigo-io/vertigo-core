@@ -65,6 +65,11 @@ public final class JpaDataBase implements SqlDataBase {
 		return innerDataBase.getSqlMapping();
 	}
 
+	@Override
+	public SqlDialect getSqlDialect() {
+		return innerDataBase.getSqlDialect();
+	}
+
 	/**
 	 * récupère la ressource JPA de la transaction et la créé si nécessaire.
 	 * @param transaction Transaction courante
@@ -81,8 +86,4 @@ public final class JpaDataBase implements SqlDataBase {
 		return resource;
 	}
 
-	@Override
-	public SqlDialect getSqlDialect() {
-		throw new UnsupportedOperationException();
-	}
 }

@@ -137,11 +137,5 @@ public final class Criterions {
 		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 			return "1=1";
 		}
-
-		@Override
-		String toHql(final CriteriaCtx ctx) {
-			return "1=1";
-		}
-
 	}
 }

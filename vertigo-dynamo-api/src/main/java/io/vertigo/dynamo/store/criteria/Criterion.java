@@ -65,39 +65,6 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		}
 	}
 
-	@Override
-	String toHql(final CriteriaCtx ctx) {
-		switch (criterionOperator) {
-			case IS_NOT_NULL:
-				return dtFieldName.name() + " is not null";
-			case IS_NULL:
-				return dtFieldName.name() + " is null";
-			case EQ:
-				return dtFieldName.name() + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case NEQ:
-				return dtFieldName.name() + " != #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case GT:
-				return dtFieldName.name() + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case GTE:
-				return dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case LT:
-				return dtFieldName.name() + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case LTE:
-				return dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
-			case BETWEEN:
-				return "(" + dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "# and " + dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[1]) + "# )";
-			case STARTS_WITH:
-				return dtFieldName.name() + " like  concat(#" + ctx.attributeName(dtFieldName, values[0]) + "#, '%')";
-			case IN:
-				final String paramValues = Stream.of(values)
-						.map(value -> prepareSqlInArgument(value))
-						.collect(Collectors.joining(", "));
-				return dtFieldName.name() + " in(" + paramValues + ")";
-			default:
-				throw new IllegalAccessError();
-		}
-	}
-
 	private static String prepareSqlInArgument(final Comparable value) {
 		Assertion.checkArgument(
 				value instanceof String

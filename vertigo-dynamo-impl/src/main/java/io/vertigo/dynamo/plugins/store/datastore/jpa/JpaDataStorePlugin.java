@@ -197,7 +197,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toHql();
+			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
 			final String tableName = getTableName(dtDefinition);
 			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
 
@@ -376,8 +376,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
-		return getListTaskName(tableName, criteria.toHql().getVal2().getAttributeNames());
+	private <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
+		return getListTaskName(tableName, criteria.toSql(sqlDataBase.getSqlDialect()).getVal2().getAttributeNames());
 	}
 
 	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {

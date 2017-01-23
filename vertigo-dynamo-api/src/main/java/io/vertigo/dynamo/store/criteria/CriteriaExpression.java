@@ -84,11 +84,4 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 				.map(operand -> operand.toSql(ctx, sqlDialect))
 				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));
 	}
-
-	@Override
-	String toHql(final CriteriaCtx ctx) {
-		return Arrays.stream(operands)
-				.map(operand -> operand.toHql(ctx))
-				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));
-	}
 }
