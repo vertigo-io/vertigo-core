@@ -107,9 +107,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Constructor.
-	 * @param dataSpaceOption the dataSpace (option)
-	 * @param connectionName the name of the connection
+	 * @param optDataSpace the dataSpace (option)
+	 * @param optConnectionName the name of the connection
+	 * @param optSequencePrefix the prefix of sequences
 	 * @param taskManager the taskManager
+	 * @param sqlDataBaseManager the sqlDataBaseManager
 	 */
 	@Inject
 	public SqlDataStorePlugin(
@@ -128,7 +130,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		connectionName = optConnectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		sequencePrefix = optSequencePrefix.orElse("SEQ_");
 		this.taskManager = taskManager;
-		this.sqlDialect = sqlDataBaseManager.getConnectionProvider(this.connectionName).getDataBase().getSqlDialect();
+		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
 		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
 	}
 
@@ -277,6 +279,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
