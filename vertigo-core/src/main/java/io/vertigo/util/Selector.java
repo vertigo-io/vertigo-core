@@ -61,7 +61,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Add a collection of class to the scope provided by the given supplier.
+	 * Adds a collection of class to the scope provided by the given supplier.
 	 * @param classesSupplier a supplier of classes
 	 * @return the selector
 	 */
@@ -74,11 +74,11 @@ public final class Selector {
 	}
 
 	/**
-	 * Add a collection of class to the scope.
+	 * Adds a collection of class to the scope.
 	 * @param classes a supplier of classes
 	 * @return the selector
 	 */
-	public Selector from(final Collection<Class> classes) {
+	public Selector from(final Iterable<Class> classes) {
 		Assertion.checkNotNull(classes);
 		checkScope();
 		// ---
