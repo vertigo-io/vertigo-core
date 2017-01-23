@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -152,11 +152,9 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	private static Map<String, DtField> indexFields(final List<DtField> fields) {
-		final Map<String, DtField> fieldsIndex = new HashMap<>();
-		for (final DtField field : fields) {
-			fieldsIndex.put(field.getName(), field);
-		}
-		return fieldsIndex;
+		return fields
+				.stream()
+				.collect(Collectors.toMap(DtField::getName, Function.identity()));
 	}
 
 	/**
@@ -200,9 +198,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		final E dto = dataStore.<E> readOne(uri);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
-		for (final DtField fragmentField : fragmentDefinition.getFields()) {
-			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
-			dataAccessor.setValue(fragment, dataAccessor.getValue(dto)); //etrange on utilise l'accessor du fragment sur l'entity
+		for (final DtField dtField : fragmentDefinition.getFields()) {
+			final DataAccessor dataAccessor = dtField.getDataAccessor();
+			dataAccessor.setValue(fragment, dataAccessor.getValue(dto));
+			//etrange on utilise l'accessor du fragment sur l'entity
 		}
 		return fragment;
 	}
@@ -319,10 +318,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
-		final List<URI> objectURIs = new ArrayList<>();
-		for (final FK dto : newDtc) {
-			objectURIs.add(DtObjectUtil.createURI(dto));
-		}
+		final List<URI> objectURIs = newDtc
+				.stream()
+				.map(DtObjectUtil::createURI)
+				.collect(Collectors.toList());
 		updateNN(dtListURI, objectURIs);
 	}
 
