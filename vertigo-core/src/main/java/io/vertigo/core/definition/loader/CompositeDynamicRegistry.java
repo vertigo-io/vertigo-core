@@ -90,8 +90,8 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
-			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			return dynamicRegistry.createDefinition(definitionSpace, xdefinition);
+			return lookUpDynamicRegistry(xdefinition)
+					.createDefinition(definitionSpace, xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new WrappedException("An error occurred during the creation of the following definition : " + xdefinition.getName(), e);

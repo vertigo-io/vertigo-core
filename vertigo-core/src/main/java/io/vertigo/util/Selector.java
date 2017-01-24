@@ -296,7 +296,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Class> interfaces() {
-			return clazz -> clazz.isInterface();
+			return Class::isInterface;
 		}
 	}
 }
