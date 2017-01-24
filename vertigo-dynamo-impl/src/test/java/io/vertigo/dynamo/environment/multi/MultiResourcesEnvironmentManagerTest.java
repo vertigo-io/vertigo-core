@@ -62,14 +62,12 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testMergedResources() {
-		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.addModule(new ModuleConfigBuilder("myApp")
-					.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
-					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
-					.build())
-			.build();
-		// @formatter:on
+						.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+						.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
+						.build())
+				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
@@ -100,13 +98,10 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
-
 		return
 			new AppConfigBuilder()
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
