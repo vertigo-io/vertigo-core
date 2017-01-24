@@ -40,6 +40,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +55,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -62,6 +64,8 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.Selector;
+import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -96,8 +100,20 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
 	 */
-	private static Iterable<Class<?>> getClasses(final String dtDefinitionsClassName) {
-		return ClassUtil.newInstance(dtDefinitionsClassName, Iterable.class);
+	private static Collection<Class> selectClasses(final String resourcePath) {
+		final Selector selector = new Selector();
+		if (resourcePath.endsWith("*")) {
+			//by package
+			final String packageName = resourcePath.substring(0, resourcePath.length() - 1);
+			selector.from(packageName);
+		} else {
+			//by Iterable of classes
+			final Iterable dtDefinitionsClass = ClassUtil.newInstance(resourcePath, Iterable.class);
+			selector.from(dtDefinitionsClass);
+		}
+		return selector
+				.filterClasses(ClassConditions.subTypeOf(DtObject.class))
+				.findClasses();
 	}
 
 	/** {@inheritDoc} */
@@ -106,10 +122,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
-		final Iterable<Class<?>> classes = getClasses(resourcePath);
-
 		//--Enregistrement des fichiers java annotés
-		for (final Class<?> javaClass : classes) {
+		for (final Class<?> javaClass : selectClasses(resourcePath)) {
 			//System.out.println(">>>>javaClass " + javaClass);
 			load(javaClass, dynamicModelrepository);
 		}
@@ -139,7 +153,12 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	}
 
-	private static void parseFragment(final Class<?> clazz, final String fragmentOf, final String dtDefinitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseFragment(
+			final Class<?> clazz,
+			final String fragmentOf,
+			final String dtDefinitionName,
+			final String packageName,
+			final DynamicDefinitionRepository dynamicModelRepository) {
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY, packageName)
 				.addDefinitionLink("from", fragmentOf);
 
@@ -363,5 +382,4 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	public String getType() {
 		return "classes";
 	}
-
 }
