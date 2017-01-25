@@ -40,7 +40,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param dynamicDefinition Definition body
 	 * @return this builder
 	 */
-	DynamicDefinitionBuilder addBody(DynamicDefinition dynamicDefinition);
+	DynamicDefinitionBuilder merge(DynamicDefinition dynamicDefinition);
 
 	/**
 	 * @param fieldName Name of the field

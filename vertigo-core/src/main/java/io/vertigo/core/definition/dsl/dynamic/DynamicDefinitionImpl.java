@@ -249,7 +249,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinitionBuilder addBody(final DynamicDefinition dynamicDefinition) {
+	public DynamicDefinitionBuilder merge(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final String propertyName : dynamicDefinition.getPropertyNames()) {
 			addPropertyValue(propertyName, dynamicDefinition.getPropertyValue(propertyName));

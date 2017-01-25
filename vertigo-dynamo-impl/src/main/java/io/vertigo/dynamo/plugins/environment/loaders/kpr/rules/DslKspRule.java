@@ -100,7 +100,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 	}
 
 	private void handleTemplateRule(final DynamicDefinition dynamicDefinition) {
-		dynamicModelrepository.addTemplate(dynamicDefinition);
+		dynamicModelrepository.addPartialDefinition(dynamicDefinition);
 	}
 
 	private void handleDefinitionRule(final DynamicDefinition dynamicDefinition) {

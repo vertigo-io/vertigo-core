@@ -46,7 +46,7 @@ public final class DynamicDefinitionRepository {
 	 * créer les fichiers toujours de la même façon.
 	 */
 	private final Map<String, DynamicDefinition> definitions = new LinkedHashMap<>();
-	private final List<DynamicDefinition> templates = new ArrayList<>();
+	private final List<DynamicDefinition> partials = new ArrayList<>();
 
 	private final DynamicRegistry registry;
 	private final DslGrammar grammar;
@@ -105,14 +105,15 @@ public final class DynamicDefinitionRepository {
 		//-----
 		final DynamicSolver solver = new DynamicSolver();
 
-		solveTemplates();
+		mergePartials();
 		final List<DynamicDefinition> sortedDynamicDefinitions = solver.solve(definitionSpace, this);
 		registerAllDefinitions(definitionSpace, sortedDynamicDefinitions);
 	}
 
-	private void solveTemplates() {
-		for (final DynamicDefinition template : templates) {
-			((DynamicDefinitionBuilder) getDefinition(template.getName())).addBody(template);
+	private void mergePartials() {
+		//parts of definitions are merged
+		for (final DynamicDefinition partial : partials) {
+			((DynamicDefinitionBuilder) getDefinition(partial.getName())).merge(partial);
 		}
 	}
 
@@ -143,13 +144,13 @@ public final class DynamicDefinitionRepository {
 	}
 
 	/**
-	 * Ajoute un template.
-	 * @param definition Template de définition
+	 * adds a partial definition.
+	 * @param partial the part of a definition
 	 */
-	public void addTemplate(final DynamicDefinition definition) {
-		Assertion.checkNotNull(definition);
+	public void addPartialDefinition(final DynamicDefinition partial) {
+		Assertion.checkNotNull(partial);
 		//-----
-		templates.add(definition);
+		partials.add(partial);
 	}
 
 	/**
