@@ -18,6 +18,10 @@ import io.vertigo.util.Selector.ClassConditions;
  */
 public class ComponentDiscovery {
 
+	private ComponentDiscovery() {
+		//private
+	}
+
 	/**
 	 * Register all components of a kind discovered in a package tree.
 	 * If component has API we must find one and only one Impl.
@@ -64,7 +68,7 @@ public class ComponentDiscovery {
 					.filterClasses(ClassConditions.subTypeOf(apiClazz))
 					.findClasses();
 			// ---
-			Assertion.checkState(potentialImpl.size() > 0, "No implentation found for the api {0}", apiClazz);
+			Assertion.checkState(!potentialImpl.isEmpty(), "No implentation found for the api {0}", apiClazz);
 			Assertion.checkState(potentialImpl.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
 			// ---
 			final Class implClass = potentialImpl.stream().findFirst().get();

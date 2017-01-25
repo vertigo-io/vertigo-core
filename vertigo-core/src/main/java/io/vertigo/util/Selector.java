@@ -190,7 +190,7 @@ public final class Selector {
 	private Predicate<Class> filterClassesBasedOnMethods() {
 		return clazz -> {
 			//We don't want to load all declared methods if we don't care
-			if (methodPredicates == ALWAYS_TRUE || clazz.getDeclaredMethods().length == 0) {
+			if (ALWAYS_TRUE.equals(methodPredicates) || clazz.getDeclaredMethods().length == 0) {
 				// no methodPredicate
 				// or no declaring method
 				// so we keep it
@@ -204,7 +204,7 @@ public final class Selector {
 	private Predicate<Class> filterClassesBasedOnFields() {
 		return clazz -> {
 			//We don't want to load all field if we don't care
-			if (fieldPredicates == ALWAYS_TRUE || clazz.getDeclaredFields().length == 0) {
+			if (ALWAYS_TRUE.equals(fieldPredicates) || clazz.getDeclaredFields().length == 0) {
 				// no fieldPredicates
 				// or no declaring field
 				// so we keep it

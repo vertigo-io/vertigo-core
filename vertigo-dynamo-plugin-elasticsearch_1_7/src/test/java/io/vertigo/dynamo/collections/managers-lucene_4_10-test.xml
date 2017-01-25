@@ -24,12 +24,8 @@
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
-		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.oracle.OracleDataStorePlugin">
-				<param name="sequencePrefix" value="SEQ_" />
-			</plugin>
-		</component>
-	</module>
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" />
+ 	</module>
 
 	<module name="myApp">
 		<definitions>

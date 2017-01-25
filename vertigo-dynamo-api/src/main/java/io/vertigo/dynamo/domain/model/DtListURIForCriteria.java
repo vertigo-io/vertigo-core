@@ -75,7 +75,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 
-		Criteria<E> criteria = null;
+		Criteria<E> criteria = Criterions.alwaysTrue();
 		for (final DtField field : dtDefinition.getFields()) {
 			if (field.getType() != DtField.FieldType.COMPUTED) {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);

@@ -57,7 +57,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
 				final String paramValues = Stream.of(values)
-						.map(value -> prepareSqlInArgument(value))
+						.map(Criterion::prepareSqlInArgument)
 						.collect(Collectors.joining(", "));
 				return dtFieldName.name() + " in(" + paramValues + ")";
 			default:
@@ -83,7 +83,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 
 	@Override
 	public Predicate<E> toPredicate() {
-		return entity -> test(entity);
+		return this::test;
 	}
 
 	private boolean test(final E entity) {
