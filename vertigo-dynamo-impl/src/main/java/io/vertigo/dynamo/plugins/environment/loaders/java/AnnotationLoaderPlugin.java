@@ -40,10 +40,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
@@ -100,7 +101,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
 	 */
-	private static Collection<Class> selectClasses(final String resourcePath) {
+	private static <F> Set<Class<F>> selectClasses(final String resourcePath, final Class<F> filterClass) {
 		final Selector selector = new Selector();
 		if (resourcePath.endsWith("*")) {
 			//by package
@@ -112,8 +113,10 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			selector.from(dtDefinitionsClass);
 		}
 		return selector
-				.filterClasses(ClassConditions.subTypeOf(DtObject.class))
-				.findClasses();
+				.filterClasses(ClassConditions.subTypeOf(filterClass))
+				.findClasses()
+				.stream()
+				.collect(Collectors.toSet());
 	}
 
 	/** {@inheritDoc} */
@@ -123,13 +126,12 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
 		//--Enregistrement des fichiers java annotés
-		for (final Class<?> javaClass : selectClasses(resourcePath)) {
-			//System.out.println(">>>>javaClass " + javaClass);
+		for (final Class<DtObject> javaClass : selectClasses(resourcePath, DtObject.class)) {
 			load(javaClass, dynamicModelrepository);
 		}
 	}
 
-	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static void load(final Class<DtObject> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
 		final String simpleName = clazz.getSimpleName();
@@ -154,7 +156,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static void parseFragment(
-			final Class<?> clazz,
+			final Class<DtObject> clazz,
 			final String fragmentOf,
 			final String dtDefinitionName,
 			final String packageName,
@@ -166,7 +168,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static void parseDtDefinition(
-			final Class<?> clazz,
+			final Class<DtObject> clazz,
 			final DtStereotype stereotype,
 			final String dtDefinitionName,
 			final String packageName,
@@ -181,7 +183,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
 	}
 
-	private static void parseDynamicDefinitionBuilder(final Class<?> clazz, final DynamicDefinitionBuilder dtDefinitionBuilder, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final DynamicDefinitionBuilder dtDefinitionBuilder, final DynamicDefinitionRepository dynamicModelRepository) {
 		final String packageName = clazz.getPackage().getName();
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -218,7 +220,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		return StoreManager.MAIN_DATA_SPACE_NAME;
 	}
 
-	private static DtStereotype parseStereotype(final Class<?> clazz) {
+	private static DtStereotype parseStereotype(final Class<DtObject> clazz) {
 		if (DtMasterData.class.isAssignableFrom(clazz)) {
 			return DtStereotype.MasterData;
 		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
