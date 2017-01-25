@@ -14,7 +14,7 @@ public final class Param {
 	private static final String FALSE = "false";
 
 	/** Regexp paramName. */
-	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+)*");
+	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+){0,200}");
 	private final String name;
 	private final String value;
 
@@ -112,9 +112,9 @@ public final class Param {
 			} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
 				return toBoolean(paramName, paramValue);
 			} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
-				return Integer.parseInt(paramValue);
+				return Integer.valueOf(paramValue);
 			} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
-				return Long.parseLong(paramValue);
+				return Long.valueOf(paramValue);
 			} else {
 				throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 			}

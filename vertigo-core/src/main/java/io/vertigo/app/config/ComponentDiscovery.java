@@ -18,6 +18,10 @@ import io.vertigo.util.Selector.ClassConditions;
  */
 public class ComponentDiscovery {
 
+	private ComponentDiscovery() {
+		//private
+	}
+
 	/**
 	 * Register all components of a kind discovered in a package tree.
 	 * If component has API we must find one and only one Impl.
