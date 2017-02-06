@@ -101,7 +101,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
 	 */
-	private static <F> Set<Class<F>> selectClasses(final String resourcePath, final Class<F> filterClass) {
+	private static Set<Class> selectClasses(final String resourcePath, final Class filterClass) {
 		final Selector selector = new Selector();
 		if (resourcePath.endsWith("*")) {
 			//by package
