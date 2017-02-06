@@ -68,13 +68,17 @@ public final class DtObjectJsonConverter implements JsonConverter {
 			objectPath = "";
 		} else if (input instanceof UiContext) {
 			uiObject = (UiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());
-			Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", webServiceParam);
+			if (!webServiceParam.isOptional()) {
+				Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", webServiceParam);
+			}
 			objectPath = webServiceParam.getName();
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));
 		}
 		//-----
-		UiObjectUtil.postReadUiObject(uiObject, objectPath, webServiceParam);
+		if (uiObject != null) { //uiObject peut être null si le paramètre est optional
+			UiObjectUtil.postReadUiObject(uiObject, objectPath, webServiceParam);
+		}
 		routeContext.setParamValue(webServiceParam, uiObject);
 	}
 

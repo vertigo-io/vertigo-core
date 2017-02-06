@@ -101,7 +101,9 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 			final ExtendedObject<?> updatedExtendedObject = new ExtendedObject(updatedValue);
 			updatedExtendedObject.putAll(extendedObject);
 			routeContext.setParamValue(webServiceParam, updatedExtendedObject);
-		}
+		} /*else if (value instanceof Optional && ((Optional) value).isPresent()) {
+			validateParam(((Optional) value).get(), uiMessageStack, webServiceParam, routeContext);
+			}*/
 	}
 
 	private static List<DtObjectValidator<DtObject>> obtainDtObjectValidators(final WebServiceParam webServiceParam) {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -216,6 +217,19 @@ public final class SimplerTestWebServices implements WebServices {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
 		result.add(contactTo);
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
+	@Doc("Test ws multipart body with optional objects. Send a body with an object of to field : contactFrom, Optional<contactTo>. Each one should be an json of Contact.")
+	@POST("/innerbodyOptional")
+	public List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactTo) {
+		final List<Contact> result = new ArrayList<>(2);
+		result.add(contactFrom);
+		if (contactTo.isPresent()) {
+			result.add(contactTo.get());
+		}
 		//offset + range ?
 		//code 200
 		return result;
