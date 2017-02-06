@@ -20,7 +20,6 @@ package io.vertigo.vega.plugins.webservice.handler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -101,13 +100,7 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 		}
 		return webServiceDefinition.getWebServiceParams()
 				.stream()
-				.map(webServiceParam -> {
-					if (webServiceParam.isOptional()) {
-						return Optional.ofNullable(routeContext.getParamValue(webServiceParam));
-					} else {
-						return routeContext.getParamValue(webServiceParam);
-					}
-				})
+				.map(webServiceParam -> routeContext.getParamValue(webServiceParam))
 				.toArray();
 	}
 }

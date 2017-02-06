@@ -18,19 +18,19 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiListModifiable;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.DtListDelta;
-import io.vertigo.vega.webservice.model.UiObject;
-import io.vertigo.vega.webservice.validation.VegaUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiContextResolver;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
+import io.vertigo.vega.webservice.validation.VegaUiMessageStack;
 import spark.Request;
 import spark.Response;
 
@@ -92,7 +92,7 @@ public final class WebServiceCallContext {
 	 * @param value param value
 	 */
 	public void setParamValue(final WebServiceParam webServiceParam, final Object value) {
-		request.attribute(webServiceParam.getFullName(), value);
+		request.attribute(webServiceParam.getFullName(), ifOptional(webServiceParam, value));
 	}
 
 	/**
@@ -105,53 +105,29 @@ public final class WebServiceCallContext {
 	}
 
 	/**
-	 * Register UiObject.
+	 * Register Updated Dtos.
 	 * @param webServiceParam param name
-	 * @param uiObject param value
+	 * @param updatedValue param updatedvalue
+	 * @param contextKeyMap Map of elements contextKey
 	 */
-	public void registerUiObject(final WebServiceParam webServiceParam, final UiObject uiObject) {
-		request.attribute(webServiceParam.getFullName(), uiObject);
-	}
+	public void registerUpdatedDtObjects(final WebServiceParam webServiceParam, final Serializable updatedValue, final Map<String, DtObject> contextKeyMap) {
+		Assertion.checkArgument(updatedValue instanceof DtObject
+				|| updatedValue instanceof DtList
+				|| updatedValue instanceof DtListDelta,
+				"Context {0} format {1} not supported. Should be a DtObject, a DtList or a DtListDelta", webServiceParam.getFullName(), updatedValue.getClass().getSimpleName());
 
-	/**
-	 * Register Updated Dto.
-	 * @param webServiceParam param name
-	 * @param contextKey Context key of this dto in request
-	 * @param updatedDto param value
-	 */
-	public void registerUpdatedDto(final WebServiceParam webServiceParam, final String contextKey, final DtObject updatedDto) {
-		uiContextResolver.register(contextKey, updatedDto);
+		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
+			uiContextResolver.register(entry.getKey(), entry.getValue());
+		}
 		request.attribute(webServiceParam.getFullName() + "-input", request.attribute(webServiceParam.getFullName()));
-		request.attribute(webServiceParam.getFullName(), updatedDto);
+		request.attribute(webServiceParam.getFullName(), ifOptional(webServiceParam, updatedValue));
 	}
 
-	/**
-	 * Register Updated DtListDelta.
-	 * @param webServiceParam param name
-	 * @param dtListDelta param value
-	 * @param contextKeyMap Map of elements contextKey
-	 */
-	public void registerUpdatedDtListDelta(final WebServiceParam webServiceParam, final DtListDelta dtListDelta, final Map<String, DtObject> contextKeyMap) {
-		final UiListDelta<?> uiListDelta = (UiListDelta<?>) request.attribute(webServiceParam.getFullName());
-		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
-			uiContextResolver.register(entry.getKey(), entry.getValue());
+	private static Object ifOptional(final WebServiceParam webServiceParam, final Object value) {
+		Object newValue = value;
+		if (webServiceParam.isOptional()) {
+			newValue = Optional.ofNullable(value);
 		}
-		request.attribute(webServiceParam.getFullName() + "-input", uiListDelta);
-		request.attribute(webServiceParam.getFullName(), dtListDelta);
-	}
-
-	/**
-	 * Register Updated DtList.
-	 * @param webServiceParam param name
-	 * @param dtList param value
-	 * @param contextKeyMap Map of elements contextKey
-	 */
-	public void registerUpdatedDtList(final WebServiceParam webServiceParam, final DtList dtList, final Map<String, DtObject> contextKeyMap) {
-		final UiListModifiable<?> uiList = (UiListModifiable<?>) request.attribute(webServiceParam.getFullName());
-		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
-			uiContextResolver.register(entry.getKey(), entry.getValue());
-		}
-		request.attribute(webServiceParam.getFullName() + "-input", uiList);
-		request.attribute(webServiceParam.getFullName(), dtList);
+		return newValue;
 	}
 }

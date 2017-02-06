@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -69,31 +70,31 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 	}
 
 	private static void validateParam(final Object value, final UiMessageStack uiMessageStack, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
+		final Map<String, DtObject> contextKeyMap = new HashMap<>();
 		if (value instanceof UiObject) {
 			final UiObject<DtObject> uiObject = (UiObject<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
 			//Only authorized fields have already been checked (JsonConverterHandler)
 			final DtObject updatedDto = uiObject.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
-			routeContext.registerUpdatedDto(webServiceParam, uiObject.getInputKey(), updatedDto);
+			contextKeyMap.put(uiObject.getInputKey(), updatedDto);
+			routeContext.registerUpdatedDtObjects(webServiceParam, updatedDto, contextKeyMap);
 		} else if (value instanceof UiListDelta) {
 			final UiListDelta<DtObject> uiListDelta = (UiListDelta<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
-			final Map<String, DtObject> contextKeyMap = new HashMap<>();
 
 			//Only authorized fields have already been checked (JsonConverterHandler)
 			final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
 			final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
 			final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
 			final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
-			routeContext.registerUpdatedDtListDelta(webServiceParam, dtListDelta, contextKeyMap);
+			routeContext.registerUpdatedDtObjects(webServiceParam, dtListDelta, contextKeyMap);
 		} else if (value instanceof UiListModifiable) {
 			final UiListModifiable<DtObject> uiList = (UiListModifiable<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
-			final Map<String, DtObject> contextKeyMap = new HashMap<>();
 
 			//Only authorized fields have already been checked (JsonConverterHandler)
 			final DtList<DtObject> dtList = mergeAndCheckInput(uiList.getObjectType(), uiList, dtObjectValidators, uiMessageStack, contextKeyMap);
-			routeContext.registerUpdatedDtList(webServiceParam, dtList, contextKeyMap);
+			routeContext.registerUpdatedDtObjects(webServiceParam, dtList, contextKeyMap);
 		} else if (value instanceof ExtendedObject) {
 			final ExtendedObject<?> extendedObject = (ExtendedObject) value;
 			validateParam(extendedObject.getInnerObject(), uiMessageStack, webServiceParam, routeContext);
@@ -101,9 +102,9 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 			final ExtendedObject<?> updatedExtendedObject = new ExtendedObject(updatedValue);
 			updatedExtendedObject.putAll(extendedObject);
 			routeContext.setParamValue(webServiceParam, updatedExtendedObject);
-		} /*else if (value instanceof Optional && ((Optional) value).isPresent()) {
+		} else if (value instanceof Optional && ((Optional) value).isPresent()) {
 			validateParam(((Optional) value).get(), uiMessageStack, webServiceParam, routeContext);
-			}*/
+		}
 	}
 
 	private static List<DtObjectValidator<DtObject>> obtainDtObjectValidators(final WebServiceParam webServiceParam) {
