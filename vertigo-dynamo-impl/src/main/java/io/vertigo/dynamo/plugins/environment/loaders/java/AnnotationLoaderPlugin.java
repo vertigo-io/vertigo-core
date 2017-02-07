@@ -116,6 +116,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				.filterClasses(ClassConditions.subTypeOf(filterClass))
 				.findClasses()
 				.stream()
+				.map(clazz -> (Class<F>) clazz)
 				.collect(Collectors.toSet());
 	}
 
