@@ -322,7 +322,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append("_BY_CRITERIA")
 				.toString();
 		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			return fullName.substring(fullName.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
+			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
 		return fullName;
 	}

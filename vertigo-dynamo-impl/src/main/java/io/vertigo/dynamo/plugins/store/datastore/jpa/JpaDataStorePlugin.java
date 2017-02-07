@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.store.datastore.jpa;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -194,7 +193,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), criteria);
+		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition));
 		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
@@ -376,31 +375,16 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private <E extends Entity> String getListTaskName(final String tableName, final Criteria<E> criteria) {
-		return getListTaskName(tableName, criteria.toSql(sqlDataBase.getSqlDialect()).getVal2().getAttributeNames());
-	}
-
-	private static String getListTaskName(final String tableName, final Set<String> criteriaFieldNames) {
-		final StringBuilder sb = new StringBuilder()
+	private static String getListTaskName(final String tableName) {
+		final String fullName = new StringBuilder()
 				.append("LIST_")
-				.append(tableName);
-
-		//si il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
-		if (criteriaFieldNames.size() <= 1) {
-			String sep = "_BY_";
-			for (final String filterName : criteriaFieldNames) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-		} else {
-			sb.append("_BY_CRITERIA");
+				.append(tableName)
+				.append("_BY_CRITERIA")
+				.toString();
+		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
+			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
 		}
-		String result = sb.toString();
-		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
-		}
-		return result;
+		return fullName;
 	}
 
 }
