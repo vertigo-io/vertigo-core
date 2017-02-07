@@ -796,6 +796,51 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testPostInnerBodyOptionalPresentObject() {
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+
+		final Map<String, String> contactTo = given().filter(loggedSessionFilter)
+				.when().get("/test/6")
+				.body().as(Map.class);
+
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(2))
+				.body("get(0).conId", Matchers.equalTo(5))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.body("get(1).conId", Matchers.equalTo(6))
+				.body("get(1).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerbodyOptional");
+	}
+
+	@Test
+	public void testPostInnerBodyOptionalEmptyObject() {
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.build();
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(1))
+				.body("get(0).conId", Matchers.equalTo(5))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerbodyOptional");
+	}
+
+	@Test
 	public void testPostInnerBodyValidationErrors() throws ParseException {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);

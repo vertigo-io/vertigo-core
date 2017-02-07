@@ -23,7 +23,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -166,10 +165,8 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			final Object converterSource = jsonReaderToApply.extractData(request, webServiceParam, routeContext);
 			if (converterSource != null) { //On ne convertit pas les null
 				jsonConverterToApply.populateWebServiceCallContext(converterSource, webServiceParam, routeContext);
-			}
-			if (webServiceParam.isOptional()) {
-				final Object paramValue = routeContext.getParamValue(webServiceParam);
-				routeContext.setParamValue(webServiceParam, Optional.ofNullable(paramValue));
+			} else if (webServiceParam.isOptional()) {
+				routeContext.setParamValue(webServiceParam, converterSource);
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {
