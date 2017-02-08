@@ -446,6 +446,21 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		testFacetResultByRange(result);
 	}
 
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testEmptyIndexQuery() {
+		//On supprime tout
+		remove("*:*");
+		long size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(0L, size);
+
+		size = query("*:*");
+		Assert.assertEquals(0, size);
+	}
+
 	private void testFacetResultByRange(final FacetedQueryResult<Car, ?> result) {
 		Assert.assertEquals(carDataBase.size(), result.getCount());
 
