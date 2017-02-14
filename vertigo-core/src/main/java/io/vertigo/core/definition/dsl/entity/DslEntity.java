@@ -149,4 +149,22 @@ public final class DslEntity implements DslEntityFieldType {
 	public boolean isEntity() {
 		return true;
 	}
+
+	public void assertThatFieldIsAProperty(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(getField(fieldName).getType().isProperty(),
+				"expected a property on {0}", fieldName);
+	}
+
+	public void assertThatFieldIsAnEntity(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(getField(fieldName).getType().isEntity(),
+				"expected an entity on {0}", fieldName);
+	}
+
+	public void assertThatFieldIsALink(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		Assertion.checkState(getField(fieldName).getType().isEntityLink(),
+				"expected a link on {0}", fieldName);
+	}
 }

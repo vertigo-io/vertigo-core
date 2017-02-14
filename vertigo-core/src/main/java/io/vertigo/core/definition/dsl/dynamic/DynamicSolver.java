@@ -36,11 +36,12 @@ import io.vertigo.lang.VSystemException;
  * @author  pchretien
  */
 final class DynamicSolver {
+
 	/**
 	* Résoltuion des références.
 	* On appelle SyntaxHandler dans le bon Ordre
 	*/
-	List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionRepository) {
+	static List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionRepository) {
 		Assertion.checkNotNull(definitionSpace);
 		Assertion.checkNotNull(definitionRepository);
 		//-----

@@ -18,10 +18,14 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.lang.Assertion;
 
 /**
  * Classe permettant de créer dynamiquement une structure grammaticale.
@@ -30,21 +34,73 @@ import io.vertigo.core.definition.dsl.entity.DslEntity;
  *
  * @author  pchretien
  */
-public interface DynamicDefinition {
+public final class DynamicDefinition {
+	/** Type. */
+	private final DslEntity entity;
+
+	/** Name of the package. */
+	private final String packageName;
+
+	/**name of this definition.*/
+	private final String name;
+
+	/** Map  (fieldName, propertyValue)  */
+	private final Map<String, Object> propertyValueByFieldName;
+
 	/**
-	 * @return Nom de la Définition
+	 * Links.
+	 * Map (fieldName, definitions identified by its name)
 	 */
-	String getName();
+	private final Map<String, List<String>> definitionLinkNamesByFieldName;
+
+	/**
+	 * Children.
+	 * Map (fieldName, definitions
+	 */
+	private final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName;
+
+	DynamicDefinition(
+			final DslEntity entity,
+			final String packageName,
+			final String name,
+			final Map<String, Object> propertyValueByFieldName,
+			final Map<String, List<String>> definitionLinkNamesByFieldName,
+			final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName) {
+		Assertion.checkNotNull(entity);
+		//packageName can be null
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(propertyValueByFieldName);
+		Assertion.checkNotNull(definitionLinkNamesByFieldName);
+		Assertion.checkNotNull(childDefinitionsByFieldName);
+		//---
+		this.entity = entity;
+		this.packageName = packageName;
+		this.name = name;
+		this.propertyValueByFieldName = propertyValueByFieldName;
+		this.definitionLinkNamesByFieldName = definitionLinkNamesByFieldName;
+		this.childDefinitionsByFieldName = childDefinitionsByFieldName;
+	}
 
 	/**
 	 * @return Nom du package
 	 */
-	String getPackageName();
+	public String getPackageName() {
+		return packageName;
+	}
 
 	/**
 	 * @return Entité
 	 */
-	DslEntity getEntity();
+	public DslEntity getEntity() {
+		return entity;
+	}
+
+	/**
+	 * @return Nom de la Définition
+	 */
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * Retourne la valeur d'une (méta) propriété liée au domaine, champ, dtDéfinition...
@@ -52,13 +108,22 @@ public interface DynamicDefinition {
 	 * @param fieldName Name of the field
 	 * @return valeur de la propriété
 	 */
-	Object getPropertyValue(String fieldName);
+	public Object getPropertyValue(final String fieldName) {
+		entity.assertThatFieldIsAProperty(fieldName);
+		// On ne vérifie rien sur le type retourné par le getter.
+		// le type a été validé lors du put.
+		//-----
+		// Conformémément au contrat, on retourne null si pas de propriété trouvée
+		return propertyValueByFieldName.get(fieldName);
+	}
 
 	/**
 	 * Set des propriétés gérées.
 	 * @return Collection
 	 */
-	Set<String> getPropertyNames();
+	public Set<String> getPropertyNames() {
+		return Collections.unmodifiableSet(propertyValueByFieldName.keySet());
+	}
 
 	/**
 	 * Permet de récupérer la liste des définitions d'un champ.
@@ -66,36 +131,64 @@ public interface DynamicDefinition {
 	 * @param fieldName Nom du champ.
 	 * @return List
 	 */
-	List<String> getDefinitionLinkNames(final String fieldName);
+	public List<String> getDefinitionLinkNames(final String fieldName) {
+		entity.assertThatFieldIsALink(fieldName);
+		//---
+		return definitionLinkNamesByFieldName.get(fieldName);
+	}
 
 	/**
 	 * Uniquement si il y a une et une seule référence pour ce champ.
 	 * @param fieldName Nom du champ.
 	 * @return Clé de la définition
 	 */
-	String getDefinitionLinkName(final String fieldName);
+	public String getDefinitionLinkName(final String fieldName) {
+		entity.assertThatFieldIsALink(fieldName);
+		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucun lien déclaré pour le champ ''{0}'' sur ''{1}'' ", fieldName, getName());
+		final List<String> list = definitionLinkNamesByFieldName.get(fieldName);
+		final String definitionName = list.get(0);
+		//-----
+		// On vérifie qu'il y a une définition pour le champ demandé
+		Assertion.checkNotNull(definitionName);
+		return definitionName;
+	}
 
 	/**
 	 * @param fieldName Nom du champ.
 	 * @return Si la définition contient le champ
 	 */
-	boolean containsDefinitionLinkName(final String fieldName);
+	public boolean containsDefinitionLinkName(final String fieldName) {
+		entity.assertThatFieldIsALink(fieldName);
+		//---
+		return definitionLinkNamesByFieldName.containsKey(fieldName);
+	}
 
 	/**
 	 * Permet de récupérer la collection de tous les champs qui pointent vers des définitions utilisées par référence.
 	 * @return Collection de tous les champs utilisant des définitions référencées.
 	 */
-	List<String> getAllDefinitionLinkFieldNames();
+	public Set<String> getAllDefinitionLinkFieldNames() {
+		return definitionLinkNamesByFieldName.keySet();
+	}
 
 	/**
 	 * Récupération de la liste des definitions dont est composée la définition principale.
 	 * @param fieldName String
 	 * @return List
 	 */
-	List<DynamicDefinition> getChildDefinitions(final String fieldName);
+	public List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+		entity.assertThatFieldIsAnEntity(fieldName);
+		//---
+		return childDefinitionsByFieldName.get(fieldName);
+	}
 
 	/**
 	 * @return Collection des listes de définitions composites.
 	 */
-	List<DynamicDefinition> getAllChildDefinitions();
+	public List<DynamicDefinition> getAllChildDefinitions() {
+		return childDefinitionsByFieldName.values()
+				.stream()
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+	}
 }

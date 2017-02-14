@@ -103,17 +103,19 @@ public final class DynamicDefinitionRepository {
 	public void solve(final DefinitionSpace definitionSpace) {
 		Assertion.checkNotNull(definitionSpace);
 		//-----
-		final DynamicSolver solver = new DynamicSolver();
-
 		mergePartials();
-		final List<DynamicDefinition> sortedDynamicDefinitions = solver.solve(definitionSpace, this);
+
+		final List<DynamicDefinition> sortedDynamicDefinitions = DynamicSolver.solve(definitionSpace, this);
 		registerAllDefinitions(definitionSpace, sortedDynamicDefinitions);
 	}
 
 	private void mergePartials() {
 		//parts of definitions are merged
 		for (final DynamicDefinition partial : partials) {
-			((DynamicDefinitionBuilder) getDefinition(partial.getName())).merge(partial);
+			final DynamicDefinition merged = new DynamicDefinitionBuilder(partial.getName(), partial.getEntity())
+					.merge(getDefinition(partial.getName()))
+					.merge(partial).build();
+			definitions.put(partial.getName(), merged);
 		}
 	}
 
@@ -162,7 +164,7 @@ public final class DynamicDefinitionRepository {
 	 * @return Nouvelle Définition
 	 */
 	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final DslEntity entity, final String packageName) {
-		return new DynamicDefinitionImpl(definitionName, entity).withPackageName(packageName);
+		return new DynamicDefinitionBuilder(definitionName, entity).withPackageName(packageName);
 	}
 
 	/**

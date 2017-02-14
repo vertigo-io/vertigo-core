@@ -135,7 +135,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionLinkName("dataType"));
 		final String domainName = xdomain.getName();
 
-		final boolean hasFormatter = xdomain.containsDefinitionLinkName("formatter");
+		final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
 
 		final DomainBuilder domainBuilder = new DomainBuilder(domainName, dataType);

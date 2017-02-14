@@ -85,9 +85,12 @@ public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 			switch (declarationChoice.getChoiceIndex()) {
 				case 0:
 					//On positionne le Package
-					final DynamicDefinitionBuilder dynamicDefinition = (DynamicDefinitionBuilder) declarationChoice.getValue();
-					dynamicDefinition.withPackageName(packageName);
-					handleDefinitionRule((DynamicDefinition) declarationChoice.getValue());
+					final DynamicDefinition oldDynamicDefinition = (DynamicDefinition) declarationChoice.getValue();
+					final DynamicDefinition newDynamicDefinition = new DynamicDefinitionBuilder(oldDynamicDefinition.getName(), oldDynamicDefinition.getEntity())
+							.withPackageName(packageName)
+							.merge(oldDynamicDefinition)
+							.build();
+					handleDefinitionRule(newDynamicDefinition);
 					break;
 				case 1:
 					handleTemplateRule((DynamicDefinition) declarationChoice.getValue());
