@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -153,18 +152,6 @@ public final class DslDefinitionRepository {
 		Assertion.checkNotNull(partial);
 		//-----
 		partials.add(partial);
-	}
-
-	/**
-	 * Create a new definition.
-	 * This definition is not registered.
-	 * @param packageName Nom du package
-	 * @param definitionName Name of the definition
-	 * @param entity entity
-	 * @return Nouvelle Définition
-	 */
-	public static DslDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final DslEntity entity, final String packageName) {
-		return new DslDefinitionBuilder(definitionName, entity).withPackageName(packageName);
 	}
 
 	/**

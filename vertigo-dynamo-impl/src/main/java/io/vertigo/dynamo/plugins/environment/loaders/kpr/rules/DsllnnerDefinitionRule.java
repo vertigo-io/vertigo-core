@@ -24,7 +24,6 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
@@ -63,7 +62,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		final String definitionName = (String) parsing.get(2);
 		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
-		final DslDefinitionBuilder dynamicDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
+		final DslDefinitionBuilder dynamicDefinitionBuilder = new DslDefinitionBuilder(definitionName, entity);
 		populateDefinition(definitionBody, dynamicDefinitionBuilder);
 
 		//---

@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.loader.KernelGrammar;
@@ -81,7 +82,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On liste les types primitifs
 		final DslEntity dataTypeEntity = KernelGrammar.getDataTypeEntity();
 		for (final DataType type : DataType.values()) {
-			dynamicDefinitions.add(DslDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
+			dynamicDefinitions.add(new DslDefinitionBuilder(type.name(), dataTypeEntity).build());
 		}
 		return dynamicDefinitions;
 	}
@@ -492,7 +493,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return DslDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
+		return new DslDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain)
+				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)
@@ -507,7 +509,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//On fait la même chose avec DTC
 
-		return DslDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
+		return new DslDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain)
+				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)

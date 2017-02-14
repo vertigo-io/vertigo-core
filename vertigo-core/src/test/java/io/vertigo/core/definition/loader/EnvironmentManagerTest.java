@@ -39,6 +39,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
@@ -57,21 +58,24 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void simpleTest() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 
-		final DslDefinition address1Definition = DslDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+		final DslDefinition address1Definition = new DslDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(STREET, "1, rue du louvre")
 				.addPropertyValue(POSTAL_CODE, "75008")
 				.addPropertyValue(CITY, "Paris")
 				.build();
 		dynamicDefinitionRepository.addDefinition(address1Definition);
 
-		final DslDefinition address2Definition = DslDefinitionRepository.createDynamicDefinitionBuilder("MOCK_SECOND_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+		final DslDefinition address2Definition = new DslDefinitionBuilder("MOCK_SECOND_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(STREET, "105, rue martin")
 				.addPropertyValue(POSTAL_CODE, "75008")
 				.addPropertyValue(CITY, "Paris CEDEX")
 				.build();
 		dynamicDefinitionRepository.addDefinition(address2Definition);
 
-		final DslDefinition personDefinition = DslDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MISTER_BEAN", PersonGrammar.PERSON_ENTITY, "io.vertigo.test.model")
+		final DslDefinition personDefinition = new DslDefinitionBuilder("MOCK_MISTER_BEAN", PersonGrammar.PERSON_ENTITY)
+				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(NAME, "105, rue martin")
 				.addPropertyValue(FIRST_NAME, "75008")
 				.addPropertyValue(AGE, 42)
@@ -90,7 +94,8 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void badTypeTest() {
 		Assertions.assertThrows(ClassCastException.class,
 				() -> {
-					final DslDefinition address1Definition = DslDefinitionRepository.createDynamicDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY, "io.vertigo.test.model")
+					final DslDefinition address1Definition = new DslDefinitionBuilder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+							.withPackageName("io.vertigo.test.model")
 							.addPropertyValue(STREET, "1, rue du louvre")
 							.addPropertyValue(POSTAL_CODE, 75008)
 							.addPropertyValue(CITY, "Paris")

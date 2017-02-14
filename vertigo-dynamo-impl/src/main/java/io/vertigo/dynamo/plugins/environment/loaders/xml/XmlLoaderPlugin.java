@@ -85,7 +85,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 	private static DslDefinition toDynamicDefinition(final XmlClass clazz) {
 		final DslEntity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
-		final DslDefinitionBuilder dtDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
+		final DslDefinitionBuilder dtDefinitionBuilder = new DslDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity)
+				.withPackageName(clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
 				.addPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
 
@@ -103,7 +104,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	private static DslDefinition toDynamicDefinition(final XmlAttribute attribute) {
 		final DslEntity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 
-		return DslDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
+		return new DslDefinitionBuilder(attribute.getCode(), dtFieldEntity)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
 				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
@@ -127,7 +128,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DslDefinitionBuilder associationDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, association.getPackageName())
+		final DslDefinitionBuilder associationDefinitionBuilder = new DslDefinitionBuilder(name, dynamicMetaDefinition)
+				.withPackageName(association.getPackageName())
 				.addPropertyValue(KspProperty.NAVIGABILITY_A, association.isNavigableA())
 				.addPropertyValue(KspProperty.NAVIGABILITY_B, association.isNavigableB())
 				//---

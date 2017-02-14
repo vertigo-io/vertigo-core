@@ -162,7 +162,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			final String dtDefinitionName,
 			final String packageName,
 			final DslDefinitionRepository dynamicModelRepository) {
-		final DslDefinitionBuilder dtDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY, packageName)
+		final DslDefinitionBuilder dtDefinitionBuilder = new DslDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY)
+				.withPackageName(packageName)
 				.addDefinitionLink("from", fragmentOf);
 
 		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
@@ -174,7 +175,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			final String dtDefinitionName,
 			final String packageName,
 			final DslDefinitionRepository dynamicModelRepository) {
-		final DslDefinitionBuilder dtDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
+		final DslDefinitionBuilder dtDefinitionBuilder = new DslDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY)
+				.withPackageName(packageName)
 				.addPropertyValue(STEREOTYPE, stereotype.name());
 
 		// Only Persistent stereotypes have a dataspace => Fragment got it from parent
@@ -239,7 +241,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				//============================================================
 				//Attention pamc inverse dans oom les déclarations des objets !!
 
-				final DslDefinition associationDefinition = DslDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)
+				final DslDefinition associationDefinition = new DslDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY)
+						.withPackageName(packageName)
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 						.addPropertyValue(MULTIPLICITY_A, association.primaryMultiplicity())
@@ -268,7 +271,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				//============================================================
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
-				final DslDefinition associationDefinition = DslDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)
+				final DslDefinition associationDefinition = new DslDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY)
+						.withPackageName(packageName)
 						.addPropertyValue(TABLE_NAME, association.tableName())
 
 						// associationDefinition.
@@ -321,7 +325,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DslDefinition dtField = DslDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
+		final DslDefinition dtField = new DslDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY)
 				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
 				.addPropertyValue(NOT_NULL, field.required())
