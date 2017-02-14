@@ -20,9 +20,9 @@ package io.vertigo.core.definition.dsl.entity;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
@@ -82,13 +82,11 @@ public final class DslEntity implements DslEntityFieldType {
 	 * @return Ensemble de toutes les propriétés gérées (obligatoires ou non).
 	 */
 	public Set<String> getPropertyNames() {
-		final Set<String> names = new HashSet<>();
-		for (final DslEntityField field : fields.values()) {
-			if (field.getType().isProperty()) {
-				names.add(field.getName());
-			}
-		}
-		return names;
+		return fields.values()
+				.stream()
+				.filter(field -> field.getType().isProperty())
+				.map(field -> field.getName())
+				.collect(Collectors.toSet());
 	}
 
 	/**
