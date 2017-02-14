@@ -16,10 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.security;
+package io.vertigo.persona.security.dsl;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,10 +42,6 @@ public final class DslSecurityRulesBuilderTest {
 		testStringFixedQuery(testQueries);
 	}
 
-	private <O> SqlSecurityRuleTranslator createSqlSecurityRuleTranslator() {
-		return new SqlSecurityRuleTranslator();
-	}
-
 	int getPreferedResult() {
 		return 3;
 	}
@@ -59,19 +54,6 @@ public final class DslSecurityRulesBuilderTest {
 					.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
 			final String result = securityRuleTranslator.toSql();
 			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
-			i++;
-		}
-	}
-
-	private void testObjectFixedQuery(final Object[]... testData) {
-		int i = 0;
-		for (final Object[] testParam : testData) {
-			final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
-					.withRule((String) testParam[0])
-					.withCriteria((Map<String, String[]>) testParam[1]);
-			final String result = securityRuleTranslator.toSql();
-			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
 			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
 			i++;
 		}
