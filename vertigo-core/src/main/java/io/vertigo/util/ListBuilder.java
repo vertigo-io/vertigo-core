@@ -59,7 +59,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		Assertion.checkNotNull(values);
 		//-----
 		for (final X value : values) {
-			list.add(value);
+			add(value);
 		}
 		return this;
 	}
