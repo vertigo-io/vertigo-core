@@ -35,30 +35,30 @@ import io.vertigo.lang.VSystemException;
  *
  * @author  pchretien
  */
-final class DynamicSolver {
+final class DslSolver {
 
 	/**
 	* Résoltuion des références.
 	* On appelle SyntaxHandler dans le bon Ordre
 	*/
-	static List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final DynamicDefinitionRepository definitionRepository) {
+	static List<DslDefinition> solve(final DefinitionSpace definitionSpace, final DslDefinitionRepository definitionRepository) {
 		Assertion.checkNotNull(definitionSpace);
 		Assertion.checkNotNull(definitionRepository);
 		//-----
 		//Liste des clés résolues
-		final List<DynamicDefinition> orderedList = new ArrayList<>();
+		final List<DslDefinition> orderedList = new ArrayList<>();
 
 		final Collection<String> orphans = definitionRepository.getOrphanDefinitionKeys();
 		if (!orphans.isEmpty()) {
 			throw new VSystemException(" Les clés suivantes {0} sont orphelines", orphans);
 		}
 		//-----
-		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
+		final Collection<DslDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
 
-		DynamicDefinition xdef;
+		DslDefinition xdef;
 		int size = coll.size();
 		while (size > 0) {
-			for (final Iterator<DynamicDefinition> it = coll.iterator(); it.hasNext();) {
+			for (final Iterator<DslDefinition> it = coll.iterator(); it.hasNext();) {
 				xdef = it.next();
 				//==============================================================
 				//==============================================================
@@ -78,10 +78,10 @@ final class DynamicSolver {
 	}
 
 	private static boolean isSolved(final DefinitionSpace definitionSpace,
-			final DynamicDefinitionRepository definitionRepository,
-			final List<DynamicDefinition> orderedList,
-			final DynamicDefinition definition,
-			final DynamicDefinition xdefRoot) {
+			final DslDefinitionRepository definitionRepository,
+			final List<DslDefinition> orderedList,
+			final DslDefinition definition,
+			final DslDefinition xdefRoot) {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
@@ -95,7 +95,7 @@ final class DynamicSolver {
 						throw new VSystemException("Clé {0} de type {1}, référencée par la propriété {2} de {3} non trouvée",
 								definitionName, definition.getEntity().getField(fieldName).getType(), fieldName, xdefRootName);
 					}
-					final DynamicDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
+					final DslDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
 					if (!orderedList.contains(linkedDefinition)) {
 						return false;
 					}
@@ -104,7 +104,7 @@ final class DynamicSolver {
 		}
 
 		//On vérifie que les composites sont résolues.
-		for (final DynamicDefinition child : definition.getAllChildDefinitions()) {
+		for (final DslDefinition child : definition.getAllChildDefinitions()) {
 			if (!isSolved(definitionSpace, definitionRepository, orderedList, child, xdefRoot)) {
 				return false;
 			}

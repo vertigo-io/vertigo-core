@@ -27,7 +27,7 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
 /*
  * @author pchretien
  */
-public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, PegChoice> {
+public final class DslDynamicDefinitionRule extends AbstractRule<DslDefinition, PegChoice> {
 
 	/**
 	 * Constructor.
@@ -68,7 +68,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	}
 
 	@Override
-	protected DynamicDefinition handle(final PegChoice parsing) {
+	protected DslDefinition handle(final PegChoice parsing) {
 		final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) ((List) parsing.getValue()).get(2);
 		return xDefinitionEntry.getDefinition();
 	}

@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -37,7 +37,7 @@ import io.vertigo.lang.WrappedException;
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
 	private final DslGrammar grammar;
-	private final List<DynamicDefinition> rootDynamicDefinitions;
+	private final List<DslDefinition> rootDynamicDefinitions;
 
 	/**
 	 * Constructor.
@@ -71,13 +71,13 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DynamicDefinition> getRootDynamicDefinitions() {
+	public List<DslDefinition> getRootDynamicDefinitions() {
 		return rootDynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
+	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
 		if (!xdefinition.getEntity().isProvided()) {
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
@@ -87,7 +87,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			return lookUpDynamicRegistry(xdefinition)
@@ -98,7 +98,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		}
 	}
 
-	private DynamicRegistry lookUpDynamicRegistry(final DynamicDefinition xdefinition) {
+	private DynamicRegistry lookUpDynamicRegistry(final DslDefinition xdefinition) {
 		//On regarde si la grammaire contient la métaDefinition.
 		return dynamicRegistries
 				.stream()

@@ -20,7 +20,7 @@ package io.vertigo.persona.plugins.security.loaders;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
@@ -51,7 +51,7 @@ public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelRepository) {
+	public void load(final String resourcePath, final DslDefinitionRepository dynamicModelRepository) {
 		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
 		xmlSecurityLoader.load();
 	}

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -39,7 +39,7 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
 		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			return createFileDefinition(xdefinition);
@@ -47,7 +47,7 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
-	private static FileInfoDefinition createFileDefinition(final DynamicDefinition xFileDefinition) {
+	private static FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {
 		final String fileDefinitionName = xFileDefinition.getName();
 		final String storeName = getPropertyValueAsString(xFileDefinition, KspProperty.DATA_SPACE);
 

@@ -46,9 +46,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.loader.LoaderPlugin;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -122,7 +122,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
+	public void load(final String resourcePath, final DslDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
@@ -132,7 +132,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static void load(final Class<DtObject> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static void load(final Class<DtObject> clazz, final DslDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//-----
 		final String simpleName = clazz.getSimpleName();
@@ -161,8 +161,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			final String fragmentOf,
 			final String dtDefinitionName,
 			final String packageName,
-			final DynamicDefinitionRepository dynamicModelRepository) {
-		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY, packageName)
+			final DslDefinitionRepository dynamicModelRepository) {
+		final DslDefinitionBuilder dtDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.FRAGMENT_ENTITY, packageName)
 				.addDefinitionLink("from", fragmentOf);
 
 		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
@@ -173,8 +173,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			final DtStereotype stereotype,
 			final String dtDefinitionName,
 			final String packageName,
-			final DynamicDefinitionRepository dynamicModelRepository) {
-		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
+			final DslDefinitionRepository dynamicModelRepository) {
+		final DslDefinitionBuilder dtDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(dtDefinitionName, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.addPropertyValue(STEREOTYPE, stereotype.name());
 
 		// Only Persistent stereotypes have a dataspace => Fragment got it from parent
@@ -184,7 +184,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		parseDynamicDefinitionBuilder(clazz, dtDefinitionBuilder, dynamicModelRepository);
 	}
 
-	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final DynamicDefinitionBuilder dtDefinitionBuilder, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final DslDefinitionBuilder dtDefinitionBuilder, final DslDefinitionRepository dynamicModelRepository) {
 		final String packageName = clazz.getPackage().getName();
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -207,7 +207,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			parseAssociationDefinition(dynamicModelRepository, method, packageName);
 		}
 
-		final DynamicDefinition dtDefinition = dtDefinitionBuilder.build();
+		final DslDefinition dtDefinition = dtDefinitionBuilder.build();
 		dynamicModelRepository.addDefinition(dtDefinition);
 	}
 
@@ -232,14 +232,14 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		return DtStereotype.ValueObject;
 	}
 
-	private static void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
+	private static void parseAssociationDefinition(final DslDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
 				final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
 				//============================================================
 				//Attention pamc inverse dans oom les déclarations des objets !!
 
-				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)
+				final DslDefinition associationDefinition = DslDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 						.addPropertyValue(MULTIPLICITY_A, association.primaryMultiplicity())
@@ -268,7 +268,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				//============================================================
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
-				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)
+				final DslDefinition associationDefinition = DslDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)
 						.addPropertyValue(TABLE_NAME, association.tableName())
 
 						// associationDefinition.
@@ -295,7 +295,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static void parseFieldAnnotations(final Field field, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseFieldAnnotations(final Field field, final DslDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : field.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom du champ
@@ -305,7 +305,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static void parseMethodAnnotations(final Method method, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseMethodAnnotations(final Method method, final DslDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom de la méthode
@@ -318,10 +318,10 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private static void parseAnnotation(final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
+	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
+		final DslDefinition dtField = DslDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
 				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
 				.addPropertyValue(NOT_NULL, field.required())

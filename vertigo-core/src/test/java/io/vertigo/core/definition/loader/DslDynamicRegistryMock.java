@@ -21,8 +21,8 @@ package io.vertigo.core.definition.loader;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -43,8 +43,8 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	/**
 	 * @return DynamicDefinitionRepository bouchon pour test
 	 */
-	public static DynamicDefinitionRepository createDynamicDefinitionRepository() {
-		return new DynamicDefinitionRepository(new DslDynamicRegistryMock());
+	public static DslDefinitionRepository createDynamicDefinitionRepository() {
+		return new DslDefinitionRepository(new DslDynamicRegistryMock());
 	}
 
 	@Override
@@ -53,17 +53,17 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	}
 
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition definition) {
 		return new FakeDefinition(definition.getName());
 	}
 
 	@Override
-	public List<DynamicDefinition> getRootDynamicDefinitions() {
+	public List<DslDefinition> getRootDynamicDefinitions() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
+	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
 		//
 	}
 

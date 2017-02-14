@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.environment.registries;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
@@ -49,7 +49,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	}
 
 	@Override
-	public List<DynamicDefinition> getRootDynamicDefinitions() {
+	public List<DslDefinition> getRootDynamicDefinitions() {
 		return Collections.emptyList();
 	}
 
@@ -59,7 +59,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param propertyName Name of the property
 	 * @return Propriété de type Boolean uniquement
 	 */
-	protected static final Boolean getPropertyValueAsBoolean(final DynamicDefinition xdefinition, final String propertyName) {
+	protected static final Boolean getPropertyValueAsBoolean(final DslDefinition xdefinition, final String propertyName) {
 		return (Boolean) xdefinition.getPropertyValue(propertyName);
 	}
 
@@ -69,13 +69,13 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param propertyName Name of the property
 	 * @return Propriété de type String uniquement
 	 */
-	protected static final String getPropertyValueAsString(final DynamicDefinition xdefinition, final String propertyName) {
+	protected static final String getPropertyValueAsString(final DslDefinition xdefinition, final String propertyName) {
 		return (String) xdefinition.getPropertyValue(propertyName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
+	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
 		//
 	}
 

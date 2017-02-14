@@ -28,8 +28,8 @@ import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -72,11 +72,11 @@ public final class DefinitionLoader implements Component {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
-		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
+		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(handler);
 
 		//--Enregistrement des types primitifs
 		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
-			for (final DynamicDefinition dynamicDefinition : dynamicRegistryPlugin.getRootDynamicDefinitions()) {
+			for (final DslDefinition dynamicDefinition : dynamicRegistryPlugin.getRootDynamicDefinitions()) {
 				dynamicModelRepository.addDefinition(dynamicDefinition);
 			}
 		}

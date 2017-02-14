@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -76,19 +76,19 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DynamicDefinition> getRootDynamicDefinitions() {
-		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
+	public List<DslDefinition> getRootDynamicDefinitions() {
+		final List<DslDefinition> dynamicDefinitions = new ArrayList<>();
 		//On liste les types primitifs
 		final DslEntity dataTypeEntity = KernelGrammar.getDataTypeEntity();
 		for (final DataType type : DataType.values()) {
-			dynamicDefinitions.add(DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
+			dynamicDefinitions.add(DslDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
 		}
 		return dynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
 		final DslEntity entity = xdefinition.getEntity();
 		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
 			return createConstraint(xdefinition);
@@ -114,7 +114,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param xconstraint Définition de contrainte
 	 * @return DefinitionStandard Définition typée créée.
 	 */
-	private static ConstraintDefinition createConstraint(final DynamicDefinition xconstraint) {
+	private static ConstraintDefinition createConstraint(final DslDefinition xconstraint) {
 		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
 		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
 		final String name = xconstraint.getName();
@@ -124,14 +124,14 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return new ConstraintDefinition(name, className, msg, args);
 	}
 
-	private static FormatterDefinition createFormatter(final DynamicDefinition xformatter) {
+	private static FormatterDefinition createFormatter(final DslDefinition xformatter) {
 		final String name = xformatter.getName();
 		final String args = getPropertyValueAsString(xformatter, KspProperty.ARGS);
 		final String className = getPropertyValueAsString(xformatter, KspProperty.CLASS_NAME);
 		return new FormatterDefinition(name, className, args);
 	}
 
-	private static Domain createDomain(final DefinitionSpace definitionSpace, final DynamicDefinition xdomain) {
+	private static Domain createDomain(final DefinitionSpace definitionSpace, final DslDefinition xdomain) {
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionLinkName("dataType"));
 		final String domainName = xdomain.getName();
 
@@ -153,7 +153,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.build();
 	}
 
-	private static DtDefinition createFragmentDtDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdtDefinition) {
+	private static DtDefinition createFragmentDtDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdtDefinition) {
 		final DtDefinition from = definitionSpace.resolve(xdtDefinition.getDefinitionLinkName("from"), DtDefinition.class);
 
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
@@ -168,7 +168,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 				.withPackageName(from.getPackageName());
 
 		//1. adds aliases
-		for (final DynamicDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
+		for (final DslDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
 			final DtField aliasDtField = from.getField(alias.getName());
 
 			//--- REQUIRED
@@ -191,11 +191,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//2. adds data and computed fields
 		//Déclaration des champs du DT
-		final List<DynamicDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields, sortFieldName, displayFieldName);
 
 		//Déclaration des champs calculés
-		final List<DynamicDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder
@@ -220,7 +220,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * @param xdtDefinition Définition de DT
 	 */
-	private DtDefinition createDtDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdtDefinition) {
+	private DtDefinition createDtDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdtDefinition) {
 		//Déclaration de la définition
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
@@ -254,15 +254,15 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
 
 		//Déclaration de la clé primaire
-		final List<DynamicDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
+		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
 		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys, sortFieldName, displayFieldName);
 
 		//Déclaration des champs du DT
-		final List<DynamicDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields, sortFieldName, displayFieldName);
 
 		//Déclaration des champs calculés
-		final List<DynamicDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder.build();
@@ -289,11 +289,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static void populateIdDtField(
 			final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DynamicDefinition> fields,
+			final List<DslDefinition> fields,
 			final String sortFieldName,
 			final String displayFieldName) {
 
-		for (final DynamicDefinition field : fields) {
+		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
@@ -314,11 +314,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 */
 	private static void populateDataDtField(final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DynamicDefinition> fields,
+			final List<DslDefinition> fields,
 			final String sortFieldName,
 			final String displayFieldName) {
 
-		for (final DynamicDefinition field : fields) {
+		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
@@ -347,11 +347,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static void populateComputedDtField(
 			final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DynamicDefinition> fields,
+			final List<DslDefinition> fields,
 			final String sortFieldName,
 			final String displayFieldName) {
 
-		for (final DynamicDefinition field : fields) {
+		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
 			//--
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
@@ -368,7 +368,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		}
 	}
 
-	private static AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xassociation) {
+	private static AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 		final String tableName = getPropertyValueAsString(xassociation, KspProperty.TABLE_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
@@ -408,7 +408,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return name;
 	}
 
-	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xassociation) {
+	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 
 		final String multiplicityA = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_A);
 		final String multiplicityB = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_B);
@@ -461,7 +461,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param dynamicDefinition Definition
 	 * @return Container des propriétés
 	 */
-	private static Properties extractProperties(final DynamicDefinition dynamicDefinition) {
+	private static Properties extractProperties(final DslDefinition dynamicDefinition) {
 		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
 
 		//On associe les propriétés Dt et Ksp par leur nom.
@@ -474,7 +474,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelRepository) {
+	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelRepository) {
 		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(xdefinition.getEntity())
 				|| DomainGrammar.FRAGMENT_ENTITY.equals(xdefinition.getEntity())) {
 			//Dans le cas des DT on ajoute les domaines
@@ -486,20 +486,20 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/*
 	 * Construction des deux domaines relatif à un DT : DO_DT_XXX_DTO et DO_DT_XXX_DTC
 	 */
-	private static DynamicDefinition createDTODomain(final String definitionName, final String packageName) {
+	private static DslDefinition createDTODomain(final String definitionName, final String packageName) {
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
+		return DslDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 	}
 
-	private static DynamicDefinition createDTCDomain(final String definitionName, final String packageName) {
+	private static DslDefinition createDTCDomain(final String definitionName, final String packageName) {
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
@@ -507,7 +507,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//On fait la même chose avec DTC
 
-		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
+		return DslDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
 				.addDefinitionLink("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.addPropertyValue(KspProperty.TYPE, definitionName)

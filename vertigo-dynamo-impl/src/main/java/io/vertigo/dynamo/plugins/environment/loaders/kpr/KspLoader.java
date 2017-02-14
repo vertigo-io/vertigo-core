@@ -25,7 +25,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -60,7 +60,7 @@ final class KspLoader {
 	 *
 	 * @param dynamicModelrepository DynamicDefinitionRepository
 	 */
-	void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	void load(final DslDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();

@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class DynamicDefinition {
+public final class DslDefinition {
 	/** Type. */
 	private final DslEntity entity;
 
@@ -57,15 +57,15 @@ public final class DynamicDefinition {
 	 * Children.
 	 * Map (fieldName, definitions
 	 */
-	private final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName;
+	private final Map<String, List<DslDefinition>> childDefinitionsByFieldName;
 
-	DynamicDefinition(
+	DslDefinition(
 			final DslEntity entity,
 			final String packageName,
 			final String name,
 			final Map<String, Object> propertyValueByFieldName,
 			final Map<String, List<String>> definitionLinkNamesByFieldName,
-			final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName) {
+			final Map<String, List<DslDefinition>> childDefinitionsByFieldName) {
 		Assertion.checkNotNull(entity);
 		//packageName can be null
 		Assertion.checkArgNotEmpty(name);
@@ -176,7 +176,7 @@ public final class DynamicDefinition {
 	 * @param fieldName String
 	 * @return List
 	 */
-	public List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+	public List<DslDefinition> getChildDefinitions(final String fieldName) {
 		entity.assertThatFieldIsAnEntity(fieldName);
 		//---
 		return childDefinitionsByFieldName.get(fieldName);
@@ -185,7 +185,7 @@ public final class DynamicDefinition {
 	/**
 	 * @return Collection des listes de définitions composites.
 	 */
-	public List<DynamicDefinition> getAllChildDefinitions() {
+	public List<DslDefinition> getAllChildDefinitions() {
 		return childDefinitionsByFieldName.values()
 				.stream()
 				.flatMap(List::stream)

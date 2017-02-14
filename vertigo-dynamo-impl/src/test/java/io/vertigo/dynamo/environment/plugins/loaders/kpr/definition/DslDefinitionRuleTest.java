@@ -22,16 +22,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDynamicDefinitionRule;
 
 public class DslDefinitionRuleTest {
-	private final DynamicDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
+	private final DslDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
 	@Test
 	public void test1() throws PegNoMatchFoundException {
-		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
+		final DslDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
 				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
 				.getValue();
 
@@ -46,7 +46,7 @@ public class DslDefinitionRuleTest {
 	//		)
 	@Test
 	public void test2() throws PegNoMatchFoundException {
-		final DynamicDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
+		final DslDefinition dynamicDefinition = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository.getGrammar())
 				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
 				.getValue();
 		Assert.assertNotNull(dynamicDefinition);

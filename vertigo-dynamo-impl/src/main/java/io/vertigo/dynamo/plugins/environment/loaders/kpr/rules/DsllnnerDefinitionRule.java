@@ -23,8 +23,8 @@ import java.util.List;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionBuilder;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
@@ -63,7 +63,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		final String definitionName = (String) parsing.get(2);
 		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
-		final DynamicDefinitionBuilder dynamicDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
+		final DslDefinitionBuilder dynamicDefinitionBuilder = DslDefinitionRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
 		populateDefinition(definitionBody, dynamicDefinitionBuilder);
 
 		//---
@@ -73,7 +73,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	/**
 	 * Peuple la définition à partir des éléments trouvés.
 	 */
-	private static void populateDefinition(final DslDefinitionBody definitionBody, final DynamicDefinitionBuilder dynamicDefinitionBuilder) {
+	private static void populateDefinition(final DslDefinitionBody definitionBody, final DslDefinitionBuilder dynamicDefinitionBuilder) {
 		for (final DslDefinitionEntry fieldDefinitionEntry : definitionBody.getDefinitionEntries()) {
 			//-----
 			// 1.On vérifie que le champ existe pour la metaDefinition

@@ -42,7 +42,7 @@ public interface DynamicRegistry {
 	 * 
 	 * @return Liste des definitions de base (String ....) permettant de construire les autes
 	 */
-	List<DynamicDefinition> getRootDynamicDefinitions();
+	List<DslDefinition> getRootDynamicDefinitions();
 
 	/**
 	 * Create a definition from a dynamic definition in a context defined by definitionSpace (preexisting definitions).
@@ -50,7 +50,7 @@ public interface DynamicRegistry {
 	 * @param definition Definition
 	 * @return An optional definition
 	 */
-	Definition createDefinition(final DefinitionSpace definitionSpace, DynamicDefinition definition);
+	Definition createDefinition(final DefinitionSpace definitionSpace, DslDefinition definition);
 
 	/**
 	 * Ajout d'une définition.
@@ -60,5 +60,5 @@ public interface DynamicRegistry {
 	 * @param definition DynamicDefinition
 	 * @param definitionRepository DynamicModelRepository
 	 */
-	void onNewDefinition(final DynamicDefinition definition, final DynamicDefinitionRepository definitionRepository);
+	void onNewDefinition(final DslDefinition definition, final DslDefinitionRepository definitionRepository);
 }

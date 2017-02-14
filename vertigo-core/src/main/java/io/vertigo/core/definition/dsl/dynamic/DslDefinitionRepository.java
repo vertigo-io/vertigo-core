@@ -39,14 +39,14 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class DynamicDefinitionRepository {
+public final class DslDefinitionRepository {
 
 	/***
 	 * On retient les définitions dans l'ordre pour
 	 * créer les fichiers toujours de la même façon.
 	 */
-	private final Map<String, DynamicDefinition> definitions = new LinkedHashMap<>();
-	private final List<DynamicDefinition> partials = new ArrayList<>();
+	private final Map<String, DslDefinition> definitions = new LinkedHashMap<>();
+	private final List<DslDefinition> partials = new ArrayList<>();
 
 	private final DynamicRegistry registry;
 	private final DslGrammar grammar;
@@ -55,7 +55,7 @@ public final class DynamicDefinitionRepository {
 	 * Constructeur.
 	 * @param registry DynamicDefinitionHandler
 	 */
-	public DynamicDefinitionRepository(final DynamicRegistry registry) {
+	public DslDefinitionRepository(final DynamicRegistry registry) {
 		Assertion.checkNotNull(registry);
 		//-----
 		this.registry = registry;
@@ -87,10 +87,10 @@ public final class DynamicDefinitionRepository {
 	 * @param definitionName Name of the definition
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
-	public DynamicDefinition getDefinition(final String definitionName) {
+	public DslDefinition getDefinition(final String definitionName) {
 		Assertion.checkArgument(definitions.containsKey(definitionName), "Aucune clé enregistrée pour :{0} parmi {1}", definitionName, definitions.keySet());
 		//-----
-		final DynamicDefinition definition = definitions.get(definitionName);
+		final DslDefinition definition = definitions.get(definitionName);
 		//-----
 		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionName);
 		return definition;
@@ -105,23 +105,23 @@ public final class DynamicDefinitionRepository {
 		//-----
 		mergePartials();
 
-		final List<DynamicDefinition> sortedDynamicDefinitions = DynamicSolver.solve(definitionSpace, this);
+		final List<DslDefinition> sortedDynamicDefinitions = DslSolver.solve(definitionSpace, this);
 		registerAllDefinitions(definitionSpace, sortedDynamicDefinitions);
 	}
 
 	private void mergePartials() {
 		//parts of definitions are merged
-		for (final DynamicDefinition partial : partials) {
-			final DynamicDefinition merged = new DynamicDefinitionBuilder(partial.getName(), partial.getEntity())
+		for (final DslDefinition partial : partials) {
+			final DslDefinition merged = new DslDefinitionBuilder(partial.getName(), partial.getEntity())
 					.merge(getDefinition(partial.getName()))
 					.merge(partial).build();
 			definitions.put(partial.getName(), merged);
 		}
 	}
 
-	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DynamicDefinition> sortedDynamicDefinitions) {
-		for (final DynamicDefinition xdefinition : sortedDynamicDefinitions) {
-			DynamicValidator.check(xdefinition);
+	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
+		for (final DslDefinition xdefinition : sortedDynamicDefinitions) {
+			DsValidator.check(xdefinition);
 			if (!xdefinition.getEntity().isProvided()) {
 				//The definition identified as root are not registered.
 				final Definition definition = registry.createDefinition(definitionSpace, xdefinition);
@@ -134,11 +134,11 @@ public final class DynamicDefinitionRepository {
 	 * Add a definition.
 	 * @param definition DynamicDefinition
 	 */
-	public void addDefinition(final DynamicDefinition definition) {
+	public void addDefinition(final DslDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On enregistre la définition qu'elle soit renseignée ou null.
-		final DynamicDefinition previousDefinition = definitions.put(definition.getName(), definition);
+		final DslDefinition previousDefinition = definitions.put(definition.getName(), definition);
 		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
 		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", definition.getName());
 		//-----
@@ -149,7 +149,7 @@ public final class DynamicDefinitionRepository {
 	 * adds a partial definition.
 	 * @param partial the part of a definition
 	 */
-	public void addPartialDefinition(final DynamicDefinition partial) {
+	public void addPartialDefinition(final DslDefinition partial) {
 		Assertion.checkNotNull(partial);
 		//-----
 		partials.add(partial);
@@ -163,8 +163,8 @@ public final class DynamicDefinitionRepository {
 	 * @param entity entity
 	 * @return Nouvelle Définition
 	 */
-	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final DslEntity entity, final String packageName) {
-		return new DynamicDefinitionBuilder(definitionName, entity).withPackageName(packageName);
+	public static DslDefinitionBuilder createDynamicDefinitionBuilder(final String definitionName, final DslEntity entity, final String packageName) {
+		return new DslDefinitionBuilder(definitionName, entity).withPackageName(packageName);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	Collection<String> getOrphanDefinitionKeys() {
 		final Collection<String> collection = new ArrayList<>();
-		for (final Entry<String, DynamicDefinition> entry : definitions.entrySet()) {
+		for (final Entry<String, DslDefinition> entry : definitions.entrySet()) {
 			if (entry.getValue() == null) {
 				collection.add(entry.getKey());
 			}
@@ -183,7 +183,7 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * @return Liste des définitions complètes
 	 */
-	Collection<DynamicDefinition> getDefinitions() {
+	Collection<DslDefinition> getDefinitions() {
 		return Collections.unmodifiableCollection(definitions.values());
 	}
 }

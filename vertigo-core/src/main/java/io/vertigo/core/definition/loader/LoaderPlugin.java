@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.definition.loader;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -40,6 +40,6 @@ public interface LoaderPlugin extends Plugin {
 	 * @param resourcePath resourcePath
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
+	void load(String resourcePath, DslDefinitionRepository dynamicModelRepository);
 
 }

@@ -33,12 +33,12 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  *
  */
-final class DynamicValidator {
-	private DynamicValidator() {
+final class DsValidator {
+	private DsValidator() {
 		//utility Class
 	}
 
-	static void check(final DynamicDefinition definition) {
+	static void check(final DslDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		final DslEntity myEntity = definition.getEntity();
@@ -59,7 +59,7 @@ final class DynamicValidator {
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).
-		for (final DynamicDefinition child : definition.getAllChildDefinitions()) {
+		for (final DslDefinition child : definition.getAllChildDefinitions()) {
 			check(child);
 		}
 
@@ -68,7 +68,7 @@ final class DynamicValidator {
 	}
 
 	private static void checkProperties(
-			final DynamicDefinition definition,
+			final DslDefinition definition,
 			final Set<String> propertyNames,
 			final Set<String> entityPropertyNames) {
 		// Vérification que toutes les propriétés sont déclarées sur le
@@ -86,7 +86,7 @@ final class DynamicValidator {
 	}
 
 	private static void checkMandatoryProperties(
-			final DynamicDefinition dynamicDefinition,
+			final DslDefinition dynamicDefinition,
 			final DslEntity myEntity,
 			final Set<String> propertyNames,
 			final Set<String> entityPropertyNames) {

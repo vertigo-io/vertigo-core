@@ -34,7 +34,7 @@ import io.vertigo.lang.Builder;
  * Interface de création des définitions.
  * @author  pchretien
  */
-public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition> {
+public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 	/** Type. */
 	private final DslEntity entity;
 
@@ -58,14 +58,14 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * Children.
 	 * Map (fieldName, definitions
 	 */
-	private final Map<String, List<DynamicDefinition>> childDefinitionsByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<DslDefinition>> childDefinitionsByFieldName = new LinkedHashMap<>();
 
 	/**
 	 * Constructor.
 	 * @param name the name of the dynamicDefinition
 	 * @param entity Entité
 	 */
-	public DynamicDefinitionBuilder(final String name, final DslEntity entity) {
+	public DslDefinitionBuilder(final String name, final DslEntity entity) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(entity);
 		//-----
@@ -88,7 +88,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param packageName Package name
 	 * @return Builder
 	 */
-	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
+	public DslDefinitionBuilder withPackageName(final String newPackageName) {
 		packageName = newPackageName;
 		return this;
 	}
@@ -97,7 +97,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param dynamicDefinition Definition body
 	 * @return this builder
 	 */
-	public DynamicDefinitionBuilder merge(final DynamicDefinition dynamicDefinition) {
+	public DslDefinitionBuilder merge(final DslDefinition dynamicDefinition) {
 		if (packageName == null) {
 			withPackageName(dynamicDefinition.getPackageName());
 		}
@@ -123,7 +123,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param value Valeur de la propriété
 	 * @return this builder
 	 */
-	public DynamicDefinitionBuilder addPropertyValue(final String fieldName, final Object value) {
+	public DslDefinitionBuilder addPropertyValue(final String fieldName, final Object value) {
 		entity.assertThatFieldIsAProperty(fieldName);
 		//----
 		getEntity().getPropertyType(fieldName).checkValue(value);
@@ -138,7 +138,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param definitionName Name of the definition
 	 * @return this builder
 	 */
-	public DynamicDefinitionBuilder addDefinitionLink(final String fieldName, final String definitionName) {
+	public DslDefinitionBuilder addDefinitionLink(final String fieldName, final String definitionName) {
 		return addAllDefinitionLinks(fieldName, Collections.singletonList(definitionName));
 	}
 
@@ -149,7 +149,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param definitionNames  list of the names of the dedinitions
 	 * @return this builder
 	 */
-	public DynamicDefinitionBuilder addAllDefinitionLinks(final String fieldName, final List<String> definitionNames) {
+	public DslDefinitionBuilder addAllDefinitionLinks(final String fieldName, final List<String> definitionNames) {
 		entity.assertThatFieldIsALink(fieldName);
 		Assertion.checkNotNull(definitionNames);
 		//-----
@@ -157,7 +157,7 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 		return this;
 	}
 
-	private void addAllChildDefinitions(final String fieldName, final List<DynamicDefinition> definitions) {
+	private void addAllChildDefinitions(final String fieldName, final List<DslDefinition> definitions) {
 		entity.assertThatFieldIsAnEntity(fieldName);
 		Assertion.checkNotNull(definitions);
 		//-----
@@ -170,15 +170,15 @@ public final class DynamicDefinitionBuilder implements Builder<DynamicDefinition
 	 * @param definition Définition
 	 * @return this builder
 	 */
-	public DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition) {
+	public DslDefinitionBuilder addChildDefinition(final String fieldName, final DslDefinition definition) {
 		addAllChildDefinitions(fieldName, Collections.singletonList(definition));
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DynamicDefinition build() {
-		return new DynamicDefinition(entity, packageName, name, propertyValueByFieldName, definitionLinkNamesByFieldName, childDefinitionsByFieldName);
+	public DslDefinition build() {
+		return new DslDefinition(entity, packageName, name, propertyValueByFieldName, definitionLinkNamesByFieldName, childDefinitionsByFieldName);
 	}
 
 }

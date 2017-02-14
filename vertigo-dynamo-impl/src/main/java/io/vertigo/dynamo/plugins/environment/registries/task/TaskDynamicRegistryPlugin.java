@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -44,7 +44,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Only taskDefinitions are concerned
 			return createTaskDefinition(xdefinition);
@@ -52,12 +52,12 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
 	}
 
-	private static Class<? extends TaskEngine> getTaskEngineClass(final DynamicDefinition xtaskDefinition) {
+	private static Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
 		final String taskEngineClassName = getPropertyValueAsString(xtaskDefinition, KspProperty.CLASS_NAME);
 		return ClassUtil.classForName(taskEngineClassName, TaskEngine.class);
 	}
 
-	private static TaskDefinition createTaskDefinition(final DynamicDefinition xtaskDefinition) {
+	private static TaskDefinition createTaskDefinition(final DslDefinition xtaskDefinition) {
 		final String taskDefinitionName = xtaskDefinition.getName();
 		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
@@ -68,7 +68,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.withPackageName(xtaskDefinition.getPackageName());
-		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
+		for (final DslDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
