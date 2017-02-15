@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,27 +45,27 @@ public final class DslDefinition {
 	private final String name;
 
 	/** Map  (fieldName, propertyValue)  */
-	private final Map<String, Object> propertyValueByFieldName;
+	private final Map<DslEntityField, Object> propertyValueByFieldName;
 
 	/**
 	 * Links.
 	 * Map (fieldName, definitions identified by its name)
 	 */
-	private final Map<String, List<String>> definitionLinkNamesByFieldName;
+	private final Map<DslEntityField, List<String>> definitionLinkNamesByFieldName;
 
 	/**
 	 * Children.
 	 * Map (fieldName, definitions
 	 */
-	private final Map<String, List<DslDefinition>> childDefinitionsByFieldName;
+	private final Map<DslEntityField, List<DslDefinition>> childDefinitionsByFieldName;
 
 	DslDefinition(
 			final DslEntity entity,
 			final String packageName,
 			final String name,
-			final Map<String, Object> propertyValueByFieldName,
-			final Map<String, List<String>> definitionLinkNamesByFieldName,
-			final Map<String, List<DslDefinition>> childDefinitionsByFieldName) {
+			final Map<DslEntityField, Object> propertyValueByFieldName,
+			final Map<DslEntityField, List<String>> definitionLinkNamesByFieldName,
+			final Map<DslEntityField, List<DslDefinition>> childDefinitionsByFieldName) {
 		Assertion.checkNotNull(entity);
 		//packageName can be null
 		Assertion.checkArgNotEmpty(name);
@@ -109,12 +109,13 @@ public final class DslDefinition {
 	 * @return valeur de la propriété
 	 */
 	public Object getPropertyValue(final String fieldName) {
-		entity.assertThatFieldIsAProperty(fieldName);
+		final DslEntityField dslEntityField = entity.getField(fieldName);
+		Assertion.checkState(dslEntityField.getType().isProperty(), "expected a property on {0}", fieldName);
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
 		//-----
 		// Conformémément au contrat, on retourne null si pas de propriété trouvée
-		return propertyValueByFieldName.get(fieldName);
+		return propertyValueByFieldName.get(dslEntityField);
 	}
 
 	/**
@@ -122,7 +123,10 @@ public final class DslDefinition {
 	 * @return Collection
 	 */
 	public Set<String> getPropertyNames() {
-		return Collections.unmodifiableSet(propertyValueByFieldName.keySet());
+		return propertyValueByFieldName.keySet()
+				.stream()
+				.map(DslEntityField::getName)
+				.collect(Collectors.toSet());
 	}
 
 	/**
@@ -132,9 +136,10 @@ public final class DslDefinition {
 	 * @return List
 	 */
 	public List<String> getDefinitionLinkNames(final String fieldName) {
-		entity.assertThatFieldIsALink(fieldName);
+		final DslEntityField dslEntityField = entity.getField(fieldName);
+		Assertion.checkState(dslEntityField.getType().isEntityLink(), "expected a link on {0}", fieldName);
 		//---
-		return definitionLinkNamesByFieldName.get(fieldName);
+		return definitionLinkNamesByFieldName.get(dslEntityField);
 	}
 
 	/**
@@ -143,9 +148,7 @@ public final class DslDefinition {
 	 * @return Clé de la définition
 	 */
 	public String getDefinitionLinkName(final String fieldName) {
-		entity.assertThatFieldIsALink(fieldName);
-		Assertion.checkArgument(containsDefinitionLinkName(fieldName), "Aucun lien déclaré pour le champ ''{0}'' sur ''{1}'' ", fieldName, getName());
-		final List<String> list = definitionLinkNamesByFieldName.get(fieldName);
+		final List<String> list = getDefinitionLinkNames(fieldName);
 		final String definitionName = list.get(0);
 		//-----
 		// On vérifie qu'il y a une définition pour le champ demandé
@@ -154,20 +157,10 @@ public final class DslDefinition {
 	}
 
 	/**
-	 * @param fieldName Nom du champ.
-	 * @return Si la définition contient le champ
-	 */
-	public boolean containsDefinitionLinkName(final String fieldName) {
-		entity.assertThatFieldIsALink(fieldName);
-		//---
-		return definitionLinkNamesByFieldName.containsKey(fieldName);
-	}
-
-	/**
 	 * Permet de récupérer la collection de tous les champs qui pointent vers des définitions utilisées par référence.
 	 * @return Collection de tous les champs utilisant des définitions référencées.
 	 */
-	public Set<String> getAllDefinitionLinkFieldNames() {
+	public Set<DslEntityField> getAllDefinitionLinkFields() {
 		return definitionLinkNamesByFieldName.keySet();
 	}
 
@@ -177,9 +170,10 @@ public final class DslDefinition {
 	 * @return List
 	 */
 	public List<DslDefinition> getChildDefinitions(final String fieldName) {
-		entity.assertThatFieldIsAnEntity(fieldName);
+		final DslEntityField dslEntityField = entity.getField(fieldName);
+		Assertion.checkState(dslEntityField.getType().isEntity(), "expected an entity on {0}", fieldName);
 		//---
-		return childDefinitionsByFieldName.get(fieldName);
+		return childDefinitionsByFieldName.get(dslEntityField);
 	}
 
 	/**

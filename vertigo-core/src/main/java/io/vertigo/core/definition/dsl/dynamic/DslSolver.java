@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import io.vertigo.core.definition.dsl.entity.DslEntityField;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -85,7 +86,8 @@ final class DslSolver {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final String fieldName : definition.getAllDefinitionLinkFieldNames()) {
+		for (final DslEntityField dslEntityField : definition.getAllDefinitionLinkFields()) {
+			final String fieldName = dslEntityField.getName();
 			for (final String definitionName : definition.getDefinitionLinkNames(fieldName)) {
 				//reference should be already solved in a previous resources module : then continue
 				if (!definitionSpace.containsDefinitionName(definitionName)) {
