@@ -55,7 +55,6 @@ import java.util.List;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.definition.loader.KernelGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**

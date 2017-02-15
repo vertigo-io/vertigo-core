@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.loader;
+package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +28,7 @@ import io.vertigo.core.definition.dsl.entity.DslGrammar;
 /**
  * @author pchretien
  */
-public final class KernelGrammar implements DslGrammar {
+final class KernelGrammar implements DslGrammar {
 	/**the data types are provided by the language (String, Integer...) */
 	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType")
 			.withProvided()
