@@ -18,17 +18,15 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
-import java.util.List;
-
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 /**
- * This handler creates 
+ * This handler creates
  * - creates a definition from a DynamicDefinition
  * - adds dynamicDefinition from a new DynamicDefinition
- * 
+ *
  * example : Each time a DtDefinition, two others definitions (domains)  are created (a domain for one object, a domain for a list).
  * @author pchretien
  */
@@ -37,12 +35,6 @@ public interface DynamicRegistry {
 	 * @return Grammar
 	 */
 	DslGrammar getGrammar();
-
-	/**
-	 * 
-	 * @return Liste des definitions de base (String ....) permettant de construire les autes
-	 */
-	List<DslDefinition> getRootDynamicDefinitions();
 
 	/**
 	 * Create a definition from a dynamic definition in a context defined by definitionSpace (preexisting definitions).
@@ -56,7 +48,7 @@ public interface DynamicRegistry {
 	 * Ajout d'une définition.
 	 * Utilisé pour créer des définitions Ã  partir d'autres Definitions.
 	 * Exemple : création des domaines à partir d'un DT.
-	 * 
+	 *
 	 * @param definition DynamicDefinition
 	 * @param definitionRepository DynamicModelRepository
 	 */

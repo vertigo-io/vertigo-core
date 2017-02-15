@@ -18,9 +18,6 @@
  */
 package io.vertigo.core.definition.loader;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
@@ -55,11 +52,6 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	@Override
 	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition definition) {
 		return new FakeDefinition(definition.getName());
-	}
-
-	@Override
-	public List<DslDefinition> getRootDynamicDefinitions() {
-		return Collections.emptyList();
 	}
 
 	@Override

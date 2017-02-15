@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
@@ -46,11 +43,6 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	@Override
 	public DslGrammar getGrammar() {
 		return grammar;
-	}
-
-	@Override
-	public List<DslDefinition> getRootDynamicDefinitions() {
-		return Collections.emptyList();
 	}
 
 	/**

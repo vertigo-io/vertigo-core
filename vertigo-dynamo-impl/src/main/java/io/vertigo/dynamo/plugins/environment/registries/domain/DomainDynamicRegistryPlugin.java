@@ -76,18 +76,6 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DslDefinition> getRootDynamicDefinitions() {
-		final List<DslDefinition> dynamicDefinitions = new ArrayList<>();
-		//On liste les types primitifs
-		final DslEntity dataTypeEntity = KernelGrammar.getDataTypeEntity();
-		for (final DataType type : DataType.values()) {
-			dynamicDefinitions.add(new DslDefinitionBuilder(type.name(), dataTypeEntity).build());
-		}
-		return dynamicDefinitions;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
 		final DslEntity entity = xdefinition.getEntity();
 		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {

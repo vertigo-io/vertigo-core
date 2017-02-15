@@ -37,7 +37,6 @@ import io.vertigo.lang.WrappedException;
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
 	private final DslGrammar grammar;
-	private final List<DslDefinition> rootDynamicDefinitions;
 
 	/**
 	 * Constructor.
@@ -49,11 +48,6 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		dynamicRegistries = new ArrayList<>(dynamicRegistryPlugins);
 		//Création de la grammaire.
 		grammar = createGrammar();
-
-		rootDynamicDefinitions = new ArrayList<>();
-		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
-			rootDynamicDefinitions.addAll(dynamicRegistry.getRootDynamicDefinitions());
-		}
 	}
 
 	private DslGrammar createGrammar() {
@@ -67,12 +61,6 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public DslGrammar getGrammar() {
 		return grammar;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<DslDefinition> getRootDynamicDefinitions() {
-		return rootDynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */
