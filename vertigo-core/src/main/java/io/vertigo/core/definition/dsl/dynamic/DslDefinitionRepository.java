@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -157,14 +159,12 @@ public final class DslDefinitionRepository {
 	/**
 	 *  @return Liste des clés orphelines.
 	 */
-	Collection<String> getOrphanDefinitionKeys() {
-		final Collection<String> collection = new ArrayList<>();
-		for (final Entry<String, DslDefinition> entry : definitions.entrySet()) {
-			if (entry.getValue() == null) {
-				collection.add(entry.getKey());
-			}
-		}
-		return Collections.unmodifiableCollection(collection);
+	Set<String> getOrphanDefinitionKeys() {
+		return definitions.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue() == null) //select orphans
+				.map(Entry::getKey)
+				.collect(Collectors.toSet());
 	}
 
 	/**
