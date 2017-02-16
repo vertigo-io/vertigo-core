@@ -122,18 +122,18 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DslDefinitionRepository dynamicModelrepository) {
+	public void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
-		Assertion.checkNotNull(dynamicModelrepository);
+		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
 		//--Enregistrement des fichiers java annotés
 		for (final Class<DtObject> javaClass : selectClasses(resourcePath, DtObject.class)) {
-			load(javaClass, dynamicModelrepository);
+			load(javaClass, dslDefinitionRepository);
 		}
 	}
 
-	private static void load(final Class<DtObject> clazz, final DslDefinitionRepository dynamicModelrepository) {
-		Assertion.checkNotNull(dynamicModelrepository);
+	private static void load(final Class<DtObject> clazz, final DslDefinitionRepository dslDefinitionRepository) {
+		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
@@ -148,10 +148,10 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 					break;
 				}
 			}
-			parseFragment(clazz, fragmentOf, dtDefinitionName, packageName, dynamicModelrepository);
+			parseFragment(clazz, fragmentOf, dtDefinitionName, packageName, dslDefinitionRepository);
 		} else {
 			final DtStereotype stereotype = parseStereotype(clazz);
-			parseDtDefinition(clazz, stereotype, dtDefinitionName, packageName, dynamicModelrepository);
+			parseDtDefinition(clazz, stereotype, dtDefinitionName, packageName, dslDefinitionRepository);
 		}
 
 	}

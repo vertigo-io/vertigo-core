@@ -56,7 +56,9 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param encoding encoding des KSP
 	 */
 	@Inject
-	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
+	public KprLoaderPlugin(
+			final ResourceManager resourceManager,
+			@Named("encoding") final Optional<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
 		//-----
@@ -66,14 +68,14 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DslDefinitionRepository dynamicModelrepository) {
+	public void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
-		Assertion.checkNotNull(dynamicModelrepository);
+		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
 		final URL kprURL = resourceManager.resolve(resourcePath);
 		for (final URL url : getKspFiles(kprURL, charset, resourceManager)) {
 			final KspLoader loader = new KspLoader(url, charset);
-			loader.load(dynamicModelrepository);
+			loader.load(dslDefinitionRepository);
 		}
 	}
 

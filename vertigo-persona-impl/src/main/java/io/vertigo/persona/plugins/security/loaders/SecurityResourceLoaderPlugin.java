@@ -51,7 +51,7 @@ public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DslDefinitionRepository dynamicModelRepository) {
+	public void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
 		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
 		xmlSecurityLoader.load();
 	}

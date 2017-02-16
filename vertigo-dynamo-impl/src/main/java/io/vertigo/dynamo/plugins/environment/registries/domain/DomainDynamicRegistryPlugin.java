@@ -463,13 +463,13 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DslDefinition> onNewDefinition(final DslDefinition xdefinition) {
-		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(xdefinition.getEntity())
-				|| DomainGrammar.FRAGMENT_ENTITY.equals(xdefinition.getEntity())) {
+	public List<DslDefinition> onNewDefinition(final DslDefinition dslDefinition) {
+		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(dslDefinition.getEntity())
+				|| DomainGrammar.FRAGMENT_ENTITY.equals(dslDefinition.getEntity())) {
 			//Dans le cas des DT on ajoute les domaines
 			return new ListBuilder<DslDefinition>()
-					.add(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()))
-					.add(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()))
+					.add(createDTODomain(dslDefinition.getName(), dslDefinition.getPackageName()))
+					.add(createDTCDomain(dslDefinition.getName(), dslDefinition.getPackageName()))
 					.build();
 		}
 		return Collections.emptyList();

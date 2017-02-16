@@ -66,20 +66,20 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void load(final String resourcePath, final DslDefinitionRepository dynamicModelrepository) {
+	public final void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
-		Assertion.checkNotNull(dynamicModelrepository);
+		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
 		final URL url = resourceManager.resolve(resourcePath);
 
 		final XmlLoader loader = createLoader(url);
 
 		for (final XmlClass clazz : loader.getClasses()) {
-			dynamicModelrepository.addDefinition(toDynamicDefinition(clazz));
+			dslDefinitionRepository.addDefinition(toDynamicDefinition(clazz));
 		}
 
 		for (final XmlAssociation association : loader.getAssociations()) {
-			dynamicModelrepository.addDefinition(toDynamicDefinition(association, dynamicModelrepository));
+			dslDefinitionRepository.addDefinition(toDynamicDefinition(association, dslDefinitionRepository));
 		}
 	}
 

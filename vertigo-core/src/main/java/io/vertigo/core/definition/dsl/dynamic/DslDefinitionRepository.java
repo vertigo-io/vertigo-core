@@ -51,15 +51,18 @@ public final class DslDefinitionRepository {
 
 	private final DynamicRegistry registry;
 	private final DslGrammar grammar;
+	private final DefinitionSpace definitionSpace;
 
 	/**
 	 * Constructeur.
 	 * @param registry DynamicDefinitionHandler
 	 */
-	public DslDefinitionRepository(final DynamicRegistry registry) {
+	public DslDefinitionRepository(final DynamicRegistry registry, final DefinitionSpace definitionSpace) {
 		Assertion.checkNotNull(registry);
+		Assertion.checkNotNull(definitionSpace);
 		//-----
 		this.registry = registry;
+		this.definitionSpace = definitionSpace;
 		grammar = registry.getGrammar();
 	}
 
@@ -101,13 +104,11 @@ public final class DslDefinitionRepository {
 	 * Résolution des références de définitions.
 	 * @param definitionSpace Space where all the definitions are stored
 	 */
-	public void solve(final DefinitionSpace definitionSpace) {
-		Assertion.checkNotNull(definitionSpace);
-		//-----
+	public void solve() {
 		mergePartials();
 
 		final List<DslDefinition> sortedDslDefinitions = DslSolver.solve(definitionSpace, this);
-		registerAllDefinitions(definitionSpace, sortedDslDefinitions);
+		registerAllDefinitions(sortedDslDefinitions);
 	}
 
 	private void mergePartials() {
@@ -120,15 +121,18 @@ public final class DslDefinitionRepository {
 		}
 	}
 
-	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
-		for (final DslDefinition dslDefinition : sortedDynamicDefinitions) {
-			if (!dslDefinition.getEntity().isProvided()) {
-				DsValidator.check(dslDefinition);
-				//The definition identified as root are not registered.
-				final Definition definition = registry.createDefinition(definitionSpace, dslDefinition);
-				definitionSpace.put(definition);
-			}
-		}
+	private void registerAllDefinitions(final List<DslDefinition> sortedDynamicDefinitions) {
+		sortedDynamicDefinitions
+				.stream()
+				.filter(dslDefinition -> !dslDefinition.getEntity().isProvided()) // provided definitions are excluded
+				.forEach(dslDefinition -> registerDefinition(dslDefinition));
+	}
+
+	private void registerDefinition(final DslDefinition dslDefinition) {
+		DsValidator.check(dslDefinition);
+		//The definition identified as root are not registered.
+		final Definition definition = registry.createDefinition(definitionSpace, dslDefinition);
+		definitionSpace.put(definition);
 	}
 
 	/**
@@ -137,13 +141,10 @@ public final class DslDefinitionRepository {
 	 */
 	public void addDefinition(final DslDefinition dslDefinition) {
 		Assertion.checkNotNull(dslDefinition);
-		//-----
-		//On enregistre la définition qu'elle soit renseignée ou null.
+		//---
 		final DslDefinition previousDefinition = dslDefinitions.put(dslDefinition.getName(), dslDefinition);
-		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
-		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", dslDefinition.getName());
-		//-----
-
+		Assertion.checkState(previousDefinition == null, "this definition '{0}' has already be registered", dslDefinition.getName());
+		//---
 		registry.onNewDefinition(dslDefinition)
 				.stream()
 				.forEach(newDefinition -> addDefinition(newDefinition));
@@ -155,7 +156,7 @@ public final class DslDefinitionRepository {
 	 */
 	public void addPartialDefinition(final DslDefinition partial) {
 		Assertion.checkNotNull(partial);
-		//-----
+		//---
 		partials.add(partial);
 	}
 

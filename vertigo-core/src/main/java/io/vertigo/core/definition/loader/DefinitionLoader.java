@@ -69,10 +69,10 @@ public final class DefinitionLoader implements Component {
 	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
 	 */
 	private void parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
-		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
+		final CompositeDynamicRegistry dynamicRegistry = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
-		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(handler);
+		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(dynamicRegistry, definitionSpace);
 
 		//--Enregistrement des types primitifs
 		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
@@ -85,7 +85,8 @@ public final class DefinitionLoader implements Component {
 			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
-		dynamicModelRepository.solve(definitionSpace);
+
+		dynamicModelRepository.solve();
 	}
 
 	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
