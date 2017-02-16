@@ -18,6 +18,9 @@
  */
 package io.vertigo.core.definition.dsl.dynamic;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -50,7 +53,8 @@ public interface DynamicRegistry {
 	 * Exemple : création des domaines à partir d'un DT.
 	 *
 	 * @param dslDefinition dslDefinition
-	 * @param definitionRepository DynamicModelRepository
 	 */
-	void onNewDefinition(final DslDefinition dslDefinition, final DslDefinitionRepository definitionRepository);
+	default List<DslDefinition> onNewDefinition(final DslDefinition dslDefinition) {
+		return Collections.emptyList();
+	}
 }

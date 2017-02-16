@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,6 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -53,6 +53,7 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -462,13 +463,16 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dslDefinitionRepository) {
+	public List<DslDefinition> onNewDefinition(final DslDefinition xdefinition) {
 		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(xdefinition.getEntity())
 				|| DomainGrammar.FRAGMENT_ENTITY.equals(xdefinition.getEntity())) {
 			//Dans le cas des DT on ajoute les domaines
-			dslDefinitionRepository.addDefinition(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
-			dslDefinitionRepository.addDefinition(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
+			return new ListBuilder<DslDefinition>()
+					.add(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()))
+					.add(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()))
+					.build();
 		}
+		return Collections.emptyList();
 	}
 
 	/*

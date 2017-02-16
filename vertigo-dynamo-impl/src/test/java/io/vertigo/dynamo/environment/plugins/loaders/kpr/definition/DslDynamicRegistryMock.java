@@ -53,9 +53,4 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 		return () -> "FAKE";
 	}
 
-	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
-		//
-	}
-
 }

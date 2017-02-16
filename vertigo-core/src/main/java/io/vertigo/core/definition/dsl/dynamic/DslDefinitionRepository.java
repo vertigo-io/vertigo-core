@@ -143,7 +143,10 @@ public final class DslDefinitionRepository {
 		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
 		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", dslDefinition.getName());
 		//-----
-		registry.onNewDefinition(dslDefinition, this);
+
+		registry.onNewDefinition(dslDefinition)
+				.stream()
+				.forEach(newDefinition -> addDefinition(newDefinition));
 	}
 
 	/**

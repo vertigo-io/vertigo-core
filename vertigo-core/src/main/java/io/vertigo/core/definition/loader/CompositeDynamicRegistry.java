@@ -19,11 +19,11 @@
 package io.vertigo.core.definition.loader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -65,12 +65,13 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
+	public List<DslDefinition> onNewDefinition(final DslDefinition dslDefinition) {
 		//Les entités du noyaux ne sont pas à gérer par des managers spécifiques.
-		if (!xdefinition.getEntity().isProvided()) {
-			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			dynamicRegistry.onNewDefinition(xdefinition, dynamicModelrepository);
+		if (!dslDefinition.getEntity().isProvided()) {
+			return lookUpDynamicRegistry(dslDefinition)
+					.onNewDefinition(dslDefinition);
 		}
+		return Collections.emptyList();
 	}
 
 	/** {@inheritDoc} */

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.environment.registries;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
@@ -64,11 +63,4 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	protected static final String getPropertyValueAsString(final DslDefinition dslDefinition, final String propertyName) {
 		return (String) dslDefinition.getPropertyValue(propertyName);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void onNewDefinition(final DslDefinition dslDefinition, final DslDefinitionRepository dynamicModelrepository) {
-		//
-	}
-
 }

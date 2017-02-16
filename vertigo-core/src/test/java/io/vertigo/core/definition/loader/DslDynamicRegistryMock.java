@@ -54,11 +54,6 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 		return new FakeDefinition(definition.getName());
 	}
 
-	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
-		//
-	}
-
 	@DefinitionPrefix("MOCK_")
 	public final static class FakeDefinition implements Definition {
 		private final String name;
