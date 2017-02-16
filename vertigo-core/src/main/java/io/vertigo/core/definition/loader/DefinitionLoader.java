@@ -72,7 +72,7 @@ public final class DefinitionLoader implements Component {
 		final CompositeDynamicRegistry dynamicRegistry = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
-		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(dynamicRegistry, definitionSpace);
+		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(dynamicRegistry);
 
 		//--Enregistrement des types primitifs
 		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
@@ -86,7 +86,7 @@ public final class DefinitionLoader implements Component {
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
 
-		dynamicModelRepository.solve();
+		dynamicModelRepository.solve(definitionSpace);
 	}
 
 	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {

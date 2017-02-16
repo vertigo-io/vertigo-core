@@ -51,18 +51,15 @@ public final class DslDefinitionRepository {
 
 	private final DynamicRegistry registry;
 	private final DslGrammar grammar;
-	private final DefinitionSpace definitionSpace;
 
 	/**
 	 * Constructeur.
 	 * @param registry DynamicDefinitionHandler
 	 */
-	public DslDefinitionRepository(final DynamicRegistry registry, final DefinitionSpace definitionSpace) {
+	public DslDefinitionRepository(final DynamicRegistry registry) {
 		Assertion.checkNotNull(registry);
-		Assertion.checkNotNull(definitionSpace);
 		//-----
 		this.registry = registry;
-		this.definitionSpace = definitionSpace;
 		grammar = registry.getGrammar();
 	}
 
@@ -104,11 +101,11 @@ public final class DslDefinitionRepository {
 	 * Résolution des références de définitions.
 	 * @param definitionSpace Space where all the definitions are stored
 	 */
-	public void solve() {
+	public void solve(final DefinitionSpace definitionSpace) {
 		mergePartials();
 
 		final List<DslDefinition> sortedDslDefinitions = DslSolver.solve(definitionSpace, this);
-		registerAllDefinitions(sortedDslDefinitions);
+		registerAllDefinitions(definitionSpace, sortedDslDefinitions);
 	}
 
 	private void mergePartials() {
@@ -121,14 +118,14 @@ public final class DslDefinitionRepository {
 		}
 	}
 
-	private void registerAllDefinitions(final List<DslDefinition> sortedDynamicDefinitions) {
+	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
 		sortedDynamicDefinitions
 				.stream()
 				.filter(dslDefinition -> !dslDefinition.getEntity().isProvided()) // provided definitions are excluded
-				.forEach(dslDefinition -> registerDefinition(dslDefinition));
+				.forEach(dslDefinition -> registerDefinition(definitionSpace, dslDefinition));
 	}
 
-	private void registerDefinition(final DslDefinition dslDefinition) {
+	private void registerDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
 		DsValidator.check(dslDefinition);
 		//The definition identified as root are not registered.
 		final Definition definition = registry.createDefinition(definitionSpace, dslDefinition);
