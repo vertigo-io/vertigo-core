@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.database.data.domain.Movie;
+import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
 
 /**
@@ -22,18 +22,18 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCollectDtListEmpty() {
-		DtList<Movie> emptyDtList = new DtList<>(Movie.class);
-		DtList<Movie> listCollected = emptyDtList.stream().collect(VCollectors.toDtList(Movie.class));
+		DtList<Artist> emptyDtList = new DtList<>(Artist.class);
+		DtList<Artist> listCollected = emptyDtList.stream().collect(VCollectors.toDtList(Artist.class));
 
 		assertNotNull(listCollected);
 		assertTrue(listCollected.isEmpty());
 		assertEquals(0, listCollected.size());
 	}
 
-	private static Movie createMovie(long id, String title) {
-		Movie m = new Movie();
+	private static Artist createArtist(long id, String name) {
+		Artist m = new Artist();
 		m.setId(id);
-		m.setTitle(title);
+		m.setName(name);
 		return m;
 	}
 
@@ -42,17 +42,17 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCollectDtList() {
-		DtList<Movie> dtList = new DtList<>(Movie.class);
-		Movie m1 = createMovie(1, "Title 1");
-		Movie m2 = createMovie(2, "Title 2");
+		DtList<Artist> dtList = new DtList<>(Artist.class);
+		Artist m1 = createArtist(1, "David Bowie");
+		Artist m2 = createArtist(2, "Joe Strummer");
 
 		dtList.add(m1);
 		dtList.add(m2);
 
 		// @formatter:off
-		DtList<Movie> listCollected = dtList.stream()
+		DtList<Artist> listCollected = dtList.stream()
 											.sorted( (mov1, mov2) -> mov1.getId().compareTo(mov2.getId()))
-											.collect(VCollectors.toDtList(Movie.class));
+											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 
 		assertNotNull(listCollected);
@@ -68,19 +68,19 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterCollectDtList() {
-		DtList<Movie> dtList = new DtList<>(Movie.class);
-		Movie m1 = createMovie(1, "Title 1");
-		Movie m2 = createMovie(2, "Title 2");
-		Movie m3 = createMovie(3, "Title 3");
+		DtList<Artist> dtList = new DtList<>(Artist.class);
+		Artist m1 = createArtist(1, "Louis Armstrong");
+		Artist m2 = createArtist(2, "Duke Ellington");
+		Artist m3 = createArtist(3, "Jimmy Hendricks");
 
 		dtList.add(m1);
 		dtList.add(m2);
 		dtList.add(m3);
 
 		// @formatter:off
-		DtList<Movie> listCollected = dtList.stream()
+		DtList<Artist> listCollected = dtList.stream()
 											.filter( m -> m.getId() % 2 == 0)
-											.collect(VCollectors.toDtList(Movie.class));
+											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 		assertNotNull(listCollected);
 		assertTrue(listCollected.isEmpty() == false);

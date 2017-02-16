@@ -9,8 +9,8 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/database/data/execution.kpr" />
-			<resource type="classes" path="io.vertigo.dynamo.database.data.DtDefinitions" />
+			<resource type="kpr" path="io/vertigo/dynamo/domain/data/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.domain.data.DtDefinitions" />
 		</definitions>
 	</module>
 </config>
