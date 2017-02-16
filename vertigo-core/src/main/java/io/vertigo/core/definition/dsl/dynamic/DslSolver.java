@@ -47,7 +47,7 @@ final class DslSolver {
 		Assertion.checkNotNull(definitionRepository);
 		//-----
 		//Liste des clés résolues
-		final List<DslDefinition> orderedList = new ArrayList<>();
+		final List<DslDefinition> sortedList = new ArrayList<>();
 
 		final Collection<String> orphans = definitionRepository.getOrphanDefinitionKeys();
 		if (!orphans.isEmpty()) {
@@ -56,16 +56,16 @@ final class DslSolver {
 		//-----
 		final Collection<DslDefinition> coll = new ArrayList<>(definitionRepository.getDefinitions());
 
-		DslDefinition xdef;
+		DslDefinition dslDefinition;
 		int size = coll.size();
 		while (size > 0) {
 			for (final Iterator<DslDefinition> it = coll.iterator(); it.hasNext();) {
-				xdef = it.next();
+				dslDefinition = it.next();
 				//==============================================================
 				//==============================================================
 				//On vérifie que les sous éléments sont résolues
-				if (isSolved(definitionSpace, definitionRepository, orderedList, xdef, xdef)) {
-					orderedList.add(xdef);
+				if (isSolved(definitionSpace, definitionRepository, sortedList, dslDefinition, dslDefinition)) {
+					sortedList.add(dslDefinition);
 					it.remove();
 				}
 			}
@@ -75,7 +75,7 @@ final class DslSolver {
 			}
 			size = coll.size();
 		}
-		return orderedList;
+		return sortedList;
 	}
 
 	private static boolean isSolved(final DefinitionSpace definitionSpace,

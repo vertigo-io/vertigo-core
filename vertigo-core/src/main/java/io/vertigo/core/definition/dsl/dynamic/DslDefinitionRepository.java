@@ -106,8 +106,8 @@ public final class DslDefinitionRepository {
 		//-----
 		mergePartials();
 
-		final List<DslDefinition> sortedDynamicDefinitions = DslSolver.solve(definitionSpace, this);
-		registerAllDefinitions(definitionSpace, sortedDynamicDefinitions);
+		final List<DslDefinition> sortedDslDefinitions = DslSolver.solve(definitionSpace, this);
+		registerAllDefinitions(definitionSpace, sortedDslDefinitions);
 	}
 
 	private void mergePartials() {
@@ -121,11 +121,11 @@ public final class DslDefinitionRepository {
 	}
 
 	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
-		for (final DslDefinition xdefinition : sortedDynamicDefinitions) {
-			DsValidator.check(xdefinition);
-			if (!xdefinition.getEntity().isProvided()) {
+		for (final DslDefinition dslDefinition : sortedDynamicDefinitions) {
+			if (!dslDefinition.getEntity().isProvided()) {
+				DsValidator.check(dslDefinition);
 				//The definition identified as root are not registered.
-				final Definition definition = registry.createDefinition(definitionSpace, xdefinition);
+				final Definition definition = registry.createDefinition(definitionSpace, dslDefinition);
 				definitionSpace.put(definition);
 			}
 		}

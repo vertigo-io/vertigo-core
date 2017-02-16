@@ -462,12 +462,12 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelRepository) {
+	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dslDefinitionRepository) {
 		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(xdefinition.getEntity())
 				|| DomainGrammar.FRAGMENT_ENTITY.equals(xdefinition.getEntity())) {
 			//Dans le cas des DT on ajoute les domaines
-			dynamicModelRepository.addDefinition(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
-			dynamicModelRepository.addDefinition(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
+			dslDefinitionRepository.addDefinition(createDTODomain(xdefinition.getName(), xdefinition.getPackageName()));
+			dslDefinitionRepository.addDefinition(createDTCDomain(xdefinition.getName(), xdefinition.getPackageName()));
 		}
 	}
 
