@@ -86,17 +86,17 @@ final class DsValidator {
 	}
 
 	private static void checkMandatoryProperties(
-			final DslDefinition dynamicDefinition,
-			final DslEntity myEntity,
+			final DslDefinition dslDefinition,
+			final DslEntity dslEntity,
 			final Set<String> propertyNames,
 			final Set<String> entityPropertyNames) {
 		// Vérification des propriétés obligatoires
 		final Set<String> unusedMandatoryPropertySet = new HashSet<>();
 		for (final String propertyName : entityPropertyNames) {
-			final DslEntityField entityField = myEntity.getField(propertyName);
+			final DslEntityField entityField = dslEntity.getField(propertyName);
 
 			if ((entityField.getCardinality() == Cardinality.ONE)
-					&& (!propertyNames.contains(propertyName) || dynamicDefinition.getPropertyValue(propertyName) == null)) {
+					&& (!propertyNames.contains(propertyName) || dslDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
 				// est nulle alors erreur !
@@ -104,7 +104,7 @@ final class DsValidator {
 			}
 		}
 		if (!unusedMandatoryPropertySet.isEmpty()) {
-			throw new IllegalStateException(dynamicDefinition.getName() + " Il existe des propriétés obligatoires non renseignées " + unusedMandatoryPropertySet);
+			throw new IllegalStateException(dslDefinition.getName() + " Il existe des propriétés obligatoires non renseignées " + unusedMandatoryPropertySet);
 		}
 	}
 }

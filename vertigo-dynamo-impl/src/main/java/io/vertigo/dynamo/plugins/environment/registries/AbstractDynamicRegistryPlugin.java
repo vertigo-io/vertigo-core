@@ -51,8 +51,8 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param propertyName Name of the property
 	 * @return Propriété de type Boolean uniquement
 	 */
-	protected static final Boolean getPropertyValueAsBoolean(final DslDefinition xdefinition, final String propertyName) {
-		return (Boolean) xdefinition.getPropertyValue(propertyName);
+	protected static final Boolean getPropertyValueAsBoolean(final DslDefinition dslDefinition, final String propertyName) {
+		return (Boolean) dslDefinition.getPropertyValue(propertyName);
 	}
 
 	/**
@@ -61,13 +61,13 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 * @param propertyName Name of the property
 	 * @return Propriété de type String uniquement
 	 */
-	protected static final String getPropertyValueAsString(final DslDefinition xdefinition, final String propertyName) {
-		return (String) xdefinition.getPropertyValue(propertyName);
+	protected static final String getPropertyValueAsString(final DslDefinition dslDefinition, final String propertyName) {
+		return (String) dslDefinition.getPropertyValue(propertyName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onNewDefinition(final DslDefinition xdefinition, final DslDefinitionRepository dynamicModelrepository) {
+	public void onNewDefinition(final DslDefinition dslDefinition, final DslDefinitionRepository dynamicModelrepository) {
 		//
 	}
 

@@ -69,7 +69,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DslDefinition, 
 
 	@Override
 	protected DslDefinition handle(final PegChoice parsing) {
-		final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) ((List) parsing.getValue()).get(2);
-		return xDefinitionEntry.getDefinition();
+		final DslDefinitionEntry dslDefinitionEntry = (DslDefinitionEntry) ((List) parsing.getValue()).get(2);
+		return dslDefinitionEntry.getDefinition();
 	}
 }

@@ -52,7 +52,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	private final DslDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
+	private final DslDefinitionRepository dslDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
 	@Test
 	public void simpleTest() {
@@ -64,7 +64,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addPropertyValue(POSTAL_CODE, "75008")
 				.addPropertyValue(CITY, "Paris")
 				.build();
-		dynamicDefinitionRepository.addDefinition(address1Definition);
+		dslDefinitionRepository.addDefinition(address1Definition);
 
 		final DslDefinition address2Definition = new DslDefinitionBuilder("MOCK_SECOND_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
 				.withPackageName("io.vertigo.test.model")
@@ -72,7 +72,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addPropertyValue(POSTAL_CODE, "75008")
 				.addPropertyValue(CITY, "Paris CEDEX")
 				.build();
-		dynamicDefinitionRepository.addDefinition(address2Definition);
+		dslDefinitionRepository.addDefinition(address2Definition);
 
 		final DslDefinition personDefinition = new DslDefinitionBuilder("MOCK_MISTER_BEAN", PersonGrammar.PERSON_ENTITY)
 				.withPackageName("io.vertigo.test.model")
@@ -84,9 +84,9 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.addDefinitionLink(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
 				.addDefinitionLink(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
 				.build();
-		dynamicDefinitionRepository.addDefinition(personDefinition);
+		dslDefinitionRepository.addDefinition(personDefinition);
 
-		dynamicDefinitionRepository.solve(definitionSpace);
+		dslDefinitionRepository.solve(definitionSpace);
 		assertNotNull(personDefinition);
 	}
 
@@ -100,7 +100,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 							.addPropertyValue(POSTAL_CODE, 75008)
 							.addPropertyValue(CITY, "Paris")
 							.build();
-					dynamicDefinitionRepository.addDefinition(address1Definition);
+					dslDefinitionRepository.addDefinition(address1Definition);
 				});
 
 	}

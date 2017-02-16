@@ -62,17 +62,17 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		final String definitionName = (String) parsing.get(2);
 		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
-		final DslDefinitionBuilder dynamicDefinitionBuilder = new DslDefinitionBuilder(definitionName, entity);
-		populateDefinition(definitionBody, dynamicDefinitionBuilder);
+		final DslDefinitionBuilder dslDefinitionBuilder = new DslDefinitionBuilder(definitionName, entity);
+		populateDefinition(definitionBody, dslDefinitionBuilder);
 
 		//---
-		return new DslDefinitionEntry(entityName, dynamicDefinitionBuilder.build());
+		return new DslDefinitionEntry(entityName, dslDefinitionBuilder.build());
 	}
 
 	/**
 	 * Peuple la définition à partir des éléments trouvés.
 	 */
-	private static void populateDefinition(final DslDefinitionBody definitionBody, final DslDefinitionBuilder dynamicDefinitionBuilder) {
+	private static void populateDefinition(final DslDefinitionBody definitionBody, final DslDefinitionBuilder dslDefinitionBuilder) {
 		for (final DslDefinitionEntry fieldDefinitionEntry : definitionBody.getDefinitionEntries()) {
 			//-----
 			// 1.On vérifie que le champ existe pour la metaDefinition
@@ -80,10 +80,10 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dslDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addAllDefinitionLinks(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
+				dslDefinitionBuilder.addAllDefinitionLinks(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinitionNames());
 			}
 		}
 		for (final DslPropertyEntry dslPropertyEntry : definitionBody.getPropertyEntries()) {
@@ -91,8 +91,8 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//			Assertion.precondition(definition.getEntity().getPropertySet().contains(fieldPropertyEntry.getProperty()), "Propriété {0} non enregistré sur {1}",
 			//					fieldPropertyEntry.getProperty(), definition.getEntity().getName());
 			//-----
-			final Object value = readProperty(dynamicDefinitionBuilder.getEntity(), dslPropertyEntry);
-			dynamicDefinitionBuilder.addPropertyValue(dslPropertyEntry.getPropertyName(), value);
+			final Object value = readProperty(dslDefinitionBuilder.getEntity(), dslPropertyEntry);
+			dslDefinitionBuilder.addPropertyValue(dslPropertyEntry.getPropertyName(), value);
 		}
 	}
 

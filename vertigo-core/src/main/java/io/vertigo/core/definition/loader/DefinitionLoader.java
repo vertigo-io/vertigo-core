@@ -76,8 +76,8 @@ public final class DefinitionLoader implements Component {
 
 		//--Enregistrement des types primitifs
 		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
-			for (final DslDefinition dynamicDefinition : dynamicRegistryPlugin.getGrammar().getRootDefinitions()) {
-				dynamicModelRepository.addDefinition(dynamicDefinition);
+			for (final DslDefinition dslDefinition : dynamicRegistryPlugin.getGrammar().getRootDefinitions()) {
+				dynamicModelRepository.addDefinition(dslDefinition);
 			}
 		}
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {

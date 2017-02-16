@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -44,12 +45,14 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
-		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+		final DslEntity dslEntity = dslDefinition.getEntity();
+
+		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(dslEntity)) {
 			//Only taskDefinitions are concerned
-			return createTaskDefinition(xdefinition);
+			return createTaskDefinition(dslDefinition);
 		}
-		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
+		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
 	private static Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
@@ -93,11 +96,13 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	}
 
 	private static boolean isInValue(final String sText) {
-		if ("in".equals(sText)) {
-			return true;
-		} else if ("out".equals(sText)) {
-			return false;
+		switch (sText) {
+			case "in":
+				return true;
+			case "out":
+				return false;
+			default:
+				throw new IllegalArgumentException("les seuls types autorises sont 'in' ou 'out' et non > " + sText);
 		}
-		throw new IllegalArgumentException("les seuls types autorises sont 'in' ou 'out' et non > " + sText);
 	}
 }

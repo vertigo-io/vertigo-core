@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -39,12 +40,13 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
-		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+		final DslEntity dslEntity = dslDefinition.getEntity();
+		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(dslEntity)) {
 			//Seuls les taches sont gérées.
-			return createFileDefinition(xdefinition);
+			return createFileDefinition(dslDefinition);
 		}
-		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
+		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
 	private static FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {

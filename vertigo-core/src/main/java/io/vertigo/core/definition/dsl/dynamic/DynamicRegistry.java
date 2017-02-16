@@ -25,7 +25,7 @@ import io.vertigo.core.spaces.definiton.DefinitionSpace;
 /**
  * This handler creates
  * - creates a definition from a DynamicDefinition
- * - adds dynamicDefinition from a new DynamicDefinition
+ * - adds dslDefinition from a new DynamicDefinition
  *
  * example : Each time a DtDefinition, two others definitions (domains)  are created (a domain for one object, a domain for a list).
  * @author pchretien
@@ -39,18 +39,18 @@ public interface DynamicRegistry {
 	/**
 	 * Create a definition from a dynamic definition in a context defined by definitionSpace (preexisting definitions).
 	 * @param definitionSpace Space where all the definitions are stored.
-	 * @param definition Definition
+	 * @param dslDefinition Definition
 	 * @return An optional definition
 	 */
-	Definition createDefinition(final DefinitionSpace definitionSpace, DslDefinition definition);
+	Definition createDefinition(final DefinitionSpace definitionSpace, DslDefinition dslDefinition);
 
 	/**
 	 * Ajout d'une définition.
 	 * Utilisé pour créer des définitions Ã  partir d'autres Definitions.
 	 * Exemple : création des domaines à partir d'un DT.
 	 *
-	 * @param definition DynamicDefinition
+	 * @param dslDefinition dslDefinition
 	 * @param definitionRepository DynamicModelRepository
 	 */
-	void onNewDefinition(final DslDefinition definition, final DslDefinitionRepository definitionRepository);
+	void onNewDefinition(final DslDefinition dslDefinition, final DslDefinitionRepository definitionRepository);
 }

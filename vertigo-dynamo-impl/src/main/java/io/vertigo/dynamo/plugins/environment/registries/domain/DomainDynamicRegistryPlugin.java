@@ -76,24 +76,24 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
-		final DslEntity entity = xdefinition.getEntity();
-		if (entity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
-			return createConstraint(xdefinition);
-		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			return createFormatter(xdefinition);
-		} else if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
-			return createDomain(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			return createDtDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.FRAGMENT_ENTITY)) {
-			return createFragmentDtDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			return createAssociationSimpleDefinition(definitionSpace, xdefinition);
-		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			return createAssociationNNDefinition(definitionSpace, xdefinition);
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+		final DslEntity dslEntity = dslDefinition.getEntity();
+		if (dslEntity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
+			return createConstraint(dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.FORMATTER_ENTITY)) {
+			return createFormatter(dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.DOMAIN_ENTITY)) {
+			return createDomain(definitionSpace, dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
+			return createDtDefinition(definitionSpace, dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.FRAGMENT_ENTITY)) {
+			return createFragmentDtDefinition(definitionSpace, dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
+			return createAssociationSimpleDefinition(definitionSpace, dslDefinition);
+		} else if (dslEntity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
+			return createAssociationNNDefinition(definitionSpace, dslDefinition);
 		}
-		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
+		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
 	/**
@@ -446,16 +446,16 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * Extrait le PropertyContainer<DtProperty> d'une DynamicDefinition.
 	 * Associe les DtProperty et les KspProperty par leur nom.
-	 * @param dynamicDefinition Definition
+	 * @param dslDefinition Definition
 	 * @return Container des propriétés
 	 */
-	private static Properties extractProperties(final DslDefinition dynamicDefinition) {
+	private static Properties extractProperties(final DslDefinition dslDefinition) {
 		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
 
 		//On associe les propriétés Dt et Ksp par leur nom.
-		for (final String entityPropertyName : dynamicDefinition.getPropertyNames()) {
+		for (final String entityPropertyName : dslDefinition.getPropertyNames()) {
 			final Property property = DtProperty.valueOf(entityPropertyName);
-			propertiesBuilder.addValue(property, dynamicDefinition.getPropertyValue(entityPropertyName));
+			propertiesBuilder.addValue(property, dslDefinition.getPropertyValue(entityPropertyName));
 		}
 		return propertiesBuilder.build();
 	}

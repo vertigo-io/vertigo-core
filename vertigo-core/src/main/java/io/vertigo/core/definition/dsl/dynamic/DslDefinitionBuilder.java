@@ -62,7 +62,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 
 	/**
 	 * Constructor.
-	 * @param name the name of the dynamicDefinition
+	 * @param name the name of the dslDefinition
 	 * @param entity Entité
 	 */
 	public DslDefinitionBuilder(final String name, final DslEntity entity) {
@@ -94,25 +94,25 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 	}
 
 	/**
-	 * @param dynamicDefinition Definition body
+	 * @param dslDefinition Definition body
 	 * @return this builder
 	 */
-	public DslDefinitionBuilder merge(final DslDefinition dynamicDefinition) {
+	public DslDefinitionBuilder merge(final DslDefinition dslDefinition) {
 		if (packageName == null) {
-			withPackageName(dynamicDefinition.getPackageName());
+			withPackageName(dslDefinition.getPackageName());
 		}
 		// 1. maj des EntityProperty
-		for (final String propertyName : dynamicDefinition.getPropertyNames()) {
-			addPropertyValue(propertyName, dynamicDefinition.getPropertyValue(propertyName));
+		for (final String propertyName : dslDefinition.getPropertyNames()) {
+			addPropertyValue(propertyName, dslDefinition.getPropertyValue(propertyName));
 		}
 
 		for (final DslEntityField dslEntityField : entity.getFields()) {
 			if (dslEntityField.getType().isEntityLink()) {
 				// 2. link
-				addAllDefinitionLinks(dslEntityField.getName(), dynamicDefinition.getDefinitionLinkNames(dslEntityField.getName()));
+				addAllDefinitionLinks(dslEntityField.getName(), dslDefinition.getDefinitionLinkNames(dslEntityField.getName()));
 			} else if (dslEntityField.getType().isEntity()) {
 				// 3. children
-				addAllChildDefinitions(dslEntityField.getName(), dynamicDefinition.getChildDefinitions(dslEntityField.getName()));
+				addAllChildDefinitions(dslEntityField.getName(), dslDefinition.getChildDefinitions(dslEntityField.getName()));
 			}
 		}
 		return this;
@@ -159,13 +159,13 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 		return this;
 	}
 
-	private void addAllChildDefinitions(final String fieldName, final List<DslDefinition> definitions) {
-		Assertion.checkNotNull(definitions);
+	private void addAllChildDefinitions(final String fieldName, final List<DslDefinition> dslDefinitions) {
+		Assertion.checkNotNull(dslDefinitions);
 		final DslEntityField dslEntityField = entity.getField(fieldName);
 		Assertion.checkState(dslEntityField.getType().isEntity(), "expected an entity on {0}", fieldName);
 		//---
 		childDefinitionsByFieldName.get(dslEntityField)
-				.addAll(definitions);
+				.addAll(dslDefinitions);
 	}
 
 	/**

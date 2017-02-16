@@ -81,21 +81,21 @@ final class DslSolver {
 	private static boolean isSolved(final DefinitionSpace definitionSpace,
 			final DslDefinitionRepository definitionRepository,
 			final List<DslDefinition> orderedList,
-			final DslDefinition definition,
+			final DslDefinition dslDefinition,
 			final DslDefinition xdefRoot) {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
-		for (final DslEntityField dslEntityField : definition.getAllDefinitionLinkFields()) {
+		for (final DslEntityField dslEntityField : dslDefinition.getAllDefinitionLinkFields()) {
 			final String fieldName = dslEntityField.getName();
-			for (final String definitionName : definition.getDefinitionLinkNames(fieldName)) {
+			for (final String definitionName : dslDefinition.getDefinitionLinkNames(fieldName)) {
 				//reference should be already solved in a previous resources module : then continue
 				if (!definitionSpace.containsDefinitionName(definitionName)) {
 					//or references should be in currently parsed resources
 					if (!definitionRepository.containsDefinitionName(definitionName)) {
-						final String xdefRootName = xdefRoot.getName().equals(definition.getName()) ? xdefRoot.getName() : (xdefRoot.getName() + "." + definition.getName());
+						final String xdefRootName = xdefRoot.getName().equals(dslDefinition.getName()) ? xdefRoot.getName() : (xdefRoot.getName() + "." + dslDefinition.getName());
 						throw new VSystemException("Clé {0} de type {1}, référencée par la propriété {2} de {3} non trouvée",
-								definitionName, definition.getEntity().getField(fieldName).getType(), fieldName, xdefRootName);
+								definitionName, dslDefinition.getEntity().getField(fieldName).getType(), fieldName, xdefRootName);
 					}
 					final DslDefinition linkedDefinition = definitionRepository.getDefinition(definitionName);
 					if (!orderedList.contains(linkedDefinition)) {
@@ -106,7 +106,7 @@ final class DslSolver {
 		}
 
 		//On vérifie que les composites sont résolues.
-		for (final DslDefinition child : definition.getAllChildDefinitions()) {
+		for (final DslDefinition child : dslDefinition.getAllChildDefinitions()) {
 			if (!isSolved(definitionSpace, definitionRepository, orderedList, child, xdefRoot)) {
 				return false;
 			}

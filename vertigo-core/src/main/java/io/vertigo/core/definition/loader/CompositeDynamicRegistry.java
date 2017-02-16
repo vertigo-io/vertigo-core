@@ -36,7 +36,7 @@ import io.vertigo.lang.WrappedException;
  */
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
-	private final DslGrammar grammar;
+	private final DslGrammar dslGrammar;
 
 	/**
 	 * Constructor.
@@ -47,7 +47,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		//-----
 		dynamicRegistries = new ArrayList<>(dynamicRegistryPlugins);
 		//Création de la grammaire.
-		grammar = createGrammar();
+		dslGrammar = createGrammar();
 	}
 
 	private DslGrammar createGrammar() {
@@ -60,7 +60,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	/** {@inheritDoc} */
 	@Override
 	public DslGrammar getGrammar() {
-		return grammar;
+		return dslGrammar;
 	}
 
 	/** {@inheritDoc} */
@@ -75,24 +75,24 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
-			return lookUpDynamicRegistry(xdefinition)
-					.createDefinition(definitionSpace, xdefinition);
+			return lookUpDynamicRegistry(dslDefinition)
+					.createDefinition(definitionSpace, dslDefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new WrappedException("An error occurred during the creation of the following definition : " + xdefinition.getName(), e);
+			throw new WrappedException("An error occurred during the creation of the following definition : " + dslDefinition.getName(), e);
 		}
 	}
 
-	private DynamicRegistry lookUpDynamicRegistry(final DslDefinition xdefinition) {
+	private DynamicRegistry lookUpDynamicRegistry(final DslDefinition dslDefinition) {
 		//On regarde si la grammaire contient la métaDefinition.
 		return dynamicRegistries
 				.stream()
-				.filter(dynamicRegistry -> dynamicRegistry.getGrammar().getEntities().contains(xdefinition.getEntity()))
+				.filter(dynamicRegistry -> dynamicRegistry.getGrammar().getEntities().contains(dslDefinition.getEntity()))
 				.findFirst()
 				//Si on n'a pas trouvé de définition c'est qu'il manque la registry.
-				.orElseThrow(() -> new IllegalArgumentException(xdefinition.getEntity().getName() + " " + xdefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc."));
+				.orElseThrow(() -> new IllegalArgumentException(dslDefinition.getEntity().getName() + " " + dslDefinition.getName() + " non traitée. Il manque une DynamicRegistry ad hoc."));
 	}
 }

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -60,15 +61,17 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdefinition) {
-		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			return createIndexDefinition(definitionSpace, xdefinition);
-		} else if (SearchGrammar.FACET_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			return createFacetDefinition(definitionSpace, xdefinition);
-		} else if (SearchGrammar.FACETED_QUERY_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			return createFacetedQueryDefinition(xdefinition);
+	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+		final DslEntity dslEntity = dslDefinition.getEntity();
+
+		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(dslEntity)) {
+			return createIndexDefinition(definitionSpace, dslDefinition);
+		} else if (SearchGrammar.FACET_DEFINITION_ENTITY.equals(dslEntity)) {
+			return createFacetDefinition(definitionSpace, dslDefinition);
+		} else if (SearchGrammar.FACETED_QUERY_DEFINITION_ENTITY.equals(dslEntity)) {
+			return createFacetedQueryDefinition(dslDefinition);
 		}
-		throw new IllegalStateException("The type of definition" + xdefinition + " is not managed by me");
+		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DefinitionSpace definitionSpace, final DslDefinition xsearchObjet) {

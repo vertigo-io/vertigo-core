@@ -46,7 +46,7 @@ public final class DslDefinitionRepository {
 	 * On retient les définitions dans l'ordre pour
 	 * créer les fichiers toujours de la même façon.
 	 */
-	private final Map<String, DslDefinition> definitions = new LinkedHashMap<>();
+	private final Map<String, DslDefinition> dslDefinitions = new LinkedHashMap<>();
 	private final List<DslDefinition> partials = new ArrayList<>();
 
 	private final DynamicRegistry registry;
@@ -76,7 +76,7 @@ public final class DslDefinitionRepository {
 	 * @return Si la définition a déjà été enregistrée
 	 */
 	public boolean containsDefinitionName(final String definitionName) {
-		return definitions.containsKey(definitionName);
+		return dslDefinitions.containsKey(definitionName);
 	}
 
 	/**
@@ -89,9 +89,9 @@ public final class DslDefinitionRepository {
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
 	public DslDefinition getDefinition(final String definitionName) {
-		Assertion.checkArgument(definitions.containsKey(definitionName), "Aucune clé enregistrée pour :{0} parmi {1}", definitionName, definitions.keySet());
+		Assertion.checkArgument(dslDefinitions.containsKey(definitionName), "Aucune clé enregistrée pour :{0} parmi {1}", definitionName, dslDefinitions.keySet());
 		//-----
-		final DslDefinition definition = definitions.get(definitionName);
+		final DslDefinition definition = dslDefinitions.get(definitionName);
 		//-----
 		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionName);
 		return definition;
@@ -116,7 +116,7 @@ public final class DslDefinitionRepository {
 			final DslDefinition merged = new DslDefinitionBuilder(partial.getName(), partial.getEntity())
 					.merge(getDefinition(partial.getName()))
 					.merge(partial).build();
-			definitions.put(partial.getName(), merged);
+			dslDefinitions.put(partial.getName(), merged);
 		}
 	}
 
@@ -133,17 +133,17 @@ public final class DslDefinitionRepository {
 
 	/**
 	 * Add a definition.
-	 * @param definition DynamicDefinition
+	 * @param dslDefinition DynamicDefinition
 	 */
-	public void addDefinition(final DslDefinition definition) {
-		Assertion.checkNotNull(definition);
+	public void addDefinition(final DslDefinition dslDefinition) {
+		Assertion.checkNotNull(dslDefinition);
 		//-----
 		//On enregistre la définition qu'elle soit renseignée ou null.
-		final DslDefinition previousDefinition = definitions.put(definition.getName(), definition);
+		final DslDefinition previousDefinition = dslDefinitions.put(dslDefinition.getName(), dslDefinition);
 		//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
-		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", definition.getName());
+		Assertion.checkState(previousDefinition == null, "la définition {0} est déjà enregistrée", dslDefinition.getName());
 		//-----
-		registry.onNewDefinition(definition, this);
+		registry.onNewDefinition(dslDefinition, this);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public final class DslDefinitionRepository {
 	 *  @return Liste des clés orphelines.
 	 */
 	Set<String> getOrphanDefinitionKeys() {
-		return definitions.entrySet()
+		return dslDefinitions.entrySet()
 				.stream()
 				.filter(entry -> entry.getValue() == null) //select orphans
 				.map(Entry::getKey)
@@ -171,6 +171,6 @@ public final class DslDefinitionRepository {
 	 * @return Liste des définitions complètes
 	 */
 	Collection<DslDefinition> getDefinitions() {
-		return Collections.unmodifiableCollection(definitions.values());
+		return Collections.unmodifiableCollection(dslDefinitions.values());
 	}
 }
