@@ -67,7 +67,7 @@ import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 /**
  * @author npiedeloup
  */
-public final class AnnotationsWebServiceScannerUtil {
+final class AnnotationsWebServiceScannerUtil {
 
 	/**
 	 * Constructor.
@@ -81,7 +81,7 @@ public final class AnnotationsWebServiceScannerUtil {
 	 * @param webServicesClass Class to introspect
 	 * @return List of WebServiceDefinition found
 	 */
-	public static List<WebServiceDefinition> scanWebService(final Class<? extends WebServices> webServicesClass) {
+	static List<WebServiceDefinition> scanWebService(final Class<? extends WebServices> webServicesClass) {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
 		return Arrays.stream(webServicesClass.getMethods())
