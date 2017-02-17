@@ -98,7 +98,6 @@ public final class AppConfig {
 		printComponent(out, "modules", "components", "plugins");
 		doPrintLine(out);
 		printComponents(out, "boot", bootConfig.getComponentConfigs());
-		printComponents(out, "boot", ConfigUtil.buildConfigs(bootConfig.getPluginConfigs()));
 		for (final ModuleConfig moduleConfig : modules) {
 			doPrintLine(out);
 			printModule(out, moduleConfig);
@@ -108,7 +107,6 @@ public final class AppConfig {
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
 		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
-		printComponents(out, moduleConfig.getName(), ConfigUtil.buildConfigs(moduleConfig.getPluginConfigs()));
 	}
 
 	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {

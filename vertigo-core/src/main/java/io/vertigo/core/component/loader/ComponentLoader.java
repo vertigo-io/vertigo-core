@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
-import io.vertigo.app.config.ConfigUtil;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
@@ -43,7 +43,6 @@ import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
@@ -79,11 +78,7 @@ public final class ComponentLoader {
 		//-----
 		final Optional<ParamManager> optionalParamManager = Optional.of(componentSpace.resolve(ParamManager.class));
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponents(optionalParamManager, moduleConfig.getName(),
-					new ListBuilder<ComponentConfig>()
-							.addAll(moduleConfig.getComponentConfigs())
-							.addAll(ConfigUtil.buildConfigs(moduleConfig.getPluginConfigs()))
-							.build());
+			injectComponents(optionalParamManager, moduleConfig.getName(), moduleConfig.getComponentConfigs());
 			injectAspects(moduleConfig.getAspectConfigs());
 		}
 	}
@@ -149,9 +144,8 @@ public final class ComponentLoader {
 
 	private void injectAspects(final List<AspectConfig> aspectConfigs) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(componentSpace, aspectConfigs)) {
-			registerAspect(aspect);
-		}
+		findAspects(componentSpace, aspectConfigs)
+				.forEach(this::registerAspect);
 	}
 
 	/**
@@ -159,13 +153,12 @@ public final class ComponentLoader {
 	 * @param aspectConfigs the list of all aspects inside the module
 	 * @return aspects (and its config)
 	 */
-	private static List<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
+	private static Stream<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
 		Assertion.checkNotNull(aspectConfigs);
 		//-----
 		return aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(container, aspectConfig))
-				.collect(Collectors.toList());
+				.map(aspectConfig -> createAspect(container, aspectConfig));
 	}
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {

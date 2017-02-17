@@ -19,10 +19,10 @@
 package io.vertigo.core.spaces.definiton;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -38,23 +38,8 @@ import io.vertigo.lang.JsonExclude;
  * @author pchretien
  */
 public final class DefinitionSpace implements Component, Activeable {
-	/**
-	 * Liste des objets indexés par Class (le type) et nom.
-	 */
-	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
-
-	/**
-	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
-	 * @param clazz Classe gérée
-	 */
-	private void register(final Class<? extends Definition> clazz) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(!definitions.containsKey(clazz), "Type '{0}' deja enregistré", clazz.getName());
-		//-----
-		definitions.put(clazz, new LinkedHashMap<String, Definition>());
-	}
 
 	/**
 	 * Enregistrement d'un nouvel object.
@@ -63,33 +48,19 @@ public final class DefinitionSpace implements Component, Activeable {
 	public void put(final Definition definition) {
 		Assertion.checkNotNull(definition, "A definition can't be null.");
 		//-----
-		if (!definitions.containsKey(definition.getClass())) {
-			register(definition.getClass());
-		}
-		final Map<String, Definition> tobjects = definitions.get(definition.getClass());
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
-		final Definition previous = tobjects.put(name, definition);
-		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", name);
 		//-----
 		final Definition previous2 = allObjects.put(name, definition);
 		//On vérifie l'unicité globale du nom.
-		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", name);
-	}
-
-	/**
-	 * @param definition  Definition recherché
-	 * @return  Si une définition avec le nom précisé est déjà enregistrée.
-	 */
-	public boolean containsDefinition(final Definition definition) {
-		return allObjects.containsValue(definition);
+		Assertion.checkArgument(previous2 == null, "L'objet {0} est déja enregistré !", name);
 	}
 
 	/**
 	 * @param name  Objet recherché
 	 * @return Si un objet avec l'identifiant est déjà enregistré.
 	 */
-	public boolean containsDefinitionName(final String name) {
+	public boolean contains(final String name) {
 		return allObjects.containsKey(name);
 	}
 
@@ -103,30 +74,20 @@ public final class DefinitionSpace implements Component, Activeable {
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(definitions.containsKey(clazz), "Type de définition '{0}' non enregistré (aucune définition de ce type)", clazz.getName());
 		//-----
-		final Map<String, Definition> tobjects = definitions.get(clazz);
-		final Object o = tobjects.get(name);
-		Assertion.checkNotNull(o, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), tobjects.keySet());
-		return clazz.cast(o);
-	}
-
-	/**
-	 * Récupération d'une définition par son nom.
-	 * @param name Identifiant de l'objet
-	 * @return Objet associé
-	 */
-	public Definition resolve(final String name) {
-		final Definition object = allObjects.get(name);
-		Assertion.checkNotNull(object, "Definition not found with name : {0}", name);
-		return object;
+		final Definition definition = allObjects.get(name);
+		Assertion.checkNotNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), allObjects.keySet());
+		return clazz.cast(definition);
 	}
 
 	/**
 	 * @return Liste de tous les types de définition gérés.
 	 */
 	public Collection<Class<? extends Definition>> getAllTypes() {
-		return Collections.unmodifiableCollection(definitions.keySet());
+		return allObjects.values()
+				.stream()
+				.map(Definition::getClass)
+				.collect(Collectors.toSet());
 	}
 
 	/**
@@ -134,20 +95,21 @@ public final class DefinitionSpace implements Component, Activeable {
 	 * @param clazz type de l'object
 	 * @param <C> Type de l'objet
 	 */
-	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
+	public <C extends Definition> Set<C> getAll(final Class<C> clazz) {
 		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
-		if (definitions.containsKey(clazz)) {
-			return (Collection<C>) definitions.get(clazz).values();
-		}
-		return Collections.emptyList();
+		return allObjects.values()
+				.stream()
+				.filter(definition -> clazz.isAssignableFrom(definition.getClass()))
+				.map(clazz::cast)
+				.collect(Collectors.toSet());
 	}
 
 	/**
 	 * @return true if there is no definition in this space
 	 */
 	public boolean isEmpty() {
-		return definitions.isEmpty() && allObjects.isEmpty();
+		return allObjects.isEmpty();
 	}
 
 	/** {@inheritDoc} */
@@ -159,7 +121,6 @@ public final class DefinitionSpace implements Component, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		definitions.clear();
 		allObjects.clear();
 	}
 

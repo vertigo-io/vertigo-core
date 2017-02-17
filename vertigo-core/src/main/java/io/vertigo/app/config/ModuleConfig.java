@@ -24,6 +24,7 @@ import java.util.List;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Configuration of a module.
@@ -82,14 +83,10 @@ public final class ModuleConfig {
 	 * @return the list of the component-configs
 	 */
 	public List<ComponentConfig> getComponentConfigs() {
-		return components;
-	}
-
-	/**
-	 * @return the list of the plugin-configs
-	 */
-	public List<PluginConfig> getPluginConfigs() {
-		return plugins;
+		return new ListBuilder<ComponentConfig>()
+				.addAll(components)
+				.addAll(ConfigUtil.buildConfigs(plugins))
+				.build();
 	}
 
 	/**

@@ -90,7 +90,7 @@ final class DslSolver {
 			final String fieldName = dslEntityField.getName();
 			for (final String definitionName : dslDefinition.getDefinitionLinkNames(fieldName)) {
 				//reference should be already solved in a previous resources module : then continue
-				if (!definitionSpace.containsDefinitionName(definitionName)) {
+				if (!definitionSpace.contains(definitionName)) {
 					//or references should be in currently parsed resources
 					if (!definitionRepository.containsDefinitionName(definitionName)) {
 						final String xdefRootName = xdefRoot.getName().equals(dslDefinition.getName()) ? xdefRoot.getName() : (xdefRoot.getName() + "." + dslDefinition.getName());

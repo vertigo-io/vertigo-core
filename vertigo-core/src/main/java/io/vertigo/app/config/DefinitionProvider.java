@@ -18,6 +18,9 @@
  */
 package io.vertigo.app.config;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import io.vertigo.core.spaces.definiton.Definition;
 
 /**
@@ -25,6 +28,6 @@ import io.vertigo.core.spaces.definiton.Definition;
  * @author pchretien
  *
  */
-public interface DefinitionProvider extends Iterable<Definition> {
+public interface DefinitionProvider extends Supplier<List<Definition>> {
 	//
 }

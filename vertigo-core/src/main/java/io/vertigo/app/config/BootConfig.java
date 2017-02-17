@@ -24,6 +24,7 @@ import java.util.Optional;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.util.ListBuilder;
 
 /**
  * This Class defines the properties of ComponentSpace and DefinitionSpace.
@@ -73,14 +74,10 @@ public final class BootConfig {
 	 * @return the list of component-configs
 	 */
 	public List<ComponentConfig> getComponentConfigs() {
-		return componentConfigs;
-	}
-
-	/**
-	 * @return the list of plugin-configs
-	 */
-	public List<PluginConfig> getPluginConfigs() {
-		return pluginConfigs;
+		return new ListBuilder<ComponentConfig>()
+				.addAll(componentConfigs)
+				.addAll(ConfigUtil.buildConfigs(pluginConfigs))
+				.build();
 	}
 
 	/**

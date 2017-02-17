@@ -21,10 +21,10 @@ package io.vertigo.core.definition.loader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -68,7 +68,7 @@ public final class DefinitionLoader implements Component {
 	/**
 	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
 	 */
-	private void parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
+	private Stream<Definition> parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		final CompositeDynamicRegistry dynamicRegistry = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
@@ -86,30 +86,31 @@ public final class DefinitionLoader implements Component {
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
 
-		dynamicModelRepository.solve(definitionSpace);
+		return dynamicModelRepository.solve(definitionSpace);
 	}
 
 	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
-		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectDefinitions(definitionSpace, moduleConfig);
-		}
+		moduleConfigs
+				.stream()
+				.flatMap(moduleConfig -> createDefinitions(definitionSpace, moduleConfig))
+				.forEach(definitionSpace::put); //Here all definitions are registered into the definitionSpace
 	}
 
-	private void injectDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {
+	private Stream<Definition> createDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		final List<DefinitionResourceConfig> definitionResourceConfigs = moduleConfig.getDefinitionResourceConfigs();
-		if (!definitionResourceConfigs.isEmpty()) {
-			parse(definitionSpace, definitionResourceConfigs);
-		}
-		//-----
-		for (final DefinitionProviderConfig definitionProviderConfig : moduleConfig.getDefinitionProviderConfigs()) {
-			final DefinitionProvider definitionProvider = ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass());
-			for (final Definition definition : definitionProvider) {
-				definitionSpace.put(definition);
-			}
-		}
+		return Stream.concat(
+				parse(definitionSpace, moduleConfig.getDefinitionResourceConfigs()), //case by Resource
+				provide(moduleConfig.getDefinitionProviderConfigs()));
+	}
+
+	private Stream<Definition> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
+		return definitionProviderConfigs
+				.stream()
+				.map(definitionProviderConfig -> ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass()))
+				.flatMap(definitionProvider -> definitionProvider.get().stream());
+
 	}
 }

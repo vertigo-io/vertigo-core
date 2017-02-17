@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -101,11 +102,11 @@ public final class DslDefinitionRepository {
 	 * Résolution des références de définitions.
 	 * @param definitionSpace Space where all the definitions are stored
 	 */
-	public void solve(final DefinitionSpace definitionSpace) {
+	public Stream<Definition> solve(final DefinitionSpace definitionSpace) {
 		mergePartials();
 
 		final List<DslDefinition> sortedDslDefinitions = DslSolver.solve(definitionSpace, this);
-		registerAllDefinitions(definitionSpace, sortedDslDefinitions);
+		return createDefinitionStream(definitionSpace, sortedDslDefinitions);
 	}
 
 	private void mergePartials() {
@@ -118,18 +119,17 @@ public final class DslDefinitionRepository {
 		}
 	}
 
-	private void registerAllDefinitions(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
-		sortedDynamicDefinitions
+	private Stream<Definition> createDefinitionStream(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
+		return sortedDynamicDefinitions
 				.stream()
 				.filter(dslDefinition -> !dslDefinition.getEntity().isProvided()) // provided definitions are excluded
-				.forEach(dslDefinition -> registerDefinition(definitionSpace, dslDefinition));
+				.map(dslDefinition -> createDefinition(definitionSpace, dslDefinition));
 	}
 
-	private void registerDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	private Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
 		DsValidator.check(dslDefinition);
 		//The definition identified as root are not registered.
-		final Definition definition = registry.createDefinition(definitionSpace, dslDefinition);
-		definitionSpace.put(definition);
+		return registry.createDefinition(definitionSpace, dslDefinition);
 	}
 
 	/**

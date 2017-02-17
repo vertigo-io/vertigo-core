@@ -127,6 +127,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 		final DslEntityField dslEntityField = entity.getField(fieldName);
 		Assertion.checkState(dslEntityField.getType().isProperty(), "expected a property on {0}", fieldName);
 		//----
+		entity.getPropertyType(fieldName).checkValue(value);
 		propertyValueByFieldName.put(dslEntityField, value);
 		return this;
 	}
