@@ -152,7 +152,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	void registerWebServiceDefinitions(final DefinitionSpace definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
 		// We register WebService Definition in this order
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			definitionSpace.put(webServiceDefinition);
+			definitionSpace.registerDefinition(webServiceDefinition);
 		}
 		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
 	}

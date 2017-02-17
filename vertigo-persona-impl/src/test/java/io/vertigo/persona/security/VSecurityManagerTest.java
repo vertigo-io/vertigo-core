@@ -93,8 +93,8 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
+		definitionSpace.registerDefinition(admin);
+		definitionSpace.registerDefinition(user);
 
 		final Role r1 = definitionSpace.resolve(admin.getName(), Role.class);
 		Assert.assertTrue(admin.equals(r1));
@@ -109,10 +109,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
-		definitionSpace.put(manager);
-		definitionSpace.put(secretary);
+		definitionSpace.registerDefinition(admin);
+		definitionSpace.registerDefinition(user);
+		definitionSpace.registerDefinition(manager);
+		definitionSpace.registerDefinition(secretary);
 
 		final UserSession userSession = securityManager.createUserSession()
 				.addRole(admin)
@@ -244,10 +244,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
-		definitionSpace.put(manager);
-		definitionSpace.put(secretary);
+		definitionSpace.registerDefinition(admin);
+		definitionSpace.registerDefinition(user);
+		definitionSpace.registerDefinition(manager);
+		definitionSpace.registerDefinition(secretary);
 		testDescription(securityManager);
 	}
 

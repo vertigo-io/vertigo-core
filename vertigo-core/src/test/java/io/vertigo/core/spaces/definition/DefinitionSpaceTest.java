@@ -66,7 +66,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 
 		assertEquals(0L, definitionSpace.getAllTypes().size(), "definitionSpace must be emmpty");
-		definitionSpace.put(new SampleDefinition());
+		definitionSpace.registerDefinition(new SampleDefinition());
 
 		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");

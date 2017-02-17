@@ -86,7 +86,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 				currentPermission = null;
 				break;
 			case role:
-				definitionSpace.put(currentRole);
+				definitionSpace.registerDefinition(currentRole);
 				currentRole = null;
 				break;
 			default:
@@ -116,7 +116,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 		final String filter = attrs.getValue(AttrsName.filter.name());
 		//-----
 		final Permission permission = new Permission(id, operation, filter);
-		definitionSpace.put(permission);
+		definitionSpace.registerDefinition(permission);
 		return permission;
 	}
 

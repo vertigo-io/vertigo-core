@@ -31,46 +31,34 @@ import io.vertigo.lang.JsonExclude;
 
 /**
  * Espace de définitions (non threadSafe).
- * Il est nécessaire d'enregistrer toutes les définitions au démarrage du serveur.
- * Etape 1 : Enregistrer les classes éligibles (register)
- * Etape 2 : Ajouter les objets (put)
  *
  * @author pchretien
  */
-public final class DefinitionSpace implements Component, Activeable {
+public final class DefinitionSpace implements Component, DefinitionContainer, Activeable {
 	@JsonExclude
-	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
+	private final Map<String, Definition> allObjects = new LinkedHashMap<>();
 
 	/**
 	 * Enregistrement d'un nouvel object.
 	 * @param definition Objet à enregistrer
 	 */
-	public void put(final Definition definition) {
+	public void registerDefinition(final Definition definition) {
 		Assertion.checkNotNull(definition, "A definition can't be null.");
-		//-----
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
+		Assertion.checkArgument(allObjects.containsKey(name), "this definition '{0}' is already registered", name);
 		//-----
-		final Definition previous2 = allObjects.put(name, definition);
-		//On vérifie l'unicité globale du nom.
-		Assertion.checkArgument(previous2 == null, "L'objet {0} est déja enregistré !", name);
+		allObjects.put(name, definition);
 	}
 
-	/**
-	 * @param name  Objet recherché
-	 * @return Si un objet avec l'identifiant est déjà enregistré.
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public boolean contains(final String name) {
 		return allObjects.containsKey(name);
 	}
 
-	/**
-	 * Cette méthode ne doit être appelée que si l'objet est déjà enregistré.
-	 * @param name Identifiant de l'objet
-	 * @param clazz type de l'object
-	 * @return Objet associé
-	 * @param <D> Type de l'objet
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
@@ -105,11 +93,10 @@ public final class DefinitionSpace implements Component, Activeable {
 				.collect(Collectors.toSet());
 	}
 
-	/**
-	 * @return true if there is no definition in this space
-	 */
-	public boolean isEmpty() {
-		return allObjects.isEmpty();
+	/** {@inheritDoc} */
+	@Override
+	public Set<String> keySet() {
+		return allObjects.keySet();
 	}
 
 	/** {@inheritDoc} */
@@ -123,5 +110,4 @@ public final class DefinitionSpace implements Component, Activeable {
 	public void stop() {
 		allObjects.clear();
 	}
-
 }

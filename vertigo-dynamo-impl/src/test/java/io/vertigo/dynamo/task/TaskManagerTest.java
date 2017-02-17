@@ -60,7 +60,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	public void testRegistry() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
-		definitionSpace.put(taskDefinition1);
+		definitionSpace.registerDefinition(taskDefinition1);
 
 		final TaskDefinition taskDefinition2 = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
 		Assert.assertNotNull(taskDefinition2);
@@ -73,11 +73,11 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	public void testDoubleRegistry() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
-		definitionSpace.put(taskDefinition1);
+		definitionSpace.registerDefinition(taskDefinition1);
 
 		//On déclenche une assertion en réenregistrant la même tache
 		final TaskDefinition taskDefinition2 = buildTaskDefinition("TK_MULTI_3", "*");
-		definitionSpace.put(taskDefinition2);
+		definitionSpace.registerDefinition(taskDefinition2);
 	}
 
 	/**

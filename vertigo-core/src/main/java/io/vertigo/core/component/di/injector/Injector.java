@@ -31,8 +31,8 @@ import javax.inject.Inject;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
+import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -56,7 +56,7 @@ public final class Injector {
 	 * @param container Fournisseur de composants
 	 * @return Instance de composants créée.
 	 */
-	public static <T> T newInstance(final Class<T> clazz, final Container container) {
+	public static <T> T newInstance(final Class<T> clazz, final ComponentContainer container) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(container);
 		//-----
@@ -71,27 +71,27 @@ public final class Injector {
 		}
 	}
 
-	private static <T> T createInstance(final Class<T> clazz, final Container container) {
+	private static <T> T createInstance(final Class<T> clazz, final ComponentContainer componentContainer) {
 		//On a un et un seul constructeur public injectable.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
 		//On recherche les paramètres
-		final Object[] constructorParameters = findConstructorParameters(container, constructor);
+		final Object[] constructorParameters = findConstructorParameters(componentContainer, constructor);
 		return ClassUtil.newInstance(constructor, constructorParameters);
 	}
 
 	/**
 	 * Inject members/properties into an instance in a contex defined by a container.
 	 * @param instance Object in which the members/propertis will be injected
-	 * @param container container of all the components that can be injected in the instance
+	 * @param componentContainer container of all the components that can be injected in the instance
 	 */
-	public static void injectMembers(final Object instance, final Container container) {
+	public static void injectMembers(final Object instance, final ComponentContainer componentContainer) {
 		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(container);
+		Assertion.checkNotNull(componentContainer);
 		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final DIDependency dependency = new DIDependency(field);
-			final Object injected = getInjected(container, dependency);
+			final Object injected = getInjected(componentContainer, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.when(!field.getType().isPrimitive())
@@ -100,7 +100,7 @@ public final class Injector {
 		}
 	}
 
-	private static Object[] findConstructorParameters(final Container container, final Constructor<?> constructor) {
+	private static Object[] findConstructorParameters(final ComponentContainer container, final Constructor<?> constructor) {
 		final Object[] parameters = new Object[constructor.getParameterTypes().length];
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
@@ -109,7 +109,7 @@ public final class Injector {
 		return parameters;
 	}
 
-	private static Object getInjected(final Container container, final DIDependency dependency) {
+	private static Object getInjected(final ComponentContainer container, final DIDependency dependency) {
 		if (dependency.isOption()) {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.

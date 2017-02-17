@@ -43,7 +43,7 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecute() {
 		final JobDefinition jobDefinition = new JobDefinition("JB_TEST_SYNC", TestJob.class);
-		getApp().getDefinitionSpace().put(jobDefinition);
+		getApp().getDefinitionSpace().registerDefinition(jobDefinition);
 
 		jobManager.execute(jobDefinition);
 		Assert.assertEquals(1, TestJob.getCount());

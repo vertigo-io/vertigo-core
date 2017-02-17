@@ -46,7 +46,7 @@ public class SchedulerManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScheduleNow() throws InterruptedException {
 		final JobDefinition jobDefinition = new JobDefinition("JB_TEST_ASYNC", TestJob.class);
-		getApp().getDefinitionSpace().put(jobDefinition);
+		getApp().getDefinitionSpace().registerDefinition(jobDefinition);
 
 		schedulerManager.scheduleNow(jobDefinition);
 		//Le traitement métier n'a pas encore été effectué, on le vérifie
@@ -64,7 +64,7 @@ public class SchedulerManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScheduleAtDate() throws InterruptedException {
 		final JobDefinition jobDefinition = new JobDefinition("JB_AT_DATE", TestJob.class);
-		getApp().getDefinitionSpace().put(jobDefinition);
+		getApp().getDefinitionSpace().registerDefinition(jobDefinition);
 
 		final Date date = new DateBuilder(new Date()).addSeconds(1).build();
 		schedulerManager.scheduleAtDate(jobDefinition, date);
@@ -82,7 +82,7 @@ public class SchedulerManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScheduleEverySecondInterval() throws InterruptedException {
 		final JobDefinition jobDefinition = new JobDefinition("JB_EVERY_SECOND", TestJob.class);
-		getApp().getDefinitionSpace().put(jobDefinition);
+		getApp().getDefinitionSpace().registerDefinition(jobDefinition);
 
 		schedulerManager.scheduleEverySecondInterval(jobDefinition, 1);
 		//Le traitement métier n'a pas encore été effectué, on le vérifie

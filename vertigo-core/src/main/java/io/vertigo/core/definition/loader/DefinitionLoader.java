@@ -95,7 +95,7 @@ public final class DefinitionLoader implements Component {
 		moduleConfigs
 				.stream()
 				.flatMap(moduleConfig -> createDefinitions(definitionSpace, moduleConfig))
-				.forEach(definitionSpace::put); //Here all definitions are registered into the definitionSpace
+				.forEach(definitionSpace::registerDefinition); //Here all definitions are registered into the definitionSpace
 	}
 
 	private Stream<Definition> createDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {

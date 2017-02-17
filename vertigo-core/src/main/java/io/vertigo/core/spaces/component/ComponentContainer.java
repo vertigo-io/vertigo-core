@@ -16,17 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.lang;
+package io.vertigo.core.spaces.component;
 
 import java.util.Set;
 
 /**
  * The Container interface defines a universal container for the components.
  * Each component is identified by an id.
- * 
- * @author pchretien, prahmoune
+ *
+ * @author pchretien
  */
-public interface Container {
+public interface ComponentContainer {
 
 	/**
 	 * Returns true if this container contains the specified component

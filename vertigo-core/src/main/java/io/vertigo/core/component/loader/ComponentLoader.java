@@ -37,10 +37,10 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Container;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
 
@@ -153,17 +153,17 @@ public final class ComponentLoader {
 	 * @param aspectConfigs the list of all aspects inside the module
 	 * @return aspects (and its config)
 	 */
-	private static Stream<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
+	private static Stream<Aspect> findAspects(final ComponentContainer componentContainer, final List<AspectConfig> aspectConfigs) {
 		Assertion.checkNotNull(aspectConfigs);
 		//-----
 		return aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(container, aspectConfig));
+				.map(aspectConfig -> createAspect(componentContainer, aspectConfig));
 	}
 
-	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
+	private static Aspect createAspect(final ComponentContainer componentContainer, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
+		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), componentContainer);
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
@@ -186,9 +186,9 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static <C extends Component> C createInstance(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
+	private static <C extends Component> C createInstance(final ComponentContainer componentContainer, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, componentConfig.getParams());
-		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
+		final ComponentContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final C component = (C) Injector.newInstance(componentConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), componentConfig);
