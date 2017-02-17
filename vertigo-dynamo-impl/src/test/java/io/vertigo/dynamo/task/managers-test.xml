@@ -20,6 +20,7 @@
 		<definitions>
 			<resource type="kpr" path="io/vertigo/dynamo/task/data/execution.kpr" />
 			<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
+			<provider className="io.vertigo.dynamo.task.TaskDefinitionProvider" />
 		</definitions>
 	</module>
 </config>

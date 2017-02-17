@@ -46,7 +46,7 @@ public final class DefinitionSpace implements Component, DefinitionContainer, Ac
 		Assertion.checkNotNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
-		Assertion.checkArgument(allObjects.containsKey(name), "this definition '{0}' is already registered", name);
+		Assertion.checkArgument(!allObjects.containsKey(name), "this definition '{0}' is already registered", name);
 		//-----
 		allObjects.put(name, definition);
 	}

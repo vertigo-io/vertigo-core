@@ -14,6 +14,7 @@
 	<module name="myApp">
 		<definitions>
 			<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
+			<provider className ="io.vertigo.persona.security.SecurityDefinitionProvider" />
 		</definitions>
 	</module>
 </config>

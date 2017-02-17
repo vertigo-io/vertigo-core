@@ -37,6 +37,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
@@ -52,22 +53,15 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
+				.addModule(new ModuleConfigBuilder("test")
+						.addDefinitionProvider(TestDefinitionprovider.class)
+						.build())
 				.build();
-	}
-
-	@Test
-	public void testEmpty() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		assertEquals(0L, definitionSpace.getAllTypes().size(), "definitionSpace must be emmpty");
 	}
 
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-
-		assertEquals(0L, definitionSpace.getAllTypes().size(), "definitionSpace must be emmpty");
-		definitionSpace.registerDefinition(new SampleDefinition());
-
 		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
