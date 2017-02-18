@@ -32,7 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.environment.multi.data.DtDefinitions;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistryPlugin;
 
 /**
  * Test de l'implémentation standard.
@@ -106,7 +106,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(DomainDynamicRegistryPlugin.class)
+				.addPlugin(DynamoDynamicRegistryPlugin.class)
 			.endBoot();
 		// @formatter:on
 	}

@@ -28,7 +28,9 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
+import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
@@ -51,7 +53,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
@@ -59,20 +60,17 @@ import io.vertigo.util.StringUtil;
 /**
  * @author pchretien
  */
-public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
-	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistryPlugin.class);
+public final class DomainDynamicRegistry implements DynamicRegistry {
+	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistry.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
 	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
-	/**
-	 * Constructeur.
-	 */
-	public DomainDynamicRegistryPlugin() {
-		super(new DomainGrammar());
-
+	@Override
+	public DslGrammar getGrammar() {
+		return new DomainGrammar();
 	}
 
 	/** {@inheritDoc} */
@@ -103,20 +101,20 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param xconstraint Définition de contrainte
 	 * @return DefinitionStandard Définition typée créée.
 	 */
-	private static ConstraintDefinition createConstraint(final DslDefinition xconstraint) {
+	private ConstraintDefinition createConstraint(final DslDefinition xconstraint) {
 		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
 		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
 		final String name = xconstraint.getName();
-		final String args = getPropertyValueAsString(xconstraint, KspProperty.ARGS);
-		final String msg = getPropertyValueAsString(xconstraint, KspProperty.MSG);
-		final String className = getPropertyValueAsString(xconstraint, KspProperty.CLASS_NAME);
+		final String args = (String) xconstraint.getPropertyValue(KspProperty.ARGS);
+		final String msg = (String) xconstraint.getPropertyValue(KspProperty.MSG);
+		final String className = (String) xconstraint.getPropertyValue(KspProperty.CLASS_NAME);
 		return new ConstraintDefinition(name, className, msg, args);
 	}
 
-	private static FormatterDefinition createFormatter(final DslDefinition xformatter) {
+	private FormatterDefinition createFormatter(final DslDefinition xformatter) {
 		final String name = xformatter.getName();
-		final String args = getPropertyValueAsString(xformatter, KspProperty.ARGS);
-		final String className = getPropertyValueAsString(xformatter, KspProperty.CLASS_NAME);
+		final String args = (String) xformatter.getPropertyValue(KspProperty.ARGS);
+		final String className = (String) xformatter.getPropertyValue(KspProperty.CLASS_NAME);
 		return new FormatterDefinition(name, className, args);
 	}
 
@@ -357,18 +355,18 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		}
 	}
 
-	private static AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
-		final String tableName = getPropertyValueAsString(xassociation, KspProperty.TABLE_NAME);
+	private AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
+		final String tableName = (String) xassociation.getPropertyValue(KspProperty.TABLE_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
-		final boolean navigabilityA = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_A);
-		final String roleA = getPropertyValueAsString(xassociation, KspProperty.ROLE_A);
-		final String labelA = getPropertyValueAsString(xassociation, KspProperty.LABEL_A);
+		final boolean navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
+		final String roleA = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
+		final String labelA = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
 
 		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionB"), DtDefinition.class);
-		final boolean navigabilityB = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_B);
-		final String roleB = getPropertyValueAsString(xassociation, KspProperty.ROLE_B);
-		final String labelB = getPropertyValueAsString(xassociation, KspProperty.LABEL_B);
+		final boolean navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
+		final String roleB = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, true, false);
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, true, false);
@@ -399,8 +397,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 
-		final String multiplicityA = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_A);
-		final String multiplicityB = getPropertyValueAsString(xassociation, KspProperty.MULTIPLICITY_B);
+		final String multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
+		final String multiplicityB = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_B);
 		// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 		if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 			//Relation n-n
@@ -411,17 +409,17 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			throw new IllegalArgumentException("Les associations 1-1 sont interdites");
 		}
 
-		final String fkFieldName = getPropertyValueAsString(xassociation, KspProperty.FK_FIELD_NAME);
+		final String fkFieldName = (String) xassociation.getPropertyValue(KspProperty.FK_FIELD_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
-		final boolean navigabilityA = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_A).booleanValue();
-		final String roleA = getPropertyValueAsString(xassociation, KspProperty.ROLE_A);
-		final String labelA = getPropertyValueAsString(xassociation, KspProperty.LABEL_A);
+		final boolean navigabilityA = ((Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A)).booleanValue();
+		final String roleA = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
+		final String labelA = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
 
 		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionB"), DtDefinition.class);
-		final boolean navigabilityB = getPropertyValueAsBoolean(xassociation, KspProperty.NAVIGABILITY_B).booleanValue();
-		final String roleB = getPropertyValueAsString(xassociation, KspProperty.ROLE_B);
-		final String labelB = getPropertyValueAsString(xassociation, KspProperty.LABEL_B);
+		final boolean navigabilityB = ((Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B)).booleanValue();
+		final String roleB = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(ASSOCIATION_SIMPLE_DEFINITION_PREFIX, xassociation.getName());

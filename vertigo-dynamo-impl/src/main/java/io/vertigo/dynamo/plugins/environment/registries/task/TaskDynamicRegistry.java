@@ -20,12 +20,13 @@ package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
@@ -35,12 +36,11 @@ import io.vertigo.util.ClassUtil;
 /**
  * @author pchretien
  */
-public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
-	/**
-	 * Constructeur.
-	 */
-	public TaskDynamicRegistryPlugin() {
-		super(new TaskGrammar());
+public final class TaskDynamicRegistry implements DynamicRegistry {
+
+	@Override
+	public DslGrammar getGrammar() {
+		return new TaskGrammar();
 	}
 
 	/** {@inheritDoc} */
@@ -55,14 +55,14 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
-	private static Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
-		final String taskEngineClassName = getPropertyValueAsString(xtaskDefinition, KspProperty.CLASS_NAME);
+	private Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
+		final String taskEngineClassName = (String) xtaskDefinition.getPropertyValue(KspProperty.CLASS_NAME);
 		return ClassUtil.classForName(taskEngineClassName, TaskEngine.class);
 	}
 
-	private static TaskDefinition createTaskDefinition(final DslDefinition xtaskDefinition) {
+	private TaskDefinition createTaskDefinition(final DslDefinition xtaskDefinition) {
 		final String taskDefinitionName = xtaskDefinition.getName();
-		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
+		final String request = (String) xtaskDefinition.getPropertyValue(KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
 		final String dataSpace = (String) xtaskDefinition.getPropertyValue(KspProperty.DATA_SPACE);
@@ -77,8 +77,8 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final Boolean required = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
-			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
+			final Boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.NOT_NULL);
+			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
 				if (required.booleanValue()) {
 					taskDefinitionBuilder.addInRequired(attributeName, domain);
 				} else {

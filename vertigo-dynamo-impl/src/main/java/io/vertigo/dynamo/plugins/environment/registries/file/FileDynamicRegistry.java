@@ -19,23 +19,22 @@
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 
 /**
  * @author pchretien
  */
-public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
+public final class FileDynamicRegistry implements DynamicRegistry {
 
-	/**
-	 * Constructeur.
-	 */
-	public FileDynamicRegistryPlugin() {
-		super(new FileGrammar());
+	@Override
+	public DslGrammar getGrammar() {
+		return new FileGrammar();
 	}
 
 	/** {@inheritDoc} */
@@ -49,9 +48,9 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
-	private static FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {
+	private FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {
 		final String fileDefinitionName = xFileDefinition.getName();
-		final String storeName = getPropertyValueAsString(xFileDefinition, KspProperty.DATA_SPACE);
+		final String storeName = (String) xFileDefinition.getPropertyValue(KspProperty.DATA_SPACE);
 
 		return new FileInfoDefinition(fileDefinitionName, storeName);
 	}
