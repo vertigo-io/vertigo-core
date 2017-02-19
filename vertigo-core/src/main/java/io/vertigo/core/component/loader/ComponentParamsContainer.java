@@ -26,8 +26,8 @@ import java.util.Set;
 
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 /**
  * This container contains params initialized with String.
@@ -35,7 +35,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class ComponentParamsContainer implements ComponentContainer {
+final class ComponentParamsContainer implements Container {
 	private final Optional<ParamManager> paramManagerOption;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;

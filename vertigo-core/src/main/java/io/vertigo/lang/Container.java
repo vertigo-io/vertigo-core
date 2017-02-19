@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.component;
+package io.vertigo.lang;
 
 import java.util.Set;
 
@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author pchretien
  */
-public interface ComponentContainer {
+public interface Container {
 
 	/**
 	 * Returns true if this container contains the specified component

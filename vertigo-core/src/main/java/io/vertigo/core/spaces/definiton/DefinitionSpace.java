@@ -34,7 +34,7 @@ import io.vertigo.lang.JsonExclude;
  *
  * @author pchretien
  */
-public final class DefinitionSpace implements Component, DefinitionContainer, Activeable {
+public final class DefinitionSpace implements Component, Activeable {
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>();
 
@@ -51,14 +51,21 @@ public final class DefinitionSpace implements Component, DefinitionContainer, Ac
 		allObjects.put(name, definition);
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Returns true if this container contains the specified definition
+	 * @param name the name of the expected definition
+	 * @return true if the definition is already registered.
+	 */
 	public boolean contains(final String name) {
 		return allObjects.containsKey(name);
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Resolve a definition from its name and class.
+	 * @param name the name of the expected definition
+	 * @param definitionClass Type of the definition
+	 * @return the definition
+	 */
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
@@ -93,8 +100,10 @@ public final class DefinitionSpace implements Component, DefinitionContainer, Ac
 				.collect(Collectors.toSet());
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Returns the list of the names  of the definitions managed in this container.
+	 * @return list of names
+	 */
 	public Set<String> keySet() {
 		return allObjects.keySet();
 	}

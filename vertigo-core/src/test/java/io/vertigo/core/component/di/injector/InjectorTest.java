@@ -41,8 +41,8 @@ import io.vertigo.core.component.di.data.F;
 import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P2;
 import io.vertigo.core.component.di.data.P3;
-import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
@@ -50,7 +50,7 @@ import io.vertigo.lang.Assertion;
  */
 @RunWith(JUnitPlatform.class)
 public final class InjectorTest {
-	private static class MyContainer implements ComponentContainer {
+	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();
 
 		@Override
@@ -89,7 +89,7 @@ public final class InjectorTest {
 
 	@Test
 	public void testA() {
-		final A a = Injector.newInstance(A.class, new ComponentContainer() {
+		final A a = Injector.newInstance(A.class, new Container() {
 
 			@Override
 			public boolean contains(final String id) {
@@ -113,7 +113,7 @@ public final class InjectorTest {
 	public void testBFail() {
 		Assertions.assertThrows(DIException.class,
 				() -> {
-					final B b = Injector.newInstance(B.class, new ComponentContainer() {
+					final B b = Injector.newInstance(B.class, new Container() {
 
 						@Override
 						public boolean contains(final String id) {

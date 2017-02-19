@@ -27,6 +27,7 @@ import java.util.Set;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
+import io.vertigo.lang.Container;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -50,7 +51,7 @@ import io.vertigo.util.StringUtil;
  * Les composants sont d'un type M.
  * @author pchretien
  */
-public final class ComponentSpace implements ComponentContainer, Activeable {
+public final class ComponentSpace implements Container, Activeable {
 	/**
 	 * Components (sorted by creation)
 	 */

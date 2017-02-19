@@ -21,8 +21,8 @@ package io.vertigo.core.component.loader;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 import io.vertigo.lang.VSystemException;
 
 /**
@@ -30,12 +30,12 @@ import io.vertigo.lang.VSystemException;
  *
  * @author pchretien
  */
-final class ComponentDualContainer implements ComponentContainer {
-	private final ComponentContainer componentContainer1;
-	private final ComponentContainer componentContainer2;
+final class ComponentDualContainer implements Container {
+	private final Container componentContainer1;
+	private final Container componentContainer2;
 	private final Set<String> ids;
 
-	ComponentDualContainer(final ComponentContainer componentContainer1, final ComponentContainer componentContainer2) {
+	ComponentDualContainer(final Container componentContainer1, final Container componentContainer2) {
 		Assertion.checkNotNull(componentContainer1);
 		Assertion.checkNotNull(componentContainer2);
 		//-----

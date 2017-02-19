@@ -21,19 +21,19 @@ package io.vertigo.core.component.loader;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 /**
  * Conteneur permettant de compter les clés non utilisées.
  *
  * @author pchretien
  */
-final class ComponentProxyContainer implements ComponentContainer {
-	private final ComponentContainer componentContainer;
+final class ComponentProxyContainer implements Container {
+	private final Container componentContainer;
 	private final Set<String> usedKeys = new HashSet<>();
 
-	ComponentProxyContainer(final ComponentContainer componentContainer) {
+	ComponentProxyContainer(final Container componentContainer) {
 		Assertion.checkNotNull(componentContainer);
 		//-----
 		this.componentContainer = componentContainer;

@@ -31,8 +31,8 @@ import javax.inject.Inject;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
-import io.vertigo.core.spaces.component.ComponentContainer;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -56,7 +56,7 @@ public final class Injector {
 	 * @param componentContainer Fournisseur de composants
 	 * @return Instance de composants créée.
 	 */
-	public static <T> T newInstance(final Class<T> clazz, final ComponentContainer componentContainer) {
+	public static <T> T newInstance(final Class<T> clazz, final Container componentContainer) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(componentContainer);
 		//-----
@@ -71,7 +71,7 @@ public final class Injector {
 		}
 	}
 
-	private static <T> T createInstance(final Class<T> clazz, final ComponentContainer componentContainer) {
+	private static <T> T createInstance(final Class<T> clazz, final Container componentContainer) {
 		//On a un et un seul constructeur public injectable.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
 		//On recherche les paramètres
@@ -84,7 +84,7 @@ public final class Injector {
 	 * @param instance Object in which the members/propertis will be injected
 	 * @param componentContainer container of all the components that can be injected in the instance
 	 */
-	public static void injectMembers(final Object instance, final ComponentContainer componentContainer) {
+	public static void injectMembers(final Object instance, final Container componentContainer) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(componentContainer);
 		//-----
@@ -100,7 +100,7 @@ public final class Injector {
 		}
 	}
 
-	private static Object[] findConstructorParameters(final ComponentContainer componentContainer, final Constructor<?> constructor) {
+	private static Object[] findConstructorParameters(final Container componentContainer, final Constructor<?> constructor) {
 		final Object[] parameters = new Object[constructor.getParameterTypes().length];
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
@@ -109,7 +109,7 @@ public final class Injector {
 		return parameters;
 	}
 
-	private static Object getInjected(final ComponentContainer componentContainer, final DIDependency dependency) {
+	private static Object getInjected(final Container componentContainer, final DIDependency dependency) {
 		if (dependency.isOption()) {
 			if (componentContainer.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.

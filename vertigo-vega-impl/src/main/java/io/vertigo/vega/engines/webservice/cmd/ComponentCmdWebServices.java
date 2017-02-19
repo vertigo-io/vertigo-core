@@ -122,6 +122,6 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
-		return Home.getApp().getDefinitionSpace().resolve(definitionName);
+		return Home.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
 	}
 }
