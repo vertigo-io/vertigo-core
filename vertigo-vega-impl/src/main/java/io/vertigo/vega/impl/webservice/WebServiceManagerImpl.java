@@ -20,7 +20,6 @@ package io.vertigo.vega.impl.webservice;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,6 +29,7 @@ import io.vertigo.app.Home;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
@@ -128,20 +128,22 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>();
+		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 
 		//1- We introspect all RestfulService class
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof WebServices) {
 				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(((WebServices) component).getClass());
-				allWebServiceDefinitions.addAll(webServiceDefinitions);
+				allWebServiceDefinitionListBuilder.addAll(webServiceDefinitions);
 			}
 		}
 
 		//2- We sort by path, parameterized path should be after strict path
-		Collections.sort(allWebServiceDefinitions, new WebServiceDefinitionComparator());
-		return allWebServiceDefinitions;
+		return allWebServiceDefinitionListBuilder
+				.sort(new WebServiceDefinitionComparator())
+				.unmodifiable()
+				.build();
 	}
 
 	/**
@@ -151,9 +153,8 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	 */
 	void registerWebServiceDefinitions(final DefinitionSpace definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
 		// We register WebService Definition in this order
-		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			definitionSpace.registerDefinition(webServiceDefinition);
-		}
+		webServiceDefinitions
+				.forEach(definitionSpace::registerDefinition);
 		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
 	}
 
