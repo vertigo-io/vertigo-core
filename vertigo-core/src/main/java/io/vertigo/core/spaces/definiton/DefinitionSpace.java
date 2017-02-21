@@ -90,14 +90,15 @@ public final class DefinitionSpace implements Component, Activeable {
 	 * @param clazz type de l'object
 	 * @param <C> Type de l'objet
 	 */
-	public <C extends Definition> Set<C> getAll(final Class<C> clazz) {
+	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
 		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
 		return allObjects.values()
 				.stream()
 				.filter(definition -> clazz.isAssignableFrom(definition.getClass()))
 				.map(clazz::cast)
-				.collect(Collectors.toSet());
+				.sorted((c1, c2) -> c1.getName().compareTo(c2.getName()))
+				.collect(Collectors.toList());
 	}
 
 	/**
