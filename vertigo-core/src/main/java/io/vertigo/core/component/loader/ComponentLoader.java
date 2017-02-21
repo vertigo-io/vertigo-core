@@ -27,8 +27,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -59,7 +57,6 @@ public final class ComponentLoader {
 	 * @param componentSpace Space where all the components are stored
 	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
-	@Inject
 	public ComponentLoader(final ComponentSpace componentSpace, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(aopPlugin);

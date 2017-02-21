@@ -119,13 +119,13 @@ public final class ComponentSpace implements Container, Activeable {
 		return components.keySet();
 	}
 
-	private static void startComponent(final Object component) {
+	private static void startComponent(final Component component) {
 		if (component instanceof Activeable) {
 			Activeable.class.cast(component).start();
 		}
 	}
 
-	private static void stopComponent(final Object component) {
+	private static void stopComponent(final Component component) {
 		if (component instanceof Activeable) {
 			Activeable.class.cast(component).stop();
 		}
@@ -139,10 +139,10 @@ public final class ComponentSpace implements Container, Activeable {
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Component> reverseComponents = new ArrayList<>(components.values());
-		java.util.Collections.reverse(reverseComponents);
+		final List<Component> reversedComponents = new ArrayList<>(components.values());
+		java.util.Collections.reverse(reversedComponents);
 
-		for (final Object component : reverseComponents) {
+		for (final Component component : reversedComponents) {
 			stopComponent(component);
 		}
 	}
