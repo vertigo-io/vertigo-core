@@ -2,8 +2,10 @@
 <config>
 	<module name="myApp">
 		<definitions>
-			<resource type="xmi" path="io/vertigo/dynamo/environment/eaxmi/data/associationAA.xml" />
-			<resource type="kpr" path="io/vertigo/dynamo/environment/eaxmi/data/domain.kpr" />
+			<provider className="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="xmi" path="io/vertigo/dynamo/environment/eaxmi/data/associationAA.xml" />
+				<resource type="kpr" path="io/vertigo/dynamo/environment/eaxmi/data/domain.kpr" />
+			</provider>
 		</definitions>
 	</module>
 </config>

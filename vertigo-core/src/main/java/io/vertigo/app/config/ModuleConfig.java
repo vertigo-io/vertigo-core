@@ -40,7 +40,6 @@ import io.vertigo.util.ListBuilder;
 public final class ModuleConfig {
 	private final String name;
 	private final List<DefinitionProviderConfig> definitionProviders;
-	private final List<DefinitionResourceConfig> definitionResources;
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
@@ -49,14 +48,12 @@ public final class ModuleConfig {
 
 	ModuleConfig(final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
-			final List<DefinitionResourceConfig> definitionResourceConfigs,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
-		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
@@ -64,7 +61,6 @@ public final class ModuleConfig {
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
-		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
@@ -73,10 +69,6 @@ public final class ModuleConfig {
 
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
 		return definitionProviders;
-	}
-
-	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
-		return definitionResources;
 	}
 
 	/**

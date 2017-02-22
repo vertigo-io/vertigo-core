@@ -85,7 +85,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 	}
 
 	/**
-	 * @param packageName Package name
+	 * @param newPackageName Package name
 	 * @return Builder
 	 */
 	public DslDefinitionBuilder withPackageName(final String newPackageName) {

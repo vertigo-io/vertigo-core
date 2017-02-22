@@ -19,12 +19,11 @@
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.app.Home;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -45,12 +44,12 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	public DefinitionSupplier supplyDefinition(final DslDefinition dslDefinition) {
 		final DslEntity dslEntity = dslDefinition.getEntity();
 
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(dslEntity)) {
 			//Only taskDefinitions are concerned
-			return createTaskDefinition(dslDefinition);
+			return (definitionSpace) -> createTaskDefinition(dslDefinition);
 		}
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}

@@ -27,10 +27,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
@@ -102,11 +101,11 @@ public final class DslDefinitionRepository {
 	 * Résolution des références de définitions.
 	 * @param definitionSpace Space where all the definitions are stored
 	 */
-	public Stream<Definition> solve(final DefinitionSpace definitionSpace) {
+	public List<DefinitionSupplier> solve(final DefinitionSpace definitionSpace) {
 		mergePartials();
 
 		final List<DslDefinition> sortedDslDefinitions = DslSolver.solve(definitionSpace, this);
-		return createDefinitionStream(definitionSpace, sortedDslDefinitions);
+		return createDefinitionStream(sortedDslDefinitions);
 	}
 
 	private void mergePartials() {
@@ -119,17 +118,18 @@ public final class DslDefinitionRepository {
 		}
 	}
 
-	private Stream<Definition> createDefinitionStream(final DefinitionSpace definitionSpace, final List<DslDefinition> sortedDynamicDefinitions) {
+	private List<DefinitionSupplier> createDefinitionStream(final List<DslDefinition> sortedDynamicDefinitions) {
 		return sortedDynamicDefinitions
 				.stream()
 				.filter(dslDefinition -> !dslDefinition.getEntity().isProvided()) // provided definitions are excluded
-				.map(dslDefinition -> createDefinition(definitionSpace, dslDefinition));
+				.map(dslDefinition -> createDefinition(dslDefinition))
+				.collect(Collectors.toList());
 	}
 
-	private Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	private DefinitionSupplier createDefinition(final DslDefinition dslDefinition) {
 		DsValidator.check(dslDefinition);
 		//The definition identified as root are not registered.
-		return registry.createDefinition(definitionSpace, dslDefinition);
+		return registry.supplyDefinition(dslDefinition);
 	}
 
 	/**

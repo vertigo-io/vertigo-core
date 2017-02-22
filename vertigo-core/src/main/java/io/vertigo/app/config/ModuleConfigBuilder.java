@@ -48,7 +48,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
@@ -85,27 +84,13 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	 * Adds a provider of definitions.
-	 * @param definitionProviderClass Class of the definitions provider
+	 * @param definitionProviderConfig the definitionProviderConfig
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass) {
-		Assertion.checkNotNull(definitionProviderClass);
+	public ModuleConfigBuilder addDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
+		Assertion.checkNotNull(definitionProviderConfig);
 		//-----
-		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
-		return this;
-	}
-
-	/**
-	 * Adds definitions defined by a resource file.
-	 * @param resourceType Type of the resource
-	 * @param resourcePath Path of the resource
-	* @return this builder
-	 */
-	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourcePath);
-		//-----
-		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));
+		myDefinitionProviderConfigs.add(definitionProviderConfig);
 		return this;
 	}
 
@@ -185,7 +170,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		final ModuleConfig moduleConfig = new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
-				myDefinitionResourceConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
 				myAspectConfigs,

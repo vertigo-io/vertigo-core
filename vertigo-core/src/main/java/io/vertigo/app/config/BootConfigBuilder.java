@@ -25,7 +25,6 @@ import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
@@ -173,8 +172,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	@Override
 	public BootConfig build() {
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.addComponent(ParamManager.class, ParamManagerImpl.class)
-				.addComponent(DefinitionLoader.class);
+				.addComponent(ParamManager.class, ParamManagerImpl.class);
 
 		return new BootConfig(
 				myLogConfigOption,

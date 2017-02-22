@@ -21,9 +21,8 @@ package io.vertigo.core.definition.dsl.dynamic;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 /**
  * This handler creates
@@ -45,7 +44,7 @@ public interface DynamicRegistry {
 	 * @param dslDefinition Definition
 	 * @return An optional definition
 	 */
-	Definition createDefinition(final DefinitionSpace definitionSpace, DslDefinition dslDefinition);
+	DefinitionSupplier supplyDefinition(DslDefinition dslDefinition);
 
 	/**
 	 * Ajout d'une définition.

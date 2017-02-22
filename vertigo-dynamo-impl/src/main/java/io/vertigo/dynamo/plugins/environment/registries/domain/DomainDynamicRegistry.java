@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
@@ -75,7 +76,12 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	public DefinitionSupplier supplyDefinition(final DslDefinition dslDefinition) {
+		return (definitionSpace) -> createDefinition(definitionSpace, dslDefinition);
+	}
+
+	private Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+
 		final DslEntity dslEntity = dslDefinition.getEntity();
 		if (dslEntity.equals(DomainGrammar.CONSTRAINT_ENTITY)) {
 			return createConstraint(dslDefinition);
@@ -437,7 +443,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		LOGGER.trace("" + xassociation.getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
 
 		final String label = primaryAssociationNode.getLabel();
-		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
+		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(),
+				fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
 
 		return associationSimpleDefinition;
 	}

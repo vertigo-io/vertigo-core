@@ -22,13 +22,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.definition.loader.DynamicRegistryPlugin;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistry;
@@ -39,14 +37,14 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-public final class DynamoDynamicRegistryPlugin implements DynamicRegistryPlugin {
+public final class DynamoDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
 	private final DslGrammar dslGrammar;
 
 	/**
 	 * Constructor.
 	 */
-	public DynamoDynamicRegistryPlugin() {
+	public DynamoDynamicRegistry() {
 		dynamicRegistries = new ListBuilder()
 				.add(new DomainDynamicRegistry())
 				.add(new FileDynamicRegistry())
@@ -96,11 +94,11 @@ public final class DynamoDynamicRegistryPlugin implements DynamicRegistryPlugin 
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	public DefinitionSupplier supplyDefinition(final DslDefinition dslDefinition) {
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			return lookUpDynamicRegistry(dslDefinition)
-					.createDefinition(definitionSpace, dslDefinition);
+					.supplyDefinition(dslDefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new WrappedException("An error occurred during the creation of the following definition : " + dslDefinition.getName(), e);

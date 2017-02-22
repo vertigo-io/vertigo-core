@@ -22,12 +22,12 @@ import java.util.regex.Pattern;
 
 /**
  * Définition.
- * 
+ *
  * Les Définitions de service, de DT, les domaines, les Formatters sont des définitions.
  * De maniére plus générale tout élément qui sert établir le modèle est une définition.
  * Une définition sert à modéliser le métier.
  *
- * Une définition 
+ * Une définition
  *  - n'est pas serializable.
  *  - est invariante (non mutable) dans le temps.
  *  - est chargée au (re)démarrage du serveur.
@@ -41,7 +41,7 @@ public interface Definition {
 	 * Expression réguliére vérifiée par les noms des définitions.
 	 * 2 exemples acceptés :
 	 * TO_TO
-	 * ou 
+	 * ou
 	 * TO_TO$TI_TI
 	 */
 	Pattern REGEX_DEFINITION_URN = Pattern.compile("[A-Z0-9_]{3,60}([$][A-Z0-9_]{3,60})?");
@@ -50,4 +50,5 @@ public interface Definition {
 	 * @return Nom de la définition.
 	 */
 	String getName();
+
 }

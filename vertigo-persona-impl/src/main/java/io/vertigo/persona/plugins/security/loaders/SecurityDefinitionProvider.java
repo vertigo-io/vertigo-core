@@ -18,41 +18,49 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionResourceConfig;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien
  */
-public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
+public final class SecurityDefinitionProvider implements DefinitionProvider {
 	private final ResourceManager resourceManager;
+	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
 
 	/**
 	 * Constructor.
 	 * @param resourceManager the resourceManager
 	 */
 	@Inject
-	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {
+	public SecurityDefinitionProvider(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//-----
 		this.resourceManager = resourceManager;
 
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public String getType() {
-		return "security";
+	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
+		Assertion.checkNotNull(definitionResourceConfig);
+		//
+		definitionResourceConfigs.add(definitionResourceConfig);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
-		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
-		xmlSecurityLoader.load();
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		return definitionResourceConfigs.stream()
+				.flatMap(definitionResourceConfig -> new XmlSecurityLoader(resourceManager, definitionResourceConfig.getPath()).load())
+				.collect(Collectors.toList());
 	}
 }

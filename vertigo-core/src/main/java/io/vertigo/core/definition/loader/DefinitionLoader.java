@@ -18,23 +18,17 @@
  */
 package io.vertigo.core.definition.loader;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
+import io.vertigo.app.Home;
+import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.DefinitionResourceConfig;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.util.ClassUtil;
 
 /**
 
@@ -48,69 +42,29 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-public final class DefinitionLoader implements Component {
-	private final Map<String, LoaderPlugin> loaderPlugins;
-	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
+public final class DefinitionLoader {
 
-	@Inject
-	public DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
-		Assertion.checkNotNull(dynamicRegistryPlugins);
-		Assertion.checkNotNull(loaderPlugins);
-		//-----
-		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
-		//On enregistre les loaders
-		this.loaderPlugins = new HashMap<>();
-		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
-			this.loaderPlugins.put(loaderPlugin.getType(), loaderPlugin);
-		}
-	}
-
-	/**
-	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
-	 */
-	private Stream<Definition> parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
-		final CompositeDynamicRegistry dynamicRegistry = new CompositeDynamicRegistry(dynamicRegistryPlugins);
-
-		//Création du repositoy des instances le la grammaire (=> model)
-		final DslDefinitionRepository dynamicModelRepository = new DslDefinitionRepository(dynamicRegistry);
-
-		//--Enregistrement des types primitifs
-		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
-			for (final DslDefinition dslDefinition : dynamicRegistryPlugin.getGrammar().getRootDefinitions()) {
-				dynamicModelRepository.addDefinition(dslDefinition);
-			}
-		}
-		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
-			final LoaderPlugin loaderPlugin = loaderPlugins.get(definitionResourceConfig.getType());
-			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
-			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
-		}
-
-		return dynamicModelRepository.solve(definitionSpace);
-	}
-
-	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
+	public static void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> createDefinitions(definitionSpace, moduleConfig))
-				.forEach(definitionSpace::registerDefinition); //Here all definitions are registered into the definitionSpace
+				.peek(Assertion::checkNotNull)
+				.flatMap(moduleConfig -> provide(definitionSpace, moduleConfig.getDefinitionProviderConfigs()))
+				.forEach(supplier -> definitionSpace.registerDefinition(supplier.get(definitionSpace))); //Here all definitions are registered into the definitionSpace
 	}
 
-	private Stream<Definition> createDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		return Stream.concat(
-				parse(definitionSpace, moduleConfig.getDefinitionResourceConfigs()), //case by Resource
-				provide(moduleConfig.getDefinitionProviderConfigs()));
-	}
-
-	private Stream<Definition> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
+	private static Stream<DefinitionSupplier> provide(final DefinitionSpace definitionSpace, final List<DefinitionProviderConfig> definitionProviderConfigs) {
 		return definitionProviderConfigs
 				.stream()
-				.map(definitionProviderConfig -> ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass()))
-				.flatMap(definitionProvider -> definitionProvider.get().stream());
+				.map(DefinitionLoader::createDefinitionProvider)
+				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
+	}
+
+	private static DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
+		final DefinitionProvider instance = Injector.newInstance(definitionProviderConfig.getDefinitionProviderClass(), Home.getApp().getComponentSpace());// attention c'est pourri
+		definitionProviderConfig.getDefinitionResourceConfigs().forEach(config -> instance.addDefinitionResourceConfig(config));
+		return instance;
 
 	}
 }

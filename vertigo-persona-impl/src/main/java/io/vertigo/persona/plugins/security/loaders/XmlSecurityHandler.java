@@ -20,10 +20,12 @@ package io.vertigo.persona.plugins.security.loaders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Permission;
@@ -49,14 +51,18 @@ final class XmlSecurityHandler extends DefaultHandler {
 		ref;
 	}
 
-	private final DefinitionSpace definitionSpace;
-	private Permission currentPermission;
-	private Role currentRole;
+	private final List<DefinitionSupplier> permissionSuppliers = new ArrayList<>();
+	private final List<DefinitionSupplier> roleSuppliers = new ArrayList<>();
+	private final List<String> permissionsRef = new ArrayList<>();
+	private final String[] currentRoleAttributes = new String[2];
+	private boolean isInRole;
 
-	XmlSecurityHandler(final DefinitionSpace definitionSpace) {
-		Assertion.checkNotNull(definitionSpace);
-		//-----
-		this.definitionSpace = definitionSpace;
+	public List<DefinitionSupplier> getPermissionSuppliers() {
+		return permissionSuppliers;
+	}
+
+	public List<DefinitionSupplier> getRoleSuppliers() {
+		return roleSuppliers;
 	}
 
 	@Override
@@ -65,10 +71,21 @@ final class XmlSecurityHandler extends DefaultHandler {
 			case authorisationConfig:
 				break;
 			case permission:
-				currentPermission = createPermission(attrs);
+				if (!isInRole) {
+					// it's a real permission so we handle it
+					permissionSuppliers.add(supplyPermissions(
+							attrs.getValue(AttrsName.id.name()).trim(),
+							attrs.getValue(AttrsName.operation.name()).trim(),
+							attrs.getValue(AttrsName.filter.name()).trim()));
+				} else {
+					// we are in a role so we append to the list of references
+					permissionsRef.add(attrs.getValue(AttrsName.ref.name()));
+				}
 				break;
 			case role:
-				currentRole = createRole(attrs);
+				isInRole = true;
+				currentRoleAttributes[0] = attrs.getValue(AttrsName.name.name()).trim();
+				currentRoleAttributes[1] = attrs.getValue(AttrsName.description.name()).trim();
 				break;
 			default:
 		}
@@ -80,51 +97,35 @@ final class XmlSecurityHandler extends DefaultHandler {
 			case authorisationConfig:
 				break;
 			case permission:
-				if (currentRole != null) {
-					currentRole.getPermissions().add(currentPermission);
-				}
-				currentPermission = null;
 				break;
 			case role:
-				definitionSpace.registerDefinition(currentRole);
-				currentRole = null;
+				Assertion.checkNotNull(currentRoleAttributes);
+				// ---
+				roleSuppliers.add(supplyRole(
+						currentRoleAttributes[0],
+						currentRoleAttributes[1],
+						new ArrayList<>(permissionsRef)));
+				permissionsRef.clear();
+				isInRole = false;
 				break;
 			default:
 		}
 	}
 
-	private static Role createRole(final Attributes attrs) {
-		Assertion.checkNotNull(attrs);
-		//-----
-		final String name = attrs.getValue(AttrsName.name.name()).trim();
-		final String description = attrs.getValue(AttrsName.description.name()).trim();
-		//-----
-		final List<Permission> permissions = new ArrayList<>();
+	private DefinitionSupplier supplyRole(final String name, final String description, final List<String> myPermRefs) {
+		return (definitionSpace) -> createRole(name, description, myPermRefs, definitionSpace);
+	}
+
+	private Role createRole(final String name, final String description, final List<String> myPermRefs, final DefinitionSpace definitionSpace) {
+		final List<Permission> permissions = myPermRefs.stream()
+				.map(permissionName -> definitionSpace.resolve(permissionName, Permission.class))
+				.collect(Collectors.toList());
 		return new Role(name, description, permissions);
 	}
 
-	//case of <permission id="PRM_READ_ALL_PRODUCTS" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
-	private Permission createPermission(final Attributes attrs) {
-		Assertion.checkNotNull(attrs);
-		//-----
-		final String permissionRef = attrs.getValue(AttrsName.ref.name());
-		if (permissionRef != null) {
-			return obtainPermission(permissionRef);
-		}
-		final String id = attrs.getValue(AttrsName.id.name()).trim();
-		final String operation = attrs.getValue(AttrsName.operation.name());
-		final String filter = attrs.getValue(AttrsName.filter.name());
-		//-----
-		final Permission permission = new Permission(id, operation, filter);
-		definitionSpace.registerDefinition(permission);
-		return permission;
-	}
-
-	//case of <permission ref="PRM_READ_MY_FAMILLE"/>
-	private Permission obtainPermission(final String permissionRef) {
-		Assertion.checkArgNotEmpty(permissionRef);
-		//-----
-		return definitionSpace.resolve(permissionRef, Permission.class);
+	//case of <permission id="PRM_READ_ALL_PRODUCTSè" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
+	private DefinitionSupplier supplyPermissions(final String id, final String operation, final String filter) {
+		return (definitionSpace) -> new Permission(id, operation, filter);
 	}
 
 }

@@ -19,15 +19,24 @@
 package io.vertigo.app.config;
 
 import java.util.List;
-import java.util.function.Supplier;
 
-import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 /**
  * Provides a list of definitions through an iterable.
  * @author pchretien
  *
  */
-public interface DefinitionProvider extends Supplier<List<Definition>> {
-	//
+public interface DefinitionProvider {
+
+	/**
+	 * Return a list of definitions with a set of already known definitions
+	 * @return the list of new definition to register
+	 */
+	List<DefinitionSupplier> get(final DefinitionSpace definitionSpace);
+
+	default void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
+		// nothing by default
+	}
+
 }

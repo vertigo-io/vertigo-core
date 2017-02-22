@@ -95,8 +95,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions
-			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);
-			definitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
+			DefinitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
 
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponentsAndAspects(appConfig.getModuleConfigs());

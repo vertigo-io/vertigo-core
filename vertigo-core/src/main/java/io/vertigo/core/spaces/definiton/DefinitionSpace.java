@@ -63,7 +63,7 @@ public final class DefinitionSpace implements Component, Activeable {
 	/**
 	 * Resolve a definition from its name and class.
 	 * @param name the name of the expected definition
-	 * @param definitionClass Type of the definition
+	 * @param clazz Type of the definition
 	 * @return the definition
 	 */
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {

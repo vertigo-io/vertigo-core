@@ -18,6 +18,10 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -25,15 +29,24 @@ import io.vertigo.lang.Assertion;
  */
 public final class DefinitionProviderConfig {
 	private final Class<? extends DefinitionProvider> definitionProviderClass;
+	private final List<DefinitionResourceConfig> definitionResources;
 
-	DefinitionProviderConfig(final Class<? extends DefinitionProvider> definitionProviderClass) {
+	DefinitionProviderConfig(final Class<? extends DefinitionProvider> definitionProviderClass,
+			final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		Assertion.checkNotNull(definitionProviderClass);
+
+		Assertion.checkNotNull(definitionResourceConfigs);
 		//-----
 		this.definitionProviderClass = definitionProviderClass;
+		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 	}
 
 	public Class<? extends DefinitionProvider> getDefinitionProviderClass() {
 		return definitionProviderClass;
+	}
+
+	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
+		return definitionResources;
 	}
 
 	@Override

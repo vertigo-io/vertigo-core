@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -54,7 +55,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new ModuleConfigBuilder("test")
-						.addDefinitionProvider(TestDefinitionprovider.class)
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(TestDefinitionprovider.class).build())
 						.build())
 				.build();
 	}
@@ -68,7 +69,8 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
 		assertNotNull(sampleDefinition);
 		assertEquals("THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be THE_DEFINITION");
-		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be THE_DEFINITION");
+		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
+				"localName must be THE_DEFINITION");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 

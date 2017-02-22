@@ -27,6 +27,7 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
@@ -50,6 +51,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
+	private DefinitionProviderConfigBuilder definitionProviderConfigBuilder;
 	private TagName current;
 
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
@@ -103,10 +105,13 @@ final class XMLModulesHandler extends DefaultHandler {
 				}
 				pluginConfigBuilder = null;
 				break;
+			case provider:
+				moduleConfigBuilder.addDefinitionProvider(definitionProviderConfigBuilder.build());
+				definitionProviderConfigBuilder = null;
+				break;
 			case aspect:
 			case param:
 			case definitions:
-			case provider:
 			case resource:
 			case config:
 			case init:
@@ -164,12 +169,12 @@ final class XMLModulesHandler extends DefaultHandler {
 			case provider:
 				final String definitionProviderClassName = attrs.getValue("className");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
-				moduleConfigBuilder.addDefinitionProvider(definitionProviderClass);
+				definitionProviderConfigBuilder = new DefinitionProviderConfigBuilder(definitionProviderClass);
 				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				moduleConfigBuilder.addDefinitionResource(resourceType, evalParamValue(resourcePath));
+				definitionProviderConfigBuilder.addDefinitionResource(resourceType, evalParamValue(resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");

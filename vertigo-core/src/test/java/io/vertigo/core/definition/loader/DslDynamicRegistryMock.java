@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.definition.loader;
 
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -50,8 +50,8 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	}
 
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition definition) {
-		return new FakeDefinition(definition.getName());
+	public DefinitionSupplier supplyDefinition(final DslDefinition definition) {
+		return (definitionSpace) -> new FakeDefinition(definition.getName());
 	}
 
 	@DefinitionPrefix("MOCK_")

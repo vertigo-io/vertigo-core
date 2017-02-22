@@ -21,6 +21,7 @@ package io.vertigo.persona.plugins.security.loaders;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.stream.Stream;
 
 import javax.inject.Named;
 import javax.xml.XMLConstants;
@@ -30,7 +31,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import io.vertigo.app.Home;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -78,11 +79,11 @@ final class XmlSecurityLoader {
 		authURL = resourceManager.resolve(url);
 	}
 
-	void load() {
+	Stream<DefinitionSupplier> load() {
 		Assertion.checkNotNull(authURL);
 		//-----
 		try {
-			doLoadXML(authURL);
+			return doLoadXML(authURL);
 		} catch (final ParserConfigurationException pce) {
 			throw new WrappedException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", authURL.getPath()), pce);
 		} catch (final SAXException se) {
@@ -92,16 +93,17 @@ final class XmlSecurityLoader {
 		}
 	}
 
-	private static void doLoadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
+	private static Stream<DefinitionSupplier> doLoadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
 		xsdValidate(configURL);
 		//---
 
-		final XmlSecurityHandler handler = new XmlSecurityHandler(Home.getApp().getDefinitionSpace());
+		final XmlSecurityHandler handler = new XmlSecurityHandler();
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);
+		return Stream.concat(handler.getPermissionSuppliers().stream(), handler.getRoleSuppliers().stream());
 	}
 
 	private static void xsdValidate(final URL configURL) {
@@ -110,4 +112,5 @@ final class XmlSecurityLoader {
 		XMLUtil.validateXmlByXsd(configURL, xsd);
 		//--- fin validation XSD
 	}
+
 }

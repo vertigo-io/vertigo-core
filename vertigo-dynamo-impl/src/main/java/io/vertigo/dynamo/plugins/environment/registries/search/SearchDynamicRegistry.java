@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.app.Home;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
@@ -60,7 +61,11 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
+	public DefinitionSupplier supplyDefinition(final DslDefinition dslDefinition) {
+		return (defintionSpace) -> createDefinition(defintionSpace, dslDefinition);
+	}
+
+	private Definition createDefinition(final DefinitionSpace definitionSpace, final DslDefinition dslDefinition) {
 		final DslEntity dslEntity = dslDefinition.getEntity();
 
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(dslEntity)) {
