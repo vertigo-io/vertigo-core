@@ -34,7 +34,6 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -77,26 +76,6 @@ import io.vertigo.util.StringUtil;
 public final class AnnotationLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
-
-	private static final class MethodComparator implements Comparator<Method>, Serializable {
-		private static final long serialVersionUID = -3272894481096942477L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final Method m1, final Method m2) {
-			return m1.getName().compareTo(m2.getName());
-		}
-	}
-
-	private static final class FieldComparator implements Comparator<Field>, Serializable {
-		private static final long serialVersionUID = -3272894481096942477L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final Field f1, final Field f2) {
-			return f1.getName().compareTo(f2.getName());
-		}
-	}
 
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
@@ -195,14 +174,15 @@ public final class AnnotationLoader implements Loader {
 		// Cela devient alors bloquant pour une communication par sérialisation entre 2 instances.
 
 		final List<Field> fields = new ArrayList<>(ClassUtil.getAllFields(clazz));
-		Collections.sort(fields, new FieldComparator());
+		Collections.sort(fields, Comparator.comparing(Field::getName));
+		
 		for (final Field field : fields) {
 			//On regarde si il s'agit d'un champ
 			parseFieldAnnotations(field, dtDefinitionBuilder);
 		}
 
 		final Method[] methods = clazz.getMethods();
-		Arrays.sort(methods, new MethodComparator());
+		Arrays.sort(methods, Comparator.comparing(Method::getName));
 		for (final Method method : methods) {
 			parseMethodAnnotations(method, dtDefinitionBuilder);
 			//On regarde si il s'agit d'une associations

@@ -74,7 +74,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		}
 		return webServiceDefinition.getWebServiceParams()
 				.stream()
-				.anyMatch(webServiceParam -> webServiceParam.isNeedServerSideToken());
+				.anyMatch(WebServiceParam::isNeedServerSideToken);
 	}
 
 	/** {@inheritDoc}  */

@@ -39,6 +39,6 @@ public interface Loader {
 	 * @param resourcePath resourcePath
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	void load(String resourcePath, DslDefinitionRepository dynamicModelRepository);
+	void load(String resourcePath, DslDefinitionRepository dslDefinitionRepository);
 
 }

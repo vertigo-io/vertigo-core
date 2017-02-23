@@ -65,13 +65,13 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		return parse(definitionSpace, definitionResourceConfigs);
+		return parse(definitionSpace);
 	}
 
 	/**
 	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
 	 */
-	private List<DefinitionSupplier> parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
+	private List<DefinitionSupplier> parse(final DefinitionSpace definitionSpace) {
 
 		//Création du repositoy des instances le la grammaire (=> model)
 		final DynamicRegistry dynamoDynamicRegistry = new DynamoDynamicRegistry();
