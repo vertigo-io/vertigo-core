@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;

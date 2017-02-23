@@ -39,11 +39,11 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionUtil;
 
 @RunWith(JUnitPlatform.class)
 public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {

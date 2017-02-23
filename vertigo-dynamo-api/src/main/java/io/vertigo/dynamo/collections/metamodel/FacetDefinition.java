@@ -21,8 +21,8 @@ package io.vertigo.dynamo.collections.metamodel;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;

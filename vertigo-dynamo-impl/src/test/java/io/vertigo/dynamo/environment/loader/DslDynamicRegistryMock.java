@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.environment.loader;
 
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
 
 /**

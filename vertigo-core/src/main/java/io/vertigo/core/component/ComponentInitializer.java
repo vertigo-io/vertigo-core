@@ -16,51 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.entity;
-
-import io.vertigo.lang.Assertion;
+package io.vertigo.core.component;
 
 /**
- * Defines a link to an entity.
- * @author pchretien
+ * Initializer of components.
+ * @author npiedeloup, ,pchretien
  */
-public final class DslEntityLink implements DslEntityFieldType {
-	private final DslEntity entity;
-
+public interface ComponentInitializer {
 	/**
-	 * Constructor
-	 * @param entity the entity that is linked
+	 * Initialize.
 	 */
-	DslEntityLink(final DslEntity entity) {
-		Assertion.checkNotNull(entity);
-		//-----
-		this.entity = entity;
-	}
-
-	/**
-	 * @return the linked entity
-	 */
-	public DslEntity getEntity() {
-		return entity;
-	}
-
-	@Override
-	public String toString() {
-		return "Link<" + entity.getName() + ">";
-	}
-
-	@Override
-	public boolean isProperty() {
-		return false;
-	}
-
-	@Override
-	public boolean isEntityLink() {
-		return true;
-	}
-
-	@Override
-	public boolean isEntity() {
-		return false;
-	}
+	void init();
 }

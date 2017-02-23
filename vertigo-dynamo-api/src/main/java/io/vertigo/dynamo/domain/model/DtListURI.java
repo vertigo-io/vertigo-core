@@ -21,7 +21,7 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 

@@ -26,13 +26,13 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.spaces.component.ComponentInitializer;
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;

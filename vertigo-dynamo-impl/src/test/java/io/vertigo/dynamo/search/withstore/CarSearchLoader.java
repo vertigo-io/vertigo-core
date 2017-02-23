@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;

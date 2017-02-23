@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
 import io.vertigo.persona.security.metamodel.Role;
 

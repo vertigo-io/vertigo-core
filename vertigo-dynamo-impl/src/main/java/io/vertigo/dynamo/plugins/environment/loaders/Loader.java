@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 
 /**
  * Chargeur de l'environnement.

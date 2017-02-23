@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.dynamic;
+package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,9 +28,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
 
 /**

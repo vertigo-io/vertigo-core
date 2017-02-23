@@ -22,8 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDynamicDefinitionRule;
 
 public class DslDefinitionRuleTest {

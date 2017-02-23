@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -49,17 +46,20 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Integer;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**

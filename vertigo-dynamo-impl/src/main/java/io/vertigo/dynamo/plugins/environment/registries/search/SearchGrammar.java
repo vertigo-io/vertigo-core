@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
 

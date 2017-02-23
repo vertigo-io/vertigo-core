@@ -25,7 +25,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.WrappedException;

@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;

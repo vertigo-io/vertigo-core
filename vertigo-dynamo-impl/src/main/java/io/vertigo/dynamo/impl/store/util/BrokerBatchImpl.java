@@ -46,8 +46,8 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;

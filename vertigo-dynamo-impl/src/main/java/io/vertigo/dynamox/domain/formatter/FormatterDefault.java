@@ -19,7 +19,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;

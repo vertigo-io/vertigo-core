@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.dynamic;
+package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityField;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 

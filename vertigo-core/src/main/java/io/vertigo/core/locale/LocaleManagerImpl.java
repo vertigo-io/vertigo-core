@@ -34,7 +34,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;

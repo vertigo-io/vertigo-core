@@ -16,7 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config;
+package io.vertigo.app.config.rules;
+
+import io.vertigo.app.config.ModuleConfig;
 
 /**
  * Rule : all components of a module must respect this rule.

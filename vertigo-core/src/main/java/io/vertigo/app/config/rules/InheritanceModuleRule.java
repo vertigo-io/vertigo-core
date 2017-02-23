@@ -20,7 +20,6 @@ package io.vertigo.app.config.rules;
 
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.ModuleRule;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 

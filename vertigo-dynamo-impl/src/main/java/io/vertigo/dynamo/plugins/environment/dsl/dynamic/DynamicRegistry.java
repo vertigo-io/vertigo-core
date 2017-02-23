@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.dynamic;
+package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 
 import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 
 /**
  * This handler creates

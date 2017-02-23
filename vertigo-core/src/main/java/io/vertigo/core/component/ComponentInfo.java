@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.component;
+package io.vertigo.core.component;
 
 import java.util.Date;
 

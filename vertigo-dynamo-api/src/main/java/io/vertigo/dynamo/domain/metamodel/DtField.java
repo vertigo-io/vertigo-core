@@ -21,7 +21,7 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.Locale;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.MessageText;

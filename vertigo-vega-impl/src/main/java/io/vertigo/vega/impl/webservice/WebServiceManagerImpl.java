@@ -26,8 +26,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;

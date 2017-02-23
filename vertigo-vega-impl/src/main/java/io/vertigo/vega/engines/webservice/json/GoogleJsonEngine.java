@@ -48,8 +48,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;

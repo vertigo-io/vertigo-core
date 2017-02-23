@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;

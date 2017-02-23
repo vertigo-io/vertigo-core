@@ -16,15 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.component;
+package io.vertigo.dynamo.plugins.environment.dsl.entity;
+
+import java.util.Collections;
+import java.util.List;
+
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 
 /**
- * Initializer of components.
- * @author npiedeloup, ,pchretien
+ * Une grammaire est composée d'entités et de propriétés.
+ * Les entités sont une composition d'entités et de propriétés.
+ *
+ * Il est possible de composer une grammaire à partir de grammaires.
+ *
+ * @author pchretien
  */
-public interface ComponentInitializer {
+@FunctionalInterface
+public interface DslGrammar {
 	/**
-	 * Initialize.
+	 * Returns the list of entities
+	 * @return List of entities.
 	 */
-	void init();
+	List<DslEntity> getEntities();
+
+	/**
+	 * Examples : a grammar is defined from atoms (string...)
+	 * @return the list of primitives/ root definitions
+	 */
+	default List<DslDefinition> getRootDefinitions() {
+		return Collections.emptyList();
+	}
 }

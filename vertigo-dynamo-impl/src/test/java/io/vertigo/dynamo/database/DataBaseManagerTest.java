@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.domain.Movie;

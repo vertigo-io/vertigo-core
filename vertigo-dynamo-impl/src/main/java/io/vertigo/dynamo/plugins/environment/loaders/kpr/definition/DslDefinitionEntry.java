@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.lang.Assertion;
 
 /**

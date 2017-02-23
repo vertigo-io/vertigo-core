@@ -21,7 +21,6 @@ package io.vertigo.core.definition;
 import java.util.List;
 
 import io.vertigo.app.config.DefinitionResourceConfig;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 /**
  * Provides a list of definitions through an iterable.

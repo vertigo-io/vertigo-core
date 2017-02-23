@@ -20,7 +20,7 @@ package io.vertigo.core.spaces.component.data;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.spaces.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 
 public final class StartedManagerInitializer implements ComponentInitializer {

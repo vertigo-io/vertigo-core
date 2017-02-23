@@ -21,7 +21,7 @@ package io.vertigo.dynamo.search.model;
 import java.io.Serializable;
 import java.util.Optional;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;

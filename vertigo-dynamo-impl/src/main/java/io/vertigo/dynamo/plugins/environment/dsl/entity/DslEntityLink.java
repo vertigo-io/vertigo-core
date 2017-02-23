@@ -16,23 +16,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.definiton;
+package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.vertigo.lang.Assertion;
 
-/**Each définition has a prefix
+/**
+ * Defines a link to an entity.
  * @author pchretien
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Target({ ElementType.TYPE })
-public @interface DefinitionPrefix {
+public final class DslEntityLink implements DslEntityFieldType {
+	private final DslEntity entity;
+
 	/**
-	 * Préfix de la définition du champ.
+	 * Constructor
+	 * @param entity the entity that is linked
 	 */
-	String value();
+	DslEntityLink(final DslEntity entity) {
+		Assertion.checkNotNull(entity);
+		//-----
+		this.entity = entity;
+	}
+
+	/**
+	 * @return the linked entity
+	 */
+	public DslEntity getEntity() {
+		return entity;
+	}
+
+	@Override
+	public String toString() {
+		return "Link<" + entity.getName() + ">";
+	}
+
+	@Override
+	public boolean isProperty() {
+		return false;
+	}
+
+	@Override
+	public boolean isEntityLink() {
+		return true;
+	}
+
+	@Override
+	public boolean isEntity() {
+		return false;
+	}
 }

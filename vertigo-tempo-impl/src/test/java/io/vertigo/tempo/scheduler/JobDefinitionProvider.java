@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 public final class JobDefinitionProvider implements DefinitionProvider {

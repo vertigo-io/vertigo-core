@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.entity;
+package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import io.vertigo.core.definition.dsl.entity.DslEntityField.Cardinality;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField.Cardinality;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 

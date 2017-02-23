@@ -25,7 +25,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;

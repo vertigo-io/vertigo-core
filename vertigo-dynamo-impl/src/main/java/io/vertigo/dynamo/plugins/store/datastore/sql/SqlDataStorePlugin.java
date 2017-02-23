@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DataType;

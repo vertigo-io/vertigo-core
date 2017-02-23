@@ -32,8 +32,8 @@ import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;
 

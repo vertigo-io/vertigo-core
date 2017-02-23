@@ -18,19 +18,19 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
 

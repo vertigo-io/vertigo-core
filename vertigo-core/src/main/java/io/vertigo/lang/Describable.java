@@ -20,7 +20,7 @@ package io.vertigo.lang;
 
 import java.util.List;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.ComponentInfo;
 
 /**
  * Permet d'ajouter un comportement sur un composant.

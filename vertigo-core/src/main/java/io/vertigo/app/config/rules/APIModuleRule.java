@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.ModuleRule;
 import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
 

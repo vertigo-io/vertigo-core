@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**

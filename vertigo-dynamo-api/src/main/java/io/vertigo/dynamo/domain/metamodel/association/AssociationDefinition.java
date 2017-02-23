@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.definition.Definition;
 import io.vertigo.lang.Assertion;
 
 /**

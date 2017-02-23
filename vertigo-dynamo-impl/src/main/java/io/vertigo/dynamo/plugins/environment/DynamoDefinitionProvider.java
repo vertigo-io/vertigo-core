@@ -11,12 +11,12 @@ import javax.inject.Named;
 
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.loaders.Loader;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoader;

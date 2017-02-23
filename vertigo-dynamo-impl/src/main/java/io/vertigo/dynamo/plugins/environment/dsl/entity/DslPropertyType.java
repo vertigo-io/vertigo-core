@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.entity;
+package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
 import io.vertigo.lang.Assertion;
 

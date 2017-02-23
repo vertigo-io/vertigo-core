@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 

@@ -25,7 +25,7 @@ import java.io.PrintStream;
  *
  * @author pchretien
  */
-public final class Logo {
+final class Logo {
 	private Logo() {
 		//constructor is protected
 	}
@@ -34,7 +34,7 @@ public final class Logo {
 	 * Displays logo in console.
 	 * @param out Out
 	 */
-	public static void printCredits(final PrintStream out) {
+	static void printCredits(final PrintStream out) {
 		out.println();
 		out.println("+--------------------------------------------------+");
 		out.println("|   _____________                                  |");

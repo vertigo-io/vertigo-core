@@ -30,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;

@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.dynamic;
+package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.DslEntityField;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 

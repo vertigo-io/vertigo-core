@@ -24,8 +24,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionBodyRule;
 import io.vertigo.lang.VSystemException;

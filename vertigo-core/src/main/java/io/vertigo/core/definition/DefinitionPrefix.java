@@ -16,34 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.dsl.entity;
+package io.vertigo.core.definition;
 
-import java.util.Collections;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
-
-/**
- * Une grammaire est composée d'entités et de propriétés.
- * Les entités sont une composition d'entités et de propriétés.
- *
- * Il est possible de composer une grammaire à partir de grammaires.
- *
+/**Each définition has a prefix
  * @author pchretien
  */
-@FunctionalInterface
-public interface DslGrammar {
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target({ ElementType.TYPE })
+public @interface DefinitionPrefix {
 	/**
-	 * Returns the list of entities
-	 * @return List of entities.
+	 * Préfix de la définition du champ.
 	 */
-	List<DslEntity> getEntities();
-
-	/**
-	 * Examples : a grammar is defined from atoms (string...)
-	 * @return the list of primitives/ root definitions
-	 */
-	default List<DslDefinition> getRootDefinitions() {
-		return Collections.emptyList();
-	}
+	String value();
 }

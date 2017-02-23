@@ -21,7 +21,7 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.core.spaces.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.ListBuilder;
