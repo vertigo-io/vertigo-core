@@ -37,6 +37,7 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
+import io.vertigo.dynamo.environment.loader.EnvironmentManagerTest;
 import io.vertigo.dynamo.environment.multi.MultiResourcesEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
@@ -137,7 +138,8 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 		//Criteria
 		SqlCriteriaTest.class,
-		PredicateCriteriaTest.class
+		PredicateCriteriaTest.class,
+		EnvironmentManagerTest.class
 
 })
 public final class DynamoTestSuite {

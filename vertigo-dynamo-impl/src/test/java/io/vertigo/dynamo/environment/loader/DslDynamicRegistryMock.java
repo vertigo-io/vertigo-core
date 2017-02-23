@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.loader;
+package io.vertigo.dynamo.environment.loader;
 
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;

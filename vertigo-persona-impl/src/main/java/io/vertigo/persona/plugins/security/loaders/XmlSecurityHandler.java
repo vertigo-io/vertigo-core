@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Permission;

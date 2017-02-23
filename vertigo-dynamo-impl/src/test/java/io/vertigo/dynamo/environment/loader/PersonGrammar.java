@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.loader;
+package io.vertigo.dynamo.environment.loader;
 
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Double;

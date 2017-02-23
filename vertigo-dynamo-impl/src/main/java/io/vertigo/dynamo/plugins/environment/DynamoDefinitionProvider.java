@@ -9,15 +9,15 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionResourceConfig;
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.loader.Loader;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.dynamo.plugins.environment.loaders.Loader;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoader;

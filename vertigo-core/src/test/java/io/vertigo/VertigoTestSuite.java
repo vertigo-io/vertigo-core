@@ -28,7 +28,6 @@ import io.vertigo.core.component.aop.Aspect2Test;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
-import io.vertigo.core.definition.loader.EnvironmentManagerTest;
 import io.vertigo.core.locale.LocaleManagerTest;
 import io.vertigo.core.param.multi.MultiParamManagerTest;
 import io.vertigo.core.param.properties.PropertiesParamManagerTest;
@@ -86,7 +85,6 @@ import io.vertigo.util.StringUtilTest;
 		XmlParamManagerTest.class,
 		//--Resources
 		ResourceManagerTest.class,
-		EnvironmentManagerTest.class,
 		//Locales
 		LocaleManagerTest.class
 })

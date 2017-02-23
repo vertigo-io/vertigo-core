@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;

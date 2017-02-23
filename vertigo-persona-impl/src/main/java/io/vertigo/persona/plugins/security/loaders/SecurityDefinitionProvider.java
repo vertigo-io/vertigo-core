@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionResourceConfig;
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;

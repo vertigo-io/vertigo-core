@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
 import io.vertigo.core.definition.dsl.entity.DslEntity;

@@ -16,29 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.loader;
+package io.vertigo.core.definition;
 
-import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
+import java.util.List;
+
+import io.vertigo.app.config.DefinitionResourceConfig;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 
 /**
- * Chargeur de l'environnement.
+ * Provides a list of definitions through an iterable.
  * @author pchretien
+ *
  */
-public interface Loader {
-	/**
-	 * Type parsed by loader.
-	 * Examples : oom, kpr, eaxmi...
-	 * @return Type parsed by loader
-	 */
-	String getType();
+public interface DefinitionProvider {
 
 	/**
-	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
-	 * défini par une url (sur système de fichier ou classpath)
-	 * et selon la grammaire en argument.
-	 * @param resourcePath resourcePath
-	 * @param dynamicModelRepository DynamicModelRepository
+	 * Return a list of definitions with a set of already known definitions
+	 * @return the list of new definition to register
 	 */
-	void load(String resourcePath, DslDefinitionRepository dslDefinitionRepository);
+	List<DefinitionSupplier> get(final DefinitionSpace definitionSpace);
+
+	default void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
+		// nothing by default
+	}
 
 }

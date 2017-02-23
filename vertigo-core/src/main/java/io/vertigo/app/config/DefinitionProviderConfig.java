@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 

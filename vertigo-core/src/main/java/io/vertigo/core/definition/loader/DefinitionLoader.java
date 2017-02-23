@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -66,7 +66,8 @@ public final class DefinitionLoader {
 	private static DefinitionProvider createDefinitionProvider(final ComponentSpace componentSpace, final DefinitionProviderConfig definitionProviderConfig) {
 		final DefinitionProvider instance = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams());
-		definitionProviderConfig.getDefinitionResourceConfigs().forEach(config -> instance.addDefinitionResourceConfig(config));
+		definitionProviderConfig.getDefinitionResourceConfigs()
+				.forEach(config -> instance.addDefinitionResourceConfig(config));
 		return instance;
 
 	}

@@ -16,17 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition.loader;
+package io.vertigo.dynamo.environment.loader;
 
-import static io.vertigo.core.definition.loader.PersonGrammar.AGE;
-import static io.vertigo.core.definition.loader.PersonGrammar.CITY;
-import static io.vertigo.core.definition.loader.PersonGrammar.FIRST_NAME;
-import static io.vertigo.core.definition.loader.PersonGrammar.HEIGHT;
-import static io.vertigo.core.definition.loader.PersonGrammar.MAIN_ADDRESS;
-import static io.vertigo.core.definition.loader.PersonGrammar.MALE;
-import static io.vertigo.core.definition.loader.PersonGrammar.NAME;
-import static io.vertigo.core.definition.loader.PersonGrammar.POSTAL_CODE;
-import static io.vertigo.core.definition.loader.PersonGrammar.STREET;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.AGE;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.CITY;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.FIRST_NAME;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.HEIGHT;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.MAIN_ADDRESS;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.MALE;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.NAME;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.POSTAL_CODE;
+import static io.vertigo.dynamo.environment.loader.PersonGrammar.STREET;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Assertions;

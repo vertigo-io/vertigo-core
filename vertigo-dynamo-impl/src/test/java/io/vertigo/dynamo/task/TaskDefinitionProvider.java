@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
-import io.vertigo.app.config.DefinitionProvider;
-import io.vertigo.app.config.DefinitionSupplier;
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
