@@ -18,7 +18,6 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -27,7 +26,7 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
@@ -101,7 +100,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		//we do nothing with webServerPlugin
 		Home.getApp().registerPostStartFunction(() -> {
 			final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
-			WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
+			WebServiceManagerImpl.this.registerWebServiceDefinitions((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace(), webServiceDefinitions);
 		});
 	}
 
@@ -141,7 +140,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 
 		//2- We sort by path, parameterized path should be after strict path
 		return allWebServiceDefinitionListBuilder
-				.sort(new WebServiceDefinitionComparator())
+				.sort(Comparator.comparing(WebServiceDefinition::getName))
 				.unmodifiable()
 				.build();
 	}
@@ -151,24 +150,10 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	 * @param definitionSpace DefinitionSpace
 	 * @param webServiceDefinitions WebServiceDefinitions
 	 */
-	void registerWebServiceDefinitions(final DefinitionSpace definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
+	void registerWebServiceDefinitions(final DefinitionSpaceWritable definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
 		// We register WebService Definition in this order
 		webServiceDefinitions
 				.forEach(definitionSpace::registerDefinition);
 		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
-	}
-
-	private static final class WebServiceDefinitionComparator implements Comparator<WebServiceDefinition>, Serializable {
-		private static final long serialVersionUID = -3628192753809615711L;
-
-		WebServiceDefinitionComparator() {
-			//rien
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final WebServiceDefinition webServiceDefinition1, final WebServiceDefinition webServiceDefinition2) {
-			return webServiceDefinition1.getName().compareTo(webServiceDefinition2.getName());
-		}
 	}
 }
