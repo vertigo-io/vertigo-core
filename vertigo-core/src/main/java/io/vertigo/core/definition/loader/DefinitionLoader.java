@@ -26,6 +26,7 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
@@ -46,14 +47,14 @@ public final class DefinitionLoader {
 	 * @param componentSpace the componentSpace
 	 * @param moduleConfigs module configs
 	 */
-	public static void injectDefinitions(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
+	public static Stream<Definition> createDefinitions(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
-		moduleConfigs
+		return moduleConfigs
 				.stream()
 				.peek(Assertion::checkNotNull)
 				.flatMap(moduleConfig -> provide(definitionSpace, componentSpace, moduleConfig.getDefinitionProviderConfigs()))
-				.forEach(supplier -> definitionSpace.registerDefinition(supplier.get(definitionSpace))); //Here all definitions are registered into the definitionSpace
+				.map(supplier -> supplier.get(definitionSpace));
 	}
 
 	private static Stream<DefinitionSupplier> provide(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<DefinitionProviderConfig> definitionProviderConfigs) {

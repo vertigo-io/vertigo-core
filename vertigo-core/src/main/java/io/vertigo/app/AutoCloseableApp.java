@@ -28,9 +28,11 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.ComponentSpaceWritable;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Activeable;
@@ -60,8 +62,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final AppConfig appConfig;
 	private State state;
 
-	private final DefinitionSpace definitionSpace;
-	private final ComponentSpace componentSpace;
+	private final DefinitionSpaceWritable definitionSpaceWritable;
+	private final ComponentSpaceWritable componentSpaceWritable;
 
 	//à remplacer par event ??
 	private final List<Runnable> postStartFunctions = new ArrayList<>();
@@ -82,12 +84,12 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		final Boot boot = new Boot(appConfig.getBootConfig());
 		boot.init();
 		//-----0. Boot
-		componentSpace = new ComponentSpace();
-		definitionSpace = new DefinitionSpace();
+		componentSpaceWritable = new ComponentSpaceWritable();
+		definitionSpaceWritable = new DefinitionSpaceWritable();
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(componentSpace, appConfig.getBootConfig().getAopPlugin());
+			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable, appConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
@@ -95,10 +97,12 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions
-			DefinitionLoader.injectDefinitions(definitionSpace, componentSpace, appConfig.getModuleConfigs());
+			DefinitionLoader.createDefinitions(definitionSpaceWritable, componentSpaceWritable, appConfig.getModuleConfigs())
+					.forEach(definitionSpaceWritable::registerDefinition);
+			//Here all definitions are registered into the definitionSpace
 
 			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpace.resolve(ParamManager.class)), appConfig.getModuleConfigs());
+			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
 			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
 				Logo.printCredits(System.out);
@@ -133,14 +137,14 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	private void appStart() {
-		definitionSpace.start();
-		componentSpace.start();
+		definitionSpaceWritable.start();
+		componentSpaceWritable.start();
 		Thread.currentThread().setName("MAIN");
 	}
 
 	private void appStop() {
-		componentSpace.stop();
-		definitionSpace.stop();
+		componentSpaceWritable.stop();
+		definitionSpaceWritable.stop();
 	}
 
 	/** {@inheritDoc} */
@@ -174,19 +178,21 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public DefinitionSpace getDefinitionSpace() {
-		return definitionSpace;
+		//We publish the Read Only version
+		return definitionSpaceWritable;
 	}
 
 	@Override
 	public ComponentSpace getComponentSpace() {
-		return componentSpace;
+		//We publish the Read Only version
+		return componentSpaceWritable;
 	}
 
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
 			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
 					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
-			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
+			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
 	}

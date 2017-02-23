@@ -31,20 +31,20 @@ import io.vertigo.lang.VSystemException;
  * @author pchretien
  */
 final class ComponentDualContainer implements Container {
-	private final Container componentContainer1;
-	private final Container componentContainer2;
+	private final Container container1;
+	private final Container container2;
 	private final Set<String> ids;
 
-	ComponentDualContainer(final Container componentContainer1, final Container componentContainer2) {
-		Assertion.checkNotNull(componentContainer1);
-		Assertion.checkNotNull(componentContainer2);
+	ComponentDualContainer(final Container container1, final Container container2) {
+		Assertion.checkNotNull(container1);
+		Assertion.checkNotNull(container2);
 		//-----
-		this.componentContainer1 = componentContainer1;
-		this.componentContainer2 = componentContainer2;
+		this.container1 = container1;
+		this.container2 = container2;
 		ids = new LinkedHashSet<>();
-		ids.addAll(componentContainer1.keySet());
-		ids.addAll(componentContainer2.keySet());
-		Assertion.checkArgument(ids.size() == componentContainer1.keySet().size() + componentContainer2.keySet().size(), "Ambiguité : il y a des ids en doublon");
+		ids.addAll(container1.keySet());
+		ids.addAll(container2.keySet());
+		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
 	}
 
 	/** {@inheritDoc} */
@@ -61,11 +61,11 @@ final class ComponentDualContainer implements Container {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
 		//-----
-		if (componentContainer1.contains(id)) {
-			return componentContainer1.resolve(id, clazz);
+		if (container1.contains(id)) {
+			return container1.resolve(id, clazz);
 		}
-		if (componentContainer2.contains(id)) {
-			return componentContainer2.resolve(id, clazz);
+		if (container2.contains(id)) {
+			return container2.resolve(id, clazz);
 		}
 		throw new VSystemException("component info with id '{0}' not found.", id);
 	}

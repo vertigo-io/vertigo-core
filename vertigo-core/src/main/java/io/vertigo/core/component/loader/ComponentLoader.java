@@ -31,7 +31,7 @@ import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.ComponentSpaceWritable;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.core.component.di.reactor.DIReactor;
@@ -50,14 +50,14 @@ public final class ComponentLoader {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
-	private final ComponentSpace componentSpace;
+	private final ComponentSpaceWritable componentSpace;
 
 	/**
 	 * Constructor.
 	 * @param componentSpace Space where all the components are stored
 	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
-	public ComponentLoader(final ComponentSpace componentSpace, final AopPlugin aopPlugin) {
+	public ComponentLoader(final ComponentSpaceWritable componentSpace, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
@@ -109,14 +109,14 @@ public final class ComponentLoader {
 
 		//On a récupéré la liste ordonnée des ids.
 		//On positionne un proxy pour compter les plugins non utilisés
-		final ComponentProxyContainer componentContainer = new ComponentProxyContainer(componentSpace);
+		final ComponentProxyContainer componentProxyContainer = new ComponentProxyContainer(componentSpace);
 
 		for (final String id : ids) {
 			if (componentConfigById.containsKey(id)) {
 				//Si il s'agit d'un composant (y compris plugin)
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Component component = createComponentWithOptions(paramManagerOption, componentContainer, componentConfig);
+				final Component component = createComponentWithOptions(paramManagerOption, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			}
@@ -130,7 +130,7 @@ public final class ComponentLoader {
 				//only plugins are considered
 				.map(ComponentConfig::getId)
 				//used keys are removed
-				.filter(pluginId -> !componentContainer.getUsedKeys().contains(pluginId))
+				.filter(pluginId -> !componentProxyContainer.getUsedKeys().contains(pluginId))
 				.collect(Collectors.toList());
 
 		if (!unusedPluginIds.isEmpty()) {
@@ -149,17 +149,17 @@ public final class ComponentLoader {
 	 * @param aspectConfigs the list of all aspects inside the module
 	 * @return aspects (and its config)
 	 */
-	private static Stream<Aspect> findAspects(final Container componentContainer, final List<AspectConfig> aspectConfigs) {
+	private static Stream<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
 		Assertion.checkNotNull(aspectConfigs);
 		//-----
 		return aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(componentContainer, aspectConfig));
+				.map(aspectConfig -> createAspect(container, aspectConfig));
 	}
 
-	private static Aspect createAspect(final Container componentContainer, final AspectConfig aspectConfig) {
+	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), componentContainer);
+		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
@@ -182,8 +182,8 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static <C extends Component> C createInstance(final Container componentContainer, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
-		return (C) createInstance(componentConfig.getImplClass(), componentContainer, paramManagerOption, componentConfig.getParams());
+	private static <C extends Component> C createInstance(final Container container, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
+		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOption, componentConfig.getParams());
 	}
 
 	private Component createComponentWithOptions(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {

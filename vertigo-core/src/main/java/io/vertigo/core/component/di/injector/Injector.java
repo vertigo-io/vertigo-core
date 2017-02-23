@@ -53,17 +53,17 @@ public final class Injector {
 	 *
 	 * @param <T> Type de l'instance
 	 * @param clazz Classe de l'instance
-	 * @param componentContainer Fournisseur de composants
+	 * @param container Fournisseur de composants
 	 * @return Instance de composants créée.
 	 */
-	public static <T> T newInstance(final Class<T> clazz, final Container componentContainer) {
+	public static <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(componentContainer);
+		Assertion.checkNotNull(container);
 		//-----
 		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
-			final T instance = createInstance(clazz, componentContainer);
-			injectMembers(instance, componentContainer);
+			final T instance = createInstance(clazz, container);
+			injectMembers(instance, container);
 			return instance;
 		} catch (final Exception e) {
 			//Contextualisation de l'exception et des assertions.
@@ -71,27 +71,27 @@ public final class Injector {
 		}
 	}
 
-	private static <T> T createInstance(final Class<T> clazz, final Container componentContainer) {
+	private static <T> T createInstance(final Class<T> clazz, final Container container) {
 		//On a un et un seul constructeur public injectable.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
 		//On recherche les paramètres
-		final Object[] constructorParameters = findConstructorParameters(componentContainer, constructor);
+		final Object[] constructorParameters = findConstructorParameters(container, constructor);
 		return ClassUtil.newInstance(constructor, constructorParameters);
 	}
 
 	/**
 	 * Inject members/properties into an instance in a contex defined by a container.
 	 * @param instance Object in which the members/propertis will be injected
-	 * @param componentContainer container of all the components that can be injected in the instance
+	 * @param container container of all the components that can be injected in the instance
 	 */
-	public static void injectMembers(final Object instance, final Container componentContainer) {
+	public static void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(componentContainer);
+		Assertion.checkNotNull(container);
 		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final DIDependency dependency = new DIDependency(field);
-			final Object injected = getInjected(componentContainer, dependency);
+			final Object injected = getInjected(container, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.when(!field.getType().isPrimitive())
@@ -100,32 +100,32 @@ public final class Injector {
 		}
 	}
 
-	private static Object[] findConstructorParameters(final Container componentContainer, final Constructor<?> constructor) {
+	private static Object[] findConstructorParameters(final Container container, final Constructor<?> constructor) {
 		final Object[] parameters = new Object[constructor.getParameterTypes().length];
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
-			parameters[i] = getInjected(componentContainer, dependency);
+			parameters[i] = getInjected(container, dependency);
 		}
 		return parameters;
 	}
 
-	private static Object getInjected(final Container componentContainer, final DIDependency dependency) {
+	private static Object getInjected(final Container container, final DIDependency dependency) {
 		if (dependency.isOption()) {
-			if (componentContainer.contains(dependency.getName())) {
+			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Optional.ofNullable(componentContainer.resolve(dependency.getName(), dependency.getType()));
+				return Optional.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
 			return Optional.empty();
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();
-			for (final String id : componentContainer.keySet()) {
+			for (final String id : container.keySet()) {
 				//On prend tous les objets ayant l'identifiant requis
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match) {
-					final Object injected = componentContainer.resolve(id, Object.class);
+					final Object injected = container.resolve(id, Object.class);
 					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);
 				}
@@ -133,7 +133,7 @@ public final class Injector {
 			return Collections.unmodifiableList(list);
 		}
 		//-----
-		final Object value = componentContainer.resolve(dependency.getName(), dependency.getType());
+		final Object value = container.resolve(dependency.getName(), dependency.getType());
 		Assertion.checkNotNull(value);
 		//-----
 		return value;

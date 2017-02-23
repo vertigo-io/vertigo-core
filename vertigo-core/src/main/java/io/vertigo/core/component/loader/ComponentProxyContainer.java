@@ -30,25 +30,25 @@ import io.vertigo.lang.Container;
  * @author pchretien
  */
 final class ComponentProxyContainer implements Container {
-	private final Container componentContainer;
+	private final Container container;
 	private final Set<String> usedKeys = new HashSet<>();
 
-	ComponentProxyContainer(final Container componentContainer) {
-		Assertion.checkNotNull(componentContainer);
+	ComponentProxyContainer(final Container container) {
+		Assertion.checkNotNull(container);
 		//-----
-		this.componentContainer = componentContainer;
+		this.container = container;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		return componentContainer.contains(id);
+		return container.contains(id);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <O> O resolve(final String id, final Class<O> componentClass) {
-		final O result = componentContainer.resolve(id, componentClass);
+		final O result = container.resolve(id, componentClass);
 		usedKeys.add(id);
 		return result;
 	}
@@ -56,7 +56,7 @@ final class ComponentProxyContainer implements Container {
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		return componentContainer.keySet();
+		return container.keySet();
 	}
 
 	Set<String> getUsedKeys() {
