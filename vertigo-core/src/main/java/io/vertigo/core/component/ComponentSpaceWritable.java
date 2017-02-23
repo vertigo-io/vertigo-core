@@ -30,7 +30,7 @@ import io.vertigo.lang.Component;
 import io.vertigo.util.StringUtil;
 
 /**
- * ThCentralisation des accès aux composants et aux plugins.
+ * Centralisation des accès aux composants et aux plugins.
  *
  * Les composants et leur initializers sont instanciés par injection
  *  - des paramètres déclarés sur le scope composant.
@@ -43,11 +43,6 @@ import io.vertigo.util.StringUtil;
  * Donc un plugin ne peut pas être injecté dans un plugin, il ne peut être injecté que dans LE composant pour lequel il est prévu.
  * En revanche les composants (à ne pas réaliser de dépendances cycliques) peuvent être injecter dans les composants, les plugins et les initializers.
  *
- * @author pchretien
- */
-/**
- * Centralisation des accès aux composants et aux plugins d'un module.
- * Les composants sont d'un type M.
  * @author pchretien
  */
 public final class ComponentSpaceWritable implements ComponentSpace, Activeable {

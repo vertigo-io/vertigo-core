@@ -52,7 +52,6 @@ public final class DefinitionLoader {
 		//-----
 		return moduleConfigs
 				.stream()
-				.peek(Assertion::checkNotNull)
 				.flatMap(moduleConfig -> provide(definitionSpace, componentSpace, moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpace));
 	}
@@ -65,11 +64,13 @@ public final class DefinitionLoader {
 	}
 
 	private static DefinitionProvider createDefinitionProvider(final ComponentSpace componentSpace, final DefinitionProviderConfig definitionProviderConfig) {
-		final DefinitionProvider instance = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
+		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams());
+
 		definitionProviderConfig.getDefinitionResourceConfigs()
-				.forEach(config -> instance.addDefinitionResourceConfig(config));
-		return instance;
+				.forEach(definitionProvider::addDefinitionResourceConfig);
+
+		return definitionProvider;
 
 	}
 }
