@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionResourceConfig;
@@ -14,27 +15,44 @@ import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.core.definition.loader.Loader;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.EAXmiLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin;
+import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistry;
 import io.vertigo.lang.Assertion;
 
+/**
+
+ * Environnement permettant de charger le Modèle.
+ * Le Modèle peut être chargé de multiples façon :
+ * - par lecture d'un fichier oom (poweramc),
+ * - par lecture des annotations java présentes sur les beans,
+ * - par lecture de fichiers ksp regoupés dans un projet kpr,
+ * - ....
+ *  Ces modes de chargement sont extensibles.
+ *
+ * @author pchretien
+ */
 public class DynamoDefinitionProvider implements DefinitionProvider {
 
-	private final Map<String, LoaderPlugin> loadersByType = new HashMap<>();
+	private final Map<String, Loader> loadersByType = new HashMap<>();
 	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
 
+	/**
+	 * Constructeur injectable.
+	 * @param resourceManager the component for finding resources
+	 * @param encoding the encoding to use for reading ksp files
+	 */
 	@Inject
-	public DynamoDefinitionProvider(final ResourceManager resourceManager) {
-		loadersByType.put("kpr", new KprLoaderPlugin(resourceManager, Optional.empty())); // attention il y a un paramètre
-		loadersByType.put("oom", new OOMLoaderPlugin(resourceManager));
-		loadersByType.put("xmi", new EAXmiLoaderPlugin(resourceManager));
-		loadersByType.put("classes", new AnnotationLoaderPlugin());
+	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
+		loadersByType.put("kpr", new KprLoader(resourceManager, encoding));
+		loadersByType.put("oom", new OOMLoader(resourceManager));
+		loadersByType.put("xmi", new EAXmiLoader(resourceManager));
+		loadersByType.put("classes", new AnnotationLoader());
 
 	}
 
@@ -64,7 +82,7 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 			dslDefinitionRepository.addDefinition(dslDefinition);
 		}
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
-			final LoaderPlugin loaderPlugin = loadersByType.get(definitionResourceConfig.getType());
+			final Loader loaderPlugin = loadersByType.get(definitionResourceConfig.getType());
 			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loadersByType.keySet());
 			loaderPlugin.load(definitionResourceConfig.getPath(), dslDefinitionRepository);
 		}

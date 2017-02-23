@@ -19,8 +19,10 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -38,6 +40,7 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	private final Class<? extends DefinitionProvider> myClass;
 
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
+	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -64,11 +67,36 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 		return this;
 	}
 
+	/**
+	 * Adds a param to this definitionProvider.
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public DefinitionProviderConfigBuilder addAllParams(final Param... params) {
+		Assertion.checkNotNull(params);
+		//-----
+		myParams.addAll(Arrays.asList(params));
+		return this;
+	}
+
+	/**
+	 * Adds a param to this definitionProvider.
+	 * @param param the param
+	 * @return this builder
+	 */
+	public DefinitionProviderConfigBuilder addParam(final Param param) {
+		Assertion.checkNotNull(param);
+		//-----
+		myParams.add(param);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DefinitionProviderConfig build() {
 		final DefinitionProviderConfig definitionProviderConfig = new DefinitionProviderConfig(
 				myClass,
+				myParams,
 				myDefinitionResourceConfigs);
 
 		return definitionProviderConfig;

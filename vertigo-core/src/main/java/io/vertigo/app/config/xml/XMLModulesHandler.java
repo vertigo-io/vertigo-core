@@ -167,6 +167,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				pluginConfigBuilder = new PluginConfigBuilder(pluginImplClass);
 				break;
 			case provider:
+				current = TagName.provider;
 				final String definitionProviderClassName = attrs.getValue("className");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
 				definitionProviderConfigBuilder = new DefinitionProviderConfigBuilder(definitionProviderClass);
@@ -182,8 +183,10 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Param param = Param.create(paramName, paramValue);
 				if (current == TagName.plugin) {
 					pluginConfigBuilder.addParam(param);
-				} else {
+				} else if (current == TagName.component) {
 					componentConfigBuilder.addParam(param);
+				} else if (current == TagName.provider) {
+					definitionProviderConfigBuilder.addParam(param);
 				}
 				break;
 			case aspect:

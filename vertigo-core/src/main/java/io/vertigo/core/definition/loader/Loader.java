@@ -16,22 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.xml;
+package io.vertigo.core.definition.loader;
 
-import java.util.List;
+import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 
-public interface XmlLoader {
+/**
+ * Chargeur de l'environnement.
+ * @author pchretien
+ */
+public interface Loader {
+	/**
+	 * Type parsed by loader.
+	 * Examples : oom, kpr, eaxmi...
+	 * @return Type parsed by loader
+	 */
+	String getType();
 
 	/**
-	 * Récupération des classes déclarées dans l'OOM.
-	 * @return Liste des classes
+	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
+	 * défini par une url (sur système de fichier ou classpath)
+	 * et selon la grammaire en argument.
+	 * @param resourcePath resourcePath
+	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	List<XmlClass> getClasses();
-
-	/**
-	 * Récupération des associations déclarées dans l'OOM.
-	 * @return Liste des associations
-	 */
-	List<XmlAssociation> getAssociations();
+	void load(String resourcePath, DslDefinitionRepository dynamicModelRepository);
 
 }

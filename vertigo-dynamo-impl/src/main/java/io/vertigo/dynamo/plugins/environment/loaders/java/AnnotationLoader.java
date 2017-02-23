@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.core.definition.loader.Loader;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -74,7 +74,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author pchretien
  */
-public final class AnnotationLoaderPlugin implements LoaderPlugin {
+public final class AnnotationLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 

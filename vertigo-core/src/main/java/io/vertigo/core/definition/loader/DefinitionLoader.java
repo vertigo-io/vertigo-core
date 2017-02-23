@@ -19,50 +19,53 @@
 package io.vertigo.core.definition.loader;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-import io.vertigo.app.Home;
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
 /**
 
- * Environnement permettant de charger le Modèle.
- * Le Modèle peut être chargé de multiples façon :
- * - par lecture d'un fichier oom (poweramc),
- * - par lecture des annotations java présentes sur les beans,
- * - par lecture de fichiers ksp regoupés dans un projet kpr,
- * - ....
- *  Ces modes de chargement sont extensibles.
+ * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
+ * Use DynamoDefinitionProvider to use the DSL.
  *
  * @author pchretien
  */
 public final class DefinitionLoader {
 
-	public static void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
+	/**
+	 * Inject all the definition of the modules.
+	 * @param definitionSpace the definitionSpace to build
+	 * @param componentSpace the componentSpace
+	 * @param moduleConfigs module configs
+	 */
+	public static void injectDefinitions(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		moduleConfigs
 				.stream()
 				.peek(Assertion::checkNotNull)
-				.flatMap(moduleConfig -> provide(definitionSpace, moduleConfig.getDefinitionProviderConfigs()))
+				.flatMap(moduleConfig -> provide(definitionSpace, componentSpace, moduleConfig.getDefinitionProviderConfigs()))
 				.forEach(supplier -> definitionSpace.registerDefinition(supplier.get(definitionSpace))); //Here all definitions are registered into the definitionSpace
 	}
 
-	private static Stream<DefinitionSupplier> provide(final DefinitionSpace definitionSpace, final List<DefinitionProviderConfig> definitionProviderConfigs) {
+	private static Stream<DefinitionSupplier> provide(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<DefinitionProviderConfig> definitionProviderConfigs) {
 		return definitionProviderConfigs
 				.stream()
-				.map(DefinitionLoader::createDefinitionProvider)
+				.map(config -> createDefinitionProvider(componentSpace, config))
 				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
 	}
 
-	private static DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
-		final DefinitionProvider instance = Injector.newInstance(definitionProviderConfig.getDefinitionProviderClass(), Home.getApp().getComponentSpace());// attention c'est pourri
+	private static DefinitionProvider createDefinitionProvider(final ComponentSpace componentSpace, final DefinitionProviderConfig definitionProviderConfig) {
+		final DefinitionProvider instance = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
+				definitionProviderConfig.getParams());
 		definitionProviderConfig.getDefinitionResourceConfigs().forEach(config -> instance.addDefinitionResourceConfig(config));
 		return instance;
 

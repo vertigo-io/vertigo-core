@@ -22,32 +22,37 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.log4j.Logger;
+import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.core.definition.dsl.dynamic.DslDefinition;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.core.definition.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.loader.LoaderPlugin;
+import io.vertigo.core.definition.loader.Loader;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Parser d'un fichier powerAMC/OOM ou EA/XMI.
  *
  * @author pchretien
  */
-public abstract class XmlLoaderPlugin implements LoaderPlugin {
+public abstract class AbstractXmlLoader implements Loader {
 	private static final int MAX_COLUMN_LENGTH = 30;
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
-	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
+	private static final Logger LOGGER = Logger.getLogger(AbstractXmlLoader.class);
 
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -56,32 +61,52 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	/**
 	 * Constructeur.
 	 */
-	public XmlLoaderPlugin(final ResourceManager resourceManager) {
+	public AbstractXmlLoader(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//-----
 		this.resourceManager = resourceManager;
 	}
 
-	protected abstract XmlLoader createLoader(final URL url);
-
 	/** {@inheritDoc} */
 	@Override
 	public final void load(final String resourcePath, final DslDefinitionRepository dslDefinitionRepository) {
+		final URL xmiFileURL = resourceManager.resolve(resourcePath);
+
+		try {
+			final SAXParserFactory factory = SAXParserFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+			final SAXParser saxParser = factory.newSAXParser();
+			saxParser.parse(xmiFileURL.openStream(), getHandler());
+		} catch (final Exception e) {
+			throw new WrappedException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
+		}
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
-		final URL url = resourceManager.resolve(resourcePath);
 
-		final XmlLoader loader = createLoader(url);
-
-		for (final XmlClass clazz : loader.getClasses()) {
+		for (final XmlClass clazz : getClasses()) {
 			dslDefinitionRepository.addDefinition(toDynamicDefinition(clazz));
 		}
 
-		for (final XmlAssociation association : loader.getAssociations()) {
+		for (final XmlAssociation association : getAssociations()) {
 			dslDefinitionRepository.addDefinition(toDynamicDefinition(association, dslDefinitionRepository));
 		}
 	}
+
+	protected abstract DefaultHandler getHandler();
+
+	/**
+	 * Récupération des classes déclarées.
+	 * @return Liste des classes
+	 */
+	protected abstract List<XmlClass> getClasses();
+
+	/**
+	 * Récupération des associations déclarées dans l'OOM.
+	 * @return Liste des associations
+	 */
+	protected abstract List<XmlAssociation> getAssociations();
 
 	private static DslDefinition toDynamicDefinition(final XmlClass clazz) {
 		final DslEntity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
@@ -177,7 +202,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getName() + "'");
 		}
 		if (dtDefinitionA.getName().equals(dtDefinitionB.getName()) && association.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getName() + "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
+			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getName()
+					+ "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
 		}
 
 		//On récupère le nom de LA clé primaire .
@@ -210,7 +236,4 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		return DT_DEFINITION_PREFIX + SEPARATOR + code.toUpperCase(TO_UPPER_CASE_LOCALE);
 	}
 
-	//	public String getType() {
-	//		return "oom";
-	//	}
 }

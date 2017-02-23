@@ -31,22 +31,18 @@ import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
 import io.vertigo.dynamo.domain.formatter.NumberFormatterTest;
 import io.vertigo.dynamo.domain.formatter.StringFormatterTest;
-import io.vertigo.dynamo.environment.eaxmi.EAXmiAATest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiEnvironmentManagerTest;
-import io.vertigo.dynamo.environment.eaxmi.EAXmiTest;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParser;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
 import io.vertigo.dynamo.environment.multi.MultiResourcesEnvironmentManagerTest;
-import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
 import io.vertigo.dynamo.environment.oom.OOMParserIdentifiersTest;
 import io.vertigo.dynamo.environment.oom.OOMParserStereotypesTest;
 import io.vertigo.dynamo.environment.oom.OOMParserTest;
-import io.vertigo.dynamo.environment.oom.OOMTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionBodyRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionRuleTest;
@@ -93,9 +89,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		DomainManagerTest.class,
 		//--Environment
 		//----EAXMI
-		EAXmiAATest.class,
 		EAXmiEnvironmentManagerTest.class,
-		EAXmiTest.class,
 		EAXmiTestParser.class,
 		EAXmiTestParserAA.class,
 		EAXmiTestParserIdentifiers.class,
@@ -105,13 +99,11 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//----Multi
 		MultiResourcesEnvironmentManagerTest.class,
 		//----OOM
-		OOMAATest.class,
 		OOMEnvironmentManagerTest.class,
 		OOMParserAATest.class,
 		OOMParserIdentifiersTest.class,
 		OOMParserStereotypesTest.class,
 		OOMParserTest.class,
-		OOMTest.class,
 		//----Rule
 		DslDefinitionBodyRuleTest.class,
 		DslDefinitionEntryRuleTest.class,

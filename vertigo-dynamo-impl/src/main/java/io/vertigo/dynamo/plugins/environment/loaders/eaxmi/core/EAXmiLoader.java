@@ -18,26 +18,21 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.log4j.Logger;
+import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.AbstractXmlLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -45,29 +40,21 @@ import io.vertigo.util.StringUtil;
  * Loader de fichier XMI version Enterprise Architect.
  * @author pforhan
  */
-public final class EAXmiLoader implements XmlLoader {
-	private final Map<XmlId, EAXmiObject> map;
+public final class EAXmiLoader extends AbstractXmlLoader {
+	private final Map<XmlId, EAXmiObject> map = new LinkedHashMap<>();
 
 	private static final Logger LOG = Logger.getLogger(EAXmiLoader.class);
 
 	/**
 	 * Constructeur.
-	 * @param xmiFileURL URL du fichier XMI
 	 */
-	public EAXmiLoader(final URL xmiFileURL) {
-		Assertion.checkNotNull(xmiFileURL);
-		//-----
-		map = new LinkedHashMap<>();
-		final EAXmiHandler handler = new EAXmiHandler(map);
-		try {
-			final SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+	public EAXmiLoader(final ResourceManager resourceManager) {
+		super(resourceManager);
+	}
 
-			final SAXParser saxParser = factory.newSAXParser();
-			saxParser.parse(xmiFileURL.openStream(), handler);
-		} catch (final Exception e) {
-			throw new WrappedException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
-		}
+	@Override
+	protected DefaultHandler getHandler() {
+		return new EAXmiHandler(map);
 	}
 
 	/**
@@ -179,6 +166,11 @@ public final class EAXmiLoader implements XmlLoader {
 		final boolean navigabilityA = obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability();
 		return new XmlAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+	}
+
+	@Override
+	public String getType() {
+		return "xmi";
 	}
 
 }
