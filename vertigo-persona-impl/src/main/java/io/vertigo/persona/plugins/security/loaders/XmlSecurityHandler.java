@@ -57,11 +57,11 @@ final class XmlSecurityHandler extends DefaultHandler {
 	private final String[] currentRoleAttributes = new String[2];
 	private boolean isInRole;
 
-	public List<DefinitionSupplier> getPermissionSuppliers() {
+	List<DefinitionSupplier> getPermissionSuppliers() {
 		return permissionSuppliers;
 	}
 
-	public List<DefinitionSupplier> getRoleSuppliers() {
+	List<DefinitionSupplier> getRoleSuppliers() {
 		return roleSuppliers;
 	}
 

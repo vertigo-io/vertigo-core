@@ -60,7 +60,7 @@ public final class SecurityDefinitionProvider implements DefinitionProvider {
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		return definitionResourceConfigs.stream()
-				.flatMap(definitionResourceConfig -> new XmlSecurityLoader(resourceManager, definitionResourceConfig.getPath()).load())
+				.flatMap(definitionResourceConfig -> new XmlSecurityLoader(resourceManager, definitionResourceConfig.getPath()).load().stream())
 				.collect(Collectors.toList());
 	}
 }

@@ -1,7 +1,6 @@
 package io.vertigo.dynamo.plugins.environment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +23,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistry;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.MapBuilder;
 
 /**
 
@@ -39,7 +39,7 @@ import io.vertigo.lang.Assertion;
  */
 public class DynamoDefinitionProvider implements DefinitionProvider {
 
-	private final Map<String, Loader> loadersByType = new HashMap<>();
+	private final Map<String, Loader> loadersByType;
 	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
 
 	/**
@@ -49,11 +49,13 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 	 */
 	@Inject
 	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
-		loadersByType.put("kpr", new KprLoader(resourceManager, encoding));
-		loadersByType.put("oom", new OOMLoader(resourceManager));
-		loadersByType.put("xmi", new EAXmiLoader(resourceManager));
-		loadersByType.put("classes", new AnnotationLoader());
-
+		loadersByType = new MapBuilder<String, Loader>()
+				.put("kpr", new KprLoader(resourceManager, encoding))
+				.put("oom", new OOMLoader(resourceManager))
+				.put("xmi", new EAXmiLoader(resourceManager))
+				.put("classes", new AnnotationLoader())
+				.unmodifiable()
+				.build();
 	}
 
 	@Override

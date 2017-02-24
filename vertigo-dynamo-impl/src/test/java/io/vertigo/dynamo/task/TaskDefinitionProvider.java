@@ -6,29 +6,24 @@ import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_3;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_OUT;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-public final class TaskDefinitionProvider implements DefinitionProvider {
+public final class TaskDefinitionProvider extends SimpleDefinitionProvider {
 
 	@Override
-	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return new ListBuilder<Definition>()
 				.add(buildTaskDefinition("TK_MULTI", "*"))
 				.add(buildTaskDefinition("TK_ADD", "+"))
-				.build()
-				.stream()
-				.map(definition -> (DefinitionSupplier) (dS) -> definition)
-				.collect(Collectors.toList());
+				.build();
 
 	}
 

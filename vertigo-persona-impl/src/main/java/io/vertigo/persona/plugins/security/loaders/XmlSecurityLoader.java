@@ -21,7 +21,7 @@ package io.vertigo.persona.plugins.security.loaders;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.stream.Stream;
+import java.util.List;
 
 import javax.inject.Named;
 import javax.xml.XMLConstants;
@@ -36,6 +36,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.util.XMLUtil;
 
@@ -79,7 +80,7 @@ final class XmlSecurityLoader {
 		authURL = resourceManager.resolve(url);
 	}
 
-	Stream<DefinitionSupplier> load() {
+	List<DefinitionSupplier> load() {
 		Assertion.checkNotNull(authURL);
 		//-----
 		try {
@@ -93,7 +94,7 @@ final class XmlSecurityLoader {
 		}
 	}
 
-	private static Stream<DefinitionSupplier> doLoadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
+	private static List<DefinitionSupplier> doLoadXML(final URL configURL) throws SAXException, IOException, ParserConfigurationException {
 		xsdValidate(configURL);
 		//---
 
@@ -103,7 +104,10 @@ final class XmlSecurityLoader {
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);
-		return Stream.concat(handler.getPermissionSuppliers().stream(), handler.getRoleSuppliers().stream());
+		return new ListBuilder<DefinitionSupplier>()
+				.addAll(handler.getPermissionSuppliers())
+				.addAll(handler.getRoleSuppliers())
+				.build();
 	}
 
 	private static void xsdValidate(final URL configURL) {
