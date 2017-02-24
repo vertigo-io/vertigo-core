@@ -1,7 +1,6 @@
 package io.vertigo.core.definition;
 
 import java.util.Collection;
-import java.util.Set;
 
 public interface DefinitionSpace {
 
@@ -31,11 +30,4 @@ public interface DefinitionSpace {
 	 * @param <C> Type de l'objet
 	 */
 	<C extends Definition> Collection<C> getAll(Class<C> clazz);
-
-	/**
-	 * Returns the list of the names  of the definitions managed in this container.
-	 * @return list of names
-	 */
-	Set<String> keySet();
-
 }

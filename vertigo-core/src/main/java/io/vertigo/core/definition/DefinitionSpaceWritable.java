@@ -21,7 +21,6 @@ package io.vertigo.core.definition;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.lang.Activeable;
@@ -87,12 +86,6 @@ public final class DefinitionSpaceWritable implements Activeable, DefinitionSpac
 				.map(clazz::cast)
 				.sorted((c1, c2) -> c1.getName().compareTo(c2.getName()))
 				.collect(Collectors.toList());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<String> keySet() {
-		return allObjects.keySet();
 	}
 
 	/** {@inheritDoc} */

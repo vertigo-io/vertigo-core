@@ -29,7 +29,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * @author mlaroche
  */
 public final class DefinitionProviderConfig {
 	private final Class<? extends DefinitionProvider> definitionProviderClass;

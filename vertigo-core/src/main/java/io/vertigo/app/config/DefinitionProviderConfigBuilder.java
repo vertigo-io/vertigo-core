@@ -28,14 +28,13 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
 /**
- * The moduleConfigBuilder defines the configuration of a module.
- * A module has a name.
- * A module is composed of
- *  - components & plugins
- *  - aspects
- *  - definitions (defined by resources or providers)
+ * The DefinitionProviderConfigBuilder defines the configuration of a definitionProvider.
+ * A definition is composed of
+ *  - a class that provides definitions
+ *  - parameters
+ *  - resources
  *
- * @author npiedeloup, pchretien
+ * @author mlaroche
  */
 public final class DefinitionProviderConfigBuilder implements Builder<DefinitionProviderConfig> {
 	private final Class<? extends DefinitionProvider> myClass;

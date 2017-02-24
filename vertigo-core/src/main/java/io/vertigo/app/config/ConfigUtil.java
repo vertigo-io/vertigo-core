@@ -8,12 +8,12 @@ import java.util.Set;
 
 import io.vertigo.lang.Assertion;
 
-public final class ConfigUtil {
+final class ConfigUtil {
 	private ConfigUtil() {
 		//
 	}
 
-	public static List<ComponentConfig> buildConfigs(final List<PluginConfig> pluginConfigs) {
+	static List<ComponentConfig> buildConfigs(final List<PluginConfig> pluginConfigs) {
 		Assertion.checkNotNull(pluginConfigs);
 		//---
 		final List<ComponentConfig> componentConfigs = new ArrayList<>();
