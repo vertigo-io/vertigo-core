@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.app.config.rules.ModuleRule;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -34,7 +32,6 @@ import io.vertigo.util.ListBuilder;
  *  - config of plugins
  *  - config of resources
  *  - params
- *  - rules
  *
  * @author npiedeloup, pchretien
  */
@@ -44,28 +41,23 @@ public final class ModuleConfig {
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
-	@JsonExclude
-	private final List<ModuleRule> moduleRules;
 
 	ModuleConfig(final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
-			final List<AspectConfig> aspectConfigs,
-			final List<ModuleRule> moduleRules) {
+			final List<AspectConfig> aspectConfigs) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
-		Assertion.checkNotNull(moduleRules);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
-		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
 
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
@@ -94,12 +86,6 @@ public final class ModuleConfig {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	void checkRules() {
-		for (final ModuleRule moduleRule : moduleRules) {
-			moduleRule.check(this);
-		}
 	}
 
 	@Override

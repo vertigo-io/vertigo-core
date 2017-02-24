@@ -22,9 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import io.vertigo.app.config.rules.APIModuleRule;
-import io.vertigo.app.config.rules.ModuleRule;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
@@ -32,6 +31,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
+import io.vertigo.lang.VSystemException;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
@@ -159,25 +159,31 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
+	private void checkApi() {
+		final List<ComponentConfig> noApiComponentConfigs = myComponentConfigs
+				.stream()
+				//we don't care plugins
+				//which components don't have api ?
+				.filter(componentConfig -> !componentConfig.getApiClass().isPresent())
+				.collect(Collectors.toList());
+
+		if (!noApiComponentConfigs.isEmpty()) {
+			throw new VSystemException("api rule : all components of module '{0}' must have an api. Components '{1}' don't respect this rule.", myName, noApiComponentConfigs);
+		}
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
-		final List<ModuleRule> moduleRules = new ArrayList<>();
-		//Mise à jour des règles.
 		if (myHasApi) {
-			moduleRules.add(new APIModuleRule());
+			checkApi();
 		}
-		//-----
-		final ModuleConfig moduleConfig = new ModuleConfig(
+		return new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
-				myAspectConfigs,
-				moduleRules);
-
-		moduleConfig.checkRules();
-		return moduleConfig;
+				myAspectConfigs);
 	}
 
 }
