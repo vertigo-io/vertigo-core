@@ -33,7 +33,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Describable;
 
@@ -55,7 +55,7 @@ public abstract class AbstractTestCaseJU4 {
 	public final void setUp() throws Exception {
 		app = new AutoCloseableApp(buildAppConfig());
 		// On injecte les comosants sur la classe de test.
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
 	}
 

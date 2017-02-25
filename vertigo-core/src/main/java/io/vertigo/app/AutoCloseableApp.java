@@ -29,7 +29,7 @@ import io.vertigo.app.config.ComponentInitializerConfig;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.ComponentSpaceWritable;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
@@ -192,7 +192,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
 			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
 					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
-			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
+			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
 	}

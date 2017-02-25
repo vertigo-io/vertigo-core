@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
@@ -66,6 +66,6 @@ public final class JobManagerImpl implements JobManager {
 	}
 
 	private static Runnable createJob(final JobDefinition jobDefinition) {
-		return Injector.newInstance(jobDefinition.getJobClass(), Home.getApp().getComponentSpace());
+		return DIInjector.newInstance(jobDefinition.getJobClass(), Home.getApp().getComponentSpace());
 	}
 }

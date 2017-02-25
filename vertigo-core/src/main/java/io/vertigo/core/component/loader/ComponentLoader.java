@@ -33,7 +33,7 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.ComponentSpaceWritable;
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
@@ -159,7 +159,7 @@ public final class ComponentLoader {
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectImplClass(), container);
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
@@ -209,7 +209,7 @@ public final class ComponentLoader {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
 		//---
-		final T component = Injector.newInstance(clazz, dualContainer);
+		final T component = DIInjector.newInstance(clazz, dualContainer);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
 	}

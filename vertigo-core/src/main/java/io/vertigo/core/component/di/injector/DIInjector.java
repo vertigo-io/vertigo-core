@@ -42,8 +42,8 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-public final class Injector {
-	private Injector() {
+public final class DIInjector {
+	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
 	}
 

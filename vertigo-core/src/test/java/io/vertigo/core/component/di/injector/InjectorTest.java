@@ -89,7 +89,7 @@ public final class InjectorTest {
 
 	@Test
 	public void testA() {
-		final A a = Injector.newInstance(A.class, new Container() {
+		final A a = DIInjector.newInstance(A.class, new Container() {
 
 			@Override
 			public boolean contains(final String id) {
@@ -113,7 +113,7 @@ public final class InjectorTest {
 	public void testBFail() {
 		Assertions.assertThrows(DIException.class,
 				() -> {
-					final B b = Injector.newInstance(B.class, new Container() {
+					final B b = DIInjector.newInstance(B.class, new Container() {
 
 						@Override
 						public boolean contains(final String id) {
@@ -137,12 +137,12 @@ public final class InjectorTest {
 	@Test
 	public void testB2() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
 
 		Assertions.assertThrows(DIException.class,
 				() -> {
-					final B2 b2 = Injector.newInstance(B2.class, container);
+					final B2 b2 = DIInjector.newInstance(B2.class, container);
 					nop(b2);
 				});
 	}
@@ -150,19 +150,19 @@ public final class InjectorTest {
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
-		final B b = Injector.newInstance(B.class, container);
+		final B b = DIInjector.newInstance(B.class, container);
 		assertEquals(a, b.getA());
 	}
 
 	@Test
 	public void testE() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
 		container.put("p3", new P3());
-		E e = Injector.newInstance(E.class, container);
+		E e = DIInjector.newInstance(E.class, container);
 		assertTrue(e.getA().isPresent());
 		assertEquals(a, e.getA().get());
 		assertFalse(e.getB().isPresent());
@@ -174,7 +174,7 @@ public final class InjectorTest {
 		container.put("pen", new P2());
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
-		e = Injector.newInstance(E.class, container);
+		e = DIInjector.newInstance(E.class, container);
 		assertTrue(e.getA().isPresent());
 		assertEquals(a, e.getA().get());
 		assertFalse(e.getB().isPresent());
@@ -185,12 +185,12 @@ public final class InjectorTest {
 	@Test
 	public void testF() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
 		container.put("param1", "test1");
 		container.put("param2", "test2");
 		container.put("param3", "test3");
-		final F f = Injector.newInstance(F.class, container);
+		final F f = DIInjector.newInstance(F.class, container);
 		assertEquals(f.getA(), a);
 		assertEquals(f.getParam1(), "test1");
 		assertEquals(f.getParam2(), "test2");
