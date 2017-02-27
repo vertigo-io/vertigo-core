@@ -49,21 +49,31 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		final String errCode = sqle.getSQLState();
 		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
-		if ("22001".equals(errCode) || "22003".equals(errCode)) {
-			// Valeur trop grande pour ce champs
-			handleTooLargeValueSqlException(sqle);
-		} else if ("23503".equals(errCode)) {
-			// Violation de contrainte d'intégrité référentielle
-			handleForeignConstraintSQLException(sqle);
-		} else if ("23505".equals(errCode)) {
-			// Violation de contrainte d'unicité
-			handleUniqueConstraintSQLException(sqle);
-		} else if ("01".equals(code) || "02".equals(code) || "08".equals(code) || "22".equals(code) || "23".equals(code)) {
-			// Erreur utilisateur
-			handleUserSQLException(sqle);
-		} else {
-			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statement);
+		switch (errCode) {
+			case "22001":
+			case "22003":
+				// Valeur trop grande pour ce champs
+				handleTooLargeValueSqlException(sqle);
+				break;
+			case "23503":
+				// Violation de contrainte d'intégrité référentielle
+				handleForeignConstraintSQLException(sqle);
+				break;
+			case "23505":
+				// Violation de contrainte d'unicité
+				handleUniqueConstraintSQLException(sqle);
+				break;
+			case "01":
+			case "02":
+			case "08":
+			case "22":
+			case "23":
+				// Erreur utilisateur
+				handleUserSQLException(sqle);
+				break;
+			default:
+				// Message d'erreur par défaut
+				handleOtherSQLException(sqle, statement);
 		}
 	}
 
