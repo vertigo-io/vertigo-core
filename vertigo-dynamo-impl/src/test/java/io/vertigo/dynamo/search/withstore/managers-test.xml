@@ -46,7 +46,7 @@
 
 	<module name="myApp" api="false">
 		<definitions>
-			<provider className="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
 				<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
 				<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
 			</provider>

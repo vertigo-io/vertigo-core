@@ -22,7 +22,7 @@ public final class Criterions {
 	 * @param dtFieldName the field
 	 * @return is null
 	 */
-	public static Criteria isNull(final DtFieldName dtFieldName) {
+	public static <E extends Entity> Criteria<E> isNull(final DtFieldName<E> dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NULL);
 	}
 
@@ -30,7 +30,7 @@ public final class Criterions {
 	 * @param dtFieldName the field
 	 * @return is not null
 	 */
-	public static Criteria isNotNull(final DtFieldName dtFieldName) {
+	public static <E extends Entity> Criteria<E> isNotNull(final DtFieldName<E> dtFieldName) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IS_NOT_NULL);
 	}
 
@@ -39,7 +39,7 @@ public final class Criterions {
 	 * @return is equal to the value
 	 * @param value the value
 	 */
-	public static Criteria isEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.EQ, value);
 	}
 
@@ -48,7 +48,7 @@ public final class Criterions {
 	 * @return is not equal to the value
 	 * @param value the value
 	 */
-	public static Criteria isNotEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isNotEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.NEQ, value);
 	}
 
@@ -57,7 +57,7 @@ public final class Criterions {
 	 * @return is greater than the value
 	 * @param value the value
 	 */
-	public static Criteria isGreaterThan(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isGreaterThan(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.GT, value);
 	}
 
@@ -66,7 +66,7 @@ public final class Criterions {
 	 * @return is greater than or equal to the value
 	 * @param value the value
 	 */
-	public static Criteria isGreaterThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isGreaterThanOrEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.GTE, value);
 	}
 
@@ -75,7 +75,7 @@ public final class Criterions {
 	 * @return is less than the value
 	 * @param value the value
 	 */
-	public static Criteria isLessThan(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isLessThan(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.LT, value);
 	}
 
@@ -84,7 +84,7 @@ public final class Criterions {
 	 * @return is less than or equal to the value
 	 * @param value the value
 	 */
-	public static Criteria isLessThanOrEqualTo(final DtFieldName dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isLessThanOrEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.LTE, value);
 	}
 
@@ -93,7 +93,7 @@ public final class Criterions {
 	 * @return starts with the value
 	 * @param value the value
 	 */
-	public static Criteria startsWith(final DtFieldName dtFieldName, final String value) {
+	public static <E extends Entity> Criteria<E> startsWith(final DtFieldName<E> dtFieldName, final String value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.STARTS_WITH, value);
 	}
 
@@ -103,7 +103,7 @@ public final class Criterions {
 	 * @param min the min value
 	 * @param max the max value
 	 */
-	public static Criteria isBetween(final DtFieldName dtFieldName, final Comparable min, final Comparable max) {
+	public static <E extends Entity> Criteria<E> isBetween(final DtFieldName<E> dtFieldName, final Comparable min, final Comparable max) {
 		return new Criterion<>(dtFieldName, CriterionOperator.BETWEEN, min, max);
 	}
 
@@ -112,7 +112,7 @@ public final class Criterions {
 	 * @return is in a list of values
 	 * @param values list of allowed values
 	 */
-	public static Criteria in(final DtFieldName dtFieldName, final Comparable... values) {
+	public static <E extends Entity> Criteria<E> in(final DtFieldName<E> dtFieldName, final Comparable... values) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IN, values);
 	}
 
@@ -120,16 +120,16 @@ public final class Criterions {
 	 * An always true criteria.
 	 * @return true
 	 */
-	public static Criteria alwaysTrue() {
-		return new AlwaysTrueCriteria();
+	public static <E extends Entity> Criteria<E> alwaysTrue() {
+		return new AlwaysTrueCriteria<>();
 	}
 
-	private static class AlwaysTrueCriteria extends Criteria<Entity> {
+	private static class AlwaysTrueCriteria<E extends Entity> extends Criteria<E> {
 
 		private static final long serialVersionUID = 2967018427662007659L;
 
 		@Override
-		public Predicate<Entity> toPredicate() {
+		public Predicate<E> toPredicate() {
 			return (entity) -> true;
 		}
 

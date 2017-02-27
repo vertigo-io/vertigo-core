@@ -5,7 +5,7 @@
 	</module>	
 	<module name="vertigo-tempo">
 		<definitions>
-			<provider className="io.vertigo.tempo.job.JobDefinitionProvider"/>
+			<provider class="io.vertigo.tempo.job.JobDefinitionProvider"/>
 		</definitions>
 		
 		<component api="JobManager" class="io.vertigo.tempo.impl.job.JobManagerImpl" />

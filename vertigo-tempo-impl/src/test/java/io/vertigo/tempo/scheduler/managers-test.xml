@@ -2,7 +2,7 @@
 <config>
 	<module name="kasper-labs">
 		<definitions>
-			<provider className="io.vertigo.tempo.scheduler.JobDefinitionProvider" />
+			<provider class="io.vertigo.tempo.scheduler.JobDefinitionProvider" />
 		</definitions>
 		
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />

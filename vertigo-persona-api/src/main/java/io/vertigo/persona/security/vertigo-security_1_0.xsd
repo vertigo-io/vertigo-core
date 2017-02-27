@@ -4,7 +4,7 @@
 
 	<xs:element name="authorisationConfig">
 		<xs:complexType>
-			<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="permission" type="permission" />
 				<xs:element name="role" type="role" />
 			</xs:choice>
@@ -19,7 +19,7 @@
 	</xs:complexType>
 	
 	<xs:complexType name="role">	
-		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="permission" type="permissionRef" />
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>

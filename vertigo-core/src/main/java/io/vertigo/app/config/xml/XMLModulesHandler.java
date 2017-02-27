@@ -168,7 +168,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case provider:
 				current = TagName.provider;
-				final String definitionProviderClassName = attrs.getValue("className");
+				final String definitionProviderClassName = attrs.getValue("class");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
 				definitionProviderConfigBuilder = new DefinitionProviderConfigBuilder(definitionProviderClass);
 				break;

@@ -45,7 +45,7 @@
 	  		<xs:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded"/>
 	  		<xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
 	  	</xs:sequence>
-	  	<xs:attribute name="className" type="xs:string" use="required"/>
+	  	<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>
 
 	<xs:complexType name="resourceType">

@@ -14,11 +14,11 @@
 	</module>
 	<module name="myApp">
 		<definitions>
-			<provider className="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
 				<resource type="kpr" path="io/vertigo/dynamo/task/data/execution.kpr" />
 				<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
 			</provider>
-			<provider className="io.vertigo.dynamo.task.TaskDefinitionProvider" />
+			<provider class="io.vertigo.dynamo.task.TaskDefinitionProvider" />
 		</definitions>
 	</module>
 </config>
