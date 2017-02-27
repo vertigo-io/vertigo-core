@@ -125,13 +125,13 @@ final class ESDocumentCodec {
 			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
-		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
-
-		/* 1: URI */
-		xContentBuilder.startObject();
-		/* 2 : Result stocké */
+		/* 2: Result stocké */
 		final String result = encode(dtResult);
-		xContentBuilder.field(FULL_RESULT, result);
+
+		/* 1 : URI */
+		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()
+				.startObject()
+				.field(FULL_RESULT, result);
 
 		/* 3 : Les champs du dto index */
 		final DtObject dtIndex = index.getIndexDtObject();
@@ -152,8 +152,7 @@ final class ESDocumentCodec {
 				}
 			}
 		}
-		xContentBuilder.endObject();
-		return xContentBuilder;
+		return xContentBuilder.endObject();
 	}
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
