@@ -107,7 +107,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 * @param xconstraint Définition de contrainte
 	 * @return DefinitionStandard Définition typée créée.
 	 */
-	private ConstraintDefinition createConstraint(final DslDefinition xconstraint) {
+	private static ConstraintDefinition createConstraint(final DslDefinition xconstraint) {
 		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
 		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
 		final String name = xconstraint.getName();
@@ -117,7 +117,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		return new ConstraintDefinition(name, className, msg, args);
 	}
 
-	private FormatterDefinition createFormatter(final DslDefinition xformatter) {
+	private static FormatterDefinition createFormatter(final DslDefinition xformatter) {
 		final String name = xformatter.getName();
 		final String args = (String) xformatter.getPropertyValue(KspProperty.ARGS);
 		final String className = (String) xformatter.getPropertyValue(KspProperty.CLASS_NAME);
@@ -361,7 +361,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		}
 	}
 
-	private AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
+	private static AssociationNNDefinition createAssociationNNDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 		final String tableName = (String) xassociation.getPropertyValue(KspProperty.TABLE_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);

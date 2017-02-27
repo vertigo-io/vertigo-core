@@ -47,7 +47,7 @@ public final class FileDynamicRegistry implements DynamicRegistry {
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
-	private FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {
+	private static FileInfoDefinition createFileDefinition(final DslDefinition xFileDefinition) {
 		final String fileDefinitionName = xFileDefinition.getName();
 		final String storeName = (String) xFileDefinition.getPropertyValue(KspProperty.DATA_SPACE);
 

@@ -41,7 +41,7 @@ final class OracleDialect implements SqlDialect {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return String Nom de la sequence
 	 */
-	private String getSequenceName(final String sequencePrefix, final String tableName) {
+	private static String getSequenceName(final String sequencePrefix, final String tableName) {
 		//oracle n'autorise pas de sequence de plus de 30 char.
 		String sequenceName = sequencePrefix + tableName;
 		if (sequenceName.length() > 30) {

@@ -54,12 +54,12 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}
 
-	private Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
+	private static Class<? extends TaskEngine> getTaskEngineClass(final DslDefinition xtaskDefinition) {
 		final String taskEngineClassName = (String) xtaskDefinition.getPropertyValue(KspProperty.CLASS_NAME);
 		return ClassUtil.classForName(taskEngineClassName, TaskEngine.class);
 	}
 
-	private TaskDefinition createTaskDefinition(final DslDefinition xtaskDefinition) {
+	private static TaskDefinition createTaskDefinition(final DslDefinition xtaskDefinition) {
 		final String taskDefinitionName = xtaskDefinition.getName();
 		final String request = (String) xtaskDefinition.getPropertyValue(KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);

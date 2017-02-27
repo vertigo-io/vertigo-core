@@ -85,7 +85,7 @@ public final class AppConfig {
 		doPrint(out);
 	}
 
-	private void doPrintLine(final PrintStream out) {
+	private static void doPrintLine(final PrintStream out) {
 		out.println("+-------------------------+------------------------+----------------------------------------------+");
 	}
 
