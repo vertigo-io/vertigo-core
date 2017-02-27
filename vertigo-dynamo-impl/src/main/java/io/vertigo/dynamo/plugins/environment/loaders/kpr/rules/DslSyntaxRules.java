@@ -38,22 +38,22 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de suppression des blancs. */
-	static final PegRule<?> SPACES = PegRules.skipBlanks(WHITE_SPACE);
+	protected static final PegRule<?> SPACES = PegRules.skipBlanks(WHITE_SPACE);
 
-	static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
-	static final PegRule<String> ARRAY_END = PegRules.term("]");
-	static final PegRule<String> ARRAY_SEPARATOR = PegRules.term(",");
+	protected static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
+	protected static final PegRule<String> ARRAY_END = PegRules.term("]");
+	protected static final PegRule<String> ARRAY_SEPARATOR = PegRules.term(",");
 
-	static final PegRule<String> OBJECT_START = PegRules.term("{"); //like json { name:"john doe", city:"kjkjk"}
-	static final PegRule<String> OBJECT_END = PegRules.term("}");
-	static final PegRule<String> OBJECT_SEPARATOR = PegRules.term(",");
+	protected static final PegRule<String> OBJECT_START = PegRules.term("{"); //like json { name:"john doe", city:"kjkjk"}
+	protected static final PegRule<String> OBJECT_END = PegRules.term("}");
+	protected static final PegRule<String> OBJECT_SEPARATOR = PegRules.term(",");
 
-	static final PegRule<String> PAIR_SEPARATOR = PegRules.term(":"); //name:"bill"
-	static final PegRule<String> QUOTATION_MARK = PegRules.term("\"");
+	protected static final PegRule<String> PAIR_SEPARATOR = PegRules.term(":"); //name:"bill"
+	protected static final PegRule<String> QUOTATION_MARK = PegRules.term("\"");
 
-	static final PegRule<String> PROPERTY_VALUE = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE, "propertyValue"); //En fait il faut autoriser tous les caractères sauf les guillemets".
+	protected static final PegRule<String> PROPERTY_VALUE = PegRules.word(false, "\"", PegWordRule.Mode.REJECT_ESCAPABLE, "propertyValue"); //En fait il faut autoriser tous les caractères sauf les guillemets".
 	//Il faut gérer le caractère d'évitement.
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "word");
+	protected static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "word");
 
 	private DslSyntaxRules() {
 		//Classe sans état
