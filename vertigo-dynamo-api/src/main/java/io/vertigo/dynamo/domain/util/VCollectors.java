@@ -12,6 +12,7 @@ import java.util.stream.Collector;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Collectors 'Lite' Java 8 pour vertigo
@@ -20,7 +21,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  */
 public final class VCollectors {
 
-	static final Set<Collector.Characteristics> CH_ID = Collections
+	private static final Set<Collector.Characteristics> CH_ID = Collections
 			.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
 
 	private VCollectors() {
@@ -32,7 +33,7 @@ public final class VCollectors {
 	 * @param <A>
 	 * @param <R>
 	 */
-	static class CollectorImpl<T, A, R> implements Collector<T, A, R> {
+	private static class CollectorImpl<T, A, R> implements Collector<T, A, R> {
 
 		private final Supplier<A> supplier;
 		private final BiConsumer<A, T> accumulator;
@@ -103,15 +104,17 @@ public final class VCollectors {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dtClass
 	 * @return A collector for DtList
 	 */
 	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
+		Assertion.checkNotNull(dtClass);
+		//---
 		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtClass);
 		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
 			left.addAll(right);
 			return left;
-		} , CH_ID);
+		}, CH_ID);
 	}
 }
