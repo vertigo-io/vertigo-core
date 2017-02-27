@@ -37,6 +37,9 @@ import io.vertigo.lang.VSystemException;
  * @author  pchretien
  */
 final class DslSolver {
+	private DslSolver() {
+		//private constructor
+	}
 
 	/**
 	* Résoltuion des références.
