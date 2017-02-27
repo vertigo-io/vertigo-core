@@ -18,65 +18,21 @@
  */
 package io.vertigo.persona.impl.security;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.impl.security.dsl.model.DslExpression;
 import io.vertigo.persona.impl.security.dsl.model.DslFixedValue;
 import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.impl.security.dsl.model.DslUserPropertyValue;
-import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  *
  *
  * @author npiedeloup
  */
-public final class SqlSecurityRuleTranslator {
-
-	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
-	private Map<String, String[]> myUserCriteria;
+public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTranslator<SqlSecurityRuleTranslator> {
 
 	/**
-	 * Set security pattern.
-	 * @param securityRule security Pattern (not null, could be empty)
-	 * @return this builder
+	 * @return This security rule as SQL Query
 	 */
-	public SqlSecurityRuleTranslator withRule(final String securityRule) {
-		Assertion.checkNotNull(securityRule);
-		//-----
-		try {
-			final DslMultiExpression myMultiExpression = DslParserUtil.parseMultiExpression(securityRule);
-			myMultiExpressions.add(myMultiExpression);
-		} catch (final PegNoMatchFoundException e) {
-			final String message = StringUtil.format("Echec de lecture de la securityRule {0}\n{1}", securityRule, e.getFullMessage());
-			throw new WrappedException(message, e);
-		} catch (final Exception e) {
-			final String message = StringUtil.format("Echec de lecture de la securityRule {0}\n{1}", securityRule, e.getMessage());
-			throw new WrappedException(message, e);
-		}
-		return this;
-	}
-
-	/**
-	 * Set criteria.
-	 * @param userCriteria Criteria
-	 * @return this builder
-	 */
-	public SqlSecurityRuleTranslator withCriteria(final Map<String, String[]> userCriteria) {
-		Assertion.checkNotNull(userCriteria);
-		Assertion.checkState(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
-		//-----
-		myUserCriteria = userCriteria;
-		return this;
-
-	}
-
 	public String toSql() {
 		return buildQueryString();
 	}
@@ -86,7 +42,7 @@ public final class SqlSecurityRuleTranslator {
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
 		String sep = "";
-		for (final DslMultiExpression multiExpressionDefinition : myMultiExpressions) {
+		for (final DslMultiExpression multiExpressionDefinition : getMultiExpressions()) {
 			query.append(sep);
 			appendMultiExpression(query, multiExpressionDefinition);
 			sep = DEFAULT_BOOL_SEP;
@@ -123,7 +79,7 @@ public final class SqlSecurityRuleTranslator {
 		query.append(expressionDefinition.getFieldName());
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final String[] userValues = myUserCriteria.get(userPropertyValue.getUserProperty());
+			final String[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
 				if (userValues.length == 1) {
 					query
@@ -148,4 +104,5 @@ public final class SqlSecurityRuleTranslator {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
 		}
 	}
+
 }
