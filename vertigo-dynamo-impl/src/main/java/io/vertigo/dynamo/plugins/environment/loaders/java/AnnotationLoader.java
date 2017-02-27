@@ -39,7 +39,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -174,8 +173,8 @@ public final class AnnotationLoader implements Loader {
 		// Cela devient alors bloquant pour une communication par sérialisation entre 2 instances.
 
 		final List<Field> fields = new ArrayList<>(ClassUtil.getAllFields(clazz));
-		Collections.sort(fields, Comparator.comparing(Field::getName));
-		
+		fields.sort(Comparator.comparing(Field::getName));
+
 		for (final Field field : fields) {
 			//On regarde si il s'agit d'un champ
 			parseFieldAnnotations(field, dtDefinitionBuilder);
