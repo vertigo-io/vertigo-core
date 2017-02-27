@@ -17,7 +17,7 @@ import io.vertigo.util.Selector.ClassConditions;
  * @author mlaroche
  *
  */
-public class ComponentDiscovery {
+public final class ComponentDiscovery {
 
 	private ComponentDiscovery() {
 		//private
@@ -101,11 +101,11 @@ public class ComponentDiscovery {
 
 		// Without API
 		myImplClasses.stream()
-				.forEach((clazz) -> moduleConfigBuilder.addComponent(clazz));
+				.forEach(moduleConfigBuilder::addComponent);
 
 		//Plugins
 		pluginsImplClasses.stream()
-				.forEach((clazz) -> moduleConfigBuilder.addPlugin(clazz));
+				.forEach(moduleConfigBuilder::addPlugin);
 	}
 
 }
