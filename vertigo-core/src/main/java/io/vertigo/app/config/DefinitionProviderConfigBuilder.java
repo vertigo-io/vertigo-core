@@ -94,12 +94,10 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	/** {@inheritDoc} */
 	@Override
 	public DefinitionProviderConfig build() {
-		final DefinitionProviderConfig definitionProviderConfig = new DefinitionProviderConfig(
+		return new DefinitionProviderConfig(
 				myClass,
 				myParams,
 				myDefinitionResourceConfigs);
-
-		return definitionProviderConfig;
 	}
 
 }

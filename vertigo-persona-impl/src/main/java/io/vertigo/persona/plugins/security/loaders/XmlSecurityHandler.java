@@ -116,7 +116,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 		return (definitionSpace) -> createRole(name, description, myPermRefs, definitionSpace);
 	}
 
-	private Role createRole(final String name, final String description, final List<String> myPermRefs, final DefinitionSpace definitionSpace) {
+	private static Role createRole(final String name, final String description, final List<String> myPermRefs, final DefinitionSpace definitionSpace) {
 		final List<Permission> permissions = myPermRefs.stream()
 				.map(permissionName -> definitionSpace.resolve(permissionName, Permission.class))
 				.collect(Collectors.toList());
@@ -124,8 +124,7 @@ final class XmlSecurityHandler extends DefaultHandler {
 	}
 
 	//case of <permission id="PRM_READ_ALL_PRODUCTSè" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
-	private DefinitionSupplier supplyPermissions(final String id, final String operation, final String filter) {
+	private static DefinitionSupplier supplyPermissions(final String id, final String operation, final String filter) {
 		return (definitionSpace) -> new Permission(id, operation, filter);
 	}
-
 }
