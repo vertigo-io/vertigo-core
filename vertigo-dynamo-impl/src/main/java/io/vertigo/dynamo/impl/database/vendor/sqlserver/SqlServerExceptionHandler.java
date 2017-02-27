@@ -64,18 +64,18 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 
-		final int codeErreur = sqle.getErrorCode();
+		final int errorCode = sqle.getErrorCode();
 
-		if (codeErreur >= 20000 && codeErreur < 30000) {
+		if (errorCode >= 20_000 && errorCode < 30_000) {
 			// Erreur utilisateur
 			handleUserSQLException(sqle);
-		} else if (codeErreur == 8152) {
+		} else if (errorCode == 8152) {
 			// Valeur trop grande pour ce champs (#8152)
 			handleTooLargeValueSqlException(sqle);
-		} else if (codeErreur == 547) {
+		} else if (errorCode == 547) {
 			// Violation de contrainte d'intégrité référentielle (#547)
 			handleForeignConstraintSQLException(sqle);
-		} else if (codeErreur == 2601 || codeErreur == 2627) {
+		} else if (errorCode == 2601 || errorCode == 2627) {
 			// Violation de contrainte d'unicité (#2627)
 			// Violation de contrainte d'unicité sur index (#2601) (attention message différent)
 			handleUniqueConstraintSQLException(sqle);

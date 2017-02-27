@@ -41,10 +41,10 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		if (errCode >= 20000 && errCode < 30000) {
+		if (errCode >= 20_000 && errCode < 30_000) {
 			// Erreur utilisateur
 			handleUserSQLException(sqle);
-		} else if (errCode == 1438 || errCode == 12899) {
+		} else if (errCode == 1438 || errCode == 12_899) {
 			// Valeur trop grande pour ce champs
 			handleTooLargeValueSqlException(sqle);
 		} else if (errCode == 2292) {
