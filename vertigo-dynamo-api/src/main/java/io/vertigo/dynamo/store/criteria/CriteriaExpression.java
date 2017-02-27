@@ -15,18 +15,6 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	enum CriteriaOperator {
 		OR, //(2),
 		AND;//(2);
-		//	not(1);
-		//---
-		//		private final int arity;
-		//
-		//		CriteriaOperator(final int arity) {
-		//			this.arity = arity;
-		//		}
-		//
-		//		public int getArity() {
-		//			return arity;
-		//		}
-		//		Assertion.checkArgument(operands.length >= operator.getArity(), "the function {0} has a min arity of {1}", operator, operator.getArity());
 	}
 
 	private final CriteriaOperator operator;
