@@ -1,10 +1,11 @@
-package io.vertigo.app.config;
+package io.vertigo.app.config.discovery;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
@@ -36,6 +37,8 @@ public class ComponentDiscovery {
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
 				.filterClasses(ClassConditions.subTypeOf(componentType))
+				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())
+				// we dont take abstracts
 				.findClasses();
 		registerComponents(components, moduleConfigBuilder);
 	}
@@ -46,6 +49,7 @@ public class ComponentDiscovery {
 		// ---
 		//we control the api just bellow
 		moduleConfigBuilder.withNoAPI();
+
 		//API
 		final Collection<Class> apiClasses = new Selector()
 				.from(components)
@@ -53,18 +57,32 @@ public class ComponentDiscovery {
 				// we dont check api for plugins
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
 				.findClasses();
+
 		//Impl
 		final Collection<Class> implClasses = new Selector()
 				.from(components)
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
 
+		//ComponentsImpl
+		final Collection<Class> componentsImplClasses = new Selector()
+				.from(implClasses)
+				//Plugins are handled separately
+				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
+				.findClasses();
+
+		//PluginsImpl
+		final Collection<Class> pluginsImplClasses = new Selector()
+				.from(implClasses)
+				.filterClasses(ClassConditions.subTypeOf(Plugin.class))
+				.findClasses();
+
 		final Map<Class, Class> apiImplMap = new HashMap<>();
-		final Collection<Class> myImplClasses = new ArrayList<>(implClasses);
+		final Collection<Class> myImplClasses = new ArrayList<>(componentsImplClasses);
 		//---
 		for (final Class apiClazz : apiClasses) {
 			final Collection<Class> potentialImpl = new Selector()
-					.from(implClasses)
+					.from(componentsImplClasses)
 					.filterClasses(ClassConditions.subTypeOf(apiClazz))
 					.findClasses();
 			// ---
@@ -85,6 +103,9 @@ public class ComponentDiscovery {
 		myImplClasses.stream()
 				.forEach((clazz) -> moduleConfigBuilder.addComponent(clazz));
 
+		//Plugins
+		pluginsImplClasses.stream()
+				.forEach((clazz) -> moduleConfigBuilder.addPlugin(clazz));
 	}
 
 }
