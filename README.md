@@ -55,7 +55,7 @@ A simple managment of users, not only technical.
 Publishing managment.
 
 * __converter__ : as it says : convert your documents from one format to another
-* __publisher__ : lightweigth publisher tool. Produce documents from a user's defined template and application's datas. Templates are really easy to modified because they just are ODT or DOCX with tags.
+* __publisher__ : lightweight publisher tool. Produce documents from a user's defined template and application's data. Templates are really easy to modify because they are just ODT or DOCX with tags.
 
 
 ##vertigo-vega
