@@ -95,20 +95,20 @@ public final class PegRules {
 
 	/**
 	 * @param rule Rule to repeat
-	 * @param repeat If text should be parsed entirely
+	 * @param untilEnd If text should be parsed entirely
 	 * @return zeroOrMore rule
 	 */
-	public static <R> PegRule<List<R>> zeroOrMore(final PegRule<R> rule, final boolean repeat) {
-		return new PegManyRule<>(rule, true, repeat);
+	public static <R> PegRule<List<R>> zeroOrMore(final PegRule<R> rule, final boolean untilEnd) {
+		return new PegManyRule<>(rule, true, untilEnd);
 	}
 
 	/**
 	 * @param rule Rule to repeat
-	 * @param repeat If text should be parsed entirely
+	 * @param untilEnd If text should be parsed entirely
 	 * @return oneOrMore rule
 	 */
-	public static <R> PegRule<List<R>> oneOrMore(final PegRule<R> rule, final boolean repeat) {
-		return new PegManyRule<>(rule, false, repeat);
+	public static <R> PegRule<List<R>> oneOrMore(final PegRule<R> rule, final boolean untilEnd) {
+		return new PegManyRule<>(rule, false, untilEnd);
 	}
 
 	/**
@@ -131,6 +131,15 @@ public final class PegRules {
 	}
 
 	/**
+	 * @param <O> Result object
+	 * @param innerRule InnerRule
+	 * @return Rule to ensure innerRull match whole text
+	 */
+	public static <O> PegRule<O> parseAll(final PegRule<O> innerRule) {
+		return new PegParseAllRule<>(innerRule);
+	}
+
+	/**
 	 * @param rootRule Root rule to start with
 	 * @return Html railroad diagram
 	 */
@@ -138,4 +147,5 @@ public final class PegRules {
 		final PegRulesHtmlRenderer pegRulesHtmlRenderer = new PegRulesHtmlRenderer();
 		return pegRulesHtmlRenderer.render(rootRule);
 	}
+
 }
