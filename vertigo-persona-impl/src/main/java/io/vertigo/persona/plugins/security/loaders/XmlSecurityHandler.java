@@ -111,8 +111,8 @@ final class XmlSecurityHandler extends DefaultHandler {
 		}
 	}
 
-	private DefinitionSupplier supplyRole(final String name, final String description, final List<String> myPermRefs) {
-		return (definitionSpace) -> createRole(name, description, myPermRefs, definitionSpace);
+	private static DefinitionSupplier supplyRole(final String name, final String description, final List<String> myPermRefs) {
+		return definitionSpace -> createRole(name, description, myPermRefs, definitionSpace);
 	}
 
 	private static Role createRole(final String name, final String description, final List<String> myPermRefs, final DefinitionSpace definitionSpace) {
@@ -124,6 +124,6 @@ final class XmlSecurityHandler extends DefaultHandler {
 
 	//case of <permission id="PRM_READ_ALL_PRODUCTSè" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
 	private static DefinitionSupplier supplyPermissions(final String id, final String operation, final String filter) {
-		return (definitionSpace) -> new Permission(id, operation, filter);
+		return definitionSpace -> new Permission(id, operation, filter);
 	}
 }

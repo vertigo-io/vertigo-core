@@ -123,7 +123,7 @@ public final class DslDefinitionRepository {
 		return sortedDynamicDefinitions
 				.stream()
 				.filter(dslDefinition -> !dslDefinition.getEntity().isProvided()) // provided definitions are excluded
-				.map(dslDefinition -> createDefinition(dslDefinition))
+				.map(this::createDefinition)
 				.collect(Collectors.toList());
 	}
 
@@ -145,7 +145,7 @@ public final class DslDefinitionRepository {
 		//---
 		registry.onNewDefinition(dslDefinition)
 				.stream()
-				.forEach(newDefinition -> addDefinition(newDefinition));
+				.forEach(this::addDefinition);
 	}
 
 	/**

@@ -130,7 +130,7 @@ public final class Criterions {
 
 		@Override
 		public Predicate<E> toPredicate() {
-			return (entity) -> true;
+			return entity -> true;
 		}
 
 		@Override

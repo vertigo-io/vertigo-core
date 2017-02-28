@@ -166,7 +166,7 @@ public final class Selector {
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnFields())
-				.flatMap((clazz) -> Stream.<Method> of(clazz.getDeclaredMethods()))
+				.flatMap(clazz -> Stream.<Method> of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
 				.map(method -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
@@ -181,9 +181,9 @@ public final class Selector {
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
-				.flatMap((clazz) -> Stream.<Field> of(clazz.getDeclaredFields()))
+				.flatMap(clazz -> Stream.<Field> of(clazz.getDeclaredFields()))
 				.filter(fieldPredicates)
-				.map((field) -> new Tuple2<>(Class.class.cast(field.getDeclaringClass()), field))
+				.map(field -> new Tuple2<>(Class.class.cast(field.getDeclaringClass()), field))
 				.collect(Collectors.toList());
 	}
 

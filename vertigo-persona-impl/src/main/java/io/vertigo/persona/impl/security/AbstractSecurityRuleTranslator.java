@@ -11,7 +11,7 @@ import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.util.StringUtil;
 
-class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
+abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
 	private Map<String, String[]> myUserCriteria;

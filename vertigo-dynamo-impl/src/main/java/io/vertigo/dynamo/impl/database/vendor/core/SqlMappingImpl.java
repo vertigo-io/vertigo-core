@@ -140,10 +140,10 @@ public final class SqlMappingImpl implements SqlMapping {
 					statement.setString(index, (String) value);
 					break;
 				case Date:
-					if (value instanceof java.sql.Timestamp) {
-						statement.setTimestamp(index, (java.sql.Timestamp) value);
+					if (value instanceof Timestamp) {
+						statement.setTimestamp(index, (Timestamp) value);
 					} else {
-						final java.sql.Timestamp ts = new java.sql.Timestamp(((java.util.Date) value).getTime());
+						final Timestamp ts = new Timestamp(((java.util.Date) value).getTime());
 						statement.setTimestamp(index, ts);
 					}
 					break;

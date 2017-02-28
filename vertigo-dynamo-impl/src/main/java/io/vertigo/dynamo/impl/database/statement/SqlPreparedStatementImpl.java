@@ -360,7 +360,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	public final String toString() {
 		return getParameters()
 				.stream()
-				.map(parameter -> parameter.toString())
+				.map(SqlParameter::toString)
 				.collect(Collectors.joining(", ", getSql() + '(', ")"));
 	}
 
@@ -369,7 +369,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 *
 	 * @return PreparedStatement
 	 */
-	final java.sql.PreparedStatement getPreparedStatement() {
+	final PreparedStatement getPreparedStatement() {
 		Assertion.checkNotNull(statement, "Le statement est null, l'exécution est elle OK ?");
 		//-----
 		return statement;

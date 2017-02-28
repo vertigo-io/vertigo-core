@@ -51,7 +51,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 	 * Set des clés non trouvées pour ne pas les reloguer.
 	 * On synchronise car il s'agit d'une ressource partagée modifiées par tous les threads.
 	 */
-	private final Set<String> notFoundKeys = java.util.Collections.synchronizedSet(new HashSet<String>());
+	private final Set<String> notFoundKeys = Collections.synchronizedSet(new HashSet<String>());
 
 	//Bundle pour la locale par défaut.
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
