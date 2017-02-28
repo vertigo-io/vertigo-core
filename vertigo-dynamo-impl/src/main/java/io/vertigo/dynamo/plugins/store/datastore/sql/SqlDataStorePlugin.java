@@ -156,17 +156,17 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getDataSpace() {
+	public String getDataSpace() {
 		return dataSpace;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final String getConnectionName() {
+	public String getConnectionName() {
 		return connectionName;
 	}
 
-	private static final DtField getIdField(final DtDefinition dtDefinition) {
+	private static DtField getIdField(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---
 		return dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
@@ -174,7 +174,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
@@ -332,7 +332,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final void create(final DtDefinition dtDefinition, final Entity entity) {
+	public void create(final DtDefinition dtDefinition, final Entity entity) {
 		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
@@ -344,7 +344,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void update(final DtDefinition dtDefinition, final Entity entity) {
+	public void update(final DtDefinition dtDefinition, final Entity entity) {
 		Assertion.checkNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
@@ -377,7 +377,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	private final long buildNextSequence(final String sequenceName, final String query) {
+	private long buildNextSequence(final String sequenceName, final String query) {
 		final String taskName = TASK.TK_SELECT.name() + '_' + sequenceName;
 		final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
 
@@ -521,7 +521,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
