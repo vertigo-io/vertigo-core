@@ -95,7 +95,6 @@ final class XmlSecurityHandler extends DefaultHandler {
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
 			case authorisationConfig:
-				break;
 			case permission:
 				break;
 			case role:
