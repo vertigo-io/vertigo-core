@@ -127,7 +127,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
+	private static ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
 		final String filterValue = new StringBuilder()
 				.append("_id").append(":{") //{ for exclude min
 				.append(firstUri != null ? ("\"" + firstUri + "\"") : "*")
