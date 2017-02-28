@@ -126,36 +126,35 @@ final class ESDocumentCodec {
 			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
-		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
+		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
+			/* 1: URI */
+			xContentBuilder.startObject();
+			//xContentBuilder.field(URN, index.getURI().toURN());
+			/* 2 : Result stocké */
+			final String result = encode(dtResult);
+			xContentBuilder.field(FULL_RESULT, result);
 
-		/* 1: URI */
-		xContentBuilder.startObject();
-		//xContentBuilder.field(URN, index.getURI().toURN());
-		/* 2 : Result stocké */
-		final String result = encode(dtResult);
-		xContentBuilder.field(FULL_RESULT, result);
+			/* 3 : Les champs du dto index */
+			final DtObject dtIndex = index.getIndexDtObject();
+			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
+			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
 
-		/* 3 : Les champs du dto index */
-		final DtObject dtIndex = index.getIndexDtObject();
-		final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
-		final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
-
-		for (final DtField dtField : indexDtDefinition.getFields()) {
-			if (!copyToFields.contains(dtField)) {//On index pas les copyFields
-				final Object value = dtField.getDataAccessor().getValue(dtIndex);
-				if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
-					final String indexFieldName = dtField.getName();
-					if (value instanceof String) {
-						final String encodedValue = escapeInvalidUTF8Char((String) value);
-						xContentBuilder.field(indexFieldName, encodedValue);
-					} else {
-						xContentBuilder.field(indexFieldName, value);
+			for (final DtField dtField : indexDtDefinition.getFields()) {
+				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
+					final Object value = dtField.getDataAccessor().getValue(dtIndex);
+					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
+						final String indexFieldName = dtField.getName();
+						if (value instanceof String) {
+							final String encodedValue = escapeInvalidUTF8Char((String) value);
+							xContentBuilder.field(indexFieldName, encodedValue);
+						} else {
+							xContentBuilder.field(indexFieldName, value);
+						}
 					}
 				}
 			}
+			return xContentBuilder.endObject();
 		}
-		xContentBuilder.endObject();
-		return xContentBuilder;
 	}
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
