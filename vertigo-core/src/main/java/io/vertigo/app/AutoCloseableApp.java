@@ -97,7 +97,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions
-			DefinitionLoader.createDefinitions(definitionSpaceWritable, componentSpaceWritable, appConfig.getModuleConfigs())
+			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
+			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
 					.forEach(definitionSpaceWritable::registerDefinition);
 			//Here all definitions are registered into the definitionSpace
 

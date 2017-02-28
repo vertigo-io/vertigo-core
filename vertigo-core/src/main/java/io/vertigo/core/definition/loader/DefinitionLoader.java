@@ -40,6 +40,16 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DefinitionLoader {
+	private final DefinitionSpace definitionSpace;
+	private final ComponentSpace componentSpace;
+
+	public DefinitionLoader(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace) {
+		Assertion.checkNotNull(definitionSpace);
+		Assertion.checkNotNull(componentSpace);
+		//-----
+		this.definitionSpace = definitionSpace;
+		this.componentSpace = componentSpace;
+	}
 
 	/**
 	 * Inject all the definition of the modules.
@@ -47,23 +57,23 @@ public final class DefinitionLoader {
 	 * @param componentSpace the componentSpace
 	 * @param moduleConfigs module configs
 	 */
-	public static Stream<Definition> createDefinitions(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
+	public Stream<Definition> createDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		return moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> provide(definitionSpace, componentSpace, moduleConfig.getDefinitionProviderConfigs()))
+				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpace));
 	}
 
-	private static Stream<DefinitionSupplier> provide(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace, final List<DefinitionProviderConfig> definitionProviderConfigs) {
+	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
 		return definitionProviderConfigs
 				.stream()
-				.map(config -> createDefinitionProvider(componentSpace, config))
+				.map(this::createDefinitionProvider)
 				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
 	}
 
-	private static DefinitionProvider createDefinitionProvider(final ComponentSpace componentSpace, final DefinitionProviderConfig definitionProviderConfig) {
+	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
 		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams());
 
