@@ -42,6 +42,11 @@ public final class DefinitionLoader {
 	private final DefinitionSpace definitionSpace;
 	private final ComponentSpace componentSpace;
 
+	/**
+	 * Loader of definitions
+	 * @param definitionSpace the definitionSpace to build
+	 * @param componentSpace the componentSpace
+	 */
 	public DefinitionLoader(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace) {
 		Assertion.checkNotNull(definitionSpace);
 		Assertion.checkNotNull(componentSpace);
@@ -50,14 +55,9 @@ public final class DefinitionLoader {
 		this.componentSpace = componentSpace;
 	}
 
-	private DefinitionLoader() {
-		// private
-	}
-
 	/**
 	 * Inject all the definition of the modules.
-	 * @param definitionSpace the definitionSpace to build
-	 * @param componentSpace the componentSpace
+	 *
 	 * @param moduleConfigs module configs
 	 * @return a stream of definitions
 	 */
