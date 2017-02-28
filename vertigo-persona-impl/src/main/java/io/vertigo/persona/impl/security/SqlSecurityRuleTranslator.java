@@ -55,7 +55,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 
 	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
 		String sep = "";
-		final String boolSep = " " + multiExpressionDefinition.getBoolOperator().toString() + " ";
+		final String boolSep = " " + multiExpressionDefinition.getBoolOperator() + " ";
 		if (multiExpressionDefinition.isBlock()) {
 			query.append('(');
 		}

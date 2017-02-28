@@ -85,12 +85,11 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 					PegRules.parseAll(blockMultiExpressionRule), //0
 					PegRules.parseAll(multiExpressionRule) //1
 			);
-		} else {
-			return PegRules.choice(//"block or not")
-					blockMultiExpressionRule, //0
-					multiExpressionRule //1
-			);
 		}
+		return PegRules.choice(//"block or not")
+				blockMultiExpressionRule, //0
+				multiExpressionRule //1
+		);
 	}
 
 	/** {@inheritDoc} */
