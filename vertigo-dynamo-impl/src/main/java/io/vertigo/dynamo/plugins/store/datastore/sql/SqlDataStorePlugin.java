@@ -140,7 +140,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 * @param dtDefinition the dtDefinition
 	 * @return the name of the table
 	 */
-	private static final String getTableName(final DtDefinition dtDefinition) {
+	private static String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
