@@ -58,22 +58,22 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		String sep = "";
 		String boolSep;
 		if (multiExpressionDefinition.getBoolOperator() == BoolOperator.AND) {
-			boolSep = " +";
+			boolSep = "+";
 		} else {
-			boolSep = " ";
+			boolSep = "";
 		}
 
 		for (final DslExpression expression : multiExpressionDefinition.getExpressions()) {
-			query.append(sep).append('(');
+			query.append(sep).append(boolSep).append('(');
 			appendExpression(query, expression);
 			query.append(')');
-			sep = boolSep;
+			sep = " ";
 		}
 		for (final DslMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
-			query.append(sep).append('(');
+			query.append(sep).append(boolSep).append('(');
 			appendMultiExpression(query, multiExpression);
 			query.append(')');
-			sep = boolSep;
+			sep = " ";
 		}
 	}
 

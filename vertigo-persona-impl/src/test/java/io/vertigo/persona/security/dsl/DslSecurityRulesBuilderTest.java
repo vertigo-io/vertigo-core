@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.persona.impl.security.SearchSecurityRuleTranslator;
 import io.vertigo.persona.impl.security.SqlSecurityRuleTranslator;
 
 /**
@@ -34,29 +35,56 @@ public final class DslSecurityRulesBuilderTest {
 	public void testStringQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "ALL=${query}", "Test", "ALL=Test" }, //0
-				{ "ALL=${query}", "'Test test2'", "ALL='Test test2'" }, //1
-				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //2
+				{ "ALL=${query}", "Test", "ALL=Test", "+(ALL:Test)" }, //0
+				{ "ALL=${query}", "'Test test2'", "ALL='Test test2'", "+(ALL:'Test test2')" }, //1
+				{ "ALL=${query} && OTHER='VALID'", "Test", "ALL=Test AND OTHER='VALID'", "+(ALL:Test) +(OTHER:'VALID')" }, //2
+				{ "ALL=${query} || OTHER='VALID'", "Test", "ALL=Test OR OTHER='VALID'", "(ALL:Test) (OTHER:'VALID')" }, //3
+				{ "(ALL=${query} || OTHER='VALID')", "Test", "(ALL=Test OR OTHER='VALID')", "(ALL:Test) (OTHER:'VALID')" }, //4
+				{ "((ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID'))", "Test",
+						"((ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID'))",
+						"+((ALL:Test) (OTHER:'VALID')) +((ALL:Test) (OTHER:'VALID'))" }, //5
+				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test",
+						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
+						"+((ALL:Test) (OTHER:'VALID')) +((ALL:Test) (OTHER:'VALID'))" }, //6
+				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
 
 		};
-		testStringFixedQuery(testQueries);
+		testSearchAndSqlQuery(testQueries);
 	}
 
-	int getPreferedResult() {
+	private void testSearchAndSqlQuery(final String[]... testData) {
+		int i = 0;
+		for (final String[] testParam : testData) {
+			testSqlQuery(testParam, i);
+			testSearchQuery(testParam, i);
+			i++;
+		}
+	}
+
+	int getSqlResult() {
+		return 2;
+	}
+
+	int getSearchResult() {
 		return 3;
 	}
 
-	private void testStringFixedQuery(final String[]... testData) {
-		int i = 0;
-		for (final String[] testParam : testData) {
-			final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
-					.withRule(testParam[0])
-					.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
-			final String result = securityRuleTranslator.toSql();
-			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
-			i++;
-		}
+	private void testSqlQuery(final String[] testParam, final int i) {
+		final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
+				.withRule(testParam[0])
+				.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
+		final String result = securityRuleTranslator.toSql();
+		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
+		Assert.assertEquals("Built sql query #" + i + " incorrect", expectedResult, result);
+	}
+
+	private void testSearchQuery(final String[] testParam, final int i) {
+		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
+				.withRule(testParam[0])
+				.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
+		final String result = securityRuleTranslator.toSearchQuery();
+		final String expectedResult = testParam[Math.min(getSearchResult(), testParam.length - 1)];
+		Assert.assertEquals("Built search query #" + i + " incorrect", expectedResult, result);
 	}
 
 }

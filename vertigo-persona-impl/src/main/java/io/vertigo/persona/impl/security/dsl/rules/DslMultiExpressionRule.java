@@ -65,24 +65,32 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				DslSyntaxRules.SPACES //4
 		);
 		final PegRule<List<List<Object>>> manyNextExpressionsRule = PegRules.zeroOrMore(nextExpressionsRule, false);
-		final PegRule<List<Object>> multiExpressionRule = PegRules.sequence(
-				DslSyntaxRules.SPACES, //0
-				expressionsRule, //1
-				DslSyntaxRules.SPACES, //2
-				manyNextExpressionsRule, //3
-				DslSyntaxRules.SPACES //4
-		);
+		final PegRule<List<Object>> multiExpressionRule = PegRules.named(
+				PegRules.sequence(
+						DslSyntaxRules.SPACES, //0
+						expressionsRule, //1
+						DslSyntaxRules.SPACES, //2
+						manyNextExpressionsRule, //3
+						DslSyntaxRules.SPACES //4
+				), "multiExpressionRule");
 		final PegRule<List<Object>> blockMultiExpressionRule = PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
-				DslSyntaxRules.BLOCK_START, //2
-				multiExpressionRule, //4
-				DslSyntaxRules.BLOCK_START, //2
+				DslSyntaxRules.BLOCK_START, //1
+				multiExpressionRule, //2
+				DslSyntaxRules.BLOCK_END, //3
 				DslSyntaxRules.SPACES //4
 		);
-		return PegRules.choice(//"block or not")
-				blockMultiExpressionRule, //0
-				multiExpressionRule //1
-		);
+		if (level == 0) {
+			return PegRules.choice(//"block or not")
+					PegRules.parseAll(blockMultiExpressionRule), //0
+					PegRules.parseAll(multiExpressionRule) //1
+			);
+		} else {
+			return PegRules.choice(//"block or not")
+					blockMultiExpressionRule, //0
+					multiExpressionRule //1
+			);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -93,7 +101,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		switch (parsing.getChoiceIndex()) {
 			case 0:
 				final List<?> blockExpression = (List<?>) parsing.getValue();
-				innerBlock = (List<Object>) blockExpression.get(4);
+				innerBlock = (List<Object>) blockExpression.get(2);
 				break;
 			case 1:
 				innerBlock = (List<Object>) parsing.getValue();
@@ -119,7 +127,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 
 		final List<List<Object>> many = (List<List<Object>>) innerBlock.get(3); //manyNextExpressionsRule
 		//On récupère le produit de la règle many
-		BoolOperator operator = BoolOperator.AND;
+		BoolOperator operator = null;
 		for (final List<Object> item : many) {
 			if (operator != null && operator != (BoolOperator) item.get(1)) {
 				throw new IllegalArgumentException("Can't use different operator in same block, attempt to find " + operator);
@@ -138,6 +146,6 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 			}
 		}
 		//---
-		return new DslMultiExpression(block, operator, expressionDefinitions, multiExpressionDefinitions);
+		return new DslMultiExpression(block, operator != null ? operator : BoolOperator.AND, expressionDefinitions, multiExpressionDefinitions);
 	}
 }
