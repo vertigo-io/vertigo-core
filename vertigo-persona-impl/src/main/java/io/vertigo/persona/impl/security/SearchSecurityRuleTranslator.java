@@ -93,7 +93,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			}
 		} else if (expressionDefinition.getValue() instanceof DslFixedValue) {
 			query.append(expressionDefinition.getFieldName())
-					.append(":")
+					.append(':')
 					.append(((DslFixedValue) expressionDefinition.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
