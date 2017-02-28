@@ -16,29 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders;
+package io.vertigo.app.config.discovery.data;
 
-import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.lang.Component;
 
 /**
- * Chargeur de l'environnement.
- * @author pchretien
+ * @author mlaroche
  */
-public interface Loader {
-	/**
-	 * Type parsed by loader.
-	 * Examples : oom, kpr, eaxmi...
-	 * @return Type parsed by loader
-	 */
-	String getType();
+public class DiscoveryC implements Component {
 
-	/**
-	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
-	 * défini par une url (sur système de fichier ou classpath)
-	 * et selon la grammaire en argument.
-	 * @param resourcePath resourcePath
-	 * @param dslDefinitionRepository dslDefinitionRepository
-	 */
-	void load(String resourcePath, DslDefinitionRepository dslDefinitionRepository);
+	void firstMethod() {
+		// nothing
+	}
 
 }

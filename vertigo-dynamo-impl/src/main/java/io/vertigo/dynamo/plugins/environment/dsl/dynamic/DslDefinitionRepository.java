@@ -100,6 +100,7 @@ public final class DslDefinitionRepository {
 	/**
 	 * Résolution des références de définitions.
 	 * @param definitionSpace Space where all the definitions are stored
+	 * @return a list of DefinitionSuppliers
 	 */
 	public List<DefinitionSupplier> solve(final DefinitionSpace definitionSpace) {
 		mergePartials();

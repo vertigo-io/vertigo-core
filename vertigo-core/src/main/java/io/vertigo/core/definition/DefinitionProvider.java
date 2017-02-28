@@ -31,10 +31,15 @@ public interface DefinitionProvider {
 
 	/**
 	 * Return a list of definitions with a set of already known definitions
+	 * @param definitionSpace the actual definitionSpace with a readOnly access
 	 * @return the list of new definition to register
 	 */
 	List<DefinitionSupplier> get(final DefinitionSpace definitionSpace);
 
+	/**
+	 * Adds a new definitionResourceConfig to the provider to read definitions
+	 * @param definitionResourceConfig a new resource to read
+	 */
 	default void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
 		// nothing by default
 	}

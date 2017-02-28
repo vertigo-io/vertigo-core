@@ -67,7 +67,7 @@ public final class ComponentLoader {
 
 	/**
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
-	 *
+	 * @param optionalParamManager optional paramManager
 	 * @param moduleConfigs the config of the module to add.
 	 */
 	public void injectAllComponentsAndAspects(final Optional<ParamManager> optionalParamManager, final List<ModuleConfig> moduleConfigs) {

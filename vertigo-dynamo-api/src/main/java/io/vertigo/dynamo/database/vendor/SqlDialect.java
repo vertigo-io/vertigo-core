@@ -4,6 +4,12 @@ import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
+/**
+ * The database dialect.
+ * Provides all the vendor's specific SQL
+ * @author mlaroche
+ *
+ */
 public interface SqlDialect {
 	/**
 	 * @return The operator for string concatenation.
@@ -14,7 +20,9 @@ public interface SqlDialect {
 
 	/**
 	 * Prépare la PK si il n'y a pas de système de sequence.
-	 * @param entity Objet à sauvegarder (création ou modification)
+	 * @param tableName concerned table
+	 * @param sequencePrefix the sequence prefix to use
+	 * @return the query for selecting the pk
 	 */
 	default Optional<String> createPrimaryKeyQuery(final String tableName, final String sequencePrefix) {
 		return Optional.empty();
@@ -39,6 +47,7 @@ public interface SqlDialect {
 	 * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
 	 * spécificités de la base de données utilisée..
 	 * @param tableName nom de la table
+	 * @param requestedFields the list of fields to retrieve (the select clause)
 	 * @param idFieldName nom de la clé primaire
 	 * @return select à exécuter.
 	 */
@@ -51,5 +60,8 @@ public interface SqlDialect {
 				.toString();
 	}
 
+	/**
+	 * @return if keys are generated
+	 */
 	boolean generatedKeys();
 }

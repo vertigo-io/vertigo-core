@@ -37,8 +37,8 @@ public final class ComponentDiscovery {
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
 				.filterClasses(ClassConditions.subTypeOf(componentType))
+				// we ignore not discoverable classes
 				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())
-				// we dont take abstracts
 				.findClasses();
 		registerComponents(components, moduleConfigBuilder);
 	}

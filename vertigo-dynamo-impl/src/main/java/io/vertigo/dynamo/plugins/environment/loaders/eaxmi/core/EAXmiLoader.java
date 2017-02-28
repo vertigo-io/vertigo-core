@@ -47,6 +47,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 
 	/**
 	 * Constructeur.
+	 * @param resourceManager the vertigo resourceManager
 	 */
 	public EAXmiLoader(final ResourceManager resourceManager) {
 		super(resourceManager);

@@ -7,6 +7,11 @@ import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 
+/**
+ * Dialect for HSQL databases.
+ * @author mlaroche
+ *
+ */
 public final class HSqlDialect implements SqlDialect {
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 

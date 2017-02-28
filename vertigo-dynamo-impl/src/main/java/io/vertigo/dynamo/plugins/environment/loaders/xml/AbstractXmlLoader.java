@@ -60,6 +60,7 @@ public abstract class AbstractXmlLoader implements Loader {
 
 	/**
 	 * Constructeur.
+	 * @param resourceManager the vertigo resourceManager
 	 */
 	public AbstractXmlLoader(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);

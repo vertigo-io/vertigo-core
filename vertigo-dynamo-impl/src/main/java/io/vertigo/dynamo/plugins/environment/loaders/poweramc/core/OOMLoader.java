@@ -45,6 +45,7 @@ public final class OOMLoader extends AbstractXmlLoader {
 
 	/**
 	 * Constructor.
+	 * @param resourceManager the vertigo resourceManager
 	 */
 	public OOMLoader(final ResourceManager resourceManager) {
 		super(resourceManager);

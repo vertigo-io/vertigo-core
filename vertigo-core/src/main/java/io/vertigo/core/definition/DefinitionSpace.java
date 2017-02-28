@@ -2,6 +2,11 @@ package io.vertigo.core.definition;
 
 import java.util.Collection;
 
+/**
+ * Espace de définitions (non threadSafe).
+ * @author mlaroche
+ *
+ */
 public interface DefinitionSpace {
 
 	/**

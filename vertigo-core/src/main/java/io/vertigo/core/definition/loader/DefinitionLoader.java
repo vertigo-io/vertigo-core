@@ -33,7 +33,6 @@ import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
 
 /**
-
  * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
  * Use DynamoDefinitionProvider to use the DSL.
  *
@@ -51,11 +50,16 @@ public final class DefinitionLoader {
 		this.componentSpace = componentSpace;
 	}
 
+	private DefinitionLoader() {
+		// private
+	}
+
 	/**
 	 * Inject all the definition of the modules.
 	 * @param definitionSpace the definitionSpace to build
 	 * @param componentSpace the componentSpace
 	 * @param moduleConfigs module configs
+	 * @return a stream of definitions
 	 */
 	public Stream<Definition> createDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);

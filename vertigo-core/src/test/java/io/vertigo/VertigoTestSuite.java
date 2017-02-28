@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.app.config.discovery.DiscoveryTest;
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
 import io.vertigo.core.component.aop.Aspect2Test;
@@ -68,6 +69,7 @@ import io.vertigo.util.StringUtilTest;
 		AppConfig2Test.class,
 		AspectTest.class,
 		Aspect2Test.class,
+		DiscoveryTest.class,
 		//Lang
 		AssertionTest.class,
 		TuplesTest.class,

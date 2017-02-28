@@ -33,7 +33,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 
 /**
@@ -219,7 +218,6 @@ public final class UiErrorBuilder {
 	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
 			uiMessageStack.addFieldMessage(Level.ERROR, uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
-			//action.addActionError("<b>" + entry.getKey().getLabel().getDisplay() + "</b> : " + errorMessage.getDisplay());
 		}
 	}
 

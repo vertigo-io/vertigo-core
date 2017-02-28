@@ -52,6 +52,7 @@ public interface DynamicRegistry {
 	 * Exemple : création des domaines à partir d'un DT.
 	 *
 	 * @param dslDefinition dslDefinition
+	 * @return a list of dslDefinitions
 	 */
 	default List<DslDefinition> onNewDefinition(final DslDefinition dslDefinition) {
 		return Collections.emptyList();

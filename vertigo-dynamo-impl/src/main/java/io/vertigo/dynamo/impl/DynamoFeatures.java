@@ -56,7 +56,7 @@ public final class DynamoFeatures extends Features {
 		super("dynamo");
 	}
 
-	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, Param... params) {
+	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
 				.addPlugin(searchServicesPluginClass, params);
@@ -69,7 +69,7 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures addDataStorePlugin(Class<? extends DataStorePlugin> dataStorePlugin, Param... params) {
+	public DynamoFeatures addDataStorePlugin(final Class<? extends DataStorePlugin> dataStorePlugin, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(dataStorePlugin, params);
 		return this;
@@ -81,7 +81,7 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures addKVStorePlugin(Class<? extends KVStorePlugin> kvStorePlugin, Param... params) {
+	public DynamoFeatures addKVStorePlugin(final Class<? extends KVStorePlugin> kvStorePlugin, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(kvStorePlugin, params);
 		return this;
@@ -93,7 +93,7 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
-	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, Param... params) {
+	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(connectionProviderPluginClass, params);
 		return this;
