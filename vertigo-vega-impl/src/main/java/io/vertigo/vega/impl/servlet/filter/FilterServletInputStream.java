@@ -139,7 +139,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.InputStream#reset()
 	 */
 	@Override
-	synchronized public void mark(final int readlimit) {
+	public synchronized void mark(final int readlimit) {
 		in.mark(readlimit);
 	}
 
@@ -151,7 +151,7 @@ class FilterServletInputStream extends ServletInputStream {
 	 * @see java.io.IOException
 	 */
 	@Override
-	synchronized public void reset() throws IOException {
+	public synchronized void reset() throws IOException {
 		in.reset();
 	}
 

@@ -82,7 +82,7 @@ public abstract class DtListURI implements Serializable {
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
 	 */
-	public synchronized final String urn() {
+	public final synchronized String urn() {
 		if (urn == null) {
 			urn = buildUrn();
 			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);

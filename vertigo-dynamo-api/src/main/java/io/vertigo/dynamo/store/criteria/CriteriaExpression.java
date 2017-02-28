@@ -13,8 +13,8 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = 8301054336845536973L;
 
 	enum CriteriaOperator {
-		OR, //(2),
-		AND;//(2);
+		OR,
+		AND;
 	}
 
 	private final CriteriaOperator operator;

@@ -65,7 +65,7 @@ public final class XmlAssociation {
 			final boolean navigabilityA,
 			final boolean navigabilityB) {
 		Assertion.checkArgNotEmpty(code);
-		//Assertion.notEmpty(packageName);
+		/*packageName can be null*/
 		Assertion.checkArgNotEmpty(multiplicityA);
 		Assertion.checkArgNotEmpty(multiplicityB);
 		Assertion.checkArgNotEmpty(roleLabelA);
@@ -171,7 +171,7 @@ public final class XmlAssociation {
 
 	/**
 	 * @return Code de l'entité A participant à l'association
-	
+
 	 */
 	public String getCodeA() {
 		return codeA;
