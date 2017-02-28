@@ -208,7 +208,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	private Map<String, Object> createResponsesHeaders(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> headers = new LinkedHashMap<>();
 		if (webServiceDefinition.isAccessTokenPublish()) {
-			headers.put("x-access-token", createSchemaObject(String.class));
+			headers.put("x-access-token", createSchemaObject(String.class)); //not nullable
 		}
 		return headers;
 	}
@@ -231,9 +231,16 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Map<String, Object> headers) {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DESCRIPTION, description);
-		putIfNotEmpty(response, SCHEMA, createSchemaObject(returnType));
+		putIfNotEmpty(response, SCHEMA, createOptionalSchemaObject(returnType).orElse(null)); //return type could be void
 		putIfNotEmpty(response, "headers", headers);
 		return response;
+	}
+
+	private Optional<Map<String, Object>> createOptionalSchemaObject(final Type type) {
+		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
+			return Optional.empty();
+		}
+		return Optional.of(createSchemaObject(type));
 	}
 
 	private Map<String, Object> createSchemaObject(final Type type) {
@@ -248,12 +255,10 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		if (typeAndFormat[1] != null) {
 			schema.put("format", typeAndFormat[1]);
 		}
-		if (WebServiceTypeUtil.isAssignableFrom(void.class, type)) {
-			return null;
-		} else if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
+		if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
-			schema.put("items", createSchemaObject(itemsType));
+			schema.put("items", createSchemaObject(itemsType)); //type argument can't be void
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
@@ -292,7 +297,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 			final Type fieldType = getFieldType(dtField);
-			final Map<String, Object> fieldSchema = createSchemaObject(fieldType);
+			final Map<String, Object> fieldSchema = createSchemaObject(fieldType); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
 			if (dtField.isRequired()) {
 				required.add(fieldName);
@@ -341,7 +346,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		} else if (fieldType instanceof TypeVariable) {
 			usedFieldType = parameterClass;
 		}
-		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
+		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType); //field type can't be void
 		if ((field.getModifiers() & Modifier.FINAL) != 0
 				&& !Optional.class.isAssignableFrom(field.getType())) {
 			requireds.add(field.getName());
@@ -495,7 +500,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		putIfNotEmpty(parameter, DESCRIPTION, description);
 		parameter.put(REQUIRED, !webServiceParam.isOptional());
 		if (webServiceParam.getParamType() == WebServiceParamType.Body) {
-			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType()));
+			parameter.put(SCHEMA, createSchemaObject(webServiceParam.getGenericType())); //params are not void
 		} else if (webServiceParam.getParamType() == WebServiceParamType.InnerBody) {
 			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType()));
