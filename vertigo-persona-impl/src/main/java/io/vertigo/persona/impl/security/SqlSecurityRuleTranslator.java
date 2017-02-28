@@ -57,7 +57,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		String sep = "";
 		final String boolSep = " " + multiExpressionDefinition.getBoolOperator().toString() + " ";
 		if (multiExpressionDefinition.isBlock()) {
-			query.append("(");
+			query.append('(');
 		}
 		for (final DslExpression expression : multiExpressionDefinition.getExpressions()) {
 			query.append(sep);
@@ -70,7 +70,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 			sep = boolSep;
 		}
 		if (multiExpressionDefinition.isBlock()) {
-			query.append(")");
+			query.append(')');
 		}
 	}
 
@@ -93,7 +93,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 						query.append(userValue);
 						inSep = ",";
 					}
-					query.append(")");
+					query.append(')');
 				}
 			}
 		} else if (expressionDefinition.getValue() instanceof DslFixedValue) {
