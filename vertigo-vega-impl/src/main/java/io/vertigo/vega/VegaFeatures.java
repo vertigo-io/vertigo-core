@@ -60,6 +60,7 @@ public final class VegaFeatures extends Features {
 	private boolean securityEnabled;
 	private String myApiPrefix;
 	private Integer myPort;
+	private String myOriginCORSFilter;
 
 	public VegaFeatures() {
 		super("vega");
@@ -98,6 +99,11 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
+	public VegaFeatures withOriginCORSFilter(final String originCORSFilter) {
+		myOriginCORSFilter = originCORSFilter;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
@@ -109,9 +115,15 @@ public final class VegaFeatures extends Features {
 				.addComponent(CatalogWebServices.class)
 
 				//-- Handlers plugins
-				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
-				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
-				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
+				.addPlugin(ExceptionWebServiceHandlerPlugin.class);
+		if (myOriginCORSFilter != null) {
+			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class,
+					Param.create("originCORSFilter", myOriginCORSFilter));
+		} else {
+			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class);
+		}
+
+		getModuleConfigBuilder().addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
 		if (mySearchApiVersion != null) {
 			getModuleConfigBuilder()
