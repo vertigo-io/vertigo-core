@@ -21,13 +21,11 @@
 	<artifactId>vertigo</artifactId>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
-
+	
 	<properties>
-		<!-- Sonar for a global coverage of Junit tests -->
-		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.itReportPath>
-		<sonar.language>java</sonar.language>
+		<!-- For global junit test coverage -->
+		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
 	</properties>
 
 	<modules>
@@ -65,37 +63,6 @@
 				<configuration>
 					<skip>true</skip> <!-- No need to deploy the reactor -->
 				</configuration>
-			</plugin>
-			
-			<!-- Sonar for a global coverage of Junit tests -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.9</version>
-				<configuration>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<id>agent-for-ut</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>agent-for-it</id>
-						<goals>
-							<goal>prepare-agent-integration</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
