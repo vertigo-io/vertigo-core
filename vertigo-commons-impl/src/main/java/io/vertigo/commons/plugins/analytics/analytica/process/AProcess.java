@@ -127,15 +127,11 @@ public final class AProcess {
 		checkRegex(type, PROCESS_TYPE_REGEX, "process type");
 		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		checkRegex(type, LOCATION_REGEX, "location");
-		for (final String measureName : measures.keySet()) {
-			checkRegex(measureName, MEASURE_REGEX, "metadata name");
-		}
-		for (final String metaDataName : metaDatas.keySet()) {
-			checkRegex(metaDataName, METADATA_REGEX, "metadata name");
-		}
-		if (!measures.containsKey(DURATION)) {
-			throw new IllegalArgumentException("measures must contain DURATION");
-		}
+		measures.keySet()
+				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "metadata name"));
+		metaDatas.keySet()
+				.forEach(metaDataName -> checkRegex(metaDataName, METADATA_REGEX, "metadata name"));
+		Assertion.checkArgument(measures.containsKey(DURATION), "measures must contain DURATION");
 		if (measures.containsKey(SUB_DURATION) && measures.get(SUB_DURATION) > measures.get(DURATION)) {
 			throw new IllegalArgumentException("measures SUB_DURATION must be lower than DURATION (duration:" + measures.get(DURATION) + " < sub_duration:" + measures.get(SUB_DURATION) + ") in process type " + type + ", category  : " + category + " at " + startDate);
 		}

@@ -18,6 +18,9 @@
 package io.vertigo.commons.plugins.analytics.analytica;
 
 import java.net.UnknownHostException;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,6 +28,9 @@ import javax.inject.Named;
 import io.vertigo.commons.impl.analytics.AnalyticsAgentPlugin;
 import io.vertigo.commons.plugins.analytics.analytica.connector.AProcessConnector;
 import io.vertigo.commons.plugins.analytics.analytica.connector.LoggerConnector;
+import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
+import io.vertigo.commons.plugins.analytics.analytica.process.AProcessBuilder;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -33,9 +39,16 @@ import io.vertigo.lang.WrappedException;
  * @version $Id: AnalyticaAgentPlugin.java,v 1.6 2012/05/10 09:38:14 npiedeloup Exp $
  */
 public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
-	private static final String KEY_HOST_NAME = "\\{java.io.hostName\\}";
+	/**
+	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
+	 * l'application pendant le traitement d'une requete (thread).
+	 */
+	private static final ThreadLocal<Deque<AProcessBuilder>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
-	private final AProcessCollector processCollector;
+	private static final String KEY_HOST_NAME = "\\{java.io.hostName\\}";
+	private final String appName;
+	private final String location;
+
 	private final AProcessConnector processConnector;
 
 	/**
@@ -46,8 +59,8 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	@Inject
 	public AnalyticaAgentPlugin(@Named("systemName") final String systemName, @Named("systemLocation") final String systemLocation) {
 		processConnector = new LoggerConnector();
-		final String mySystemLocation = translateSystemLocation(systemLocation);
-		processCollector = new AProcessCollector(systemName, mySystemLocation);
+		appName = systemName;
+		location = translateSystemLocation(systemLocation);
 	}
 
 	private static String translateSystemLocation(final String systemLocation) {
@@ -60,32 +73,74 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void startProcess(final String processType, final String category) {
-		processCollector.startProcess(processType, category);
+	public void startProcess(final String type, final String category) {
+		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
+				.withLocation(location)
+				.withCategory(category);
+		push(processBuilder);
+	}
+
+	private static Deque<AProcessBuilder> getStack() {
+		final Deque<AProcessBuilder> stack = THREAD_LOCAL_PROCESS.get();
+		Assertion.checkNotNull(stack, "Pile non initialisée : startProcess()");
+		return stack;
+	}
+
+	private static void push(final AProcessBuilder processBuilder) {
+		Deque<AProcessBuilder> stack = THREAD_LOCAL_PROCESS.get();
+		if (stack == null) {
+			stack = new LinkedList<>();
+			THREAD_LOCAL_PROCESS.set(stack);
+		} else {
+			Assertion.checkState(stack.size() < 100, "the stack of AProcesses contains more than 100 process. All processes must be closed.\nStack:" + stack);
+		}
+		stack.push(processBuilder);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void incMeasure(final String measureType, final double value) {
-		processCollector.incMeasure(measureType, value);
+		getStack().peek()
+				.incMeasure(measureType, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void setMeasure(final String measureType, final double value) {
-		processCollector.setMeasure(measureType, value);
+		getStack().peek()
+				.setMeasure(measureType, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void addMetaData(final String metaDataName, final String value) {
-		processCollector.addMetaData(metaDataName, value);
+		getStack().peek()
+				.addMetaData(metaDataName, value);
+	}
+
+	/**
+	 * Termine le process courant.
+	 * Le processus courant devient alors le processus parent le cas échéant.
+	 * @return Process uniquement dans le cas ou c'est le processus parent.
+	 */
+	private Optional<AProcess> doStopProcess() {
+		final AProcess process = getStack().pop()
+				.build();
+		if (getStack().isEmpty()) {
+			//On est au processus racine on le collecte
+			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
+			return Optional.of(process);
+		}
+		getStack().peek()
+				.addSubProcess(process);
+		//On n'est pas dans le cas de la racine
+		return Optional.empty();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stopProcess() {
-		processCollector.stopProcess()
+		doStopProcess()
 				.ifPresent(processConnector::add);
 	}
 }
