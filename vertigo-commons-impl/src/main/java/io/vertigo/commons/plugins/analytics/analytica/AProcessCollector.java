@@ -27,10 +27,11 @@
  * but you are not obliged to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package io.vertigo.commons.plugins.analytics.analytica.connector;
+package io.vertigo.commons.plugins.analytics.analytica;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
 import io.vertigo.commons.plugins.analytics.analytica.process.AProcessBuilder;
@@ -44,10 +45,15 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  * @version $Id: AgentManagerImpl.java,v 1.7 2012/03/29 08:48:19 npiedeloup Exp $
  */
-public final class AProcessCollector {
-	private final AProcessConnector processConnector;
+final class AProcessCollector {
 	private final String appName;
 	private final String location;
+
+	/**
+	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
+	 * l'application pendant le traitement d'une requete (thread).
+	 */
+	private static final ThreadLocal<Deque<AProcessBuilder>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
 	/**
 	 * Constructor.
@@ -55,29 +61,13 @@ public final class AProcessCollector {
 	 * @param processConnector Collector output connector
 	 */
 
-	public AProcessCollector(final String appName, final String location, final AProcessConnector processConnector) {
+	AProcessCollector(final String appName, final String location) {
 		Assertion.checkNotNull(appName, "appName is required");
 		Assertion.checkNotNull(location, "location is required");
-		Assertion.checkNotNull(processConnector, "processConnector is required");
 		//-----------------------------------------------------------------
 		this.location = location;
 		this.appName = appName;
-		this.processConnector = processConnector;
 	}
-
-	public String getAppName() {
-		return appName;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	/**
-	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
-	 * l'application pendant le traitement d'une requete (thread).
-	 */
-	private static final ThreadLocal<Deque<AProcessBuilder>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
 	/**
 	 * Retourne le premier element de la pile (sans le retirer).
@@ -97,9 +87,7 @@ public final class AProcessCollector {
 
 	private static Deque<AProcessBuilder> getStack() {
 		final Deque<AProcessBuilder> stack = THREAD_LOCAL_PROCESS.get();
-		if (stack == null) {
-			throw new IllegalArgumentException("Pile non initialisée : startProcess()");
-		}
+		Assertion.checkNotNull(stack, "Pile non initialisée : startProcess()");
 		return stack;
 	}
 
@@ -128,21 +116,6 @@ public final class AProcessCollector {
 		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
 				.withLocation(location)
 				.withCategory(category);
-		push(processBuilder);
-		return this;
-	}
-
-	/**
-	 * Enregistre dans le thread courant le demarrage d'un process.
-	 * Doit respecter les regles sur le nom d'un process.
-	 * @param type Type de process
-	 * @param categories Process categories
-	 * @return this analytics process collector
-	 */
-	public AProcessCollector startProcess(final String type, final String... categories) {
-		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
-				.withLocation(location)
-				.withCategory(categories);
 		push(processBuilder);
 		return this;
 	}
@@ -184,46 +157,17 @@ public final class AProcessCollector {
 	/**
 	 * Termine le process courant.
 	 * Le processus courant devient alors le processus parent le cas échéant.
-	 * @return this analytics process collector
+	 * @return Process uniquement dans le cas ou c'est le processus parent.
 	 */
-	public AProcessCollector stopProcess() {
-		final AProcess process = doStopProcess();
-		if (process != null) {
-			processConnector.add(process);
-		}
-		return this;
-	}
-
-	/**
-	 * Termine le process courant.
-	 * Le processus courant devient alors le processus parent le cas echeant.
-	 * @return Processus uniquement dans le cas ou c'est le processus parent.
-	 */
-	private static AProcess doStopProcess() {
+	public Optional<AProcess> stopProcess() {
 		final AProcess process = pop().build();
 		if (getStack().isEmpty()) {
 			//On est au processus racine on le collecte
 			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
-			return process;
+			return Optional.of(process);
 		}
 		peek().addSubProcess(process);
 		//On n'est pas dans le cas de la racine : conformement au contrat on renvoie null
-		return null;
-	}
-
-	/**
-	 * Ajout d'un process deja assemble par une sonde.
-	 * Cet ajout peut-etre multi-thread.
-	 * @param process Process a ajouter
-	 */
-	public void add(final AProcess process) {
-		if (THREAD_LOCAL_PROCESS.get() != null) {
-			throw new IllegalStateException("A process is already have started. You can't add a new full process tree at this time.");
-		}
-		if (process == null) {
-			throw new NullPointerException("process is required");
-		}
-		//---------------------------------------------------------------------
-		processConnector.add(process);
+		return Optional.empty();
 	}
 }

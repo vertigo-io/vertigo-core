@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.commons.impl.analytics.AnalyticsAgentPlugin;
-import io.vertigo.commons.plugins.analytics.analytica.connector.AProcessCollector;
 import io.vertigo.commons.plugins.analytics.analytica.connector.AProcessConnector;
 import io.vertigo.commons.plugins.analytics.analytica.connector.LoggerConnector;
 import io.vertigo.lang.WrappedException;
@@ -37,6 +36,7 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	private static final String KEY_HOST_NAME = "\\{java.io.hostName\\}";
 
 	private final AProcessCollector processCollector;
+	private final AProcessConnector processConnector;
 
 	/**
 	 * Constructeur.
@@ -45,11 +45,9 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	 */
 	@Inject
 	public AnalyticaAgentPlugin(@Named("systemName") final String systemName, @Named("systemLocation") final String systemLocation) {
-		super();
-		//-----------------------------------------------------------------
-		final AProcessConnector processConnector = new LoggerConnector();
+		processConnector = new LoggerConnector();
 		final String mySystemLocation = translateSystemLocation(systemLocation);
-		processCollector = new AProcessCollector(systemName, mySystemLocation, processConnector);
+		processCollector = new AProcessCollector(systemName, mySystemLocation);
 	}
 
 	private static String translateSystemLocation(final String systemLocation) {
@@ -87,7 +85,7 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void stopProcess() {
-		processCollector.stopProcess();
+		processCollector.stopProcess()
+				.ifPresent(processConnector::add);
 	}
-
 }

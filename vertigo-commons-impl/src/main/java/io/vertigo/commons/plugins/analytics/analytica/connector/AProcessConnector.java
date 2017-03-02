@@ -38,6 +38,7 @@ import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
  * @author pchretien, npiedeloup
  * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $
  */
+@FunctionalInterface
 public interface AProcessConnector {
 	/**
 	 * Ajout d'un process dans le système.

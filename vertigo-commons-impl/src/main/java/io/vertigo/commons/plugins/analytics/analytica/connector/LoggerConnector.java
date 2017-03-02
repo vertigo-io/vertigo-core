@@ -33,21 +33,24 @@ import java.util.Collections;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
-import io.vertigo.commons.plugins.analytics.analytica.process.AProcessJsonCodec;
 
 /**
  * Processes connector which only use a log4j logger.
  * @author npiedeloup
  */
 public final class LoggerConnector implements AProcessConnector {
+	private static final Gson GSON = new GsonBuilder().create();
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final AProcess process) {
 		final Logger logger = Logger.getLogger(process.getType());
 		if (logger.isInfoEnabled()) {
-			final String json = AProcessJsonCodec.toJson(Collections.singletonList(process));
+			final String json = GSON.toJson(Collections.singletonList(process));
 			logger.info(json);
 		}
 	}

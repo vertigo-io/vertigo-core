@@ -30,12 +30,14 @@
 package io.vertigo.commons.plugins.analytics.analytica.process;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 
@@ -110,16 +112,8 @@ public final class AProcessBuilder {
 	}
 
 	public AProcessBuilder withLocation(final String... locations) {
-		int counter = 0;
-		final StringBuilder locationBuilder = new StringBuilder();
-		for (final String _location : locations) {
-			if (counter != 0) {
-				locationBuilder.append(AProcess.CATEGORY_SEPARATOR);
-			}
-			locationBuilder.append(_location);
-			counter++;
-		}
-		myLocation = locationBuilder.toString();
+		myLocation = Arrays.stream(locations)
+				.collect(Collectors.joining(AProcess.LOCATION_SEPARATOR));
 		return this;
 	}
 
@@ -129,16 +123,8 @@ public final class AProcessBuilder {
 	}
 
 	public AProcessBuilder withCategory(final String... categories) {
-		int counter = 0;
-		final StringBuilder categoryBuilder = new StringBuilder();
-		for (final String _category : categories) {
-			if (counter != 0) {
-				categoryBuilder.append(AProcess.CATEGORY_SEPARATOR);
-			}
-			categoryBuilder.append(_category);
-			counter++;
-		}
-		myCategory = categoryBuilder.toString();
+		myCategory = Arrays.stream(categories)
+				.collect(Collectors.joining(AProcess.CATEGORY_SEPARATOR));
 		return this;
 	}
 
@@ -172,15 +158,15 @@ public final class AProcessBuilder {
 
 	/**
 	 * Mise a jour d'une metadonnee.
-	 * @param mdName Nom de la metadonnee
+	 * @param mmetaDataName Nom de la metadonnee
 	 * @param mdValue  Valeur de la metadonnee
 	 * @return Builder
 	 */
-	public AProcessBuilder addMetaData(final String mdName, final String mdValue) {
-		Assertion.checkNotNull(mdName, "Metadata name is required");
-		Assertion.checkNotNull(mdValue, "Metadata value is required");
+	public AProcessBuilder addMetaData(final String mmetaDataName, final String mmetaDataValue) {
+		Assertion.checkNotNull(mmetaDataName, "Metadata name is required");
+		Assertion.checkNotNull(mmetaDataValue, "Metadata value is required");
 		//---------------------------------------------------------------------
-		metaDatas.put(mdName, mdValue);
+		metaDatas.put(mmetaDataName, mmetaDataValue);
 		return this;
 	}
 
@@ -212,7 +198,8 @@ public final class AProcessBuilder {
 	 * @return Builder
 	 */
 	public AProcessBuilder beginSubProcess(final String type, final Date subStartDate, final double subDurationMs) {
-		return new AProcessBuilder(appName, type, this, subStartDate, subDurationMs).withLocation(myLocation);
+		return new AProcessBuilder(appName, type, this, subStartDate, subDurationMs)
+				.withLocation(myLocation);
 	}
 
 	/**
