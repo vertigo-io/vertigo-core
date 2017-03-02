@@ -20,7 +20,6 @@ package io.vertigo.commons.plugins.analytics.analytica;
 import java.net.UnknownHostException;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,7 +56,9 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	 * @param systemLocation System location (Environment, Server, Jvm, ..)
 	 */
 	@Inject
-	public AnalyticaAgentPlugin(@Named("systemName") final String systemName, @Named("systemLocation") final String systemLocation) {
+	public AnalyticaAgentPlugin(
+			@Named("systemName") final String systemName,
+			@Named("systemLocation") final String systemLocation) {
 		processConnector = new LoggerConnector();
 		appName = systemName;
 		location = translateSystemLocation(systemLocation);
@@ -92,7 +93,7 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 			stack = new LinkedList<>();
 			THREAD_LOCAL_PROCESS.set(stack);
 		} else {
-			Assertion.checkState(stack.size() < 100, "the stack of AProcesses contains more than 100 process. All processes must be closed.\nStack:" + stack);
+			Assertion.checkState(stack.size() < 100, "the stack contains more than 100 process. All processes must be closed.\nStack:" + stack);
 		}
 		stack.push(processBuilder);
 	}
@@ -100,22 +101,19 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void incMeasure(final String measureType, final double value) {
-		getStack().peek()
-				.incMeasure(measureType, value);
+		getStack().peek().incMeasure(measureType, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void setMeasure(final String measureType, final double value) {
-		getStack().peek()
-				.setMeasure(measureType, value);
+		getStack().peek().setMeasure(measureType, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void addMetaData(final String metaDataName, final String value) {
-		getStack().peek()
-				.addMetaData(metaDataName, value);
+		getStack().peek().addMetaData(metaDataName, value);
 	}
 
 	/**
@@ -123,24 +121,17 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 	 * Le processus courant devient alors le processus parent le cas échéant.
 	 * @return Process uniquement dans le cas ou c'est le processus parent.
 	 */
-	private Optional<AProcess> doStopProcess() {
-		final AProcess process = getStack().pop()
-				.build();
-		if (getStack().isEmpty()) {
-			//On est au processus racine on le collecte
-			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
-			return Optional.of(process);
-		}
-		getStack().peek()
-				.addSubProcess(process);
-		//On n'est pas dans le cas de la racine
-		return Optional.empty();
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public void stopProcess() {
-		doStopProcess()
-				.ifPresent(processConnector::add);
+		final AProcess process = getStack().pop().build();
+		if (getStack().isEmpty()) {
+			//case of the root process, it's finished and must be sent to the connector
+			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
+			processConnector.add(process);
+		} else {
+			//case of a subProcess, it's finished and must be added to the stack
+			getStack().peek().addSubProcess(process);
+		}
 	}
 }
