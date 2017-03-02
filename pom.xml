@@ -26,7 +26,7 @@
 		<!-- Sonar for a global coverage of Junit tests -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.itReportPath>
 		<sonar.language>java</sonar.language>
 	</properties>
 
@@ -66,19 +66,33 @@
 					<skip>true</skip> <!-- No need to deploy the reactor -->
 				</configuration>
 			</plugin>
+			
+			<!-- Sonar for a global coverage of Junit tests -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.9</version>
 				<configuration>
-					<destFile>${sonar.jacoco.reportPath}</destFile>
 					<append>true</append>
 				</configuration>
 				<executions>
 					<execution>
-						<id>agent</id>
+						<id>agent-for-ut</id>
 						<goals>
 							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>agent-for-it</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
