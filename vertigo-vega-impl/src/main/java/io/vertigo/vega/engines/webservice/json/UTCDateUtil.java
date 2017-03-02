@@ -34,7 +34,7 @@ public final class UTCDateUtil {
 			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", //ISO8601
 			"EEE, dd MMM yyyy HH:mm:ss zzz", // RFC 822, updated by RFC 1123
 			"EEEE, dd-MMM-yy HH:mm:ss zzz", // RFC 850, obsoleted by RFC 1036
-	//not supported : "EEE MMM d HH:mm:ss yyyy", // ANSI C's asctime() format
+			//not supported : "EEE MMM d HH:mm:ss yyyy", // ANSI C's asctime() format
 	};
 
 	private UTCDateUtil() {

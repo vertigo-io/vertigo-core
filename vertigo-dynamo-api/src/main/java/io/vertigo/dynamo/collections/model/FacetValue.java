@@ -67,7 +67,7 @@ public final class FacetValue implements Serializable {
 	public String getCode() {
 		return code;
 	}
-	
+
 	/**
 	 * Returns the label of the facet.
 	 * This label must be human readable.
