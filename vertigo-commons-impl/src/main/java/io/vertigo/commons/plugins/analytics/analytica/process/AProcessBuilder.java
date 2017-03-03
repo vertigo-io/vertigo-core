@@ -183,7 +183,7 @@ public final class AProcessBuilder {
 		final StringBuilder metadataBuilder = new StringBuilder();
 		final Iterator<String> mdValuesIterator = mdValues.iterator();
 		while (mdValuesIterator.hasNext()) {
-			metadataBuilder.append(mdValuesIterator.next()).append("/");
+			metadataBuilder.append(mdValuesIterator.next()).append('/');
 		}
 
 		metaDatas.put(mdName, metadataBuilder.toString());
@@ -240,7 +240,7 @@ public final class AProcessBuilder {
 	public AProcess build() {
 		//Si on est dans le mode de construction en runtime, on ajoute la duree.
 		if (durationMs == null) {
-			durationMs = Long.valueOf(System.currentTimeMillis() - start).doubleValue();
+			durationMs = (double) (System.currentTimeMillis() - start);
 		}
 		//On ajoute la mesure obligatoire : duree
 		setMeasure(AProcess.DURATION, durationMs);
