@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.lang.Assertion;
 
@@ -37,7 +38,7 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	private final String category;
 	private final String analyticsMeasurePrefix;
 	private final boolean createSubProcess;
-	private final AnalyticsAgentPlugin analyticsAgent;
+	private final AnalyticsAgent analyticsAgent;
 
 	//Tableau des mesures identifiées par leur nom.
 	private final Map<String, Double> measures = new HashMap<>();
@@ -56,7 +57,7 @@ public final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	 * @param createSubProcess if subProcess is created
 	 * @param analyticsAgent Analytics agent to report execution
 	 */
-	AnalyticsTrackerImpl(final String processType, final String category, final boolean createSubProcess, final AnalyticsAgentPlugin analyticsAgent) {
+	AnalyticsTrackerImpl(final String processType, final String category, final boolean createSubProcess, final AnalyticsAgent analyticsAgent) {
 		Assertion.checkArgNotEmpty(processType);
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkNotNull(analyticsAgent);

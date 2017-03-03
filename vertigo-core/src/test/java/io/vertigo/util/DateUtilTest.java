@@ -187,7 +187,7 @@ public final class DateUtilTest {
 	public void testDaysBetweenDateTimeError() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).addMinutes(48).addDays(48).toDateTime();
-		expectThrows(IllegalArgumentException.class, ()->{
+		expectThrows(IllegalArgumentException.class, () -> {
 			final int days = DateUtil.daysBetween(now, date2);
 			nop(days);
 		});
@@ -222,7 +222,7 @@ public final class DateUtilTest {
 	public void testCompareDateError() {
 		final Date now = DateUtil.newDateTime();
 		final Date date2 = new DateBuilder(now).toDateTime();
-		expectThrows(IllegalArgumentException.class, ()->{
+		expectThrows(IllegalArgumentException.class, () -> {
 			final int compare = DateUtil.compareDate(now, date2);
 			nop(compare);
 		});

@@ -112,11 +112,21 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(), resultCluster, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(
+				searchQuery.getFacetedQuery(),
+				count,
+				dtc,
+				facets,
+				searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(),
+				resultCluster,
+				resultHighlights,
+				searchQuery);
 
 	}
 
-	private Map<FacetValue, DtList<I>> createCluster(final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
+	private Map<FacetValue, DtList<I>> createCluster(
+			final Map<String, I> dtcIndex,
+			final Map<I, Map<DtField, String>> resultHighlights) {
 		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
 		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
@@ -131,28 +141,27 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			//Cas des facettes par 'term'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
-			for (final Bucket value : multiBuckets.getBuckets()) {
-				final String term = value.getKeyAsString();
+			for (final Bucket bucket : multiBuckets.getBuckets()) {
+				final String term = bucket.getKeyAsString();
 				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
 				facetValue = new FacetValue(term, new ListFilter(query), label);
-				populateCluster(value, facetValue, resultCluster, dtcIndex, resultHighlights);
+				populateCluster(bucket, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
 		return resultCluster;
 	}
 
 	private static Bucket getBucketByKey(final MultiBucketsAggregation multiBuckets, final String facetName) {
-		for (final Bucket bucket : multiBuckets.getBuckets()) {
-			if (bucket.getKeyAsString().equals(facetName)) {
-				return bucket;
-			}
-		}
-		throw new VSystemException("No facet {0} found in result", facetName);
+		return multiBuckets.getBuckets()
+				.stream()
+				.filter(bucket -> bucket.getKeyAsString().equals(facetName))
+				.findFirst()
+				.orElseThrow(() -> new VSystemException("No facet {0} found in result", facetName));
 	}
 
-	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
-		final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+	private void populateCluster(final Bucket bucket, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
+		final SearchHits facetSearchHits = ((TopHits) bucket.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
 		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		for (final SearchHit searchHit : facetSearchHits) {
 			I result = dtcIndex.get(searchHit.getId());
@@ -193,21 +202,21 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
 				final Aggregation aggregation = queryResponse.getAggregations().get(facetDefinition.getName());
 				if (aggregation != null) {
-					final Facet currentFacet;
-					if (facetDefinition.isRangeFacet()) {
-						//Cas des facettes par 'range'
-						final MultiBucketsAggregation rangeBuckets = (MultiBucketsAggregation) aggregation;
-						currentFacet = createFacetRange(facetDefinition, rangeBuckets);
-					} else {
-						//Cas des facettes par 'term'
-						final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) aggregation;
-						currentFacet = createTermFacet(facetDefinition, multiBuckets);
-					}
-					facets.add(currentFacet);
+					final Facet facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
+					facets.add(facet);
 				}
 			}
 		}
 		return facets;
+	}
+
+	private static Facet createFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation aggregation) {
+		if (facetDefinition.isRangeFacet()) {
+			//Cas des facettes par 'range'
+			return createFacetRange(facetDefinition, aggregation);
+		}
+		//Cas des facettes par 'term'
+		return createTermFacet(facetDefinition, aggregation);
 	}
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation multiBuckets) {

@@ -49,7 +49,7 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(dslEntity)) {
 			//Only taskDefinitions are concerned
-			return (definitionSpace) -> createTaskDefinition(dslDefinition);
+			return definitionSpace -> createTaskDefinition(dslDefinition);
 		}
 		throw new IllegalStateException("The type of definition" + dslDefinition + " is not managed by me");
 	}

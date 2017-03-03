@@ -166,7 +166,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			if (converterSource != null) { //On ne convertit pas les null
 				jsonConverterToApply.populateWebServiceCallContext(converterSource, webServiceParam, routeContext);
 			} else if (webServiceParam.isOptional()) {
-				routeContext.setParamValue(webServiceParam, converterSource);
+				routeContext.setParamValue(webServiceParam, null /*converterSource*/);
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {

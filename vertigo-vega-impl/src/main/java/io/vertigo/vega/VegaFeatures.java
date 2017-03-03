@@ -20,6 +20,7 @@ package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.PluginConfig;
+import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -60,6 +61,7 @@ public final class VegaFeatures extends Features {
 	private boolean securityEnabled;
 	private String myApiPrefix;
 	private Integer myPort;
+	private String myOriginCORSFilter;
 
 	public VegaFeatures() {
 		super("vega");
@@ -98,9 +100,20 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
+	public VegaFeatures withOriginCORSFilter(final String originCORSFilter) {
+		myOriginCORSFilter = originCORSFilter;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
+
+		final PluginConfigBuilder corsAllowerPluginConfigBuilder = new PluginConfigBuilder(CorsAllowerWebServiceHandlerPlugin.class);
+		if (myOriginCORSFilter != null) {
+			corsAllowerPluginConfigBuilder.addParam(Param.create("originCORSFilter", myOriginCORSFilter));
+		}
+
 		getModuleConfigBuilder()
 				.withNoAPI()
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
@@ -110,7 +123,7 @@ public final class VegaFeatures extends Features {
 
 				//-- Handlers plugins
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
-				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
+				.addPlugin(corsAllowerPluginConfigBuilder.build())
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
 		if (mySearchApiVersion != null) {
