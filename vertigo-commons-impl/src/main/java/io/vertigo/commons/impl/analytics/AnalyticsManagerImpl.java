@@ -18,8 +18,9 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import java.util.List;
+
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -38,27 +39,16 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * Constructor.
 	 */
 	@Inject
-	public AnalyticsManagerImpl(
-			@Named("appName") final String appName,
-			@Named("appLocation") final String appLocation,
-			final AProcessConnectorPlugin processConnectorPlugin) {
-		Assertion.checkNotNull(appName);
-		Assertion.checkNotNull(appLocation);
-		Assertion.checkNotNull(processConnectorPlugin);
+	public AnalyticsManagerImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {
+		Assertion.checkNotNull(processConnectorPlugins);
 		//---
-		analyticsAgent = new AnalyticsAgentImpl(appName, appLocation, processConnectorPlugin);
+		analyticsAgent = new AnalyticsAgentImpl(processConnectorPlugins);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsAgent getAgent() {
 		return analyticsAgent;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AnalyticsTracker startLogTracker(final String processType, final String category) {
-		return new AnalyticsTrackerImpl(processType, category, false, analyticsAgent);
 	}
 
 	/** {@inheritDoc} */

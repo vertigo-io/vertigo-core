@@ -49,7 +49,7 @@ public final class TaskManagerImpl implements TaskManager {
 	/** {@inheritDoc} */
 	@Override
 	public TaskResult execute(final Task task) {
-		try (final AnalyticsTracker tracker = analyticsManager.startLogTracker("Task", task.getDefinition().getName())) {
+		try (final AnalyticsTracker tracker = analyticsManager.startTracker("Task", task.getDefinition().getName())) {
 			final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
 			final TaskResult taskResult = taskEngine.process(task);
 			tracker.markAsSucceeded();

@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  * Collect tracker.
  * @author npiedeloup
  */
-public final class AnalyticsTrackerImpl implements AnalyticsTracker {
+final class AnalyticsTrackerImpl implements AnalyticsTracker {
 
 	private final Logger logger;
 	private final String processType;

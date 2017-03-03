@@ -328,7 +328,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	private AnalyticsTracker createTracker() {
 		return analyticsManager
-				.startLogTracker("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())))
+				.startTracker("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())))
 				.addMetaData("statement", toString());
 	}
 

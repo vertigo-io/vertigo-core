@@ -3,6 +3,7 @@ package io.vertigo.commons.impl.analytics;
 import java.net.UnknownHostException;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.lang.Assertion;
@@ -12,38 +13,31 @@ import io.vertigo.lang.WrappedException;
  * Agent de collecte.
  * @author pchretien
  */
-public final class AnalyticsAgentImpl implements AnalyticsAgent {
+final class AnalyticsAgentImpl implements AnalyticsAgent {
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
 	 * l'application pendant le traitement d'une requete (thread).
 	 */
 	private static final ThreadLocal<Deque<AProcessBuilder>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
-	private static final String KEY_HOST_NAME = "\\{java.io.hostName\\}";
-	private final String appName;
+	/*appLocation location (Environment, Server, Jvm, ..) */
 	private final String appLocation;
-	private final AProcessConnectorPlugin processConnectorPlugin;
+	private final List<AProcessConnectorPlugin> processConnectorPlugins;
 
 	/**
 	 * Constructeur.
-	 * @param appName app name
 	 * @param appLocation location (Environment, Server, Jvm, ..)
 	 */
-	AnalyticsAgentImpl(
-			final String appName,
-			final String appLocation,
-			final AProcessConnectorPlugin processConnectorPlugin) {
-		Assertion.checkArgNotEmpty(appName);
-		Assertion.checkArgNotEmpty(appLocation);
-		Assertion.checkNotNull(processConnectorPlugin);
-		this.appName = appName;
-		this.appLocation = translateSystemLocation(appLocation);
-		this.processConnectorPlugin = processConnectorPlugin;
+	AnalyticsAgentImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {
+		Assertion.checkNotNull(processConnectorPlugins);
+		//---
+		appLocation = getHostName();
+		this.processConnectorPlugins = processConnectorPlugins;
 	}
 
-	private static String translateSystemLocation(final String systemLocation) {
+	private static String getHostName() {
 		try {
-			return systemLocation.replaceAll(KEY_HOST_NAME, java.net.InetAddress.getLocalHost().getHostName());
+			return java.net.InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
 			throw new WrappedException(e);
 		}
@@ -72,8 +66,8 @@ public final class AnalyticsAgentImpl implements AnalyticsAgent {
 	 * @param category Categorie du processus
 	 */
 	@Override
-	public void startProcess(final String type, final String category) {
-		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
+	public void startProcess(final String processType, final String category) {
+		final AProcessBuilder processBuilder = new AProcessBuilder("app", processType)
 				.withLocation(appLocation)
 				.withCategory(category);
 		push(processBuilder);
@@ -123,7 +117,8 @@ public final class AnalyticsAgentImpl implements AnalyticsAgent {
 		if (getStack().isEmpty()) {
 			//case of the root process, it's finished and must be sent to the connector
 			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
-			processConnectorPlugin.add(process);
+			processConnectorPlugins.forEach(
+					processConnectorPlugin -> processConnectorPlugin.add(process));
 		} else {
 			//case of a subProcess, it's finished and must be added to the stack
 			getStack().peek().addSubProcess(process);

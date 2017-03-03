@@ -26,7 +26,6 @@ import io.vertigo.lang.Manager;
  * @author pchretien, npiedeloup
  */
 public interface AnalyticsManager extends Manager {
-
 	/**
 	 * @return collect agent
 	 */
@@ -39,13 +38,4 @@ public interface AnalyticsManager extends Manager {
 	 * @return collect tracker
 	 */
 	AnalyticsTracker startTracker(final String processType, final String category);
-
-	/**
-	 * Start process logging (no subProcess, only local metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
-	 */
-	AnalyticsTracker startLogTracker(final String processType, final String category);
-
 }
