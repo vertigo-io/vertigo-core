@@ -3,9 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
+		<artifactId>vertigo</artifactId>
 		<version>0.9.4-SNAPSHOT</version>
-		<relativePath>../vertigo-parent</relativePath>
 	</parent>
 
 	<artifactId>vertigo-dynamo-plugin-elasticsearch_1_7</artifactId>

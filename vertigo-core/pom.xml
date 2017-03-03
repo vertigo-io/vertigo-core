@@ -23,9 +23,8 @@
 
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
+		<artifactId>vertigo</artifactId>
 		<version>0.9.4-SNAPSHOT</version>
-		<relativePath>../vertigo-parent</relativePath>
 	</parent>
 
 	<artifactId>vertigo-core</artifactId>
