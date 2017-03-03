@@ -18,14 +18,12 @@
  */
 package io.vertigo.commons.impl.analytics;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
-import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -34,17 +32,21 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
-	private final AnalyticsAgentPlugin analyticsAgent;
+	private final AnalyticsAgent analyticsAgent;
 
 	/**
 	 * Constructor.
-	 * @param agentPlugin Agent plugin used to report execution.
 	 */
 	@Inject
-	public AnalyticsManagerImpl(final Optional<AnalyticsAgentPlugin> agentPlugin) {
-		Assertion.checkNotNull(agentPlugin);
-		//-----
-		analyticsAgent = agentPlugin.orElse(new DummyAgentPlugin());
+	public AnalyticsManagerImpl(
+			@Named("appName") final String appName,
+			@Named("appLocation") final String appLocation,
+			final AProcessConnectorPlugin processConnectorPlugin) {
+		Assertion.checkNotNull(appName);
+		Assertion.checkNotNull(appLocation);
+		Assertion.checkNotNull(processConnectorPlugin);
+		//---
+		analyticsAgent = new AnalyticsAgentImpl(appName, appLocation, processConnectorPlugin);
 	}
 
 	/** {@inheritDoc} */

@@ -27,7 +27,7 @@
  * but you are not obliged to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package io.vertigo.commons.plugins.analytics.analytica.process;
+package io.vertigo.commons.impl.analytics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
-public final class AProcessBuilder {
+final class AProcessBuilder {
 	private final String appName;
 	private final String myType;
 	private final Date startDate;
@@ -74,7 +74,7 @@ public final class AProcessBuilder {
 	 * La duree du processus sera obtenue lors de l'appel a la methode build().
 	 * @param type Type du processus
 	 */
-	public AProcessBuilder(final String appName, final String type) {
+	AProcessBuilder(final String appName, final String type) {
 		this(appName, type, null, new Date(), null);
 	}
 
@@ -84,7 +84,7 @@ public final class AProcessBuilder {
 	 * @param startDate Date de debut processus
 	 * @param durationMs Duree du processus (Millisecondes)
 	 */
-	public AProcessBuilder(final String appName, final String type, final Date startDate, final double durationMs) {
+	AProcessBuilder(final String appName, final String type, final Date startDate, final double durationMs) {
 		this(appName, type, null, startDate, durationMs);
 	}
 
@@ -106,23 +106,23 @@ public final class AProcessBuilder {
 		this.durationMs = durationMs;
 	}
 
-	public AProcessBuilder withLocation(final String location) {
+	AProcessBuilder withLocation(final String location) {
 		myLocation = location;
 		return this;
 	}
 
-	public AProcessBuilder withLocation(final String... locations) {
+	AProcessBuilder withLocation(final String... locations) {
 		myLocation = Arrays.stream(locations)
 				.collect(Collectors.joining(AProcess.LOCATION_SEPARATOR));
 		return this;
 	}
 
-	public AProcessBuilder withCategory(final String category) {
+	AProcessBuilder withCategory(final String category) {
 		myCategory = category;
 		return this;
 	}
 
-	public AProcessBuilder withCategory(final String... categories) {
+	AProcessBuilder withCategory(final String... categories) {
 		myCategory = Arrays.stream(categories)
 				.collect(Collectors.joining(AProcess.CATEGORY_SEPARATOR));
 		return this;
@@ -135,7 +135,7 @@ public final class AProcessBuilder {
 	 * @param mValue  Valeur a incrementer
 	 * @return Builder
 	 */
-	public AProcessBuilder incMeasure(final String mName, final double mValue) {
+	AProcessBuilder incMeasure(final String mName, final double mValue) {
 		Assertion.checkNotNull(mName, "Measure name is required");
 		//---------------------------------------------------------------------
 		final Double lastmValue = measures.get(mName);
@@ -149,7 +149,7 @@ public final class AProcessBuilder {
 	 * @param mValue  Valeur é incrémenter
 	 * @return Builder
 	 */
-	public AProcessBuilder setMeasure(final String mName, final double mValue) {
+	AProcessBuilder setMeasure(final String mName, final double mValue) {
 		Assertion.checkNotNull(mName, "Measure name is required");
 		//---------------------------------------------------------------------
 		measures.put(mName, mValue);
@@ -162,7 +162,7 @@ public final class AProcessBuilder {
 	 * @param mmetaDataValue  Valeur de la metadonnee
 	 * @return Builder
 	 */
-	public AProcessBuilder addMetaData(final String mmetaDataName, final String mmetaDataValue) {
+	AProcessBuilder addMetaData(final String mmetaDataName, final String mmetaDataValue) {
 		Assertion.checkNotNull(mmetaDataName, "Metadata name is required");
 		Assertion.checkNotNull(mmetaDataValue, "Metadata value is required");
 		//---------------------------------------------------------------------
@@ -176,7 +176,7 @@ public final class AProcessBuilder {
 	 * @param mdValues Valeurs de la metadonnee
 	 * @return Builder
 	 */
-	public AProcessBuilder addMetaData(final String mdName, final Set<String> mdValues) {
+	AProcessBuilder addMetaData(final String mdName, final Set<String> mdValues) {
 		Assertion.checkNotNull(mdName, "Metadata name is required");
 		Assertion.checkNotNull(mdValues, "Metadata value is required");
 		//---------------------------------------------------------------------
@@ -197,7 +197,7 @@ public final class AProcessBuilder {
 	 * @param type Type du sous process
 	 * @return Builder
 	 */
-	public AProcessBuilder beginSubProcess(final String type, final Date subStartDate, final double subDurationMs) {
+	AProcessBuilder beginSubProcess(final String type, final Date subStartDate, final double subDurationMs) {
 		return new AProcessBuilder(appName, type, this, subStartDate, subDurationMs)
 				.withLocation(myLocation);
 	}
@@ -207,7 +207,7 @@ public final class AProcessBuilder {
 	 * Le sous processus est automatiquement ajoute au processus parent.
 	 * @return Builder
 	 */
-	public AProcessBuilder endSubProcess() {
+	AProcessBuilder endSubProcess() {
 		Assertion.checkNotNull(parent, "parent is required when you close a subprocess");
 		//---------------------------------------------------------------------
 		parent.addSubProcess(build());
@@ -219,7 +219,7 @@ public final class AProcessBuilder {
 	 * @param subProcess Sous-Processus a ajouter
 	 * @return Builder
 	 */
-	public AProcessBuilder addSubProcess(final AProcess subProcess) {
+	AProcessBuilder addSubProcess(final AProcess subProcess) {
 		return addSubProcess(subProcess, true);
 	}
 

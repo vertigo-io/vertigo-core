@@ -2,7 +2,7 @@
  * Analytica - beta version - Systems Monitoring Tool
  *
  * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiére - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ * KleeGroup, Centre d'affaire la Boursidière - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * This program is free software; you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation;
@@ -27,24 +27,32 @@
  * but you are not obliged to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package io.vertigo.commons.plugins.analytics.analytica.connector;
+package io.vertigo.commons.plugins.analytics.connector;
 
-import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
+import java.util.Collections;
+
+import org.apache.log4j.Logger;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import io.vertigo.commons.impl.analytics.AProcess;
+import io.vertigo.commons.impl.analytics.AProcessConnectorPlugin;
 
 /**
- * Connecteur des process.
- * Les messages sont composes des Processus et envoyes ; un consommateur les traitera.
- *
- * @author pchretien, npiedeloup
- * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $
+ * Processes connector which only use a log4j logger.
+ * @author npiedeloup
  */
-@FunctionalInterface
-public interface AProcessConnector {
-	/**
-	 * Ajout d'un process dans le système.
-	 * Cet ajout peut-etre multi-thread.
-	 * @param process Process a ajouter
-	 */
-	void add(AProcess process);
+public final class LoggerProcessConnectorPlugin implements AProcessConnectorPlugin {
+	private static final Gson GSON = new GsonBuilder().create();
 
+	/** {@inheritDoc} */
+	@Override
+	public void add(final AProcess process) {
+		final Logger logger = Logger.getLogger(process.getType());
+		if (logger.isInfoEnabled()) {
+			final String json = GSON.toJson(Collections.singletonList(process));
+			logger.info(json);
+		}
+	}
 }

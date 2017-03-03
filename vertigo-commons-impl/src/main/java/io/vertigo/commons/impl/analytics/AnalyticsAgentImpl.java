@@ -1,43 +1,18 @@
-/**
- * Analytica - beta version - Systems Monitoring Tool
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidi�re - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * This program is free software; you can redistribute it and/or modify it under the terms
- * of the GNU General Public License as published by the Free Software Foundation;
- * either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program;
- * if not, see <http://www.gnu.org/licenses>
- */
-package io.vertigo.commons.plugins.analytics.analytica;
+package io.vertigo.commons.impl.analytics;
 
 import java.net.UnknownHostException;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.vertigo.commons.impl.analytics.AnalyticsAgentPlugin;
-import io.vertigo.commons.plugins.analytics.analytica.connector.AProcessConnector;
-import io.vertigo.commons.plugins.analytics.analytica.connector.LoggerConnector;
-import io.vertigo.commons.plugins.analytics.analytica.process.AProcess;
-import io.vertigo.commons.plugins.analytics.analytica.process.AProcessBuilder;
+import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 /**
- * Impl�mentation de l'agent de collecte avec redirection vers Analytica.
- * @author pchretien, npiedeloup
- * @version $Id: AnalyticaAgentPlugin.java,v 1.6 2012/05/10 09:38:14 npiedeloup Exp $
+ * Agent de collecte.
+ * @author pchretien
  */
-public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
+public final class AnalyticsAgentImpl implements AnalyticsAgent {
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
 	 * l'application pendant le traitement d'une requete (thread).
@@ -46,22 +21,24 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 
 	private static final String KEY_HOST_NAME = "\\{java.io.hostName\\}";
 	private final String appName;
-	private final String location;
-
-	private final AProcessConnector processConnector;
+	private final String appLocation;
+	private final AProcessConnectorPlugin processConnectorPlugin;
 
 	/**
 	 * Constructeur.
-	 * @param systemName System name
-	 * @param systemLocation System location (Environment, Server, Jvm, ..)
+	 * @param appName app name
+	 * @param appLocation location (Environment, Server, Jvm, ..)
 	 */
-	@Inject
-	public AnalyticaAgentPlugin(
-			@Named("systemName") final String systemName,
-			@Named("systemLocation") final String systemLocation) {
-		processConnector = new LoggerConnector();
-		appName = systemName;
-		location = translateSystemLocation(systemLocation);
+	AnalyticsAgentImpl(
+			final String appName,
+			final String appLocation,
+			final AProcessConnectorPlugin processConnectorPlugin) {
+		Assertion.checkArgNotEmpty(appName);
+		Assertion.checkArgNotEmpty(appLocation);
+		Assertion.checkNotNull(processConnectorPlugin);
+		this.appName = appName;
+		this.appLocation = translateSystemLocation(appLocation);
+		this.processConnectorPlugin = processConnectorPlugin;
 	}
 
 	private static String translateSystemLocation(final String systemLocation) {
@@ -70,15 +47,6 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 		} catch (final UnknownHostException e) {
 			throw new WrappedException(e);
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void startProcess(final String type, final String category) {
-		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
-				.withLocation(location)
-				.withCategory(category);
-		push(processBuilder);
 	}
 
 	private static Deque<AProcessBuilder> getStack() {
@@ -98,19 +66,46 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 		stack.push(processBuilder);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Démarrage d'un processus.
+	 * @param processType Type du processus
+	 * @param category Categorie du processus
+	 */
+	@Override
+	public void startProcess(final String type, final String category) {
+		final AProcessBuilder processBuilder = new AProcessBuilder(appName, type)
+				.withLocation(appLocation)
+				.withCategory(category);
+		push(processBuilder);
+	}
+
+	/**
+	 * Incrémente une mesure (set si pas présente).
+	 * @param measureType Type de mesure
+	 * @param value Incrément de la mesure
+	 */
 	@Override
 	public void incMeasure(final String measureType, final double value) {
 		getStack().peek().incMeasure(measureType, value);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	* Affecte une valeur fixe à la mesure.
+	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas).
+	* @param measureType Type de mesure
+	* @param value valeur de la mesure
+	*/
 	@Override
 	public void setMeasure(final String measureType, final double value) {
 		getStack().peek().setMeasure(measureType, value);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Affecte une valeur fixe à une meta-donnée.
+	 *
+	 * @param metaDataName Nom de la meta-donnée
+	 * @param value Valeur de la meta-donnée
+	 */
 	@Override
 	public void addMetaData(final String metaDataName, final String value) {
 		getStack().peek().addMetaData(metaDataName, value);
@@ -128,7 +123,7 @@ public final class AnalyticaAgentPlugin implements AnalyticsAgentPlugin {
 		if (getStack().isEmpty()) {
 			//case of the root process, it's finished and must be sent to the connector
 			THREAD_LOCAL_PROCESS.remove(); //Et on le retire du ThreadLocal
-			processConnector.add(process);
+			processConnectorPlugin.add(process);
 		} else {
 			//case of a subProcess, it's finished and must be added to the stack
 			getStack().peek().addSubProcess(process);
