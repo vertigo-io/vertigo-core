@@ -81,6 +81,6 @@ final class DaemonTimerTask implements Runnable {
 		status = DaemonStat.Status.pending;
 		successes++;
 		lastExecSucceed = true;
-		LOG.info("Executio succeeded on daemon: " + daemonInfo.getName());
+		LOG.info("Execution succeeded on daemon: " + daemonInfo.getName());
 	}
 }
