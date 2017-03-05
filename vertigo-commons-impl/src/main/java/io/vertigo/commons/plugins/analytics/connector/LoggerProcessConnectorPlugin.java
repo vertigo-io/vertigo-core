@@ -55,4 +55,19 @@ public final class LoggerProcessConnectorPlugin implements AProcessConnectorPlug
 			logger.info(json);
 		}
 	}
+	//	if (logger.isInfoEnabled()) {
+	//		final StringBuilder sb = new StringBuilder()
+	//				.append("Finish ")
+	//				.append(category)
+	//				.append(success ? " successfully" : " with error").append(" in ( ")
+	//				.append(duration)
+	//				.append(" ms)");
+	//		if (!measures.isEmpty()) {
+	//			sb.append(" measures:").append(measures);
+	//		}
+	//		if (!metaData.isEmpty()) {
+	//			sb.append(" metaData:").append(metaData);
+	//		}
+	//		logger.info(sb.toString());
+	//	}
 }

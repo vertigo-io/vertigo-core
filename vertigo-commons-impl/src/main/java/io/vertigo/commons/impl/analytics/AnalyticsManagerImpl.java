@@ -54,7 +54,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsTracker startTracker(final String processType, final String category) {
-		return new AnalyticsTrackerImpl(processType, category, true, analyticsAgent);
+		return new AnalyticsTrackerImpl(processType, category, analyticsAgent);
 	}
 
 }

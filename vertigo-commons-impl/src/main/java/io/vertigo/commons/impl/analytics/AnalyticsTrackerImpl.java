@@ -21,8 +21,6 @@ package io.vertigo.commons.impl.analytics;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.lang.Assertion;
@@ -32,12 +30,6 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 final class AnalyticsTrackerImpl implements AnalyticsTracker {
-
-	private final Logger logger;
-	private final String processType;
-	private final String category;
-	private final String analyticsMeasurePrefix;
-	private final boolean createSubProcess;
 	private final AnalyticsAgent analyticsAgent;
 
 	//Tableau des mesures identifiées par leur nom.
@@ -45,8 +37,6 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 
 	//Tableau des métadonnées identifiées par leur nom.
 	private final Map<String, String> metaData = new HashMap<>();
-
-	private final long start;
 
 	private boolean success;
 
@@ -57,23 +47,12 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	 * @param createSubProcess if subProcess is created
 	 * @param analyticsAgent Analytics agent to report execution
 	 */
-	AnalyticsTrackerImpl(final String processType, final String category, final boolean createSubProcess, final AnalyticsAgent analyticsAgent) {
+	AnalyticsTrackerImpl(final String processType, final String category, final AnalyticsAgent analyticsAgent) {
 		Assertion.checkArgNotEmpty(processType);
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkNotNull(analyticsAgent);
-		this.processType = processType;
-		this.category = category;
-		this.createSubProcess = createSubProcess;
+		//---
 		this.analyticsAgent = analyticsAgent;
-		logger = Logger.getLogger(processType);
-		analyticsMeasurePrefix = createSubProcess ? "" : processType;
-		start = System.currentTimeMillis();
-		if (createSubProcess) {
-			analyticsAgent.startProcess(processType, category);
-		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("Start " + category);
-		}
 	}
 
 	/** {@inheritDoc} */
@@ -81,7 +60,7 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	public AnalyticsTracker incMeasure(final String measureType, final double value) {
 		final Double prevValue = measures.get(measureType);
 		measures.put(measureType, prevValue != null ? (prevValue + value) : value);
-		analyticsAgent.incMeasure(analyticsMeasurePrefix + measureType, value);
+		analyticsAgent.incMeasure(measureType, value);
 		return this;
 	}
 
@@ -89,7 +68,7 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	@Override
 	public AnalyticsTracker setMeasure(final String measureType, final double value) {
 		measures.put(measureType, value);
-		analyticsAgent.setMeasure(analyticsMeasurePrefix + measureType, value);
+		analyticsAgent.setMeasure(measureType, value);
 		return this;
 	}
 
@@ -97,7 +76,7 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	@Override
 	public AnalyticsTracker addMetaData(final String metaDataName, final String value) {
 		metaData.put(metaDataName, value);
-		analyticsAgent.addMetaData(analyticsMeasurePrefix + metaDataName, value);
+		analyticsAgent.addMetaData(metaDataName, value);
 		return this;
 	}
 
@@ -111,30 +90,9 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker {
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
-		final long duration = System.currentTimeMillis() - start;
-		if (createSubProcess) {
-			//on ne place pas cette mesure si pas de process local
-			analyticsAgent.setMeasure("errorPct", success ? 0 : 100);
-			analyticsAgent.stopProcess();
-		} else {
-			analyticsAgent.incMeasure(processType + "Count", 1);
-			analyticsAgent.incMeasure(processType + "Duration", duration);
-		}
-		if (logger.isInfoEnabled()) {
-			final StringBuilder sb = new StringBuilder()
-					.append("Finish ")
-					.append(category)
-					.append(success ? " successfully" : " with error").append(" in ( ")
-					.append(duration)
-					.append(" ms)");
-			if (!measures.isEmpty()) {
-				sb.append(" measures:").append(measures);
-			}
-			if (!metaData.isEmpty()) {
-				sb.append(" metaData:").append(metaData);
-			}
-			logger.info(sb.toString());
-		}
+		//on ne place pas cette mesure si pas de process local
+		analyticsAgent.setMeasure("errorPct", success ? 0 : 100);
+		analyticsAgent.stopProcess();
 	}
 
 }

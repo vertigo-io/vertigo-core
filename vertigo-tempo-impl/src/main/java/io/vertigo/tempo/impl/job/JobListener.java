@@ -54,9 +54,9 @@ final class JobListener {
 	}
 
 	void onStart(final JobDefinition jobDefinition) {
-		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
-		analyticsManager.getAgent().setMeasure(ME_USER_ERROR_PCT, 0D);
-		analyticsManager.getAgent().setMeasure(ME_ERROR_PCT, 0D);
+		analyticsManager.startTracker(PROCESS_TYPE, jobDefinition.getName())
+				.setMeasure(ME_USER_ERROR_PCT, 0D)
+				.setMeasure(ME_ERROR_PCT, 0D);
 		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 	}
 
