@@ -33,7 +33,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -138,7 +138,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final E result = getEntityManager().find(objectClass, uri.getId());
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
@@ -194,7 +194,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition));
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
 			final String tableName = getTableName(dtDefinition);
@@ -241,7 +241,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
 		final String serviceName = "Jpa:find " + taskName;
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 			//PK de la DtList recherchée
 			final String idFieldName = dtDefinition.getIdField().get().getName();
@@ -293,7 +293,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final EntityManager entityManager = getEntityManager();
 			if (persist) { //si pas de PK exception
 				//Si l'objet est en cours de création (pk null)
@@ -318,7 +318,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final Object dto = loadWithoutClear(uri);
 			if (dto == null) {
 				throw new VSystemException("Aucune ligne supprimée");
@@ -339,7 +339,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
-		try (AnalyticsTracker tracker = analyticsManager.startTracker("Jpa", serviceName)) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
 			final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 			final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
