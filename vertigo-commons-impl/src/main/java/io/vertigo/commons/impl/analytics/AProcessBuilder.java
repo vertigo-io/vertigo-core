@@ -33,10 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
@@ -65,9 +63,7 @@ final class AProcessBuilder {
 	private final Map<String, String> metaDatas;
 
 	private final long start;
-	private Double durationMs = null;
 	private final List<AProcess> subProcesses;
-	private final AProcessBuilder parent;
 
 	/**
 	 * Constructeur.
@@ -75,20 +71,10 @@ final class AProcessBuilder {
 	 * @param type Type du processus
 	 */
 	AProcessBuilder(final String appName, final String type) {
-		this(appName, type, null, new Date(), null);
+		this(appName, type, new Date());
 	}
 
-	/**
-	 * Constructeur .
-	 * @param type Type du processus
-	 * @param startDate Date de debut processus
-	 * @param durationMs Duree du processus (Millisecondes)
-	 */
-	AProcessBuilder(final String appName, final String type, final Date startDate, final double durationMs) {
-		this(appName, type, null, startDate, durationMs);
-	}
-
-	private AProcessBuilder(final String appName, final String type, final AProcessBuilder parent, final Date startDate, final Double durationMs) {
+	private AProcessBuilder(final String appName, final String type, final Date startDate) {
 		Assertion.checkNotNull(appName, "appName is required");
 		Assertion.checkNotNull(type, "type of process is required");
 		Assertion.checkNotNull(startDate, "start of process is required");
@@ -101,9 +87,6 @@ final class AProcessBuilder {
 		subProcesses = new ArrayList<>();
 		this.startDate = startDate;
 		start = startDate.getTime();
-		this.parent = parent;
-		//---------------------------------------------------------------------
-		this.durationMs = durationMs;
 	}
 
 	AProcessBuilder withLocation(final String location) {
@@ -171,65 +154,15 @@ final class AProcessBuilder {
 	}
 
 	/**
-	 * Mise a jour d'une metadonnee.
-	 * @param mdName Nom de la metadonnee
-	 * @param mdValues Valeurs de la metadonnee
-	 * @return Builder
-	 */
-	AProcessBuilder addMetaData(final String mdName, final Set<String> mdValues) {
-		Assertion.checkNotNull(mdName, "Metadata name is required");
-		Assertion.checkNotNull(mdValues, "Metadata value is required");
-		//---------------------------------------------------------------------
-		final StringBuilder metadataBuilder = new StringBuilder();
-		final Iterator<String> mdValuesIterator = mdValues.iterator();
-		while (mdValuesIterator.hasNext()) {
-			metadataBuilder.append(mdValuesIterator.next()).append('/');
-		}
-
-		metaDatas.put(mdName, metadataBuilder.toString());
-		return this;
-	}
-
-	/**
-	 * Ajout d'un sous processus.
-	 * @param subStartDate Date de debut
-	 * @param subDurationMs Duree du sous process en Ms
-	 * @param type Type du sous process
-	 * @return Builder
-	 */
-	AProcessBuilder beginSubProcess(final String type, final Date subStartDate, final double subDurationMs) {
-		return new AProcessBuilder(appName, type, this, subStartDate, subDurationMs)
-				.withLocation(myLocation);
-	}
-
-	/**
-	 * Fin d'un sous processus.
-	 * Le sous processus est automatiquement ajoute au processus parent.
-	 * @return Builder
-	 */
-	AProcessBuilder endSubProcess() {
-		Assertion.checkNotNull(parent, "parent is required when you close a subprocess");
-		//---------------------------------------------------------------------
-		parent.addSubProcess(build());
-		return parent;
-	}
-
-	/**
 	 * Ajout d'un sous processus.
 	 * @param subProcess Sous-Processus a ajouter
 	 * @return Builder
 	 */
 	AProcessBuilder addSubProcess(final AProcess subProcess) {
-		return addSubProcess(subProcess, true);
-	}
-
-	private AProcessBuilder addSubProcess(final AProcess subProcess, final boolean addSubDuration) {
 		Assertion.checkNotNull(subProcess, "sub process is required ");
 		//---------------------------------------------------------------------
 		subProcesses.add(subProcess);
-		if (addSubDuration) {
-			incMeasure(AProcess.SUB_DURATION, subProcess.getDuration());
-		}
+		incMeasure(AProcess.SUB_DURATION, subProcess.getDuration());
 		return this;
 	}
 
@@ -239,9 +172,7 @@ final class AProcessBuilder {
 	 */
 	public AProcess build() {
 		//Si on est dans le mode de construction en runtime, on ajoute la duree.
-		if (durationMs == null) {
-			durationMs = (double) (System.currentTimeMillis() - start);
-		}
+		final long durationMs = System.currentTimeMillis() - start;
 		//On ajoute la mesure obligatoire : duree
 		setMeasure(AProcess.DURATION, durationMs);
 		return new AProcess(

@@ -18,26 +18,15 @@
  */
 package io.vertigo.commons.analytics;
 
-import java.util.Optional;
-
-import io.vertigo.lang.Manager;
-
 /**
- * Main access to all analytics functions.
+ * This interface defines a collect tracker.
+ * This tracker must be used to collect data during a process.
  *
  * @author pchretien, npiedeloup
  */
-public interface AnalyticsManager extends Manager {
-	/**
-	 * @return the current tracker if it has been created before
-	 */
-	Optional<AnalyticsTracker> getCurrentTracker();
+public interface AnalyticsTrackerWritable extends AnalyticsTracker, AutoCloseable {
 
-	/**
-	 * Start process (may be a sub-process with its own metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
-	 */
-	AnalyticsTrackerWritable createTracker(final String processType, final String category);
+	/** {@inheritDoc} */
+	@Override
+	void close();
 }

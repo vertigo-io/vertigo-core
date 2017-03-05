@@ -99,28 +99,29 @@ public final class AProcess {
 
 	/**
 	 * @param appName Nom de l'application
-	 * @param type Type du processus
+	 * @param type the type of the proceee
 	 * @param category  Category
 	 * @param startDate Date du processus
 	 * @param measures Mesures du processus
-	 * @param metaDatas Metadonnées du processus
-	 * @param subProcesses Liste des sous processus
+	 * @param metaDatas lis of the metadatas
+	 * @param subProcesses list of the sub processes (0..*)
 	 */
-	AProcess(final String appName, final String type,
+	AProcess(final String appName,
+			final String type,
 			final String category,
 			final String location,
 			final Date startDate,
 			final Map<String, Double> measures,
 			final Map<String, String> metaDatas,
 			final List<AProcess> subProcesses) {
-		Assertion.checkNotNull(appName, "appName is required");
-		Assertion.checkNotNull(type, "type of process is required");
-		Assertion.checkNotNull(category, "category of process is required");
-		Assertion.checkNotNull(location, "location of process is required");
-		Assertion.checkNotNull(startDate, "startDate is required");
-		Assertion.checkNotNull(measures, "measures are required");
-		Assertion.checkNotNull(metaDatas, "metaDatas are required");
-		Assertion.checkNotNull(subProcesses, "subProcesses are required");
+		Assertion.checkNotNull(appName, "the appName is required");
+		Assertion.checkNotNull(type, "the type of the process is required");
+		Assertion.checkNotNull(category, "the category of the process is required");
+		Assertion.checkNotNull(location, "the location of the process is required");
+		Assertion.checkNotNull(startDate, "the startDate is required");
+		Assertion.checkNotNull(measures, "the measures are required");
+		Assertion.checkNotNull(metaDatas, "the metaDatas are required");
+		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
 
 		//---
 		checkRegex(appName, APP_NAME_REGEX, "appName");

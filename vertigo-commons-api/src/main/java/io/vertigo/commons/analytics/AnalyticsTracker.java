@@ -24,8 +24,7 @@ package io.vertigo.commons.analytics;
  *
  * @author pchretien, npiedeloup
  */
-public interface AnalyticsTracker extends AutoCloseable {
-
+public interface AnalyticsTracker {
 	/**
 	 * Increments a measure (creates if not exists).
 	 * @param measureType the type of the measure
@@ -58,7 +57,9 @@ public interface AnalyticsTracker extends AutoCloseable {
 	 */
 	AnalyticsTracker markAsSucceeded();
 
-	/** {@inheritDoc} */
-	@Override
-	void close();
+	/**
+	 * Marks this tracker as Failed.
+	 * @return this tracker
+	 */
+	AnalyticsTracker markAsFailed(Exception e);
 }

@@ -32,6 +32,10 @@ import io.vertigo.AbstractTestCaseJU4;
  */
 public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 
+	private static final String PRICE = "MONTANT";
+
+	private static final String WEIGHT = "POIDS";
+
 	/** Base de données gérant les articles envoyés dans une commande. */
 	private static final String PROCESS_TYPE = "ARTICLE";
 
@@ -48,10 +52,10 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
 			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure("POIDS", 25)
-						.incMeasure("MONTANT", 10);
+				tracker.incMeasure(WEIGHT, 25)
+						.incMeasure(PRICE, 10);
 			}
 			tracker.markAsSucceeded();
 		}
@@ -62,12 +66,14 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testNoProcess() {
-		analyticsManager.getAgent().incMeasure("POIDS", 25);
+		analyticsManager.getCurrentTracker().ifPresent(
+				tracker -> tracker.incMeasure(WEIGHT, 25));
 		//Dans le cas du dummy ça doit passer
 	}
 
 	/**
 	 * Même test après désactivation.
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void testOff() {
@@ -79,13 +85,14 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 * Test sur l'envoi de 1000 commandes contenant chacune 1000 articles d'un poids de 25 kg.
 	 * Chaque article coute 10€.
 	 * Les frais d'envoi sont de 5€.
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Commandes")) {
+		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker(PROCESS_TYPE, "1000 Commandes")) {
 			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure("MONTANT", 5);
+				tracker.incMeasure(PRICE, 5);
 				test1000Articles();
 			}
 			tracker.markAsSucceeded();

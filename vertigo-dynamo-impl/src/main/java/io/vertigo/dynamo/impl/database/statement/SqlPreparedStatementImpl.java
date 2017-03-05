@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
@@ -258,7 +258,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(domain);
 		//-----
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
+		try (AnalyticsTrackerWritable tracker = createTracker()) {
 			// ResultSet JDBC
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			try (final ResultSet resultSet = statement.executeQuery()) {
@@ -280,7 +280,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state.assertDefinedState();
 		//---
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
+		try (AnalyticsTrackerWritable tracker = createTracker()) {
 			//execution de la Requête
 			final int res = statement.executeUpdate();
 			success = true;
@@ -306,7 +306,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state.assertDefinedState();
 		//---
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
+		try (AnalyticsTrackerWritable tracker = createTracker()) {
 			final int[] res = statement.executeBatch();
 
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -326,10 +326,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/**
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private AnalyticsTracker createTracker() {
-		return analyticsManager
-				.startTracker("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())))
-				.addMetaData("statement", toString());
+	private AnalyticsTrackerWritable createTracker() {
+		final AnalyticsTrackerWritable analyticsTrackerWritable = analyticsManager.createTracker("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())));
+		analyticsTrackerWritable.addMetaData("statement", toString());
+		return analyticsTrackerWritable;
 	}
 
 	//=========================================================================
