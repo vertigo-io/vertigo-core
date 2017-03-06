@@ -127,14 +127,4 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 		causeException = e;
 		return this;
 	}
-
-	@Override
-	public void exec(final Runnable runnable) {
-		try {
-			runnable.run();
-			markAsSucceeded();
-		} catch (final Exception e) {
-			markAsFailed(e);
-		}
-	}
 }

@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.analytics;
 
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
-import io.vertigo.commons.plugins.analytics.connector.LoggerProcessConnectorPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -52,13 +50,10 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	public AnalyticsManagerImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
 		//---
-		//pout tester >>
-		//pout tester >>
-		//pout tester >>
-		this.processConnectorPlugins = Collections.singletonList(new LoggerProcessConnectorPlugin());
-		//		this.processConnectorPlugins = processConnectorPlugins;
+		this.processConnectorPlugins = processConnectorPlugins;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Optional<AnalyticsTracker> getCurrentTracker() {
 		final Optional<AnalyticsTrackerImpl> analyticsTrackerOpt = doGetCurrentTracker();

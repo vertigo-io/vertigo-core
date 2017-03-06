@@ -39,10 +39,8 @@ package io.vertigo.commons.impl.analytics;
 @FunctionalInterface
 public interface AProcessConnectorPlugin {
 	/**
-	 * Ajout d'un process dans le système.
-	 * Cet ajout peut-etre multi-thread.
-	 * @param process Process a ajouter
+	 * Adds a process to a connector which acts as a consumer.
+	 * @param process the process
 	 */
 	void add(AProcess process);
-
 }
