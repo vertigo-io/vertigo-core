@@ -21,9 +21,12 @@ package io.vertigo.commons.analytics;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.analytics.data.TestAProcessConnectorPlugin;
+import io.vertigo.commons.analytics.data.TestAnalyticsAspectServices;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -44,6 +47,9 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 
 	@Inject
 	private AnalyticsManager analyticsManager;
+
+	@Inject
+	private TestAnalyticsAspectServices analyticsAspectServices;
 
 	/**
 	 * Test simple avec deux compteurs.
@@ -69,6 +75,65 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 		analyticsManager.getCurrentTracker().ifPresent(
 				tracker -> tracker.incMeasure(WEIGHT, 25));
 		//Dans le cas du dummy ça doit passer
+	}
+
+	@Test
+	public void testAspect() {
+		TestAProcessConnectorPlugin.reset();
+		final int result = analyticsAspectServices.add(1, 2);
+		Assert.assertEquals(3, result);
+		//---
+		Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+	}
+
+	@Test
+	public void testConnectors() {
+		TestAProcessConnectorPlugin.reset();
+		for (int i = 0; i < 50; i++) {
+			final int result = analyticsAspectServices.add(i, 2 * i);
+			Assert.assertEquals(3 * i, result);
+		}
+		for (int i = 0; i < 50; i++) {
+			analyticsAspectServices.checkPositive(i);
+		}
+		Assert.assertEquals(100, TestAProcessConnectorPlugin.getCount());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testFail() {
+		TestAProcessConnectorPlugin.reset();
+		try {
+			analyticsAspectServices.checkPositive(-1);
+		} catch (final IllegalStateException e) {
+			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
+			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+			throw e;
+		}
+
+	}
+
+	@Test
+	public void testSetMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		Assert.assertEquals(null, TestAProcessConnectorPlugin.getLastPrice());
+		analyticsAspectServices.setMeasure();
+		Assert.assertEquals(100D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+	}
+
+	@Test
+	public void testSetAndIncMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		analyticsAspectServices.setAndIncMeasure();
+		Assert.assertEquals(120D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+	}
+
+	@Test
+	public void testIncMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		analyticsAspectServices.incMeasure();
+		Assert.assertEquals(10D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
 	}
 
 	/**

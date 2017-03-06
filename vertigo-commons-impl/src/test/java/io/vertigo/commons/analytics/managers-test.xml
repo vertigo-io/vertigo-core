@@ -1,6 +1,13 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<module name="vertigo-commons">
-		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl"/>
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl">
+			<plugin class="io.vertigo.commons.analytics.data.TestAProcessConnectorPlugin" />
+		</component>
+		<aspect class="io.vertigo.commons.impl.analytics.AnnalyticsAspect" />
+	</module>
+
+	<module name="vertigo-commons" api="false">
+		<component class="io.vertigo.commons.analytics.data.TestAnalyticsAspectServices"/>
 	</module>
 </config>
