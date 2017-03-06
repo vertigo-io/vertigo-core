@@ -73,7 +73,6 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Même test après désactivation.
-	 * @throws InterruptedException
 	 */
 	@Test
 	public void testOff() {
@@ -85,7 +84,6 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 * Test sur l'envoi de 1000 commandes contenant chacune 1000 articles d'un poids de 25 kg.
 	 * Chaque article coute 10€.
 	 * Les frais d'envoi sont de 5€.
-	 * @throws InterruptedException
 	 */
 	@Test
 	public void test1000Commandes() {
