@@ -20,6 +20,7 @@ package io.vertigo.core.component.aop;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +29,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.core.component.aop.data.components.A;
 import io.vertigo.core.component.aop.data.components.B;
@@ -69,6 +71,21 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		assertEquals(17, comp.multi(2, 3));
+	}
+
+	@Test
+	public final void testUnwrapp() {
+		final AopPlugin aopPlugin = getApp().getConfig().getBootConfig().getAopPlugin();
+		final F f = getApp().getComponentSpace().resolve(F.class);
+		// Il y a des aspects sur la classe donc elle doit être dewrappable
+		assertNotEquals(F.class.getName(), f.getClass().getName());
+		assertEquals(F.class.getName(), aopPlugin.unwrap(f).getClass().getName());
+
+		// Il y a pas d'aspect
+		final A myA = getApp().getComponentSpace().resolve(A.class);
+		assertEquals(A.class.getName(), myA.getClass().getName());
+		assertEquals(A.class.getName(), aopPlugin.unwrap(myA).getClass().getName());
+
 	}
 
 	@Override
