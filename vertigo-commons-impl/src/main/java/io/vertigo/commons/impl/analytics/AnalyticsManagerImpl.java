@@ -55,7 +55,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		//---
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
-		enabled = !processConnectorPlugins.isEmpty();
+		enabled = !this.processConnectorPlugins.isEmpty();
 	}
 
 	/** {@inheritDoc} */

@@ -46,22 +46,12 @@ public final class TaskManagerImpl implements TaskManager {
 		this.analyticsManager = analyticsManager;
 	}
 
-	//	@Override
-	//	public TaskResult execute(final Task task) {
-	//		try (final AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Task", task.getDefinition().getName())) {
-	//			final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
-	//			final TaskResult taskResult = taskEngine.process(task);
-	//			tracker.markAsSucceeded();
-	//			return taskResult;
-	//		}
-	//	}
-
 	/** {@inheritDoc} */
 	@Override
 	public TaskResult execute(final Task task) {
 		return analyticsManager
 				.trackWithReturn("Task", task.getDefinition().getName(),
-				tracker -> doExecute(tracker, task));
+						tracker -> doExecute(tracker, task));
 	}
 
 	private TaskResult doExecute(final AnalyticsTracker tracker, final Task task) {

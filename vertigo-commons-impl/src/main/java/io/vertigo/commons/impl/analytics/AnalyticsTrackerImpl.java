@@ -94,7 +94,7 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 			setMeasure("success", succeeded ? 100 : 0);
 		}
 		if (causeException != null) {
-			addMetaData("execption", causeException.getClass().getName());
+			addMetaData("exception", causeException.getClass().getName());
 		}
 		final AProcess process = stack.pop().build();
 		if (stack.isEmpty()) {
