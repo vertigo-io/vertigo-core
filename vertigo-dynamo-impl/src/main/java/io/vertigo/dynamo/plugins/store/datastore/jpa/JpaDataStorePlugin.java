@@ -33,7 +33,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
+import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -138,14 +138,17 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final E result = getEntityManager().find(objectClass, uri.getId());
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
-					.markAsSucceeded();
-			return result;
-			//Objet null géré par le dataStore
-		}
+		return analyticsManager.trackWithReturn("Jpa", serviceName,
+				tracker -> doLoadWithoutClear(tracker, uri));
+
+	}
+
+	private <E extends Entity> E doLoadWithoutClear(final AnalyticsTracker tracker, final URI<E> uri) {
+		final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+		final E result = getEntityManager().find(objectClass, uri.getId());
+		tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+		return result;
+		//Objet null géré par le dataStore
 	}
 
 	/** {@inheritDoc} */
@@ -194,29 +197,32 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition));
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
-			final String tableName = getTableName(dtDefinition);
-			final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
+		return analyticsManager.trackWithReturn("Jpa", serviceName,
+				tracker -> doFindByCriteria(tracker, dtDefinition, criteria, maxRows));
 
-			final CriteriaCtx ctx = tuple.getVal2();
-			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
-			//IN, obligatoire
-			for (final String attributeName : ctx.getAttributeNames()) {
-				q.setParameter(attributeName, ctx.getAttributeValue(attributeName));
-			}
-			if (maxRows != null) {
-				q.setMaxResults(maxRows);
-			}
+	}
 
-			final List<E> results = q.getResultList();
-			final DtList<E> dtc = new DtList<>(dtDefinition);
-			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size())
-					.markAsSucceeded();
-			return dtc;
+	private <E extends Entity> DtList<E> doFindByCriteria(final AnalyticsTracker tracker, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
+		final String tableName = getTableName(dtDefinition);
+		final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
+
+		final CriteriaCtx ctx = tuple.getVal2();
+		final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
+		//IN, obligatoire
+		for (final String attributeName : ctx.getAttributeNames()) {
+			q.setParameter(attributeName, ctx.getAttributeValue(attributeName));
 		}
+		if (maxRows != null) {
+			q.setMaxResults(maxRows);
+		}
+
+		final List<E> results = q.getResultList();
+		final DtList<E> dtc = new DtList<>(dtDefinition);
+		dtc.addAll(results);
+		tracker.setMeasure("nbSelectedRow", dtc.size());
+		return dtc;
 	}
 
 	/** {@inheritDoc} */
@@ -241,42 +247,44 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
 		final String serviceName = "Jpa:find " + taskName;
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			//PK de la DtList recherchée
-			final String idFieldName = dtDefinition.getIdField().get().getName();
-			//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
-			final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
-			final String joinTableName = associationNNDefinition.getTableName();
-			final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-			final DtField joinDtField = joinDtDefinition.getIdField().get();
+		return analyticsManager.trackWithReturn("Jpa", serviceName,
+				tracker -> doFindAll(tracker, dtDefinition, dtcUri));
+	}
 
-			//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
-			final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
-			final DtField fkField = associationNode.getDtDefinition().getIdField().get();
-			final String fkFieldName = fkField.getName();
+	private <E extends Entity> DtList<E> doFindAll(final AnalyticsTracker tracker, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		//PK de la DtList recherchée
+		final String idFieldName = dtDefinition.getIdField().get().getName();
+		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
+		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
+		final String joinTableName = associationNNDefinition.getTableName();
+		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
+		final DtField joinDtField = joinDtDefinition.getIdField().get();
 
-			final String request = new StringBuilder(" select t.* from ")
-					.append(dtDefinition.getLocalName())
-					.append(" t")
-					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-					.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
-					//Condition de la recherche
-					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
-					.toString();
+		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
+		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
+		final DtField fkField = associationNode.getDtDefinition().getIdField().get();
+		final String fkFieldName = fkField.getName();
 
-			final URI uri = dtcUri.getSource();
+		final String request = new StringBuilder(" select t.* from ")
+				.append(dtDefinition.getLocalName())
+				.append(" t")
+				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
+				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+				//Condition de la recherche
+				.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
+				.toString();
 
-			final Query q = getEntityManager().createNativeQuery(request, resultClass);
-			q.setParameter(fkFieldName, uri.getId());
+		final URI uri = dtcUri.getSource();
 
-			final List<E> results = q.getResultList();
-			final DtList<E> dtc = new DtList<>(dtDefinition);
-			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size())
-					.markAsSucceeded();
-			return dtc;
-		}
+		final Query q = getEntityManager().createNativeQuery(request, resultClass);
+		q.setParameter(fkFieldName, uri.getId());
+
+		final List<E> results = q.getResultList();
+		final DtList<E> dtc = new DtList<>(dtDefinition);
+		dtc.addAll(results);
+		tracker.setMeasure("nbSelectedRow", dtc.size());
+		return dtc;
 	}
 
 	@Override
@@ -293,45 +301,52 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String serviceName = prefixServiceName + dtDefinition.getName();
 
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final EntityManager entityManager = getEntityManager();
-			if (persist) { //si pas de PK exception
-				//Si l'objet est en cours de création (pk null)
-				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
-				//sinon on ferait persist aussi si em.contains(dto)).
-				entityManager.persist(entity);
-			} else {
-				entityManager.merge(entity);
-			}
-			entityManager.flush();
-			entityManager.clear();
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
+		try {
+			analyticsManager.track("Jpa", serviceName,
+					tracker -> doPut(tracker, entity, persist));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
 		}
 	}
 
+	private void doPut(final AnalyticsTracker tracker, final Entity entity, final boolean persist) {
+		final EntityManager entityManager = getEntityManager();
+		if (persist) { //si pas de PK exception
+			//Si l'objet est en cours de création (pk null)
+			//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
+			//sinon on ferait persist aussi si em.contains(dto)).
+			entityManager.persist(entity);
+		} else {
+			entityManager.merge(entity);
+		}
+		entityManager.flush();
+		entityManager.clear();
+		tracker.setMeasure("nbModifiedRow", 1);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
-
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final Object dto = loadWithoutClear(uri);
-			if (dto == null) {
-				throw new VSystemException("Aucune ligne supprimée");
-			}
-			getEntityManager().remove(dto);
-			getEntityManager().flush();
-			getEntityManager().clear();
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
+		try {
+			analyticsManager.track("Jpa", serviceName,
+					tracker -> doDelete(tracker, uri));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
 		}
+	}
+
+	private void doDelete(final AnalyticsTracker tracker, final URI uri) {
+		final Object dto = loadWithoutClear(uri);
+		if (dto == null) {
+			throw new VSystemException("Aucune ligne supprimée");
+		}
+		getEntityManager().remove(dto);
+		getEntityManager().flush();
+		getEntityManager().clear();
+		tracker.setMeasure("nbModifiedRow", 1);
 	}
 
 	/** {@inheritDoc} */
@@ -339,13 +354,14 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
 
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker("Jpa", serviceName)) {
-			final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
-					.markAsSucceeded();
-			return result;
-		}
+		return analyticsManager.trackWithReturn("Jpa", serviceName,
+				tracker -> {
+					final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+					final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
+					tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+					return result;
+				});
+
 	}
 
 	/**

@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Filtre analytics des requetes HTTP. *
@@ -48,9 +48,14 @@ public final class AnalyticsFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doMyFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker(ANALYTICS_TYPE, ((HttpServletRequest) request).getRequestURL().toString())) {
-			chain.doFilter(request, response);
-			tracker.markAsSucceeded();
-		}
+		final String category = ((HttpServletRequest) request).getRequestURL().toString();
+		analyticsManager.track(ANALYTICS_TYPE, category,
+				tracker -> {
+					try {
+						chain.doFilter(request, response);
+					} catch (IOException | ServletException e) {
+						throw WrappedException.wrap(e);
+					}
+				});
 	}
 }

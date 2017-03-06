@@ -52,13 +52,13 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
-			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure(WEIGHT, 25)
-						.incMeasure(PRICE, 10);
-			}
-			tracker.markAsSucceeded();
-		}
+		analyticsManager.track(PROCESS_TYPE, "1000 Articles 25 Kg",
+				tracker -> {
+					for (int i = 0; i < 1000; i++) {
+						tracker.incMeasure(WEIGHT, 25)
+								.incMeasure(PRICE, 10);
+					}
+				});
 	}
 
 	/**
@@ -88,13 +88,13 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		try (AnalyticsTrackerWritable tracker = analyticsManager.createTracker(PROCESS_TYPE, "1000 Commandes")) {
-			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure(PRICE, 5);
-				test1000Articles();
-			}
-			tracker.markAsSucceeded();
-		}
+		analyticsManager.track(PROCESS_TYPE, "1000 Commandes",
+				tracker -> {
+					for (int i = 0; i < 1000; i++) {
+						tracker.incMeasure(PRICE, 5);
+						test1000Articles();
+					}
+				});
 		log.trace("elapsed = " + (System.currentTimeMillis() - start));
 	}
 }

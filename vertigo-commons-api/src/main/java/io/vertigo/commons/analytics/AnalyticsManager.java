@@ -19,6 +19,8 @@
 package io.vertigo.commons.analytics;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import io.vertigo.lang.Manager;
 
@@ -28,16 +30,27 @@ import io.vertigo.lang.Manager;
  * @author pchretien, npiedeloup
  */
 public interface AnalyticsManager extends Manager {
+
+	/**
+	 * Tracks a process and collects metrics during its execution.
+	 * @param processType process type
+	 * @param category process category
+	 * @param consumer the function to execute within the tracker
+	 */
+	void track(final String processType, final String category, Consumer<AnalyticsTracker> consumer);
+
+	/**
+	 * Tracks a process that has a return value (and collects metrics during its execution).
+	 * @param processType process type
+	 * @param category process category
+	 * @param function the function to execute within the tracker
+	 * @return the result of the tracked function
+	 */
+	<O> O trackWithReturn(final String processType, final String category, Function<AnalyticsTracker, O> function);
+
 	/**
 	 * @return the current tracker if it has been created before
 	 */
 	Optional<AnalyticsTracker> getCurrentTracker();
 
-	/**
-	 * Start process (may be a sub-process with its own metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
-	 */
-	AnalyticsTrackerWritable createTracker(final String processType, final String category);
 }

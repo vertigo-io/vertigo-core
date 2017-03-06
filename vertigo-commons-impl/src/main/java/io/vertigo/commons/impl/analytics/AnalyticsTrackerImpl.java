@@ -24,16 +24,15 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import io.vertigo.commons.analytics.AnalyticsTracker;
-import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.lang.Assertion;
 
 /**
  * Collect tracker.
  * @author npiedeloup
  */
-final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
+final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 	private Boolean succeeded; //default no info
-	private Exception causeException; //default no info
+	private Throwable causeException; //default no info
 	private final Deque<AProcessBuilder> stack;
 	private final Consumer<AProcess> consumer;
 
@@ -107,9 +106,11 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public AnalyticsTracker markAsSucceeded() {
+	/**
+	 * Marks this tracker as succeeded.
+	 * @return this tracker
+	 */
+	AnalyticsTracker markAsSucceeded() {
 		//the last mark wins
 		//so we prefer to reset causeException
 		causeException = null;
@@ -117,13 +118,16 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 		return this;
 	}
 
-	@Override
-	public AnalyticsTracker markAsFailed(final Exception e) {
+	/**
+	 * Marks this tracker as Failed.
+	 * @return this tracker
+	 */
+	AnalyticsTracker markAsFailed(final Throwable t) {
 		//We don't check the nullability of e
 		//the last mark wins
 		//so we prefer to put the flag 'succeeded' to false
 		succeeded = false;
-		causeException = e;
+		causeException = t;
 		return this;
 	}
 }

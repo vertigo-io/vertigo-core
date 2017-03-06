@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler;
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -59,15 +59,13 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = webServiceCallContext.getWebServiceDefinition();
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
-		try (final AnalyticsTrackerWritable tracker = analyticsManager.createTracker("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath())) {
-			try {
-				final Object result = chain.handle(request, response, webServiceCallContext);
-				tracker.markAsSucceeded();
-				return result;
-			} catch (final RuntimeException e) {
-				tracker.addMetaData("errorHeader", String.valueOf(e));
-				throw e;
-			}
-		}
+		return analyticsManager.trackWithReturn("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath(),
+				tracker -> {
+					try {
+						return chain.handle(request, response, webServiceCallContext);
+					} catch (final SessionException e) {
+						throw WrappedException.wrap(e);
+					}
+				});
 	}
 }

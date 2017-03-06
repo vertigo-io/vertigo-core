@@ -50,16 +50,4 @@ public interface AnalyticsTracker {
 	 * @return this tracker
 	 */
 	AnalyticsTracker addMetaData(final String metaDataName, final String value);
-
-	/**
-	 * Marks this tracker as succeeded.
-	 * @return this tracker
-	 */
-	AnalyticsTracker markAsSucceeded();
-
-	/**
-	 * Marks this tracker as Failed.
-	 * @return this tracker
-	 */
-	AnalyticsTracker markAsFailed(Exception e);
 }

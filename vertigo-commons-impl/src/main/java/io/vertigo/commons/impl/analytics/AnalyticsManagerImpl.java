@@ -21,12 +21,13 @@ package io.vertigo.commons.impl.analytics;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracker;
-import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -43,6 +44,8 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 */
 	private static final ThreadLocal<AnalyticsTrackerImpl> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
+	private final boolean enabled;
+
 	/**
 	 * Constructor.
 	 */
@@ -51,11 +54,56 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		Assertion.checkNotNull(processConnectorPlugins);
 		//---
 		this.processConnectorPlugins = processConnectorPlugins;
+		// by default if no connector is defined we disable the collect
+		enabled = !processConnectorPlugins.isEmpty();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void track(final String processType, final String category, final Consumer<AnalyticsTracker> consumer) {
+		if (!enabled) {
+			consumer.accept(AnalyticsTrackerDummy.DUMMY_TRACKER);
+		} else {
+			// When collect feature is enabled
+			try (AnalyticsTrackerImpl tracker = createTracker(processType, category)) {
+				try {
+					consumer.accept(tracker);
+					tracker.markAsSucceeded();
+				} catch (final Exception e) {
+					tracker.markAsFailed(e);
+					throw e;
+				}
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <O> O trackWithReturn(final String processType, final String category, final Function<AnalyticsTracker, O> function) {
+		if (!enabled) {
+			return function.apply(AnalyticsTrackerDummy.DUMMY_TRACKER);
+		}
+		// When collect feature is enabled
+		try (AnalyticsTrackerImpl tracker = createTracker(processType, category)) {
+			try {
+				final O result = function.apply(tracker);
+				tracker.markAsSucceeded();
+				return result;
+			} catch (final Exception e) {
+				tracker.markAsFailed(e);
+				throw e;
+			}
+		}
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Optional<AnalyticsTracker> getCurrentTracker() {
+		if (!enabled) {
+			return Optional.empty();
+		}
+		// When collect feature is enabled
 		final Optional<AnalyticsTrackerImpl> analyticsTrackerOpt = doGetCurrentTracker();
 		if (analyticsTrackerOpt.isPresent()) {
 			return Optional.of(analyticsTrackerOpt.get());
@@ -76,9 +124,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public AnalyticsTrackerWritable createTracker(final String processType, final String category) {
+	private AnalyticsTrackerImpl createTracker(final String processType, final String category) {
 		final Optional<AnalyticsTrackerImpl> parent = doGetCurrentTracker();
 		final AnalyticsTrackerImpl analyticsTracker = new AnalyticsTrackerImpl(parent, getHostName(), processType, category, this::onClose);
 		push(analyticsTracker);
@@ -89,7 +135,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		try {
 			return java.net.InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 
@@ -102,4 +148,5 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		processConnectorPlugins.forEach(
 				processConnectorPlugin -> processConnectorPlugin.add(process));
 	}
+
 }
