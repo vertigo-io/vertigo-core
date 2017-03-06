@@ -32,8 +32,9 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
+	private Boolean succeeded; //default no info
+	private Exception causeException; //default no info
 	private final Deque<AProcessBuilder> stack;
-	//	private boolean success;
 	private final Consumer<AProcess> consumer;
 
 	/**
@@ -91,14 +92,18 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
-		//on ne place pas cette mesure si pas de process local
-		//analyticsAgent.setMeasure("errorPct", success ? 0 : 100);
+		if (succeeded != null) {
+			setMeasure("success", succeeded ? 100 : 0);
+		}
+		if (causeException != null) {
+			addMetaData("execption", causeException.getClass().getName());
+		}
 		final AProcess process = stack.pop().build();
 		if (stack.isEmpty()) {
-			//case of the root process, it's finished and must be sent to the connector
+			//when the current process is the root process, it's finished and must be sent to the connector
 			consumer.accept(process);
 		} else {
-			//case of a subProcess, it's finished and must be added to the stack
+			//when the current process is a subProcess, it's finished and must be added to the stack
 			stack.peek().addSubProcess(process);
 		}
 	}
@@ -106,13 +111,30 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsTracker markAsSucceeded() {
-		//success = true;
+		//the last mark wins
+		//so we prefer to reset causeException
+		causeException = null;
+		succeeded = true;
 		return this;
 	}
 
 	@Override
 	public AnalyticsTracker markAsFailed(final Exception e) {
-		// TODO Auto-generated method stub
+		//We don't check the nullability of e
+		//the last mark wins
+		//so we prefer to put the flag 'succeeded' to false
+		succeeded = false;
+		causeException = e;
 		return this;
+	}
+
+	@Override
+	public void exec(final Runnable runnable) {
+		try {
+			runnable.run();
+			markAsSucceeded();
+		} catch (final Exception e) {
+			markAsFailed(e);
+		}
 	}
 }
