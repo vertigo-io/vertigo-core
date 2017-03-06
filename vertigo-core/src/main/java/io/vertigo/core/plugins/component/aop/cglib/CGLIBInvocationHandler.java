@@ -32,6 +32,7 @@ import io.vertigo.util.ClassUtil;
  */
 final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandler {
 	private final Object instance;
+
 	private final Map<Method, List<Aspect>> joinPoints;
 
 	CGLIBInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
@@ -40,6 +41,10 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		//-----
 		this.instance = instance;
 		this.joinPoints = joinPoints;
+	}
+
+	Object getInstance() {
+		return instance;
 	}
 
 	/** {@inheritDoc} */

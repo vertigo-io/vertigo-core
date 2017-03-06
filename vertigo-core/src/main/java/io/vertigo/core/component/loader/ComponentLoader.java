@@ -177,7 +177,7 @@ public final class ComponentLoader {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(implClass, aspects);
 		if (!joinPoints.isEmpty()) {
-			return aopPlugin.create(instance, joinPoints);
+			return aopPlugin.wrap(instance, joinPoints);
 		}
 		return instance;
 	}

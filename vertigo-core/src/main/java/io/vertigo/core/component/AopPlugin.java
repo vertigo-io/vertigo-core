@@ -41,5 +41,12 @@ public interface AopPlugin extends Plugin {
 	 * @param joinPoints List of joinPoints
 	 * @return  Proxy-Reference
 	 */
-	<C extends Component> C create(final C instance, Map<Method, List<Aspect>> joinPoints);
+	<C extends Component> C wrap(final C instance, Map<Method, List<Aspect>> joinPoints);
+
+	/**
+	 * Unwrap the proxy
+	 * @param component the component to unwrap
+	 * @return the underlying object
+	 */
+	<C extends Component> C unwrap(final C component);
 }

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.Aspect;
@@ -30,6 +31,7 @@ import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.Factory;
 
 /**
  * This class implements the aspects using the CGLIB library.
@@ -39,7 +41,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C extends Component> C create(final C instance, final Map<Method, List<Aspect>> joinPoints) {
+	public <C extends Component> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
@@ -58,6 +60,26 @@ public final class CGLIBAopPlugin implements AopPlugin {
 
 	private static Callback createCallBack(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		return new CGLIBInvocationHandler(instance, joinPoints);
+	}
+
+	@Override
+	public <C extends Component> C unwrap(final C component) {
+		if (isWrapped(component)) {
+			return (C) Stream.of(((Factory) component).getCallbacks())
+					.filter(callback -> CGLIBInvocationHandler.class.isAssignableFrom(callback.getClass()))
+					.map(ourCallBack -> (CGLIBInvocationHandler) ourCallBack)
+					.findFirst()
+					.orElseThrow(() -> new IllegalArgumentException("the component " + component.getClass() + " is not unwrappable"))
+					// we return the unwrapped instance
+					.getInstance();
+		}
+		return component;
+	}
+
+	private static boolean isWrapped(final Object object) {
+		Assertion.checkNotNull(object);
+		// ---
+		return Enhancer.isEnhanced(object.getClass()) && Factory.class.isAssignableFrom(object.getClass());
 	}
 
 }
