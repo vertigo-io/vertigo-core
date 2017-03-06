@@ -60,8 +60,10 @@ public final class SwaggerWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/swaggerApi")
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
+		//compute contextPath + servletPath - current Ws url
+		final String prefixUrl = request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi"));
 		return new SwaggerApiBuilder()
-				.withContextPath(request.getContextPath())
+				.withContextPath(prefixUrl)
 				.withWebServiceDefinitions(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class))
 				.build();
 	}

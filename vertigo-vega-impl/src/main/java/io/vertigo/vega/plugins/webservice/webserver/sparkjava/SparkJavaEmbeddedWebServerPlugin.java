@@ -34,6 +34,7 @@ import spark.Spark;
 public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
 
 	/**
+	 * @param apiPrefix globale api prefix
 	 * @param port Server port
 	 */
 	@Inject
