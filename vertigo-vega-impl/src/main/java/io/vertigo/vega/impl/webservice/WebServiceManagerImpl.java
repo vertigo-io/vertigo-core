@@ -25,6 +25,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
@@ -86,13 +87,15 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 			final List<WebServiceHandlerPlugin> restHandlerPlugins) {
 		Assertion.checkNotNull(webServiceScannerPlugin);
 		Assertion.checkNotNull(webServerPlugin);
-		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
+		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkNotNull(webServerPlugin);
 		//-----
 		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = sortWebServiceHandlerPlugins(restHandlerPlugins);
 		//-----
 		Assertion.checkArgument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
-				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
+				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----
 		this.webServiceScannerPlugin = webServiceScannerPlugin;
 		this.webServerPlugin = webServerPlugin;
@@ -133,7 +136,8 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof WebServices) {
-				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(((WebServices) component).getClass());
+				final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(aopPlugin.unwrap((WebServices) component).getClass());
 				allWebServiceDefinitionListBuilder.addAll(webServiceDefinitions);
 			}
 		}
