@@ -48,6 +48,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/**
 	 * Constructor.
+	 * @param processConnectorPlugins list of connectors to tracks processes
 	 */
 	@Inject
 	public AnalyticsManagerImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {

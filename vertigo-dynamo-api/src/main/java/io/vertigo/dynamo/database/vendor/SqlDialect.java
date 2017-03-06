@@ -30,8 +30,9 @@ public interface SqlDialect {
 
 	/**
 	 * Creates the insert request.
-	 *
 	 * @param dtDefinition the dtDefinition
+	 * @param sequencePrefix the prefix to use for sequence
+	 * @param tableName the name of the table in which we want to insert
 	 * @return the sql request
 	 */
 	String createInsertQuery(final DtDefinition dtDefinition, String sequencePrefix, String tableName);

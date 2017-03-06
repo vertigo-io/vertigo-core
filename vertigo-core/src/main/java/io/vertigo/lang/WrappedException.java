@@ -49,6 +49,13 @@ public final class WrappedException extends RuntimeException {
 		super(message, cause);
 	}
 
+	/**
+	 * Coerce argument to a RuntimeException.
+	 * Re-throw as a non-checked exception. This method never returns, in spite of the return type.
+	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
+	 * @param th Cause exception
+	 * @return RuntimeException runtime
+	 */
 	public static RuntimeException wrap(final java.lang.Throwable th) {
 		return wrap(th, null);
 	}
@@ -81,7 +88,8 @@ public final class WrappedException extends RuntimeException {
 	}
 
 	/**
-	 * Get the orginal exception
+	 * Get the orginal exception.
+	 * @return the orginal exception that has been wrapped
 	 */
 	public Throwable unwrap() {
 		return getCause();

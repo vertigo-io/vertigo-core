@@ -33,8 +33,15 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  */
 public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 
+	/**
+	 * @return the object type of the list
+	 *
+	 */
 	Class<D> getObjectType();
 
+	/**
+	 * @return the definition of the elements of the list
+	 */
 	DtDefinition getDtDefinition();
 
 	/**

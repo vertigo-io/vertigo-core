@@ -10,7 +10,7 @@ import io.vertigo.commons.analytics.AnalyticsTracker;
  */
 final class AnalyticsTrackerDummy implements AnalyticsTracker {
 
-	static final AnalyticsTracker DUMMY_TRACKER = new AnalyticsTrackerDummy();
+	protected static final AnalyticsTracker DUMMY_TRACKER = new AnalyticsTrackerDummy();
 
 	private AnalyticsTrackerDummy() {
 	}

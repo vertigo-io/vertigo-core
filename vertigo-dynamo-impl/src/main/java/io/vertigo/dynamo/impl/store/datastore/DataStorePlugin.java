@@ -131,7 +131,7 @@ public interface DataStorePlugin extends Plugin {
 	void delete(DtDefinition dtDefinition, URI<?> uri);
 
 	/**
-	 * Load for update.
+	 * Loads for update.
 	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
@@ -140,6 +140,13 @@ public interface DataStorePlugin extends Plugin {
 	 */
 	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
 
+	/**
+	 * Finds a lists of entities matching a criteria.
+	 * @param dtDefinition the definition of entities to find
+	 * @param criteria the criteria to match
+	 * @param maxRows max number of rows to retrieve
+	 * @return the list
+	 */
 	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows);
 
 }

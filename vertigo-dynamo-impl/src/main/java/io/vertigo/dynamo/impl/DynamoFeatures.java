@@ -56,6 +56,12 @@ public final class DynamoFeatures extends Features {
 		super("dynamo");
 	}
 
+	/**
+	 * Add search to dynamo
+	 * @param searchServicesPluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
 	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(SearchManager.class, SearchManagerImpl.class)
@@ -63,46 +69,69 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
+	/**
+	 * Add store to dynamo
+	 * @return  the feature
+	 */
 	public DynamoFeatures withStore() {
 		getModuleConfigBuilder()
 				.addComponent(StoreManager.class, StoreManagerImpl.class);
 		return this;
 	}
 
+	/**
+	 * Add a store plugin
+	 * @param dataStorePlugin the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
 	public DynamoFeatures addDataStorePlugin(final Class<? extends DataStorePlugin> dataStorePlugin, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(dataStorePlugin, params);
 		return this;
 	}
 
+	/**
+	 * Add key/value store to dynamo
+	 * @return  the feature
+	 */
 	public DynamoFeatures withKVStore() {
 		getModuleConfigBuilder()
 				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class);
 		return this;
 	}
 
+	/**
+	 * Add a key/value store plugin
+	 * @param  kvStorePlugin the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
 	public DynamoFeatures addKVStorePlugin(final Class<? extends KVStorePlugin> kvStorePlugin, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(kvStorePlugin, params);
 		return this;
 	}
 
+	/**
+	 * Add sqlDataBase management to dynamo.
+	 * @return  the feature
+	 */
 	public DynamoFeatures withSqlDataBase() {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
 		return this;
 	}
 
+	/**
+	 * Add a database connection provider plugin
+	 * @param  connectionProviderPluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
 	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(connectionProviderPluginClass, params);
-		return this;
-	}
-
-	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass) {
-		getModuleConfigBuilder()
-				.addComponent(SearchManager.class, SearchManagerImpl.class)
-				.addPlugin(searchServicesPluginClass);
 		return this;
 	}
 

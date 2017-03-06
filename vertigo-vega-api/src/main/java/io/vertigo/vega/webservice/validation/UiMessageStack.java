@@ -91,8 +91,22 @@ public interface UiMessageStack extends Serializable {
 	 */
 	void info(final String message, final DtObject dto, final String fieldName);
 
+	/**
+	 * Add the message to the stack.
+	 * @param level the level of the message (Error, Warning, etc...)
+	 * @param message the message associated
+	 * @param dtObject the object
+	 * @param fieldName the name of the field associated with the error
+	 */
 	void addFieldMessage(Level level, String message, DtObject dtObject, String fieldName);
 
+	/**
+	 * Add the message to the stack.
+	 * @param level the level of the message (Error, Warning, etc...)
+	 * @param message the message associated
+	 * @param contextKey the key to use to store this message
+	 * @param fieldName the name of the field associated with the error
+	 */
 	void addFieldMessage(Level level, String message, String contextKey, String fieldName);
 
 	/**

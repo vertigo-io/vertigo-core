@@ -39,6 +39,11 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final Class<? extends Component> implClass;
 	private final List<Param> myParams = new ArrayList<>();
 
+	/**
+	 * Constructor of a component config
+	 * @param optionalApiClass and optional apiClass for the component
+	 * @param implClass the impl class of the component
+	 */
 	public ComponentConfigBuilder(final Optional<Class<? extends Component>> optionalApiClass, final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(optionalApiClass);
 		Assertion.checkNotNull(implClass);

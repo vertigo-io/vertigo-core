@@ -16,6 +16,10 @@ import io.vertigo.lang.Assertion;
 public class AnnalyticsAspect implements Aspect {
 	private final AnalyticsManager analyticsManager;
 
+	/**
+	 * Constructor.
+	 * @param analyticsManager the component responsible of managing analytics
+	 */
 	@Inject
 	public AnnalyticsAspect(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
