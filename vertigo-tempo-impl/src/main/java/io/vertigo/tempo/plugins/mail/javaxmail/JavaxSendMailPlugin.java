@@ -136,7 +136,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isPresent() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
-			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
+			throw WrappedException.wrap(e, "Probleme d'encodage lors de l'envoi du mail");
 		}
 	}
 
@@ -290,7 +290,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new WrappedException("Can't read attached file", e);
+			throw WrappedException.wrap(e, "Can't read attached file");
 		}
 	}
 

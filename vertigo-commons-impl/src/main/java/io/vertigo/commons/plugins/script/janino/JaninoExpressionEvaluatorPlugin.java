@@ -69,7 +69,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
 			//Unpacking the exception
-			throw WrappedException.wrapIfNeeded(e.getCause(), "An error occurred during expression's evaluation");
+			throw WrappedException.wrap(e.getCause(), "An error occurred during expression's evaluation");
 		}
 	}
 
@@ -77,7 +77,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		try {
 			return new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
 		} catch (final Exception ex) {
-			throw new WrappedException("An error occurred during expression's preprocessing  in \n" + expression + '\n', ex);
+			throw WrappedException.wrap(ex, "An error occurred during expression's preprocessing  in \n {0} \n", expression);
 		}
 	}
 }

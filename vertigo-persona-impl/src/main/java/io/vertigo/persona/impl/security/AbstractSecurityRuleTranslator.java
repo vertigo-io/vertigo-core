@@ -29,10 +29,10 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 			myMultiExpressions.add(myMultiExpression);
 		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture de la securityRule {0}\n{1}", securityRule, e.getFullMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture de la securityRule {0}\n{1}", securityRule, e.getMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		}
 		return (S) this;
 	}

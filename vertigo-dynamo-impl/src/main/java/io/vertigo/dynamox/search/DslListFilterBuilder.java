@@ -101,10 +101,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			myBuildQuery = DslParserUtil.parseMultiExpression(buildQuery);
 		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		}
 		return this;
 	}
@@ -293,7 +293,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return value;
 	}
 
-	private void appendTermQueryWithValue(final Object value, final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition, final StringBuilder outExpressionQuery) {
+	private void appendTermQueryWithValue(final Object value, final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition,
+			final StringBuilder outExpressionQuery) {
 		final boolean useBlock;
 		final StringBuilder queryPart = new StringBuilder();
 		if (value instanceof String) { //so not null too
@@ -353,7 +354,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return false; //never use block
 	}
 
-	private boolean appendUserStringCriteria(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslExpression expressionDefinition, final String userString, final StringBuilder outExpressionQuery) {
+	private boolean appendUserStringCriteria(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslExpression expressionDefinition, final String userString,
+			final StringBuilder outExpressionQuery) {
 		final List<DslUserCriteria> userCriteriaList = DslParserUtil.parseUserCriteria(userString);
 
 		int criteriaOnDefinitionField = 0; //On compte les fields sur le field de la definition. Si >1 on mettra des ( )
@@ -404,7 +406,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
 	}
 
-	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue, final DslMultiField dslMultiField) {
+	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue,
+			final DslMultiField dslMultiField) {
 		final List<DslExpression> monoFieldExpressionDefinitions = new ArrayList<>();
 		for (final DslField dslField : dslMultiField.getFields()) {
 			final DslField monoFieldDefinition = new DslField(

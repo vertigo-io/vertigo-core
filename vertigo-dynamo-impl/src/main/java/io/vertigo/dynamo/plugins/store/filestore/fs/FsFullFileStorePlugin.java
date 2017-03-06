@@ -133,7 +133,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			fsFileInfo.setURIStored(uri);
 			return fsFileInfo;
 		} catch (final IOException e) {
-			throw new WrappedException("Can't read fileInfo " + uri.toURN(), e);
+			throw WrappedException.wrap(e, "Can't read fileInfo " + uri.toURN());
 		}
 	}
 
@@ -150,12 +150,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
-			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
+			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
 		}
 		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
-			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
+			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
 		}
 	}
 

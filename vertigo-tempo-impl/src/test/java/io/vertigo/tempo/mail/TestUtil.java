@@ -56,7 +56,7 @@ public final class TestUtil {
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);
 		} catch (final IOException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 

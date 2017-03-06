@@ -79,11 +79,11 @@ public final class XmlParamPlugin implements ParamPlugin {
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {
-			throw new WrappedException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()), pce);
+			throw WrappedException.wrap(pce, StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()));
 		} catch (final SAXException se) {
-			throw new WrappedException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()), se);
+			throw WrappedException.wrap(se, StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()));
 		} catch (final IOException ioe) {
-			throw new WrappedException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()), ioe);
+			throw WrappedException.wrap(ioe, StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()));
 		}
 	}
 

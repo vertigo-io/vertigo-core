@@ -109,7 +109,7 @@ final class BerkeleyDatabase {
 		try {
 			status = database.get(getCurrentBerkeleyTransaction(), idEntry, dataEntry, LockMode.DEFAULT);
 		} catch (final DatabaseException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 		if (status == OperationStatus.NOTFOUND) {
 			//Si on n'a rien trouvé
@@ -141,7 +141,7 @@ final class BerkeleyDatabase {
 		try {
 			status = database.put(getCurrentBerkeleyTransaction(), idEntry, dataEntry);
 		} catch (final DatabaseException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
 			throw new VSystemException("put has failed");
@@ -173,7 +173,7 @@ final class BerkeleyDatabase {
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new WrappedException("findAll has failed", e);
+			throw WrappedException.wrap(e, "findAll has failed");
 		}
 	}
 
@@ -198,7 +198,7 @@ final class BerkeleyDatabase {
 		try {
 			status = database.delete(getCurrentBerkeleyTransaction(), idEntry);
 		} catch (final DatabaseException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 		if (OperationStatus.NOTFOUND.equals(status)) {
 			throw new VSystemException("delete has failed because no data found with key : {0}", id);

@@ -68,10 +68,10 @@ final class KspLoader {
 					.parse(s, 0);
 		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
-			throw new WrappedException(message, e);
+			throw WrappedException.wrap(e, message);
 		}
 	}
 

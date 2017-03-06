@@ -36,7 +36,7 @@ public final class WrappedException extends RuntimeException {
 	 * Constructor.
 	 * @param cause Cause exception
 	 */
-	public WrappedException(final Throwable cause) {
+	private WrappedException(final Throwable cause) {
 		super(cause);
 	}
 
@@ -45,8 +45,12 @@ public final class WrappedException extends RuntimeException {
 	 * @param message Context message
 	 * @param cause Cause exception
 	 */
-	public WrappedException(final String message, final Throwable cause) {
+	private WrappedException(final String message, final Throwable cause) {
 		super(message, cause);
+	}
+
+	public static RuntimeException wrap(final java.lang.Throwable th) {
+		return wrap(th, null);
 	}
 
 	/**
@@ -58,7 +62,7 @@ public final class WrappedException extends RuntimeException {
 	 * @param params Context message params
 	 * @return RuntimeException runtime
 	 */
-	public static RuntimeException wrapIfNeeded(final java.lang.Throwable th, final String msg, final Object... params) {
+	public static RuntimeException wrap(final java.lang.Throwable th, final String msg, final Object... params) {
 		final Throwable t;
 		if (th instanceof InvocationTargetException) {
 			t = ((InvocationTargetException) th).getTargetException();
@@ -74,6 +78,13 @@ public final class WrappedException extends RuntimeException {
 		}
 		final String message = msg != null ? StringUtil.format(msg, params) : null;
 		throw new WrappedException(message, t);
+	}
+
+	/**
+	 * Get the orginal exception
+	 */
+	public Throwable unwrap() {
+		return getCause();
 	}
 
 }

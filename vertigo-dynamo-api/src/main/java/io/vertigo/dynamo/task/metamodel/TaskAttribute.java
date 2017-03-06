@@ -105,7 +105,7 @@ public final class TaskAttribute {
 			getDomain().checkValue(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 }

@@ -141,7 +141,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw new WrappedException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
+				throw WrappedException.wrap(e, "le dictionnaire pour la locale '" + locale + "' n'est pas renseigné");
 			}
 			//On a trouvé un dictionnaire
 			check(resourceBundle, enums, override);

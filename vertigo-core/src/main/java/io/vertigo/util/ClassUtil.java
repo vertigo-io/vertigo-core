@@ -103,11 +103,11 @@ public final class ClassUtil {
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
-			throw WrappedException.wrapIfNeeded(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
+			throw WrappedException.wrap(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw new WrappedException("Accès final impossible à la classe :" + constructor.getDeclaringClass().getName(), e);
+			throw WrappedException.wrap(e, "Accès final impossible à la classe :" + constructor.getDeclaringClass().getName());
 		} catch (final Exception e) {
-			throw new WrappedException("Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName(), e);
+			throw WrappedException.wrap(e, "Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName());
 		}
 	}
 
@@ -136,9 +136,9 @@ public final class ClassUtil {
 		} catch (final NoSuchMethodException e) {
 			if (parameterTypes.length == 0) {
 				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
-				throw new WrappedException("Aucun constructeur vide trouvé sur " + clazz.getSimpleName(), e);
+				throw WrappedException.wrap(e, "Aucun constructeur vide trouvé sur " + clazz.getSimpleName());
 			}
-			throw new WrappedException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + Arrays.toString(parameterTypes), e);
+			throw WrappedException.wrap(e, "Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + Arrays.toString(parameterTypes));
 		}
 	}
 
@@ -154,7 +154,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
-			throw new WrappedException("Impossible de trouver la classe : " + javaClassName, e);
+			throw WrappedException.wrap(e, "Impossible de trouver la classe : " + javaClassName);
 		}
 	}
 
@@ -173,7 +173,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
-			throw new WrappedException("Impossible de trouver la classe : " + javaClassName, e);
+			throw WrappedException.wrap(e, "Impossible de trouver la classe : " + javaClassName);
 		}
 	}
 
@@ -192,9 +192,9 @@ public final class ClassUtil {
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
-			throw new WrappedException("accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName(), e);
+			throw WrappedException.wrap(e, "accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
-			throw WrappedException.wrapIfNeeded(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
 		}
 	}
 
@@ -213,7 +213,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			field.set(instance, value);
 		} catch (final IllegalAccessException e) {
-			throw new WrappedException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
+			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}
 	}
 
@@ -232,7 +232,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			return field.get(instance);
 		} catch (final IllegalAccessException e) {
-			throw new WrappedException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
+			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}
 	}
 
@@ -251,7 +251,7 @@ public final class ClassUtil {
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
-			throw new WrappedException("Méthode " + methodName + " non trouvée sur " + clazz.getName(), e);
+			throw WrappedException.wrap(e, "Méthode " + methodName + " non trouvée sur " + clazz.getName());
 		}
 	}
 

@@ -74,7 +74,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 			}
 		} catch (final IOException e) {
 			LOG.error("Can't save temp file " + txNewFile.getAbsolutePath());
-			throw new WrappedException("Can't save temp file.", e);
+			throw WrappedException.wrap(e, "Can't save temp file.");
 		}
 
 		// copie des données dans le fichier temporaire. Permet de vérifier l'espace disque avant d'arriver à la phase
@@ -83,7 +83,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 			FileUtil.copy(inputStream, txNewFile);
 		} catch (final IOException e) {
 			LOG.error("Can't copy uploaded file to : " + txNewFile.getAbsolutePath());
-			throw new WrappedException("Can't save uploaded file.", e);
+			throw WrappedException.wrap(e, "Can't save uploaded file.");
 		}
 	}
 

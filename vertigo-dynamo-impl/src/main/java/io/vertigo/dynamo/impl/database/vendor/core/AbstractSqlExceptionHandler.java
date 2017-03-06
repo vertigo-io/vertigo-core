@@ -129,7 +129,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 */
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new WrappedException(StringUtil.format("[SQL error] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
+		throw WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statement != null ? statement.toString() : null));
 	}
 
 	private static final class SQLConstraintMessageKey implements MessageKey {

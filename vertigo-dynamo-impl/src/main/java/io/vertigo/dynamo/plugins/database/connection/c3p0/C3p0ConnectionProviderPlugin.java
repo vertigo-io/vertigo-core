@@ -71,7 +71,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			//loads the jdbc driver
 			comboPooledDataSource.setDriverClass(jdbcDriver);
 		} catch (final PropertyVetoException e) {
-			throw WrappedException.wrapIfNeeded(e, "Can't defined JdbcDriver {0}", jdbcDriver);
+			throw WrappedException.wrap(e, "Can't defined JdbcDriver {0}", jdbcDriver);
 		}
 		comboPooledDataSource.setJdbcUrl(jdbcUrl);
 		//c3p0 can work with defaults

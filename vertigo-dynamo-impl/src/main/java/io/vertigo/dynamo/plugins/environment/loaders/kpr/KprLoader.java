@@ -89,7 +89,7 @@ public final class KprLoader implements Loader {
 		try {
 			return doGetKspFiles(kprURL, charset, resourceManager);
 		} catch (final Exception e) {
-			throw new WrappedException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
+			throw WrappedException.wrap(e, "Echec de lecture du fichier KPR " + kprURL.getFile());
 		}
 	}
 

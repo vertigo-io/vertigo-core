@@ -116,7 +116,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	}
 
 	private static void handleIOException(final IOException e) {
-		throw new WrappedException("Serveur ElasticSearch indisponible", e);
+		throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 	}
 
 	/**

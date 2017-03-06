@@ -97,7 +97,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			keyGenerator.init(crypto.getKeySize());
 			return keyGenerator.generateKey();
 		} catch (final java.security.NoSuchAlgorithmException e) {
-			throw new WrappedException(crypto.getAlgoName(), e);
+			throw WrappedException.wrap(e, crypto.getAlgoName());
 		}
 	}
 
@@ -129,7 +129,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			cipher.init(mode, key);
 			return cipher.doFinal(data);
 		} catch (final Exception e) {
-			throw new WrappedException(crypto.getAlgoName(), e);
+			throw WrappedException.wrap(e, crypto.getAlgoName());
 		}
 	}
 

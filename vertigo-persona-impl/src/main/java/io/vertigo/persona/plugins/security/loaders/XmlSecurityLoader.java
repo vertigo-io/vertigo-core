@@ -86,11 +86,11 @@ final class XmlSecurityLoader {
 		try {
 			return doLoadXML(authURL);
 		} catch (final ParserConfigurationException pce) {
-			throw new WrappedException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", authURL.getPath()), pce);
+			throw WrappedException.wrap(pce, StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", authURL.getPath()));
 		} catch (final SAXException se) {
-			throw new WrappedException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", authURL.getPath()), se);
+			throw WrappedException.wrap(se, StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", authURL.getPath()));
 		} catch (final IOException ioe) {
-			throw new WrappedException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", authURL.getPath()), ioe);
+			throw WrappedException.wrap(ioe, StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", authURL.getPath()));
 		}
 	}
 

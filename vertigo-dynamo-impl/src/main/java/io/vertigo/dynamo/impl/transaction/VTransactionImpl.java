@@ -25,9 +25,9 @@ import java.util.Map;
 
 import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
 import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
-import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -187,7 +187,7 @@ final class VTransactionImpl implements VTransactionWritable {
 		//-----
 		final Throwable throwable = this.doEnd(false);
 		if (throwable != null) {
-			throw WrappedException.wrapIfNeeded(throwable, "Transaction");
+			throw WrappedException.wrap(throwable, "Transaction");
 		}
 	}
 
@@ -196,7 +196,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	public void rollback() {
 		final Throwable throwable = doRollback();
 		if (throwable != null) {
-			throw WrappedException.wrapIfNeeded(throwable, "Transaction");
+			throw WrappedException.wrap(throwable, "Transaction");
 		}
 	}
 

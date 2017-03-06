@@ -89,7 +89,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new WrappedException("[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement, sqle);
+		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement);
 	}
 
 	/** {@inheritDoc} */

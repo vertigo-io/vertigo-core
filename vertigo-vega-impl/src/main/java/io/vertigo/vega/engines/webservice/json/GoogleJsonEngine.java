@@ -349,7 +349,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 					.create();
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw WrappedException.wrapIfNeeded(e, "Can't create Gson");
+			throw WrappedException.wrap(e, "Can't create Gson");
 		}
 	}
 }

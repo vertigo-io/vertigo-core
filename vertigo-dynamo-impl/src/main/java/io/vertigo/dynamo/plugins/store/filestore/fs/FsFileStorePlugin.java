@@ -185,7 +185,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, documentRoot + pathToSave));
 		} catch (final IOException e) {
-			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
+			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
 		}
 	}
 

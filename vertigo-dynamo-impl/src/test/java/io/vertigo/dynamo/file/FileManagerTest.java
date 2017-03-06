@@ -110,7 +110,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		try {
 			nop(vFile.createInputStream());
 		} catch (final IOException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 

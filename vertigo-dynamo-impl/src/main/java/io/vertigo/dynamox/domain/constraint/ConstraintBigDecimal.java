@@ -50,12 +50,12 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		try {
 			maxPrecision = Integer.parseInt(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw new WrappedException(args + " : first part is a not an integer", e);
+			throw WrappedException.wrap(e, args + " : first part is a not an integer");
 		}
 		try {
 			maxScale = Integer.parseInt(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
-			throw new WrappedException(args + " : second part is a not an integer", e);
+			throw WrappedException.wrap(e, args + " : second part is a not an integer");
 		}
 		// ---
 		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");

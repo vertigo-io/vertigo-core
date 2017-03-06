@@ -63,12 +63,12 @@ public final class XMLUtil {
 			try {
 				validator.validate(streamSource);
 			} catch (final SAXException e) {
-				throw new WrappedException("'" + xml.toString() + "' is not valid", e);
+				throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
 			}
 		} catch (final SocketException e) {
-			throw new WrappedException("'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag", e);
+			throw WrappedException.wrap(e, "'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag");
 		} catch (final SAXException | IOException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 }

@@ -133,7 +133,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 						inflater.inflate(uncompressedObject);
 					}
 				} catch (final DataFormatException e) {
-					throw new WrappedException(e);
+					throw WrappedException.wrap(e);
 				}
 			}
 		}

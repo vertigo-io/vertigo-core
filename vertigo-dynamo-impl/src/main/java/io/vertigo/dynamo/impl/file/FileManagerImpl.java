@@ -106,7 +106,7 @@ public final class FileManagerImpl implements FileManager {
 				connection.getInputStream().close();
 			}
 		} catch (final IOException e) {
-			throw new WrappedException("Can't get file meta from url", e);
+			throw WrappedException.wrap(e, "Can't get file meta from url");
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
 		final InputStreamBuilder inputStreamBuilder = ressourceUrl::openStream;
@@ -124,7 +124,7 @@ public final class FileManagerImpl implements FileManager {
 		try {
 			return doCreateTempFile(vFile);
 		} catch (final IOException e) {
-			throw new WrappedException("Can't create temp file for FileInfo " + vFile.getFileName(), e);
+			throw WrappedException.wrap(e, "Can't create temp file for FileInfo " + vFile.getFileName());
 		}
 	}
 

@@ -184,7 +184,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 				dto = dataStore.readOne(uri);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
-				throw new WrappedException(e);
+				throw WrappedException.wrap(e);
 			}
 			return mdFieldSort.getDataAccessor().getValue(dto);
 		}

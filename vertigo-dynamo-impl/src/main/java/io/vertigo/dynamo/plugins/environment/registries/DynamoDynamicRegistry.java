@@ -101,7 +101,7 @@ public final class DynamoDynamicRegistry implements DynamicRegistry {
 					.supplyDefinition(dslDefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new WrappedException("An error occurred during the creation of the following definition : " + dslDefinition.getName(), e);
+			throw WrappedException.wrap(e, "An error occurred during the creation of the following definition : " + dslDefinition.getName());
 		}
 	}
 

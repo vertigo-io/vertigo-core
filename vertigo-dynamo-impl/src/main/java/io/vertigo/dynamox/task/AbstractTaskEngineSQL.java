@@ -420,7 +420,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			try {
 				connection = getConnectionProvider().obtainConnection();
 			} catch (final SQLException e) {
-				throw new WrappedException("Can't connect to database", e);
+				throw WrappedException.wrap(e, "Can't connect to database");
 			}
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}

@@ -44,7 +44,7 @@ final class BerkeleyResource implements VTransactionResource {
 		try {
 			transaction = environment.beginTransaction(null, null);
 		} catch (final DatabaseException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 

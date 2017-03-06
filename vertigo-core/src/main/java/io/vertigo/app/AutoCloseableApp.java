@@ -160,7 +160,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		} catch (final Exception e) {
 			LOGGER.error("an error occured when stopping", e);
 			//Quel que soit l'état, on part en échec de l'arrét.
-			throw new WrappedException("an error occured when stopping", e);
+			throw WrappedException.wrap(e, "an error occured when stopping");
 		} finally {
 			state = State.CLOSED;
 			Home.setApp(null);
