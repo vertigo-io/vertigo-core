@@ -49,11 +49,9 @@ import io.vertigo.lang.Assertion;
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
 final class AProcessBuilder {
-	private final String appName;
 	private final String myType;
 	private final Date startDate;
 
-	private String myLocation;
 	private String myCategory;
 
 	//Tableau des mesures identifiees par leur nom.
@@ -70,16 +68,14 @@ final class AProcessBuilder {
 	 * La duree du processus sera obtenue lors de l'appel a la methode build().
 	 * @param type Type du processus
 	 */
-	AProcessBuilder(final String appName, final String type) {
-		this(appName, type, new Date());
+	AProcessBuilder(final String type) {
+		this(type, new Date());
 	}
 
-	private AProcessBuilder(final String appName, final String type, final Date startDate) {
-		Assertion.checkNotNull(appName, "appName is required");
+	private AProcessBuilder(final String type, final Date startDate) {
 		Assertion.checkNotNull(type, "type of process is required");
 		Assertion.checkNotNull(startDate, "start of process is required");
 		//---
-		this.appName = appName;
 		myType = type;
 
 		measures = new HashMap<>();
@@ -87,17 +83,6 @@ final class AProcessBuilder {
 		subProcesses = new ArrayList<>();
 		this.startDate = startDate;
 		start = startDate.getTime();
-	}
-
-	AProcessBuilder withLocation(final String location) {
-		myLocation = location;
-		return this;
-	}
-
-	AProcessBuilder withLocation(final String... locations) {
-		myLocation = Arrays.stream(locations)
-				.collect(Collectors.joining(AProcess.LOCATION_SEPARATOR));
-		return this;
 	}
 
 	AProcessBuilder withCategory(final String category) {
@@ -176,10 +161,8 @@ final class AProcessBuilder {
 		//On ajoute la mesure obligatoire : duree
 		setMeasure(AProcess.DURATION, durationMs);
 		return new AProcess(
-				appName,
 				myType,
 				myCategory,
-				myLocation,
 				startDate,
 				measures,
 				metaDatas,

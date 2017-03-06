@@ -55,8 +55,7 @@ final class AnalyticsTrackerImpl implements AnalyticsTrackerWritable {
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder("app", processType)
-				.withLocation(appLocation)
+		final AProcessBuilder processBuilder = new AProcessBuilder(processType)
 				.withCategory(category);
 		this.consumer = consumer;
 		if (parentOpt.isPresent()) {

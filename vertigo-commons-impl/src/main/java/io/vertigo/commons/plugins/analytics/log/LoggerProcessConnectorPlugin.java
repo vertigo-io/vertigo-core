@@ -27,7 +27,7 @@
  * but you are not obliged to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  */
-package io.vertigo.commons.plugins.analytics.connector;
+package io.vertigo.commons.plugins.analytics.log;
 
 import java.util.Collections;
 

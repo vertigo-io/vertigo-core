@@ -76,20 +76,16 @@ public final class AProcess {
 	/**
 	 * REGEX décrivant les régles sur les noms (type de process, mesures et metadata, . (exemples : sql, mail, services)
 	 */
-	public static final Pattern APP_NAME_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	public static final Pattern PROCESS_TYPE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	public static final Pattern METADATA_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	//	public static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z][a-z//-_]*");
-	public static final Pattern LOCATION_REGEX = Pattern.compile("[A-Z0-9a-z//.]*"); //a revoir
 
 	public static final String CATEGORY_SEPARATOR = "/";
 	public static final String LOCATION_SEPARATOR = "/";
-	private final String appName;
 	private final String type; //ex : sql, page....
 
 	private final String category; //what ex : accounts/search
-	private final String location; //where ex : fr/idf
 
 	private final Date startDate; //when
 
@@ -98,7 +94,6 @@ public final class AProcess {
 	private final List<AProcess> subProcesses;
 
 	/**
-	 * @param appName Nom de l'application
 	 * @param type the type of the proceee
 	 * @param category  Category
 	 * @param startDate Date du processus
@@ -106,28 +101,23 @@ public final class AProcess {
 	 * @param metaDatas lis of the metadatas
 	 * @param subProcesses list of the sub processes (0..*)
 	 */
-	AProcess(final String appName,
+	AProcess(
 			final String type,
 			final String category,
-			final String location,
 			final Date startDate,
 			final Map<String, Double> measures,
 			final Map<String, String> metaDatas,
 			final List<AProcess> subProcesses) {
-		Assertion.checkNotNull(appName, "the appName is required");
 		Assertion.checkNotNull(type, "the type of the process is required");
 		Assertion.checkNotNull(category, "the category of the process is required");
-		Assertion.checkNotNull(location, "the location of the process is required");
 		Assertion.checkNotNull(startDate, "the startDate is required");
 		Assertion.checkNotNull(measures, "the measures are required");
 		Assertion.checkNotNull(metaDatas, "the metaDatas are required");
 		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
 
 		//---
-		checkRegex(appName, APP_NAME_REGEX, "appName");
 		checkRegex(type, PROCESS_TYPE_REGEX, "process type");
 		//	ckeckRegex(type, CATEGORY_REGEX, "category");
-		checkRegex(type, LOCATION_REGEX, "location");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "metadata name"));
 		metaDatas.keySet()
@@ -137,10 +127,8 @@ public final class AProcess {
 			throw new IllegalArgumentException("measures SUB_DURATION must be lower than DURATION (duration:" + measures.get(DURATION) + " < sub_duration:" + measures.get(SUB_DURATION) + ") in process type " + type + ", category  : " + category + " at " + startDate);
 		}
 		//---------------------------------------------------------------------
-		this.appName = appName;
 		this.type = type;
 		this.category = category;
-		this.location = location;
 		this.startDate = startDate;
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
 		this.metaDatas = Collections.unmodifiableMap(new HashMap<>(metaDatas));
@@ -151,13 +139,6 @@ public final class AProcess {
 		if (!pattern.matcher(s).matches()) {
 			throw new IllegalArgumentException(info + " " + s + " must match regex :" + pattern.pattern());
 		}
-	}
-
-	/**
-	 * @return AppName du processus
-	 */
-	public String getAppName() {
-		return appName;
 	}
 
 	/**
@@ -194,18 +175,6 @@ public final class AProcess {
 	}
 
 	/**
-	 * [where]
-	 * @return location
-	 */
-	public String getLocation() {
-		return location;
-	}
-
-	public String[] getLocationAsArray() {
-		return location.split(LOCATION_SEPARATOR);
-	}
-
-	/**
 	 * @return Mesures du processus
 	 */
 	public Map<String, Double> getMeasures() {
@@ -229,6 +198,6 @@ public final class AProcess {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{appName:" + appName + ",  type:" + type + ", category :" + category + ", location:" + location + "}";
+		return "{type:" + type + ", category :" + category + "}";
 	}
 }
