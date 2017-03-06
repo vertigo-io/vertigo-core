@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.AnalyticsTrackerWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
@@ -35,7 +36,7 @@ import io.vertigo.tempo.job.metamodel.JobDefinition;
  * @author pchretien
  */
 public final class JobManagerImpl implements JobManager {
-	private final JobListener jobListener;
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Constructor.
@@ -45,23 +46,17 @@ public final class JobManagerImpl implements JobManager {
 	public JobManagerImpl(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
 		//-----
-		jobListener = new JobListener(analyticsManager);
+		this.analyticsManager = analyticsManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute(final JobDefinition jobDefinition) {
 		//-----
-		jobListener.onStart(jobDefinition);
-		final long start = System.currentTimeMillis();
-		try {
+		try (AnalyticsTrackerWritable analyticsTracker = analyticsManager.createTracker("Job", jobDefinition.getName())) {
 			final Runnable job = createJob(jobDefinition);
 			job.run(); //NOSONAR : JobManager manages Job execution, it decides if a runnable job runs in a new thread or not
-		} catch (final Throwable throwable) { //NOSONAR
-			jobListener.onFinish(jobDefinition, throwable);
-		} finally {
-			jobListener.onFinish(jobDefinition, System.currentTimeMillis() - start);
-
+			analyticsTracker.markAsSucceeded();
 		}
 	}
 
