@@ -29,8 +29,8 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +66,6 @@ import io.vertigo.lang.Assertion;
  */
 public final class AProcess {
 	/**
-	 * Mesure de type duree.
-	 */
-	public static final String DURATION = "duration";
-	/**
-	 * Mesure de type duree.
-	 */
-	public static final String SUB_DURATION = "sub_duration";
-	/**
 	 * REGEX décrivant les régles sur les noms (type de process, mesures et metadata, . (exemples : sql, mail, services)
 	 */
 	public static final Pattern PROCESS_TYPE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
@@ -87,7 +79,8 @@ public final class AProcess {
 
 	private final String category; //what ex : accounts/search
 
-	private final Date startDate; //when
+	private final Instant start; //when
+	private final Instant end; //when
 
 	private final Map<String, Double> measures;
 	private final Map<String, String> metaDatas;
@@ -104,13 +97,15 @@ public final class AProcess {
 	AProcess(
 			final String type,
 			final String category,
-			final Date startDate,
+			final Instant start,
+			final Instant end,
 			final Map<String, Double> measures,
 			final Map<String, String> metaDatas,
 			final List<AProcess> subProcesses) {
 		Assertion.checkNotNull(type, "the type of the process is required");
 		Assertion.checkNotNull(category, "the category of the process is required");
-		Assertion.checkNotNull(startDate, "the startDate is required");
+		Assertion.checkNotNull(start, "the start is required");
+		Assertion.checkNotNull(end, "the end is required");
 		Assertion.checkNotNull(measures, "the measures are required");
 		Assertion.checkNotNull(metaDatas, "the metaDatas are required");
 		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
@@ -122,14 +117,11 @@ public final class AProcess {
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "metadata name"));
 		metaDatas.keySet()
 				.forEach(metaDataName -> checkRegex(metaDataName, METADATA_REGEX, "metadata name"));
-		Assertion.checkArgument(measures.containsKey(DURATION), "measures must contain DURATION");
-		if (measures.containsKey(SUB_DURATION) && measures.get(SUB_DURATION) > measures.get(DURATION)) {
-			throw new IllegalArgumentException("measures SUB_DURATION must be lower than DURATION (duration:" + measures.get(DURATION) + " < sub_duration:" + measures.get(SUB_DURATION) + ") in process type " + type + ", category  : " + category + " at " + startDate);
-		}
 		//---------------------------------------------------------------------
 		this.type = type;
 		this.category = category;
-		this.startDate = startDate;
+		this.start = start;
+		this.end = end;
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
 		this.metaDatas = Collections.unmodifiableMap(new HashMap<>(metaDatas));
 		this.subProcesses = subProcesses;
@@ -162,16 +154,24 @@ public final class AProcess {
 
 	/**
 	 * @return Process duration */
-	public double getDuration() {
-		return measures.get(DURATION);
+	public long getDurationMilli() {
+		return end.toEpochMilli() - start.toEpochMilli();
 	}
 
 	/**
 	 * [when]
 	 * @return Date processus
 	 */
-	public Date getStartDate() {
-		return startDate;
+	public Instant getStart() {
+		return start;
+	}
+
+	/**
+	 * [when]
+	 * @return Date processus
+	 */
+	public Instant getEnd() {
+		return end;
 	}
 
 	/**

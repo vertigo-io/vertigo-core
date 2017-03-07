@@ -29,9 +29,9 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ import io.vertigo.lang.Assertion;
  */
 final class AProcessBuilder {
 	private final String myType;
-	private final Date startDate;
+	private final Instant start;
 
 	private String myCategory;
 
@@ -60,7 +60,6 @@ final class AProcessBuilder {
 	//Tableau des metadonnees identifiees par leur nom.
 	private final Map<String, String> metaDatas;
 
-	private final long start;
 	private final List<AProcess> subProcesses;
 
 	/**
@@ -69,20 +68,19 @@ final class AProcessBuilder {
 	 * @param type Type du processus
 	 */
 	AProcessBuilder(final String type) {
-		this(type, new Date());
+		this(type, Instant.now());
 	}
 
-	private AProcessBuilder(final String type, final Date startDate) {
+	private AProcessBuilder(final String type, final Instant start) {
 		Assertion.checkNotNull(type, "type of process is required");
-		Assertion.checkNotNull(startDate, "start of process is required");
+		Assertion.checkNotNull(start, "start of process is required");
 		//---
 		myType = type;
 
 		measures = new HashMap<>();
 		metaDatas = new HashMap<>();
 		subProcesses = new ArrayList<>();
-		this.startDate = startDate;
-		start = startDate.getTime();
+		this.start = start;
 	}
 
 	AProcessBuilder withCategory(final String category) {
@@ -103,11 +101,11 @@ final class AProcessBuilder {
 	 * @param mValue  Valeur a incrementer
 	 * @return Builder
 	 */
-	AProcessBuilder incMeasure(final String mName, final double mValue) {
-		Assertion.checkNotNull(mName, "Measure name is required");
+	AProcessBuilder incMeasure(final String measureName, final double measureValue) {
+		Assertion.checkNotNull(measureName, "Measure name is required");
 		//---------------------------------------------------------------------
-		final Double lastmValue = measures.get(mName);
-		measures.put(mName, lastmValue == null ? mValue : mValue + lastmValue);
+		final Double lastmValue = measures.get(measureName);
+		measures.put(measureName, lastmValue == null ? measureValue : measureValue + lastmValue);
 		return this;
 	}
 
@@ -117,10 +115,10 @@ final class AProcessBuilder {
 	 * @param mValue  Valeur é incrémenter
 	 * @return Builder
 	 */
-	AProcessBuilder setMeasure(final String mName, final double mValue) {
-		Assertion.checkNotNull(mName, "Measure name is required");
+	AProcessBuilder setMeasure(final String measureName, final double measureValue) {
+		Assertion.checkNotNull(measureName, "Measure name is required");
 		//---------------------------------------------------------------------
-		measures.put(mName, mValue);
+		measures.put(measureName, measureValue);
 		return this;
 	}
 
@@ -147,7 +145,6 @@ final class AProcessBuilder {
 		Assertion.checkNotNull(subProcess, "sub process is required ");
 		//---------------------------------------------------------------------
 		subProcesses.add(subProcess);
-		incMeasure(AProcess.SUB_DURATION, subProcess.getDuration());
 		return this;
 	}
 
@@ -156,14 +153,12 @@ final class AProcessBuilder {
 	 * @return Process
 	 */
 	public AProcess build() {
-		//Si on est dans le mode de construction en runtime, on ajoute la duree.
-		final long durationMs = System.currentTimeMillis() - start;
-		//On ajoute la mesure obligatoire : duree
-		setMeasure(AProcess.DURATION, durationMs);
+		final Instant end = Instant.now();
 		return new AProcess(
 				myType,
 				myCategory,
-				startDate,
+				start,
+				end,
 				measures,
 				metaDatas,
 				subProcesses);
