@@ -52,30 +52,29 @@ import io.vertigo.lang.Assertion;
  * - categories defined an array of string : search/items
 
  * 	[when]
- * - a start date
+ * - start timestamp
+ * - end   timestamp
  *
  * 	[data]
- * - a duration (cf.measures)
- * - a list of measures with a DURATION measure
- * - a list of metadatas
+ * - list of measures
+ * - list of metadatas
  *
- * - a list of sub processes (0..*)
+ * - list of sub processes (0..*)
  *
  * @author pchretien, npiedeloup
  * @version $Id: KProcess.java,v 1.8 2012/10/16 17:18:26 pchretien Exp $
  */
 public final class AProcess {
 	/**
-	 * REGEX décrivant les régles sur les noms (type de process, mesures et metadata, . (exemples : sql, mail, services)
+	 * REGEX used to define the channels.
 	 */
-	public static final Pattern PROCESS_TYPE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	public static final Pattern PROCESS_CHANNEL_REGEX = Pattern.compile("[a-z]+");
 	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	public static final Pattern METADATA_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	//	public static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z][a-z//-_]*");
 
 	public static final String CATEGORY_SEPARATOR = "/";
-	public static final String LOCATION_SEPARATOR = "/";
-	private final String type; //ex : sql, page....
+	private final String channel; //ex : sql, page....
 
 	private final String category; //what ex : accounts/search
 
@@ -87,22 +86,24 @@ public final class AProcess {
 	private final List<AProcess> subProcesses;
 
 	/**
-	 * @param type the type of the proceee
-	 * @param category  Category
-	 * @param startDate Date du processus
-	 * @param measures Mesures du processus
-	 * @param metaDatas lis of the metadatas
-	 * @param subProcesses list of the sub processes (0..*)
+	 * Constructor.
+	 * @param channel the type of the channel
+	 * @param category  the category
+	 * @param start the start instant
+	 * @param end the end instant
+	 * @param measures the measures
+	 * @param metaDatas the metadatas
+	 * @param subProcesses the list of sub processes (0..*)
 	 */
 	AProcess(
-			final String type,
+			final String channel,
 			final String category,
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
 			final Map<String, String> metaDatas,
 			final List<AProcess> subProcesses) {
-		Assertion.checkNotNull(type, "the type of the process is required");
+		Assertion.checkNotNull(channel, "the type of the process is required");
 		Assertion.checkNotNull(category, "the category of the process is required");
 		Assertion.checkNotNull(start, "the start is required");
 		Assertion.checkNotNull(end, "the end is required");
@@ -111,14 +112,14 @@ public final class AProcess {
 		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
 
 		//---
-		checkRegex(type, PROCESS_TYPE_REGEX, "process type");
+		checkRegex(channel, PROCESS_CHANNEL_REGEX, "process type");
 		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "metadata name"));
 		metaDatas.keySet()
 				.forEach(metaDataName -> checkRegex(metaDataName, METADATA_REGEX, "metadata name"));
 		//---------------------------------------------------------------------
-		this.type = type;
+		this.channel = channel;
 		this.category = category;
 		this.start = start;
 		this.end = end;
@@ -137,7 +138,7 @@ public final class AProcess {
 	 * @return Type du processus
 	 */
 	public String getType() {
-		return type;
+		return channel;
 	}
 
 	/**
@@ -153,14 +154,15 @@ public final class AProcess {
 	}
 
 	/**
-	 * @return Process duration */
-	public long getDurationMilli() {
+	 * @return the duration of the process (in milliseconds)
+	 */
+	public long getDurationMillis() {
 		return end.toEpochMilli() - start.toEpochMilli();
 	}
 
 	/**
 	 * [when]
-	 * @return Date processus
+	 * @return the start timestamp
 	 */
 	public Instant getStart() {
 		return start;
@@ -168,28 +170,28 @@ public final class AProcess {
 
 	/**
 	 * [when]
-	 * @return Date processus
+	 * @return the end timestamp
 	 */
 	public Instant getEnd() {
 		return end;
 	}
 
 	/**
-	 * @return Mesures du processus
+	 * @return the measures of the process
 	 */
 	public Map<String, Double> getMeasures() {
 		return measures;
 	}
 
 	/**
-	 * @return Metadonnees du processus
+	 * @return the metadatas of the process
 	 */
 	public Map<String, String> getMetaDatas() {
 		return metaDatas;
 	}
 
 	/**
-	 * @return Liste des sous-processus
+	 * @return the list of sub processes
 	 */
 	public List<AProcess> getSubProcesses() {
 		return subProcesses;
@@ -198,6 +200,6 @@ public final class AProcess {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{type:" + type + ", category :" + category + "}";
+		return "{channel :" + channel + ", category :" + category + "}";
 	}
 }
