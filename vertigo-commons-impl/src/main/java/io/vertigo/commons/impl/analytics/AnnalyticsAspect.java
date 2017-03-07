@@ -37,7 +37,7 @@ public class AnnalyticsAspect implements Aspect {
 	@Override
 	public Object invoke(final Object[] args, final AspectMethodInvocation invocation) {
 		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class);
-		return analyticsManager.trackWithReturn(analytics.processType(), analytics.category(),
-				tracker -> invocation.proceed(args));
+		return analyticsManager.traceWithReturn(analytics.processType(), analytics.category(),
+				tracer -> invocation.proceed(args));
 	}
 }

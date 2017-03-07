@@ -135,30 +135,30 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		analyticsManager.track(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll",
-				tracker -> {
+		analyticsManager.trace(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll",
+				tracer -> {
 					searchServicesPlugin.putAll(indexDefinition, indexCollection);
-					tracker.setMeasure("nbModifiedRow", indexCollection.size());
+					tracer.setMeasure("nbModifiedRow", indexCollection.size());
 				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		analyticsManager.track(ANALYTICS_TYPE, indexDefinition.getName() + "/put",
-				tracker -> {
+		analyticsManager.trace(ANALYTICS_TYPE, indexDefinition.getName() + "/put",
+				tracer -> {
 					searchServicesPlugin.put(indexDefinition, index);
-					tracker.setMeasure("nbModifiedRow", 1);
+					tracer.setMeasure("nbModifiedRow", 1);
 				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		return analyticsManager.trackWithReturn(ANALYTICS_TYPE, indexDefinition.getName() + "/load",
-				tracker -> {
+		return analyticsManager.traceWithReturn(ANALYTICS_TYPE, indexDefinition.getName() + "/load",
+				tracer -> {
 					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
-					tracker.setMeasure("nbSelectedRow", result.getCount());
+					tracer.setMeasure("nbSelectedRow", result.getCount());
 					return result;
 				});
 	}
@@ -166,25 +166,25 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		return analyticsManager.trackWithReturn(ANALYTICS_TYPE, indexDefinition.getName() + "/count",
-				tracker -> searchServicesPlugin.count(indexDefinition));
+		return analyticsManager.traceWithReturn(ANALYTICS_TYPE, indexDefinition.getName() + "/count",
+				tracer -> searchServicesPlugin.count(indexDefinition));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		analyticsManager.track(ANALYTICS_TYPE, indexDefinition.getName() + "/remove",
-				tracker -> {
+		analyticsManager.trace(ANALYTICS_TYPE, indexDefinition.getName() + "/remove",
+				tracer -> {
 					searchServicesPlugin.remove(indexDefinition, uri);
-					tracker.setMeasure("nbModifiedRow", 1);
+					tracer.setMeasure("nbModifiedRow", 1);
 				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		analyticsManager.track(ANALYTICS_TYPE, indexDefinition.getName() + "/removeAll",
-				tracker -> searchServicesPlugin.remove(indexDefinition, listFilter));
+		analyticsManager.trace(ANALYTICS_TYPE, indexDefinition.getName() + "/removeAll",
+				tracer -> searchServicesPlugin.remove(indexDefinition, listFilter));
 	}
 
 	/** {@inheritDoc} */

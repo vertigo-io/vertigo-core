@@ -59,8 +59,8 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 	public Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException {
 		final WebServiceDefinition webServiceDefinition = webServiceCallContext.getWebServiceDefinition();
 		//On ne prend pas request.pathInfo qui peut contenir des paramètres : on en veut pas ca dans les stats
-		return analyticsManager.trackWithReturn("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath(),
-				tracker -> {
+		return analyticsManager.traceWithReturn("WebService", webServiceDefinition.getVerb().name() + "/" + webServiceDefinition.getPath(),
+				tracer -> {
 					try {
 						return chain.handle(request, response, webServiceCallContext);
 					} catch (final SessionException e) {

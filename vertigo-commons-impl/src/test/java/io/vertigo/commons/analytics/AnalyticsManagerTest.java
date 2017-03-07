@@ -58,10 +58,10 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		analyticsManager.track(PROCESS_TYPE, "1000 Articles 25 Kg",
-				tracker -> {
+		analyticsManager.trace(PROCESS_TYPE, "1000 Articles 25 Kg",
+				tracer -> {
 					for (int i = 0; i < 1000; i++) {
-						tracker.incMeasure(WEIGHT, 25)
+						tracer.incMeasure(WEIGHT, 25)
 								.incMeasure(PRICE, 10);
 					}
 				});
@@ -72,8 +72,8 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testNoProcess() {
-		analyticsManager.getCurrentTracker().ifPresent(
-				tracker -> tracker.incMeasure(WEIGHT, 25));
+		analyticsManager.getCurrentTracer().ifPresent(
+				tracer -> tracer.incMeasure(WEIGHT, 25));
 		//Dans le cas du dummy ça doit passer
 	}
 
@@ -153,10 +153,10 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		analyticsManager.track(PROCESS_TYPE, "1000 Commandes",
-				tracker -> {
+		analyticsManager.trace(PROCESS_TYPE, "1000 Commandes",
+				tracer -> {
 					for (int i = 0; i < 1000; i++) {
-						tracker.incMeasure(PRICE, 5);
+						tracer.incMeasure(PRICE, 5);
 						test1000Articles();
 					}
 				});

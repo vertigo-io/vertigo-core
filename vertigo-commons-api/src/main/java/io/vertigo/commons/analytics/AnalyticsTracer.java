@@ -19,35 +19,35 @@
 package io.vertigo.commons.analytics;
 
 /**
- * This interface defines a collect tracker.
- * This tracker must be used to collect data during a process.
+ * This interface defines a collect tracer.
+ * This tracer must be used to collect data during a process.
  *
  * @author pchretien, npiedeloup
  */
-public interface AnalyticsTracker {
+public interface AnalyticsTracer {
 	/**
 	 * Increments a measure (creates if not exists).
 	 * @param measureType the type of the measure
 	 * @param value the increment of the measure
-	 * @return this tracker
+	 * @return this tracer
 	 */
-	AnalyticsTracker incMeasure(final String measureType, final double value);
+	AnalyticsTracer incMeasure(final String measureType, final double value);
 
 	/**
 	* Sets a value to the measure. (cleans if exists)
 	* You should use it when you have an exception. so you define explicitly one single value.
 	* @param measureType the type of the measure
 	* @param value the value of the measure
-	 * @return this tracker
+	 * @return this tracer
 	*/
-	AnalyticsTracker setMeasure(final String measureType, final double value);
+	AnalyticsTracer setMeasure(final String measureType, final double value);
 
 	/**
 	 * Sets a value to a specific metadata. (cleans if exists)
 	 *
 	 * @param metaDataName the name of the metadata
 	 * @param value the value of the metadataValeur de la meta-donnée
-	 * @return this tracker
+	 * @return this tracer
 	 */
-	AnalyticsTracker addMetaData(final String metaDataName, final String value);
+	AnalyticsTracer addMetaData(final String metaDataName, final String value);
 }

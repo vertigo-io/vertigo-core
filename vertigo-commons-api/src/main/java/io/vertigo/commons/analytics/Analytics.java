@@ -17,13 +17,13 @@ import io.vertigo.core.component.aop.AspectAnnotation;
 @AspectAnnotation
 public @interface Analytics {
 	/**
-	 * The type of process being tracked.
+	 * The type of process being traced.
 	 * @return type of process
 	 */
 	String processType();
 
 	/**
-	 * The category of the process being tracked.
+	 * The category of the process being traced.
 	 * @return category of process
 	 */
 	String category();

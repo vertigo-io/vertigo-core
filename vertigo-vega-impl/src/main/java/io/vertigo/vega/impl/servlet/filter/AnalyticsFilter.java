@@ -49,8 +49,8 @@ public final class AnalyticsFilter extends AbstractFilter {
 	@Override
 	public void doMyFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) {
 		final String category = ((HttpServletRequest) request).getRequestURL().toString();
-		analyticsManager.track(ANALYTICS_TYPE, category,
-				tracker -> {
+		analyticsManager.trace(ANALYTICS_TYPE, category,
+				tracer -> {
 					try {
 						chain.doFilter(request, response);
 					} catch (IOException | ServletException e) {

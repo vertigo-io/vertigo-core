@@ -32,25 +32,25 @@ import io.vertigo.lang.Manager;
 public interface AnalyticsManager extends Manager {
 
 	/**
-	 * Tracks a process and collects metrics during its execution.
+	 * Traces a process and collects metrics during its execution.
 	 * @param processType process type
 	 * @param category process category
-	 * @param consumer the function to execute within the tracker
+	 * @param consumer the function to execute within the tracer
 	 */
-	void track(final String processType, final String category, Consumer<AnalyticsTracker> consumer);
+	void trace(final String processType, final String category, Consumer<AnalyticsTracer> consumer);
 
 	/**
-	 * Tracks a process that has a return value (and collects metrics during its execution).
+	 * Traces a process that has a return value (and collects metrics during its execution).
 	 * @param processType process type
 	 * @param category process category
-	 * @param function the function to execute within the tracker
-	 * @return the result of the tracked function
+	 * @param function the function to execute within the tracer
+	 * @return the result of the traced function
 	 */
-	<O> O trackWithReturn(final String processType, final String category, Function<AnalyticsTracker, O> function);
+	<O> O traceWithReturn(final String processType, final String category, Function<AnalyticsTracer, O> function);
 
 	/**
-	 * @return the current tracker if it has been created before
+	 * @return the current tracer if it has been created before
 	 */
-	Optional<AnalyticsTracker> getCurrentTracker();
+	Optional<AnalyticsTracer> getCurrentTracer();
 
 }

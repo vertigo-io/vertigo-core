@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
@@ -50,7 +50,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
-	private static final int REQUEST_HEADER_FOR_TRACKER = 50;
+	private static final int REQUEST_HEADER_FOR_traceER = 50;
 
 	private static final int FETCH_SIZE = 150;
 
@@ -260,13 +260,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		boolean success = false;
 		try {
-			final SqlQueryResult res = trackWithReturn(tracker -> {
+			final SqlQueryResult res = traceWithReturn(traceer -> {
 				// ResultSet JDBC
 				final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 				try (final ResultSet resultSet = statement.executeQuery()) {
 					//Le Handler a la responsabilité de créer les données.
 					final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-					tracker.setMeasure("nbSelectedRow", result.getSQLRowCount());
+					traceer.setMeasure("nbSelectedRow", result.getSQLRowCount());
 					return result;
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
@@ -289,14 +289,14 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		boolean success = false;
 		try {
 			//execution de la Requête
-			final int result = trackWithReturn(tracker -> {
+			final int result = traceWithReturn(traceer -> {
 				int res;
 				try {
 					res = statement.executeUpdate();
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
 				}
-				tracker.setMeasure("nbModifiedRow", res);
+				traceer.setMeasure("nbModifiedRow", res);
 				return res;
 			});
 			success = true;
@@ -317,6 +317,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	private static class WrappedSqlException extends RuntimeException {
+		private static final long serialVersionUID = -6501399202170153122L;
 		private final SQLException sqlException;
 
 		WrappedSqlException(final SQLException sqlException) {
@@ -337,7 +338,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//---
 		boolean success = false;
 		try {
-			final int result = trackWithReturn(tracker -> {
+			final int result = traceWithReturn(traceer -> {
 				int[] res;
 				try {
 					res = statement.executeBatch();
@@ -350,7 +351,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 				for (final int rowCount : res) {
 					count += rowCount;
 				}
-				tracker.setMeasure("nbModifiedRow", res.length);
+				traceer.setMeasure("nbModifiedRow", res.length);
 				return count;
 			});
 			success = true;
@@ -365,11 +366,11 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/**
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private <O> O trackWithReturn(final Function<AnalyticsTracker, O> function) {
-		return analyticsManager.trackWithReturn("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())),
-				tracker -> {
-					final O result = function.apply(tracker);
-					tracker.addMetaData("statement", toString());
+	private <O> O traceWithReturn(final Function<AnalyticsTracer, O> function) {
+		return analyticsManager.traceWithReturn("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_traceER, sql.length())),
+				traceer -> {
+					final O result = function.apply(traceer);
+					traceer.addMetaData("statement", toString());
 					return result;
 				});
 	}

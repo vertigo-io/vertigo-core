@@ -25,24 +25,24 @@ public class TestAnalyticsAspectServices implements Component {
 
 	@Analytics(processType = "test", category = "setMeasure")
 	public void setMeasure() {
-		analyticsManager.getCurrentTracker()
-				.ifPresent(tracker -> tracker.setMeasure("price", 100));
+		analyticsManager.getCurrentTracer()
+				.ifPresent(tracer -> tracer.setMeasure("price", 100));
 	}
 
 	@Analytics(processType = "test", category = "setMeasure")
 	public void setAndIncMeasure() {
-		analyticsManager.getCurrentTracker()
-				.ifPresent(tracker -> tracker.setMeasure("price", 100));
-		analyticsManager.getCurrentTracker()
-				.ifPresent(tracker -> tracker.incMeasure("price", 10));
-		analyticsManager.getCurrentTracker()
-				.ifPresent(tracker -> tracker.incMeasure("price", 10));
+		analyticsManager.getCurrentTracer()
+				.ifPresent(tracer -> tracer.setMeasure("price", 100));
+		analyticsManager.getCurrentTracer()
+				.ifPresent(tracer -> tracer.incMeasure("price", 10));
+		analyticsManager.getCurrentTracer()
+				.ifPresent(tracer -> tracer.incMeasure("price", 10));
 	}
 
 	@Analytics(processType = "test", category = "incMeasure")
 	public void incMeasure() {
-		analyticsManager.getCurrentTracker()
-				.ifPresent(tracker -> tracker.incMeasure("price", 10));
+		analyticsManager.getCurrentTracer()
+				.ifPresent(tracer -> tracer.incMeasure("price", 10));
 	}
 
 }

@@ -27,7 +27,7 @@ import java.util.function.Function;
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -42,13 +42,13 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
 	 * l'application pendant le traitement d'une requete (thread).
 	 */
-	private static final ThreadLocal<AnalyticsTrackerImpl> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
+	private static final ThreadLocal<AnalyticsTracerImpl> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
 	private final boolean enabled;
 
 	/**
 	 * Constructor.
-	 * @param processConnectorPlugins list of connectors to tracks processes
+	 * @param processConnectorPlugins list of connectors to trace processes
 	 */
 	@Inject
 	public AnalyticsManagerImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {
@@ -61,17 +61,17 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void track(final String processType, final String category, final Consumer<AnalyticsTracker> consumer) {
+	public void trace(final String processType, final String category, final Consumer<AnalyticsTracer> consumer) {
 		if (!enabled) {
-			consumer.accept(AnalyticsTrackerDummy.DUMMY_TRACKER);
+			consumer.accept(AnalyticsTracerDummy.DUMMY_TRACER);
 		} else {
 			// When collect feature is enabled
-			try (AnalyticsTrackerImpl tracker = createTracker(processType, category)) {
+			try (AnalyticsTracerImpl tracer = createTracer(processType, category)) {
 				try {
-					consumer.accept(tracker);
-					tracker.markAsSucceeded();
+					consumer.accept(tracer);
+					tracer.markAsSucceeded();
 				} catch (final Exception e) {
-					tracker.markAsFailed(e);
+					tracer.markAsFailed(e);
 					throw e;
 				}
 			}
@@ -80,18 +80,18 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O trackWithReturn(final String processType, final String category, final Function<AnalyticsTracker, O> function) {
+	public <O> O traceWithReturn(final String processType, final String category, final Function<AnalyticsTracer, O> function) {
 		if (!enabled) {
-			return function.apply(AnalyticsTrackerDummy.DUMMY_TRACKER);
+			return function.apply(AnalyticsTracerDummy.DUMMY_TRACER);
 		}
 		// When collect feature is enabled
-		try (AnalyticsTrackerImpl tracker = createTracker(processType, category)) {
+		try (AnalyticsTracerImpl tracer = createTracer(processType, category)) {
 			try {
-				final O result = function.apply(tracker);
-				tracker.markAsSucceeded();
+				final O result = function.apply(tracer);
+				tracer.markAsSucceeded();
 				return result;
 			} catch (final Exception e) {
-				tracker.markAsFailed(e);
+				tracer.markAsFailed(e);
 				throw e;
 			}
 		}
@@ -100,36 +100,36 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<AnalyticsTracker> getCurrentTracker() {
+	public Optional<AnalyticsTracer> getCurrentTracer() {
 		if (!enabled) {
 			return Optional.empty();
 		}
 		// When collect feature is enabled
-		final Optional<AnalyticsTrackerImpl> analyticsTrackerOpt = doGetCurrentTracker();
-		if (analyticsTrackerOpt.isPresent()) {
-			return Optional.of(analyticsTrackerOpt.get());
+		final Optional<AnalyticsTracerImpl> analyticstracerOpt = doGetCurrentTracer();
+		if (analyticstracerOpt.isPresent()) {
+			return Optional.of(analyticstracerOpt.get());
 		}
 		return Optional.empty();
 	}
 
-	private static Optional<AnalyticsTrackerImpl> doGetCurrentTracker() {
+	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {
 		return Optional.ofNullable(THREAD_LOCAL_PROCESS.get());
 	}
 
-	private static void push(final AnalyticsTrackerImpl analyticsTracker) {
-		Assertion.checkNotNull(analyticsTracker);
+	private static void push(final AnalyticsTracerImpl analyticstracer) {
+		Assertion.checkNotNull(analyticstracer);
 		//---
-		final Optional<AnalyticsTrackerImpl> analyticsTrackerOptional = doGetCurrentTracker();
-		if (!analyticsTrackerOptional.isPresent()) {
-			THREAD_LOCAL_PROCESS.set(analyticsTracker);
+		final Optional<AnalyticsTracerImpl> analyticstracerOptional = doGetCurrentTracer();
+		if (!analyticstracerOptional.isPresent()) {
+			THREAD_LOCAL_PROCESS.set(analyticstracer);
 		}
 	}
 
-	private AnalyticsTrackerImpl createTracker(final String processType, final String category) {
-		final Optional<AnalyticsTrackerImpl> parent = doGetCurrentTracker();
-		final AnalyticsTrackerImpl analyticsTracker = new AnalyticsTrackerImpl(parent, getHostName(), processType, category, this::onClose);
-		push(analyticsTracker);
-		return analyticsTracker;
+	private AnalyticsTracerImpl createTracer(final String processType, final String category) {
+		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
+		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, getHostName(), processType, category, this::onClose);
+		push(analyticstracer);
+		return analyticstracer;
 	}
 
 	private static String getHostName() {

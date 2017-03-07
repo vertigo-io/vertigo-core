@@ -23,14 +23,14 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.lang.Assertion;
 
 /**
- * Collect tracker.
+ * A tracer collectes information durint the execution of a process.
  * @author npiedeloup
  */
-final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
+final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
 	private final Deque<AProcessBuilder> stack;
@@ -43,8 +43,8 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 	 * @param createSubProcess if subProcess is created
 	 * @param analyticsAgent Analytics agent to report execution
 	 */
-	AnalyticsTrackerImpl(
-			final Optional<AnalyticsTrackerImpl> parentOpt,
+	AnalyticsTracerImpl(
+			final Optional<AnalyticsTracerImpl> parentOpt,
 			final String appLocation,
 			final String processType,
 			final String category,
@@ -68,21 +68,21 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracker incMeasure(final String measureType, final double value) {
+	public AnalyticsTracer incMeasure(final String measureType, final double value) {
 		stack.peek().incMeasure(measureType, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracker setMeasure(final String measureType, final double value) {
+	public AnalyticsTracer setMeasure(final String measureType, final double value) {
 		stack.peek().setMeasure(measureType, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracker addMetaData(final String metaDataName, final String value) {
+	public AnalyticsTracer addMetaData(final String metaDataName, final String value) {
 		stack.peek().addMetaData(metaDataName, value);
 		return this;
 	}
@@ -107,10 +107,10 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 	}
 
 	/**
-	 * Marks this tracker as succeeded.
-	 * @return this tracker
+	 * Marks this tracer as succeeded.
+	 * @return this tracer
 	 */
-	AnalyticsTracker markAsSucceeded() {
+	AnalyticsTracer markAsSucceeded() {
 		//the last mark wins
 		//so we prefer to reset causeException
 		causeException = null;
@@ -119,10 +119,10 @@ final class AnalyticsTrackerImpl implements AnalyticsTracker, AutoCloseable {
 	}
 
 	/**
-	 * Marks this tracker as Failed.
-	 * @return this tracker
+	 * Marks this tracer as Failed.
+	 * @return this tracer
 	 */
-	AnalyticsTracker markAsFailed(final Throwable t) {
+	AnalyticsTracer markAsFailed(final Throwable t) {
 		//We don't check the nullability of e
 		//the last mark wins
 		//so we prefer to put the flag 'succeeded' to false

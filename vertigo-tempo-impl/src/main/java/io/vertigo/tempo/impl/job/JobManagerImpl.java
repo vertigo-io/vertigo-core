@@ -52,8 +52,8 @@ public final class JobManagerImpl implements JobManager {
 	@Override
 	public void execute(final JobDefinition jobDefinition) {
 		//-----
-		analyticsManager.track("Job", jobDefinition.getName(),
-				tracker -> createJob(jobDefinition).run());
+		analyticsManager.trace("Job", jobDefinition.getName(),
+				tracer -> createJob(jobDefinition).run());
 	}
 
 	private static Runnable createJob(final JobDefinition jobDefinition) {
