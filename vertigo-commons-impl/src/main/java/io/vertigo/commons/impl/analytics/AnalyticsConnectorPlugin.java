@@ -39,7 +39,7 @@ import io.vertigo.lang.Plugin;
  * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $
  */
 @FunctionalInterface
-public interface AProcessConnectorPlugin extends Plugin {
+public interface AnalyticsConnectorPlugin extends Plugin {
 	/**
 	 * Adds a process to a connector which acts as a consumer.
 	 * @param process the process

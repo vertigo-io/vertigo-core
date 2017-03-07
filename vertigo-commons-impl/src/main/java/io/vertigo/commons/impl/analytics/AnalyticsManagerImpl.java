@@ -35,7 +35,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
-	private final List<AProcessConnectorPlugin> processConnectorPlugins;
+	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
 	 * l'application pendant le traitement d'une requete (thread).
@@ -49,7 +49,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * @param processConnectorPlugins list of connectors to trace processes
 	 */
 	@Inject
-	public AnalyticsManagerImpl(final List<AProcessConnectorPlugin> processConnectorPlugins) {
+	public AnalyticsManagerImpl(final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
 		//---
 		this.processConnectorPlugins = processConnectorPlugins;

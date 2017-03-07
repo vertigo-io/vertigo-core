@@ -37,13 +37,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.commons.impl.analytics.AProcess;
-import io.vertigo.commons.impl.analytics.AProcessConnectorPlugin;
+import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 
 /**
  * Processes connector which only use a log4j logger.
  * @author npiedeloup
  */
-public final class LoggerProcessConnectorPlugin implements AProcessConnectorPlugin {
+public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static final Gson GSON = new GsonBuilder().create();
 
 	/** {@inheritDoc} */
