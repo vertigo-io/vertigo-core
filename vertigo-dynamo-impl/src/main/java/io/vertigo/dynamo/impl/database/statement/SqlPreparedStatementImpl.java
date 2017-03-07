@@ -260,13 +260,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		boolean success = false;
 		try {
-			final SqlQueryResult res = traceWithReturn(traceer -> {
+			final SqlQueryResult res = traceWithReturn(tracer -> {
 				// ResultSet JDBC
 				final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 				try (final ResultSet resultSet = statement.executeQuery()) {
 					//Le Handler a la responsabilité de créer les données.
 					final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-					traceer.setMeasure("nbSelectedRow", result.getSQLRowCount());
+					tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
 					return result;
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
@@ -289,14 +289,14 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		boolean success = false;
 		try {
 			//execution de la Requête
-			final int result = traceWithReturn(traceer -> {
+			final int result = traceWithReturn(tracer -> {
 				int res;
 				try {
 					res = statement.executeUpdate();
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
 				}
-				traceer.setMeasure("nbModifiedRow", res);
+				tracer.setMeasure("nbModifiedRow", res);
 				return res;
 			});
 			success = true;
@@ -338,7 +338,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//---
 		boolean success = false;
 		try {
-			final int result = traceWithReturn(traceer -> {
+			final int result = traceWithReturn(tracer -> {
 				int[] res;
 				try {
 					res = statement.executeBatch();
@@ -351,7 +351,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 				for (final int rowCount : res) {
 					count += rowCount;
 				}
-				traceer.setMeasure("nbModifiedRow", res.length);
+				tracer.setMeasure("nbModifiedRow", res.length);
 				return count;
 			});
 			success = true;
@@ -370,9 +370,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		return analyticsManager.traceWithReturn(
 				"sql",
 				sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
-				traceer -> {
-					final O result = function.apply(traceer);
-					traceer.addMetaData("statement", toString());
+				tracer -> {
+					final O result = function.apply(tracer);
+					tracer.addMetaData("statement", toString());
 					return result;
 				});
 	}
