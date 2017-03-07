@@ -40,7 +40,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	private static final String WEIGHT = "POIDS";
 
 	/** Base de données gérant les articles envoyés dans une commande. */
-	private static final String PROCESS_TYPE = "ARTICLE";
+	private static final String TEST_CHANNEL = "test";
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
@@ -58,7 +58,9 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		analyticsManager.trace(PROCESS_TYPE, "1000 Articles 25 Kg",
+		analyticsManager.trace(
+				TEST_CHANNEL,
+				"1000 Articles 25 Kg",
 				tracer -> {
 					for (int i = 0; i < 1000; i++) {
 						tracer.incMeasure(WEIGHT, 25)
@@ -153,7 +155,9 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		analyticsManager.trace(PROCESS_TYPE, "1000 Commandes",
+		analyticsManager.trace(
+				TEST_CHANNEL,
+				"1000 Commandes",
 				tracer -> {
 					for (int i = 0; i < 1000; i++) {
 						tracer.incMeasure(PRICE, 5);

@@ -50,7 +50,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
-	private static final int REQUEST_HEADER_FOR_traceER = 50;
+	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 
 	private static final int FETCH_SIZE = 150;
 
@@ -367,7 +367,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
 	private <O> O traceWithReturn(final Function<AnalyticsTracer, O> function) {
-		return analyticsManager.traceWithReturn("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_traceER, sql.length())),
+		return analyticsManager.traceWithReturn(
+				"sql",
+				sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				traceer -> {
 					final O result = function.apply(traceer);
 					traceer.addMetaData("statement", toString());

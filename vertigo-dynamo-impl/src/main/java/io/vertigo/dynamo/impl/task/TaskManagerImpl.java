@@ -50,7 +50,9 @@ public final class TaskManagerImpl implements TaskManager {
 	@Override
 	public TaskResult execute(final Task task) {
 		return analyticsManager
-				.traceWithReturn("Task", task.getDefinition().getName(),
+				.traceWithReturn(
+						"tasks",
+						task.getDefinition().getName(),
 						tracer -> doExecute(tracer, task));
 	}
 

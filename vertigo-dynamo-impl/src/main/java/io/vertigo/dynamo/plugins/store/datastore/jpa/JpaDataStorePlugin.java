@@ -47,7 +47,6 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
@@ -137,8 +136,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
-		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
-		return analyticsManager.traceWithReturn("Jpa", serviceName,
+		final String serviceName = "/find/" + uri.getDefinition().getName();
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
 				tracer -> doLoadWithoutClear(tracer, uri));
 
 	}
@@ -196,8 +197,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition));
-		return analyticsManager.traceWithReturn("Jpa", serviceName,
+		final String serviceName = "/find/" + getListTaskName(getTableName(dtDefinition));
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
 				tracer -> doFindByCriteria(tracer, dtDefinition, criteria, maxRows));
 
 	}
@@ -246,8 +249,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
-		final String serviceName = "Jpa:find " + taskName;
-		return analyticsManager.traceWithReturn("Jpa", serviceName,
+		final String serviceName = "/find/" + taskName;
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
 				tracer -> doFindAll(tracer, dtDefinition, dtcUri));
 	}
 
@@ -289,20 +294,22 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	@Override
 	public void create(final DtDefinition dtDefinition, final Entity entity) {
-		put("Jpa:create", entity, true);
+		//create
+		put(dtDefinition, entity, true);
 	}
 
 	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
-		put("Jpa:update", entity, false);
+		//update
+		put(dtDefinition, entity, false);
 	}
 
-	private void put(final String prefixServiceName, final Entity entity, final boolean persist) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final String serviceName = prefixServiceName + dtDefinition.getName();
-
+	private void put(final DtDefinition dtDefinition, final Entity entity, final boolean persist) {
+		final String serviceName = (persist ? "/create/" : "/update/") + dtDefinition.getName();
 		try {
-			analyticsManager.trace("Jpa", serviceName,
+			analyticsManager.trace(
+					"jpa",
+					serviceName,
 					tracer -> doPut(tracer, entity, persist));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
@@ -312,7 +319,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	private void doPut(final AnalyticsTracer tracer, final Entity entity, final boolean persist) {
 		final EntityManager entityManager = getEntityManager();
-		if (persist) { //si pas de PK exception
+		if (persist) {
+			//si pas de PK exception
 			//Si l'objet est en cours de création (pk null)
 			//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 			//sinon on ferait persist aussi si em.contains(dto)).
@@ -328,9 +336,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
+		final String serviceName = "/remove/" + uri.getDefinition().getName();
 		try {
-			analyticsManager.trace("Jpa", serviceName,
+			analyticsManager.trace(
+					"jpa",
+					serviceName,
 					tracer -> doDelete(tracer, uri));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
@@ -352,9 +362,11 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
-		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
+		final String serviceName = "/lock/" + uri.getDefinition().getName();
 
-		return analyticsManager.traceWithReturn("Jpa", serviceName,
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
 				tracer -> {
 					final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 					final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
