@@ -38,23 +38,21 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/**
 	 * Constructor.
-	 * @param processType Process type (determine logger)
+	 * @param channel the channel where the process is stored
 	 * @param category Category (identify action)
 	 * @param createSubProcess if subProcess is created
 	 * @param analyticsAgent Analytics agent to report execution
 	 */
 	AnalyticsTracerImpl(
 			final Optional<AnalyticsTracerImpl> parentOpt,
-			final String appLocation,
-			final String processType,
+			final String channel,
 			final String category,
 			final Consumer<AProcess> consumer) {
-		Assertion.checkArgNotEmpty(appLocation);
-		Assertion.checkArgNotEmpty(processType);
+		Assertion.checkArgNotEmpty(channel);
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder(processType)
+		final AProcessBuilder processBuilder = new AProcessBuilder(channel)
 				.withCategory(category);
 		this.consumer = consumer;
 		if (parentOpt.isPresent()) {

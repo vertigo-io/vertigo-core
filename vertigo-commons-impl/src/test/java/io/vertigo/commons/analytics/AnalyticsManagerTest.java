@@ -84,7 +84,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(3, result);
 		//---
 		Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 			analyticsAspectServices.checkPositive(i);
 		}
 		Assert.assertEquals(100, TestAProcessConnectorPlugin.getCount());
-		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -108,7 +108,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 			analyticsAspectServices.checkPositive(-1);
 		} catch (final IllegalStateException e) {
 			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastProcessType());
+			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
 			throw e;
 		}
 

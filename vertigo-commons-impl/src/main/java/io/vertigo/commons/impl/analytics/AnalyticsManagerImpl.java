@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.impl.analytics;
 
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -29,7 +28,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Main analytics manager implementation.
@@ -61,12 +59,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void trace(final String processType, final String category, final Consumer<AnalyticsTracer> consumer) {
+	public void trace(final String channel, final String category, final Consumer<AnalyticsTracer> consumer) {
 		if (!enabled) {
 			consumer.accept(AnalyticsTracerDummy.DUMMY_TRACER);
 		} else {
 			// When collect feature is enabled
-			try (AnalyticsTracerImpl tracer = createTracer(processType, category)) {
+			try (AnalyticsTracerImpl tracer = createTracer(channel, category)) {
 				try {
 					consumer.accept(tracer);
 					tracer.markAsSucceeded();
@@ -80,12 +78,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O traceWithReturn(final String processType, final String category, final Function<AnalyticsTracer, O> function) {
+	public <O> O traceWithReturn(final String channel, final String category, final Function<AnalyticsTracer, O> function) {
 		if (!enabled) {
 			return function.apply(AnalyticsTracerDummy.DUMMY_TRACER);
 		}
 		// When collect feature is enabled
-		try (AnalyticsTracerImpl tracer = createTracer(processType, category)) {
+		try (AnalyticsTracerImpl tracer = createTracer(channel, category)) {
 			try {
 				final O result = function.apply(tracer);
 				tracer.markAsSucceeded();
@@ -125,19 +123,11 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		}
 	}
 
-	private AnalyticsTracerImpl createTracer(final String processType, final String category) {
+	private AnalyticsTracerImpl createTracer(final String channel, final String category) {
 		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, getHostName(), processType, category, this::onClose);
+		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, channel, category, this::onClose);
 		push(analyticstracer);
 		return analyticstracer;
-	}
-
-	private static String getHostName() {
-		try {
-			return java.net.InetAddress.getLocalHost().getHostName();
-		} catch (final UnknownHostException e) {
-			throw WrappedException.wrap(e);
-		}
 	}
 
 	private void onClose(final AProcess process) {
