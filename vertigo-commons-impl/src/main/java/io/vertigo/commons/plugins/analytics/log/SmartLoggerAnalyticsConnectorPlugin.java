@@ -92,7 +92,6 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 		} else if (logger.isInfoEnabled()) {
 			logger.info(jsonObject.toString());
 		}
-		System.out.println(jsonObject.toString());
 	}
 
 	private static void buildCountAndFullDurationByCategory(final AProcess process, final String category, final AggregatedResult aggregatedResult) {
