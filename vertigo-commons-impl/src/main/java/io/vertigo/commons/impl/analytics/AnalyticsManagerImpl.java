@@ -59,12 +59,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void trace(final String channel, final String category, final Consumer<AnalyticsTracer> consumer) {
+	public void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer) {
 		if (!enabled) {
 			consumer.accept(AnalyticsTracerDummy.DUMMY_TRACER);
 		} else {
 			// When collect feature is enabled
-			try (AnalyticsTracerImpl tracer = createTracer(channel, category)) {
+			try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
 				try {
 					consumer.accept(tracer);
 					tracer.markAsSucceeded();
@@ -78,12 +78,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O traceWithReturn(final String channel, final String category, final Function<AnalyticsTracer, O> function) {
+	public <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function) {
 		if (!enabled) {
 			return function.apply(AnalyticsTracerDummy.DUMMY_TRACER);
 		}
 		// When collect feature is enabled
-		try (AnalyticsTracerImpl tracer = createTracer(channel, category)) {
+		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
 			try {
 				final O result = function.apply(tracer);
 				tracer.markAsSucceeded();
@@ -123,9 +123,9 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 		}
 	}
 
-	private AnalyticsTracerImpl createTracer(final String channel, final String category) {
+	private AnalyticsTracerImpl createTracer(final String category, final String name) {
 		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, channel, category, this::onClose);
+		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, category, name, this::onClose);
 		push(analyticstracer);
 		return analyticstracer;
 	}

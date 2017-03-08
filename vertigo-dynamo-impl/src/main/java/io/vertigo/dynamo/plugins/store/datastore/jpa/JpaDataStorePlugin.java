@@ -136,7 +136,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
-		final String serviceName = "/find/" + uri.getDefinition().getName();
+		final String serviceName = "/read/" + uri.getDefinition().getName();
 		return analyticsManager.traceWithReturn(
 				"jpa",
 				serviceName,
@@ -197,7 +197,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
 		//-----
-		final String serviceName = "/find/" + getListTaskName(getTableName(dtDefinition));
+		final String serviceName = "/findByCriteria/" + getListTaskName(getTableName(dtDefinition));
 		return analyticsManager.traceWithReturn(
 				"jpa",
 				serviceName,
@@ -249,7 +249,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
-		final String serviceName = "/find/" + taskName;
+		final String serviceName = "/findAll/" + taskName;
 		return analyticsManager.traceWithReturn(
 				"jpa",
 				serviceName,
@@ -336,7 +336,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final String serviceName = "/remove/" + uri.getDefinition().getName();
+		final String serviceName = "/delete/" + uri.getDefinition().getName();
 		try {
 			analyticsManager.trace(
 					"jpa",
@@ -362,7 +362,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
-		final String serviceName = "/lock/" + uri.getDefinition().getName();
+		final String serviceName = "/readNullableForUpdate/" + uri.getDefinition().getName();
 
 		return analyticsManager.traceWithReturn(
 				"jpa",

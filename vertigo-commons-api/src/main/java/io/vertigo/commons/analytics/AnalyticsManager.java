@@ -33,22 +33,22 @@ public interface AnalyticsManager extends Manager {
 
 	/**
 	 * Traces a process and collects metrics during its execution.
-	 * A trace is stored in a channel.
-	 * @param channel  the channel
-	 * @param category process category
+	 * A traced process is stored by categories.
+	 * @param category  the category of the process
+	 * @param name the name of the process
 	 * @param consumer the function to execute within the tracer
 	 */
-	void trace(final String channel, final String category, Consumer<AnalyticsTracer> consumer);
+	void trace(final String category, final String name, Consumer<AnalyticsTracer> consumer);
 
 	/**
 	 * Traces a process that has a return value (and collects metrics during its execution).
-	 * A trace is stored in a channel.
-	 * @param channel the channel
-	 * @param category process category
+	 * A traced process is stored by categories.
+	 * @param category the category of the process
+	 * @param name the name of the process
 	 * @param function the function to execute within the tracer
 	 * @return the result of the traced function
 	 */
-	<O> O traceWithReturn(final String channel, final String category, Function<AnalyticsTracer, O> function);
+	<O> O traceWithReturn(final String category, final String name, Function<AnalyticsTracer, O> function);
 
 	/**
 	 * @return the current tracer if it has been created before

@@ -49,7 +49,7 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 	/** {@inheritDoc} */
 	@Override
 	public void add(final AProcess process) {
-		final Logger logger = Logger.getLogger(process.getType());
+		final Logger logger = Logger.getLogger(process.getCategory());
 		if (logger.isInfoEnabled()) {
 			final String json = GSON.toJson(Collections.singletonList(process));
 			logger.info(json);

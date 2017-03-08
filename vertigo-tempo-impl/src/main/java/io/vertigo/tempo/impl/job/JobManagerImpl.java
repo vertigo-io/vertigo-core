@@ -54,7 +54,7 @@ public final class JobManagerImpl implements JobManager {
 		//-----
 		analyticsManager.trace(
 				"jobs",
-				jobDefinition.getName(),
+				"execute/" + jobDefinition.getName(),
 				tracer -> createJob(jobDefinition).run());
 	}
 

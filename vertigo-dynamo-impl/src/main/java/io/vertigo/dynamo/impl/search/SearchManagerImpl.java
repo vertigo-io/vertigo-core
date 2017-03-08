@@ -60,7 +60,7 @@ import io.vertigo.lang.VSystemException;
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
-	private static final String CHANNEL = "search";
+	private static final String CATEGORY = "search";
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
@@ -136,8 +136,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		analyticsManager.trace(
-				CHANNEL,
-				"/" + indexDefinition.getName() + "/putAll",
+				CATEGORY,
+				"/putAll/" + indexDefinition.getName(),
 				tracer -> {
 					searchServicesPlugin.putAll(indexDefinition, indexCollection);
 					tracer.setMeasure("nbModifiedRow", indexCollection.size());
@@ -148,8 +148,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		analyticsManager.trace(
-				CHANNEL,
-				indexDefinition.getName() + "/put",
+				CATEGORY,
+				"/put/" + indexDefinition.getName(),
 				tracer -> {
 					searchServicesPlugin.put(indexDefinition, index);
 					tracer.setMeasure("nbModifiedRow", 1);
@@ -160,8 +160,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		return analyticsManager.traceWithReturn(
-				CHANNEL,
-				indexDefinition.getName() + "/load",
+				CATEGORY,
+				"/loadList" + indexDefinition.getName(),
 				tracer -> {
 					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
 					tracer.setMeasure("nbSelectedRow", result.getCount());
@@ -173,8 +173,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
 		return analyticsManager.traceWithReturn(
-				CHANNEL,
-				indexDefinition.getName() + "/count",
+				CATEGORY,
+				"/count/" + indexDefinition.getName(),
 				tracer -> searchServicesPlugin.count(indexDefinition));
 	}
 
@@ -182,8 +182,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		analyticsManager.trace(
-				CHANNEL,
-				indexDefinition.getName() + "/remove",
+				CATEGORY,
+				"/remove/" + indexDefinition.getName(),
 				tracer -> {
 					searchServicesPlugin.remove(indexDefinition, uri);
 					tracer.setMeasure("nbModifiedRow", 1);
@@ -194,8 +194,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		analyticsManager.trace(
-				CHANNEL,
-				indexDefinition.getName() + "/removeAll",
+				CATEGORY,
+				"/removeAll/" + indexDefinition.getName(),
 				tracer -> searchServicesPlugin.remove(indexDefinition, listFilter));
 	}
 

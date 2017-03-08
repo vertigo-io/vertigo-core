@@ -40,7 +40,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	private static final String WEIGHT = "POIDS";
 
 	/** Base de données gérant les articles envoyés dans une commande. */
-	private static final String TEST_CHANNEL = "test";
+	private static final String TEST_CATEGORY = "test";
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
@@ -59,8 +59,8 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Articles() {
 		analyticsManager.trace(
-				TEST_CHANNEL,
-				"1000 Articles 25 Kg",
+				TEST_CATEGORY,
+				"/create/articles",
 				tracer -> {
 					for (int i = 0; i < 1000; i++) {
 						tracer.incMeasure(WEIGHT, 25)
@@ -86,7 +86,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(3, result);
 		//---
 		Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 			analyticsAspectServices.checkPositive(i);
 		}
 		Assert.assertEquals(100, TestAProcessConnectorPlugin.getCount());
-		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -110,7 +110,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 			analyticsAspectServices.checkPositive(-1);
 		} catch (final IllegalStateException e) {
 			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastChannel());
+			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
 			throw e;
 		}
 
@@ -156,8 +156,8 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
 		analyticsManager.trace(
-				TEST_CHANNEL,
-				"1000 Commandes",
+				TEST_CATEGORY,
+				"/create/orders",
 				tracer -> {
 					for (int i = 0; i < 1000; i++) {
 						tracer.incMeasure(PRICE, 5);

@@ -38,22 +38,22 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/**
 	 * Constructor.
-	 * @param channel the channel where the process is stored
-	 * @param category Category (identify action)
+	 * @param category the category where the process is stored
+	 * @param name the name that identified the perocess
 	 * @param createSubProcess if subProcess is created
 	 * @param analyticsAgent Analytics agent to report execution
 	 */
 	AnalyticsTracerImpl(
 			final Optional<AnalyticsTracerImpl> parentOpt,
-			final String channel,
 			final String category,
+			final String name,
 			final Consumer<AProcess> consumer) {
-		Assertion.checkArgNotEmpty(channel);
 		Assertion.checkArgNotEmpty(category);
+		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder(channel)
-				.withCategory(category);
+		final AProcessBuilder processBuilder = new AProcessBuilder(category)
+				.withCategory(name);
 		this.consumer = consumer;
 		if (parentOpt.isPresent()) {
 			stack = parentOpt.get().stack;
@@ -66,22 +66,22 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer incMeasure(final String measureType, final double value) {
-		stack.peek().incMeasure(measureType, value);
+	public AnalyticsTracer incMeasure(final String name, final double value) {
+		stack.peek().incMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer setMeasure(final String measureType, final double value) {
-		stack.peek().setMeasure(measureType, value);
+	public AnalyticsTracer setMeasure(final String name, final double value) {
+		stack.peek().setMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer addMetaData(final String metaDataName, final String value) {
-		stack.peek().addMetaData(metaDataName, value);
+	public AnalyticsTracer addMetaData(final String name, final String value) {
+		stack.peek().addMetaData(name, value);
 		return this;
 	}
 

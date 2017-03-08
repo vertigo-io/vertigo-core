@@ -52,7 +52,7 @@ public final class TaskManagerImpl implements TaskManager {
 		return analyticsManager
 				.traceWithReturn(
 						"tasks",
-						task.getDefinition().getName(),
+						"/execute/" + task.getDefinition().getName(),
 						tracer -> doExecute(tracer, task));
 	}
 

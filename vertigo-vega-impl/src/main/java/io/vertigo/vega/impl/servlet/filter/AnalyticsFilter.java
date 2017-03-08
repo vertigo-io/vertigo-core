@@ -35,8 +35,6 @@ import io.vertigo.lang.WrappedException;
  * @author npiedeloup
  */
 public final class AnalyticsFilter extends AbstractFilter {
-
-	private static final String ANALYTICS_TYPE = "PAGE";
 	private AnalyticsManager analyticsManager;
 
 	/** {@inheritDoc} */
@@ -48,8 +46,10 @@ public final class AnalyticsFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doMyFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) {
-		final String category = ((HttpServletRequest) request).getRequestURL().toString();
-		analyticsManager.trace(ANALYTICS_TYPE, category,
+		final String name = "/url/" + ((HttpServletRequest) request).getRequestURL().toString();
+		analyticsManager.trace(
+				"pages",
+				name,
 				tracer -> {
 					try {
 						chain.doFilter(request, response);

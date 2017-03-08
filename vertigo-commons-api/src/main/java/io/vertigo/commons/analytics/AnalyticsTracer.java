@@ -27,27 +27,28 @@ package io.vertigo.commons.analytics;
 public interface AnalyticsTracer {
 	/**
 	 * Increments a measure (creates if not exists).
-	 * @param measureType the type of the measure
+	 * @param name the name of the measure
 	 * @param value the increment of the measure
 	 * @return this tracer
 	 */
-	AnalyticsTracer incMeasure(final String measureType, final double value);
+	AnalyticsTracer incMeasure(final String name, final double value);
 
 	/**
 	* Sets a value to the measure. (cleans if exists)
+	*
 	* You should use it when you have an exception. so you define explicitly one single value.
-	* @param measureType the type of the measure
+	* @param name the name of the measure
 	* @param value the value of the measure
 	 * @return this tracer
 	*/
-	AnalyticsTracer setMeasure(final String measureType, final double value);
+	AnalyticsTracer setMeasure(final String name, final double value);
 
 	/**
 	 * Sets a value to a specific metadata. (cleans if exists)
 	 *
-	 * @param metaDataName the name of the metadata
-	 * @param value the value of the metadataValeur de la meta-donnée
+	 * @param name the name of the metadata
+	 * @param value the value of the metadata
 	 * @return this tracer
 	 */
-	AnalyticsTracer addMetaData(final String metaDataName, final String value);
+	AnalyticsTracer addMetaData(final String name, final String value);
 }

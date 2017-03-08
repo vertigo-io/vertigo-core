@@ -38,8 +38,8 @@ public class AnnalyticsAspect implements Aspect {
 	public Object invoke(final Object[] args, final AspectMethodInvocation invocation) {
 		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class);
 		return analyticsManager.traceWithReturn(
-				analytics.channel(),
 				analytics.category(),
+				analytics.name(),
 				tracer -> invocation.proceed(args));
 	}
 }

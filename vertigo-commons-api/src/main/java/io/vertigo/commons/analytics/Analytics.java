@@ -17,14 +17,14 @@ import io.vertigo.core.component.aop.AspectAnnotation;
 @AspectAnnotation
 public @interface Analytics {
 	/**
-	 * The channel where the traced process will be stored.
-	 * @return the channel of the process
-	 */
-	String channel();
-
-	/**
-	 * The category of the process being traced.
-	 * @return category of process
+	 * The category where the traced process will be stored.
+	 * @return the category of the process
 	 */
 	String category();
+
+	/**
+	 * The name of the process being traced.
+	 * @return name of process
+	 */
+	String name();
 }

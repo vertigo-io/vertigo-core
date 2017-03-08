@@ -369,7 +369,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private <O> O traceWithReturn(final Function<AnalyticsTracer, O> function) {
 		return analyticsManager.traceWithReturn(
 				"sql",
-				sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
+				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				tracer -> {
 					final O result = function.apply(tracer);
 					tracer.addMetaData("statement", toString());

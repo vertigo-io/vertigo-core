@@ -49,7 +49,8 @@ import io.vertigo.lang.Assertion;
  *	 - where, ou s'est passe l'evenement  ? sur quel serveur ?
  *
  *	[what]
- * - categories defined an array of string : search/items
+ * - category (examples : sql, jpa, tasks)
+ * - name (examples : /create/movies)
 
  * 	[when]
  * - start timestamp
@@ -58,7 +59,6 @@ import io.vertigo.lang.Assertion;
  * 	[data]
  * - list of measures
  * - list of metadatas
- *
  * - list of sub processes (0..*)
  *
  * @author pchretien, npiedeloup
@@ -66,17 +66,16 @@ import io.vertigo.lang.Assertion;
  */
 public final class AProcess {
 	/**
-	 * REGEX used to define the channels.
+	 * REGEX used to define the category.
 	 */
-	public static final Pattern PROCESS_CHANNEL_REGEX = Pattern.compile("[a-z]+");
+	public static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
 	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	public static final Pattern METADATA_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
-	//	public static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z][a-z//-_]*");
 
 	public static final String CATEGORY_SEPARATOR = "/";
-	private final String channel; //ex : sql, page....
+	private final String category; //ex : sql, page....
 
-	private final String category; //what ex : accounts/search
+	private final String name; //what ex : accounts/search
 
 	private final Instant start; //when
 	private final Instant end; //when
@@ -87,8 +86,8 @@ public final class AProcess {
 
 	/**
 	 * Constructor.
-	 * @param channel the type of the channel
-	 * @param category  the category
+	 * @param category the category
+	 * @param name  the name
 	 * @param start the start instant
 	 * @param end the end instant
 	 * @param measures the measures
@@ -96,15 +95,15 @@ public final class AProcess {
 	 * @param subProcesses the list of sub processes (0..*)
 	 */
 	AProcess(
-			final String channel,
 			final String category,
+			final String name,
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
 			final Map<String, String> metaDatas,
 			final List<AProcess> subProcesses) {
-		Assertion.checkNotNull(channel, "the type of the process is required");
 		Assertion.checkNotNull(category, "the category of the process is required");
+		Assertion.checkNotNull(name, "the name of the process is required");
 		Assertion.checkNotNull(start, "the start is required");
 		Assertion.checkNotNull(end, "the end is required");
 		Assertion.checkNotNull(measures, "the measures are required");
@@ -112,15 +111,15 @@ public final class AProcess {
 		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
 
 		//---
-		checkRegex(channel, PROCESS_CHANNEL_REGEX, "process type");
+		checkRegex(category, PROCESS_CATEGORY_REGEX, "process type");
 		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		measures.keySet()
-				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "metadata name"));
+				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "measure name"));
 		metaDatas.keySet()
 				.forEach(metaDataName -> checkRegex(metaDataName, METADATA_REGEX, "metadata name"));
 		//---------------------------------------------------------------------
-		this.channel = channel;
 		this.category = category;
+		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
@@ -135,22 +134,18 @@ public final class AProcess {
 	}
 
 	/**
-	 * @return Type du processus
+	 * [what]
+	 * @return name
 	 */
-	public String getType() {
-		return channel;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * [what]
-	 * @return Category
+	 * @return the category
 	 */
 	public String getCategory() {
 		return category;
-	}
-
-	public String[] getCategoryAsArray() {
-		return category.split(CATEGORY_SEPARATOR);
 	}
 
 	/**
@@ -200,6 +195,6 @@ public final class AProcess {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{channel :" + channel + ", category :" + category + "}";
+		return "{category :" + category + ", name :" + name + "}";
 	}
 }
