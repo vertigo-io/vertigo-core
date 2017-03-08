@@ -56,7 +56,12 @@ public final class WebServiceParam {
 	 * Parameter's source types.
 	 */
 	public enum WebServiceParamType {
-		Query, Path, Header, Body, InnerBody, Implicit
+		Query,
+		Path,
+		Header,
+		Body,
+		InnerBody,
+		Implicit
 	}
 
 	public enum ImplicitParam {
@@ -106,11 +111,6 @@ public final class WebServiceParam {
 				.check(() -> (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
-	private static boolean isImplicitParam(final String testedName) {
-		return Arrays.stream(ImplicitParam.values())
-				.anyMatch(implicitParam -> implicitParam.name().equals(testedName));
-	}
-
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
@@ -131,6 +131,11 @@ public final class WebServiceParam {
 		this.needServerSideToken = needServerSideToken;
 		this.consumeServerSideToken = consumeServerSideToken;
 		this.dtObjectValidatorClasses = Collections.unmodifiableList(new ArrayList<>(dtObjectValidatorClasses));
+	}
+
+	private static boolean isImplicitParam(final String testedName) {
+		return Arrays.stream(ImplicitParam.values())
+				.anyMatch(implicitParam -> implicitParam.name().equals(testedName));
 	}
 
 	/**

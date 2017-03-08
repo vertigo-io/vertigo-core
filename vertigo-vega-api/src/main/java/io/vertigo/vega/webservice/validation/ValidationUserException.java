@@ -78,6 +78,15 @@ public final class ValidationUserException extends VUserException {
 		this(messageText, StringUtil.camelToConstCase(fieldName), dto);
 	}
 
+	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
+		super(messageText);
+		Assertion.checkNotNull(dto, "L'objet est obligatoire");
+		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
+		//-----
+		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
+		uiErrors.add(new UiError(dto, dtField, messageText));
+	}
+
 	/**
 	 * @param uiMessageStack Message stack to populate with this current exception
 	 */
@@ -89,14 +98,5 @@ public final class ValidationUserException extends VUserException {
 				uiMessageStack.error(uiError.getErrorMessage().getDisplay());
 			}
 		}
-	}
-
-	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
-		super(messageText);
-		Assertion.checkNotNull(dto, "L'objet est obligatoire");
-		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
-		//-----
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
-		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 }

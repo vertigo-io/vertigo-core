@@ -35,21 +35,6 @@ public final class DslMultiExpression {
 	private final List<DslMultiExpression> multiExpressions;
 	private final String postBody; //Spaces like
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder()
-				.append(preBody).append(block ? "(" : "");
-		for (final DslExpression expression : expressions) {
-			sb.append(expression);
-		}
-		for (final DslMultiExpression multiExpression : multiExpressions) {
-			sb.append(multiExpression);
-		}
-		sb.append(block ? ")" : "").append(postBody);
-		return sb.toString();
-	}
-
 	/**
 	 * @param preBody String before body
 	 * @param block Is mode block
@@ -106,5 +91,20 @@ public final class DslMultiExpression {
 	 */
 	public String getPostBody() {
 		return postBody;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder()
+				.append(preBody).append(block ? "(" : "");
+		for (final DslExpression expression : expressions) {
+			sb.append(expression);
+		}
+		for (final DslMultiExpression multiExpression : multiExpressions) {
+			sb.append(multiExpression);
+		}
+		sb.append(block ? ")" : "").append(postBody);
+		return sb.toString();
 	}
 }

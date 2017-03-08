@@ -28,12 +28,6 @@ import io.vertigo.lang.Assertion;
 public final class DslFixedValue implements DslValue {
 	private final String fixedValue;
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return fixedValue;
-	}
-
 	/**
 	 * @param fixedValue Fixed content
 	 */
@@ -50,4 +44,9 @@ public final class DslFixedValue implements DslValue {
 		return fixedValue;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return fixedValue;
+	}
 }

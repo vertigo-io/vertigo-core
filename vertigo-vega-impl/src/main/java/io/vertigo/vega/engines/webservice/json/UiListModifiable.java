@@ -34,12 +34,11 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @param <D> Object type
  */
 public final class UiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
+	private static final long serialVersionUID = -8008715790791553036L;
 
 	protected UiListModifiable(final Class<D> objectType) {
 		super(new DtList<>(objectType), null);
 	}
-
-	private static final long serialVersionUID = -8008715790791553036L;
 
 	@Override
 	public void checkFormat(final UiMessageStack uiMessageStack) {
