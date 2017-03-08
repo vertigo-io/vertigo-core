@@ -183,12 +183,12 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
-			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
-			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
-				setResult(sqlRowcount);
-			}
-		}
+		getTaskDefinition().getOutAttributeOption().ifPresent(
+				outTaskAttribute -> {
+					if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
+						setResult(sqlRowcount);
+					}
+				});
 	}
 
 	//-----

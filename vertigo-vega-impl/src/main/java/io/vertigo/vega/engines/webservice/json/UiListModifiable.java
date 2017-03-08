@@ -42,7 +42,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 
 	@Override
 	public void checkFormat(final UiMessageStack uiMessageStack) {
-		stream().forEach((uiObject) -> uiObject.checkFormat(uiMessageStack));
+		stream()
+				.forEach((uiObject) -> uiObject.checkFormat(uiMessageStack));
 
 	}
 
