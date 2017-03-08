@@ -260,24 +260,28 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		boolean success = false;
 		try {
-			final SqlQueryResult res = traceWithReturn(tracer -> {
-				// ResultSet JDBC
-				final SqlMapping mapping = connection.getDataBase().getSqlMapping();
-				try (final ResultSet resultSet = statement.executeQuery()) {
-					//Le Handler a la responsabilité de créer les données.
-					final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-					tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
-					return result;
-				} catch (final SQLException e) {
-					throw new WrappedSqlException(e);
-				}
-			});
+			final SqlQueryResult result = traceWithReturn(tracer -> doExecuteQuery(tracer, domain));
 			success = true;
-			return res;
+			return result;
 		} catch (final WrappedSqlException e) {
+			//SQl Exception is unWrapped
 			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
+		}
+	}
+
+	private SqlQueryResult doExecuteQuery(final AnalyticsTracer tracer, final Domain domain) {
+		// ResultSet JDBC
+		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
+		try (final ResultSet resultSet = statement.executeQuery()) {
+			//Le Handler a la responsabilité de créer les données.
+			final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
+			tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
+			return result;
+		} catch (final SQLException e) {
+			//SQl Exception is Wrapped for lambda
+			throw new WrappedSqlException(e);
 		}
 	}
 

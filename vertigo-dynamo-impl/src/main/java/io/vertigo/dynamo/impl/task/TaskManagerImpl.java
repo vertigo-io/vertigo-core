@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
@@ -53,10 +52,10 @@ public final class TaskManagerImpl implements TaskManager {
 				.traceWithReturn(
 						"tasks",
 						"/execute/" + task.getDefinition().getName(),
-						tracer -> doExecute(tracer, task));
+						tracer -> doExecute(task));
 	}
 
-	private TaskResult doExecute(final AnalyticsTracer tracer, final Task task) {
+	private static TaskResult doExecute(final Task task) {
 		final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
 		return taskEngine.process(task);
 	}
