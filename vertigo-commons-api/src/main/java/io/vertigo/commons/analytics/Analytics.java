@@ -26,5 +26,6 @@ public @interface Analytics {
 	 * The name of the process being traced.
 	 * @return name of process
 	 */
-	String name();
+	String name() default "";
+
 }

@@ -7,13 +7,14 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * * Intercepteur de performance des composant.
  *
  * @author jmforhan
  */
-public class AnnalyticsAspect implements Aspect {
+public class AnalyticsAspect implements Aspect {
 	private final AnalyticsManager analyticsManager;
 
 	/**
@@ -21,7 +22,7 @@ public class AnnalyticsAspect implements Aspect {
 	 * @param analyticsManager the component responsible of managing analytics
 	 */
 	@Inject
-	public AnnalyticsAspect(final AnalyticsManager analyticsManager) {
+	public AnalyticsAspect(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
@@ -36,10 +37,14 @@ public class AnnalyticsAspect implements Aspect {
 	/** {@inheritDoc} */
 	@Override
 	public Object invoke(final Object[] args, final AspectMethodInvocation invocation) {
-		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class);
+		//Aspect must be declared on methods or on the class.
+		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class) == null ? invocation.getMethod().getDeclaringClass().getAnnotation(Analytics.class)
+				: invocation.getMethod().getAnnotation(Analytics.class);
+
+		final String name = StringUtil.isEmpty(analytics.name()) ? invocation.getMethod().getDeclaringClass().getSimpleName() + "::" + invocation.getMethod().getName() : analytics.name();
 		return analyticsManager.traceWithReturn(
 				analytics.category(),
-				analytics.name(),
+				name,
 				tracer -> invocation.proceed(args));
 	}
 }
