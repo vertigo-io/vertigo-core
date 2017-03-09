@@ -34,10 +34,9 @@ import io.vertigo.commons.analytics.data.TestAnalyticsAspectServices;
  * @author pchretien, npiedeloup
  */
 public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
+	private static final String PRICE = "PRICE";
 
-	private static final String PRICE = "MONTANT";
-
-	private static final String WEIGHT = "POIDS";
+	private static final String WEIGHT = "WEIGHT";
 
 	/** Base de données gérant les articles envoyés dans une commande. */
 	private static final String TEST_CATEGORY = "test";
