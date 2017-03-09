@@ -74,6 +74,12 @@ public interface ICriteriaTest {
 	}
 
 	@Test
+	default void testIsNull() {
+		final Criteria<Car> criteriaBool = Criterions.isNull(MAKE);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
 	default void testIsNotNull() {
 		final Criteria<Car> criteriaBool = Criterions.isNotNull(MAKE);
 		assertCriteria(9, criteriaBool);
