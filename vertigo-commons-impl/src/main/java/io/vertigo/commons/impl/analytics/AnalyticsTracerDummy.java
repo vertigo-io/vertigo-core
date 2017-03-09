@@ -17,19 +17,19 @@ final class AnalyticsTracerDummy implements AnalyticsTracer {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer incMeasure(final String measureType, final double value) {
+	public AnalyticsTracer incMeasure(final String name, final double value) {
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer setMeasure(final String measureType, final double value) {
+	public AnalyticsTracer setMeasure(final String name, final double value) {
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer addMetaData(final String metaDataName, final String value) {
+	public AnalyticsTracer addTag(final String name, final String value) {
 		return this;
 	}
 

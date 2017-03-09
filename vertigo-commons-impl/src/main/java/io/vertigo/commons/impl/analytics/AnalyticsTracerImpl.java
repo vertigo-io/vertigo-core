@@ -52,8 +52,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder(category)
-				.withCategory(name);
+		final AProcessBuilder processBuilder = new AProcessBuilder(category, name);
 		this.consumer = consumer;
 		if (parentOpt.isPresent()) {
 			stack = parentOpt.get().stack;
@@ -80,8 +79,8 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer addMetaData(final String name, final String value) {
-		stack.peek().addMetaData(name, value);
+	public AnalyticsTracer addTag(final String name, final String value) {
+		stack.peek().addTag(name, value);
 		return this;
 	}
 
@@ -92,7 +91,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 			setMeasure("success", succeeded ? 100 : 0);
 		}
 		if (causeException != null) {
-			addMetaData("exception", causeException.getClass().getName());
+			addTag("exception", causeException.getClass().getName());
 		}
 		final AProcess process = stack.pop().build();
 		if (stack.isEmpty()) {

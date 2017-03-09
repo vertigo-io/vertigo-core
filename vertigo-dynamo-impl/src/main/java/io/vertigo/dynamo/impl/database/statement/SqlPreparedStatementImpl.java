@@ -376,7 +376,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				tracer -> {
 					final O result = function.apply(tracer);
-					tracer.addMetaData("statement", toString());
+					tracer.addTag("statement", toString());
 					return result;
 				});
 	}

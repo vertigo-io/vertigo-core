@@ -58,7 +58,7 @@ import io.vertigo.lang.Assertion;
  *
  * 	[data]
  * - list of measures
- * - list of metadatas
+ * - list of tagss
  * - list of sub processes (0..*)
  *
  * @author pchretien, npiedeloup
@@ -66,22 +66,22 @@ import io.vertigo.lang.Assertion;
  */
 public final class AProcess {
 	/**
-	 * REGEX used to define the category.
+	 * REGEX used to define rules on category, mesaures and tags.
 	 */
 	public static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
 	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
-	public static final Pattern METADATA_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	public static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 
 	public static final String CATEGORY_SEPARATOR = "/";
 	private final String category; //ex : sql, page....
 
 	private final String name; //what ex : accounts/search
 
-	private final Instant start; //when
-	private final Instant end; //when
+	private final long start; //when
+	private final long end; //when
 
 	private final Map<String, Double> measures;
-	private final Map<String, String> metaDatas;
+	private final Map<String, String> tags;
 	private final List<AProcess> subProcesses;
 
 	/**
@@ -91,7 +91,7 @@ public final class AProcess {
 	 * @param start the start instant
 	 * @param end the end instant
 	 * @param measures the measures
-	 * @param metaDatas the metadatas
+	 * @param tags the tags
 	 * @param subProcesses the list of sub processes (0..*)
 	 */
 	AProcess(
@@ -100,14 +100,14 @@ public final class AProcess {
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
-			final Map<String, String> metaDatas,
+			final Map<String, String> tags,
 			final List<AProcess> subProcesses) {
 		Assertion.checkNotNull(category, "the category of the process is required");
 		Assertion.checkNotNull(name, "the name of the process is required");
 		Assertion.checkNotNull(start, "the start is required");
 		Assertion.checkNotNull(end, "the end is required");
 		Assertion.checkNotNull(measures, "the measures are required");
-		Assertion.checkNotNull(metaDatas, "the metaDatas are required");
+		Assertion.checkNotNull(tags, "the tags are required");
 		Assertion.checkNotNull(subProcesses, "the subProcesses are required");
 
 		//---
@@ -115,15 +115,15 @@ public final class AProcess {
 		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "measure name"));
-		metaDatas.keySet()
-				.forEach(metaDataName -> checkRegex(metaDataName, METADATA_REGEX, "metadata name"));
+		tags.keySet()
+				.forEach(tagName -> checkRegex(tagName, TAG_REGEX, "metadata name"));
 		//---------------------------------------------------------------------
 		this.category = category;
 		this.name = name;
-		this.start = start;
-		this.end = end;
+		this.start = start.toEpochMilli();
+		this.end = end.toEpochMilli();
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
-		this.metaDatas = Collections.unmodifiableMap(new HashMap<>(metaDatas));
+		this.tags = Collections.unmodifiableMap(new HashMap<>(tags));
 		this.subProcesses = subProcesses;
 	}
 
@@ -152,22 +152,22 @@ public final class AProcess {
 	 * @return the duration of the process (in milliseconds)
 	 */
 	public long getDurationMillis() {
-		return end.toEpochMilli() - start.toEpochMilli();
+		return end - start;
 	}
 
 	/**
 	 * [when]
-	 * @return the start timestamp
+	 * @return the start timestamp in Millis
 	 */
-	public Instant getStart() {
+	public long getStart() {
 		return start;
 	}
 
 	/**
 	 * [when]
-	 * @return the end timestamp
+	 * @return the end timestamp in Millis
 	 */
-	public Instant getEnd() {
+	public long getEnd() {
 		return end;
 	}
 
@@ -179,10 +179,10 @@ public final class AProcess {
 	}
 
 	/**
-	 * @return the metadatas of the process
+	 * @return the tags of the process
 	 */
-	public Map<String, String> getMetaDatas() {
-		return metaDatas;
+	public Map<String, String> getTags() {
+		return tags;
 	}
 
 	/**

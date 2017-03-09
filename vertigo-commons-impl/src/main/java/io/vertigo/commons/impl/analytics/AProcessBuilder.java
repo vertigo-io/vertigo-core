@@ -31,34 +31,27 @@ package io.vertigo.commons.impl.analytics;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
- * Builder permettant de contruire un processus.
- * Il y a deux modes de creation.
- *  - live (La date de debut et celle de la creation , la duree s'obtient lors de la creation du process
- *  - differe (la date de debute et la duree sont renseignee ensembles )
+ * This builder allows  to build a process in a fluent way.
  *
  * @author pchretien, npiedeloup
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
-final class AProcessBuilder {
-	private final String myType;
+final class AProcessBuilder implements Builder<AProcess> {
+	private final String myCategory;
 	private final Instant start;
 
-	private String myCategory;
+	private final String myName;
 
-	//Tableau des mesures identifiees par leur nom.
 	private final Map<String, Double> measures;
-
-	//Tableau des metadonnees identifiees par leur nom.
-	private final Map<String, String> metaDatas;
+	private final Map<String, String> tags;
 
 	private final List<AProcess> subProcesses;
 
@@ -67,39 +60,25 @@ final class AProcessBuilder {
 	 * La duree du processus sera obtenue lors de l'appel a la methode build().
 	 * @param type Type du processus
 	 */
-	AProcessBuilder(final String type) {
-		this(type, Instant.now());
-	}
-
-	private AProcessBuilder(final String type, final Instant start) {
-		Assertion.checkNotNull(type, "type of process is required");
-		Assertion.checkNotNull(start, "start of process is required");
+	AProcessBuilder(final String category, final String name) {
+		Assertion.checkArgNotEmpty(category, "the process category is required");
+		Assertion.checkArgNotEmpty(name, "the process name is required");
 		//---
-		myType = type;
+		myCategory = category;
+		myName = name;
 
 		measures = new HashMap<>();
-		metaDatas = new HashMap<>();
+		tags = new HashMap<>();
 		subProcesses = new ArrayList<>();
-		this.start = start;
-	}
-
-	AProcessBuilder withCategory(final String category) {
-		myCategory = category;
-		return this;
-	}
-
-	AProcessBuilder withCategory(final String... categories) {
-		myCategory = Arrays.stream(categories)
-				.collect(Collectors.joining(AProcess.CATEGORY_SEPARATOR));
-		return this;
+		this.start = Instant.now();
 	}
 
 	/**
-	 * Increment d'une mesure.
-	 * Si la mesure est nouvelle, elle est automatiquement creee avec la valeur
-	 * @param mName Nom de la mesure
-	 * @param mValue  Valeur a incrementer
-	 * @return Builder
+	 * Increments a measure.
+	 * if the measure is new,  it's automatically created with the value.
+	 * @param name the measure name
+	 * @param value  the measure value to increment
+	 * @return this builder
 	 */
 	AProcessBuilder incMeasure(final String measureName, final double measureValue) {
 		Assertion.checkNotNull(measureName, "Measure name is required");
@@ -110,36 +89,36 @@ final class AProcessBuilder {
 	}
 
 	/**
-	 * Mise a jour d'une mesure.
-	 * @param mName Nom de la mesure
-	 * @param mValue  Valeur é incrémenter
-	 * @return Builder
+	 * Upserts a mesaure defined by a name and a value.
+	 * @param name  the measure name
+	 * @param value  the value measure
+	 * @return this builder
 	 */
-	AProcessBuilder setMeasure(final String measureName, final double measureValue) {
-		Assertion.checkNotNull(measureName, "Measure name is required");
+	AProcessBuilder setMeasure(final String name, final double value) {
+		Assertion.checkNotNull(name, "measure name is required");
 		//---------------------------------------------------------------------
-		measures.put(measureName, measureValue);
+		measures.put(name, value);
 		return this;
 	}
 
 	/**
-	 * Mise a jour d'une metadonnee.
-	 * @param mmetaDataName Nom de la metadonnee
-	 * @param mmetaDataValue  Valeur de la metadonnee
-	 * @return Builder
+	 * Adds a tag defined by a name and a value.
+	 * @param name the tag name
+	 * @param value  the tag value
+	 * @return this builder
 	 */
-	AProcessBuilder addMetaData(final String mmetaDataName, final String mmetaDataValue) {
-		Assertion.checkNotNull(mmetaDataName, "Metadata name is required");
-		Assertion.checkNotNull(mmetaDataValue, "Metadata value is required");
+	AProcessBuilder addTag(final String name, final String value) {
+		Assertion.checkNotNull(name, "tag name is required");
+		Assertion.checkNotNull(value, "tag value is required");
 		//---------------------------------------------------------------------
-		metaDatas.put(mmetaDataName, mmetaDataValue);
+		tags.put(name, value);
 		return this;
 	}
 
 	/**
-	 * Ajout d'un sous processus.
-	 * @param subProcess Sous-Processus a ajouter
-	 * @return Builder
+	 * adds a sub process d'un sous processus.
+	 * @param subProcess the sub process to add
+	 * @return this builder
 	 */
 	AProcessBuilder addSubProcess(final AProcess subProcess) {
 		Assertion.checkNotNull(subProcess, "sub process is required ");
@@ -148,19 +127,17 @@ final class AProcessBuilder {
 		return this;
 	}
 
-	/**
-	 * Construction du Processus.
-	 * @return Process
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public AProcess build() {
 		final Instant end = Instant.now();
 		return new AProcess(
-				myType,
 				myCategory,
+				myName,
 				start,
 				end,
 				measures,
-				metaDatas,
+				tags,
 				subProcesses);
 	}
 }

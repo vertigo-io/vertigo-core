@@ -44,11 +44,11 @@ public interface AnalyticsTracer {
 	AnalyticsTracer setMeasure(final String name, final double value);
 
 	/**
-	 * Sets a value to a specific metadata. (cleans if exists)
+	 * Sets a value to a specific tag. (cleans if exists)
 	 *
-	 * @param name the name of the metadata
-	 * @param value the value of the metadata
+	 * @param name the name of the tag
+	 * @param value the value of the tag
 	 * @return this tracer
 	 */
-	AnalyticsTracer addMetaData(final String name, final String value);
+	AnalyticsTracer addTag(final String name, final String value);
 }
