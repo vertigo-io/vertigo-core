@@ -29,16 +29,7 @@ import io.vertigo.util.StringUtil;
  * @author npiedeloup
  */
 public final class WrappedException extends RuntimeException {
-
 	private static final long serialVersionUID = 8595187765435824071L;
-
-	/**
-	 * Constructor.
-	 * @param cause Cause exception
-	 */
-	private WrappedException(final Throwable cause) {
-		super(cause);
-	}
 
 	/**
 	 * Constructor.
