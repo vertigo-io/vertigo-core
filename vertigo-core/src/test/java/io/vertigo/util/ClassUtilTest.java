@@ -506,7 +506,7 @@ public final class ClassUtilTest {
 		}
 	}
 
-	private Field getField(final Class<?> clazz, final String fieldName) {
+	private static Field getField(final Class<?> clazz, final String fieldName) {
 		final Collection<Field> fields = ClassUtil.getAllFields(clazz);
 		for (final Field field : fields) {
 			if (fieldName.equals(field.getName())) {

@@ -61,6 +61,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/** {@inheritDoc} */
 	@Override
 	public void add(final AProcess process) {
+		Assertion.checkNotNull(process);
+		//---
 		processQueue.add(process);
 	}
 

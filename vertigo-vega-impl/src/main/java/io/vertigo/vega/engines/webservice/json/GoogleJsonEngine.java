@@ -66,7 +66,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public final class GoogleJsonEngine implements JsonEngine {
 	private final Gson gson;
 
-	private static enum SearchApiVersion {
+	private enum SearchApiVersion {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
@@ -226,7 +226,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public boolean shouldSkipField(final FieldAttributes arg0) {
-			return (arg0.getAnnotation(JsonExclude.class) != null);
+			return arg0.getAnnotation(JsonExclude.class) != null;
 		}
 
 		@Override

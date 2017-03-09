@@ -83,7 +83,7 @@ public final class Selector {
 		Assertion.checkNotNull(classes);
 		checkScope();
 		// ---
-		classes.forEach(clazz -> from(clazz));
+		classes.forEach(this::from);
 		return this;
 	}
 
@@ -289,7 +289,7 @@ public final class Selector {
 		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.checkNotNull(clazz);
 			//---
-			return subtype -> clazz.isAssignableFrom(subtype);
+			return clazz::isAssignableFrom;
 		}
 
 		/**
