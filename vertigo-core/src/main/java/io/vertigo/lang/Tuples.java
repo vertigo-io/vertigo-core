@@ -30,6 +30,27 @@ public final class Tuples {
 	}
 
 	/**
+	 * Creates a Tuple with 2 objects
+	 * @param val1 the first object
+	 * @param val2 the second object
+	 * @return
+	 */
+	public static <A, B> Tuple2<A, B> of(final A val1, final B val2) {
+		return new Tuple2(val1, val2);
+	}
+
+	/**
+	 * Creates a Tuple with 3 objects
+	 * @param val1 the first object
+	 * @param val2 the second object
+	 * @param val3 the third object
+	 * @return
+	 */
+	public static <A, B, C> Tuple3<A, B, C> of(final A val1, final B val2, final C val3) {
+		return new Tuple3(val1, val2, val3);
+	}
+
+	/**
 	 * Tuple with 2 Objects.
 	 * @param <A> Type one
 	 * @param <B> Type two
@@ -44,7 +65,7 @@ public final class Tuples {
 		* @param val1 Value 1.
 		* @param val2 Value 2.
 		*/
-		public Tuple2(final A val1, final B val2) {
+		Tuple2(final A val1, final B val2) {
 			this.val1 = val1;
 			this.val2 = val2;
 		}
@@ -101,7 +122,7 @@ public final class Tuples {
 		* @param val2 Value 2.
 		* @param val3 Value 3.
 		*/
-		public Tuple3(final A val1, final B val2, final C val3) {
+		Tuple3(final A val1, final B val2, final C val3) {
 			this.val1 = val1;
 			this.val2 = val2;
 			this.val3 = val3;

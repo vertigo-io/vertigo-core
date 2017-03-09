@@ -15,6 +15,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.TypeElementsScanner;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
 
 /**
@@ -168,7 +169,7 @@ public final class Selector {
 				.filter(filterClassesBasedOnFields())
 				.flatMap(clazz -> Stream.<Method> of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
-				.map(method -> new Tuple2<>(Class.class.cast(method.getDeclaringClass()), method))
+				.map(method -> Tuples.of(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
 	}
 
@@ -183,7 +184,7 @@ public final class Selector {
 				.filter(filterClassesBasedOnMethods())
 				.flatMap(clazz -> Stream.<Field> of(clazz.getDeclaredFields()))
 				.filter(fieldPredicates)
-				.map(field -> new Tuple2<>(Class.class.cast(field.getDeclaringClass()), field))
+				.map(field -> Tuples.of(Class.class.cast(field.getDeclaringClass()), field))
 				.collect(Collectors.toList());
 	}
 

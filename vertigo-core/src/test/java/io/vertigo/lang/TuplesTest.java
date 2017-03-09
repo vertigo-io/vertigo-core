@@ -36,9 +36,9 @@ import org.junit.runner.RunWith;
 public final class TuplesTest {
 	@Test
 	public void testTuple2() {
-		final Tuples.Tuple2<String, String> homer = new Tuples.Tuple2<>("homer", "simpson");
-		final Tuples.Tuple2<String, String> homer2 = new Tuples.Tuple2<>("homer", "simpson");
-		final Tuples.Tuple2<String, String> marge = new Tuples.Tuple2<>("marge", "simpson");
+		final Tuples.Tuple2<String, String> homer = Tuples.of("homer", "simpson");
+		final Tuples.Tuple2<String, String> homer2 = Tuples.of("homer", "simpson");
+		final Tuples.Tuple2<String, String> marge = Tuples.of("marge", "simpson");
 
 		assertEquals(homer, homer);
 		assertTrue(homer.equals(homer));
@@ -56,9 +56,9 @@ public final class TuplesTest {
 
 	@Test
 	public void testTuple3() {
-		final Tuples.Tuple3<String, String, String> homer = new Tuples.Tuple3<>("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> homer2 = new Tuples.Tuple3<>("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> marge = new Tuples.Tuple3<>("marge", "simpson", "F");
+		final Tuples.Tuple3<String, String, String> homer = Tuples.of("homer", "simpson", "M");
+		final Tuples.Tuple3<String, String, String> homer2 = Tuples.of("homer", "simpson", "M");
+		final Tuples.Tuple3<String, String, String> marge = Tuples.of("marge", "simpson", "F");
 
 		assertEquals(homer, homer);
 		assertTrue(homer.equals(homer));

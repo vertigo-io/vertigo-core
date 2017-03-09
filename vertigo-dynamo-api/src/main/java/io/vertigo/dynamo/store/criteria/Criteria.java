@@ -54,7 +54,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 		//---
 		final CriteriaCtx ctx = new CriteriaCtx();
 		final String sql = this.toSql(ctx, sqlDialect);
-		return new Tuples.Tuple2<>(sql, ctx);
+		return Tuples.of(sql, ctx);
 
 	}
 }
