@@ -5,7 +5,10 @@
 	</boot>
 
 	<module name="vertigo-commons">
-		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" >
+			<plugin class="io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin">
+			</plugin>
+		</component>
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
