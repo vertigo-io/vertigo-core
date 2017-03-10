@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -64,15 +64,13 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	 */
 	@Override
 	public List<XmlClass> getClasses() {
-		final ListBuilder<XmlClass> listBuilder = new ListBuilder<>();
-		for (final EAXmiObject obj : map.values()) {
-			LOG.debug("classe : " + obj);
-			//On ne conserve que les classes et les domaines
-			if (obj.getType() == EAXmiType.Class) {
-				listBuilder.add(createClass(obj));
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values()
+				.stream()
+				.peek(obj -> LOG.debug("class : " + obj))
+				//On ne conserve que les classes et les domaines
+				.filter(obj -> obj.getType() == EAXmiType.Class)
+				.map(EAXmiLoader::createClass)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -81,14 +79,11 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	 */
 	@Override
 	public List<XmlAssociation> getAssociations() {
-		final ListBuilder<XmlAssociation> listBuilder = new ListBuilder<>();
-		for (final EAXmiObject obj : map.values()) {
-			if (obj.getType() == EAXmiType.Association) {
-				final XmlAssociation associationXmi = createAssociation(obj);
-				listBuilder.add(associationXmi);
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values()
+				.stream()
+				.filter(obj -> obj.getType() == EAXmiType.Association)
+				.map(this::createAssociation)
+				.collect(Collectors.toList());
 	}
 
 	private static XmlClass createClass(final EAXmiObject obj) {

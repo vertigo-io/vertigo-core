@@ -18,7 +18,9 @@
  */
 package io.vertigo.app.config.xml;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -210,15 +212,14 @@ final class XMLModulesHandler extends DefaultHandler {
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
 	//Cette interface doit exister et être unique.
 	private static Class<?> resolveInterface(final String simpleName, final Class<? extends Component> clazz) {
-		Class<?> found = null;
-		for (final Class<?> interfaceClazz : ClassUtil.getAllInterfaces(clazz)) {
-			if (simpleName.equals(interfaceClazz.getSimpleName())) {
-				Assertion.checkState(found == null, "Many interfaces of class '{0}' have the same simpleName {1}", clazz, simpleName);
-				found = interfaceClazz;
-			}
-		}
-		Assertion.checkNotNull(found, "No interface of class '{0}' have the simpleName '{1}'", clazz, simpleName);
-		return found;
+		final List<Class> interfaces = ClassUtil.getAllInterfaces(clazz).stream()
+				.filter(interfaceClazz -> simpleName.equals(interfaceClazz.getSimpleName()))
+				.collect(Collectors.toList());
+
+		Assertion.checkState(interfaces.size() > 1, "Many interfaces of class '{0}' have the same simpleName {1}", clazz, simpleName);
+		Assertion.checkState(interfaces.size() == 0, "No interface of class '{0}' have the simpleName '{1}", clazz, simpleName);
+		//there is exactly one interface.
+		return interfaces.get(0);
 	}
 
 	private String evalParamValue(final String paramValue) {

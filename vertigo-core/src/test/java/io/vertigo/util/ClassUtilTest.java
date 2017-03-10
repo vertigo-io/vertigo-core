@@ -171,12 +171,9 @@ public final class ClassUtilTest {
 	public void testAllFields() {
 		final Collection<Field> fields = ClassUtil.getAllFields(String.class);
 		//On vérifi que la propriété 'value' appartient à la liste
-		boolean found = false;
-		for (final Field field : fields) {
-			if ("value".equals(field.getName())) {
-				found = true;
-			}
-		}
+		final boolean found = fields.stream()
+				.filter(field -> "value".equals(field.getName()))
+				.findAny().isPresent();
 		assertTrue(found);
 	}
 

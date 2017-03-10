@@ -21,6 +21,7 @@ package io.vertigo.core.component.di;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -135,11 +136,9 @@ public final class DIDependency {
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {
-		for (final Annotation annotation : annotations) {
-			if (annotation instanceof Named) {
-				return Named.class.cast(annotation).value();
-			}
-		}
-		return null;
+		return Arrays.stream(annotations)
+				.filter(annotation -> annotation instanceof Named)
+				.map(annotation -> Named.class.cast(annotation).value())
+				.findFirst().orElse(null);
 	}
 }
