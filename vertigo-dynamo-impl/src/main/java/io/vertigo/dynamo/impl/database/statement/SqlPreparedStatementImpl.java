@@ -294,14 +294,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		try {
 			//execution de la Requête
 			final int result = traceWithReturn(tracer -> {
-				int res;
 				try {
-					res = statement.executeUpdate();
+					final int res = statement.executeUpdate();
+					tracer.setMeasure("nbModifiedRow", res);
+					return res;
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
 				}
-				tracer.setMeasure("nbModifiedRow", res);
-				return res;
 			});
 			success = true;
 			return result;
@@ -343,20 +342,18 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		boolean success = false;
 		try {
 			final int result = traceWithReturn(tracer -> {
-				int[] res;
 				try {
-					res = statement.executeBatch();
+					final int[] res = statement.executeBatch();
+					//Calcul du nombre total de lignes affectées par le batch.
+					int count = 0;
+					for (final int rowCount : res) {
+						count += rowCount;
+					}
+					tracer.setMeasure("nbModifiedRow", res.length);
+					return count;
 				} catch (final SQLException e) {
 					throw new WrappedSqlException(e);
 				}
-
-				//Calcul du nombre total de lignes affectées par le batch.
-				int count = 0;
-				for (final int rowCount : res) {
-					count += rowCount;
-				}
-				tracer.setMeasure("nbModifiedRow", res.length);
-				return count;
 			});
 			success = true;
 			return result;
