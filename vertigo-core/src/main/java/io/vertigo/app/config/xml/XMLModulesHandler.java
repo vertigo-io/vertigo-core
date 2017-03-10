@@ -216,8 +216,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				.filter(interfaceClazz -> simpleName.equals(interfaceClazz.getSimpleName()))
 				.collect(Collectors.toList());
 
-		Assertion.checkState(interfaces.size() > 1, "Many interfaces of class '{0}' have the same simpleName {1}", clazz, simpleName);
-		Assertion.checkState(interfaces.size() == 0, "No interface of class '{0}' have the simpleName '{1}", clazz, simpleName);
+		Assertion.checkState(interfaces.size() <= 1, "Many interfaces of class '{0}' have the same simpleName {1}", clazz, simpleName);
+		Assertion.checkState(!interfaces.isEmpty(), "No interface of class '{0}' have the simpleName '{1}", clazz, simpleName);
 		//there is exactly one interface.
 		return interfaces.get(0);
 	}
