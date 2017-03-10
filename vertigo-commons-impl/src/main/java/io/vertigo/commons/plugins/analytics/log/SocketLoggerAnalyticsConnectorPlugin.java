@@ -2,7 +2,6 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,6 +14,7 @@ import org.apache.log4j.net.SocketAppender;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.analytics.AProcess;
@@ -30,9 +30,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_SERVER_PORT = 4560;// DefaultPort of SocketAppender
 
 	private Logger socketLogger;
-	private final String nodeIdentifier;
 	private final String hostName;
 	private final int port;
+
+	private final String appName;
+	private final String localHostName;
 
 	private final ConcurrentLinkedQueue<AProcess> processQueue = new ConcurrentLinkedQueue<>();
 
@@ -53,7 +55,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		// ---
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
-		nodeIdentifier = appName + ":" + retrieveHostName();
+		this.appName = appName;
+		localHostName = retrieveHostName();
 		//---
 		daemonManager.registerDaemon("remoteLogger", () -> this::pollQueue, 1);
 	}
@@ -103,10 +106,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			socketLogger = createLogger(hostName, port);
 		}
 		if (socketLogger.isInfoEnabled()) {
-			final StringBuilder log = new StringBuilder(nodeIdentifier)
-					.append(" - ")
-					.append(GSON.toJson(Collections.singletonList(process)));
-			socketLogger.info(log.toString());
+			final JsonObject log = new JsonObject();
+			log.addProperty("appName", appName);
+			log.addProperty("host", localHostName);
+			log.add("event", GSON.toJsonTree(process));
+			socketLogger.info(GSON.toJson(log));
 		}
 	}
 
