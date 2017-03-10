@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -32,7 +33,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -58,26 +58,19 @@ public final class OOMLoader extends AbstractXmlLoader {
 
 	@Override
 	public List<XmlClass> getClasses() {
-		final ListBuilder<XmlClass> listBuilder = new ListBuilder<>();
-		for (final OOMObject obj : map.values()) {
-			//On ne conserve que les classes et les domaines
-			if (obj.getType() == OOMType.Class) {
-				listBuilder.add(createClass(obj));
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values().stream()
+				//On ne conserve que les classes et les domaines
+				.filter(obj -> obj.getType() == OOMType.Class)
+				.map(this::createClass)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<XmlAssociation> getAssociations() {
-		final ListBuilder<XmlAssociation> listBuilder = new ListBuilder<>();
-		for (final OOMObject obj : map.values()) {
-			if (obj.getType() == OOMType.Association) {
-				final XmlAssociation associationOOM = createAssociation(obj);
-				listBuilder.add(associationOOM);
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values().stream()
+				.filter(obj -> obj.getType() == OOMType.Association)
+				.map(this::createAssociation)
+				.collect(Collectors.toList());
 	}
 
 	private XmlClass createClass(final OOMObject obj) {
