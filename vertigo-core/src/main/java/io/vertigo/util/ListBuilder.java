@@ -60,9 +60,8 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	public ListBuilder<X> addAll(final Collection<? extends X> values) {
 		Assertion.checkNotNull(values);
 		//-----
-		for (final X value : values) {
-			add(value);
-		}
+		values.stream()
+				.forEach(this::add);
 		return this;
 	}
 
