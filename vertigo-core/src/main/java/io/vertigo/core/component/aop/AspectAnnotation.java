@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark aspect's annotations for usage check
+ * Marks an aspect by a simple annotation
  * @author mlaroche
  */
 @Target({ ElementType.ANNOTATION_TYPE })

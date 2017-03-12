@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import io.vertigo.util.StringUtil;
 
 /**
- * Encapsulates some Exception inside a RuntimeException.
+ * Encapsulates checked Exception inside a RuntimeException.
  * Inspired by gnu.mapping.WrappedException.
  *
  * @author npiedeloup
@@ -33,8 +33,8 @@ public final class WrappedException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param message Context message
-	 * @param cause Cause exception
+	 * @param message the context message
+	 * @param cause the cause exception
 	 */
 	private WrappedException(final String message, final Throwable cause) {
 		super(message, cause);
@@ -42,7 +42,8 @@ public final class WrappedException extends RuntimeException {
 
 	/**
 	 * Coerces argument to a RuntimeException.
-	 * Re-throw as a non-checked exception. This method never returns, in spite of the return type.
+	 * Re-throws as a non-checked exception.
+	 * This method never returns, in spite of the return type.
 	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
 	 * @param th Cause exception
 	 * @return RuntimeException runtime
@@ -85,5 +86,4 @@ public final class WrappedException extends RuntimeException {
 	public Throwable unwrap() {
 		return getCause();
 	}
-
 }
