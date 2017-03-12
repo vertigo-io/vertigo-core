@@ -25,9 +25,9 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
 import io.vertigo.commons.codec.Codec;
+import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 

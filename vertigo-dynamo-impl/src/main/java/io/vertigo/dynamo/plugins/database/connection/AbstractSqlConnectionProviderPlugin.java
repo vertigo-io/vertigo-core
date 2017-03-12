@@ -25,12 +25,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.util.ListBuilder;
 
 /**

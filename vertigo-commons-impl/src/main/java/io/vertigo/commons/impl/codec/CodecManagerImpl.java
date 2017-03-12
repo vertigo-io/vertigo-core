@@ -34,8 +34,8 @@ import io.vertigo.commons.impl.codec.hash.HashEncoder;
 import io.vertigo.commons.impl.codec.hex.HexEncoder;
 import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
+import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.lang.Describable;
 
 /**
  * Implémentation standard de CodecManager.

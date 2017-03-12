@@ -16,19 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.lang;
+package io.vertigo.core.component;
 
 import java.util.List;
 
-import io.vertigo.core.component.ComponentInfo;
-
 /**
- * Permet d'ajouter un comportement sur un composant.
+ * Adds a description (defined as a list of infos) on a component.
+ * The component must implements this interface.
+ *
  * @author pchretien
  */
 public interface Describable {
 	/**
-	 * @return Liste des informations relatives à ce composant
+	 * @return list of informations on a specific componoent
 	 */
 	List<ComponentInfo> getInfos();
 }

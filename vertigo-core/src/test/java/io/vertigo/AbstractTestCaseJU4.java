@@ -32,10 +32,10 @@ import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Describable;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
