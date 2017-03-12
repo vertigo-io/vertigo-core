@@ -159,7 +159,7 @@ public final class ComponentLoader {
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectImplClass(), container);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
