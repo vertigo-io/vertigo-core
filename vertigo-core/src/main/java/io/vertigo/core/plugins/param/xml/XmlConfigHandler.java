@@ -32,7 +32,9 @@ import io.vertigo.lang.Assertion;
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
-		config, path, param;
+		config,
+		path,
+		param;
 	}
 
 	private final Map<String, Param> params;

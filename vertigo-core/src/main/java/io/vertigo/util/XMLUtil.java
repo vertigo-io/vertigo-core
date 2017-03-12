@@ -60,15 +60,19 @@ public final class XMLUtil {
 					.newSchema(xsd)
 					.newValidator();
 			final StreamSource streamSource = new StreamSource(xml.openStream());
-			try {
-				validator.validate(streamSource);
-			} catch (final SAXException e) {
-				throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
-			}
+			validate(xml, validator, streamSource);
 		} catch (final SocketException e) {
 			throw WrappedException.wrap(e, "'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag");
 		} catch (final SAXException | IOException e) {
 			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static void validate(final URL xml, final Validator validator, final StreamSource streamSource) throws IOException {
+		try {
+			validator.validate(streamSource);
+		} catch (final SAXException e) {
+			throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
 		}
 	}
 }
