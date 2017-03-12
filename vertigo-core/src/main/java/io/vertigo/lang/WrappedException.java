@@ -47,7 +47,7 @@ public final class WrappedException extends RuntimeException {
 	 * @param th Cause exception
 	 * @return RuntimeException runtime
 	 */
-	public static RuntimeException wrap(final java.lang.Throwable th) {
+	public static RuntimeException wrap(final Throwable th) {
 		return wrap(th, null);
 	}
 
@@ -60,7 +60,7 @@ public final class WrappedException extends RuntimeException {
 	 * @param params Context message params
 	 * @return RuntimeException runtime
 	 */
-	public static RuntimeException wrap(final java.lang.Throwable th, final String msg, final Object... params) {
+	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
 		final Throwable t;
 		if (th instanceof InvocationTargetException) {
 			t = ((InvocationTargetException) th).getTargetException();

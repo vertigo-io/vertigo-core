@@ -17,7 +17,7 @@ import io.vertigo.util.Selector.ClassConditions;
  * @author mlaroche
  *
  */
-public final class ComponentDiscovery {
+final class ComponentDiscovery {
 
 	private ComponentDiscovery() {
 		//private
@@ -31,7 +31,7 @@ public final class ComponentDiscovery {
 	 * @param packagePrefix the package we to look
 	 * @param moduleConfigBuilder the module where components will be added.
 	 */
-	public static void registerComponents(final Class<? extends Component> componentType, final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
+	static void registerComponents(final Class<? extends Component> componentType, final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
 		Assertion.checkNotNull(componentType);
 		//
 		final Collection<Class> components = new Selector()
