@@ -22,30 +22,30 @@ import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 
 /**
- * The AspectConfig class defines an aspect. 
- * An aspect is comoposed of 
+ * The AspectConfig class defines an aspect.
+ * An aspect is comoposed of
  *  - an interception point defined by an annotation
  *  - an interceptor (advice) defined by a component
  *
  * @author pchretien
  */
 public final class AspectConfig {
-	private final Class<? extends Aspect> implClass;
+	private final Class<? extends Aspect> aspectClass;
 
 	/**
 	 * Constructor.
 	 */
-	AspectConfig(final Class<? extends Aspect> implClass) {
-		Assertion.checkNotNull(implClass);
+	AspectConfig(final Class<? extends Aspect> aspectClass) {
+		Assertion.checkNotNull(aspectClass);
 		//-----
-		this.implClass = implClass;
+		this.aspectClass = aspectClass;
 	}
 
 	/**
 	 * @return The implementation class of the comoponent which is responsible for the interception
 	 */
-	public Class<? extends Aspect> getAspectImplClass() {
-		return implClass;
+	public Class<? extends Aspect> getAspectClass() {
+		return aspectClass;
 	}
 
 }

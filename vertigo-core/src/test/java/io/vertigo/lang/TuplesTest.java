@@ -18,58 +18,65 @@
  */
 package io.vertigo.lang;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * Tuples.
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class TuplesTest {
 	@Test
 	public void testTuple2() {
-		final Tuples.Tuple2<String, String> homer = new Tuples.Tuple2<>("homer", "simpson");
-		final Tuples.Tuple2<String, String> homer2 = new Tuples.Tuple2<>("homer", "simpson");
-		final Tuples.Tuple2<String, String> marge = new Tuples.Tuple2<>("marge", "simpson");
+		final Tuples.Tuple2<String, String> homer = Tuples.of("homer", "simpson");
+		final Tuples.Tuple2<String, String> homer2 = Tuples.of("homer", "simpson");
+		final Tuples.Tuple2<String, String> marge = Tuples.of("marge", "simpson");
 
-		Assert.assertEquals(homer, homer);
-		Assert.assertTrue(homer.equals(homer));
-		Assert.assertEquals(homer.hashCode(), homer2.hashCode());
-		Assert.assertEquals(homer, homer2);
-		Assert.assertNotEquals(homer, marge);
-		Assert.assertFalse(marge.equals(null));
+		assertEquals(homer, homer);
+		assertTrue(homer.equals(homer));
+		assertEquals(homer.hashCode(), homer2.hashCode());
+		assertEquals(homer, homer2);
+		assertNotEquals(homer, marge);
+		assertFalse(marge.equals(null));
 
-		Assert.assertEquals("homer", homer.getVal1());
-		Assert.assertEquals("simpson", homer.getVal2());
+		assertEquals("homer", homer.getVal1());
+		assertEquals("simpson", homer.getVal2());
 
-		Assert.assertEquals("marge", marge.getVal1());
-		Assert.assertEquals("simpson", marge.getVal2());
+		assertEquals("marge", marge.getVal1());
+		assertEquals("simpson", marge.getVal2());
 	}
 
 	@Test
 	public void testTuple3() {
-		final Tuples.Tuple3<String, String, String> homer = new Tuples.Tuple3<>("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> homer2 = new Tuples.Tuple3<>("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> marge = new Tuples.Tuple3<>("marge", "simpson", "F");
+		final Tuples.Tuple3<String, String, String> homer = Tuples.of("homer", "simpson", "M");
+		final Tuples.Tuple3<String, String, String> homer2 = Tuples.of("homer", "simpson", "M");
+		final Tuples.Tuple3<String, String, String> marge = Tuples.of("marge", "simpson", "F");
 
-		Assert.assertEquals(homer, homer);
-		Assert.assertTrue(homer.equals(homer));
-		Assert.assertEquals(homer.hashCode(), homer2.hashCode());
-		Assert.assertEquals(homer, homer2);
-		Assert.assertNotEquals(homer, marge);
-		Assert.assertFalse(marge.equals(null));
+		assertEquals(homer, homer);
+		assertTrue(homer.equals(homer));
+		assertEquals(homer.hashCode(), homer2.hashCode());
+		assertEquals(homer, homer2);
+		assertNotEquals(homer, marge);
+		assertFalse(marge.equals(null));
 
-		Assert.assertEquals(homer, homer2);
-		Assert.assertEquals(homer, homer);
-		Assert.assertNotEquals(homer, marge);
+		assertEquals(homer, homer2);
+		assertEquals(homer, homer);
+		assertNotEquals(homer, marge);
 
-		Assert.assertEquals("homer", homer.getVal1());
-		Assert.assertEquals("simpson", homer.getVal2());
-		Assert.assertEquals("M", homer.getVal3());
+		assertEquals("homer", homer.getVal1());
+		assertEquals("simpson", homer.getVal2());
+		assertEquals("M", homer.getVal3());
 
-		Assert.assertEquals("marge", marge.getVal1());
-		Assert.assertEquals("simpson", marge.getVal2());
-		Assert.assertEquals("F", marge.getVal3());
+		assertEquals("marge", marge.getVal1());
+		assertEquals("simpson", marge.getVal2());
+		assertEquals("F", marge.getVal3());
 	}
 }

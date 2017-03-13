@@ -54,7 +54,9 @@ public final class FileManagerImpl implements FileManager {
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
-	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes, final DaemonManager daemonManager) {
+	public FileManagerImpl(
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
+			final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
 		daemonManager.registerDaemon("PurgeTempFileDaemon", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
@@ -104,10 +106,10 @@ public final class FileManagerImpl implements FileManager {
 				connection.getInputStream().close();
 			}
 		} catch (final IOException e) {
-			throw new WrappedException("Can't get file meta from url", e);
+			throw WrappedException.wrap(e, "Can't get file meta from url");
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
-		final InputStreamBuilder inputStreamBuilder = () -> ressourceUrl.openStream();
+		final InputStreamBuilder inputStreamBuilder = ressourceUrl::openStream;
 		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
 	}
 
@@ -122,7 +124,7 @@ public final class FileManagerImpl implements FileManager {
 		try {
 			return doCreateTempFile(vFile);
 		} catch (final IOException e) {
-			throw new WrappedException("Can't create temp file for FileInfo " + vFile.getFileName(), e);
+			throw WrappedException.wrap(e, "Can't create temp file for FileInfo " + vFile.getFileName());
 		}
 	}
 

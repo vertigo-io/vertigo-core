@@ -85,29 +85,33 @@ public final class EAXmiHandler extends DefaultHandler {
 			}
 			// On ne gère que les éléments objets qui nous intéressent
 		} else if (EAXmiType.isObjet(typeElement, name)) {
-			LOG.debug("On est dans l'objet ");
-			final String id = attributes.getValue(ATTR_ID);
-			final String leNom = attributes.getValue(ATTR_NAME);
-			final EAXmiType type = EAXmiType.getType(typeElement);
-			final String association = attributes.getValue(ATTR_ASSOCIATION);
-			// On a un type, un id et on n'est pas dans un attribut ajouté à cause d'une association.
-			if (type != null && id != null && !(type.isAttribute() && association != null)) {
-				//Il existe un nouvel objet géré associé à ce Tag
-				final XmlId eaxmiid = new XmlId(id);
-				final EAXmiObject obj;
-				// Nouvelle classe ou association, on revient au package pour créer l'objet.
-				if (currentObject.getType() != null && currentObject.getType().isClass() && type.isClass()) {
-					obj = currentObject.getParent().createEAXmiObject(eaxmiid, type, leNom);
-				} else {
-					obj = currentObject.createEAXmiObject(eaxmiid, type, leNom);
-				}
-				map.put(eaxmiid, obj);
-				currentObject = obj;
-
-			}
+			parseXmiObject(attributes, typeElement);
 			// On peut être dans le cas d'un début de tag utile, on le passe pour le traiter.
 		} else if (currentObject != null) {
 			currentObject.setProperty(name, attributes);
+		}
+	}
+
+	private void parseXmiObject(final Attributes attributes, String typeElement) {
+		LOG.debug("On est dans l'objet ");
+		final String id = attributes.getValue(ATTR_ID);
+		final String leNom = attributes.getValue(ATTR_NAME);
+		final EAXmiType type = EAXmiType.getType(typeElement);
+		final String association = attributes.getValue(ATTR_ASSOCIATION);
+		// On a un type, un id et on n'est pas dans un attribut ajouté à cause d'une association.
+		if (type != null && id != null && !(type.isAttribute() && association != null)) {
+			//Il existe un nouvel objet géré associé à ce Tag
+			final XmlId eaxmiid = new XmlId(id);
+			final EAXmiObject obj;
+			// Nouvelle classe ou association, on revient au package pour créer l'objet.
+			if (currentObject.getType() != null && currentObject.getType().isClass() && type.isClass()) {
+				obj = currentObject.getParent().createEAXmiObject(eaxmiid, type, leNom);
+			} else {
+				obj = currentObject.createEAXmiObject(eaxmiid, type, leNom);
+			}
+			map.put(eaxmiid, obj);
+			currentObject = obj;
+
 		}
 	}
 

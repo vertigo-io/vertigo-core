@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Configuration of a module.
@@ -32,55 +32,51 @@ import io.vertigo.lang.JsonExclude;
  *  - config of plugins
  *  - config of resources
  *  - params
- *  - rules
  *
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfig {
 	private final String name;
 	private final List<DefinitionProviderConfig> definitionProviders;
-	private final List<DefinitionResourceConfig> definitionResources;
 	private final List<ComponentConfig> components;
+	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
-	@JsonExclude
-	private final List<ModuleRule> moduleRules;
 
 	ModuleConfig(final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
-			final List<DefinitionResourceConfig> definitionResourceConfigs,
 			final List<ComponentConfig> componentConfigs,
-			final List<AspectConfig> aspectConfigs,
-			final List<ModuleRule> moduleRules) {
+			final List<PluginConfig> pluginConfigs,
+			final List<AspectConfig> aspectConfigs) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
-		Assertion.checkNotNull(definitionResourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
+		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
-		Assertion.checkNotNull(moduleRules);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
-		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
+		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
-		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
 
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
 		return definitionProviders;
 	}
 
-	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
-		return definitionResources;
+	/**
+	 * @return the list of the component-configs
+	 */
+	public List<ComponentConfig> getComponentConfigs() {
+		return new ListBuilder<ComponentConfig>()
+				.addAll(components)
+				.addAll(ConfigUtil.buildConfigs(plugins))
+				.build();
 	}
 
 	/**
-	 * @return Liste des configurations de composants.
+	 * @return the list of the aspect-configs
 	 */
-	public List<ComponentConfig> getComponentConfigs() {
-		return components;
-	}
-
 	public List<AspectConfig> getAspectConfigs() {
 		return aspects;
 	}
@@ -88,14 +84,8 @@ public final class ModuleConfig {
 	/**
 	 * @return Nom du module.
 	 */
-	String getName() {
+	public String getName() {
 		return name;
-	}
-
-	void checkRules() {
-		for (final ModuleRule moduleRule : moduleRules) {
-			moduleRule.check(this);
-		}
 	}
 
 	@Override

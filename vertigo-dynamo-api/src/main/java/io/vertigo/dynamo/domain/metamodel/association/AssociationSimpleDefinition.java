@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.lang.Assertion;
@@ -37,7 +37,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructor.
-
+	
 	 * @param name the name of the association
 	 * @param fkFieldName the fieldname that represents the foreign key
 	 * @param associationNodeA the A node for this assocation

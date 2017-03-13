@@ -24,10 +24,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
@@ -49,7 +50,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
-	private static final int REQUEST_HEADER_FOR_TRACKER = 50;
+	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 
 	private static final int FETCH_SIZE = 150;
 
@@ -163,9 +164,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @return Valeur du paramètre
 	 */
 	final SqlParameter getParameter(final int index) {
-		final SqlParameter p = parameters.get(index);
-		Assertion.checkNotNull(p, "Le paramètre à l''index {0} n''a pas été enregistré préalablement !", index);
-		return p;
+		final SqlParameter parameter = parameters.get(index);
+		Assertion.checkNotNull(parameter, "Le paramètre à l''index {0} n''a pas été enregistré préalablement !", index);
+		return parameter;
 	}
 
 	/** {@inheritDoc}  */
@@ -175,7 +176,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			try {
 				statement.close();
 			} catch (final SQLException e) {
-				throw new WrappedException(e);
+				throw WrappedException.wrap(e);
 			}
 		}
 	}
@@ -258,19 +259,29 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(domain);
 		//-----
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
-			// ResultSet JDBC
-			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
-			try (final ResultSet resultSet = statement.executeQuery()) {
-				//Le Handler a la responsabilité de créer les données.
-				final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
-				success = true;
-				tracker.setMeasure("nbSelectedRow", result.getSQLRowCount())
-						.markAsSucceeded();
-				return result;
-			}
+		try {
+			final SqlQueryResult result = traceWithReturn(tracer -> doExecuteQuery(tracer, domain));
+			success = true;
+			return result;
+		} catch (final WrappedSqlException e) {
+			//SQl Exception is unWrapped
+			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
+		}
+	}
+
+	private SqlQueryResult doExecuteQuery(final AnalyticsTracer tracer, final Domain domain) {
+		// ResultSet JDBC
+		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
+		try (final ResultSet resultSet = statement.executeQuery()) {
+			//Le Handler a la responsabilité de créer les données.
+			final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
+			tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
+			return result;
+		} catch (final SQLException e) {
+			//SQl Exception is Wrapped for lambda
+			throw new WrappedSqlException(e);
 		}
 	}
 
@@ -280,13 +291,21 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state.assertDefinedState();
 		//---
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
+		try {
 			//execution de la Requête
-			final int res = statement.executeUpdate();
+			final int result = traceWithReturn(tracer -> {
+				try {
+					final int res = statement.executeUpdate();
+					tracer.setMeasure("nbModifiedRow", res);
+					return res;
+				} catch (final SQLException e) {
+					throw new WrappedSqlException(e);
+				}
+			});
 			success = true;
-			tracker.setMeasure("nbModifiedRow", res)
-					.markAsSucceeded();
-			return res;
+			return result;
+		} catch (final WrappedSqlException e) {
+			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
 		}
@@ -300,24 +319,46 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		statement.addBatch();
 	}
 
+	private static class WrappedSqlException extends RuntimeException {
+		private static final long serialVersionUID = -6501399202170153122L;
+		private final SQLException sqlException;
+
+		WrappedSqlException(final SQLException sqlException) {
+			Assertion.checkNotNull(sqlException);
+			//---
+			this.sqlException = sqlException;
+		}
+
+		SQLException getSqlException() {
+			return sqlException;
+		}
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public int executeBatch() throws SQLException {
 		state.assertDefinedState();
 		//---
 		boolean success = false;
-		try (AnalyticsTracker tracker = createTracker()) {
-			final int[] res = statement.executeBatch();
-
-			//Calcul du nombre total de lignes affectées par le batch.
-			int count = 0;
-			for (final int rowCount : res) {
-				count += rowCount;
-			}
+		try {
+			final int result = traceWithReturn(tracer -> {
+				try {
+					final int[] res = statement.executeBatch();
+					//Calcul du nombre total de lignes affectées par le batch.
+					int count = 0;
+					for (final int rowCount : res) {
+						count += rowCount;
+					}
+					tracer.setMeasure("nbModifiedRow", res.length);
+					return count;
+				} catch (final SQLException e) {
+					throw new WrappedSqlException(e);
+				}
+			});
 			success = true;
-			tracker.setMeasure("nbModifiedRow", res.length)
-					.markAsSucceeded();
-			return count;
+			return result;
+		} catch (final WrappedSqlException e) {
+			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
 		}
@@ -326,10 +367,15 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/**
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private AnalyticsTracker createTracker() {
-		return analyticsManager
-				.startLogTracker("Sql", sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACKER, sql.length())))
-				.addMetaData("statement", toString());
+	private <O> O traceWithReturn(final Function<AnalyticsTracer, O> function) {
+		return analyticsManager.traceWithReturn(
+				"sql",
+				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
+				tracer -> {
+					final O result = function.apply(tracer);
+					tracer.addTag("statement", toString());
+					return result;
+				});
 	}
 
 	//=========================================================================
@@ -360,7 +406,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	public final String toString() {
 		return getParameters()
 				.stream()
-				.map(parameter -> parameter.toString())
+				.map(SqlParameter::toString)
 				.collect(Collectors.joining(", ", getSql() + '(', ")"));
 	}
 
@@ -369,7 +415,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 *
 	 * @return PreparedStatement
 	 */
-	final java.sql.PreparedStatement getPreparedStatement() {
+	final PreparedStatement getPreparedStatement() {
 		Assertion.checkNotNull(statement, "Le statement est null, l'exécution est elle OK ?");
 		//-----
 		return statement;

@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.peg;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 public final class CalculatorTest {
@@ -30,11 +31,11 @@ public final class CalculatorTest {
 
 	@Test
 	public void test() throws PegNoMatchFoundException {
-		Assert.assertEquals(6, eval("2*3"));
+		assertEquals(6, eval("2*3"));
 		//--
-		Assert.assertEquals(5, eval("2 + 3"));
+		assertEquals(5, eval("2 + 3"));
 		//--
-		Assert.assertEquals(11, eval("121 /11"));
+		assertEquals(11, eval("121 /11"));
 	}
 
 	@Test(expected = PegNoMatchFoundException.class)

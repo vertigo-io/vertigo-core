@@ -20,17 +20,18 @@ package io.vertigo.dynamo.plugins.database.connection;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Classe de base des fournisseurs de connexions dynamo.
@@ -80,28 +81,28 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	/** {@inheritDoc} */
 	@Override
 	public final List<ComponentInfo> getInfos() {
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		try {
 			final SqlConnection connection = obtainConnection();
 			try (final Connection jdbcConnection = connection.getJdbcConnection()) {
 				try {
 					final DatabaseMetaData metaData = jdbcConnection.getMetaData();
 					//---
-					componentInfos.add(new ComponentInfo("database.name", metaData.getDatabaseProductName()));
-					componentInfos.add(new ComponentInfo("database.version", metaData.getDatabaseProductVersion()));
+					return new ListBuilder<ComponentInfo>()
+							.add(new ComponentInfo("database.name", metaData.getDatabaseProductName()))
+							.add(new ComponentInfo("database.version", metaData.getDatabaseProductVersion()))
 
-					componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverName()));
-					componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverVersion()));
-					componentInfos.add(new ComponentInfo("database.driver.url", metaData.getURL()));
+							.add(new ComponentInfo("database.driver.name", metaData.getDriverName()))
+							.add(new ComponentInfo("database.driver.name", metaData.getDriverVersion()))
+							.add(new ComponentInfo("database.driver.url", metaData.getURL()))
+							.build();
 				} finally {
 					connection.rollback();
 					connection.release();
 				}
 			}
-
 		} catch (final Exception e) {
 			LOG.warn("Can't get database infos", e);
+			return Collections.emptyList();
 		}
-		return componentInfos;
 	}
 }

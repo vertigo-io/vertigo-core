@@ -18,9 +18,12 @@
  */
 package io.vertigo.commons.codec.base64;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
@@ -32,11 +35,11 @@ import io.vertigo.commons.codec.CodecManager;
  * @author pchretien
  */
 public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
-	/** 
+	/**
 	 * "Les sanglots longs des .." encodé en base64.
 	 */
 	private static final String TEXT64 = "TGVzIHNhbmdsb3RzIGxvbmdzIGRlcyB2aW9sb25zIGRlIGwnYXV0b21uZSBibGVzc2VudCBtb24gY29ldXIgZCd1bmUgbGFuZ3VldXIgbW9ub3RvbmUu";
-	/** 
+	/**
 	 * bytes[] d'un objet du Projet CMS de Jonathan Tiret et Hugo Garcia-Cotte
 	 * Ces 3 bytes se différencient entre autre par le résultat de leur division modulo 3
 	 */
@@ -56,7 +59,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 			60, 85, 110, 101, 32, 112, 101, 114, 115, 111, 110, 110, 101, 32, 113, 117, 101, 32, 106, 101, 32, 110, 101, 32, 99, 111, 110, 110, 97, 105, 115, 32, 112, 97, 115, 32, 109, 97, 105, 115, 32, 113, 117, 105, 32, -61, -96, 32, 108, 39, 97, 105, 114, 32, 115, 121, 109, 112, 97, 32, 33, 116, 0, 3, 97, 103, 101, 115, 114, 0, 17, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 73, 110, 116, 101, 103, 101, 114, 18, -30, -96, -92, -9, -127, -121, 56, 2, 0, 1, 73, 0, 5, 118, 97, 108, 117, 101, 120, 114, 0, 16, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 78, 117, 109, 98, 101, 114, -122, -84, -107, 29, 11, -108, -32, -117, 2, 0, 0, 120, 112, 0, 0, 0, 65, 120, 126, 114, 0, 62, 99, 111, 109, 46, 107, 108, 101, 101, 103, 114, 111, 117, 112, 46, 97, 109, 97, 122, 105, 110, 103, 99, 97, 114, 100, 115, 46, 112, 108, 117, 103, 105, 110, 115, 46, 115, 97, 109, 112, 108, 101, 112, 108, 117, 103, 105, 110, 46, 99, 97, 114, 100, 46, 67, 97, 114, 100, 84, 121, 112, 101, 115, 0, 0, 0, 0, 0, 0, 0,
 			0, 18, 0, 0, 120, 113, 0, 126, 0, 16, 116, 0, 6, 80, 69, 79, 80, 76, 69, 115, 114, 0, 42, 99, 111, 109, 46, 107, 108, 101, 101, 103, 114, 111, 117, 112, 46, 97, 109, 97, 122, 105, 110, 103, 99, 97, 114, 100, 115, 46, 107, 101, 114, 110, 101, 108, 46, 99, 97, 114, 100, 46, 85, 82, 73, -86, -19, -117, 77, 78, 119, 45, 38, 2, 0, 1, 76, 0, 4, 117, 117, 105, 100, 116, 0, 16, 76, 106, 97, 118, 97, 47, 117, 116, 105, 108, 47, 85, 85, 73, 68, 59, 120, 112, 115, 114, 0, 14, 106, 97, 118, 97, 46, 117, 116, 105, 108, 46, 85, 85, 73, 68, -68, -103, 3, -9, -104, 109, -123, 47, 2, 0, 2, 74, 0, 12, 108, 101, 97, 115, 116, 83, 105, 103, 66, 105, 116, 115, 74, 0, 11, 109, 111, 115, 116, 83, 105, 103, 66, 105, 116, 115, 120, 112, -115, -69, -71, -62, -37, -82, -120, -13, -87, 106, -113, 58, -69, 122, 52, 90, 116, 0, 20, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 103, 111, 111, 103, 108, 101, 46, 102, 114 };
 	/**
-	 * Expression régulière vérifiée par les base 64. 
+	 * Expression régulière vérifiée par les base 64.
 	 */
 	private static final Pattern REGEX = Pattern.compile("[a-zA-Z0-9_-]*[=]*");
 
@@ -70,8 +73,8 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	@Override
 	@Test
 	public void testNull() {
-		Assert.assertNull(codec.encode(null));
-		Assert.assertNull(codec.decode(null));
+		assertNull(codec.encode(null));
+		assertNull(codec.decode(null));
 	}
 
 	/** {@inheritDoc} */
@@ -88,7 +91,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 		checkEncode("abc:def".getBytes(), "YWJjOmRlZg==");
 
 		final String encodedValue = codec.encode(TEXT.getBytes());
-		Assert.assertEquals(TEXT64, encodedValue);
+		assertEquals(TEXT64, encodedValue);
 	}
 
 	/** {@inheritDoc} */
@@ -104,12 +107,12 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	private void assertEncodeDecodeEquals(final byte[] original, final String endWith) {
 		assertEncodeDecodeEquals(original);
 		final String encodedValue = codec.encode(original);
-		Assert.assertTrue(encodedValue.endsWith(endWith));
+		assertTrue(encodedValue.endsWith(endWith));
 	}
 
 	private void assertEncodeDecodeEquals(final byte[] original) {
 		final String encodedValue = codec.encode(original);
-		Assert.assertEquals(new String(original), new String(codec.decode(encodedValue)));
+		assertEquals(new String(original), new String(codec.decode(encodedValue)));
 	}
 
 	/** {@inheritDoc} */
@@ -123,7 +126,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	@Override
 	protected void checkEncodedValue(final String encodedValue) {
 		//On vérifie que la valeur encodée respecte bien le pattern.
-		Assert.assertTrue("Pattern Base 64", REGEX.matcher(encodedValue).matches());
+		assertTrue(REGEX.matcher(encodedValue).matches(), "Pattern Base 64");
 	}
 
 }

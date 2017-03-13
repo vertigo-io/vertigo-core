@@ -19,8 +19,11 @@
 package io.vertigo.vega;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
@@ -52,25 +55,23 @@ import io.vertigo.vega.webservice.WebServiceManager;
 public final class VegaFeatures extends Features {
 
 	private boolean tokensEnabled;
-	private String tokenCollection;
+	private String myTokens;
+	private String mySearchApiVersion;
 	private boolean miscEnabled;
 	private boolean securityEnabled;
-	private String apiPrefix;
+	private String myApiPrefix;
+	private Integer myPort;
+	private String myOriginCORSFilter;
 
 	public VegaFeatures() {
 		super("vega");
 	}
 
-	@Override
-	protected void setUp() {
-		//rien
-	}
-
-	public VegaFeatures withTokens(final String collection) {
-		Assertion.checkArgNotEmpty(collection);
+	public VegaFeatures withTokens(final String tokens) {
+		Assertion.checkArgNotEmpty(tokens);
 		//-----
 		tokensEnabled = true;
-		tokenCollection = collection;
+		myTokens = tokens;
 		return this;
 	}
 
@@ -84,26 +85,37 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
-	public VegaFeatures withApiPrefix(final String prefix) {
-		apiPrefix = prefix;
+	public VegaFeatures withApiPrefix(final String apiPrefix) {
+		myApiPrefix = apiPrefix;
+		return this;
+	}
+
+	public VegaFeatures withSearchApiVersion(final String searchApiVersion) {
+		mySearchApiVersion = searchApiVersion;
 		return this;
 	}
 
 	public VegaFeatures withEmbeddedServer(final int port) {
-		final PluginConfigBuilder pluginConfigBuilder = getModuleConfigBuilder().beginPlugin(SparkJavaEmbeddedWebServerPlugin.class)
-				.addParam("port", Integer.toString(port));
-		if (apiPrefix != null) {
-			pluginConfigBuilder.addParam("apiPrefix", apiPrefix);
-		}
-		pluginConfigBuilder.endPlugin();
+		myPort = port;
 		return this;
 	}
 
+	public VegaFeatures withOriginCORSFilter(final String originCORSFilter) {
+		myOriginCORSFilter = originCORSFilter;
+		return this;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
+
+		final PluginConfigBuilder corsAllowerPluginConfigBuilder = new PluginConfigBuilder(CorsAllowerWebServiceHandlerPlugin.class);
+		if (myOriginCORSFilter != null) {
+			corsAllowerPluginConfigBuilder.addParam(Param.create("originCORSFilter", myOriginCORSFilter));
+		}
+
 		getModuleConfigBuilder()
 				.withNoAPI()
-				.addComponent(JsonEngine.class, GoogleJsonEngine.class)
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
@@ -111,9 +123,18 @@ public final class VegaFeatures extends Features {
 
 				//-- Handlers plugins
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
-				.addPlugin(CorsAllowerWebServiceHandlerPlugin.class)
+				.addPlugin(corsAllowerPluginConfigBuilder.build())
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
+		if (mySearchApiVersion != null) {
+			getModuleConfigBuilder()
+					.addComponent(JsonEngine.class, GoogleJsonEngine.class,
+							Param.create("searchApiVersion", mySearchApiVersion));
+		} else {
+			getModuleConfigBuilder()
+					.addComponent(JsonEngine.class, GoogleJsonEngine.class);
+		}
+
 		if (securityEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
@@ -121,17 +142,27 @@ public final class VegaFeatures extends Features {
 					.addPlugin(SecurityWebServiceHandlerPlugin.class);
 		}
 		if (tokensEnabled) {
-			getModuleConfigBuilder().addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
+			getModuleConfigBuilder()
+					.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
-					.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.addParam("collection", tokenCollection)
-					.endComponent();
+					.addComponent(TokenManager.class, TokenManagerImpl.class,
+							Param.create("collection", myTokens));
 		}
 		if (miscEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
+		if (myPort != null) {
+			final ListBuilder<Param> params = new ListBuilder()
+					.add(Param.create("port", Integer.toString(myPort)));
+			if (myApiPrefix != null) {
+				params.add(Param.create("apiPrefix", myApiPrefix));
+			}
+			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
+
+		}
+
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
 				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
 	}

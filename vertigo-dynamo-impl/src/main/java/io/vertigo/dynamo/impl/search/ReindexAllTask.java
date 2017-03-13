@@ -42,8 +42,8 @@ import io.vertigo.util.ClassUtil;
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
-	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
-	private static volatile long REINDEX_COUNT = 0;
+	private static volatile boolean REINDEXATION_IN_PROGRESS;
+	private static volatile long REINDEX_COUNT;
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -127,7 +127,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
+	private static ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
 		final String filterValue = new StringBuilder()
 				.append("_id").append(":{") //{ for exclude min
 				.append(firstUri != null ? ("\"" + firstUri + "\"") : "*")

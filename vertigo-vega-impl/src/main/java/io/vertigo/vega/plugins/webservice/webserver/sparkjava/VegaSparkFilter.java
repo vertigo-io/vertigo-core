@@ -28,18 +28,19 @@ import spark.servlet.SparkFilter;
  * @author npiedeloup
  */
 public final class VegaSparkFilter extends SparkFilter {
+	private static final SparkApplication[] EMPTY_CONF = new SparkApplication[0];
 
 	/** {@inheritDoc} */
 	@Override
 	protected SparkApplication getApplication(final FilterConfig filterConfig) {
-		return new SparkApplication() {
-
-			/** {@inheritDoc} */
-			@Override
-			public void init() {
-				// nothing
-			}
-
+		return () -> {
+			/*no specific initialization*/
 		};
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected SparkApplication[] getApplications(final FilterConfig filterConfig) {
+		return EMPTY_CONF;
 	}
 }

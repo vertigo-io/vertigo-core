@@ -76,7 +76,6 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		//serverToken in UiListState
 
 		final WebServiceParam uiListWebServiceParams = lookupWebServiceParam(webServiceDefinition, UiListState.class);
-		Assertion.checkNotNull(uiListWebServiceParams, "sort and pagination need a UiListState endpointParams. It should have been added by WebServiceParamBuilder.");
 
 		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListWebServiceParams);
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
@@ -116,12 +115,12 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	 * @return first WebServiceParam of this type, null if not found
 	 */
 	private static WebServiceParam lookupWebServiceParam(final WebServiceDefinition webServiceDefinition, final Class<UiListState> paramType) {
-		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
-			if (paramType.equals(webServiceParam.getType())) {
-				return webServiceParam;
-			}
-		}
-		return null;
+		return webServiceDefinition.getWebServiceParams()
+				.stream()
+				.filter(webServiceParam -> paramType.equals(webServiceParam.getType()))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("sort and pagination need a UiListState endpointParams. It should have been added by WebServiceParamBuilder."));
+
 	}
 
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {

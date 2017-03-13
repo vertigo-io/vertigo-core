@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
 
 import javax.xml.XMLConstants;
@@ -55,15 +56,23 @@ public final class XMLUtil {
 		//-----
 		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		try {
-			final Validator validator = schemaFactory.newSchema(xsd).newValidator();
+			final Validator validator = schemaFactory
+					.newSchema(xsd)
+					.newValidator();
 			final StreamSource streamSource = new StreamSource(xml.openStream());
-			try {
-				validator.validate(streamSource);
-			} catch (final SAXException e) {
-				throw new WrappedException("'" + xml.toString() + "' is not valid", e);
-			}
+			validate(xml, validator, streamSource);
+		} catch (final SocketException e) {
+			throw WrappedException.wrap(e, "'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag");
 		} catch (final SAXException | IOException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static void validate(final URL xml, final Validator validator, final StreamSource streamSource) throws IOException {
+		try {
+			validator.validate(streamSource);
+		} catch (final SAXException e) {
+			throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
 		}
 	}
 }

@@ -34,8 +34,8 @@ import io.vertigo.commons.impl.codec.hash.HashEncoder;
 import io.vertigo.commons.impl.codec.hex.HexEncoder;
 import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.lang.Describable;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 
 /**
  * Implémentation standard de CodecManager.
@@ -88,7 +88,7 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 		super();
 		htmlCodec = new HtmlCodec();
 		//---
-		final CryptoCodec tmpTripleDESCodec = new CryptoCodec(CryptoCodec.Crypto.TripleDES);
+		final CryptoCodec tmpTripleDESCodec = new CryptoCodec(CryptoCodec.Crypto.TRIPLE_DES);
 		tripleDESCodec = new NullCodec<>(tmpTripleDESCodec);
 		componentInfos.addAll(tmpTripleDESCodec.getInfos());
 		//---

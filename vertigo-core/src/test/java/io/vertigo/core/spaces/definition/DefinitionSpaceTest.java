@@ -18,25 +18,35 @@
  */
 package io.vertigo.core.spaces.definition;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.param.Param;
 
+@RunWith(JUnitPlatform.class)
 public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
@@ -45,29 +55,26 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
+				.addModule(new ModuleConfigBuilder("test")
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(TestDefinitionprovider.class)
+								.addParam(Param.create("testParam", "testParamValue"))
+								.addDefinitionResource("type1", "resource1")
+								.build())
+						.build())
 				.build();
-	}
-
-	@Test
-	public void testEmpty() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
 	}
 
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-
-		Assert.assertEquals("definitionSpace must be emmpty", 0L, definitionSpace.getAllTypes().size());
-		definitionSpace.put(new SampleDefinition());
-
-		Assert.assertEquals("definitionSpace must contain one element ", 1L, definitionSpace.getAllTypes().size());
-		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, definitionSpace.getAll(SampleDefinition.class).size());
+		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
+		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
-		Assert.assertNotNull(sampleDefinition);
-		Assert.assertEquals("localName must be THE_DEFINITION", "THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));
-		Assert.assertEquals("localName must be THE_DEFINITION", sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));
+		assertNotNull(sampleDefinition);
+		assertEquals("THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be THE_DEFINITION");
+		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
+				"localName must be THE_DEFINITION");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
@@ -84,8 +91,8 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 			definitionReference = DefinitionReference.class.cast(ios.readObject());
 		}
 
-		Assert.assertNotSame("DefinitionReferences must be not strictly equals", sampleDefinitionRef, definitionReference);
-		Assert.assertSame("Definitions must be strictly equals", sampleDefinition, definitionReference.get());
+		assertNotSame(sampleDefinitionRef, definitionReference, "DefinitionReferences must be not strictly equals");
+		assertSame(sampleDefinition, definitionReference.get(), "Definitions must be strictly equals");
 	}
 
 	@DefinitionPrefix("SAMPLE")

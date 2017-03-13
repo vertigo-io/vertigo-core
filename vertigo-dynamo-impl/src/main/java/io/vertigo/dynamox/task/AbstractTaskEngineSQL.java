@@ -183,12 +183,12 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	private void setRowCount(final int sqlRowcount) {
-		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
-			final TaskAttribute outTaskAttribute = getTaskDefinition().getOutAttributeOption().get();
-			if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
-				setResult(sqlRowcount);
-			}
-		}
+		getTaskDefinition().getOutAttributeOption().ifPresent(
+				outTaskAttribute -> {
+					if (SQL_ROWCOUNT.equals(outTaskAttribute.getName())) {
+						setResult(sqlRowcount);
+					}
+				});
 	}
 
 	//-----
@@ -420,7 +420,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			try {
 				connection = getConnectionProvider().obtainConnection();
 			} catch (final SQLException e) {
-				throw new WrappedException("Can't connect to database", e);
+				throw WrappedException.wrap(e, "Can't connect to database");
 			}
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}

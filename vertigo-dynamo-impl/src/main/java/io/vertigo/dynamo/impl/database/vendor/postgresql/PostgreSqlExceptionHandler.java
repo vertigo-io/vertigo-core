@@ -71,7 +71,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
-		throw new WrappedException("[Erreur SQL](" + errCode + ") : " + statement, sqle);
+		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + statement);
 	}
 
 	/** {@inheritDoc} */

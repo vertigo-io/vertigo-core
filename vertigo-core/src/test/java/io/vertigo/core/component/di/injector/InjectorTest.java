@@ -18,13 +18,19 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
@@ -42,6 +48,7 @@ import io.vertigo.lang.Container;
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class InjectorTest {
 	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();
@@ -82,7 +89,7 @@ public final class InjectorTest {
 
 	@Test
 	public void testA() {
-		final A a = Injector.newInstance(A.class, new Container() {
+		final A a = DIInjector.newInstance(A.class, new Container() {
 
 			@Override
 			public boolean contains(final String id) {
@@ -102,87 +109,93 @@ public final class InjectorTest {
 		nop(a);
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testBFail() {
-		final B b = Injector.newInstance(B.class, new Container() {
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final B b = DIInjector.newInstance(B.class, new Container() {
 
-			@Override
-			public boolean contains(final String id) {
-				return false;
-			}
+						@Override
+						public boolean contains(final String id) {
+							return false;
+						}
 
-			@Override
-			public <T> T resolve(final String id, final Class<T> componentClass) {
-				return null;
-			}
+						@Override
+						public <T> T resolve(final String id, final Class<T> componentClass) {
+							return null;
+						}
 
-			@Override
-			public Set<String> keySet() {
-				return Collections.EMPTY_SET;
-			}
-		});
-		nop(b);
+						@Override
+						public Set<String> keySet() {
+							return Collections.EMPTY_SET;
+						}
+					});
+					nop(b);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testB2() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
-		final B2 b2 = Injector.newInstance(B2.class, container);
-		nop(b2);
-		Assert.fail();
+
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final B2 b2 = DIInjector.newInstance(B2.class, container);
+					nop(b2);
+				});
 	}
 
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
-		final B b = Injector.newInstance(B.class, container);
-		Assert.assertEquals(a, b.getA());
+		final B b = DIInjector.newInstance(B.class, container);
+		assertEquals(a, b.getA());
 	}
 
 	@Test
 	public void testE() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
 		container.put("p3", new P3());
-		E e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isPresent());
-		Assert.assertEquals(a, e.getA().get());
-		Assert.assertFalse(e.getB().isPresent());
-		Assert.assertEquals(0, e.getPPlugins().size());
-		Assert.assertEquals(0, e.getP2Plugins().size());
+		E e = DIInjector.newInstance(E.class, container);
+		assertTrue(e.getA().isPresent());
+		assertEquals(a, e.getA().get());
+		assertFalse(e.getB().isPresent());
+		assertEquals(0, e.getPPlugins().size());
+		assertEquals(0, e.getP2Plugins().size());
 		//-----
 		container.put("p", new P());
 		container.put("p#1", new P());
 		container.put("pen", new P2());
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
-		e = Injector.newInstance(E.class, container);
-		Assert.assertTrue(e.getA().isPresent());
-		Assert.assertEquals(a, e.getA().get());
-		Assert.assertFalse(e.getB().isPresent());
-		Assert.assertEquals(2, e.getPPlugins().size());
-		Assert.assertEquals(3, e.getP2Plugins().size());
+		e = DIInjector.newInstance(E.class, container);
+		assertTrue(e.getA().isPresent());
+		assertEquals(a, e.getA().get());
+		assertFalse(e.getB().isPresent());
+		assertEquals(2, e.getPPlugins().size());
+		assertEquals(3, e.getP2Plugins().size());
 	}
 
 	@Test
 	public void testF() {
 		final MyContainer container = new MyContainer();
-		final A a = Injector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container);
 		container.put("a", a);
 		container.put("param1", "test1");
 		container.put("param2", "test2");
 		container.put("param3", "test3");
-		final F f = Injector.newInstance(F.class, container);
-		Assert.assertEquals(f.getA(), a);
-		Assert.assertEquals(f.getParam1(), "test1");
-		Assert.assertEquals(f.getParam2(), "test2");
-		Assert.assertTrue(f.getParam3().isPresent());
-		Assert.assertEquals(f.getParam3().get(), "test3");
-		Assert.assertFalse(f.getParam4().isPresent());
+		final F f = DIInjector.newInstance(F.class, container);
+		assertEquals(f.getA(), a);
+		assertEquals(f.getParam1(), "test1");
+		assertEquals(f.getParam2(), "test2");
+		assertTrue(f.getParam3().isPresent());
+		assertEquals(f.getParam3().get(), "test3");
+		assertFalse(f.getParam4().isPresent());
 	}
 }

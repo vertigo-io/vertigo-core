@@ -46,7 +46,6 @@ final class OOMHandler extends DefaultHandler {
 		//-----
 		this.map = map;
 		final OOMObject root = OOMObject.createdRoot();
-		//root.display();
 		currentTag = OOMTag.createRootTag(root);
 	}
 

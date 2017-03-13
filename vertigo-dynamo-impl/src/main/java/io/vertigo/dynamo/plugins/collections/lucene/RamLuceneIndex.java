@@ -129,13 +129,17 @@ final class RamLuceneIndex<D extends DtObject> {
 		indexedObjectPerPk.put(pkValue, dto);
 	}
 
-	private DtList<D> executeQuery(final Query query, final int skip, final int top, final Sort sort) throws IOException {
+	private DtList<D> executeQuery(
+			final Query query,
+			final int skip,
+			final int top,
+			final Optional<Sort> optSort) throws IOException {
 		try (final IndexReader indexReader = DirectoryReader.open(directory)) {
 			final IndexSearcher searcher = new IndexSearcher(indexReader);
 			//1. Exécution des la Requête
 			final TopDocs topDocs;
-			if (sort != null) {
-				topDocs = searcher.search(query, skip + top, sort);
+			if (optSort.isPresent()) {
+				topDocs = searcher.search(query, skip + top, optSort.get());
 			} else {
 				topDocs = searcher.search(query, skip + top);
 			}
@@ -146,7 +150,11 @@ final class RamLuceneIndex<D extends DtObject> {
 		}
 	}
 
-	private DtList<D> translateDocs(final IndexSearcher searcher, final TopDocs topDocs, final int skip, final int top) throws IOException {
+	private DtList<D> translateDocs(
+			final IndexSearcher searcher,
+			final TopDocs topDocs,
+			final int skip,
+			final int top) throws IOException {
 		final DtField idField = dtDefinition.getIdField().get();
 
 		final DtList<D> dtcResult = new DtList<>(dtDefinition);
@@ -213,7 +221,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final URI<Entity> uri = new URI<>(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getStoreManager().getDataStore().read(uri);
+				final DtObject fkDto = getStoreManager().getDataStore().readOne(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
 			} else {
@@ -234,40 +242,52 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @return Filtered ordered list
 	 * @throws IOException Query error
 	 */
-	public DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState dtListState,
+	public DtList<D> getCollection(
+			final String keywords,
+			final Collection<DtField> searchedFields,
+			final List<ListFilter> listFilters,
+			final DtListState dtListState,
 			final Optional<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
 		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
-		final Sort sortQuery = createSortQuery(dtListState);
-		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), sortQuery);
+		final Optional<Sort> optSort = createSort(dtListState);
+		return executeQuery(filterQuery, dtListState.getSkipRows(), dtListState.getMaxRows().get(), optSort);
 	}
 
-	private static void addKeyword(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
+	private static void addKeyword(
+			final Document document,
+			final String fieldName,
+			final String fieldValue,
+			final boolean storeValue) {
 		final IndexableField keywordField = new StringField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
 		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue));
 		document.add(keywordField);
 		document.add(sortedDocValuesField);
 	}
 
-	private static void addIndexed(final Document document, final String fieldName, final String fieldValue, final boolean storeValue) {
+	private static void addIndexed(
+			final Document document,
+			final String fieldName,
+			final String fieldValue,
+			final boolean storeValue) {
 		final IndexableField textField = new TextField(fieldName, fieldValue, storeValue ? Field.Store.YES : Field.Store.NO);
-		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase(Locale.ENGLISH)));
+		final IndexableField sortedDocValuesField = new SortedDocValuesField(fieldName, new BytesRef(fieldValue.toLowerCase(Locale.ROOT)));
 		document.add(textField);
 		document.add(sortedDocValuesField);
 	}
 
-	private static Sort createSortQuery(final DtListState dtListState) {
+	private static Optional<Sort> createSort(final DtListState dtListState) {
 		if (dtListState.getSortFieldName().isPresent()) {
 			final String sortFieldName = dtListState.getSortFieldName().get();
 			final boolean sortDesc = dtListState.isSortDesc().get();
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
 			final SortField sortField = new SortField(sortFieldName, luceneType, sortDesc);
 			sortField.setMissingValue(SortField.STRING_LAST);
-			return new Sort(sortField);
+			return Optional.of(new Sort(sortField));
 		}
-		return null;//default null -> sort by score
+		return Optional.empty();
 	}
 }

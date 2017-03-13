@@ -42,13 +42,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.filter.session.SessionFilter;
-import com.jayway.restassured.parsing.Parser;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
-import com.jayway.restassured.specification.ResponseSpecification;
-
+import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
+import io.restassured.parsing.Parser;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
@@ -111,7 +110,8 @@ public final class WebServiceManagerTest {
 				.body("definitions", Matchers.notNullValue())
 				.body("definitions.size()", Matchers.greaterThanOrEqualTo(30)) //actually 37
 				.statusCode(HttpStatus.SC_OK)
-				.when().log().ifValidationFails()
+				.log().ifValidationFails()
+				.when()
 				.get("/swaggerApi");
 	}
 
@@ -547,6 +547,18 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testWsUrlError() {
+		final String[] testOkJson = { "{ \"firstName\" : \"test\" }", "{ firstName : \"test\" }", "{ 'firstName' : \"test\" }", "{\n\t\"firstName\" : \"test\"\n}" };
+		for (final String testJson : testOkJson) {
+			loggedAndExpect(given().body(testJson))
+					.body("firstName", Matchers.equalTo("test"))
+					.statusCode(HttpStatus.SC_OK)
+					.when()
+					.put("/test/contactUrl99");
+		}
+	}
+
+	@Test
 	public void testPutContact() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
@@ -784,6 +796,51 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testPostInnerBodyOptionalPresentObject() {
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+
+		final Map<String, String> contactTo = given().filter(loggedSessionFilter)
+				.when().get("/test/6")
+				.body().as(Map.class);
+
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.put("contactTo", contactTo)
+				.build();
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(2))
+				.body("get(0).conId", Matchers.equalTo(5))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.body("get(1).conId", Matchers.equalTo(6))
+				.body("get(1).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerbodyOptional");
+	}
+
+	@Test
+	public void testPostInnerBodyOptionalEmptyObject() {
+		final Map<String, String> contactFrom = given().filter(loggedSessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+
+		final Map<String, Object> fullBody = new MapBuilder<String, Object>()
+				.put("contactFrom", contactFrom)
+				.build();
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(1))
+				.body("get(0).conId", Matchers.equalTo(5))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerbodyOptional");
+	}
+
+	@Test
 	public void testPostInnerBodyValidationErrors() throws ParseException {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);
@@ -794,7 +851,7 @@ public final class WebServiceManagerTest {
 				.build();
 
 		loggedAndExpect(given().body(fullBody))
-				.body("objectFieldErrors.contactFrom.firstname", Matchers.contains("Process validation error"))
+				.body("objectFieldErrors.contactFrom.firstName", Matchers.contains("Process validation error"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/innerBodyValidationErrors");
@@ -1299,7 +1356,8 @@ public final class WebServiceManagerTest {
 		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia", isAuto);
 	}
 
-	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
+	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken,
+			final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(loggedSessionFilter);
 		final String wsUrl = isAuto ? "/test/_searchAutoPagined" : "/test/_searchQueryPagined";
 		if (top != null) {
@@ -1701,7 +1759,8 @@ public final class WebServiceManagerTest {
 		return newContact;
 	}
 
-	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address, final String email, final String... tels) {
+	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address,
+			final String email, final String... tels) {
 		return new MapBuilder<String, Object>()
 				.putNullable("conId", conId)
 				.put("honorificCode", honorific)

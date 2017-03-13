@@ -29,6 +29,7 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
@@ -69,14 +70,16 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readForUpdate(final URI<E> uri) {
+	public <E extends Entity> E readOneForUpdate(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final E value = getPhysicalStore(dtDefinition).<E> readForUpdate(dtDefinition, uri);
+		final E entity = getPhysicalStore(dtDefinition).<E> readNullableForUpdate(dtDefinition, uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, uri);
-		return value;
+		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
+		//-----
+		fireAfterCommit(StoreEvent.Type.UPDATE, uri);
+		return entity;
 	}
 
 	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
@@ -98,7 +101,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Create, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -110,7 +113,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Update, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.UPDATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
@@ -122,17 +125,17 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		fireAfterCommit(StoreEvent.Type.Delete, uri);
+		fireAfterCommit(StoreEvent.Type.DELETE, uri);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E read(final URI<E> uri) {
+	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> load(uri);
+		final E entity = cacheDataStore.<E> readNullable(uri);
 		//-----
-		Assertion.checkNotNull(entity, "L''objet {0} n''a pas été trouvé", uri);
+		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;
 	}
 
@@ -141,10 +144,10 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<E> dtc = cacheDataStore.loadList(uri);
+		final DtList<E> list = cacheDataStore.findAll(uri);
 		//-----
-		Assertion.checkNotNull(dtc);
-		return dtc;
+		Assertion.checkNotNull(list);
+		return list;
 	}
 
 	/** {@inheritDoc} */
@@ -152,4 +155,11 @@ public final class DataStoreImpl implements DataStore {
 	public int count(final DtDefinition dtDefinition) {
 		return getPhysicalStore(dtDefinition).count(dtDefinition);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria) {
+		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
+	}
+
 }

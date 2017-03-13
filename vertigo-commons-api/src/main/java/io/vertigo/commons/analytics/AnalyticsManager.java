@@ -18,6 +18,10 @@
  */
 package io.vertigo.commons.analytics;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import io.vertigo.lang.Manager;
 
 /**
@@ -28,24 +32,27 @@ import io.vertigo.lang.Manager;
 public interface AnalyticsManager extends Manager {
 
 	/**
-	 * @return collect agent
+	 * Traces a process and collects metrics during its execution.
+	 * A traced process is stored by categories.
+	 * @param category  the category of the process
+	 * @param name the name of the process
+	 * @param consumer the function to execute within the tracer
 	 */
-	AnalyticsAgent getAgent();
+	void trace(final String category, final String name, Consumer<AnalyticsTracer> consumer);
 
 	/**
-	 * Start process (may be a sub-process with its own metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
+	 * Traces a process that has a return value (and collects metrics during its execution).
+	 * A traced process is stored by categories.
+	 * @param category the category of the process
+	 * @param name the name of the process
+	 * @param function the function to execute within the tracer
+	 * @return the result of the traced function
 	 */
-	AnalyticsTracker startTracker(final String processType, final String category);
+	<O> O traceWithReturn(final String category, final String name, Function<AnalyticsTracer, O> function);
 
 	/**
-	 * Start process logging (no subProcess, only local metrics).
-	 * @param processType process type
-	 * @param category process category
-	 * @return collect tracker
+	 * @return the current tracer if it has been created before
 	 */
-	AnalyticsTracker startLogTracker(final String processType, final String category);
+	Optional<AnalyticsTracer> getCurrentTracer();
 
 }

@@ -18,76 +18,33 @@
  */
 package io.vertigo.dynamo.environment.java.data;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.dynamo.environment.java.data.domain.Attachment;
 import io.vertigo.dynamo.environment.java.data.domain.City;
+import io.vertigo.dynamo.environment.java.data.domain.CityFragment;
 import io.vertigo.dynamo.environment.java.data.domain.Command;
 import io.vertigo.dynamo.environment.java.data.domain.CommandCriteria;
 import io.vertigo.dynamo.environment.java.data.domain.CommandType;
 import io.vertigo.dynamo.environment.java.data.domain.CommandValidation;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Attention cette classe est générée automatiquement !
  */
 public final class DtDefinitions implements Iterable<Class<?>> {
 
-	/**
-	 * Enumération des DtDefinitions.
-	 */
-	public enum Definitions {
-		/** Objet de données Attachment. */
-		Attachment(Attachment.class),
-		/** Objet de données City. */
-		City(City.class),
-		/** Objet de données Command. */
-		Command(Command.class),
-		/** Objet de données CommandCriteria. */
-		CommandCriteria(CommandCriteria.class),
-		/** Objet de données CommandType. */
-		CommandType(CommandType.class),
-		/** Objet de données CommandValidation. */
-		CommandValidation(CommandValidation.class),;
-
-		private final Class<?> clazz;
-
-		private Definitions(final Class<?> clazz) {
-			this.clazz = clazz;
-		}
-
-		/**
-		  * Classe associée.
-		  * @return Class d'implémentation de l'objet
-		  */
-		public Class<?> getDtClass() {
-			return clazz;
-		}
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<Class<?>> iterator() {
-		return new Iterator<Class<?>>() {
-			private final Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
-
-			/** {@inheritDoc} */
-			@Override
-			public boolean hasNext() {
-				return it.hasNext();
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public Class<?> next() {
-				return it.next().getDtClass();
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public void remove() {
-				//unsupported
-			}
-		};
+		return new ListBuilder<Class<?>>()
+				.add(Attachment.class)
+				.add(City.class)
+				.add(CityFragment.class)
+				.add(Command.class)
+				.add(CommandCriteria.class)
+				.add(CommandType.class)
+				.add(CommandValidation.class)
+				.build().iterator();
 	}
 }

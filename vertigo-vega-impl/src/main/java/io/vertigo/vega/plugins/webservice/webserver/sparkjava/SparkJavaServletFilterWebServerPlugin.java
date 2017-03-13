@@ -33,6 +33,7 @@ public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJa
 
 	/**
 	 * Constructor.
+	 * @param apiPrefix Global apiPrefix
 	 */
 	@Inject
 	public SparkJavaServletFilterWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix) {

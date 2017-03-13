@@ -21,9 +21,12 @@ package io.vertigo.commons.analytics;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.analytics.data.TestAProcessConnectorPlugin;
+import io.vertigo.commons.analytics.data.TestAnalyticsAspectServices;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -31,15 +34,21 @@ import io.vertigo.AbstractTestCaseJU4;
  * @author pchretien, npiedeloup
  */
 public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
+	private static final String PRICE = "PRICE";
+
+	private static final String WEIGHT = "WEIGHT";
 
 	/** Base de données gérant les articles envoyés dans une commande. */
-	private static final String PROCESS_TYPE = "ARTICLE";
+	private static final String TEST_CATEGORY = "test";
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
 
 	@Inject
 	private AnalyticsManager analyticsManager;
+
+	@Inject
+	private TestAnalyticsAspectServices analyticsAspectServices;
 
 	/**
 	 * Test simple avec deux compteurs.
@@ -48,13 +57,15 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void test1000Articles() {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Articles 25 Kg")) {
-			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure("POIDS", 25)
-						.incMeasure("MONTANT", 10);
-			}
-			tracker.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				TEST_CATEGORY,
+				"/create/articles",
+				tracer -> {
+					for (int i = 0; i < 1000; i++) {
+						tracer.incMeasure(WEIGHT, 25)
+								.incMeasure(PRICE, 10);
+					}
+				});
 	}
 
 	/**
@@ -62,8 +73,68 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testNoProcess() {
-		analyticsManager.getAgent().incMeasure("POIDS", 25);
+		analyticsManager.getCurrentTracer().ifPresent(
+				tracer -> tracer.incMeasure(WEIGHT, 25));
 		//Dans le cas du dummy ça doit passer
+	}
+
+	@Test
+	public void testAspect() {
+		TestAProcessConnectorPlugin.reset();
+		final int result = analyticsAspectServices.add(1, 2);
+		Assert.assertEquals(3, result);
+		//---
+		Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+	}
+
+	@Test
+	public void testConnectors() {
+		TestAProcessConnectorPlugin.reset();
+		for (int i = 0; i < 50; i++) {
+			final int result = analyticsAspectServices.add(i, 2 * i);
+			Assert.assertEquals(3 * i, result);
+		}
+		for (int i = 0; i < 50; i++) {
+			analyticsAspectServices.checkPositive(i);
+		}
+		Assert.assertEquals(100, TestAProcessConnectorPlugin.getCount());
+		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testFail() {
+		TestAProcessConnectorPlugin.reset();
+		try {
+			analyticsAspectServices.checkPositive(-1);
+		} catch (final IllegalStateException e) {
+			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
+			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+			throw e;
+		}
+
+	}
+
+	@Test
+	public void testSetMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		Assert.assertEquals(null, TestAProcessConnectorPlugin.getLastPrice());
+		analyticsAspectServices.setMeasure();
+		Assert.assertEquals(100D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+	}
+
+	@Test
+	public void testSetAndIncMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		analyticsAspectServices.setAndIncMeasure();
+		Assert.assertEquals(120D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+	}
+
+	@Test
+	public void testIncMeasures() {
+		TestAProcessConnectorPlugin.reset();
+		analyticsAspectServices.incMeasure();
+		Assert.assertEquals(10D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
 	}
 
 	/**
@@ -83,13 +154,15 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void test1000Commandes() {
 		final long start = System.currentTimeMillis();
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(PROCESS_TYPE, "1000 Commandes")) {
-			for (int i = 0; i < 1000; i++) {
-				tracker.incMeasure("MONTANT", 5);
-				test1000Articles();
-			}
-			tracker.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				TEST_CATEGORY,
+				"/create/orders",
+				tracer -> {
+					for (int i = 0; i < 1000; i++) {
+						tracer.incMeasure(PRICE, 5);
+						test1000Articles();
+					}
+				});
 		log.trace("elapsed = " + (System.currentTimeMillis() - start));
 	}
 }

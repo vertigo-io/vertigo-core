@@ -20,8 +20,8 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.lang.reflect.Constructor;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 

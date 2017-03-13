@@ -64,9 +64,14 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESTransportSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("envIndex") final String envIndex,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
-			@Named("config.file") final Optional<String> configFile, @Named("node.name") final Optional<String> nodeName, final CodecManager codecManager,
+	public ESTransportSearchServicesPlugin(
+			@Named("servers.names") final String serversNamesStr,
+			@Named("envIndex") final String envIndex,
+			@Named("rowsPerQuery") final int rowsPerQuery,
+			@Named("cluster.name") final String clusterName,
+			@Named("config.file") final Optional<String> configFile,
+			@Named("node.name") final Optional<String> nodeName,
+			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,

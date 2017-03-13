@@ -18,7 +18,6 @@
  */
 package io.vertigo.persona.security;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
@@ -30,9 +29,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
-import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 
 /**
@@ -62,7 +60,6 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Test
 	public void testAuthenticate() {
 		final UserSession userSession = securityManager.createUserSession();
 		Assert.assertFalse(userSession.isAuthenticated());
@@ -88,31 +85,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertFalse(securityManager.getCurrentUserSession().isPresent());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testRole() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Role admin = createRole("R_ADMIN");
-		final Role user = createRole("R_USER");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
-
-		final Role r1 = definitionSpace.resolve(admin.getName(), Role.class);
-		Assert.assertTrue(admin.equals(r1));
-		final Role r2 = definitionSpace.resolve("R_SECRETARY", Role.class);
-		nop(r2);
+		final Role admin = definitionSpace.resolve("R_ADMIN", Role.class);
+		Assert.assertTrue("R_ADMIN".equals(admin.getName()));
+		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
+		Assert.assertTrue("R_SECRETARY".equals(secretary.getName()));
 	}
 
 	@Test
 	public void testAccess() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Role admin = createRole("R_ADMIN");
-		final Role user = createRole("R_USER");
-		final Role manager = createRole("R_MANAGER");
-		final Role secretary = createRole("R_SECRETARY");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
-		definitionSpace.put(manager);
-		definitionSpace.put(secretary);
+		final Role admin = definitionSpace.resolve("R_ADMIN", Role.class);
+		final Role user = definitionSpace.resolve("R_USER", Role.class);
+		final Role manager = definitionSpace.resolve("R_MANAGER", Role.class);
+		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
 
 		final UserSession userSession = securityManager.createUserSession()
 				.addRole(admin)
@@ -239,26 +227,12 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testDescription() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Role admin = createRole("R_ADMIN");
-		final Role user = createRole("R_USER");
-		final Role manager = createRole("R_MANAGER");
-		final Role secretary = createRole("R_SECRETARY");
-		definitionSpace.put(admin);
-		definitionSpace.put(user);
-		definitionSpace.put(manager);
-		definitionSpace.put(secretary);
 		testDescription(securityManager);
 	}
 
 	private Role getRole(final String name) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(name, Role.class);
-	}
-
-	private static Role createRole(final String name) {
-		final String description = name;
-		return new Role(name, description, Collections.<Permission> emptyList());
 	}
 
 	public static final class Famille {

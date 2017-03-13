@@ -99,7 +99,12 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public FsFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, @Named("path") final String path, final VTransactionManager transactionManager, final FileManager fileManager) {
+	public FsFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("storeDtName") final String storeDtDefinitionName,
+			@Named("path") final String path,
+			final VTransactionManager transactionManager,
+			final FileManager fileManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);
@@ -126,7 +131,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final URI<Entity> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -169,7 +174,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().read(dtoUri);
+			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().readOne(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
@@ -180,7 +185,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, documentRoot + pathToSave));
 		} catch (final IOException e) {
-			throw new WrappedException("Impossible de lire le fichier uploadé.", e);
+			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
 		}
 	}
 
@@ -236,7 +241,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 		final URI<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final DtObject fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
+		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base

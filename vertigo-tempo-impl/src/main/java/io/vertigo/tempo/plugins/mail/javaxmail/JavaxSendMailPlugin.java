@@ -45,11 +45,11 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
@@ -76,7 +76,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private final Optional<String> mailLogin;
 	private final Optional<String> mailPassword;
 	/** Compteur de mails envoyés. */
-	private int mailSent = 0;
+	private int mailSent;
 
 	/**
 	 * Crée le plugin d'envoie de mail.
@@ -91,10 +91,15 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
 	 */
 	@Inject
-	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol,
-			@Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode,
-			@Named("developmentMailTo") final String developmentMailTo, @Named("port") final Optional<Integer> mailPort,
-			@Named("login") final Optional<String> mailLogin, @Named("pwd") final Optional<String> mailPassword) {
+	public JavaxSendMailPlugin(
+			final FileManager fileManager,
+			@Named("storeProtocol") final String mailStoreProtocol,
+			@Named("host") final String mailHost,
+			@Named("developmentMode") final boolean developmentMode,
+			@Named("developmentMailTo") final String developmentMailTo,
+			@Named("port") final Optional<Integer> mailPort,
+			@Named("login") final Optional<String> mailLogin,
+			@Named("pwd") final Optional<String> mailPassword) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);
@@ -131,7 +136,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isPresent() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
-			throw new WrappedException("Probleme d'encodage lors de l'envoi du mail", e);
+			throw WrappedException.wrap(e, "Probleme d'encodage lors de l'envoi du mail");
 		}
 	}
 
@@ -285,7 +290,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new WrappedException("Can't read attached file", e);
+			throw WrappedException.wrap(e, "Can't read attached file");
 		}
 	}
 

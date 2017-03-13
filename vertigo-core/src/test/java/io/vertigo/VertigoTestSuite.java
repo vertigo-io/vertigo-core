@@ -22,13 +22,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.app.config.discovery.DiscoveryTest;
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
 import io.vertigo.core.component.aop.Aspect2Test;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
-import io.vertigo.core.definition.loader.EnvironmentManagerTest;
 import io.vertigo.core.locale.LocaleManagerTest;
 import io.vertigo.core.param.multi.MultiParamManagerTest;
 import io.vertigo.core.param.properties.PropertiesParamManagerTest;
@@ -46,6 +46,7 @@ import io.vertigo.util.ClassUtilTest;
 import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
 import io.vertigo.util.MapBuilderTest;
+import io.vertigo.util.SelectorTest;
 import io.vertigo.util.StringUtilTest;
 
 /**
@@ -68,6 +69,7 @@ import io.vertigo.util.StringUtilTest;
 		AppConfig2Test.class,
 		AspectTest.class,
 		Aspect2Test.class,
+		DiscoveryTest.class,
 		//Lang
 		AssertionTest.class,
 		TuplesTest.class,
@@ -76,6 +78,7 @@ import io.vertigo.util.StringUtilTest;
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
 		DateUtilTest.class,
+		SelectorTest.class,
 		StringUtilTest.class,
 		MapBuilderTest.class,
 		//--Params
@@ -84,10 +87,10 @@ import io.vertigo.util.StringUtilTest;
 		XmlParamManagerTest.class,
 		//--Resources
 		ResourceManagerTest.class,
-		EnvironmentManagerTest.class,
 		//Locales
 		LocaleManagerTest.class
 })
+
 public final class VertigoTestSuite {
 	//
 }

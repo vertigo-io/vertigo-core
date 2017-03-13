@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -26,12 +27,16 @@ import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
+import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
+import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
+import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.impl.transaction.VTransactionAspect;
 import io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl;
+import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
@@ -51,9 +56,88 @@ public final class DynamoFeatures extends Features {
 		super("dynamo");
 	}
 
+	/**
+	 * Add search to dynamo
+	 * @param searchServicesPluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(SearchManager.class, SearchManagerImpl.class)
+				.addPlugin(searchServicesPluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Add store to dynamo
+	 * @return  the feature
+	 */
+	public DynamoFeatures withStore() {
+		getModuleConfigBuilder()
+				.addComponent(StoreManager.class, StoreManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Add a store plugin
+	 * @param dataStorePlugin the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures addDataStorePlugin(final Class<? extends DataStorePlugin> dataStorePlugin, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(dataStorePlugin, params);
+		return this;
+	}
+
+	/**
+	 * Add key/value store to dynamo
+	 * @return  the feature
+	 */
+	public DynamoFeatures withKVStore() {
+		getModuleConfigBuilder()
+				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Add a key/value store plugin
+	 * @param  kvStorePlugin the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures addKVStorePlugin(final Class<? extends KVStorePlugin> kvStorePlugin, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(kvStorePlugin, params);
+		return this;
+	}
+
+	/**
+	 * Add sqlDataBase management to dynamo.
+	 * @return  the feature
+	 */
+	public DynamoFeatures withSqlDataBase() {
+		getModuleConfigBuilder()
+				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Add a database connection provider plugin
+	 * @param  connectionProviderPluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(connectionProviderPluginClass, params);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
-	protected void setUp() {
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
@@ -61,25 +145,5 @@ public final class DynamoFeatures extends Features {
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
 
-	}
-
-	public DynamoFeatures withStore() {
-		getModuleConfigBuilder()
-				.addComponent(StoreManager.class, StoreManagerImpl.class);
-		return this;
-	}
-
-	public DynamoFeatures withSQL(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass) {
-		getModuleConfigBuilder()
-				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class)
-				.addPlugin(connectionProviderPluginClass);
-		return this;
-	}
-
-	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass) {
-		getModuleConfigBuilder()
-				.addComponent(SearchManager.class, SearchManagerImpl.class)
-				.addPlugin(searchServicesPluginClass);
-		return this;
 	}
 }

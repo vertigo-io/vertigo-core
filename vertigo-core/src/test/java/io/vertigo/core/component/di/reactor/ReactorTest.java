@@ -18,12 +18,16 @@
  */
 package io.vertigo.core.component.di.reactor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
@@ -45,23 +49,30 @@ import io.vertigo.core.component.di.data.P3;
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class ReactorTest {
 	private static void nop(final Object o) {
 		//NOP
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testIdArgument() {
-		final DIReactor reactor = new DIReactor()
-				.addComponent(null, A.class);
-		nop(reactor);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> {
+					final DIReactor reactor = new DIReactor()
+							.addComponent(null, A.class);
+					nop(reactor);
+				});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testClassArgument() {
-		final DIReactor reactor = new DIReactor()
-				.addComponent("a", null);
-		nop(reactor);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> {
+					final DIReactor reactor = new DIReactor()
+							.addComponent("a", null);
+					nop(reactor);
+				});
 	}
 
 	@Test
@@ -69,8 +80,8 @@ public final class ReactorTest {
 		final List<String> list = new DIReactor()
 				.addComponent("a", A.class)
 				.proceed();
-		Assert.assertEquals(1, list.size());
-		Assert.assertEquals("a", list.get(0));
+		assertEquals(1, list.size());
+		assertEquals("a", list.get(0));
 	}
 
 	@Test
@@ -79,9 +90,9 @@ public final class ReactorTest {
 				.addComponent("a", A.class)
 				.addComponent("b", B.class)
 				.proceed();
-		Assert.assertEquals(2, list.size());
-		Assert.assertEquals("a", list.get(0));
-		Assert.assertEquals("b", list.get(1));
+		assertEquals(2, list.size());
+		assertEquals("a", list.get(0));
+		assertEquals("b", list.get(1));
 	}
 
 	@Test
@@ -91,8 +102,8 @@ public final class ReactorTest {
 				.addComponent("a", A.class)
 				.addComponent("b", B.class)
 				.proceed();
-		Assert.assertEquals(2, list.size());
-		Assert.assertEquals("a", list.get(0));
+		assertEquals(2, list.size());
+		assertEquals("a", list.get(0));
 	}
 
 	@Test
@@ -102,8 +113,8 @@ public final class ReactorTest {
 				.addParent("a")
 				.addComponent("b", B.class)
 				.proceed();
-		Assert.assertEquals(1, list.size());
-		Assert.assertEquals("b", list.get(0));
+		assertEquals(1, list.size());
+		assertEquals("b", list.get(0));
 	}
 
 	@Test
@@ -113,9 +124,9 @@ public final class ReactorTest {
 				.addComponent("b", B.class)
 				.addComponent("a", A.class)
 				.proceed();
-		Assert.assertEquals(2, list.size());
-		Assert.assertEquals("a", list.get(0));
-		Assert.assertEquals("b", list.get(1));
+		assertEquals(2, list.size());
+		assertEquals("a", list.get(0));
+		assertEquals("b", list.get(1));
 	}
 
 	@Test
@@ -125,16 +136,16 @@ public final class ReactorTest {
 				.addComponent("e", E.class)
 				.addComponent("a", A.class)
 				.addComponent("p3", P3.class) //Plugin objligatoire
-				.addComponent("p", P.class) //Plugin facultatif car liste 
-				.addComponent("p2", P.class) //Plugin facultatif car liste 
+				.addComponent("p", P.class) //Plugin facultatif car liste
+				.addComponent("p2", P.class) //Plugin facultatif car liste
 				.proceed();
 		//E dépend de option(A) et de option(B) donc A doit être le premier élément listé
-		Assert.assertEquals(5, list.size());
-		Assert.assertEquals("a", list.get(0));
-		//		Assert.assertEquals("p3", list.get(1));
-		//		Assert.assertEquals("p", list.get(1));
-		//		Assert.assertEquals("p2", list.get(1));
-		Assert.assertEquals("e", list.get(4));
+		assertEquals(5, list.size());
+		assertEquals("a", list.get(0));
+		//		assertEquals("p3", list.get(1));
+		//		assertEquals("p", list.get(1));
+		//		assertEquals("p2", list.get(1));
+		assertEquals("e", list.get(4));
 	}
 
 	@Test
@@ -147,9 +158,9 @@ public final class ReactorTest {
 				.addComponent("a", A.class)
 				.addComponent("f", F.class, params)
 				.proceed();
-		Assert.assertEquals(2, list.size());
-		Assert.assertEquals("a", list.get(0));
-		Assert.assertEquals("f", list.get(1));
+		assertEquals(2, list.size());
+		assertEquals("a", list.get(0));
+		assertEquals("f", list.get(1));
 	}
 
 	@Test
@@ -160,49 +171,60 @@ public final class ReactorTest {
 		final List<String> list = new DIReactor()
 				.addComponent("b", B.class, params)
 				.proceed();
-		Assert.assertEquals(1, list.size());
-		Assert.assertEquals("b", list.get(0));
+		assertEquals(1, list.size());
+		assertEquals("b", list.get(0));
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMissing() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("c", C.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("c", C.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyCyclic() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("c", C.class)
-				.addComponent("D", D.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("c", C.class)
+							.addComponent("D", D.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMultiple() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addComponent("b", B.class)
-				.proceed();
-		nop(list);
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addComponent("b", B.class)
+							.proceed();
+					nop(list);
+				});
 	}
 
-	@Test(expected = DIException.class)
+	@Test
 	public void testDependencyMultiple2() {
-		final List<String> list = new DIReactor()
-				.addComponent("a", A.class)
-				.addComponent("b", B.class)
-				.addParent("b")
-				.proceed();
-		nop(list);
-		Assert.fail();
+		Assertions.assertThrows(DIException.class,
+				() -> {
+					final List<String> list = new DIReactor()
+							.addComponent("a", A.class)
+							.addComponent("b", B.class)
+							.addParent("b")
+							.proceed();
+					nop(list);
+				});
 	}
 }

@@ -34,17 +34,17 @@ import io.vertigo.lang.WrappedException;
 final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** Champ DUPLICATE_KEY_1. */
-	private static final int DUPLICATE_KEY_1 = 23001;
+	private static final int DUPLICATE_KEY_1 = 23_001;
 	/** Champ UNIQUE_INDEX_1. */
-	private static final int UNIQUE_INDEX_1 = 23505;
+	private static final int UNIQUE_INDEX_1 = 23_505;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1. */
-	private static final int REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1 = 23003;
+	private static final int REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1 = 23_003;
 	/** Champ REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1. */
-	private static final int REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1 = 23002;
+	private static final int REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1 = 23_002;
 	/** Champ VALUE_TOO_LARGE_FOR_PRECISION_1. */
-	private static final int VALUE_TOO_LARGE_FOR_PRECISION_1 = 90039;
+	private static final int VALUE_TOO_LARGE_FOR_PRECISION_1 = 90_039;
 	/** Champ VALUE_TOO_LONG_2. */
-	private static final int VALUE_TOO_LONG_2 = 90005;
+	private static final int VALUE_TOO_LONG_2 = 90_005;
 
 	/**
 	 * Crée une nouvelle instance de H2SqlExceptionHandler.
@@ -89,7 +89,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	@Override
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new WrappedException("[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement, sqle);
+		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement);
 	}
 
 	/** {@inheritDoc} */

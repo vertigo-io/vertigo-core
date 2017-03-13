@@ -25,7 +25,7 @@ import java.io.PrintStream;
  *
  * @author pchretien
  */
-public final class Logo {
+final class Logo {
 	private Logo() {
 		//constructor is protected
 	}
@@ -34,12 +34,12 @@ public final class Logo {
 	 * Displays logo in console.
 	 * @param out Out
 	 */
-	public static void printCredits(final PrintStream out) {
+	static void printCredits(final PrintStream out) {
 		out.println();
 		out.println("+--------------------------------------------------+");
 		out.println("|   _____________                                  |");
 		out.println("|  |     _     / |                                 |");
-		out.println("|  |#   / \\   / /|  Vertigo v0.9.3 - 2016          |");
+		out.println("|  |#   / \\   / /|  Vertigo v0.9.4 - 2017          |");
 		out.println("|  |  __\\ /__/ / |                                 |");
 		out.println("|  | / _      /  |                                 |");
 		out.println("|  |/ / \\  ()/  *|                                 |");

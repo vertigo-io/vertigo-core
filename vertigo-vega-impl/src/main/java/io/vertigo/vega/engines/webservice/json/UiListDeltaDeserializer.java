@@ -30,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiListDelta.

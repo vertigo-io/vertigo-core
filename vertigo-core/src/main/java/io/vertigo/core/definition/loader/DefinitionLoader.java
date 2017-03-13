@@ -18,97 +18,73 @@
  */
 package io.vertigo.core.definition.loader;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
-import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.util.ClassUtil;
 
 /**
-
- * Environnement permettant de charger le Modèle.
- * Le Modèle peut être chargé de multiples façon :
- * - par lecture d'un fichier oom (poweramc),
- * - par lecture des annotations java présentes sur les beans,
- * - par lecture de fichiers ksp regoupés dans un projet kpr,
- * - ....
- *  Ces modes de chargement sont extensibles.
+ * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
+ * Use DynamoDefinitionProvider to use the DSL.
  *
  * @author pchretien
  */
-public final class DefinitionLoader implements Component {
-	private final Map<String, LoaderPlugin> loaderPlugins;
-	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
+public final class DefinitionLoader {
+	private final DefinitionSpace definitionSpace;
+	private final ComponentSpace componentSpace;
 
-	@Inject
-	public DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
-		Assertion.checkNotNull(dynamicRegistryPlugins);
-		Assertion.checkNotNull(loaderPlugins);
+	/**
+	 * Loader of definitions
+	 * @param definitionSpace the definitionSpace to build
+	 * @param componentSpace the componentSpace
+	 */
+	public DefinitionLoader(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace) {
+		Assertion.checkNotNull(definitionSpace);
+		Assertion.checkNotNull(componentSpace);
 		//-----
-		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
-		//On enregistre les loaders
-		this.loaderPlugins = new HashMap<>();
-		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
-			this.loaderPlugins.put(loaderPlugin.getType(), loaderPlugin);
-		}
+		this.definitionSpace = definitionSpace;
+		this.componentSpace = componentSpace;
 	}
 
 	/**
-	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
+	 * Inject all the definition of the modules.
+	 *
+	 * @param moduleConfigs module configs
+	 * @return a stream of definitions
 	 */
-	private void parse(final DefinitionSpace definitionSpace, final List<DefinitionResourceConfig> definitionResourceConfigs) {
-		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
-
-		//Création du repositoy des instances le la grammaire (=> model)
-		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
-
-		//--Enregistrement des types primitifs
-		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
-			for (final DynamicDefinition dynamicDefinition : dynamicRegistryPlugin.getRootDynamicDefinitions()) {
-				dynamicModelRepository.addDefinition(dynamicDefinition);
-			}
-		}
-		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
-			final LoaderPlugin loaderPlugin = loaderPlugins.get(definitionResourceConfig.getType());
-			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
-			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
-		}
-		dynamicModelRepository.solve(definitionSpace);
-	}
-
-	public void injectDefinitions(final DefinitionSpace definitionSpace, final List<ModuleConfig> moduleConfigs) {
+	public Stream<Definition> createDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
-		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectDefinitions(definitionSpace, moduleConfig);
-		}
+		return moduleConfigs
+				.stream()
+				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
+				.map(supplier -> supplier.get(definitionSpace));
 	}
 
-	private void injectDefinitions(final DefinitionSpace definitionSpace, final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		final List<DefinitionResourceConfig> definitionResourceConfigs = moduleConfig.getDefinitionResourceConfigs();
-		if (!definitionResourceConfigs.isEmpty()) {
-			parse(definitionSpace, definitionResourceConfigs);
-		}
-		//-----
-		for (final DefinitionProviderConfig definitionProviderConfig : moduleConfig.getDefinitionProviderConfigs()) {
-			final DefinitionProvider definitionProvider = ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass());
-			for (final Definition definition : definitionProvider) {
-				definitionSpace.put(definition);
-			}
-		}
+	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
+		return definitionProviderConfigs
+				.stream()
+				.map(this::createDefinitionProvider)
+				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
+	}
+
+	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
+		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
+				definitionProviderConfig.getParams());
+
+		definitionProviderConfig.getDefinitionResourceConfigs()
+				.forEach(definitionProvider::addDefinitionResourceConfig);
+
+		return definitionProvider;
+
 	}
 }

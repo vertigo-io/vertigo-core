@@ -51,7 +51,10 @@ public final class TokenManagerImpl implements TokenManager {
 	 * @param kvStoreManager KV store manager
 	 */
 	@Inject
-	public TokenManagerImpl(@Named("collection") final String collection, final VSecurityManager securityManager, final KVStoreManager kvStoreManager) {
+	public TokenManagerImpl(
+			@Named("collection") final String collection,
+			final VSecurityManager securityManager,
+			final KVStoreManager kvStoreManager) {
 		Assertion.checkArgNotEmpty(collection);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvStoreManager);

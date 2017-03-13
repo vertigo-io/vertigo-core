@@ -23,7 +23,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.spaces.component.ComponentSpace;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -93,7 +92,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		//-----
 		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
-			final JsonConverter jsonConverter = Injector.newInstance(jsonConverterClass, componentSpace);
+			final JsonConverter jsonConverter = DIInjector.newInstance(jsonConverterClass, componentSpace);
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
 				List<JsonConverter> jsonConverterBySourceType = jsonConverters.get(inputType);
 				if (jsonConverterBySourceType == null) {
@@ -105,7 +104,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 
 		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
-			final JsonReader<?> jsonReader = Injector.newInstance(jsonReaderClass, componentSpace);
+			final JsonReader<?> jsonReader = DIInjector.newInstance(jsonReaderClass, componentSpace);
 			for (final WebServiceParamType restParamType : jsonReader.getSupportedInput()) {
 				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
 				if (jsonReaderByRestParamType == null) {
@@ -116,7 +115,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 		}
 		for (final Class<? extends JsonSerializer> jsonSerializerClass : JSON_SERIALIZER_CLASSES) {
-			final JsonSerializer jsonSerializer = Injector.newInstance(jsonSerializerClass, componentSpace);
+			final JsonSerializer jsonSerializer = DIInjector.newInstance(jsonSerializerClass, componentSpace);
 			jsonWriters.add(jsonSerializer);
 		}
 
@@ -166,10 +165,8 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			final Object converterSource = jsonReaderToApply.extractData(request, webServiceParam, routeContext);
 			if (converterSource != null) { //On ne convertit pas les null
 				jsonConverterToApply.populateWebServiceCallContext(converterSource, webServiceParam, routeContext);
-			}
-			if (webServiceParam.isOptional()) {
-				final Object paramValue = routeContext.getParamValue(webServiceParam);
-				routeContext.setParamValue(webServiceParam, Optional.ofNullable(paramValue));
+			} else if (webServiceParam.isOptional()) {
+				routeContext.setParamValue(webServiceParam, null /*converterSource*/);
 			}
 			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {

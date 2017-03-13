@@ -24,11 +24,6 @@ package io.vertigo.dynamo.plugins.collections.lucene_4_10;
  * @author  pchretien
  */
 final class LuceneConstants {
-
-	private LuceneConstants() {
-		//rien
-	}
-
 	/**
 	 * Tableau des mots vides en Français et en Anglais.
 	 */
@@ -54,4 +49,8 @@ final class LuceneConstants {
 	 * Tableau des elisions.
 	 */
 	static final String[] ELISION_ARTICLES = { "l", "m", "t", "qu", "n", "s", "j" };
+
+	private LuceneConstants() {
+		//
+	}
 }

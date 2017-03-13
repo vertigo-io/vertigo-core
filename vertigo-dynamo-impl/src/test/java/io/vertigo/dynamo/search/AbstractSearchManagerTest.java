@@ -44,7 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -444,6 +444,21 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(false);
 		final FacetedQueryResult<Car, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByRange(result);
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testEmptyIndexQuery() {
+		//On supprime tout
+		remove("*:*");
+		long size = searchManager.count(carIndexDefinition);
+		Assert.assertEquals(0L, size);
+
+		size = query("*:*");
+		Assert.assertEquals(0, size);
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<Car, ?> result) {

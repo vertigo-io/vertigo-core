@@ -111,7 +111,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			final RamLuceneIndex<D> index = indexList(dtc, false);
 			return index.getCollection(keywords, searchedFields, listFilters, listState, boostedField);
 		} catch (final IOException e) {
-			throw new WrappedException("Erreur d'indexation", e);
+			throw WrappedException.wrap(e, "Erreur d'indexation");
 		}
 	}
 

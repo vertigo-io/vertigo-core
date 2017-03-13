@@ -18,11 +18,17 @@
  */
 package io.vertigo.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitPlatform.class)
 public final class MapBuilderTest {
 	@Test
 	public void testMap() {
@@ -33,8 +39,22 @@ public final class MapBuilderTest {
 				.unmodifiable()
 				.build();
 
-		Assert.assertEquals(3, map.size());
-		Assert.assertEquals(2, map.get("two").intValue());
+		assertEquals(3, map.size());
+		assertEquals(2, map.get("two").intValue());
+	}
+
+	@Test
+	public void testPutall() {
+		final Map<String, Integer> data = new HashMap<>();
+		data.put("one", 1);
+		data.put("two", 2);
+		data.put("three", 3);
+
+		final Map<String, Integer> map = new MapBuilder<String, Integer>()
+				.putAll(data)
+				.put("four", 4)
+				.build();
+		assertEquals(4, map.size());
 	}
 
 	@Test
@@ -46,10 +66,10 @@ public final class MapBuilderTest {
 				.build();
 
 		map.put("nine", 9);
-		Assert.assertEquals(4, map.size());
+		assertEquals(4, map.size());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testUnmodifiableMap() {
 		final Map<String, Integer> map = new MapBuilder<String, Integer>()
 				.put("one", 1)
@@ -58,6 +78,7 @@ public final class MapBuilderTest {
 				.unmodifiable()
 				.build();
 
-		map.put("nine", 9);
+		Assertions.assertThrows(Exception.class,
+				() -> map.put("nine", 9));
 	}
 }

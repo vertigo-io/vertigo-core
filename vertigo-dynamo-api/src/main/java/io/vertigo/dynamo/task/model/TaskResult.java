@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import java.util.Optional;
+
+import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 
@@ -29,7 +32,7 @@ public final class TaskResult {
 	/**
 	 * Définition de la tache.
 	 */
-	private final TaskDefinition taskDefinition;
+	private final Optional<TaskAttribute> outTaskAttributeOptional;
 
 	private final Object result;
 
@@ -39,12 +42,10 @@ public final class TaskResult {
 	 */
 	TaskResult(final TaskDefinition taskDefinition, final Object result) {
 		Assertion.checkNotNull(taskDefinition);
-		//		Assertion.checkNotNull(taskAttributes);
 		//-----
-		this.taskDefinition = taskDefinition;
-		if (taskDefinition.getOutAttributeOption().isPresent()) {
-			taskDefinition.getOutAttributeOption().get().checkAttribute(result);
-		}
+		outTaskAttributeOptional = taskDefinition.getOutAttributeOption();
+		outTaskAttributeOptional.ifPresent(outTaskAttribute -> outTaskAttribute.checkAttribute(result));
+
 		this.result = result;
 	}
 
@@ -56,7 +57,7 @@ public final class TaskResult {
 	 * @return Result
 	 */
 	public <V> V getResult() {
-		Assertion.checkArgument(taskDefinition.getOutAttributeOption().isPresent(), "this task does not provide any result");
+		Assertion.checkArgument(outTaskAttributeOptional.isPresent(), "this task does not provide any result");
 		return (V) result;
 	}
 }

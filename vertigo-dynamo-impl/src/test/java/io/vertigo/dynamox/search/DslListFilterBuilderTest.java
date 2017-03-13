@@ -182,6 +182,7 @@ public final class DslListFilterBuilderTest {
 				{ "F1:#query# OR F2:#query#", "Test", "F1:Test OR F2:Test" }, //2
 				{ "F1:#query# AND F2:#query#", "Test", "F1:Test AND F2:Test" }, //3
 				{ "F1:#query# AND (F2:#query# OR F3:#query#)", "Test", "F1:Test AND (F2:Test OR F3:Test)" }, //4
+				{ "(F1:#query# OR F2:#query#) AND (F3:#query# OR F4:#query#)", "Test", "(F1:Test OR F2:Test) AND (F3:Test OR F4:Test)" }, //5
 		};
 		testStringFixedQuery(testQueries);
 	}

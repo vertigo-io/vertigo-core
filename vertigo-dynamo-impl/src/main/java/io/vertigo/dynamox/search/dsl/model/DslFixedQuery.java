@@ -28,12 +28,6 @@ import io.vertigo.lang.Assertion;
 public final class DslFixedQuery implements DslQuery {
 	private final String fixedQuery;
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return fixedQuery;
-	}
-
 	/**
 	 * @param fixedQuery Fixed content
 	 */
@@ -50,4 +44,9 @@ public final class DslFixedQuery implements DslQuery {
 		return fixedQuery;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return fixedQuery;
+	}
 }

@@ -62,9 +62,15 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESNodeSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("envIndex") final String envIndex,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
-			@Named("config.file") final Optional<String> configFile, @Named("node.name") final Optional<String> nodeName, final CodecManager codecManager, final ResourceManager resourceManager) {
+	public ESNodeSearchServicesPlugin(
+			@Named("servers.names") final String serversNamesStr,
+			@Named("envIndex") final String envIndex,
+			@Named("rowsPerQuery") final int rowsPerQuery,
+			@Named("cluster.name") final String clusterName,
+			@Named("config.file") final Optional<String> configFile,
+			@Named("node.name") final Optional<String> nodeName,
+			final CodecManager codecManager,
+			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");

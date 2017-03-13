@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -55,6 +56,7 @@ public final class TaskAttribute {
 	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
+		Assertion.when(!required).check(() -> DataType.DtList != domain.getDataType(), "A list in never optional. Check attribute '{0}'", attributeName);
 		//-----
 		name = attributeName;
 		this.domain = domain;
@@ -103,7 +105,7 @@ public final class TaskAttribute {
 			getDomain().checkValue(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 }

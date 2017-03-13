@@ -2,8 +2,10 @@
 <config>
 	<module name="myApp">
 		<definitions>
-			<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/AssociationAA.oom" />
-			<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/AssociationAA.oom" />
+				<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
+			</provider>
 		</definitions>
 	</module>
 </config>

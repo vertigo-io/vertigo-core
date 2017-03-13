@@ -18,11 +18,13 @@
  */
 package io.vertigo.commons.codec.serialization;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
@@ -46,8 +48,8 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	@Override
 	@Test
 	public void testNull() {
-		Assert.assertNull(codec.encode(null));
-		Assert.assertNull(codec.decode(null));
+		assertNull(codec.encode(null));
+		assertNull(codec.decode(null));
 	}
 
 	/** {@inheritDoc} */
@@ -56,7 +58,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	public void testEncode() {
 		for (final Serializable value : createObjects()) {
 			final byte[] serializedValue = codec.encode(value);
-			Assert.assertEquals(value, codec.decode(serializedValue));
+			assertEquals(value, codec.decode(serializedValue));
 		}
 	}
 
@@ -66,7 +68,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	public void testDecode() throws Exception {
 		for (final Serializable value : createObjects()) {
 			final byte[] serializedValue = codec.encode(value);
-			Assert.assertEquals(value, codec.decode(serializedValue));
+			assertEquals(value, codec.decode(serializedValue));
 		}
 	}
 

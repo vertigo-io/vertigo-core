@@ -23,9 +23,8 @@
 
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.3</version>
-		<relativePath>../vertigo-parent</relativePath>
+		<artifactId>vertigo</artifactId>
+		<version>0.9.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-core</artifactId>
@@ -67,7 +66,12 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
-			<version>3.2.2</version>
+			<version>3.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
 		</dependency>
 	</dependencies>
 

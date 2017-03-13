@@ -18,12 +18,25 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleManagerImpl;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
+import io.vertigo.core.param.ParamManagerImpl;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Component;
+import io.vertigo.lang.Plugin;
 
 /**
  * Configuration.
@@ -35,7 +48,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
-	private ModuleConfig myBootModuleConfig; //required
+	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
+	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -44,6 +58,21 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		Assertion.checkNotNull(appConfigBuilder);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
+	}
+
+	/**
+	 * Opens the boot module.
+	 * There is exactly one BootConfig per AppConfig.
+	 *
+	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @return this builder
+	 */
+	public BootConfigBuilder withLocales(final String locales) {
+		addComponent(
+				LocaleManager.class,
+				LocaleManagerImpl.class,
+				Param.create("locales", locales));
+		return this;
 	}
 
 	/**
@@ -68,25 +97,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * @return Module config builder
-	 */
-	ModuleConfigBuilder beginBootModule() {
-		return new ModuleConfigBuilder(appConfigBuilder);
-	}
-
-	/**
-	 * @param moduleConfig Module config
-	 * @return this builder
-	 */
-	BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		Assertion.checkState(myBootModuleConfig == null, "moduleConfig is already completed");
-		//-----
-		myBootModuleConfig = moduleConfig;
-		return this;
-	}
-
-	/**
 	 * @param aopPlugin AopPlugin
 	 * @return this builder
 	 */
@@ -105,13 +115,69 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
+	* Adds a component defined by an implementation.
+	 * @param implClass impl of the component
+	 * @param params the list of params
+	 */
+	public void addComponent(final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(implClass);
+		myComponentConfigs.add(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
+	}
+
+	/**
+	* Adds a component defined by an api and an implementation.
+	 * @param apiClass api of the component
+	 * @param implClass impl of the component
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(apiClass);
+		myComponentConfigs.add(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+		return this;
+	}
+
+	/**
+	 * Adds a plugin defined by its implementation.
+	 * @param pluginImplClass  impl of the plugin
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		return addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
+	}
+
+	/**
+	 * Adds a plugin defined by its builder.
+	 * @param pluginConfig the plugin-config
+	 * @return this builder
+	 */
+	public BootConfigBuilder addPlugin(final PluginConfig pluginConfig) {
+		Assertion.checkNotNull(pluginConfig);
+		//---
+		myPluginConfigs.add(pluginConfig);
+		return this;
+	}
+
+	/**
 	 * @return BootConfig
 	 */
 	@Override
 	public BootConfig build() {
+		addComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.addComponent(ParamManager.class, ParamManagerImpl.class);
+
 		return new BootConfig(
 				myLogConfigOption,
-				myBootModuleConfig,
+				myComponentConfigs,
+				myPluginConfigs,
 				myAopPlugin,
 				mySilence);
 	}

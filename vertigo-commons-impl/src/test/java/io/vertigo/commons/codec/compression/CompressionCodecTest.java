@@ -18,7 +18,11 @@
  */
 package io.vertigo.commons.codec.compression;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
@@ -28,7 +32,7 @@ import io.vertigo.commons.impl.codec.compression.CompressionCodec;
 
 /**
  * Test du codec de compresion.
- * 
+ *
  * @author pchretien
  */
 public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]> {
@@ -40,23 +44,23 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	/**
 	 * Test des mécanismes de compression/décompression des valeurs null.
-	 ** 
+	 **
 	 */
 	@Override
 	@Test
 	public void testNull() {
-		Assert.assertNull(codec.encode(null));
-		Assert.assertNull(codec.decode(null));
+		assertNull(codec.encode(null));
+		assertNull(codec.decode(null));
 	}
 
 	/**
 	 * Test des mécanismes de compression/décompression.
-	 ** 
+	 **
 	 */
 	@Override
 	@Test
 	public void testEncode() {
-		Assert.assertNotNull(codec.encode(TEXT.getBytes()));
+		assertNotNull(codec.encode(TEXT.getBytes()));
 
 	}
 
@@ -65,7 +69,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	@Test
 	public void testDecode() throws Exception {
 		final byte[] encodedValue = codec.encode(TEXT.getBytes());
-		Assert.assertEquals(TEXT, new String(codec.decode(encodedValue)));
+		assertEquals(TEXT, new String(codec.decode(encodedValue)));
 
 	}
 
@@ -73,18 +77,18 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	public void testUncompressedDecode() {
 		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
-		Assert.assertTrue(s.length < CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+		assertTrue(s.length < CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		final byte[] result = codec.decode(s);
-		Assert.assertEquals("qdfsdf", new String(result));
+		assertEquals("qdfsdf", new String(result));
 	}
 
 	@Test
 	public void testNopDecode() {
 		// object sans préfixe de compression, est laissé tel quel;
 		final byte[] s = "qdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
-		Assert.assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+		assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		final byte[] result = codec.decode(s);
-		Assert.assertEquals(new String(s), new String(result));
+		assertEquals(new String(s), new String(result));
 	}
 
 	/** {@inheritDoc} */
@@ -93,11 +97,10 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	public void testFailDecode() throws Exception {
 		// object avec prefix ne correspondant pas à une classe;
 		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
-		Assert.assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+		assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		/* final byte[] result = */
 
 		//Le decodage lance une exception
 		codec.decode(s);
-		Assert.fail();
 	}
 }

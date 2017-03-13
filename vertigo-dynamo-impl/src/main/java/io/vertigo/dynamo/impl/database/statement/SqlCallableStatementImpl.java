@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.lang.Assertion;
 
@@ -64,11 +65,12 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 	 * @throws SQLException Si erreur
 	 */
 	private void registerOutParameters() throws SQLException {
+		final SqlMapping sqlMapping = getConnection().getDataBase().getSqlMapping();
 		SqlParameter parameter;
 		for (int i = 0; i < getParameters().size(); i++) {
 			parameter = getParameter(i);
 			if (parameter.isOut()) {
-				getCallableStatement().registerOutParameter(i + 1, getConnection().getDataBase().getSqlMapping().getSqlType(parameter.getDataType()));
+				getCallableStatement().registerOutParameter(i + 1, sqlMapping.getSqlType(parameter.getDataType()));
 			}
 		}
 	}

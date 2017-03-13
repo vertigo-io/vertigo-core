@@ -20,13 +20,17 @@ package io.vertigo.lang;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
  * Test de l'utilitaire des assertions.
  *
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class AssertionTest {
 	@Test
 	public void testCheckNotNull() {
@@ -43,14 +47,16 @@ public final class AssertionTest {
 		Assertion.checkNotNull("notNull", "message: {0} ", "param");
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckNotNullFail() {
-		Assertion.checkNotNull(null);
+		Assertions.assertThrows(NullPointerException.class,
+				() -> Assertion.checkNotNull(null));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckNotNull3FailWithMessage() {
-		Assertion.checkNotNull(null, "message: {0} ", "param");
+		Assertions.assertThrows(NullPointerException.class,
+				() -> Assertion.checkNotNull(null, "message: {0} ", "param"));
 	}
 
 	@Test
@@ -63,14 +69,16 @@ public final class AssertionTest {
 		Assertion.checkArgument(true, "message {0}", "param");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgumentFail() {
-		Assertion.checkArgument(false, "message");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> Assertion.checkArgument(false, "message"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckArgument2Fail() {
-		Assertion.checkArgument(false, "message {0}", "param");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> Assertion.checkArgument(false, "message {0}", "param"));
 	}
 
 	//-----
@@ -84,14 +92,16 @@ public final class AssertionTest {
 		Assertion.checkState(true, "message {0}", "param1");
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testCheckStateFail() {
-		Assertion.checkState(false, "message");
+		Assertions.assertThrows(IllegalStateException.class,
+				() -> Assertion.checkState(false, "message"));
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testCheckState2Fail() {
-		Assertion.checkState(false, "message {0}", "param1");
+		Assertions.assertThrows(IllegalStateException.class,
+				() -> Assertion.checkState(false, "message {0}", "param1"));
 	}
 
 	@Test
@@ -99,14 +109,16 @@ public final class AssertionTest {
 		Assertion.checkArgNotEmpty("test", "message");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testCheckNotEmptyFail() {
-		Assertion.checkArgNotEmpty("  ", "message");
+		Assertions.assertThrows(IllegalArgumentException.class,
+				() -> Assertion.checkArgNotEmpty("  ", "message"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCheckNotEmpty2Fail() {
-		Assertion.checkArgNotEmpty(null, "message {0}", "param");
+		Assertions.assertThrows(NullPointerException.class,
+				() -> Assertion.checkArgNotEmpty(null, "message {0}", "param"));
 	}
 
 	@Test

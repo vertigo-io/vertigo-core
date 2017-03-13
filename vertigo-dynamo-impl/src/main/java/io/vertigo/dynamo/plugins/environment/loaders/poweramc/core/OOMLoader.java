@@ -18,24 +18,21 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.AbstractXmlLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -43,53 +40,37 @@ import io.vertigo.util.StringUtil;
  * Seules les classes et leurs attributs ainsi que les associations sont extraites.
  * @author pchretien
  */
-public final class OOMLoader implements XmlLoader {
-	private final Map<XmlId, OOMObject> map;
+public final class OOMLoader extends AbstractXmlLoader {
+	private final Map<XmlId, OOMObject> map = new LinkedHashMap<>();
 
 	/**
 	 * Constructor.
-	 * @param powerAMCURL the url of the OOM file
+	 * @param resourceManager the vertigo resourceManager
 	 */
-	public OOMLoader(final URL powerAMCURL) {
-		Assertion.checkNotNull(powerAMCURL);
-		//-----
-		map = new LinkedHashMap<>();
-		final OOMHandler handler = new OOMHandler(map);
-		try {
-			final SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+	public OOMLoader(final ResourceManager resourceManager) {
+		super(resourceManager);
+	}
 
-			final SAXParser saxParser = factory.newSAXParser();
-			saxParser.parse(powerAMCURL.openStream(), handler);
-		} catch (final Exception e) {
-			throw new WrappedException("erreur lors de la lecture du fichier oom : " + powerAMCURL, e);
-		}
+	@Override
+	protected DefaultHandler getHandler() {
+		return new OOMHandler(map);
 	}
 
 	@Override
 	public List<XmlClass> getClasses() {
-		final ListBuilder<XmlClass> listBuilder = new ListBuilder<>();
-		for (final OOMObject obj : map.values()) {
-			//On ne conserve que les classes et les domaines
-			if (obj.getType() == OOMType.Class) {
-				listBuilder.add(createClass(obj));
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values().stream()
+				//On ne conserve que les classes et les domaines
+				.filter(obj -> obj.getType() == OOMType.Class)
+				.map(this::createClass)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<XmlAssociation> getAssociations() {
-		final ListBuilder<XmlAssociation> listBuilder = new ListBuilder<>();
-		for (final OOMObject obj : map.values()) {
-			if (obj.getType() == OOMType.Association) {
-				final XmlAssociation associationOOM = createAssociation(obj);
-				if (associationOOM != null) {
-					listBuilder.add(associationOOM);
-				}
-			}
-		}
-		return listBuilder.unmodifiable().build();
+		return map.values().stream()
+				.filter(obj -> obj.getType() == OOMType.Association)
+				.map(this::createAssociation)
+				.collect(Collectors.toList());
 	}
 
 	private XmlClass createClass(final OOMObject obj) {
@@ -199,5 +180,10 @@ public final class OOMLoader implements XmlLoader {
 		final boolean navigabilityB = obj.getRoleBNavigability();
 
 		return new XmlAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+	}
+
+	@Override
+	public String getType() {
+		return "oom";
 	}
 }

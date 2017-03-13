@@ -23,11 +23,11 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.MessageText;
-import io.vertigo.vega.engines.webservice.json.UiList;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiObject;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * @author npiedeloup
@@ -55,7 +55,7 @@ final class UiObjectUtil {
 		}
 	}
 
-	static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) {
+	static void postReadUiList(final UiListModifiable<DtObject> uiList, final String inputKey, final WebServiceParam webServiceParam) {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		int index = 0;
 		for (final UiObject<DtObject> entry : uiList) {

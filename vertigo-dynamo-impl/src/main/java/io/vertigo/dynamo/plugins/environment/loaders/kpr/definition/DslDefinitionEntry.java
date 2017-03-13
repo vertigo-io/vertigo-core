@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -35,7 +35,7 @@ public final class DslDefinitionEntry {
 	 * Obligatoire
 	 */
 	private final String fieldName;
-	private final DynamicDefinition definition;
+	private final DslDefinition definition;
 	private final List<String> definitionNames;
 
 	/**
@@ -59,7 +59,7 @@ public final class DslDefinitionEntry {
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
 	 */
-	public DslDefinitionEntry(final String fieldName, final DynamicDefinition definition) {
+	public DslDefinitionEntry(final String fieldName, final DslDefinition definition) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definition);
 		//-----
@@ -87,7 +87,7 @@ public final class DslDefinitionEntry {
 	/**
 	 * @return Définition
 	 */
-	public DynamicDefinition getDefinition() {
+	public DslDefinition getDefinition() {
 		Assertion.checkNotNull(definition);
 		//-----
 		return definition;

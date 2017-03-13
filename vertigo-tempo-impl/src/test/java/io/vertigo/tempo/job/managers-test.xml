@@ -4,6 +4,10 @@
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	</module>	
 	<module name="vertigo-tempo">
+		<definitions>
+			<provider class="io.vertigo.tempo.job.JobDefinitionProvider"/>
+		</definitions>
+		
 		<component api="JobManager" class="io.vertigo.tempo.impl.job.JobManagerImpl" />
-	</module>
+		</module>
 </config>

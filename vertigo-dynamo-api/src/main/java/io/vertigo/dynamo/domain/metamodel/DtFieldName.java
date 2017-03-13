@@ -18,11 +18,14 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.dynamo.domain.model.DtObject;
+
 /**
  * Nom de champs de DT (marqueur).
+ * @param <D> the dtobject associated to this dtField
  * @author mlaroche
  */
-public interface DtFieldName {
+public interface DtFieldName<D extends DtObject> {
 
 	/** @return nom du champ (const case) */
 	String name();

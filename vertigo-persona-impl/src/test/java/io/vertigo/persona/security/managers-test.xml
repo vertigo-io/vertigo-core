@@ -2,7 +2,6 @@
 <config>
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
-		<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
 	</boot>
 
 	<module name="vertigo-persona">
@@ -13,7 +12,10 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
+			<provider class="io.vertigo.persona.plugins.security.loaders.SecurityDefinitionProvider" >
+				<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
+			</provider>
+			<provider class="io.vertigo.persona.security.TestSecurityDefinitionProvider" />
 		</definitions>
 	</module>
 </config>

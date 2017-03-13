@@ -27,6 +27,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
@@ -37,7 +38,7 @@ import io.vertigo.lang.Assertion;
  * @author skerdudou
  */
 public final class PropertiesParamPlugin implements ParamPlugin {
-	private final Properties params;
+	private final Properties properties;
 
 	/**
 	 * Constructeur.
@@ -52,7 +53,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 		Assertion.checkArgNotEmpty(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
-		params = loadProperties(configURL);
+		properties = loadProperties(configURL);
 	}
 
 	private static Properties loadProperties(final URL configURL) throws IOException {
@@ -65,9 +66,10 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<String> getValue(final String paramName) {
+	public Optional<Param> getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.getProperty(paramName)) : Optional.<String> empty();
+		final String paramValue = properties.getProperty(paramName);
+		return paramValue != null ? Optional.<Param> of(Param.create(paramName, paramValue)) : Optional.<Param> empty();
 	}
 }

@@ -18,15 +18,11 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import java.util.Collections;
-import java.util.List;
-
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinition;
-import io.vertigo.core.definition.dsl.dynamic.DynamicDefinitionRepository;
-import io.vertigo.core.definition.dsl.dynamic.DynamicRegistry;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
@@ -42,8 +38,8 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	/**
 	 * @return DynamicDefinitionRepository bouchon pour test
 	 */
-	public static DynamicDefinitionRepository createDynamicDefinitionRepository() {
-		return new DynamicDefinitionRepository(new DslDynamicRegistryMock());
+	public static DslDefinitionRepository createDynamicDefinitionRepository() {
+		return new DslDefinitionRepository(new DslDynamicRegistryMock());
 	}
 
 	@Override
@@ -52,24 +48,8 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	}
 
 	@Override
-	public Definition createDefinition(final DefinitionSpace definitionSpace, final DynamicDefinition definition) {
-		return new Definition() {
-
-			@Override
-			public String getName() {
-				return "FAKE";
-			}
-		};
-	}
-
-	@Override
-	public List<DynamicDefinition> getRootDynamicDefinitions() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		//
+	public DefinitionSupplier supplyDefinition(final DslDefinition definition) {
+		return (definitionSpace) -> () -> "FAKE";
 	}
 
 }

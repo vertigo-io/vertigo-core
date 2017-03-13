@@ -62,7 +62,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 			try {
 				return MessageDigest.getInstance(algoName);
 			} catch (final NoSuchAlgorithmException e) {
-				throw new WrappedException(algoName, e);
+				throw WrappedException.wrap(e, algoName);
 			}
 		}
 	}

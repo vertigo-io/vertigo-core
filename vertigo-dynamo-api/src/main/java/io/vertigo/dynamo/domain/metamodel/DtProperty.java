@@ -87,7 +87,7 @@ public final class DtProperty {
 			Assertion.checkNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw new WrappedException("Propriete " + propertyName + " non trouvee sur DtProperty", e);
+			throw WrappedException.wrap(e, "Propriete " + propertyName + " non trouvee sur DtProperty");
 		}
 	}
 }

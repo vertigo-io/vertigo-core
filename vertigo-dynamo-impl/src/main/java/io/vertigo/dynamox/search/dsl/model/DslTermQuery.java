@@ -59,7 +59,14 @@ public final class DslTermQuery implements DslQuery {
 	 * @param defaultValue Optional default value (used if null or empty criteria)
 	 * @param postTerm String after body
 	 */
-	public DslTermQuery(final String preBody, final String preTerm, final String termField, final String postTerm, final EscapeMode escapeMode, final Optional<String> defaultValue, final String postBody) {
+	public DslTermQuery(
+			final String preBody,
+			final String preTerm,
+			final String termField,
+			final String postTerm,
+			final EscapeMode escapeMode,
+			final Optional<String> defaultValue,
+			final String postBody) {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(preTerm);
 		Assertion.checkNotNull(termField);

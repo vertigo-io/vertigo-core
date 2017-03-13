@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
@@ -52,7 +53,7 @@ final class AppServletStarter {
 
 	/** Servlet listener */
 	private final AppServletListener appServletListener = new AppServletListener();
-	private AutoCloseableApp app = null;
+	private AutoCloseableApp app;
 
 	/**
 	 * Initialize and start Vertigo Home.
@@ -65,7 +66,7 @@ final class AppServletStarter {
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Map<String, String> webAppConf = createWebParams(servletContext);
+			final Map<String, Param> webAppConf = createWebParams(servletContext);
 			WebAppContextParamPlugin.setParams(webAppConf);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
@@ -94,7 +95,7 @@ final class AppServletStarter {
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			throw new WrappedException("Problème d'initialisation de l'application", e);
+			throw WrappedException.wrap(e, "Problème d'initialisation de l'application");
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -106,11 +107,11 @@ final class AppServletStarter {
 	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppParamPlugin du ParamManager.
 	 * @return Properties
 	 */
-	private static Map<String, String> createWebParams(final ServletContext servletContext) {
+	private static Map<String, Param> createWebParams(final ServletContext servletContext) {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
-		final Map<String, String> webParams = new HashMap<>();
+		final Map<String, Param> webParams = new HashMap<>();
 		String name;
 		/*
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
@@ -118,7 +119,7 @@ final class AppServletStarter {
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
-			webParams.put(name, servletContext.getInitParameter(name));
+			webParams.put(name, Param.create(name, servletContext.getInitParameter(name)));
 		}
 		return webParams;
 	}
@@ -171,7 +172,7 @@ final class AppServletStarter {
 		try {
 			readFile(servletParams, externalPropertiesFileName);
 		} catch (final IOException e) {
-			throw new WrappedException("Erreur lors de la lecture du fichier", e);
+			throw WrappedException.wrap(e, "Erreur lors de la lecture du fichier");
 		}
 
 		return servletParams;

@@ -18,22 +18,50 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import io.vertigo.core.definition.DefinitionProvider;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * @author mlaroche
  */
 public final class DefinitionProviderConfig {
 	private final Class<? extends DefinitionProvider> definitionProviderClass;
+	private final Map<String, String> params;
+	private final List<DefinitionResourceConfig> definitionResources;
 
-	DefinitionProviderConfig(final Class<? extends DefinitionProvider> definitionProviderClass) {
+	DefinitionProviderConfig(final Class<? extends DefinitionProvider> definitionProviderClass, final List<Param> params,
+			final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.checkNotNull(params);
+		Assertion.checkNotNull(definitionResourceConfigs);
 		//-----
 		this.definitionProviderClass = definitionProviderClass;
+		this.params = params
+				.stream()
+				.collect(Collectors.toMap(Param::getName, Param::getValue));
+		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 	}
 
 	public Class<? extends DefinitionProvider> getDefinitionProviderClass() {
 		return definitionProviderClass;
+	}
+
+	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {
+		return definitionResources;
+	}
+
+	/**
+	 * @return the params
+	 */
+	public Map<String, String> getParams() {
+		return params;
 	}
 
 	@Override

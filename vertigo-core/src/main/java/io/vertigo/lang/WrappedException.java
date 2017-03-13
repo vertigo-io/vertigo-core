@@ -23,34 +23,37 @@ import java.lang.reflect.InvocationTargetException;
 import io.vertigo.util.StringUtil;
 
 /**
- * Encapsulates some Exception inside a RuntimeException.
+ * Encapsulates checked Exception inside a RuntimeException.
  * Inspired by gnu.mapping.WrappedException.
  *
  * @author npiedeloup
  */
 public final class WrappedException extends RuntimeException {
-
 	private static final long serialVersionUID = 8595187765435824071L;
 
 	/**
 	 * Constructor.
-	 * @param cause Cause exception
+	 * @param message the context message
+	 * @param cause the cause exception
 	 */
-	public WrappedException(final Throwable cause) {
-		super(cause);
-	}
-
-	/**
-	 * Constructor.
-	 * @param message Context message
-	 * @param cause Cause exception
-	 */
-	public WrappedException(final String message, final Throwable cause) {
+	private WrappedException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
-	 * Coerce argument to a RuntimeException.
+	 * Coerces argument to a RuntimeException.
+	 * Re-throws as a non-checked exception.
+	 * This method never returns, in spite of the return type.
+	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
+	 * @param th Cause exception
+	 * @return RuntimeException runtime
+	 */
+	public static RuntimeException wrap(final Throwable th) {
+		return wrap(th, null);
+	}
+
+	/**
+	 * Coerces argument to a RuntimeException.
 	 * Re-throw as a non-checked exception. This method never returns, in spite of the return type.
 	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
 	 * @param th Cause exception
@@ -58,7 +61,7 @@ public final class WrappedException extends RuntimeException {
 	 * @param params Context message params
 	 * @return RuntimeException runtime
 	 */
-	public static RuntimeException wrapIfNeeded(final java.lang.Throwable th, final String msg, final Object... params) {
+	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
 		final Throwable t;
 		if (th instanceof InvocationTargetException) {
 			t = ((InvocationTargetException) th).getTargetException();
@@ -76,4 +79,11 @@ public final class WrappedException extends RuntimeException {
 		throw new WrappedException(message, t);
 	}
 
+	/**
+	 * Gets the orginal exception.
+	 * @return the orginal exception that has been wrapped
+	 */
+	public Throwable unwrap() {
+		return getCause();
+	}
 }

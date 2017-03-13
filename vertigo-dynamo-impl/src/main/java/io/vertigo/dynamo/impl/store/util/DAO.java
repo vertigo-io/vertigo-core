@@ -18,13 +18,16 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -34,8 +37,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
@@ -133,14 +135,26 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragment);
-		final DtField idField = fragmentDefinition.getFragment().get().getIdField().get();
-		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor du fragment sur l'entity
+		final DtDefinition entityDefinition = fragmentDefinition.getFragment().get();
+		final Map<String, DtField> entityFields = indexFields(entityDefinition.getFields());
+		final DtField idField = entityDefinition.getIdField().get();
+		final P entityId = (P) idField.getDataAccessor().getValue(fragment);//etrange on utilise l'accessor de l'entity sur le fragment
 		final E dto = get(entityId);
 		for (final DtField fragmentField : fragmentDefinition.getFields()) {
-			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
-			dataAccessor.setValue(dto, dataAccessor.getValue(fragment)); //etrange on utilise l'accessor du fragment sur l'entity
+			//On vérifie la présence du champ dans l'Entity (il peut s'agir d'un champ non persistent d'UI
+			if (entityFields.containsKey(fragmentField.getName())) {
+				final DataAccessor fragmentDataAccessor = fragmentField.getDataAccessor();
+				final DataAccessor entityDataAccessor = entityFields.get(fragmentField.getName()).getDataAccessor();
+				entityDataAccessor.setValue(dto, fragmentDataAccessor.getValue(fragment));
+			}
 		}
 		return dto;
+	}
+
+	private static Map<String, DtField> indexFields(final List<DtField> fields) {
+		return fields
+				.stream()
+				.collect(Collectors.toMap(DtField::getName, Function.identity()));
 	}
 
 	/**
@@ -170,7 +184,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Object recherché
 	 */
 	public final E get(final URI<E> uri) {
-		return dataStore.<E> read(uri);
+		return dataStore.<E> readOne(uri);
 	}
 
 	/**
@@ -181,12 +195,13 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return F Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
-		final E dto = dataStore.<E> read(uri);
+		final E dto = dataStore.<E> readOne(uri);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
-		for (final DtField fragmentField : fragmentDefinition.getFields()) {
-			final DataAccessor dataAccessor = fragmentField.getDataAccessor();
-			dataAccessor.setValue(fragment, dataAccessor.getValue(dto)); //etrange on utilise l'accessor du fragment sur l'entity
+		for (final DtField dtField : fragmentDefinition.getFields()) {
+			final DataAccessor dataAccessor = dtField.getDataAccessor();
+			dataAccessor.setValue(fragment, dataAccessor.getValue(dto));
+			//etrange on utilise l'accessor du fragment sur l'entity
 		}
 		return fragment;
 	}
@@ -230,10 +245,22 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param maxRows Nombre maximum de ligne
 	 * @return DtList<D> récupéré NOT NUL
 	 */
+	@Deprecated
 	public final DtList<E> getListByDtField(final String fieldName, final Object value, final int maxRows) {
-		final FilterCriteria<E> criteria = new FilterCriteriaBuilder<E>().addFilter(fieldName, value).build();
+		// we assume that this method was always used with comparable objects (String, Long, Integer, Boolean...)
+		return getListByDtFieldName(() -> fieldName, (Comparable) value, maxRows);
+	}
+
+	/**
+	 * @param dtFieldName de l'object à récupérer NOT NULL
+	 * @param value de l'object à récupérer NOT NULL
+	 * @param maxRows Nombre maximum de ligne
+	 * @return DtList<D> récupéré NOT NUL
+	 */
+	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Comparable value, final int maxRows) {
+		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
-		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
+		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
 		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
@@ -258,17 +285,6 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, 2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
-	}
-
-	/**
-	 * @param criteria Critére de recherche NOT NULL
-	 * @param maxRows Nombre maximum de ligne
-	 * @return DtList<D> récupéré NOT NUL
-	 * @deprecated Use findAll instead
-	 */
-	@Deprecated
-	public final DtList<E> getList(final Criteria<E> criteria, final int maxRows) {
-		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -302,10 +318,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
-		final List<URI> objectURIs = new ArrayList<>();
-		for (final FK dto : newDtc) {
-			objectURIs.add(DtObjectUtil.createURI(dto));
-		}
+		final List<URI> objectURIs = newDtc
+				.stream()
+				.map(DtObjectUtil::createURI)
+				.collect(Collectors.toList());
 		updateNN(dtListURI, objectURIs);
 	}
 

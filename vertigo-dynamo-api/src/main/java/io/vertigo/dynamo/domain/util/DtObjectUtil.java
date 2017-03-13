@@ -21,8 +21,8 @@ package io.vertigo.dynamo.domain.util;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
@@ -105,14 +105,16 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
+	 * @param <E> 
 	
 	 * @param associationDefinitionName Nom de la définition d'une association
-	 * @param entity the entity
-	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
+	 * @param dto  Object
+	 * @param dtoTargetClass Class of entity of this association
+	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> URI<E> createURI(final Entity entity, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> URI<E> createURI(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
-		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
 		final AssociationSimpleDefinition associationSimpleDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
@@ -123,7 +125,7 @@ public final class DtObjectUtil {
 		final DtField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
-		final Object id = fkField.getDataAccessor().getValue(entity);
+		final Object id = fkField.getDataAccessor().getValue(dto);
 		if (id == null) {
 			return null;
 		}

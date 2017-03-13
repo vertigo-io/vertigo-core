@@ -18,7 +18,10 @@
  */
 package io.vertigo.commons.codec.crypto;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
@@ -33,8 +36,8 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	@Override
 	@Test
 	public void testNull() {
-		Assert.assertNull(codec.encode(null));
-		Assert.assertNull(codec.decode(null));
+		assertNull(codec.encode(null));
+		assertNull(codec.decode(null));
 	}
 
 	/** {@inheritDoc} */
@@ -42,7 +45,7 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	@Test
 	public void testEncode() {
 		for (int i = 0; i < 30000; i++) {
-			Assert.assertNotNull(codec.encode(TEXT.getBytes()));
+			assertNotNull(codec.encode(TEXT.getBytes()));
 		}
 	}
 
@@ -52,7 +55,7 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	public void testDecode() throws Exception {
 		final byte[] encryptedValue = codec.encode(TEXT.getBytes());
 		for (int i = 0; i < 30000; i++) {
-			Assert.assertEquals(TEXT, new String(codec.decode(encryptedValue)));
+			assertEquals(TEXT, new String(codec.decode(encryptedValue)));
 		}
 	}
 

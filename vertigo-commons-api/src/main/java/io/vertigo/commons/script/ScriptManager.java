@@ -24,42 +24,44 @@ import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Manager;
 
-/** 
- * Gestion des manipulations sur des scripts.
+/**
+ * Manages scripts.
+ * A script is composed of expressions.
+ * A script (and experssions) can be parameterized.
  *
  * @author pchretien
  */
 public interface ScriptManager extends Manager {
 	/**
-	 * Parse le script, notifie le handler.
-	 * La grammaire est constituées de simples balises (Séparateurs). 
+	 * Parses the script with a specific handler.
+	 * the grammar is defined by simple tags balises (separators).
 	 *
-	 * @param script Script à analyser
-	 * @param scriptHandler Handler gérant la grammaire analysée
-	 * @param separators Liste des séparateurs autorisés dans la grammaire.
+	 * @param script the script to analyse
+	 * @param scriptHandler the hander
+	 * @param separators the list of allowed separators in the grammar.
 	 */
 	void parse(final String script, final ScriptParserHandler scriptHandler, final List<ScriptSeparator> separators);
 
 	/**
-	 * Evaluation du script.
-	 * Transforme un script en text.
-	 * @param script Script à évaluer
-	 * @return Script évalué
+	 * Evaluates the script, transforms a script into a text.
+	 * @param script the script
+	 * @return the evaluated script as a simplet text
 	 */
 	String evaluateScript(final String script, final SeparatorType separatorType, final List<ExpressionParameter> parameters);
 
 	/**
-	 * Evaluation d'une expression et non d'un bloc de code.
-	 *  Exemple d'expressions exprimées en java 
-	 *  - name  
+	 * Evaluates an expression.
+	 *  Examples of expressions written in java
+	 *  - name
 	 *  - birthDate
 	 *  - age>20
 	 *  - salary>5000 && age <30
 	 *  - name + surName
-	 * @param expression Expression
-	 * @param parameters Paramètres
-	 * @param type Type retourné
-	 * @return Résultat de l'expression après évaluation
+	 * @param expression the expression
+	 * @param parameters the parameters
+	 * @param type the returned type
+	 * @return the evaluated expression
+	 * @Param <J> the returned type by the evaluation
 	 */
 	<J> J evaluateExpression(final String expression, List<ExpressionParameter> parameters, Class<J> type);
 }

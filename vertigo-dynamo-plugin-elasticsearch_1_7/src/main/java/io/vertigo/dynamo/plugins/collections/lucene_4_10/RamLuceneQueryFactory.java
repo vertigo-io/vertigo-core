@@ -88,7 +88,7 @@ final class RamLuceneQueryFactory {
 			try {
 				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
-				throw new WrappedException("Erreur lors de la création du filtrage de la requete", e);
+				throw WrappedException.wrap(e, "Erreur lors de la création du filtrage de la requete");
 			}
 		}
 		return query;

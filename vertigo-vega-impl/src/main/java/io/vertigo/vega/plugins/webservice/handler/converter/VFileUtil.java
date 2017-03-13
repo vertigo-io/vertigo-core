@@ -108,7 +108,7 @@ final class VFileUtil {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
-			throw new WrappedException("Error while sending file. <!-- " + e.getMessage() + "-->", e);
+			throw WrappedException.wrap(e, "Error while sending file. <!-- " + e.getMessage() + "-->");
 		}
 		// response already send
 	}
@@ -116,7 +116,9 @@ final class VFileUtil {
 	private static VFile readQueryFile(final Request request, final WebServiceParam webServiceParam) {
 		try {
 			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName());
-			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", webServiceParam.getName());
+			Assertion.checkArgument(!request.raw().getParts().isEmpty(),
+					"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
+					webServiceParam.getName());
 			final Part file = request.raw().getPart(webServiceParam.getName());
 			if (file == null) {
 				final String sentParts = request.raw().getParts()
@@ -127,7 +129,7 @@ final class VFileUtil {
 			}
 			return createVFile(file);
 		} catch (IOException | ServletException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 

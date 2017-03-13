@@ -24,14 +24,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.util.ClassUtil;
 
 /**
  * This container contains params initialized with String.
- * Method getUnusedKeys allows to identify phantom params.
+ * Method getUnusedKeys allows to identify 'phantom' params.
  *
  * @author pchretien
  */
@@ -61,13 +61,10 @@ final class ComponentParamsContainer implements Container {
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
-		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
+		Assertion.checkState(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
-		final Object value = getParamValue(id, clazz);
-		final Class<O> type = ClassUtil.box(clazz);
-		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
-		return type.cast(value);
+		return getParam(id).getValue(clazz);
 	}
 
 	/** {@inheritDoc} */
@@ -79,36 +76,18 @@ final class ComponentParamsContainer implements Container {
 	/**
 	 * Récupération d'un paramètre typé par son nom.
 	 * @param paramName Nom du paramètre
-	 * @param paramType Type du paramètre attendu
 	 * @return Valeur sous forme texte du paramètre
 	 */
-	private Object getParamValue(final String paramName, final Class<?> paramType) {
+	private Param getParam(final String paramName) {
 		Assertion.checkNotNull(paramName);
-		Assertion.checkNotNull(paramType);
 		//-----
 		final String paramValue = params.get(paramName);
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
-			Assertion.checkArgument(paramManagerOption.isPresent(), "config is not allowed here");
-			//-----
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
-			return paramManagerOption.get().getValue(property, paramType);
+			return paramManagerOption.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
+					.getParam(property);
 		}
-		return cast(paramName, ClassUtil.box(paramType), paramValue);
-	}
-
-	private static Object cast(final String paramName, final Class<?> paramType, final String value) {
-		Assertion.checkArgument(!paramType.isPrimitive(), "only non primitive types are accepted for param " + paramName + " of type " + paramType);
-		//-----
-		if (String.class.equals(paramType)) {
-			return value;
-		} else if (Boolean.class.equals(paramType) || boolean.class.equals(paramType)) {
-			return Boolean.valueOf(value);
-		} else if (Integer.class.equals(paramType) || int.class.equals(paramType)) {
-			return Integer.valueOf(value);
-		} else if (Long.class.equals(paramType) || long.class.equals(paramType)) {
-			return Long.valueOf(value);
-		}
-		throw new IllegalArgumentException("type '" + paramType + "' unsupported");
+		return Param.create(paramName, paramValue);
 	}
 
 	/*

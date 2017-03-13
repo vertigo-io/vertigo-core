@@ -26,6 +26,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -49,7 +50,8 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	 * @param collUpdates Map of updated inputs
 	 * @param collDeletes Map of removed inputs
 	 */
-	UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
+	// TODO remettre protected
+	public UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
 		Assertion.checkNotNull(objectType);
 		Assertion.checkNotNull(collCreates);
 		Assertion.checkNotNull(collUpdates);

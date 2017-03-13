@@ -38,6 +38,8 @@ import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.spans.SpanFirstQuery;
+import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -85,12 +87,12 @@ final class RamLuceneQueryFactory {
 		final Builder queryBuilder = new BooleanQuery.Builder()
 				.add(keywordsQuery, BooleanClause.Occur.MUST);
 
+		final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 		for (final ListFilter filter : filters) {
-			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 			try {
 				queryBuilder.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
-				throw new WrappedException("Erreur lors de la création du filtrage de la requete", e);
+				throw WrappedException.wrap(e, "Erreur lors de la création du filtrage de la requete");
 			}
 		}
 		return queryBuilder.build();
@@ -110,8 +112,10 @@ final class RamLuceneQueryFactory {
 				final CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
 				while (tokenStream.incrementToken()) {
 					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
-					final PrefixQuery termQuery = new PrefixQuery(new Term(fieldName, term));
-					queryBuilder.add(termQuery, BooleanClause.Occur.MUST);
+					final PrefixQuery prefixQuery = new PrefixQuery(new Term(fieldName, term));
+					queryBuilder.add(prefixQuery, BooleanClause.Occur.MUST);
+					final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new SpanMultiTermQueryWrapper<>(prefixQuery), 1);
+					queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
 				}
 			} finally {
 				reader.reset();

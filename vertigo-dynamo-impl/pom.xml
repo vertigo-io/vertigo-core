@@ -3,9 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.3</version>
-		<relativePath>../vertigo-parent</relativePath>
+		<artifactId>vertigo</artifactId>
+		<version>0.9.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-dynamo-impl</artifactId>
@@ -50,7 +49,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.3.3</version>
+			<version>2.3.4</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -59,20 +58,20 @@
 		<dependency>
 			<groupId>com.sleepycat</groupId>
 			<artifactId>je</artifactId>
-			<version>5.0.73</version>
+			<version>5.0.84</version>
 		</dependency>
 
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>5.5.0</version> <!-- 5.5.0 compatible with ElasticSearch 2.3.5 -->
+			<version>5.5.2</version> <!-- 5.5.2 compatible with ElasticSearch 2.4.4 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>5.5.0</version> <!-- 5.5.0 compatible with ElasticSearch 2.3.5 -->
+			<version>5.5.2</version> <!-- 5.5.2 compatible with ElasticSearch 2.4.4 -->
 			<optional>true</optional>
 		</dependency>
 
@@ -85,13 +84,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.1.0.Final</version>
+			<version>5.2.6.Final</version>
 			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.1.0.Final</version>
+			<version>5.2.6.Final</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -99,7 +98,7 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>2.3.5</version>
+			<version>2.4.4</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		
@@ -153,4 +152,13 @@
 		</dependency-->
 		<!--/exporter-->
 	</dependencies>
+	
+	<!-- repo pour com.sleepycat.je:5.0.84 -->
+	<repositories>
+	    <repository>
+	      <id>boundless</id>
+	      <name>boundless</name>
+	      <url>http://repo.boundlessgeo.com/main</url>
+	    </repository>
+	  </repositories>
 </project>

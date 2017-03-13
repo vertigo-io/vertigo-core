@@ -82,7 +82,7 @@ public final class CompressionFilter extends AbstractFilter {
 	 * @return boolean
 	 */
 	public boolean isUserAgentNullOrCompressionNull(final String reqGzip, final String reqUserAgent) {
-		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && ! reqUserAgent.contains(userAgent);
+		return compressionThreshold == 0 || "false".equalsIgnoreCase(reqGzip) || reqUserAgent != null && !reqUserAgent.contains(userAgent);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class CompressionFilter extends AbstractFilter {
 		}
 
 		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) res;
+		final HttpServletResponse response = (HttpServletResponse) res;
 
 		// Is request stream compressed ?
 		if (GZIP.equalsIgnoreCase(request.getHeader("Content-Encoding"))) {
@@ -129,9 +129,9 @@ public final class CompressionFilter extends AbstractFilter {
 
 		boolean supportCompression = false;
 		String name;
-		final Enumeration en = request.getHeaders("Accept-Encoding");
+		final Enumeration<String> en = request.getHeaders("Accept-Encoding");
 		while (en.hasMoreElements()) {
-			name = (String) en.nextElement();
+			name = en.nextElement();
 			if (name.contains(GZIP)) {
 				supportCompression = true;
 				break;
@@ -140,12 +140,8 @@ public final class CompressionFilter extends AbstractFilter {
 
 		if (supportCompression) {
 			// compress response stream
-			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(response, compressionThreshold);
-			response = wrappedResponse;
-			try {
-				chain.doFilter(request, response);
-			} finally {
-				wrappedResponse.finishResponse();
+			try (final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(response, compressionThreshold)) {
+				chain.doFilter(request, wrappedResponse);
 			}
 		} else {
 			chain.doFilter(request, response);

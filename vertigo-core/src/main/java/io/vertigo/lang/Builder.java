@@ -19,10 +19,10 @@
 package io.vertigo.lang;
 
 /**
- * The Builder interface allows you to buil an object step by step using a fluent style.
- * 
- * It's better to build an immutable object to be able to share your object without using synchronized.   
- *  
+ * The Builder interface allows you to build an object step by step using a fluent style.
+ *
+ * It's better to build an immutable object to be able to share your object without using synchronized.
+ *
  * @author pchretien
  * @param <T> type of the object to build
  */

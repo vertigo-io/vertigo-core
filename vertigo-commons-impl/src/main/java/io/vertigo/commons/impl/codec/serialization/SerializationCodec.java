@@ -47,7 +47,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 			oos.flush();
 			return baos.toByteArray();
 		} catch (final IOException e) {
-			throw new WrappedException("Serialization : write stream exception for " + object.getClass().getName(), e);
+			throw WrappedException.wrap(e, "Serialization : write stream exception for " + object.getClass().getName());
 		}
 	}
 
@@ -59,7 +59,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 		try (final InputStream bais = new ByteArrayInputStream(serializedObject); final ObjectInputStream ois = new ObjectInputStream(bais)) {
 			return (Serializable) ois.readObject();
 		} catch (final IOException | ClassNotFoundException e) {
-			throw new WrappedException("Deserialization : read stream exception", e);
+			throw WrappedException.wrap(e, "Deserialization : read stream exception");
 		}
 	}
 }

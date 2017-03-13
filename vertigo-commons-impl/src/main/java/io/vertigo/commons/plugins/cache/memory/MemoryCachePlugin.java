@@ -29,9 +29,9 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 
 /**
  * Implémentation MapCache du plugins.

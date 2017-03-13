@@ -19,8 +19,8 @@
 package io.vertigo.app;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 
 /**
  * The app class is the core of vertigo.
@@ -71,5 +71,4 @@ public interface App {
 	 * @return the componentSpace
 	 */
 	ComponentSpace getComponentSpace();
-
 }

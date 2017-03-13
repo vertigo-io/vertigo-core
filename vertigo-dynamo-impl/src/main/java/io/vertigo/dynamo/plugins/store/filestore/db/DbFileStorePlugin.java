@@ -66,7 +66,10 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
-	public DbFileStorePlugin(@Named("name") final Optional<String> name, @Named("storeDtName") final String storeDtDefinitionName, final FileManager fileManager) {
+	public DbFileStorePlugin(
+			@Named("name") final Optional<String> name,
+			@Named("storeDtName") final String storeDtDefinitionName,
+			final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);
@@ -82,7 +85,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
 		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
-		final Entity fileInfoDto = getStoreManager().getDataStore().read(dtoUri);
+		final Entity fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);

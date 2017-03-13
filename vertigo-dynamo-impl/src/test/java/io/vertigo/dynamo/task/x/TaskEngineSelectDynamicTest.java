@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
@@ -66,7 +66,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		addNSuperHero(10);
 	}
 
-	private void execStatement(String request) {
+	private void execStatement(final String request) {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INIT")
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request)
@@ -445,10 +445,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute("PARAM_1", doInteger, true)
-				.addInAttribute("PARAM_2", doInteger, false)
-				.addInAttribute("PARAM_3", doInteger, false)
-				.withOutAttribute("dtc", doSuperHeroes, true)
+				.addInRequired("PARAM_1", doInteger)
+				.addInOptional("PARAM_2", doInteger)
+				.addInOptional("PARAM_3", doInteger)
+				.withOutRequired("dtc", doSuperHeroes)
 				.build();
 	}
 
@@ -461,8 +461,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTO_SUPER_HERO, doSupeHero, true)
-				.withOutAttribute("dtc", doSupeHeroes, true)
+				.addInRequired(DTO_SUPER_HERO, doSupeHero)
+				.withOutRequired("dtc", doSupeHeroes)
 				.build();
 	}
 
@@ -474,8 +474,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTC_SUPER_HERO_IN, doSupeHeroes, true)
-				.withOutAttribute("dtc", doSupeHeroes, true)
+				.addInRequired(DTC_SUPER_HERO_IN, doSupeHeroes)
+				.withOutRequired("dtc", doSupeHeroes)
 				.build();
 	}
 

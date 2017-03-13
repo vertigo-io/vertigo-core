@@ -30,9 +30,11 @@ import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
+import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.core.param.Param;
 
 /**
  * Defines commons module.
@@ -47,19 +49,9 @@ public final class CommonsFeatures extends Features {
 		super("commons");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
-				.addComponent(CodecManager.class, CodecManagerImpl.class)
-				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
-				.addComponent(EventBusManager.class, EventBusManagerImpl.class);
-	}
-
 	/**
-	 * Activates script.
-	 * 
+	 * Activates script with a default plugin. 
+	 *
 	 * @return these features
 	 */
 	public CommonsFeatures withScript() {
@@ -70,15 +62,40 @@ public final class CommonsFeatures extends Features {
 	}
 
 	/**
-	 * Activates caches.
-	 * 
-	 * @param cachePluginClass the cache plugin
+	 * Activates script with a defined plugin. 
+	
+	 * @param expressionEvaluatorPluginClass the type of plugin to use
+	 * @param params the params
 	 * @return these features
 	 */
-	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass) {
+	public CommonsFeatures withScript(Class<? extends ExpressionEvaluatorPlugin> expressionEvaluatorPluginClass, Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
+				.addPlugin(expressionEvaluatorPluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 *
+	 * @param cachePluginClass the cache plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass, Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
-				.beginPlugin(cachePluginClass).endPlugin();
+				.addPlugin(cachePluginClass, params);
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
+				.addComponent(CodecManager.class, CodecManagerImpl.class)
+				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
+				.addComponent(EventBusManager.class, EventBusManagerImpl.class);
 	}
 }

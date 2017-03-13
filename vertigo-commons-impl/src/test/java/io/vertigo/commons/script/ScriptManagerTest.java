@@ -18,12 +18,14 @@
  */
 package io.vertigo.commons.script;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -54,28 +56,28 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	public void testStringReplace() {
 		final String script = "ce matin M.<%=nom%> est allé chercher son pain";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("ce matin M.Duraton est allé chercher son pain", result);
+		assertEquals("ce matin M.Duraton est allé chercher son pain", result);
 	}
 
 	@Test
 	public void testIntegerReplace() {
 		final String script = "M.Duraton a <%=age%> ans";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("M.Duraton a 54 ans", result);
+		assertEquals("M.Duraton a 54 ans", result);
 	}
 
 	@Test
 	public void testCount() {
 		final String script = "Le prénom de M.<%=nom%> est composé de <%=prenom.length()%> lettres";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("Le prénom de M.Duraton est composé de 9 lettres", result);
+		assertEquals("Le prénom de M.Duraton est composé de 9 lettres", result);
 	}
 
 	@Test
 	public void testIf() {
 		final String script = "<%if (nom.startsWith(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("Il s'agit bien de M.Duraton", result);
+		assertEquals("Il s'agit bien de M.Duraton", result);
 	}
 
 	@Test(expected = Exception.class)
@@ -91,7 +93,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		//On fait une évaluation d'un texte qui s'avère non dynamique. (Absence de <%)
 		final String script = "Il s'agit bien de M.Duraton";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("Il s'agit bien de M.Duraton", result);
+		assertEquals("Il s'agit bien de M.Duraton", result);
 	}
 
 	@Test
@@ -103,7 +105,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 		scriptManager.parse(script, scriptHandler, separators);
-		Assert.assertEquals("bla bla", scriptHandler.result.toString());
+		assertEquals("bla bla", scriptHandler.result.toString());
 	}
 
 	@Test(expected = Exception.class)
@@ -127,7 +129,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		final String script = "le prix du barril est de $price$ $$";
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 		scriptManager.parse(script, scriptHandler, separators);
-		Assert.assertEquals("le prix du barril est de 100 $", scriptHandler.result.toString());
+		assertEquals("le prix du barril est de 100 $", scriptHandler.result.toString());
 	}
 
 	@Test(expected = Exception.class)
@@ -143,38 +145,38 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExpressionString() {
 		final String test = scriptManager.evaluateExpression("\"darwin\"", createParameters(), String.class);
-		Assert.assertEquals("darwin", test);
+		assertEquals("darwin", test);
 	}
 
 	@Test
 	public void testExpressionVarString() {
 		final String test = scriptManager.evaluateExpression("nom", createParameters(), String.class);
-		Assert.assertEquals("Duraton", test);
+		assertEquals("Duraton", test);
 	}
 
 	@Test
 	public void testExpressionVarInteger() {
 		final Integer test = scriptManager.evaluateExpression("age", createParameters(), Integer.class);
-		Assert.assertEquals(54, test.intValue());
+		assertEquals(54, test.intValue());
 	}
 
 	@Test
 	public void testExpressionVarBoolean() {
 		final Boolean test = scriptManager.evaluateExpression("(age>20 && age <60) && nom.startsWith(\"Du\")", createParameters(), Boolean.class);
-		Assert.assertTrue(test.booleanValue());
+		assertTrue(test.booleanValue());
 	}
 
 	//
 	//	@Test
 	//	public void testBSExpressionVarBoolean() {
 	//		final Boolean test = bsExpressionEvaluatorPlugin.evaluate("age>20", createParameters(), Boolean.class);
-	//		Assert.assertTrue(test.booleanValue());
+	//		assertTrue(test.booleanValue());
 	//	}
 	//
 	//	@Test
 	//	public void testMVELExpressionVarBoolean() {
 	//		final Boolean test = mvelExpressionEvaluatorPlugin.evaluate("nom == 'Duraton'", createParameters(), Boolean.class);
-	//		Assert.assertTrue(test.booleanValue());
+	//		assertTrue(test.booleanValue());
 	//	}
 
 	private class MyScriptParserHandler implements ScriptParserHandler {

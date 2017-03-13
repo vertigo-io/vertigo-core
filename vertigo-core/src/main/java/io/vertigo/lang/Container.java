@@ -23,8 +23,8 @@ import java.util.Set;
 /**
  * The Container interface defines a universal container for the components.
  * Each component is identified by an id.
- * 
- * @author pchretien, prahmoune
+ *
+ * @author pchretien
  */
 public interface Container {
 

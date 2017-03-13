@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.file.metamodel;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;

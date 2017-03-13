@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -61,14 +62,13 @@ public interface DataStorePlugin extends Plugin {
 
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
-	 * Peut-être null.
 	 *
 	 * @param uri URI de l'objet à charger
 	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E read(DtDefinition dtDefinition, URI<E> uri);
+	<E extends Entity> E readNullable(DtDefinition dtDefinition, URI<E> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -107,20 +107,20 @@ public interface DataStorePlugin extends Plugin {
 	//=============================== WRITE ====================================
 	//==========================================================================
 	/**
-	* Creates an object.
-	* No object with the same id must have been created previously.
-	*
-	* @param dtDefinition Definition
-	* @param entity Object to create
-	*/
+	 * Creates an object.
+	 * No object with the same id must have been created previously.
+	 *
+	 * @param dtDefinition Definition
+	 * @param entity Object to create
+	 */
 	void create(DtDefinition dtDefinition, Entity entity);
 
 	/**
-	* Updates an object.
-	* This object must have an id.
-	* @param dtDefinition Definition
-	* @param entity Object to update
-	*/
+	 * Updates an object.
+	 * This object must have an id.
+	 * @param dtDefinition Definition
+	 * @param entity Object to update
+	 */
 	void update(DtDefinition dtDefinition, Entity entity);
 
 	/**
@@ -131,13 +131,22 @@ public interface DataStorePlugin extends Plugin {
 	void delete(DtDefinition dtDefinition, URI<?> uri);
 
 	/**
-	 * Load for update.
-	 * Can be null.
+	 * Loads for update.
 	 *
 	 * @param dtDefinition Object's definition
 	 * @param uri Object's uri
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
+
+	/**
+	 * Finds a lists of entities matching a criteria.
+	 * @param dtDefinition the definition of entities to find
+	 * @param criteria the criteria to match
+	 * @param maxRows max number of rows to retrieve
+	 * @return the list
+	 */
+	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows);
+
 }

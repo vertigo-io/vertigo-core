@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Boolean;
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.Integer;
-import static io.vertigo.core.definition.dsl.entity.DslPropertyType.String;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
@@ -49,13 +46,20 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.STORE_TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TABLE_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.TYPE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.UNIT;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Integer;
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.definition.loader.KernelGrammar;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -81,6 +85,11 @@ public final class DomainGrammar implements DslGrammar {
 	public static final DslEntity FORMATTER_ENTITY;
 	/**Définition d'un domain.*/
 	public static final DslEntity DOMAIN_ENTITY;
+
+	/**the data types are provided by the language (String, Integer...) */
+	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType")
+			.withProvided()
+			.build();
 
 	/**Field*/
 	public static final DslEntity DT_FIELD_ENTITY;
@@ -114,7 +123,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addOptionalField(INDEX_TYPE, String)
 				.addOptionalField(STORE_TYPE, String)
 				.addRequiredField("formatter", FORMATTER_ENTITY.getLink())
-				.addRequiredField("dataType", KernelGrammar.getDataTypeEntity().getLink())
+				.addRequiredField("dataType", DATA_TYPE_ENTITY.getLink())
 				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
@@ -189,6 +198,7 @@ public final class DomainGrammar implements DslGrammar {
 	@Override
 	public List<DslEntity> getEntities() {
 		return new ListBuilder<DslEntity>()
+				.add(DATA_TYPE_ENTITY)
 				.add(CONSTRAINT_ENTITY)
 				.add(FORMATTER_ENTITY)
 				//---
@@ -199,5 +209,13 @@ public final class DomainGrammar implements DslGrammar {
 				.add(ASSOCIATION_NN_ENTITY)
 				.unmodifiable()
 				.build();
+	}
+
+	@Override
+	public List<DslDefinition> getRootDefinitions() {
+		//We are listing all primitives types
+		return Arrays.stream(DataType.values())
+				.map(dataType -> new DslDefinitionBuilder(dataType.name(), DATA_TYPE_ENTITY).build())
+				.collect(Collectors.toList());
 	}
 }

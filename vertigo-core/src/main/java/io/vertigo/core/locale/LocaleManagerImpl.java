@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.locale;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,15 +28,16 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
@@ -51,7 +52,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 	 * Set des clés non trouvées pour ne pas les reloguer.
 	 * On synchronise car il s'agit d'une ressource partagée modifiées par tous les threads.
 	 */
-	private final Set<String> notFoundKeys = java.util.Collections.synchronizedSet(new HashSet<String>());
+	private final Set<String> notFoundKeys = Collections.synchronizedSet(new HashSet<String>());
 
 	//Bundle pour la locale par défaut.
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
@@ -141,7 +142,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw new WrappedException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
+				throw WrappedException.wrap(e, "le dictionnaire pour la locale '" + locale + "' n'est pas renseigné");
 			}
 			//On a trouvé un dictionnaire
 			check(resourceBundle, enums, override);
@@ -163,17 +164,15 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 				Assertion.checkState(oldValue == null, "Valeur deja renseignée pour{0}", key);
 			}
 		}
-
 	}
 
 	private void check(final ResourceBundle resourceBundle, final MessageKey[] enums, final boolean override) {
 		//============================================
 		//==On vérifie que les listes sont complètes==
 		//============================================
-		final List<String> resourcesKeys = new ArrayList<>();
-		for (final MessageKey resourceKey : enums) {
-			resourcesKeys.add(resourceKey.name());
-		}
+		final List<String> resourcesKeys = Arrays.stream(enums)
+				.map(MessageKey::name)
+				.collect(Collectors.toList());
 
 		//1- Toutes les clés du fichier properties sont dans l'enum des resources
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
@@ -258,10 +257,10 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public List<ComponentInfo> getInfos() {
-		long nbRessources = 0;
-		for (final Map<String, String> resourceMap : getDictionaries().values()) {
-			nbRessources += resourceMap.size();
-		}
+		final long nbRessources = getDictionaries().values()
+				.stream()
+				.mapToInt(resources -> resources.size()) // each dictionary is count
+				.sum();
 
 		return new ListBuilder<ComponentInfo>()
 				.add(new ComponentInfo("locale.count", nbRessources))

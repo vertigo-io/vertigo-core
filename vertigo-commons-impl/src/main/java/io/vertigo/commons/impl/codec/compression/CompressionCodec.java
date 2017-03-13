@@ -25,9 +25,9 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
@@ -133,7 +133,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 						inflater.inflate(uncompressedObject);
 					}
 				} catch (final DataFormatException e) {
-					throw new WrappedException(e);
+					throw WrappedException.wrap(e);
 				}
 			}
 		}

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.model.URI;
 
 public final class DtListURIForNNAssociation extends DtListURIForAssociation<AssociationNNDefinition> {
@@ -35,6 +35,11 @@ public final class DtListURIForNNAssociation extends DtListURIForAssociation<Ass
 	 */
 	public AssociationNNDefinition getAssociationDefinition() {
 		return associationNNDefinitionRef.get();
+	}
+
+	@Override
+	public String buildUrn() {
+		return getAssociationDefinition().getName() + D2A_SEPARATOR + getRoleName() + D2A_SEPARATOR + getSource().urn();
 	}
 
 }

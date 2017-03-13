@@ -18,17 +18,14 @@
  */
 package io.vertigo.app.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Plugin;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * The pluginConfigBuilder defines the configuration of a plugin.
@@ -36,89 +33,49 @@ import io.vertigo.util.StringUtil;
   *
  * @author npiedeloup, pchretien
  */
-public final class PluginConfigBuilder implements Builder<ComponentConfig> {
+public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
-	private final Map<String, String> myParams = new HashMap<>();
-	private final ModuleConfigBuilder myModuleConfigBuilder;
-	private final String pluginType;
-	private Integer myIndex;
+	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor.
-	 * @param moduleConfigBuilder the builder of the module
 	 * @param pluginImplClass impl of the plugin
 	 */
-	PluginConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
-		Assertion.checkNotNull(moduleConfigBuilder);
+	public PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;
-		myModuleConfigBuilder = moduleConfigBuilder;
-		pluginType = StringUtil.first2LowerCase(getType(pluginImplClass));
-	}
-
-	void withIndex(final int index) {
-		myIndex = index;
-	}
-
-	String getPluginType() {
-		return pluginType;
-	}
-
-	/*
-	 * We are looking for the type of the plugin.
-	 * This type is the first objector interface that inherits from then 'plugin' interface.
-	 */
-	private static String getType(final Class<? extends Plugin> pluginImplClass) {
-		//We are seeking the first and unique Object that extends Plugin.
-		//This Interface defines the type of the plugin.
-
-		for (final Class intf : ClassUtil.getAllInterfaces(pluginImplClass)) {
-			if (Arrays.asList(intf.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(intf);
-			}
-		}
-		//We have found nothing among the interfaces.
-		//we are drilling the classes to look for a class that inherits the plugin.
-		for (Class currentClass = pluginImplClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
-			if (Arrays.asList(currentClass.getInterfaces()).contains(Plugin.class)) {
-				return DIAnnotationUtil.buildId(currentClass);
-			}
-		}
-		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + pluginImplClass);
 	}
 
 	/**
 	 * Adds a param to this plugin.
-	 * @param paramName the name of the param
-	 * @param paramValue the value of the param
+	 * @param params the list of params
 	 * @return this builder
 	 */
-	public PluginConfigBuilder addParam(final String paramName, final String paramValue) {
-		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
-		//paramValue can be null
+	public PluginConfigBuilder addAllParams(final Param... params) {
+		Assertion.checkNotNull(params);
 		//-----
-		if (paramValue != null) {
-			myParams.put(paramName, paramValue);
-		}
+		myParams.addAll(Arrays.asList(params));
 		return this;
 	}
 
 	/**
-	 * Ends this config of plugin.
-	 * @return the builder of the module
+	 * Adds a param to this plugin.
+	 * @param param the param
+	 * @return this builder
 	 */
-	public ModuleConfigBuilder endPlugin() {
-		return myModuleConfigBuilder;
+	public PluginConfigBuilder addParam(final Param param) {
+		Assertion.checkNotNull(param);
+		//-----
+		myParams.add(param);
+		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public ComponentConfig build() {
-		Assertion.checkNotNull(myIndex, "an index is required to define an id");
-		//-----
-		//By Convention only the second plugin of a defined type is tagged by its index #nn
-		final String pluginId = myIndex == 0 ? pluginType : pluginType + "#" + myIndex;
-		return new ComponentConfig(pluginId, Optional.empty(), myPluginImplClass, false, myParams);
+	public PluginConfig build() {
+		return new PluginConfig(
+				myPluginImplClass,
+				myParams);
 	}
 }

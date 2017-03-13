@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -56,7 +55,7 @@ public final class SortFunction<D extends DtObject> implements UnaryOperator<DtL
 
 		//On trie.
 		final Comparator<D> comparator = new DtObjectComparator<>(storeManager, dtc.getDefinition(), sortFieldName, sortDesc);
-		Collections.sort(list, comparator);
+		list.sort(comparator);
 
 		//On reconstitue la collection.
 		final DtList<D> sortedDtc = new DtList<>(dtc.getDefinition());

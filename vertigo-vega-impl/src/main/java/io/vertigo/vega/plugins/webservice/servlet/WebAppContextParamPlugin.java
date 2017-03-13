@@ -21,6 +21,7 @@ package io.vertigo.vega.plugins.webservice.servlet;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.lang.Assertion;
 
@@ -29,9 +30,9 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
 */
 public final class WebAppContextParamPlugin implements ParamPlugin {
-	private static Map<String, String> params;
+	private static Map<String, Param> params;
 
-	public static void setParams(final Map<String, String> params) {
+	public static void setParams(final Map<String, Param> params) {
 		Assertion.checkNotNull(params);
 		//-----
 		WebAppContextParamPlugin.params = params;
@@ -39,9 +40,9 @@ public final class WebAppContextParamPlugin implements ParamPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<String> getValue(final String paramName) {
+	public Optional<Param> getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return params.containsKey(paramName) ? Optional.<String> ofNullable(params.get(paramName)) : Optional.<String> empty();
+		return Optional.<Param> ofNullable(params.get(paramName));
 	}
 }

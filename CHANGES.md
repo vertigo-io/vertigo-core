@@ -1,10 +1,65 @@
 Version history
 ===============
 
-Running 0.9.4-SNAPSHOT
+Running 0.9.5-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 0.9.4 - 2017/03/13
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-093-to-094)
+
+__In Bold__ : Potential compatibility problems 
+* [All] Code cleaning, refactoring and documenting (and Stream java8, Optionnal, Methods refs, ...)
+* [All] Always use WrappedException (wrap & unwrap), and params order changed
+* [All] Moved dsl classes from core to dynamo
+* __[Core] Renamed Injector to DIInjector__
+* [Core] ComponentConfigBuilder is no more generic
+* [Core] Support features in managers.xml
+* [Core] Component discovery in features
+* [Core] Changed boot config managment (features, added plugins, ...) redundancy__
+* [Core] Fixed #80 : We check file exists and canRead before accept this plugin
+* [Core] Updated cglib » cglib-nodep from 3.2.2 to 3.2.4
+* [Core] Added notepad++ coloration config
+* [Core] Changed tests Junit4 Assert to JUnit5 Assertions
+* [Commons] Refactor AnalyticsManager, added some plugins to log, aggregate and centralize measures 
+* [Commons] Updated minor slf4j-api from 1.7.21 to 1.7.22
+* [Dynamo] Adding Collectors in order to create DtList from Java 8 stream
+* [Dynamo] Fixed #79 Now fragments loaded by annotations correctly have a FK to the linked entity
+* [Dynamo] Closed Jsonbuilder in Search codec
+* __[Dynamo] Renamed read to readOne and readNullable__
+* __[Dynamo] Renamed loadList to findAll__
+* [Dynamo] Updated minor elasticsearch from 1.7.5 to 1.7.6
+* [Dynamo] Updated versions of hsqldb 2.3.3 to 2.3.4; lucene 5.5.0 to 5.5.2; elasticsearch 2.3.5 to 2.4.4
+* [Dynamo] Updated version of hibernate 5.1.0 to 5.2.6 (break StreamDataType for file store)
+* [Dynamo] Renamed H2Database.java to H2DataBase.java
+* [Dynamo] Fixed create domain for DTs and Fragments
+* [Dynamo] Changed BerkleyDb cleaner config (1000 elements max every minute, cleaner_min_ustilization : 90, cleaner_min_file_utilization:50)
+* [Dynamo] Updated BerkleyDb version to 5.0.84
+* [Dynamo] Better spaces whereInPreProcessor detection
+* [Dynamo] Better search for autocomplete : correct word order is more pertinent
+* [Dynamo] Fixed reloadAndMerge when fragment have ui fields
+* [Dynamo] Refactored Data access (database dialect moved from StoreManager to DataBaseManager)
+* [Dynamo] Changed reindexer task log level to debug, if nothing was updated
+* [Dynamo] Added new Criterions class, should replace previous ListFilter and Criteria
+* [Dynamo] Fixed ReindexTask to use KeyConcept URI instead of Dt Index which could be unpersistent
+* __[Persona] Replaced Security DTD by XSD__
+* [Persona] Added Dsl parser for security rule (usefull for next version of security managment)
+* [Vega] Fixed #77 (WS routes with numbers)
+* __[Vega/Struts2] Merged similarity between Struts2 and Vega, now Struts2 uses Vega to limit 
+* __[Vega] Renamed classes prefixed by RestXXX to VegaXXX__
+* [Vega] Renamed UiObject getStringValue to getInputValue
+* [Vega] Added searchApiVersion param to VegaFeatures (usefull for tests)
+* [Vega] Fixed swagger custom url param
+* [Vega] Fixed ResponseWrapper for XOR mode Stream or Writer
+* [Vega] Made AbstractHttpServletResponseWrapper autocloseable
+* [Vega] Updated version gson 2.7 to 2.8.0; spark-core 2.5 to 2.5.4; com.jayway.restassured rest-assured 2.8.0 to io.rest-assured rest-assured 3.0.1
+* [Vega] Fixed #76 (Optional inner body param cannot be a DtObject)
+* [Vega] Updated version of spark java from 2.5.4 to 2.5.5
+* [Vega] Added originCORSFilter params in VegaFeatures
+* [Vega] Fixed swaggerUi when using apiPrefix
+* [Vega] Updated SwaggerUi to v2.2.8
 
 
 Release 0.9.3 - 2016/10/11

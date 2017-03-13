@@ -2,9 +2,6 @@
 <config>
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	</boot>
 
 	<module name="dynamo">
@@ -14,7 +11,9 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/file/data/execution.kpr" />
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="kpr" path="io/vertigo/dynamo/file/data/execution.kpr" />
+			</provider>
 		</definitions>
 	</module>
 </config>

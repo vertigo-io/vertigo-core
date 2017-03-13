@@ -21,17 +21,10 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.core.definition.loader.DefinitionLoader;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleManagerImpl;
-import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.param.ParamManagerImpl;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.core.resource.ResourceManagerImpl;
-import io.vertigo.core.spaces.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ListBuilder;
 
 /**
  * The AppConfigBuilder builder allows you to create an AppConfig using a fluent, simple style .
@@ -39,9 +32,8 @@ import io.vertigo.util.ClassUtil;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
-	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
+	private final ListBuilder<ModuleConfig> myModuleConfigListBuilder = new ListBuilder<>();
 	private final BootConfigBuilder myBootConfigBuilder;
-	private final ModuleConfigBuilder myBootModuleConfigBuilder;
 	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
 
 	/**
@@ -49,29 +41,12 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public AppConfigBuilder() {
 		myBootConfigBuilder = new BootConfigBuilder(this);
-		myBootModuleConfigBuilder =
-				myBootConfigBuilder.beginBootModule().withNoAPI()
-						.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-						.addComponent(ParamManager.class, ParamManagerImpl.class)
-						.addComponent(DefinitionLoader.class);
-	}
 
-	/**
-	 * Opens the boot module.
-	 * There is exactly one BootConfig per AppConfig.  
-	 * 
-	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
-	 * @return this builder
-	 */
-	public ModuleConfigBuilder beginBootModule(final String locales) {
-		return myBootModuleConfigBuilder
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				.addParam("locales", locales)
-				.endComponent();
 	}
 
 	/**
 	 * Opens the bootConfigBuilder.
+	 * There is exactly one BootConfig per AppConfig.
 	 * @return this builder
 	 */
 	public BootConfigBuilder beginBoot() {
@@ -89,35 +64,15 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Adds a list of ModuleConfig.
-	 * @param moduleConfigs list of moduleConfig
+	 * Adds a a moduleConfig.
+	 * @param moduleConfig the moduleConfig
 	 * @return this builder
 	 */
-	public AppConfigBuilder addAllModules(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
+	public AppConfigBuilder addModule(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
 		//-----
-		myModuleConfigs.addAll(moduleConfigs);
+		myModuleConfigListBuilder.add(moduleConfig);
 		return this;
-	}
-
-	/**
-	 * Adds a new module.
-	 * @param name Name of the module
-	 * @return the module builder 
-	 */
-	public ModuleConfigBuilder beginModule(final String name) {
-		return new ModuleConfigBuilder(this, name);
-	}
-
-	/**
-	 * Begins a new module defined by its features.
-	 * @param featuresClass Type of features
-	 * @return the module builder 
-	 */
-	public <F extends Features> F beginModule(final Class<F> featuresClass) {
-		final F features = ClassUtil.newInstance(featuresClass);
-		features.init(this);
-		return features;
 	}
 
 	/**
@@ -126,8 +81,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
-		beginBoot().withModule(myBootModuleConfigBuilder.build()).endBoot();
-
-		return new AppConfig(myBootConfigBuilder.build(), myModuleConfigs, myComponentInitializerConfigs);
+		return new AppConfig(myBootConfigBuilder.build(),
+				myModuleConfigListBuilder.unmodifiable().build(),
+				myComponentInitializerConfigs);
 	}
 }

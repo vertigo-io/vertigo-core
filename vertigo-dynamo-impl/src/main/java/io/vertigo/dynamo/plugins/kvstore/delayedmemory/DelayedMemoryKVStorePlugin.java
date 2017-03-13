@@ -18,12 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,7 +36,6 @@ import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.
@@ -68,14 +69,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 			final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(collections);
 		//-----
-		final ListBuilder<String> listBuilder = new ListBuilder<>();
-		for (final String collection : collections.split(", ")) {
-			listBuilder.add(collection.trim());
-		}
-		this.collections = listBuilder.unmodifiable().build();
-		for (final String collection : this.collections) {
-			collectionsData.put(collection, new ConcurrentHashMap<String, DelayedMemoryCacheValue>());
-		}
+		this.collections = Arrays.stream(collections.split(", "))
+				.map(collection -> collection.trim())
+				.peek(collection -> collectionsData.put(collection, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
+				.collect(Collectors.toList());
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 

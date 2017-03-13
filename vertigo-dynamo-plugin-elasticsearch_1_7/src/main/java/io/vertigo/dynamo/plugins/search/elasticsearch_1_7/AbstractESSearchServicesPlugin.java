@@ -129,7 +129,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
 			}
 		} catch (final ElasticsearchException e) {
-			throw new WrappedException("Error on index " + indexName, e);
+			throw WrappedException.wrap(e, "Error on index " + indexName);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
@@ -254,7 +254,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
+		Assertion.checkArgument(indexSettingsValid,
+				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
@@ -307,7 +308,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			putMappingResponse.isAcknowledged();
 
 		} catch (final IOException e) {
-			throw new WrappedException("Serveur ElasticSearch indisponible", e);
+			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}
 	}
 

@@ -23,19 +23,16 @@ import java.util.Iterator;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
-import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
-import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -65,56 +62,52 @@ public final class MyAppConfig {
 	}
 
 	public static AppConfig config() {
-		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule("fr")
-				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.addPlugin(SecurityResourceLoaderPlugin.class)
-				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(KprLoaderPlugin.class)
-				.addPlugin(DomainDynamicRegistryPlugin.class)
-			.endModule()
-			.beginBoot()
+				.beginBoot()
+				.withLocales("fr")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.silently()
-			.endBoot()
-			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(CommonsFeatures.class).withCache(MemoryCachePlugin.class).endModule()
-			.beginModule(DynamoFeatures.class)
-				.withStore()
-				.getModuleConfigBuilder()
-				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class)
-				.beginPlugin(PostgreSqlDataStorePlugin.class)
-					.addParam("sequencePrefix","SEQ_")
-				.endPlugin()
-				.beginPlugin(DelayedMemoryKVStorePlugin.class)
-					.addParam("collections", "tokens")
-					.addParam("timeToLiveSeconds", "120")
-				.endPlugin()
-			.endModule()
-			.beginModule(VegaFeatures.class)
-				.withTokens("tokens")
-				.withSecurity()
-				.withMisc()
-				.withEmbeddedServer(WS_PORT)
-			.endModule()
-			//-----
-			.beginModule("dao-app").withNoAPI()
-				.addComponent(ContactDao.class)
-			.endModule()
-			.beginModule("webservices-app").withNoAPI()
-				.addComponent(ComponentCmdWebServices.class)
-				.addComponent(CommonWebServices.class)
-				.addComponent(ContactsWebServices.class)
-				.addComponent(SimplerTestWebServices.class)
-				.addComponent(AdvancedTestWebServices.class)
-				.addComponent(AnonymousTestWebServices.class)
-				.addComponent(FileDownloadWebServices.class)
-			.endModule()
-			.beginModule("myApp")
-				.addDefinitionResource("classes", DtDefinitions.class.getName())
-				.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
-			.endModule()
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new PersonaFeatures()
+						.withUserSession(TestUserSession.class)
+						.build())
+				.addModule(new CommonsFeatures()
+						.withCache(MemoryCachePlugin.class)
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withKVStore()
+						.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
+								Param.create("collections", "tokens"),
+								Param.create("timeToLiveSeconds", "120"))
+						.build())
+				.addModule(new VegaFeatures()
+						.withTokens("tokens")
+						.withSecurity()
+						.withMisc()
+						.withEmbeddedServer(WS_PORT)
+						.build())
+				//-----
+				.addModule(new ModuleConfigBuilder("dao-app")
+						.withNoAPI()
+						.addComponent(ContactDao.class)
+						.build())
+				.addModule(new ModuleConfigBuilder("webservices-app")
+						.withNoAPI()
+						.addComponent(ComponentCmdWebServices.class)
+						.addComponent(CommonWebServices.class)
+						.addComponent(ContactsWebServices.class)
+						.addComponent(SimplerTestWebServices.class)
+						.addComponent(AdvancedTestWebServices.class)
+						.addComponent(AnonymousTestWebServices.class)
+						.addComponent(FileDownloadWebServices.class)
+						.build())
+				.addModule(new ModuleConfigBuilder("myApp")
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("classes", DtDefinitions.class.getName())
+								.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
+								.build())
+						.build())
+				.build();
 	}
 }

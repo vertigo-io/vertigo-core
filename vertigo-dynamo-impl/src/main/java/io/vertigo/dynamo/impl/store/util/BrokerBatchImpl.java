@@ -46,8 +46,8 @@ import java.util.Map;
 import java.util.Set;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionUtil;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -57,6 +57,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
+import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
@@ -150,19 +151,20 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dtDef.getDataSpace())
 				.withRequest(request)
-				.addInAttribute(inDtcName, dtcDomain, true)
-				.withOutAttribute("out", dtcDomain, true)
+				.addInRequired(inDtcName, dtcDomain)
+				.withOutRequired("out", dtcDomain)
 				.build();
 
 		// On exécute par paquet
 		final DtList<E> ret = new DtList<>(dtDefinition);
 		for (final DtList<E> paq : set) {
 			/* Création de la tache. */
-			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
-					.addValue(inDtcName, paq);
+			final Task task = new TaskBuilder(taskDefinition)
+					.addValue(inDtcName, paq)
+					.build();
 			// Exécution de la tache
 			final DtList<E> result = taskManager
-					.execute(taskBuilder.build())
+					.execute(task)
 					.getResult();
 			ret.addAll(result);
 		}

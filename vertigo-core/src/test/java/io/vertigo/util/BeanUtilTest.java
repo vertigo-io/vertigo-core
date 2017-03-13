@@ -18,12 +18,17 @@
  */
 package io.vertigo.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 /**
 * @author pchretien
 */
+@RunWith(JUnitPlatform.class)
 public final class BeanUtilTest {
 	public static class Book {
 		private String author;
@@ -42,26 +47,28 @@ public final class BeanUtilTest {
 	public void testgetAuthor() {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
-		Assert.assertEquals("Murakami", BeanUtil.getValue(book, "author"));
+		assertEquals("Murakami", BeanUtil.getValue(book, "author"));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testFailgetAuthor() {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
-		Assert.assertEquals("Murakami", BeanUtil.getValue(book, "creator"));
+		Assertions.assertThrows(Exception.class,
+				() -> BeanUtil.getValue(book, "creator"));
 	}
 
 	@Test
 	public void testsetAuthor() {
 		final Book book = new Book();
 		BeanUtil.setValue(book, "author", "Mishima");
-		Assert.assertEquals("Mishima", BeanUtil.getValue(book, "author"));
+		assertEquals("Mishima", BeanUtil.getValue(book, "author"));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testFailsetAuthor() {
 		final Book book = new Book();
-		BeanUtil.setValue(book, "creator", "Mishima");
+		Assertions.assertThrows(Exception.class,
+				() -> BeanUtil.setValue(book, "creator", "Mishima"));
 	}
 }

@@ -32,9 +32,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.engines.webservice.json.UiList;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiObject;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -42,6 +41,7 @@ import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.model.ExtendedObject;
+import io.vertigo.vega.webservice.model.UiObject;
 import spark.Request;
 import spark.Response;
 
@@ -72,12 +72,9 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		if (webServiceDefinition.isServerSideSave()) {
 			return true;
 		}
-		for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
-			if (webServiceParam.isNeedServerSideToken()) {
-				return true;
-			}
-		}
-		return false;
+		return webServiceDefinition.getWebServiceParams()
+				.stream()
+				.anyMatch(WebServiceParam::isNeedServerSideToken);
 	}
 
 	/** {@inheritDoc}  */
@@ -88,8 +85,8 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 				final Object webServiceValue = routeContext.getParamValue(webServiceParam);
 				if (webServiceValue instanceof UiObject) {
 					readServerSideUiObject((UiObject<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
-				} else if (webServiceValue instanceof UiList) {
-					readServerSideUiList((UiList<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
+				} else if (webServiceValue instanceof UiListModifiable) {
+					readServerSideUiList((UiListModifiable<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else if (webServiceValue instanceof UiListDelta) {
 					readServerSideUiListDelta((UiListDelta<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else {

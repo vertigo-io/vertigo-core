@@ -60,7 +60,7 @@ public final class TestUtil {
 				return fileManager.createFile(file);
 			}
 		} catch (final IOException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public final class TestUtil {
 		try {
 			return new File(fileURL.toURI());
 		} catch (final URISyntaxException e) {
-			throw new WrappedException(e);
+			throw WrappedException.wrap(e);
 		}
 	}
 

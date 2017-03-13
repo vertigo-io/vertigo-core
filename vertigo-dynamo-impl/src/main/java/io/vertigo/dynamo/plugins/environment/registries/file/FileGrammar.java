@@ -21,11 +21,11 @@ package io.vertigo.dynamo.plugins.environment.registries.file;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.dsl.entity.DslEntity;
-import io.vertigo.core.definition.dsl.entity.DslEntityBuilder;
-import io.vertigo.core.definition.dsl.entity.DslGrammar;
-import io.vertigo.core.definition.dsl.entity.DslPropertyType;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
+import io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType;
 
 /**
  * @author npiedeloup

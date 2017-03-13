@@ -18,21 +18,24 @@
  */
 package io.vertigo;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Describable;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -47,11 +50,12 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception exception
 	 */
+	@BeforeEach
 	@Before
 	public final void setUp() throws Exception {
 		app = new AutoCloseableApp(buildAppConfig());
 		// On injecte les comosants sur la classe de test.
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
 	}
 
@@ -64,6 +68,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Exception
 	 */
+	@AfterEach
 	@After
 	public final void tearDown() throws Exception {
 		try {
@@ -129,7 +134,7 @@ public abstract class AbstractTestCaseJU4 {
 		if (manager instanceof Describable) {
 			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
 			for (final ComponentInfo componentInfo : componentInfos) {
-				Assert.assertNotNull(componentInfo);
+				assertNotNull(componentInfo);
 			}
 		}
 	}

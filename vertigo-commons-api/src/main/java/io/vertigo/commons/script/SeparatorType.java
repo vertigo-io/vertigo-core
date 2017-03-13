@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.script;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,14 +56,13 @@ public enum SeparatorType {
 	private final List<ScriptSeparator> separators;
 
 	SeparatorType(final String startExpression, final String endExpression) {
-		separators = new ArrayList<>(1);
-		separators.add(new ScriptSeparator(startExpression, endExpression));
+		separators = Collections.singletonList(new ScriptSeparator(startExpression, endExpression));
 	}
 
 	/**
 	 * @return Liste des ScriptSeparator pour ce SeparatorType.
 	 */
 	public List<ScriptSeparator> getSeparators() {
-		return Collections.unmodifiableList(separators);
+		return separators;
 	}
 }

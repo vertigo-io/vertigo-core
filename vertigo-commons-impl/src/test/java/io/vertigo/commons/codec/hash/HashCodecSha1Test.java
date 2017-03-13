@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.codec.hash;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractEncoderTest;
@@ -57,8 +58,8 @@ public final class HashCodecSha1Test extends AbstractEncoderTest<Encoder<byte[],
 		//Caractères simples sans encodage
 		final Encoder<byte[], String> hexEncoder = getCodecManager().getHexEncoder();
 		final byte[] encoded = codec.encode(TEXT.getBytes());
-		Assert.assertEquals(160 / 8, codec.encode(TEXT.getBytes()).length);
+		assertEquals(160 / 8, codec.encode(TEXT.getBytes()).length);
 
-		Assert.assertEquals(ENCODE_TEXT, hexEncoder.encode(encoded));
+		assertEquals(ENCODE_TEXT, hexEncoder.encode(encoded));
 	}
 }

@@ -27,8 +27,8 @@ import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
@@ -122,6 +122,6 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
-		return Home.getApp().getDefinitionSpace().resolve(definitionName);
+		return Home.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
 	}
 }

@@ -21,7 +21,6 @@ package io.vertigo.dynamo.task;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_1;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_2;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_3;
-import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_OUT;
 
 import javax.inject.Inject;
 
@@ -29,10 +28,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 
@@ -45,39 +42,13 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	private TaskManager taskManager;
 
 	/**
-	 * test la description du manager.
-	 */
-	@Test
-	public void testDescription() {
-		final String TK_ADD_DESC = "TK_ADD_DESC";
-		buildTaskDefinition(TK_ADD_DESC, "+");
-	}
-
-	/**
 	 * Test l'enregistrement d'une task.
 	 */
 	@Test
 	public void testRegistry() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
-		definitionSpace.put(taskDefinition1);
-
-		final TaskDefinition taskDefinition2 = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
-		Assert.assertNotNull(taskDefinition2);
-	}
-
-	/**
-	 * Vérification de l'impossibilité d'enregistrer deux fois une tache.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testDoubleRegistry() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
-		definitionSpace.put(taskDefinition1);
-
-		//On déclenche une assertion en réenregistrant la même tache
-		final TaskDefinition taskDefinition2 = buildTaskDefinition("TK_MULTI_3", "*");
-		definitionSpace.put(taskDefinition2);
+		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
+		Assert.assertNotNull(taskDefinition);
 	}
 
 	/**
@@ -91,22 +62,13 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		nop(taskDefinition);
 	}
 
-	/**
-	 * Test l'enregistrement d'une task avec une faute de nommage.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testTaskDefinitionWithError() {
-		//On ne respect pas le pattern TK_
-		final TaskDefinition taskDefinition = buildTaskDefinition("TZ_ADD_REGISTRY", "+");
-		nop(taskDefinition);
-	}
-
 	/***
 	 * Test nominal d'une addition.
 	 */
 	@Test
 	public void testExecuteAdd() {
-		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD", "+");
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
 		Assert.assertEquals(Integer.valueOf(10), executeTask(taskDefinition, 5, 2, 3));
 	}
 
@@ -115,7 +77,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExecuteMulti() {
-		final TaskDefinition taskDefinition = buildTaskDefinition("TK_MULTI", "*");
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_MULTI", TaskDefinition.class);
+
 		Assert.assertEquals(Integer.valueOf(30), executeTask(taskDefinition, 5, 2, 3));
 	}
 
@@ -124,7 +88,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testExecuteNull() {
-		final TaskDefinition taskDefinition = buildTaskDefinition("TK_MULTI_2", "*");
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_MULTI", TaskDefinition.class);
 		//on vérifie que le passage d'un paramètre null déclenche une assertion
 		executeTask(taskDefinition, null, 2, 3);
 	}
@@ -134,7 +99,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExecuteAddAdd() {
-		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD_2", "+");
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.addValue(ATTR_IN_INT_1, 1)
@@ -171,21 +137,6 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		return taskManager
 				.execute(task)
 				.getResult();
-	}
-
-	private TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
-
-		return new TaskDefinitionBuilder(taskDefinitionName)
-				.withEngine(TaskEngineMock.class)
-				.withRequest(params)
-				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttribute(ATTR_IN_INT_1, doInteger, true)
-				.addInAttribute(ATTR_IN_INT_2, doInteger, true)
-				.addInAttribute(ATTR_IN_INT_3, doInteger, true)
-				.withOutAttribute(ATTR_OUT, doInteger, true)
-				.build();
 	}
 
 }

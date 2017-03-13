@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -34,7 +33,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
+import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,20 +47,19 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteria;
-import io.vertigo.dynamo.store.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.store.criteria.CriteriaCtx;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Implémentation d'un Store Jpa.
@@ -70,16 +68,17 @@ import io.vertigo.util.StringUtil;
  */
 public final class JpaDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
+
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
-	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
+	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
 
 	private final String dataSpace;
 	private final String connectionName;
 	private final VTransactionManager transactionManager;
-	private final SqlDataBaseManager dataBaseManager;
 	private final AnalyticsManager analyticsManager;
+	private final SqlDataBase sqlDataBase;
 
 	/**
 	 * Constructor.
@@ -90,16 +89,24 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 * @param analyticsManager  Analytics manager
 	 */
 	@Inject
-	public JpaDataStorePlugin(@Named("name") final Optional<String> nameOption, @Named("connectionName") final Optional<String> connectionName, final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(
+			@Named("name") final Optional<String> nameOption,
+			@Named("connectionName") final Optional<String> connectionName,
+			final VTransactionManager transactionManager,
+			final SqlDataBaseManager dataBaseManager,
+			final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(nameOption);
 		Assertion.checkNotNull(connectionName);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
+		Assertion.checkNotNull(analyticsManager);
 		//-----
 		dataSpace = nameOption.orElse(StoreManager.MAIN_DATA_SPACE_NAME);
 		this.connectionName = connectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		this.transactionManager = transactionManager;
-		this.dataBaseManager = dataBaseManager;
+		sqlDataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
+		Assertion.checkState(sqlDataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", sqlDataBase.getClass());
+
 		this.analyticsManager = analyticsManager;
 	}
 
@@ -120,9 +127,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private JpaResource obtainJpaResource() {
-		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
-		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
-		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
+		return ((JpaDataBase) sqlDataBase).obtainJpaResource(getCurrentTransaction());
 	}
 
 	/** récupère la transaction courante. */
@@ -131,15 +136,20 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
-		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final E result = getEntityManager().find(objectClass, uri.getId());
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
-					.markAsSucceeded();
-			return result;
-			//Objet null géré par le dataStore
-		}
+		final String serviceName = "/read/" + uri.getDefinition().getName();
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
+				tracer -> doLoadWithoutClear(tracer, uri));
+
+	}
+
+	private <E extends Entity> E doLoadWithoutClear(final AnalyticsTracer tracer, final URI<E> uri) {
+		final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+		final E result = getEntityManager().find(objectClass, uri.getId());
+		tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+		return result;
+		//Objet null géré par le dataStore
 	}
 
 	/** {@inheritDoc} */
@@ -160,16 +170,14 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//-----
 		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		Assertion.when(criteria != null)
-				.check(() -> criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
-		final FilterCriteria<E> filterCriteria = (FilterCriteria<E>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
-		return doLoadList(dtDefinition, filterCriteria, maxRows);
+		final Criteria<E> filterCriteria = (criteria == null ? EMPTY_CRITERIA : criteria);
+		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E read(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
 		final E entity = this.<E> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
@@ -177,98 +185,47 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return entity;
 	}
 
-	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<E> filterCriteria, final Integer maxRows) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(filterCriteria);
-		//-----
-		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
-		//-----
-		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			final String tableName = getTableName(dtDefinition);
-			final String request = createLoadAllLikeQuery(tableName, filterCriteria);
-
-			final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
-			//IN, obligatoire
-			for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
-				q.setParameter(filterEntry.getKey(), filterEntry.getValue());
-			}
-			for (final Map.Entry<String, String> prefixEntry : filterCriteria.getPrefixMap().entrySet()) {
-				q.setParameter(prefixEntry.getKey(), prefixEntry.getValue());
-			}
-			if (maxRows != null) {
-				q.setMaxResults(maxRows);
-			}
-
-			final List<E> results = q.getResultList();
-			final DtList<E> dtc = new DtList<>(dtDefinition);
-			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size())
-					.markAsSucceeded();
-			return dtc;
-		}
-	}
-
 	private static String getTableName(final DtDefinition dtDefinition) {
 		// Warning jSQL is "almost case-insensitive"; that's why we have to keep the case of java objects
 		return dtDefinition.getFragment().orElse(dtDefinition).getClassSimpleName();
 	}
 
-	private static <E extends Entity> String getListTaskName(final String tableName, final FilterCriteria<E> filter) {
-		final StringBuilder sb = new StringBuilder()
-				.append("LIST_")
-				.append(tableName);
-		//s'il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
-		if (filter.getFilterMap().size() + filter.getPrefixMap().size() <= 1) {
-			String sep = "_BY_";
-			for (final String filterName : filter.getFilterMap().keySet()) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-			sep = "_PREFIXED_ON_";
-			for (final String filterName : filter.getPrefixMap().keySet()) {
-				sb.append(sep);
-				sb.append(filterName);
-				sep = "_AND_";
-			}
-		} else {
-			sb.append("_BY_CRITERIA");
-		}
-		String result = sb.toString();
-		if (result.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
-			result = result.substring(result.length() - MAX_TASK_SPECIFIC_NAME_LENGTH);
-		}
+	@Override
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(criteria);
+		//-----
+		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
+		//-----
+		final String serviceName = "/findByCriteria/" + getListTaskName(getTableName(dtDefinition));
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
+				tracer -> doFindByCriteria(tracer, dtDefinition, criteria, maxRows));
 
-		return result;
 	}
 
-	private static <E extends Entity> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<E> filterCriteria) {
-		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
-		String sep = " where ";
-		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
-			request.append(sep);
-			request.append("t.").append(camelFieldName);
-			if (filterCriteria.getFilterMap().get(fieldName) != null) {
-				request.append(" = :").append(fieldName);
-			} else {
-				request.append(" is null");
-			}
-			sep = " and ";
+	private <E extends Entity> DtList<E> doFindByCriteria(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
+		final String tableName = getTableName(dtDefinition);
+		final String request = createLoadAllLikeQuery(tableName, tuple.getVal1());
+
+		final CriteriaCtx ctx = tuple.getVal2();
+		final TypedQuery<E> q = getEntityManager().createQuery(request, resultClass);
+		//IN, obligatoire
+		for (final String attributeName : ctx.getAttributeNames()) {
+			q.setParameter(attributeName, ctx.getAttributeValue(attributeName));
 		}
-		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
-			request.append(sep)
-					.append("t.")
-					.append(camelFieldName)
-					.append(" like concat(:")
-					.append(fieldName)
-					.append(",'%')");
-			sep = " and ";
+		if (maxRows != null) {
+			q.setMaxResults(maxRows);
 		}
-		return request.toString();
+
+		final List<E> results = q.getResultList();
+		final DtList<E> dtc = new DtList<>(dtDefinition);
+		dtc.addAll(results);
+		tracer.setMeasure("nbSelectedRow", dtc.size());
+		return dtc;
 	}
 
 	/** {@inheritDoc} */
@@ -278,12 +235,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Object value = dtcUri.getSource().getId();
+		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		final FilterCriteria<E> filterCriteria = new FilterCriteriaBuilder<E>()
-				.addFilter(fkField.getName(), value)
-				.build();
-		return doLoadList(dtDefinition, filterCriteria, null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField, value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -295,112 +249,131 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";
-		final String serviceName = "Jpa:find " + taskName;
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
-			//PK de la DtList recherchée
-			final String idFieldName = dtDefinition.getIdField().get().getName();
-			//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
-			final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
-			final String joinTableName = associationNNDefinition.getTableName();
-			final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-			final DtField joinDtField = joinDtDefinition.getIdField().get();
+		final String serviceName = "/findAll/" + taskName;
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
+				tracer -> doFindAll(tracer, dtDefinition, dtcUri));
+	}
 
-			//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
-			final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
-			final DtField fkField = associationNode.getDtDefinition().getIdField().get();
-			final String fkFieldName = fkField.getName();
+	private <E extends Entity> DtList<E> doFindAll(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
+		//PK de la DtList recherchée
+		final String idFieldName = dtDefinition.getIdField().get().getName();
+		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
+		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
+		final String joinTableName = associationNNDefinition.getTableName();
+		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
+		final DtField joinDtField = joinDtDefinition.getIdField().get();
 
-			final String request = new StringBuilder(" select t.* from ")
-					.append(dtDefinition.getLocalName())
-					.append(" t")
-					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-					.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
-					//Condition de la recherche
-					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
-					.toString();
+		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
+		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
+		final DtField fkField = associationNode.getDtDefinition().getIdField().get();
+		final String fkFieldName = fkField.getName();
 
-			final URI uri = dtcUri.getSource();
+		final String request = new StringBuilder(" select t.* from ")
+				.append(dtDefinition.getLocalName())
+				.append(" t")
+				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
+				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+				//Condition de la recherche
+				.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
+				.toString();
 
-			final Query q = getEntityManager().createNativeQuery(request, resultClass);
-			q.setParameter(fkFieldName, uri.getId());
+		final URI uri = dtcUri.getSource();
 
-			final List<E> results = q.getResultList();
-			final DtList<E> dtc = new DtList<>(dtDefinition);
-			dtc.addAll(results);
-			tracker.setMeasure("nbSelectedRow", dtc.size())
-					.markAsSucceeded();
-			return dtc;
-		}
+		final Query q = getEntityManager().createNativeQuery(request, resultClass);
+		q.setParameter(fkFieldName, uri.getId());
+
+		final List<E> results = q.getResultList();
+		final DtList<E> dtc = new DtList<>(dtDefinition);
+		dtc.addAll(results);
+		tracer.setMeasure("nbSelectedRow", dtc.size());
+		return dtc;
 	}
 
 	@Override
 	public void create(final DtDefinition dtDefinition, final Entity entity) {
-		put("Jpa:create", entity, true);
+		//create
+		put(dtDefinition, entity, true);
 	}
 
 	@Override
 	public void update(final DtDefinition dtDefinition, final Entity entity) {
-		put("Jpa:update", entity, false);
+		//update
+		put(dtDefinition, entity, false);
 	}
 
-	private void put(final String prefixServiceName, final Entity entity, final boolean persist) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final String serviceName = prefixServiceName + dtDefinition.getName();
-
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final EntityManager entityManager = getEntityManager();
-			if (persist) { //si pas de PK exception
-				//Si l'objet est en cours de création (pk null)
-				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
-				//sinon on ferait persist aussi si em.contains(dto)).
-				entityManager.persist(entity);
-			} else {
-				entityManager.merge(entity);
-			}
-			entityManager.flush();
-			entityManager.clear();
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
+	private void put(final DtDefinition dtDefinition, final Entity entity, final boolean persist) {
+		final String serviceName = (persist ? "/create/" : "/update/") + dtDefinition.getName();
+		try {
+			analyticsManager.trace(
+					"jpa",
+					serviceName,
+					tracer -> doPut(tracer, entity, persist));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
 		}
+	}
+
+	private void doPut(final AnalyticsTracer tracer, final Entity entity, final boolean persist) {
+		final EntityManager entityManager = getEntityManager();
+		if (persist) {
+			//si pas de PK exception
+			//Si l'objet est en cours de création (pk null)
+			//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
+			//sinon on ferait persist aussi si em.contains(dto)).
+			entityManager.persist(entity);
+		} else {
+			entityManager.merge(entity);
+		}
+		entityManager.flush();
+		entityManager.clear();
+		tracer.setMeasure("nbModifiedRow", 1);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
-
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Object dto = loadWithoutClear(uri);
-			if (dto == null) {
-				throw new VSystemException("Aucune ligne supprimée");
-			}
-			getEntityManager().remove(dto);
-			getEntityManager().flush();
-			getEntityManager().clear();
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
+		final String serviceName = "/delete/" + uri.getDefinition().getName();
+		try {
+			analyticsManager.trace(
+					"jpa",
+					serviceName,
+					tracer -> doDelete(tracer, uri));
 		} catch (final PersistenceException pse) {
 			//Gère les erreurs d'exécution JDBC.
 			handlePersistenceException(pse);
 		}
 	}
 
+	private void doDelete(final AnalyticsTracer tracer, final URI uri) {
+		final Object dto = loadWithoutClear(uri);
+		if (dto == null) {
+			throw new VSystemException("Aucune ligne supprimée");
+		}
+		getEntityManager().remove(dto);
+		getEntityManager().flush();
+		getEntityManager().clear();
+		tracer.setMeasure("nbModifiedRow", 1);
+	}
+
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
-		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+		final String serviceName = "/readNullableForUpdate/" + uri.getDefinition().getName();
 
-		try (AnalyticsTracker tracker = analyticsManager.startLogTracker("Jpa", serviceName)) {
-			final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
-			tracker.setMeasure("nbSelectedRow", result != null ? 1 : 0)
-					.markAsSucceeded();
-			return result;
-		}
+		return analyticsManager.traceWithReturn(
+				"jpa",
+				serviceName,
+				tracer -> {
+					final Class<Entity> objectClass = (Class<Entity>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+					final E result = (E) getEntityManager().find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
+					tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
+					return result;
+				});
+
 	}
 
 	/**
@@ -420,8 +393,26 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			throw pse;
 		}
 		final SQLException sqle = (SQLException) t;
-		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).getDataBase();
-		dataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+		sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+	}
+
+	private static String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {
+		final StringBuilder request = new StringBuilder("select t ")
+				.append(" from ").append(tableName).append(" t")
+				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"));
+		return request.toString();
+	}
+
+	private static String getListTaskName(final String tableName) {
+		final String fullName = new StringBuilder()
+				.append("LIST_")
+				.append(tableName)
+				.append("_BY_CRITERIA")
+				.toString();
+		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
+			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
+		}
+		return fullName;
 	}
 
 }

@@ -18,11 +18,13 @@
  */
 package io.vertigo.app.config;
 
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.util.ListBuilder;
 
 /**
  * This Class defines the properties of ComponentSpace and DefinitionSpace.
@@ -35,7 +37,8 @@ public final class BootConfig {
 	@JsonExclude
 	private final AopPlugin aopPlugin;
 
-	private final ModuleConfig bootModuleConfig;
+	private final List<ComponentConfig> componentConfigs;
+	private final List<PluginConfig> pluginConfigs;
 
 	/**
 	 * Constructor.
@@ -44,15 +47,18 @@ public final class BootConfig {
 	 */
 	BootConfig(
 			final Optional<LogConfig> logConfigOption,
-			final ModuleConfig bootModuleConfig,
+			final List<ComponentConfig> componentConfigs,
+			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
 			final boolean silence) {
 		Assertion.checkNotNull(logConfigOption);
-		Assertion.checkNotNull(bootModuleConfig);
+		Assertion.checkNotNull(componentConfigs);
+		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
 		this.logConfigOption = logConfigOption;
-		this.bootModuleConfig = bootModuleConfig;
+		this.componentConfigs = componentConfigs;
+		this.pluginConfigs = pluginConfigs;
 		this.silence = silence;
 		this.aopPlugin = aopPlugin;
 	}
@@ -65,11 +71,13 @@ public final class BootConfig {
 	}
 
 	/**
-	 *
-	 * @return the config of the boot consireded as a module
+	 * @return the list of component-configs
 	 */
-	public ModuleConfig getBootModuleConfig() {
-		return bootModuleConfig;
+	public List<ComponentConfig> getComponentConfigs() {
+		return new ListBuilder<ComponentConfig>()
+				.addAll(componentConfigs)
+				.addAll(ConfigUtil.buildConfigs(pluginConfigs))
+				.build();
 	}
 
 	/**

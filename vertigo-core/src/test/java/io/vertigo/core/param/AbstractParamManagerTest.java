@@ -18,10 +18,14 @@
  */
 package io.vertigo.core.param;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 
@@ -34,40 +38,43 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void test1() {
-		final String value = paramManager.getStringValue("server.host");
-		Assert.assertEquals("wiki", value);
+		final String value = paramManager.getParam("server.host").getValueAsString();
+		assertEquals("wiki", value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test2() {
-		paramManager.getStringValue("server.wrong");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getParam("server.wrong").getValueAsString());
 	}
 
 	@Test
 	public void test3() {
-		final int value = paramManager.getIntValue("server.port");
-		Assert.assertEquals(8080, value);
+		final int value = paramManager.getParam("server.port").getValueAsInt();
+		assertEquals(8080, value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test4() {
-		paramManager.getIntValue("server.active");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getParam("server.active").getValueAsInt());
 	}
 
 	@Test
 	public void test5() {
-		final boolean value = paramManager.getBooleanValue("server.active");
-		Assert.assertTrue(value);
+		final boolean value = paramManager.getParam("server.active").getValueAsBoolean();
+		assertTrue(value);
 	}
 
 	@Test
 	public void test6() {
-		final boolean value = paramManager.getBooleanValue("server.verbose");
-		Assert.assertFalse(value);
+		final boolean value = paramManager.getParam("server.verbose").getValueAsBoolean();
+		assertFalse(value);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void test7() {
-		paramManager.getBooleanValue("server.port");
+		Assertions.assertThrows(Exception.class,
+				() -> paramManager.getParam("server.port").getValueAsBoolean());
 	}
 }

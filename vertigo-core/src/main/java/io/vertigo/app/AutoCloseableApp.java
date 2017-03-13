@@ -20,18 +20,21 @@ package io.vertigo.app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.ComponentSpaceWritable;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.core.spaces.component.ComponentInitializer;
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -43,13 +46,13 @@ import io.vertigo.lang.WrappedException;
 public final class AutoCloseableApp implements App, AutoCloseable {
 	private enum State {
 		/** Components are starting*/
-		starting,
+		STARTING,
 		/** Components are started*/
-		active,
+		ACTIVE,
 		/** Components are stopping*/
-		stopping,
+		STOPPING,
 		/** App is closed, good bye !*/
-		closed
+		CLOSED
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
@@ -59,8 +62,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final AppConfig appConfig;
 	private State state;
 
-	private final DefinitionSpace definitionSpace;
-	private final ComponentSpace componentSpace;
+	private final DefinitionSpaceWritable definitionSpaceWritable;
+	private final ComponentSpaceWritable componentSpaceWritable;
 
 	//à remplacer par event ??
 	private final List<Runnable> postStartFunctions = new ArrayList<>();
@@ -75,27 +78,32 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		start = System.currentTimeMillis();
 		this.appConfig = appConfig;
 		Home.setApp(this);
-		state = State.starting;
+		state = State.STARTING;
 		//-----
 		//-----0. Boot (considered as a Module)
 		final Boot boot = new Boot(appConfig.getBootConfig());
 		boot.init();
 		//-----0. Boot
-		componentSpace = new ComponentSpace();
-		definitionSpace = new DefinitionSpace();
+		componentSpaceWritable = new ComponentSpaceWritable();
+		definitionSpaceWritable = new DefinitionSpaceWritable();
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig().getAopPlugin());
+			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable, appConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
-			componentLoader.injectBootComponents(componentSpace, appConfig.getBootConfig().getBootModuleConfig());
+
+			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
+			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot",
+					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions
-			final DefinitionLoader definitionLoader = componentSpace.resolve(DefinitionLoader.class);
-			definitionLoader.injectDefinitions(definitionSpace, appConfig.getModuleConfigs());
+			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
+			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
+					.forEach(definitionSpaceWritable::registerDefinition);
+			//Here all definitions are registered into the definitionSpace
 
 			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponents(componentSpace, componentSpace.resolve(ParamManager.class), appConfig.getModuleConfigs());
+			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
 			//-----3. Print
 			if (!appConfig.getBootConfig().isSilence()) {
 				Logo.printCredits(System.out);
@@ -106,7 +114,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//-----5. Start
 			appStart();
 			//-----
-			state = State.active;
+			state = State.ACTIVE;
 			//-----6. AfterStart (application is active)
 			appPostStart();
 		} catch (final Exception e) {
@@ -117,7 +125,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public void registerPostStartFunction(final Runnable postStartFunction) {
-		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
+		Assertion.checkArgument(State.STARTING.equals(state), "Applisteners can't be registered at runtime");
 		Assertion.checkNotNull(postStartFunction);
 		//-----
 		postStartFunctions.add(postStartFunction);
@@ -130,31 +138,31 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	private void appStart() {
-		definitionSpace.start();
-		componentSpace.start();
+		definitionSpaceWritable.start();
+		componentSpaceWritable.start();
 		Thread.currentThread().setName("MAIN");
 	}
 
 	private void appStop() {
-		componentSpace.stop();
-		definitionSpace.stop();
+		componentSpaceWritable.stop();
+		definitionSpaceWritable.stop();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
 		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-		Assertion.checkState(state == State.active || state == State.starting, "App with a state '{0}' can not be be closed", state);
-		state = State.stopping;
+		Assertion.checkState(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
+		state = State.STOPPING;
 		//-----
 		try {
 			appStop();
 		} catch (final Exception e) {
 			LOGGER.error("an error occured when stopping", e);
 			//Quel que soit l'état, on part en échec de l'arrét.
-			throw new WrappedException("an error occured when stopping", e);
+			throw WrappedException.wrap(e, "an error occured when stopping");
 		} finally {
-			state = State.closed;
+			state = State.CLOSED;
 			Home.setApp(null);
 		}
 	}
@@ -171,19 +179,21 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public DefinitionSpace getDefinitionSpace() {
-		return definitionSpace;
+		//We publish the Read Only version
+		return definitionSpaceWritable;
 	}
 
 	@Override
 	public ComponentSpace getComponentSpace() {
-		return componentSpace;
+		//We publish the Read Only version
+		return componentSpaceWritable;
 	}
 
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : appConfig.getComponentInitializerConfigs()) {
 			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
 					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
-			final ComponentInitializer componentInitializer = Injector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpace);
+			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
 	}

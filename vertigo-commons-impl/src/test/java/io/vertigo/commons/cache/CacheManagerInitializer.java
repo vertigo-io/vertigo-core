@@ -20,7 +20,7 @@ package io.vertigo.commons.cache;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.spaces.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 
 /**
  * Initialisation du manager des caches.

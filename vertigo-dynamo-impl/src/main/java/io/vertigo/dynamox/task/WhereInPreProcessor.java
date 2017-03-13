@@ -43,7 +43,7 @@ final class WhereInPreProcessor {
 	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).+#";
 	private static final Pattern JAVA_CHECK_PATTERN = Pattern.compile(REGEXP_CHECK_PATTERN);
 
-	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\)";
+	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\s*\\)";
 	private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
@@ -113,34 +113,7 @@ final class WhereInPreProcessor {
 				if (moreThanOneWhereIn) {
 					buildQuery.append("( ");
 				}
-				buildQuery.append(fkFieldName);
-				buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
-				//-----
-				String separator = "";
-				int index = 1;
-				for (final DtObject dto : listObject) {
-					buildQuery
-							.append(separator)
-							.append(IN_CHAR)
-							.append(inputParamName)
-							.append('.')
-							.append(String.valueOf(listObject.indexOf(dto)))
-							.append('.')
-							.append(pkFieldName)
-							.append(IN_CHAR);
-					separator = ",";
-					//-----
-					if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
-						buildQuery
-								.append(isNotIn ? ") AND " : ") OR ")
-								.append(fkFieldName)
-								.append(isNotIn ? " NOT IN (" : " IN (");
-						separator = "";
-					}
-					//-----
-					index++;
-				}
-				buildQuery.append(')');
+				appendValuesToSqlQuery(buildQuery, fkFieldName, pkFieldName, inputParamName, isNotIn, listObject, moreThanOneWhereIn);
 				if (moreThanOneWhereIn) {
 					buildQuery.append(')');
 				}
@@ -150,5 +123,36 @@ final class WhereInPreProcessor {
 
 		buildQuery.append(sqlQuery.substring(lastMatchOffset));
 		return buildQuery.toString();
+	}
+
+	private static void appendValuesToSqlQuery(final StringBuilder buildQuery, final String fkFieldName, final String pkFieldName, final String inputParamName, final boolean isNotIn, final DtList<?> listObject, final boolean moreThanOneWhereIn) {
+		buildQuery.append(fkFieldName);
+		buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
+		//-----
+		String separator = "";
+		int index = 1;
+		for (final DtObject dto : listObject) {
+			buildQuery
+					.append(separator)
+					.append(IN_CHAR)
+					.append(inputParamName)
+					.append('.')
+					.append(String.valueOf(listObject.indexOf(dto)))
+					.append('.')
+					.append(pkFieldName)
+					.append(IN_CHAR);
+			separator = ",";
+			//-----
+			if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {
+				buildQuery
+						.append(isNotIn ? ") AND " : ") OR ")
+						.append(fkFieldName)
+						.append(isNotIn ? " NOT IN (" : " IN (");
+				separator = "";
+			}
+			//-----
+			index++;
+		}
+		buildQuery.append(')');
 	}
 }

@@ -125,16 +125,8 @@ public final class Command implements KeyConcept {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (commandType != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(commandType);
-			if (!fkURI.urn().equals(uri.urn())) {
-				commandType = null;
-			}
-		}
-		if (commandType == null) {
-			commandType = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+		if (commandType == null || !fkURI.equals(commandType.getURI())) {
+			commandType = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return commandType;
 	}
@@ -161,16 +153,8 @@ public final class Command implements KeyConcept {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (city != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(city);
-			if (!fkURI.urn().equals(uri.urn())) {
-				city = null;
-			}
-		}
-		if (city == null) {
-			city = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+		if (city == null || !fkURI.equals(city.getURI())) {
+			city = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return city;
 	}

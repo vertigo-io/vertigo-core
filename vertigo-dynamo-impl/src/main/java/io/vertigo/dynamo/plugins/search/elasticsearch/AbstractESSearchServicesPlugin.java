@@ -77,7 +77,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final String indexName;
 	private final Set<String> types = new HashSet<>();
 	private final URL configFile;
-	private boolean indexSettingsValid = false;
+	private boolean indexSettingsValid;
 
 	/**
 	 * Constructeur.
@@ -130,7 +130,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				}
 			}
 		} catch (final ElasticsearchException | IOException e) {
-			throw new WrappedException("Error on index " + indexName, e);
+			throw WrappedException.wrap(e, "Error on index " + indexName);
 		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
@@ -255,7 +255,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
+		Assertion.checkArgument(indexSettingsValid,
+				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
@@ -277,7 +278,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.endObject();
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
-			final Set<DtField> copyToFields = indexDefinition.getIndexCopyToFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				//if (!copyToFields.contains(dtField)) {
@@ -300,7 +300,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.get();
 			putMappingResponse.isAcknowledged();
 		} catch (final IOException e) {
-			throw new WrappedException("Serveur ElasticSearch indisponible", e);
+			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}
 	}
 

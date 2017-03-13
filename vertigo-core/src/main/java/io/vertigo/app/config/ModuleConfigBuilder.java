@@ -19,18 +19,19 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import io.vertigo.app.config.rules.APIModuleRule;
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Plugin;
+import io.vertigo.lang.VSystemException;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
@@ -43,44 +44,24 @@ import io.vertigo.lang.Plugin;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	//In the case of the boot module
-	private final boolean boot;
-	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 
-	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
-	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
+	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
+	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
 
 	/**
-	 * Constructor of the boot module.
-	 * @param appConfigBuilder the builder of the appConfig
-	 */
-	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
-		Assertion.checkNotNull(appConfigBuilder);
-		//-----
-		myName = "boot";
-		boot = true;
-		myAppConfigBuilder = appConfigBuilder;
-	}
-
-	/**
-	 * Constructor of a module.
-	 * @param appConfigBuilder the builder of the appConfig
+	 * Constructor.
 	 * @param name Name of the module
 	 */
-	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
-		Assertion.checkNotNull(appConfigBuilder);
+	public ModuleConfigBuilder(final String name) {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
-		boot = false;
 		myName = name;
-		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	/**
@@ -104,170 +85,105 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	 * Adds a provider of definitions.
-	 * @param definitionProviderClass Class of the definitions provider
+	 * @param definitionProviderConfig the definitionProviderConfig
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass) {
-		Assertion.checkNotNull(definitionProviderClass);
+	public ModuleConfigBuilder addDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
+		Assertion.checkNotNull(definitionProviderConfig);
 		//-----
-		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
+		myDefinitionProviderConfigs.add(definitionProviderConfig);
 		return this;
 	}
 
 	/**
-	 * Adds definitions defined by a resource file.
-	 * @param resourceType Type of the resource
-	 * @param resourcePath Path of the resource
-	* @return this builder
-	 */
-	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourcePath);
-		//-----
-		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));
-		return this;
-	}
-
-	/**
-	* Adds a distributed component.
-	* @param apiClass api of the component
-	* @return  the builder of the component
-	*/
-	public ComponentConfigBuilder beginElasticComponent(final Class<? extends Component> apiClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), Component.class, true);
-	}
-
-	/**
-	 * Add a component.
+	* Adds a component defined by an implementation.
 	 * @param implClass impl of the component
+	 * @param params the list of params
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass) {
-		return beginComponent(implClass).endComponent();
-	}
-
-	/**
-	 * Add a component.
-	 * @param apiClass api of the component
-	 * @param implClass impl of the component
-	 * @return this builder
-	 */
-	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return beginComponent(apiClass, implClass).endComponent();
-	}
-
-	/**
-	* Begins the builder of a component.
-	* Component is added when you close the builder uising end() method.
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	public ComponentConfigBuilder beginComponent(final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> empty(), implClass, false);
-	}
-
-	/**
-	* Begins the builder of a component.
-	* @param apiClass api of the component
-	* Component is added when you close the builder uising end() method.
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	public ComponentConfigBuilder beginComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass) {
-		return doBeginComponent(Optional.<Class<? extends Component>> of(apiClass), implClass, false);
+	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(implClass);
+		return addComponent(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
 	}
 
 	/**
 	* Adds a component defined by an api and an implementation.
-	* @param apiClass api of the component
-	* @param implClass impl of the component
-	* @return  the builder of the component
-	*/
-	private ComponentConfigBuilder doBeginComponent(final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
-		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
-		myComponentConfigBuilders.add(componentConfigBuilder);
-		return componentConfigBuilder;
+	 * @param apiClass api of the component
+	 * @param implClass impl of the component
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(params);
+		//---
+		final String id = DIAnnotationUtil.buildId(apiClass);
+		return addComponent(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
 	}
 
 	/**
-	 * Ends the current module config.
-	 * @return the builder of this app
+	* Adds a component defined by its config.
+	 * @param componentConfig the config of the component
+	 * @return this builder
 	 */
-	public AppConfigBuilder endModule() {
-		if (boot) {
-			// we don't close the module
-		} else {
-			myAppConfigBuilder.addAllModules(Collections.singletonList(build()));
-		}
-		return myAppConfigBuilder;
+	public ModuleConfigBuilder addComponent(final ComponentConfig componentConfig) {
+		Assertion.checkNotNull(componentConfig);
+		//---
+		myComponentConfigs.add(componentConfig);
+		return this;
+	}
+
+	/**
+	* Adds a plugin  defined by its config.
+	 * @param pluginConfig the plugin-config
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addPlugin(final PluginConfig pluginConfig) {
+		Assertion.checkNotNull(pluginConfig);
+		//---
+		myPluginConfigs.add(pluginConfig);
+		return this;
 	}
 
 	/**
 	 * Adds a plugin defined by its implementation.
 	 * @param pluginImplClass  impl of the plugin
+	 * @param params  the list of params
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass) {
-		return beginPlugin(pluginImplClass).endPlugin();
+	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
-	/**
-	 * Begins the builder of a plugin.
-	 * @param pluginImplClass impl of the plugin
-	 * @return  the builder of the plugin
-	 */
-	public PluginConfigBuilder beginPlugin(final Class<? extends Plugin> pluginImplClass) {
-		final PluginConfigBuilder pluginConfigBuilder = new PluginConfigBuilder(this, pluginImplClass);
-		plugins.add(pluginConfigBuilder);
-		return pluginConfigBuilder;
-	}
+	private void checkApi() {
+		final List<ComponentConfig> noApiComponentConfigs = myComponentConfigs
+				.stream()
+				//we don't care plugins
+				//which components don't have api ?
+				.filter(componentConfig -> !componentConfig.getApiClass().isPresent())
+				.collect(Collectors.toList());
 
-	private List<ComponentConfig> buildPluginConfigs() {
-		final List<ComponentConfig> pluginConfigs = new ArrayList<>();
-		final Set<String> pluginTypes = new HashSet<>();
-		int index = 1;
-		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
-			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
-			if (added) {
-				//If added, its the first plugin to this type.
-				pluginConfigBuilder.withIndex(0);
-			} else {
-				pluginConfigBuilder.withIndex(index);
-				index++;
-			}
-
-			pluginConfigs.add(pluginConfigBuilder.build());
+		if (!noApiComponentConfigs.isEmpty()) {
+			throw new VSystemException("api rule : all components of module '{0}' must have an api. Components '{1}' don't respect this rule.", myName, noApiComponentConfigs);
 		}
-		return pluginConfigs;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
-		final List<ModuleRule> moduleRules = new ArrayList<>();
-		//Mise à jour des règles.
 		if (myHasApi) {
-			moduleRules.add(new APIModuleRule());
+			checkApi();
 		}
-		//-----
-		final List<ComponentConfig> componentConfigs = new ArrayList<>();
-		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
-			componentConfigs.add(componentConfigBuilder.build());
-		}
-
-		//creation of the pluginConfigs
-		componentConfigs.addAll(buildPluginConfigs());
-
-		final ModuleConfig moduleConfig = new ModuleConfig(
+		return new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
-				myDefinitionResourceConfigs,
-				componentConfigs,
-				myAspectConfigs,
-				moduleRules);
-
-		moduleConfig.checkRules();
-		return moduleConfig;
+				myComponentConfigs,
+				myPluginConfigs,
+				myAspectConfigs);
 	}
 
 }

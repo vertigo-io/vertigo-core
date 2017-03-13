@@ -59,9 +59,13 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 * @param configFile Fichier de configuration des indexs
 	 */
 	@Inject
-	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("envIndex") final String envIndex,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Optional<String> configFile,
-			final CodecManager codecManager, final ResourceManager resourceManager) {
+	public ESEmbeddedSearchServicesPlugin(
+			@Named("home") final String elasticSearchHome,
+			@Named("envIndex") final String envIndex,
+			@Named("rowsPerQuery") final int rowsPerQuery,
+			@Named("config.file") final Optional<String> configFile,
+			final CodecManager codecManager,
+			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
@@ -89,7 +93,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		try {
 			home = new File(URLDecoder.decode(esHomeURL.getFile(), "UTF-8"));
 		} catch (final UnsupportedEncodingException e) {
-			throw new WrappedException("Error de parametrage du ElasticSearchHome " + esHomeURL, e);
+			throw WrappedException.wrap(e, "Error de parametrage du ElasticSearchHome " + esHomeURL);
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());

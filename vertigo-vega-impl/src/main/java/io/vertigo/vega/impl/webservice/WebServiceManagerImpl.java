@@ -18,18 +18,18 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.spaces.component.ComponentSpace;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
@@ -87,13 +87,15 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 			final List<WebServiceHandlerPlugin> restHandlerPlugins) {
 		Assertion.checkNotNull(webServiceScannerPlugin);
 		Assertion.checkNotNull(webServerPlugin);
-		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
+		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkNotNull(webServerPlugin);
 		//-----
 		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = sortWebServiceHandlerPlugins(restHandlerPlugins);
 		//-----
 		Assertion.checkArgument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
-				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
+				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----
 		this.webServiceScannerPlugin = webServiceScannerPlugin;
 		this.webServerPlugin = webServerPlugin;
@@ -101,7 +103,7 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		//we do nothing with webServerPlugin
 		Home.getApp().registerPostStartFunction(() -> {
 			final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
-			WebServiceManagerImpl.this.registerWebServiceDefinitions(Home.getApp().getDefinitionSpace(), webServiceDefinitions);
+			WebServiceManagerImpl.this.registerWebServiceDefinitions((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace(), webServiceDefinitions);
 		});
 	}
 
@@ -128,20 +130,23 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>();
+		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 
 		//1- We introspect all RestfulService class
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof WebServices) {
-				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(((WebServices) component).getClass());
-				allWebServiceDefinitions.addAll(webServiceDefinitions);
+				final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(aopPlugin.unwrap((WebServices) component).getClass());
+				allWebServiceDefinitionListBuilder.addAll(webServiceDefinitions);
 			}
 		}
 
 		//2- We sort by path, parameterized path should be after strict path
-		Collections.sort(allWebServiceDefinitions, new WebServiceDefinitionComparator());
-		return allWebServiceDefinitions;
+		return allWebServiceDefinitionListBuilder
+				.sort(Comparator.comparing(WebServiceDefinition::getName))
+				.unmodifiable()
+				.build();
 	}
 
 	/**
@@ -149,25 +154,10 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 	 * @param definitionSpace DefinitionSpace
 	 * @param webServiceDefinitions WebServiceDefinitions
 	 */
-	void registerWebServiceDefinitions(final DefinitionSpace definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
+	void registerWebServiceDefinitions(final DefinitionSpaceWritable definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
 		// We register WebService Definition in this order
-		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			definitionSpace.put(webServiceDefinition);
-		}
+		webServiceDefinitions
+				.forEach(definitionSpace::registerDefinition);
 		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
-	}
-
-	private static final class WebServiceDefinitionComparator implements Comparator<WebServiceDefinition>, Serializable {
-		private static final long serialVersionUID = -3628192753809615711L;
-
-		WebServiceDefinitionComparator() {
-			//rien
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final WebServiceDefinition webServiceDefinition1, final WebServiceDefinition webServiceDefinition2) {
-			return webServiceDefinition1.getName().compareTo(webServiceDefinition2.getName());
-		}
 	}
 }

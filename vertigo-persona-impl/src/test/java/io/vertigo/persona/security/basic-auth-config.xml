@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE authorisation-config PUBLIC "-//Vertigo//DTD Authorisation Config 1.0//EN"
-                              "http://www.kleegroup.com/dtd/authorisation-config_1_0.dtd"> 
-<authorisation-config>	
+
+<authorisationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="vertigo-security_1_0.xsd">
 	<!--  Permissions -->	
 	<permission id="PRM_READ_ALL_PRODUCTS" operation="READ" filter="/products/.*" description="Lire tous les produits"/>		
 	<permission id="PRM_WRITE_ALL_PRODUCTS" operation="WRITE" filter="/products/.*"  description="Créer/Modifier un produit"/>				
@@ -15,16 +15,16 @@
   	</role>
 
   	<role name="R_WRITER" description="Ecrivain de l'application">	  	   
-  		<permission ref="PRM_READ_ALL_PRODUCTS"/>
-  		<permission ref="PRM_WRITE_ALL_PRODUCTS"/>
+  		<permission ref="PRM_READ_ALL_PRODUCTS" />
+  		<permission ref="PRM_WRITE_ALL_PRODUCTS" />
   	</role>
   	
   	<role name="R_ALL_FAMILLES" description="Administeur de l'application">
-  		<permission ref="PRM_READ_ALL_FAMILLES"/>		
+  		<permission ref="PRM_READ_ALL_FAMILLES" />		
   	</role>
 
   	<role name="R_MY_FAMILLE" description="Lecteur de l'application">	  	   
   		<!--permission type="read" filter="/product/*"  -->
   		<permission ref="PRM_READ_MY_FAMILLE"/>
   	</role>
-</authorisation-config>
+</authorisationConfig>

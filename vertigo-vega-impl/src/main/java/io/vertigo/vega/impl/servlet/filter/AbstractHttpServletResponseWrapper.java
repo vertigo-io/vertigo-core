@@ -25,11 +25,13 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
  * @author Emeric Vernat
  */
-abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
+public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper implements AutoCloseable {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
 	private final HttpServletResponse response;
@@ -48,11 +50,18 @@ abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.Htt
 		return stream;
 	}
 
-	protected final void close() throws IOException {
-		if (writer != null) {
-			writer.close();
-		} else if (stream != null) {
-			stream.close();
+	/** {@inheritDoc} */
+	@Override
+	public final void close() throws IOException {
+		try {
+			if (writer != null) {
+				writer.close();
+			} else if (stream != null) {
+				stream.close();
+			}
+		} catch (final IOException e) {
+			Logger.getRootLogger().trace(e.getMessage(), e);
+			//ignore IOException : streams are already send
 		}
 	}
 
@@ -138,10 +147,11 @@ abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.Htt
 	 */
 	@Override
 	public final PrintWriter getWriter() throws IOException {
-		if (stream != null) {
-			throw new IllegalStateException("getOutputStream() has already been called for this response");
-		}
 		if (writer == null) {
+			if (stream != null) {
+				throw new IllegalStateException("getOutputStream() has already been called for this response");
+			}
+
 			final ServletOutputStream outputStream = getOutputStream();
 			final String charEnc = getResponse().getCharacterEncoding();
 			// HttpServletResponse.getCharacterEncoding() shouldn't return null

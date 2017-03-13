@@ -20,7 +20,7 @@ limitations under the License. -->
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.9.3</version>
+	<version>0.9.4-SNAPSHOT</version>
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -30,7 +30,11 @@ limitations under the License. -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>0.9.3</vertigo.version>
+		<vertigo.version>0.9.4-SNAPSHOT</vertigo.version>
+		
+		<!-- For global junit test coverage -->
+		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
 	</properties>
 
 	<licenses>
@@ -45,7 +49,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.9.3</tag>
+		<tag>vertigo-0.9.4-SNAPSHOT</tag>
 	</scm>
 
 	<developers>
@@ -254,10 +258,24 @@ limitations under the License. -->
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12-beta-1</version>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-engine</artifactId>
+		    <version>5.0.0-M2</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+		 	<groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.0.0-M2</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
+		<dependency>
+		    <groupId>org.junit.platform</groupId>
+		    <artifactId>junit-platform-runner</artifactId>
+		    <version>1.0.0-M2</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 </project>

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.car;
 
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -30,6 +31,19 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
+	public enum CarFields implements DtFieldName {
+		ID,
+		MAKE,
+		MODEL,
+		DESCRIPTION,
+		YEAR,
+		KILO,
+		PRICE,
+		CONSOMMATION,
+		MOTOR_TYPE,
+		FAM_ID;
+	}
+
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

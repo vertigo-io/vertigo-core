@@ -210,32 +210,47 @@ final class OOMObject {
 	void setProperty(final String propertyName, final String propertyValue) {
 		Assertion.checkNotNull(propertyName);
 		//-----
-		if (PROPERTY_CODE.equals(propertyName)) {
-			code = propertyValue;
-		} else if (PROPERTY_NAME.equals(propertyName)) {
-			name = propertyValue;
-		} else if (PROPERTY_COMMENT.equals(propertyName)) {
-			label = propertyValue;
-		} else if (PROPERTY_PERSISTENT.equals(propertyName)) {
-			persistent = propertyValue;
-		} else if (PROPERTY_MULTIPLICITY.equals(propertyName)) {
-			multiplicity = propertyValue;
-		} else if (PROPERTY_ROLE_A_MULTIPLICITY.equals(propertyName)) {
-			roleAMultiplicity = propertyValue;
-		} else if (PROPERTY_ROLE_B_MULTIPLICITY.equals(propertyName)) {
-			roleBMultiplicity = propertyValue;
-		} else if (PROPERTY_ROLE_A_NAVIGABILITY.equals(propertyName)) {
-			roleANavigability = "1".equals(propertyValue);
-		} else if (PROPERTY_ROLE_B_NAVIGABILITY.equals(propertyName)) {
-			roleBNavigability = "1".equals(propertyValue);
-		} else if (PROPERTY_ROLE_A_NAME.equals(propertyName)) {
-			roleALabel = propertyValue;
-		} else if (PROPERTY_ROLE_B_NAME.equals(propertyName)) {
-			roleBLabel = propertyValue;
-		} else if (PROPERTY_STEREOTYPE.equals(propertyName)) {
-			stereotype = propertyValue;
+		switch (propertyName) {
+			case PROPERTY_CODE:
+				code = propertyValue;
+				break;
+			case PROPERTY_NAME:
+				name = propertyValue;
+				break;
+			case PROPERTY_COMMENT:
+				label = propertyValue;
+				break;
+			case PROPERTY_PERSISTENT:
+				persistent = propertyValue;
+				break;
+			case PROPERTY_MULTIPLICITY:
+				multiplicity = propertyValue;
+				break;
+			case PROPERTY_ROLE_A_MULTIPLICITY:
+				roleAMultiplicity = propertyValue;
+				break;
+			case PROPERTY_ROLE_B_MULTIPLICITY:
+				roleBMultiplicity = propertyValue;
+				break;
+			case PROPERTY_ROLE_A_NAVIGABILITY:
+				roleANavigability = "1".equals(propertyValue);
+				break;
+			case PROPERTY_ROLE_B_NAVIGABILITY:
+				roleBNavigability = "1".equals(propertyValue);
+				break;
+			case PROPERTY_ROLE_A_NAME:
+				roleALabel = propertyValue;
+				break;
+			case PROPERTY_ROLE_B_NAME:
+				roleBLabel = propertyValue;
+				break;
+			case PROPERTY_STEREOTYPE:
+				stereotype = propertyValue;
+				break;
+			default:
+				//On ne tient pas compte des autres propriétés
 		}
-		//On ne tient pas compte des autres propriétés
+
 	}
 
 	//==========================================================================

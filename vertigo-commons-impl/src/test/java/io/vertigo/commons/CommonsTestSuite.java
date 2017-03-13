@@ -39,6 +39,7 @@ import io.vertigo.commons.daemon.DaemonManagerTest;
 import io.vertigo.commons.eventbus.EventBusManagerTest;
 import io.vertigo.commons.peg.CalculatorTest;
 import io.vertigo.commons.peg.ParserTest;
+import io.vertigo.commons.peg.PegRulesTest;
 import io.vertigo.commons.script.ScriptManagerTest;
 
 /**
@@ -69,6 +70,7 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		//--script
 		ScriptManagerTest.class,
 		//--parser
+		PegRulesTest.class,
 		ParserTest.class,
 		CalculatorTest.class,
 		EventBusManagerTest.class

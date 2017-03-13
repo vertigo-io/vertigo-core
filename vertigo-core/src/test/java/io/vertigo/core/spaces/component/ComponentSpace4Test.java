@@ -18,39 +18,43 @@
  */
 package io.vertigo.core.spaces.component;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.spaces.component.data.StartedManager;
 import io.vertigo.core.spaces.component.data.StartedManagerImpl;
 import io.vertigo.core.spaces.component.data.StartedManagerInitializer;
 
+@RunWith(JUnitPlatform.class)
 public final class ComponentSpace4Test {
 
 	@Test
 	public void testStartedComponent() {
-		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.beginBoot()
+				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.beginModule("Started")
-				.addComponent(StartedManager.class, StartedManagerImpl.class)
-			.endModule()
-			.addInitializer(StartedManagerInitializer.class)
-		.build();
-		// @formatter:on
+				.endBoot()
+				.addModule(new ModuleConfigBuilder("Started")
+						.addComponent(StartedManager.class, StartedManagerImpl.class)
+						.build())
+				.addInitializer(StartedManagerInitializer.class)
+				.build();
 		final StartedManager startedManager;
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			startedManager = app.getComponentSpace().resolve(StartedManager.class);
-			Assert.assertTrue("Component StartedManager not Started", startedManager.isStarted());
-			Assert.assertTrue("Component StartedManager not PostStarted", startedManager.isPostStarted());
-			Assert.assertTrue("Component StartedManager not Initialized", startedManager.isInitialized());
+			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");
+			assertTrue(startedManager.isPostStarted(), "Component StartedManager not PostStarted");
+			assertTrue(startedManager.isInitialized(), "Component StartedManager not Initialized");
 		}
-		Assert.assertFalse("Component StartedManager not Stopped", startedManager.isStarted());
+		assertFalse(startedManager.isStarted(), "Component StartedManager not Stopped");
 	}
 }

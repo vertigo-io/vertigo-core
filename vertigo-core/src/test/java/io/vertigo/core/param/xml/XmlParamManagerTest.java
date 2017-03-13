@@ -18,15 +18,20 @@
  */
 package io.vertigo.core.param.xml;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.param.AbstractParamManagerTest;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 /**
  * @author pchretien
  */
+@RunWith(JUnitPlatform.class)
 public final class XmlParamManagerTest extends AbstractParamManagerTest {
 
 	@Override
@@ -34,14 +39,13 @@ public final class XmlParamManagerTest extends AbstractParamManagerTest {
 		final String locales = "fr_FR";
 		//@formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule(locales)
+			.beginBoot()
+				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.beginPlugin( XmlParamPlugin.class)
-					.addParam("url", "io/vertigo/core/param/xml/basic-app-config.xml")
-				.endPlugin()
-			.endModule()
+				.addPlugin( XmlParamPlugin.class,
+						Param.create("url", "io/vertigo/core/param/xml/basic-app-config.xml"))
+			.endBoot()
 			.build();
 		// @formatter:on
 	}
-
 }

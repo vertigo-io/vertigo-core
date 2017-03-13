@@ -48,8 +48,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -58,6 +58,7 @@ import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * @author pchretien, npiedeloup
@@ -65,7 +66,7 @@ import io.vertigo.vega.webservice.model.DtListDelta;
 public final class GoogleJsonEngine implements JsonEngine {
 	private final Gson gson;
 
-	private static enum SearchApiVersion {
+	private enum SearchApiVersion {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
@@ -175,9 +176,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Type paramType) {
+	public <D extends DtObject> UiListModifiable<D> uiListFromJson(final String json, final Type paramType) {
 		final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
-		final Type typeOfDest = createParameterizedType(UiList.class, dtoClass);
+		final Type typeOfDest = createParameterizedType(UiListModifiable.class, dtoClass);
 		return gson.fromJson(json, typeOfDest);
 	}
 
@@ -203,7 +204,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (WebServiceTypeUtil.isAssignableFrom(DtList.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
-					final Type typeOfDest = new KnownParameterizedType(UiList.class, dtoClass);
+					final Type typeOfDest = new KnownParameterizedType(UiListModifiable.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
 					value = (Serializable) gson.fromJson(jsonSubElement, paramType);
@@ -225,7 +226,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public boolean shouldSkipField(final FieldAttributes arg0) {
-			return (arg0.getAnnotation(JsonExclude.class) != null);
+			return arg0.getAnnotation(JsonExclude.class) != null;
 		}
 
 		@Override
@@ -335,7 +336,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
-					.registerTypeAdapter(UiList.class, new UiListDeserializer<>())
+					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
@@ -348,7 +349,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 					.create();
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw WrappedException.wrapIfNeeded(e, "Can't create Gson");
+			throw WrappedException.wrap(e, "Can't create Gson");
 		}
 	}
 }

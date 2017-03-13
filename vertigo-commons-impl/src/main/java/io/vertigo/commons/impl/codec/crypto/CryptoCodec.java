@@ -25,9 +25,9 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Describable;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
@@ -46,7 +46,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		/**
 		 * Triple DES.
 		 */
-		TripleDES("DESede", 168),
+		TRIPLE_DES("DESede", 168),
 		/**
 		 * AES (256bits inacessible sans security policies :http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
 		 */
@@ -97,7 +97,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			keyGenerator.init(crypto.getKeySize());
 			return keyGenerator.generateKey();
 		} catch (final java.security.NoSuchAlgorithmException e) {
-			throw new WrappedException(crypto.getAlgoName(), e);
+			throw WrappedException.wrap(e, crypto.getAlgoName());
 		}
 	}
 
@@ -129,7 +129,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 			cipher.init(mode, key);
 			return cipher.doFinal(data);
 		} catch (final Exception e) {
-			throw new WrappedException(crypto.getAlgoName(), e);
+			throw WrappedException.wrap(e, crypto.getAlgoName());
 		}
 	}
 

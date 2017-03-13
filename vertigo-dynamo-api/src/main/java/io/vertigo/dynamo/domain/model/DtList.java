@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
@@ -46,23 +46,39 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	private static final long serialVersionUID = -8059200549636099190L;
 	public static final String TOTAL_COUNT_META = "totalCount";
 
-	private DtListURI uri;
+	private final DtListURI uri;
 
 	/** Reéférence vers la Définition. */
-	private DefinitionReference<DtDefinition> dtDefinitionRef;
+	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	/** List des dto contenus. */
-	private final List<D> dtObjects = new ArrayList<>();
+	private final List<D> dtObjects;
 
 	/** List des dto contenus. */
-	private final Map<String, Serializable> metaDatas = new LinkedHashMap<>();
+	private final Map<String, Serializable> metaDatas;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dtDefinition Définition de DT
 	 */
 	public DtList(final DtDefinition dtDefinition) {
 		this.dtDefinitionRef = new DefinitionReference<>(dtDefinition);
+		this.uri = null; //new DtListURIForValueObject(dtDefinition);
+		this.dtObjects = new ArrayList<>(); //
+		this.metaDatas = new LinkedHashMap<>();
+
+	}
+
+	/**
+	 * Constructor.
+	 */
+	public DtList(final DtList dtList, final DtListURI uri) {
+		Assertion.checkNotNull(uri);
+		//---
+		this.dtDefinitionRef = dtList.dtDefinitionRef; //The same DtDefinition
+		this.uri = uri;
+		this.dtObjects = new ArrayList<>(dtList.dtObjects); //Clone
+		this.metaDatas = new LinkedHashMap<>(dtList.metaDatas); //clone
 	}
 
 	/**
@@ -150,18 +166,6 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	public DtListURI getURI() {
 		return uri;
-	}
-
-	/**
-	 * Définit l'uri de la collection.
-	 * @param newUri DtListURI
-	 */
-	public void setURI(final DtListURI newUri) {
-		if (this.uri == null) {
-			this.uri = newUri;
-		} else {
-			throw new IllegalAccessError("URI déjà fixée");
-		}
 	}
 
 	//==========================================================================

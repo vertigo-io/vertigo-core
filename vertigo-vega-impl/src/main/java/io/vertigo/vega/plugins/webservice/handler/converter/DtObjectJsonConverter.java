@@ -28,9 +28,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
-import io.vertigo.vega.engines.webservice.json.UiObject;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.model.UiObject;
 
 public final class DtObjectJsonConverter implements JsonConverter {
 	private final JsonEngine jsonReaderEngine;
@@ -55,8 +55,10 @@ public final class DtObjectJsonConverter implements JsonConverter {
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
-		Assertion.checkArgument(DtObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), DtObject.class.getSimpleName());
-		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+		Assertion.checkArgument(DtObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(),
+				DtObject.class.getSimpleName());
+		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported",
+				input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
@@ -64,15 +66,16 @@ public final class DtObjectJsonConverter implements JsonConverter {
 		if (input instanceof String) {
 			uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson((String) input, paramGenericType);
 			objectPath = "";
-		} else if (input instanceof UiContext) {
+		} else if (input instanceof UiContext) { //cas des innerBodyParam
 			uiObject = (UiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());
-			Assertion.checkNotNull(uiObject, "InnerParam not found : {0}", webServiceParam);
 			objectPath = webServiceParam.getName();
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));
 		}
 		//-----
-		UiObjectUtil.postReadUiObject(uiObject, objectPath, webServiceParam);
+		if (uiObject != null) { //uiObject peut être null ici si optional
+			UiObjectUtil.postReadUiObject(uiObject, objectPath, webServiceParam);
+		}
 		routeContext.setParamValue(webServiceParam, uiObject);
 	}
 

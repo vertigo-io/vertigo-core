@@ -18,10 +18,12 @@
  */
 package io.vertigo.app.config;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 
@@ -41,28 +43,33 @@ public final class ComponentConfig {
 	private final Class<? extends Component> implClass;
 	private final Optional<Class<? extends Component>> apiClass;
 	private final Map<String, String> params;
-	private final boolean elastic;
 
 	/**
 	 * Constructor.
-	 * @param apiClass api of the component
+	 * @param optionalApiClass api of the component
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(final String id, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic, final Map<String, String> params) {
+	ComponentConfig(
+			final String id,
+			final Optional<Class<? extends Component>> optionalApiClass,
+			final Class<? extends Component> implClass,
+			final List<Param> params) {
 		Assertion.checkArgNotEmpty(id);
-		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(optionalApiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.when(apiClass.isPresent()).check(() -> Component.class.isAssignableFrom(apiClass.get()), "api class {0} must extend {1}", apiClass, Component.class);
+		Assertion.when(optionalApiClass.isPresent()).check(() -> Component.class.isAssignableFrom(optionalApiClass.get()), "api class {0} must extend {1}", optionalApiClass, Component.class);
 		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
-		this.elastic = elastic;
 		//-----
-		this.apiClass = apiClass;
+		this.apiClass = optionalApiClass;
 		this.implClass = implClass;
-		this.params = new HashMap<>(params);
+
+		this.params = params
+				.stream()
+				.collect(Collectors.toMap(Param::getName, Param::getValue));
 	}
 
 	/**
@@ -93,13 +100,9 @@ public final class ComponentConfig {
 		return params;
 	}
 
-	public boolean isElastic() {
-		return elastic;
-	}
-
 	@Override
 	/** {@inheritDoc} */
 	public String toString() {
-		return getId();
+		return id;
 	}
 }

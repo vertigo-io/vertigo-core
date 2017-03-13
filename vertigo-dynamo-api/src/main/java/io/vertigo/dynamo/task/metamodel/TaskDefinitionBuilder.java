@@ -45,7 +45,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	/**
 	 * Constructor.
 	 *
-	 * @param taskDefinitionName Name (TK_XXX_YYY)
+	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
 	 */
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
@@ -61,17 +61,15 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 */
 	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
 		Assertion.checkNotNull(taskEngineClass);
-		//Il est important de refaire le test car les test de cast ne sont pas fiable avec les generics
-		if (taskEngineClass.isAssignableFrom(TaskEngine.class)) {
-			throw new ClassCastException("La classe doit être une sous classe de ServiceProvider");
-		}
-		//-----
+		Assertion.checkArgument(TaskEngine.class.isAssignableFrom(taskEngineClass), "class must extends TaskEngine");
+		//We have to do this  test because generics are not safe
+		//---
 		myTaskEngineClass = taskEngineClass;
 		return this;
 	}
 
 	/**
-	 * @param request Request used to configure the task. (ldap request, sql request...)
+	 * @param request the request used to configure the task. (ldap request, sql request...)
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
@@ -85,7 +83,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param packageName Name of the package
+	 * @param packageName the name of the package
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
@@ -115,13 +113,35 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
+	private TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, required);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
+	}
+
+	/**
+	 * Adds a required input attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @return this builder
+	 */
+	public TaskDefinitionBuilder addInRequired(final String attributeName, final Domain domain) {
+		return addInAttribute(attributeName, domain, true);
+	}
+
+	/**
+	 * Adds an optional input attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @return this builder
+	 */
+	public TaskDefinitionBuilder addInOptional(final String attributeName, final Domain domain) {
+		return addInAttribute(attributeName, domain, false);
 	}
 
 	/**
@@ -132,10 +152,32 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param required if attribute is required
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
+	private TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
 		//-----
 		myOutTaskAttribute = new TaskAttribute(attributeName, domain, required);
 		return this;
+	}
+
+	/**
+	 * Adds a required output attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @return this builder
+	 */
+	public TaskDefinitionBuilder withOutRequired(final String attributeName, final Domain domain) {
+		return withOutAttribute(attributeName, domain, true);
+	}
+
+	/**
+	 * Adds an optional output attribute.
+	 *
+	 * @param attributeName the name of the attribute
+	 * @param domain the domain of the attribute
+	 * @return this builder
+	 */
+	public TaskDefinitionBuilder withOutOptional(final String attributeName, final Domain domain) {
+		return withOutAttribute(attributeName, domain, false);
 	}
 
 	/** {@inheritDoc} */

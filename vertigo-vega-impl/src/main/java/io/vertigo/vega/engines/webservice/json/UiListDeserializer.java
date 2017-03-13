@@ -27,22 +27,23 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * ParameterizedType use for UiList.
  * @author npiedeloup
  */
-final class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiList<D>> {
+final class UiListDeserializer<D extends DtObject> implements JsonDeserializer<UiListModifiable<D>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UiList<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+	public UiListModifiable<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 		final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 		final Type uiObjectType = new KnownParameterizedType(UiObject.class, dtoClass);
 		final JsonArray jsonArray = json.getAsJsonArray();
 
-		final UiList<D> uiList = new UiList<>(dtoClass);
+		final UiListModifiable<D> uiList = new UiListModifiable<>(dtoClass);
 		for (final JsonElement element : jsonArray) {
 			final UiObject<D> inputDto = context.deserialize(element, uiObjectType);
 			uiList.add(inputDto);

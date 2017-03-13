@@ -3,9 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.3</version>
-		<relativePath>../vertigo-parent</relativePath>
+		<artifactId>vertigo</artifactId>
+		<version>0.9.4-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>vertigo-dynamo-api</artifactId>

@@ -18,20 +18,27 @@
  */
 package io.vertigo.core.spaces.component;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
 import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
 
+@RunWith(JUnitPlatform.class)
 public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Inject
 	private BioManager bioManager;
@@ -39,29 +46,25 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Test
 	public void testCalcul() {
 		final int res = bioManager.add(1, 2, 3);
-		Assert.assertEquals(366, res);
+		assertEquals(366, res);
 	}
 
 	//On vérifie que les composants ont bien été démarrés
 	@Test
 	public void testActive() {
-		Assert.assertTrue(bioManager.isActive());
+		assertTrue(bioManager.isActive());
 	}
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		// @formatter:off
 		return new AppConfigBuilder()
-		.beginModule("bio")
-			.addComponent(BioManager.class, BioManagerImpl.class)
-			.beginComponent(MathManager.class, MathManagerImpl.class)
-				.addParam("start", "100")
-			.endComponent()
-			.beginPlugin(MathPlugin.class)
-				.addParam("factor", "20")
-			.endPlugin()
-		.endModule()
-		.build();
-		// @formatter:on
+				.addModule(new ModuleConfigBuilder("bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.create("start", "100"))
+						.addPlugin(MathPlugin.class,
+								Param.create("factor", "20"))
+						.build())
+				.build();
 	}
 }

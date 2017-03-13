@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.
  *

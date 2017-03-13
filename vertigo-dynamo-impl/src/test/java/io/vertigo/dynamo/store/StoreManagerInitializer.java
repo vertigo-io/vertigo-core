@@ -20,7 +20,7 @@ package io.vertigo.dynamo.store;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.spaces.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.data.domain.car.Car;

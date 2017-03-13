@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.codec.csv;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractEncoderTest;
@@ -40,7 +41,7 @@ public final class CSVCodecTest extends AbstractEncoderTest<Encoder<String, Stri
 	@Override
 	@Test
 	public void testNull() throws Exception {
-		Assert.assertEquals("", codec.encode(null));
+		assertEquals("", codec.encode(null));
 		// assertNull(csvCodec.decode(null));
 	}
 

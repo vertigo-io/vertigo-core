@@ -43,15 +43,16 @@ public final class PurgeTempFileDaemon implements Daemon {
 	public void run() {
 		final File documentRootFile = new File(documentRoot);
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutes * 60L * 1000L;
-		purgeOlderFile(documentRootFile, maxTime);
+		deleteOldFiles(documentRootFile, maxTime);
 	}
 
-	private static void purgeOlderFile(final File documentRootFile, final long maxTime) {
+	private static void deleteOldFiles(final File documentRootFile, final long maxTime) {
 		for (final File subFiles : documentRootFile.listFiles()) {
 			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
-				purgeOlderFile(subFiles, maxTime);
+				deleteOldFiles(subFiles, maxTime);
 			} else if (subFiles.lastModified() < maxTime) {
-				if (!subFiles.delete()) {
+				boolean succeeded = subFiles.delete();
+				if (!succeeded) {
 					subFiles.deleteOnExit();
 				}
 			}

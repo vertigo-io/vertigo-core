@@ -18,15 +18,20 @@
  */
 package io.vertigo.app.config.xml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Properties;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.spaces.component.data.BioManager;
 
+@RunWith(JUnitPlatform.class)
 public final class AppConfig2Test {
 	@Test
 	public void HomeTest() {
@@ -35,13 +40,28 @@ public final class AppConfig2Test {
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
+		testBioManager(appConfig);
+	}
+
+	@Test
+	public void FeatureTest() {
+
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), "bio-features.xml")
+				.build();
+
+		testBioManager(appConfig);
+
+	}
+
+	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			Assert.assertEquals(app, app);
-			Assert.assertTrue(app.getComponentSpace().contains("bioManager"));
+			assertEquals(app, app);
+			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
+			assertEquals(366, res);
+			assertTrue(bioManager.isActive());
 		}
 	}
 }

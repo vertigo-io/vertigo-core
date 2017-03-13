@@ -2,11 +2,6 @@
 <config>
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	</boot>
 
 	<module name="vertigo-commons">
@@ -41,13 +36,10 @@
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="sequencePrefix" value="SEQ_" />
-			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
-				<param name="name" value="otherStore" />
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin">
+				<param name="dataSpace" value="otherStore" />
 				<param name="connectionName" value="otherBase" />
-				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin">
 				<param name="name" value="temp"/>
@@ -64,8 +56,10 @@
 
 	<module name="myApp">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamo/store/data/executionOtherStore.kpr" />
-			<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="kpr" path="io/vertigo/dynamo/store/data/executionOtherStore.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
+			</provider>
 		</definitions>
 	</module>
 	

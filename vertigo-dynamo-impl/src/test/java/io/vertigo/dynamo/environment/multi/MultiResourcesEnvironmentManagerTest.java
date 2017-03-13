@@ -24,14 +24,14 @@ import org.junit.Test;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.environment.multi.data.DtDefinitions;
-import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  * Test de l'implémentation standard.
@@ -48,7 +48,11 @@ public final class MultiResourcesEnvironmentManagerTest {
 	@Test
 	public void testFirst() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp").addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr").endModule()
+				.addModule(new ModuleConfigBuilder("myApp")
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+								.build())
+						.build())
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
@@ -59,14 +63,13 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testMergedResources() {
-		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp")
-					.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
-					.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
-				.endModule()
-			.build();
-		// @formatter:on
+				.addModule(new ModuleConfigBuilder("myApp")
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName()).build())
+						.build())
+				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
@@ -78,14 +81,14 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testSplittedModules() {
-		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp")
-				.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
-				.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
-				.endModule()
-			.build();
-		// @formatter:on
+				.addModule(new ModuleConfigBuilder("myApp")
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
+								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
+								.build())
+						.build())
+				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
@@ -97,18 +100,13 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
-
 		return
 			new AppConfigBuilder()
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
-			.endBoot()
-			.beginBootModule("fr")
+				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(KprLoaderPlugin.class)
-				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(DomainDynamicRegistryPlugin.class)
-			.endModule();
+			.endBoot();
 		// @formatter:on
 	}
 }

@@ -19,12 +19,13 @@
 package io.vertigo.persona.impl.security;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.core.param.Param;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Defines persona features.
- * 
+ *
  * @author pchretien
  */
 public final class PersonaFeatures extends Features {
@@ -36,13 +37,6 @@ public final class PersonaFeatures extends Features {
 		super("persona");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		//		getModuleConfigBuilder()
-		//				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class);
-	}
-
 	/**
 	 * Activates user session.
 	 * @param userSessionClass the user session class
@@ -50,8 +44,15 @@ public final class PersonaFeatures extends Features {
 	 */
 	public PersonaFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
 		getModuleConfigBuilder()
-				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
-				.addParam("userSessionClassName", userSessionClass.getName());
+				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
+						Param.create("userSessionClassName", userSessionClass.getName()));
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		//		getModuleConfigBuilder()
+		//				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class);
 	}
 }

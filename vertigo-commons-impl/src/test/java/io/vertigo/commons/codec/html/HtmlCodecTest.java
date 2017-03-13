@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.codec.html;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
@@ -40,10 +41,10 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	@Override
 	@Test
 	public void testNull() throws Exception {
-		Assert.assertEquals("", codec.encode(null));
-		Assert.assertEquals("", codec.encode(""));
-		Assert.assertEquals(null, codec.decode(null));
-		Assert.assertEquals("", codec.decode(""));
+		assertEquals("", codec.encode(null));
+		assertEquals("", codec.encode(""));
+		assertEquals(null, codec.decode(null));
+		assertEquals("", codec.decode(""));
 	}
 
 	/** {@inheritDoc} */
@@ -51,26 +52,26 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	@Test
 	public void testEncode() {
 		//Caractères simples sans encodage
-		Assert.assertEquals(codec.encode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
-		Assert.assertEquals(codec.encode("0123456789"), "0123456789");
-		Assert.assertEquals(codec.encode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		Assert.assertEquals(codec.encode(" "), " ");
-		Assert.assertEquals(codec.encode(""), "");
-		Assert.assertEquals(codec.encode("/"), "/");
-		Assert.assertEquals(codec.encode(";"), ";");
-		Assert.assertEquals(codec.encode("-"), "-");
+		assertEquals(codec.encode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
+		assertEquals(codec.encode("0123456789"), "0123456789");
+		assertEquals(codec.encode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		assertEquals(codec.encode(" "), " ");
+		assertEquals(codec.encode(""), "");
+		assertEquals(codec.encode("/"), "/");
+		assertEquals(codec.encode(";"), ";");
+		assertEquals(codec.encode("-"), "-");
 		//Mixte de caractères simples
-		Assert.assertEquals(codec.encode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
+		assertEquals(codec.encode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
 		//Accents
-		Assert.assertEquals(codec.encode("é"), "&eacute;");
-		Assert.assertEquals(codec.encode("è"), "&egrave;");
+		assertEquals(codec.encode("é"), "&eacute;");
+		assertEquals(codec.encode("è"), "&egrave;");
 		//Symbole euro
-		Assert.assertEquals(codec.encode(Character.toString((char) 8364)), "&euro;");
-		Assert.assertEquals(codec.encode(Character.toString((char) 128)), "&euro;");
+		assertEquals(codec.encode(Character.toString((char) 8364)), "&euro;");
+		assertEquals(codec.encode(Character.toString((char) 128)), "&euro;");
 		// < >
-		Assert.assertEquals(codec.encode("<tag>"), "&lt;tag&gt;");
+		assertEquals(codec.encode("<tag>"), "&lt;tag&gt;");
 		// caractères spéciaux :  "
-		Assert.assertEquals(codec.encode("\""), "&quot;");
+		assertEquals(codec.encode("\""), "&quot;");
 
 		/*
 		 Pour réaliser des benchs de perfs
@@ -87,26 +88,26 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	@Test
 	public void testDecode() {
 		//Caractères simples sans encodage
-		Assert.assertEquals(codec.decode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
-		Assert.assertEquals(codec.decode("0123456789"), "0123456789");
-		Assert.assertEquals(codec.decode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		Assert.assertEquals(codec.decode(" "), " ");
-		Assert.assertEquals(codec.decode(""), "");
-		Assert.assertEquals(codec.decode("/"), "/");
-		Assert.assertEquals(codec.decode("&"), "&");
-		Assert.assertEquals(codec.decode(";"), ";");
-		Assert.assertEquals(codec.decode("-"), "-");
+		assertEquals(codec.decode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
+		assertEquals(codec.decode("0123456789"), "0123456789");
+		assertEquals(codec.decode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		assertEquals(codec.decode(" "), " ");
+		assertEquals(codec.decode(""), "");
+		assertEquals(codec.decode("/"), "/");
+		assertEquals(codec.decode("&"), "&");
+		assertEquals(codec.decode(";"), ";");
+		assertEquals(codec.decode("-"), "-");
 		//Mixte de caractères simples
-		Assert.assertEquals(codec.decode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
+		assertEquals(codec.decode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
 		//Accents
-		Assert.assertEquals(codec.decode("&eacute;"), "é");
-		Assert.assertEquals(codec.decode("&egrave;"), "è");
+		assertEquals(codec.decode("&eacute;"), "é");
+		assertEquals(codec.decode("&egrave;"), "è");
 		//Symbole euro (dans HtmlCodec, l'euro est actuellement transformé en char 128)
-		Assert.assertEquals(codec.decode("&euro;"), Character.toString((char) 128));
+		assertEquals(codec.decode("&euro;"), Character.toString((char) 128));
 		// < >
-		Assert.assertEquals(codec.decode("&lt;tag&gt;"), "<tag>");
+		assertEquals(codec.decode("&lt;tag&gt;"), "<tag>");
 		// caractères spéciaux :  "
-		Assert.assertEquals(codec.decode("&quot;"), "\"");
+		assertEquals(codec.decode("&quot;"), "\"");
 	}
 
 	/** {@inheritDoc} */
@@ -121,9 +122,9 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	 */
 	@Test
 	public void testNotDecode() {
-		Assert.assertEquals("&eplat", codec.decode("&eplat"));
-		Assert.assertEquals("&testtroplong;", codec.decode("&testtroplong;"));
-		Assert.assertEquals("& deux moutons", codec.decode("& deux moutons"));
+		assertEquals("&eplat", codec.decode("&eplat"));
+		assertEquals("&testtroplong;", codec.decode("&testtroplong;"));
+		assertEquals("& deux moutons", codec.decode("& deux moutons"));
 	}
 
 	/**
@@ -131,8 +132,8 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	 */
 	@Test
 	public void testNotEncode() {
-		Assert.assertEquals("&#88;", codec.encode("&#88;"));
-		Assert.assertEquals("&#885;", codec.encode("&#885;"));
-		Assert.assertEquals("&#8859;", codec.encode("&#8859;"));
+		assertEquals("&#88;", codec.encode("&#88;"));
+		assertEquals("&#885;", codec.encode("&#885;"));
+		assertEquals("&#8859;", codec.encode("&#8859;"));
 	}
 }

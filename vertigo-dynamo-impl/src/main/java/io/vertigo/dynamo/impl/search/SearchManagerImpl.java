@@ -33,7 +33,6 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracker;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.core.locale.LocaleManager;
@@ -61,7 +60,7 @@ import io.vertigo.lang.VSystemException;
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 
-	private static final String ANALYTICS_TYPE = "search";
+	private static final String CATEGORY = "search";
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
@@ -136,61 +135,68 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/putAll")) {
-			searchServicesPlugin.putAll(indexDefinition, indexCollection);
-			tracker.setMeasure("nbModifiedRow", indexCollection.size())
-					.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				CATEGORY,
+				"/putAll/" + indexDefinition.getName(),
+				tracer -> {
+					searchServicesPlugin.putAll(indexDefinition, indexCollection);
+					tracer.setMeasure("nbModifiedRow", indexCollection.size());
+				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/put")) {
-			searchServicesPlugin.put(indexDefinition, index);
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				CATEGORY,
+				"/put/" + indexDefinition.getName(),
+				tracer -> {
+					searchServicesPlugin.put(indexDefinition, index);
+					tracer.setMeasure("nbModifiedRow", 1);
+				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/load")) {
-			final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
-			tracker.setMeasure("nbSelectedRow", result.getCount())
-					.markAsSucceeded();
-			return result;
-		}
+		return analyticsManager.traceWithReturn(
+				CATEGORY,
+				"/loadList" + indexDefinition.getName(),
+				tracer -> {
+					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
+					tracer.setMeasure("nbSelectedRow", result.getCount());
+					return result;
+				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/count")) {
-			final long result = searchServicesPlugin.count(indexDefinition);
-			tracker.markAsSucceeded();
-			return result;
-		}
+		return analyticsManager.traceWithReturn(
+				CATEGORY,
+				"/count/" + indexDefinition.getName(),
+				tracer -> searchServicesPlugin.count(indexDefinition));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/remove")) {
-			searchServicesPlugin.remove(indexDefinition, uri);
-			tracker.setMeasure("nbModifiedRow", 1)
-					.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				CATEGORY,
+				"/remove/" + indexDefinition.getName(),
+				tracer -> {
+					searchServicesPlugin.remove(indexDefinition, uri);
+					tracer.setMeasure("nbModifiedRow", 1);
+				});
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		try (AnalyticsTracker tracker = analyticsManager.startTracker(ANALYTICS_TYPE, indexDefinition.getName() + "/removeAll")) {
-			searchServicesPlugin.remove(indexDefinition, listFilter);
-			tracker.markAsSucceeded();
-		}
+		analyticsManager.trace(
+				CATEGORY,
+				"/removeAll/" + indexDefinition.getName(),
+				tracer -> searchServicesPlugin.remove(indexDefinition, listFilter));
 	}
 
 	/** {@inheritDoc} */

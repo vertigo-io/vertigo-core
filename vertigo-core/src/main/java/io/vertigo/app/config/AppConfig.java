@@ -85,28 +85,38 @@ public final class AppConfig {
 		doPrint(out);
 	}
 
+	private static void doPrintLine(final PrintStream out) {
+		out.println("+-------------------------+------------------------+----------------------------------------------+");
+	}
+
 	/**
 	 * Affiche dans la console le logo.
 	 * @param out Flux de sortie des informations
 	 */
 	private void doPrint(final PrintStream out) {
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
+		doPrintLine(out);
 		printComponent(out, "modules", "components", "plugins");
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
-		printModule(out, bootConfig.getBootModuleConfig());
+		doPrintLine(out);
+		printComponents(out, "boot", bootConfig.getComponentConfigs());
 		for (final ModuleConfig moduleConfig : modules) {
-			out.println("+-------------------------+------------------------+----------------------------------------------+");
+			doPrintLine(out);
 			printModule(out, moduleConfig);
 		}
-		out.println("+-------------------------+------------------------+----------------------------------------------+");
+		doPrintLine(out);
 	}
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
-		String moduleName = moduleConfig.getName();
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			final String componentClassName = (componentConfig.getApiClass().isPresent() ? componentConfig.getApiClass().get() : componentConfig.getImplClass()).getSimpleName();
-			printComponent(out, moduleName, componentClassName, null);
-			moduleName = null;
+		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
+	}
+
+	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {
+		boolean first = true;
+		for (final ComponentConfig componentConfig : componentConfigs) {
+			final String componentClassName = componentConfig.getApiClass()
+					.orElse(componentConfig.getImplClass())
+					.getSimpleName();
+			printComponent(out, first ? moduleName : null, componentClassName, null);
+			first = false;
 		}
 	}
 

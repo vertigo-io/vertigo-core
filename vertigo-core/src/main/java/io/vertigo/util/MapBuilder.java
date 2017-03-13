@@ -21,6 +21,7 @@ package io.vertigo.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -28,19 +29,20 @@ import io.vertigo.lang.Builder;
 /**
  * The MapBuilder class allows to build a map.
  * The map can be immutable using unmodifiable().
- * Several put() methods exist to cover the frequent cases. 
- *   
+ * Several put() methods exist to cover the frequent cases.
+ *
  * @author pchretien
- * @param <K> the type of keys 
+ * @param <K> the type of keys
  * @param <V> the type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
-	private Map<K, V> map = new HashMap<>();
+	private final Map<K, V> myMap = new HashMap<>();
+	private boolean unmodifiable;
 
 	/**
 	 * Adds key-value.
 	 * If the same value exists then an exception is thrown.
-	 *  
+	 *
 	 * @param key Key
 	 * @param value Value not null
 	 * @return this builder
@@ -49,8 +51,23 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
 		//-----
-		final Object previous = map.put(key, value);
+		final Object previous = myMap.put(key, value);
 		Assertion.checkArgument(previous == null, "Data with key '{0}' already registered", key);
+		return this;
+	}
+
+	/**
+	 * Adds a map of key-value.
+	 * Values are required.
+	 * @param map Map
+	 * @return this builder
+	 */
+	public MapBuilder<K, V> putAll(final Map<K, V> map) {
+		Assertion.checkNotNull(map);
+		//-----
+		for (final Entry<K, V> entry : map.entrySet()) {
+			put(entry.getKey(), entry.getValue());
+		}
 		return this;
 	}
 
@@ -65,11 +82,11 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
 		//-----
-		map.put(key, value);
+		myMap.put(key, value);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Adds nullable key-value.
 	 * @param key Key
 	 * @param value Value nullable
@@ -79,7 +96,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		Assertion.checkNotNull(key);
 		//-----
 		if (value != null) {
-			map.put(key, value);
+			myMap.put(key, value);
 		}
 		return this;
 	}
@@ -89,13 +106,13 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 * @return this builder
 	 */
 	public MapBuilder<K, V> unmodifiable() {
-		this.map = Collections.unmodifiableMap(map);
+		unmodifiable = true;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<K, V> build() {
-		return map;
+		return unmodifiable ? Collections.unmodifiableMap(myMap) : myMap;
 	}
 }

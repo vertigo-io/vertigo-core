@@ -18,67 +18,56 @@
  */
 package io.vertigo.app.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 
 /**
- * Paramétrage de l'application.
+ * This class allows to configure a component step by step.
  *
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-	private final ModuleConfigBuilder moduleConfigBuilder;
-	private final Optional<Class<? extends Component>> apiClass;
+	private final Optional<Class<? extends Component>> optionalApiClass;
 	private final Class<? extends Component> implClass;
-	private final boolean elastic;
-	private final Map<String, String> myParams = new HashMap<>();
+	private final List<Param> myParams = new ArrayList<>();
 
-	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Optional<Class<? extends Component>> apiClass, final Class<? extends Component> implClass, final boolean elastic) {
-		Assertion.checkNotNull(moduleConfigBuilder);
-		Assertion.checkNotNull(apiClass);
+	/**
+	 * Constructor of a component config
+	 * @param optionalApiClass and optional apiClass for the component
+	 * @param implClass the impl class of the component
+	 */
+	public ComponentConfigBuilder(final Optional<Class<? extends Component>> optionalApiClass, final Class<? extends Component> implClass) {
+		Assertion.checkNotNull(optionalApiClass);
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.moduleConfigBuilder = moduleConfigBuilder;
-		this.apiClass = apiClass;
+		this.optionalApiClass = optionalApiClass;
 		this.implClass = implClass;
-		this.elastic = elastic;
 	}
 
 	/**
-	 * Add a param to this component config.
-	 * @param paramName Name of the param
-	 * @param paramValue Value of the param
+	 * Adds a param to this component config.
+	 * @param param the param
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
-		Assertion.checkArgNotEmpty(paramName);
-		//paramValue can be null
+	public ComponentConfigBuilder addParam(final Param param) {
+		Assertion.checkNotNull(param);
 		//-----
-		if (paramValue != null) {
-			myParams.put(paramName, paramValue);
-		}
+		myParams.add(param);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final String id = apiClass.isPresent() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
-		return new ComponentConfig(id, apiClass, implClass, elastic, myParams);
-	}
-
-	/**
-	 * close this component config and returns to the module config.
-	 * @return the builder of the moduleConfig
-	 */
-	public ModuleConfigBuilder endComponent() {
-		return moduleConfigBuilder;
+		final String id = optionalApiClass.isPresent() ? DIAnnotationUtil.buildId(optionalApiClass.get()) : DIAnnotationUtil.buildId(implClass);
+		return new ComponentConfig(id, optionalApiClass, implClass, myParams);
 	}
 }

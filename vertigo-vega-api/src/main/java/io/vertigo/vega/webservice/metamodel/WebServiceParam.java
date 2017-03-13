@@ -21,6 +21,7 @@ package io.vertigo.vega.webservice.metamodel;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,13 +56,19 @@ public final class WebServiceParam {
 	 * Parameter's source types.
 	 */
 	public enum WebServiceParamType {
-		Query, Path, Header, Body, InnerBody, Implicit
+		Query,
+		Path,
+		Header,
+		Body,
+		InnerBody,
+		Implicit
 	}
 
 	public enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class),
 		//UiListState(UiListState.class),
-		Request(HttpServletRequest.class), Response(HttpServletResponse.class),;
+		Request(HttpServletRequest.class),
+		Response(HttpServletResponse.class),;
 
 		private Class<?> implicitType;
 
@@ -104,15 +111,6 @@ public final class WebServiceParam {
 				.check(() -> (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
-	private static boolean isImplicitParam(final String testedName) {
-		for (final ImplicitParam existingParam : ImplicitParam.values()) {
-			if (existingParam.name().equals(testedName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
@@ -133,6 +131,11 @@ public final class WebServiceParam {
 		this.needServerSideToken = needServerSideToken;
 		this.consumeServerSideToken = consumeServerSideToken;
 		this.dtObjectValidatorClasses = Collections.unmodifiableList(new ArrayList<>(dtObjectValidatorClasses));
+	}
+
+	private static boolean isImplicitParam(final String testedName) {
+		return Arrays.stream(ImplicitParam.values())
+				.anyMatch(implicitParam -> implicitParam.name().equals(testedName));
 	}
 
 	/**

@@ -18,9 +18,10 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,7 +59,9 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 * @param methodCORSFilter Method CORS Allowed
 	 */
 	@Inject
-	public CorsAllowerWebServiceHandlerPlugin(@Named("originCORSFilter") final Optional<String> originCORSFilter, @Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
+	public CorsAllowerWebServiceHandlerPlugin(
+			@Named("originCORSFilter") final Optional<String> originCORSFilter,
+			@Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
@@ -115,11 +118,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	}
 
 	private static Set<String> parseStringToSet(final String param) {
-		final String[] values = param.split(",");
-		final Set<String> parsedConfig = new HashSet<>(values.length);
-		for (final String value : values) {
-			parsedConfig.add(value.trim());
-		}
-		return parsedConfig;
+		return Arrays.stream(param.split(","))
+				.map(value -> value.trim())
+				.collect(Collectors.toSet());
 	}
 }
