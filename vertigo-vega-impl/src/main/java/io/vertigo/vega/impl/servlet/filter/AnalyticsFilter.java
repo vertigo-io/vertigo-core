@@ -46,9 +46,9 @@ public final class AnalyticsFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doMyFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) {
-		final String name = "/url/" + ((HttpServletRequest) request).getRequestURL().toString();
+		final String name = ((HttpServletRequest) request).getRequestURL().toString();
 		analyticsManager.trace(
-				"pages",
+				"urls",
 				name,
 				tracer -> {
 					try {
