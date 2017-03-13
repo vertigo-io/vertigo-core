@@ -44,6 +44,7 @@ __In Bold__ : Potential compatibility problems
 * [Dynamo] Changed reindexer task log level to debug, if nothing was updated
 * [Dynamo] Added new Criterions class, should replace previous ListFilter and Criteria
 * [Dynamo] Fixed ReindexTask to use KeyConcept URI instead of Dt Index which could be unpersistent
+* [Dynamo] A DtList can't be optional (especially in Tasks)
 * __[Persona] Replaced Security DTD by XSD__
 * [Persona] Added Dsl parser for security rule (usefull for next version of security managment)
 * [Vega] Fixed #77 (WS routes with numbers)
