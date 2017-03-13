@@ -23,6 +23,9 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.apache.log4j.Logger;
+
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.lang.Assertion;
 
@@ -31,6 +34,8 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
+	private final static Logger LOGGER = Logger.getLogger(AnalyticsManager.class);
+
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
 	private final Deque<AProcessBuilder> stack;
@@ -100,6 +105,25 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		} else {
 			//when the current process is a subProcess, it's finished and must be added to the stack
 			stack.peek().addSubProcess(process);
+		}
+		logProcess(process, succeeded);
+	}
+
+	private static void logProcess(final AProcess process, final boolean succeeded) {
+		if (LOGGER.isInfoEnabled()) {
+			final StringBuilder sb = new StringBuilder()
+					.append("Finish ")
+					.append(process.getCategory())
+					.append(succeeded ? " successfully" : " with error").append(" in ( ")
+					.append(process.getDurationMillis())
+					.append(" ms)");
+			if (!process.getMeasures().isEmpty()) {
+				sb.append(" measures:").append(process.getMeasures());
+			}
+			if (!process.getTags().isEmpty()) {
+				sb.append(" metaData:").append(process.getTags());
+			}
+			LOGGER.info(sb.toString());
 		}
 	}
 
