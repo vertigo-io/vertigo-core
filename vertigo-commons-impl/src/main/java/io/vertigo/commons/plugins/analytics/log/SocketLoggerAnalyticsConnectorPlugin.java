@@ -86,8 +86,10 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		// we make only one try
 		appender.setReconnectionDelay(0);
 		//---
+		logger.removeAllAppenders();
 		logger.addAppender(appender);
 		logger.setLevel(Level.INFO);
+		logger.setAdditivity(false);
 		return logger;
 	}
 
