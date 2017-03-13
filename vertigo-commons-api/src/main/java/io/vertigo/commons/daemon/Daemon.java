@@ -24,5 +24,10 @@ package io.vertigo.commons.daemon;
  * @author tingargiola
  */
 public interface Daemon extends Runnable {
-	//
+	/**
+	 * @return if the logs are activated or not.
+	 */
+	default boolean verbose() {
+		return false;
+	}
 }

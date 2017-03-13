@@ -38,7 +38,7 @@ import io.vertigo.lang.Assertion;
 final class DaemonExecutor implements Activeable {
 	private boolean isActive;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-	private final List<DaemonTimerTask> daemonTimerTasks = new ArrayList<>();
+	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
 	/**
 	* Enregistre un démon.
@@ -51,8 +51,9 @@ final class DaemonExecutor implements Activeable {
 		Assertion.checkNotNull(daemonInfo);
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonInfo, daemon);
-		daemonTimerTasks.add(timerTask);
+		final DaemonListener daemonListener = new DaemonListener(daemonInfo, daemon.verbose());
+		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
+		daemonListeners.add(daemonListener);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonInfo.getPeriodInSeconds(), daemonInfo.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
@@ -60,7 +61,7 @@ final class DaemonExecutor implements Activeable {
 	 * @return Daemons stats
 	 */
 	List<DaemonStat> getStats() {
-		return daemonTimerTasks
+		return daemonListeners
 				.stream()
 				.map(daemonTimerTask -> daemonTimerTask.getStat())
 				.collect(Collectors.toList());
@@ -78,5 +79,4 @@ final class DaemonExecutor implements Activeable {
 		scheduler.shutdown();
 		isActive = false;
 	}
-
 }
