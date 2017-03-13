@@ -23,6 +23,7 @@ __In Bold__ : Potential compatibility problems
 * [Core] Updated cglib » cglib-nodep from 3.2.2 to 3.2.4
 * [Core] Added notepad++ coloration config
 * [Core] Changed tests Junit4 Assert to JUnit5 Assertions
+* [Core] Simple ParamManager API
 * [Commons] Refactor AnalyticsManager, added some plugins to log, aggregate and centralize measures 
 * [Commons] Updated minor slf4j-api from 1.7.21 to 1.7.22
 * [Dynamo] Adding Collectors in order to create DtList from Java 8 stream
