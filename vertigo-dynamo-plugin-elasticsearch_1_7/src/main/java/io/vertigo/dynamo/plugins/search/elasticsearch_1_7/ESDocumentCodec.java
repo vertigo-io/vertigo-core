@@ -67,7 +67,6 @@ final class ESDocumentCodec {
 	private <I extends DtObject> String encode(final I dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		//	System.out.println(">>>encode : " + dto);
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}

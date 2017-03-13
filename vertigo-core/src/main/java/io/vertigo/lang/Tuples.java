@@ -33,7 +33,7 @@ public final class Tuples {
 	 * Creates a Tuple with 2 objects
 	 * @param val1 the first object
 	 * @param val2 the second object
-	 * @return
+	 * @return the new tuple created
 	 */
 	public static <A, B> Tuple2<A, B> of(final A val1, final B val2) {
 		return new Tuple2(val1, val2);
@@ -44,7 +44,7 @@ public final class Tuples {
 	 * @param val1 the first object
 	 * @param val2 the second object
 	 * @param val3 the third object
-	 * @return
+	 * @return the new tuple created
 	 */
 	public static <A, B, C> Tuple3<A, B, C> of(final A val1, final B val2, final C val3) {
 		return new Tuple3(val1, val2, val3);
