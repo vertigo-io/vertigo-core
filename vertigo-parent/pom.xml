@@ -30,7 +30,7 @@ limitations under the License. -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>0.9.4</vertigo.version>
+		<vertigo.version>0.9.5-SNAPSHOT</vertigo.version>
 		
 		<!-- For global junit test coverage -->
 		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
@@ -49,7 +49,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.9.4-SNAPSHOT</tag>
+		<tag>vertigo-0.9.5-SNAPSHOT</tag>
 	</scm>
 
 	<developers>
