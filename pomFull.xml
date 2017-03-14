@@ -61,6 +61,8 @@ limitations under the License. -->
 		<module>vertigo-bundle</module>
 
 		<module>..\vertigo-extensions</module>
+		
+		<module>..\vertigo-orchestra</module>
 	</modules>
 	
 	<scm>

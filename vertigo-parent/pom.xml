@@ -20,7 +20,7 @@ limitations under the License. -->
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.9.4-SNAPSHOT</version>
+	<version>0.9.5-SNAPSHOT</version>
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -30,7 +30,7 @@ limitations under the License. -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>0.9.4-SNAPSHOT</vertigo.version>
+		<vertigo.version>0.9.4</vertigo.version>
 		
 		<!-- For global junit test coverage -->
 		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>

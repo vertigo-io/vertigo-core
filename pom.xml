@@ -8,13 +8,12 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.4-SNAPSHOT</version>
+		<version>0.9.5-SNAPSHOT</version>
 		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 
@@ -49,16 +48,5 @@
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
 		<tag>vertigo-0.9.4-SNAPSHOT</tag>
 	</scm>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip> <!-- No need to deploy the reactor -->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
