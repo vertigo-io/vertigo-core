@@ -443,7 +443,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
-				final String fieldName = StringUtil.constToLowerCamelCase(dtField.name());
+				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 				pseudoWebServiceParams.add(new WebServiceParamBuilder(dtField.getDomain().getDataType().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());

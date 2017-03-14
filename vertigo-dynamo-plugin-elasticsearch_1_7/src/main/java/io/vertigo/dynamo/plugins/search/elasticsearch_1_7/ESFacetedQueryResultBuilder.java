@@ -111,7 +111,8 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(), resultCluster, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, searchQuery.isClusteringFacet() ? Optional.of(searchQuery.getClusteringFacetDefinition()) : Optional.empty(),
+				resultCluster, resultHighlights, searchQuery);
 	}
 
 	private Map<FacetValue, DtList<I>> createCluster(final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
@@ -131,7 +132,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			FacetValue facetValue;
 			for (final Bucket value : multiBuckets.getBuckets()) {
 				final String term = value.getKey();
-				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
 				facetValue = new FacetValue(term, new ListFilter(query), label);
 				populateCluster(value, facetValue, resultCluster, dtcIndex, resultHighlights);
@@ -140,7 +141,8 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		return resultCluster;
 	}
 
-	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
+	private void populateCluster(final Bucket value, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex,
+			final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
 		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		for (final SearchHit searchHit : facetSearchHits) {
@@ -205,7 +207,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		for (final Bucket value : multiBuckets.getBuckets()) {
 			final String term = value.getKey();
 			final MessageText label = new MessageText(term, null);
-			final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 			facetValue = new FacetValue(term, new ListFilter(query), label);
 			facetValues.put(facetValue, value.getDocCount());
 		}

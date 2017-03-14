@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
@@ -25,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * @param <D> the dtobject associated to this dtField
  * @author mlaroche
  */
-public interface DtFieldName<D extends DtObject> {
+public interface DtFieldName<D extends DtObject> extends Serializable {
 
 	/** @return nom du champ (const case) */
 	String name();

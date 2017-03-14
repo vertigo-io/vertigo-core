@@ -143,7 +143,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			FacetValue facetValue;
 			for (final Bucket bucket : multiBuckets.getBuckets()) {
 				final String term = bucket.getKeyAsString();
-				final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
 				facetValue = new FacetValue(term, new ListFilter(query), label);
 				populateCluster(bucket, facetValue, resultCluster, dtcIndex, resultHighlights);
@@ -160,7 +160,8 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 				.orElseThrow(() -> new VSystemException("No facet {0} found in result", facetName));
 	}
 
-	private void populateCluster(final Bucket bucket, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex, final Map<I, Map<DtField, String>> resultHighlights) {
+	private void populateCluster(final Bucket bucket, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex,
+			final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) bucket.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
 		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		for (final SearchHit searchHit : facetSearchHits) {
@@ -225,7 +226,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		for (final Bucket value : multiBuckets.getBuckets()) {
 			final String term = value.getKeyAsString();
 			final MessageText label = new MessageText(term, null);
-			final String query = facetDefinition.getDtField().name() + ":\"" + term + "\"";
+			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 			facetValue = new FacetValue(term, new ListFilter(query), label);
 			facetValues.put(facetValue, value.getDocCount());
 		}

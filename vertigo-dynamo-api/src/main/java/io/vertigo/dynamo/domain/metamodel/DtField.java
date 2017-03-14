@@ -42,7 +42,8 @@ import io.vertigo.lang.MessageText;
  *
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField implements DtFieldName {
+public final class DtField {
+
 	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
 	public static final String PREFIX = "FLD_";
@@ -169,12 +170,6 @@ public final class DtField implements DtFieldName {
 	 */
 	public String getResourceKey() {
 		return id;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String name() {
-		return name;
 	}
 
 	/**

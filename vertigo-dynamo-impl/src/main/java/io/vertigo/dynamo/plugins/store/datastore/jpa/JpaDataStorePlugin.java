@@ -237,7 +237,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField, value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
 	}
 
 	/** {@inheritDoc} */
