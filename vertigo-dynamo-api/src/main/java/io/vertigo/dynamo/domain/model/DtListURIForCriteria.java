@@ -81,9 +81,9 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 				final Object value = field.getDataAccessor().getValue(dtoCriteria);
 				if (value instanceof String && field.getType() != DtField.FieldType.FOREIGN_KEY) {
 					//si String et pas une FK : on met en préfix
-					criteria = criteria.and(Criterions.startsWith(field::getName, (String) value));
+					criteria = criteria.and(Criterions.startsWith(() -> field.getName(), (String) value));
 				} else if (value != null) {
-					criteria = criteria.and(Criterions.isEqualTo(field::getName, (Comparable) value));
+					criteria = criteria.and(Criterions.isEqualTo(() -> field.getName(), (Comparable) value));
 				}
 			}
 			//si null, alors on ne filtre pas

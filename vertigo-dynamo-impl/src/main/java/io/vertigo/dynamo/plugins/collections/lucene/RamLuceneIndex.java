@@ -163,7 +163,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 				final Document document = searcher.doc(scoreDoc.doc);
-				dtcResult.add(getDtObjectIndexed(document.get(idField.name())));
+				dtcResult.add(getDtObjectIndexed(document.get(idField.getName())));
 			}
 		}
 		return dtcResult;
@@ -185,20 +185,20 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final Object pkValue = idField.getDataAccessor().getValue(dto);
-				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.name());
+				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.getName());
 				final String indexedPkValue = String.valueOf(pkValue);
-				addKeyword(document, idField.name(), indexedPkValue, true);
+				addKeyword(document, idField.getName(), indexedPkValue, true);
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && !dtField.equals(idField)) {
 						if (value instanceof String) {
 							final String valueAsString = getStringValue(dto, dtField);
-							addIndexed(document, dtField.name(), valueAsString, storeValue);
+							addIndexed(document, dtField.getName(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
-							addKeyword(document, dtField.name(), valueAsString, storeValue);
+							addKeyword(document, dtField.getName(), valueAsString, storeValue);
 						} else {
-							addKeyword(document, dtField.name(), value.toString(), storeValue);
+							addKeyword(document, dtField.getName(), value.toString(), storeValue);
 						}
 					}
 				}
