@@ -49,15 +49,4 @@
 		<tag>vertigo-0.9.4-SNAPSHOT</tag>
 	</scm>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip> <!-- No need to deploy the reactor -->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
