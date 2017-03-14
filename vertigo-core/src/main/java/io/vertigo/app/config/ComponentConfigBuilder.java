@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -41,14 +40,14 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 	/**
 	 * Constructor of a component config
-	 * @param optionalApiClass and optional apiClass for the component
+	 * @param apiClassOpt and optional apiClass for the component
 	 * @param implClass the impl class of the component
 	 */
-	public ComponentConfigBuilder(final Optional<Class<? extends Component>> optionalApiClass, final Class<? extends Component> implClass) {
-		Assertion.checkNotNull(optionalApiClass);
+	public ComponentConfigBuilder(final Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass) {
+		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.optionalApiClass = optionalApiClass;
+		this.optionalApiClass = apiClassOpt;
 		this.implClass = implClass;
 	}
 
@@ -67,7 +66,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final String id = optionalApiClass.isPresent() ? DIAnnotationUtil.buildId(optionalApiClass.get()) : DIAnnotationUtil.buildId(implClass);
-		return new ComponentConfig(id, optionalApiClass, implClass, myParams);
+		return ComponentConfig.of(optionalApiClass, implClass, myParams);
 	}
 }

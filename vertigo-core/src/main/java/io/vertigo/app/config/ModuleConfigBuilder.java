@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -105,8 +104,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(implClass);
-		return addComponent(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
+		return addComponent(ComponentConfig.of(Optional.empty(), implClass, Arrays.asList(params)));
 	}
 
 	/**
@@ -121,8 +119,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(apiClass);
-		return addComponent(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+		return addComponent(ComponentConfig.of(Optional.of(apiClass), implClass, Arrays.asList(params)));
 	}
 
 	/**

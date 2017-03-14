@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
@@ -123,8 +122,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(implClass);
-		myComponentConfigs.add(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
+		myComponentConfigs.add(ComponentConfig.of(Optional.empty(), implClass, Arrays.asList(params)));
 	}
 
 	/**
@@ -139,8 +137,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(apiClass);
-		myComponentConfigs.add(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+		myComponentConfigs.add(ComponentConfig.of(Optional.of(apiClass), implClass, Arrays.asList(params)));
 		return this;
 	}
 

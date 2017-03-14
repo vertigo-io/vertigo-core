@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
@@ -46,30 +47,44 @@ public final class ComponentConfig {
 
 	/**
 	 * Constructor.
-	 * @param optionalApiClass api of the component
+	 * @param apiClassOpt api of the component
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
 	ComponentConfig(
 			final String id,
-			final Optional<Class<? extends Component>> optionalApiClass,
+			final Optional<Class<? extends Component>> apiClassOpt,
 			final Class<? extends Component> implClass,
 			final List<Param> params) {
 		Assertion.checkArgNotEmpty(id);
-		Assertion.checkNotNull(optionalApiClass);
+		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClass);
-		Assertion.when(optionalApiClass.isPresent()).check(() -> Component.class.isAssignableFrom(optionalApiClass.get()), "api class {0} must extend {1}", optionalApiClass, Component.class);
-		Assertion.checkArgument(Component.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Component.class);
+		Assertion.when(apiClassOpt.isPresent()).check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
+		Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class));
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
 		//-----
-		this.apiClass = optionalApiClass;
+		this.apiClass = apiClassOpt;
 		this.implClass = implClass;
 
 		this.params = params
 				.stream()
 				.collect(Collectors.toMap(Param::getName, Param::getValue));
+	}
+
+	/**
+	 * Builds a new ComponentConfig.
+	 * @param optionalApiClass api of the component
+	 * @param implClass impl class of the component
+	 * @param params params
+	 */
+	static ComponentConfig of(
+			final Optional<Class<? extends Component>> optionalApiClass,
+			final Class<? extends Component> implClass,
+			final List<Param> params) {
+		final String id = DIAnnotationUtil.buildId(optionalApiClass.orElse(implClass));
+		return new ComponentConfig(id, optionalApiClass, implClass, params);
 	}
 
 	/**
