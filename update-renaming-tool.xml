@@ -21,9 +21,9 @@
 			<include name="**/*.java" />
 		</replace>
 
-		<echo message="Renamed in *.java : io.vertigo.core.spaces.component.ComponentInfo to io.vertigo.core.component.ComponentInfo" />
-		<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.spaces.component.ComponentInfo" value="io.vertigo.core.component.ComponentInfo">
-			<include name="**/*.java" />
+		<echo message="Renamed in *.java : io.vertigo.core.spaces.component. to io.vertigo.core.component." />
+		<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.core.spaces.component." value="io.vertigo.core.component.">
+			 <include name="**/*.java" />
 		</replace>
 
 		<echo message="Renamed in *.java : new WrappedException(.*, e); to WrappedException.wrap(e, msg)" />
@@ -48,7 +48,6 @@
 			<include name="**/*.java" />
 		</replace>
 
-
 		<echo message="Renamed in *.java : .getStringValue(&quot;([a-zA-Z0-9\.]+)&quot;); to .getParam(\1).getValueAsString" />
 		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
 			<fileset dir="${src.path}">
@@ -57,6 +56,7 @@
 			<regexp pattern="\.getStringValue\(&quot;([a-zA-Z0-9\.]+)&quot;\)" />
 			<substitution expression=".getParam(&quot;\1&quot;).getValueAsString()" />
 		</replaceregexp>
+		
 		<echo message="Renamed in *.java : .getBooleanValue(&quot;([a-zA-Z0-9\.]+)&quot;); to .getParam(\1).getValueAsBoolean" />
 		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
 			<fileset dir="${src.path}">
@@ -65,6 +65,7 @@
 			<regexp pattern="\.getBooleanValue\(&quot;([a-zA-Z0-9\.]+)&quot;\)" />
 			<substitution expression=".getParam(&quot;\1&quot;).getValueAsBoolean()" />
 		</replaceregexp>
+		
 		<echo message="Renamed in *.java : .getIntValue(&quot;([a-zA-Z0-9\.]+)&quot;); to .getParam(\1).getValueAsInt" />
 		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
 			<fileset dir="${src.path}">
@@ -73,6 +74,7 @@
 			<regexp pattern="\.getIntValue\(&quot;([a-zA-Z0-9\.]+)&quot;\)" />
 			<substitution expression=".getParam(&quot;\1&quot;).getValueAsInt()" />
 		</replaceregexp>
+		
 		<echo message="Renamed in *.java : .getLongValue(&quot;([a-zA-Z0-9\.]+)&quot;); to .getParam(\1).getValueAsLong" />
 		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
 			<fileset dir="${src.path}">
@@ -81,8 +83,8 @@
 			<regexp pattern="\.getLongValue\(&quot;([a-zA-Z0-9\.]+)&quot;\)" />
 			<substitution expression=".getParam(&quot;\1&quot;).getValueAsLong()" />
 		</replaceregexp>
-
 	</target>
+
 	<target name="0.9.2 to 0.9.3" description="Usefull renames from 0.9.2 to 0.9.3">
 		<echo message="Renamed in *.java : io.vertigo.lang.Option to java.util.Optional" />
 		<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.lang.Option" value="java.util.Optional">
