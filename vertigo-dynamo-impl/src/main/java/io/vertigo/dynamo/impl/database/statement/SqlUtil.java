@@ -26,6 +26,7 @@ import java.util.Locale;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -35,13 +36,40 @@ import io.vertigo.lang.Assertion;
  * Centralisation du peuplement des beans.
  * @author  pchretien
  */
-final class SqlRetrieveUtil {
+final class SqlUtil {
 
-	private SqlRetrieveUtil() {
+	private SqlUtil() {
 		//Classe utilitaire, constructeir est privé.
 	}
 
-	static SqlQueryResult retrievePrimitive(final DataType dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	/**
+	 * Création du résultat issu d'un resultSet.
+	 * @param domain Domain résultat
+	 * @param mapping Mapping SQL
+	 * @param resultSet ResultSet comprenant résultat et Metadonnées permettant le cas échéant de créer dynamiquement un type dynamiquement.
+	 * @return Résultat de la requête.
+	 * @throws SQLException Exception SQL
+	 */
+	static SqlQueryResult buildResult(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		if (domain.getDataType().isPrimitive()) {
+			return retrievePrimitive(domain.getDataType(), mapping, resultSet);
+		}
+		final SqlResultMetaData resultMetaData = createResultMetaData(domain);
+		return retrieveData(resultMetaData, mapping, resultSet);
+	}
+
+	/*
+	 * Création du gestionnaire des types de sortie des preparedStatement.
+	 */
+	private static SqlResultMetaData createResultMetaData(final Domain domain) {
+		Assertion.checkArgument(!domain.getDataType().isPrimitive(), "le type de retour n''est ni un DTO ni une DTC");
+		//-----
+		final boolean isDtObject = DataType.DtObject.equals(domain.getDataType());
+		//Création des DTO, DTC typés de façon déclarative.
+		return new SqlResultMetaData(domain.getDtDefinition(), isDtObject);
+	}
+
+	private static SqlQueryResult retrievePrimitive(final DataType dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
@@ -54,7 +82,7 @@ final class SqlRetrieveUtil {
 		return new SqlQueryResult(null, 0);
 	}
 
-	static SqlQueryResult retrieveData(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static SqlQueryResult retrieveData(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultMetaData.isDtObject()) {
 			return retrieveDtObject(resultMetaData, mapping, resultSet);
 		}

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.database.statement;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.lang.Assertion;
 
 /**
  * this class concerns the param of a sql statement.
@@ -36,6 +37,8 @@ final class SqlParameter {
 	 * @param in if the param is an input (or an output)
 	 */
 	SqlParameter(final DataType dataType, final boolean in) {
+		Assertion.checkNotNull(dataType);
+		//---
 		this.dataType = dataType;
 		this.in = in;
 	}

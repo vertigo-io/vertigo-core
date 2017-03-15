@@ -151,7 +151,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * Récupération de la liste des paramètres
 	 * @return Liste des paramètres
 	 */
-	final List<SqlParameter> getParameters() {
+	protected final List<SqlParameter> getParameters() {
 		return parameters;
 	}
 
@@ -273,7 +273,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final SqlQueryResult result = SqlStatementHandler.retrieveData(domain, mapping, resultSet);
+			final SqlQueryResult result = SqlUtil.buildResult(domain, mapping, resultSet);
 			tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
 			return result;
 		} catch (final SQLException e) {
