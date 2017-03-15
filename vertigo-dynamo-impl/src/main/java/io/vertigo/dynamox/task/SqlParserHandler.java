@@ -73,15 +73,8 @@ final class SqlParserHandler implements ScriptParserHandler {
 	 * @param fieldName Nom du champ dont il faut vérifier l'existence
 	 */
 	private static void checkFieldName(final TaskAttribute taskAttribute, final String fieldName) {
-		//Dans le cas des domaines de type DTO et DTC génériques,
-		//c'est à dire ne précisant pas un DT,
-		//il n'est pas possible d'eefectuer de vérification au niveau modèle.
-		if (taskAttribute.getDomain().hasDtDefinition()) {
-			//la méthode getDtDefinition() possède une assertion qui vérifie
-			// que l'on est sur un domaine gérant les type complexes (DTO ou DTC)
-			final DtField dtField = taskAttribute.getDomain().getDtDefinition().getField(fieldName);
-			Assertion.checkNotNull(dtField);
-		}
+		final DtField dtField = taskAttribute.getDomain().getDtDefinition().getField(fieldName);
+		Assertion.checkNotNull(dtField);
 	}
 
 	/**
@@ -96,7 +89,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 		//On vérifie la cohérence du Parmètre fourni
 		//On vérifie que l'attribut existe
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(param.getAttributeName());
-		//======================================================================
+		//====
 		if (param.getFieldName() != null) {
 			// On vérifie que le fieldName existe pour l'attribut précisé
 			checkFieldName(taskAttribute, param.getFieldName());

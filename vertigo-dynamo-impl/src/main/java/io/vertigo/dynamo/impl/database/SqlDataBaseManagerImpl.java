@@ -33,8 +33,6 @@ import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.statement.SqlCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
-import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
-import io.vertigo.dynamo.impl.database.statementhandler.SqlStatementHandlerImpl;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -44,7 +42,6 @@ import io.vertigo.lang.Assertion;
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	private final AnalyticsManager analyticsManager;
-	private final SqlStatementHandler statementHandler;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
 	/**
@@ -60,7 +57,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(sqlConnectionProviderPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
-		statementHandler = new SqlStatementHandlerImpl();
 		connectionProviderPluginMap = new HashMap<>(sqlConnectionProviderPlugins.size());
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
 			final String name = sqlConnectionProviderPlugin.getName();
@@ -85,13 +81,13 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		//S'il on utilise call, il faut les {..}, sinon les erreurs SQL ne sont pas tout le temps transformées en SQLException (au moins pour oracle)
 		Assertion.when(procName.contains("call ")).check(() -> procName.startsWith("{") && procName.endsWith("}"),
 				"Les appels de procédures avec call, doivent être encapsulés avec des {...}, sans cela il y a une anomalie de remonté d'erreur SQL");
-		return new SqlCallableStatementImpl(statementHandler, analyticsManager, connection, procName);
+		return new SqlCallableStatementImpl(analyticsManager, connection, procName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
-		return new SqlPreparedStatementImpl(statementHandler, analyticsManager, connection, sql, returnGeneratedKeys);
+		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, returnGeneratedKeys);
 
 	}
 }

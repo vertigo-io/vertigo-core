@@ -21,7 +21,8 @@ package io.vertigo.dynamo.impl.database.statement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
- * Représentation objet d'un paramètre d'un statement.
+ * this class concerns the param of a sql statement.
+ *
  * @author pchretien
  */
 final class SqlParameter {
@@ -30,9 +31,9 @@ final class SqlParameter {
 	private Object value;
 
 	/**
-	 * Constructeur.
-	 * @param dataType KDataType
-	 * @param in boolean
+	 * Constructor.
+	 * @param dataType the param type
+	 * @param in if the param is an input (or an output)
 	 */
 	SqlParameter(final DataType dataType, final boolean in) {
 		this.dataType = dataType;
@@ -48,28 +49,28 @@ final class SqlParameter {
 	}
 
 	/**
-	 * @return Si paramètre IN
+	 * @return if the param is an input
 	 */
 	boolean isIn() {
 		return in;
 	}
 
 	/**
-	 * @return Si paramètre OUT
+	 * @return if the param is an output
 	 */
 	boolean isOut() {
 		return !in;
 	}
 
 	/**
-	 * @return Type du paramètre
+	 * @return the param type
 	 */
 	DataType getDataType() {
 		return dataType;
 	}
 
 	/**
-	 * @return Valeur du paramètre
+	 * @return the param value
 	 */
 	Object getValue() {
 		return value;
@@ -77,19 +78,10 @@ final class SqlParameter {
 
 	@Override
 	public String toString() {
-		final StringBuilder s = new StringBuilder();
-		if (isIn()) {
-			s.append("in");
-		}
-		if (isOut()) {
-			s.append("out");
-		}
-		s.append('=');
-		if (getValue() != null) {
-			s.append(getValue());
-		} else {
-			s.append("null");
-		}
-		return s.toString();
+		return new StringBuilder()
+				.append(in ? "in" : "out")
+				.append('=')
+				.append(value != null ? value : "null")
+				.toString();
 	}
 }

@@ -23,14 +23,17 @@ import java.sql.SQLException;
 
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.lang.Assertion;
 
 /**
- * Plugin permettant de créer les résultats issus d'une requête SQL de type select.
- * 
+ * Plugin intégrant la stratégie de création des objets issus d'un Select.
+ * Ce plugin inclut deux stratégies
+ * - Simple : la cible est connue on crée puis on peuple.
  * @author  pchretien
  */
-public interface SqlStatementHandler {
+final class SqlStatementHandler {
 	/**
 	 * Création du résultat issu d'un resultSet.
 	 * @param domain Domain résultat
@@ -39,5 +42,22 @@ public interface SqlStatementHandler {
 	 * @return Résultat de la requête.
 	 * @throws SQLException Exception SQL
 	 */
-	SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException;
+	static SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		if (domain.getDataType().isPrimitive()) {
+			return SqlRetrieveUtil.retrievePrimitive(domain.getDataType(), mapping, resultSet);
+		}
+		final SqlResultMetaData resultMetaData = createResultMetaData(domain, mapping, resultSet);
+		return SqlRetrieveUtil.retrieveData(resultMetaData, mapping, resultSet);
+	}
+
+	/*
+	 * Création du gestionnaire des types de sortie des preparedStatement.
+	 */
+	private static SqlResultMetaData createResultMetaData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) {
+		Assertion.checkArgument(!domain.getDataType().isPrimitive(), "le type de retour n''est ni un DTO ni une DTC");
+		//-----
+		final boolean isDtObject = DataType.DtObject.equals(domain.getDataType());
+		//Création des DTO, DTC typés de façon déclarative.
+		return new SqlResultMetaData(domain.getDtDefinition(), isDtObject);
+	}
 }

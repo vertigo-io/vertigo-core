@@ -37,11 +37,7 @@ import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  *
@@ -261,31 +257,4 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		execCallableStatement(connection, "shutdown;");
 	}
-
-	//On teste un preparestatement mappé sur un type dynamique DTList.
-	@Test
-	public void testDynSelect() throws Exception {
-		//On crée les données
-		createDatas();
-		//----
-		final Domain domain = new DomainBuilder("DO_TEST", DataType.DtList).build();
-		final SqlQueryResult result = executeQuery(domain, "select * from movie");
-
-		Assert.assertEquals(3, result.getSQLRowCount());
-		final DtList<Entity> dynMovies = (DtList<Entity>) result.getValue();
-		Assert.assertEquals(3, dynMovies.size());
-
-		for (final Entity dynMovie : dynMovies) {
-			final long id = (Long) getValue(dynMovie, "ID");
-			final String title = (String) getValue(dynMovie, "TITLE");
-			checkTitle(id, title);
-		}
-	}
-
-	private static Object getValue(final Entity entity, final String fieldName) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final DtField dtField = dtDefinition.getField(fieldName);
-		return dtField.getDataAccessor().getValue(entity);
-	}
-
 }

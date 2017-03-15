@@ -89,7 +89,6 @@ public final class DtField {
 
 	private final String id;
 
-	private final boolean dynamic;
 	@JsonExclude
 	private final DataAccessor dataAccessor;
 	private final boolean sort;
@@ -120,7 +119,6 @@ public final class DtField {
 			final boolean persistent,
 			final String fkDtDefinitionName,
 			final ComputedExpression computedExpression,
-			final boolean dynamic,
 			final boolean sort,
 			final boolean display) {
 		Assertion.checkArgNotEmpty(id);
@@ -158,7 +156,6 @@ public final class DtField {
 		}
 		this.computedExpression = computedExpression;
 		//-----
-		this.dynamic = dynamic;
 		this.sort = sort;
 		this.display = display;
 		//-----
@@ -241,13 +238,6 @@ public final class DtField {
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
-	}
-
-	/**
-	 * @return if the field is dynamic
-	 */
-	public boolean isDynamic() {
-		return dynamic;
 	}
 
 	/**

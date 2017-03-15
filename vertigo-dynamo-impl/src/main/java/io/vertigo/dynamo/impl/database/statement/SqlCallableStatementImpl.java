@@ -41,8 +41,8 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 	 * @param connection Connexion SQL
 	 * @param procName Nom de la procédure
 	 */
-	public SqlCallableStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String procName) {
-		super(statementHandler, analyticsManager, connection, procName, false);
+	public SqlCallableStatementImpl(final AnalyticsManager analyticsManager, final SqlConnection connection, final String procName) {
+		super(analyticsManager, connection, procName, false);
 	}
 
 	//====================================================================

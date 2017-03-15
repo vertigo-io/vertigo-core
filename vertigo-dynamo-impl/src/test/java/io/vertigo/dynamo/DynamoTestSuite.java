@@ -25,7 +25,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
-import io.vertigo.dynamo.domain.DomainManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -87,7 +86,6 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		DateFormatterTest.class,
 		NumberFormatterTest.class,
 		StringFormatterTest.class,
-		DomainManagerTest.class,
 		//--Environment
 		//----EAXMI
 		EAXmiEnvironmentManagerTest.class,

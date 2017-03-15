@@ -109,7 +109,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** Si on récupère les clés générées.*/
 	private final boolean returnGeneratedKeys;
 
-	private final SqlStatementHandler statementHandler;
 	private final AnalyticsManager analyticsManager;
 
 	//=========================================================================
@@ -126,11 +125,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param connection Connexion
 	 * @param returnGeneratedKeys true si on récupère les clés générées.
 	 */
-	public SqlPreparedStatementImpl(final SqlStatementHandler statementHandler, final AnalyticsManager analyticsManager, final SqlConnection connection, final String sql,
+	public SqlPreparedStatementImpl(final AnalyticsManager analyticsManager, final SqlConnection connection, final String sql,
 			final boolean returnGeneratedKeys) {
 		Assertion.checkNotNull(connection);
 		Assertion.checkNotNull(sql);
-		Assertion.checkNotNull(statementHandler);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.connection = connection;
@@ -139,7 +137,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//Initialistaion de l'état interne de l'automate
 		state = State.REGISTERING;
 		this.analyticsManager = analyticsManager;
-		this.statementHandler = statementHandler;
 	}
 
 	/**
@@ -276,7 +273,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final SqlQueryResult result = statementHandler.retrieveData(domain, mapping, resultSet);
+			final SqlQueryResult result = SqlStatementHandler.retrieveData(domain, mapping, resultSet);
 			tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
 			return result;
 		} catch (final SQLException e) {

@@ -156,7 +156,6 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(xdtDefinition.getName())
 				.withFragment(from)
 				.withPackageName(xdtDefinition.getPackageName())
-				.withDynamic(from.isDynamic())
 				.withDataSpace(from.getDataSpace())
 				.withPackageName(from.getPackageName());
 
@@ -226,14 +225,10 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		//-----
 		final String fragmentOf = (String) xdtDefinition.getPropertyValue(KspProperty.FRAGMENT_OF);
 		//-----
-		final Boolean tmpDynamic = (Boolean) xdtDefinition.getPropertyValue(KspProperty.DYNAMIC);
-		//Si DYNAMIC est non renseigné on suppose que le champ est non dynamic.
-		final boolean dynamic = tmpDynamic != null && tmpDynamic.booleanValue();
 		//-----
 		final String dtDefinitionName = xdtDefinition.getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
-				.withDynamic(dynamic)
 				.withDataSpace(dataSpace);
 		if (stereotype != null) {
 			dtDefinitionBuilder.withStereoType(stereotype);

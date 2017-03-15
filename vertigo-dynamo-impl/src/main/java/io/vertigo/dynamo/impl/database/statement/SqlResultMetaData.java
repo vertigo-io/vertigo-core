@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.statementhandler;
+package io.vertigo.dynamo.impl.database.statement;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -29,35 +29,36 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-final class SqlResultMetaDataStatic implements SqlResultMetaData {
+final class SqlResultMetaData {
 	private final DtDefinition dtDefinition;
 	private final boolean isDtObject;
 
 	/**
 	 * Constructeur.
 	 */
-	SqlResultMetaDataStatic(final DtDefinition dtDefinition, final boolean isDtObject) {
+	SqlResultMetaData(final DtDefinition dtDefinition, final boolean isDtObject) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		this.dtDefinition = dtDefinition;
 		this.isDtObject = isDtObject;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public DtObject createDtObject() {
+	DtObject createDtObject() {
 		return DtObjectUtil.createDtObject(dtDefinition);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isDtObject() {
+	/***
+	 * @return Si le type de sortie est un DTO.
+	 */
+	boolean isDtObject() {
 		return isDtObject;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public DtDefinition getDtDefinition() {
+	/***
+	 * Récupération de la DtDefinition du type de retour du PrepareStatement.
+	 * @return DtDefinition du type de retour du PrepareStatement
+	 */
+	DtDefinition getDtDefinition() {
 		return dtDefinition;
 	}
 }

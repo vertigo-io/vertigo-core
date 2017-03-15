@@ -22,7 +22,6 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.DYNAMIC;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.EXPRESSION;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FRAGMENT_OF;
@@ -147,7 +146,6 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields(FIELD, DT_FIELD_ENTITY)
 				.addManyFields(COMPUTED, computedFieldEntity)
 				.addOptionalField(ID, DT_FIELD_ENTITY)
-				.addOptionalField(DYNAMIC, Boolean)
 				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)
 				.addOptionalField(DATA_SPACE, String)

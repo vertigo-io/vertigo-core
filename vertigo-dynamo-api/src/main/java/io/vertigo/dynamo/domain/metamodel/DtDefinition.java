@@ -60,11 +60,6 @@ public final class DtDefinition implements Definition {
 
 	private final DtStereotype stereotype;
 
-	/**
-	 * Si la classe est dynamic, c'est à dire non représentée par une classe.
-	 */
-	private final boolean dynamic;
-
 	/** id Field */
 	private final Optional<DtField> idField;
 
@@ -82,7 +77,6 @@ public final class DtDefinition implements Definition {
 			final String packageName,
 			final DtStereotype stereotype,
 			final List<DtField> dtFields,
-			final boolean dynamic,
 			final String dataSpace) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(fragment);
@@ -108,7 +102,6 @@ public final class DtDefinition implements Definition {
 
 		}
 		idField = Optional.ofNullable(id);
-		this.dynamic = dynamic;
 		this.dataSpace = dataSpace;
 		//-----
 		Assertion.when(fragment.isPresent())
@@ -238,13 +231,6 @@ public final class DtDefinition implements Definition {
 	 */
 	public Optional<DtField> getIdField() {
 		return idField;
-	}
-
-	/**
-	 * @return Si la définition est dynamique. - C'est à dire non représentée par une classe spécifique -
-	 */
-	public boolean isDynamic() {
-		return dynamic;
 	}
 
 	/**

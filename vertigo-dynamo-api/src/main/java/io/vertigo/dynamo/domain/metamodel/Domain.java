@@ -92,10 +92,10 @@ public final class Domain implements Definition {
 		//---Properties
 		this.properties = buildProperties(constraintDefinitions, properties);
 
-		//---FK
+		//---
+		Assertion.when(!getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) != null, "a dtDefinition is required on {0}", name);
+		Assertion.when(getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) == null, "dtDefinition must be empty on {0}", name);
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
-			Assertion.checkArgument(!getDataType().isPrimitive(), "The type can only be used for DtObject or DtList");
-			//-----
 			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
 		} else {
 			dtDefinitionName = null;
@@ -171,13 +171,6 @@ public final class Domain implements Definition {
 	//==========================================================================
 	//for these domains : DtList or DtObject
 	//==========================================================================
-	/**
-	 * @return if there is a DtDefinition for this domain.
-	 */
-	public boolean hasDtDefinition() {
-		return dtDefinitionName != null;
-	}
-
 	/**
 	 * @return the dtDefinition for the domains DtList or DtObject.
 	 */
