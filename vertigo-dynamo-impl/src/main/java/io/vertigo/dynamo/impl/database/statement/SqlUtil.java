@@ -53,7 +53,7 @@ final class SqlUtil {
 	 */
 	static SqlQueryResult buildResult(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (domain.getDataType().isPrimitive()) {
-			return retrievePrimitive(domain.getDataType(), mapping, resultSet);
+			return retrievePrimitive(domain, mapping, resultSet);
 		}
 		return retrieveData(domain, mapping, resultSet);
 	}
@@ -62,11 +62,11 @@ final class SqlUtil {
 		return DataType.DtObject.equals(domain.getDataType());
 	}
 
-	private static SqlQueryResult retrievePrimitive(final DataType dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static SqlQueryResult retrievePrimitive(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
-			final Object value = mapping.getValueForResultSet(resultSet, 1, dataType);
+			final Object value = mapping.getValueForResultSet(resultSet, 1, domain.getDataType());
 			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
@@ -77,7 +77,7 @@ final class SqlUtil {
 
 	private static SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		final Integer limit = isDtObject(domain) ? 1 : null;
-		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, domain, limit);
+		final DtList<DtObject> dtc = doRetrieveDtList(domain, mapping, resultSet, limit);
 		if (isDtObject(domain)) {
 			final DtObject dto = dtc.isEmpty() ? null : dtc.get(0);
 			return new SqlQueryResult(dto, dtc.size());
@@ -85,7 +85,7 @@ final class SqlUtil {
 		return new SqlQueryResult(dtc, dtc.size());
 	}
 
-	private static DtList<DtObject> doRetrieveDtList(final SqlMapping mapping, final ResultSet resultSet, final Domain domain, final Integer limit) throws SQLException {
+	private static DtList<DtObject> doRetrieveDtList(final Domain domain, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
 		final DtField[] fields = findFields(domain, resultSet.getMetaData());
 
 		DtObject dto;
@@ -99,7 +99,6 @@ final class SqlUtil {
 			dto = DtObjectUtil.createDtObject(domain.getDtDefinition());
 			readDtObject(mapping, resultSet, dto, fields);
 			dtc.add(dto);
-			throw createTooManyRowsException();
 
 		}
 		return dtc;
@@ -113,31 +112,22 @@ final class SqlUtil {
 		}
 	}
 
-	private static DtField[] findFields(final Domain domain, final ResultSetMetaData resultSetMetaData) throws SQLException {
-		final String[] columnNames = getQueryColumnNames(resultSetMetaData);
-		final DtField[] fields = new DtField[columnNames.length];
-		for (int i = 0; i < fields.length; i++) {
-			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			final DtField f = domain.getDtDefinition().getField(columnNames[i].toUpperCase(Locale.ENGLISH));
-			Assertion.checkNotNull(f);
-			fields[i] = f;
-		}
-		return fields;
-	}
-
 	/**
 	 * Détermine les champs ramenés par un select.
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
 	 * @return Tableau de codes de champ.
 	 */
-	private static String[] getQueryColumnNames(final ResultSetMetaData resultSetMetaData) throws SQLException {
+	private static DtField[] findFields(final Domain domain, final ResultSetMetaData resultSetMetaData) throws SQLException {
 		Assertion.checkNotNull(resultSetMetaData);
 		//-----
-		final String[] res = new String[resultSetMetaData.getColumnCount()];
-		for (int i = 0; i < res.length; i++) {
-			res[i] = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
+		final DtField[] fields = new DtField[resultSetMetaData.getColumnCount()];
+		String columnLabel;
+		for (int i = 0; i < fields.length; i++) {
+			columnLabel = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
+			// toUpperCase nécessaire pour postgreSQL et SQLServer
+			fields[i] = domain.getDtDefinition().getField(columnLabel.toUpperCase(Locale.ENGLISH));
 		}
-		return res;
+		return fields;
 	}
 
 	private static RuntimeException createTooManyRowsException() {
