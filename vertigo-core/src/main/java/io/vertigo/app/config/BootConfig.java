@@ -33,7 +33,7 @@ import io.vertigo.util.ListBuilder;
  */
 public final class BootConfig {
 	private final Optional<LogConfig> logConfigOption;
-	private final boolean silence;
+	private final boolean verbose;
 	@JsonExclude
 	private final AopPlugin aopPlugin;
 
@@ -43,14 +43,14 @@ public final class BootConfig {
 	/**
 	 * Constructor.
 	 * @param aopPlugin AopPlugin
-	 * @param silence is no logs
+	 * @param verbose if logs are enabled during startup
 	 */
 	BootConfig(
 			final Optional<LogConfig> logConfigOption,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
-			final boolean silence) {
+			final boolean verbose) {
 		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
@@ -59,7 +59,7 @@ public final class BootConfig {
 		this.logConfigOption = logConfigOption;
 		this.componentConfigs = componentConfigs;
 		this.pluginConfigs = pluginConfigs;
-		this.silence = silence;
+		this.verbose = verbose;
 		this.aopPlugin = aopPlugin;
 	}
 
@@ -81,10 +81,10 @@ public final class BootConfig {
 	}
 
 	/**
-	 * @return if silent mode
+	 * @return if the startup is verbose
 	 */
-	public boolean isSilence() {
-		return silence;
+	public boolean isVerbose() {
+		return verbose;
 	}
 
 	/**

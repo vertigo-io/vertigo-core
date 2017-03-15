@@ -45,7 +45,7 @@ import io.vertigo.lang.Plugin;
 public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Optional<LogConfig> myLogConfigOption = Optional.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
-	private boolean mySilence; //false by default
+	private boolean myVerbose;
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
@@ -87,11 +87,11 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * Permet de définir un démarrage silencieux. (Sans retour console)
+	 * Enables verbosity during startup
 	 * @return this builder
 	 */
-	public BootConfigBuilder silently() {
-		mySilence = true;
+	public BootConfigBuilder verbose() {
+		myVerbose = true;
 		return this;
 	}
 
@@ -176,6 +176,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				myComponentConfigs,
 				myPluginConfigs,
 				myAopPlugin,
-				mySilence);
+				myVerbose);
 	}
 }
