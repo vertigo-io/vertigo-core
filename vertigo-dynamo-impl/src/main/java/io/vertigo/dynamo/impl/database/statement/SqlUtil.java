@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,7 +40,7 @@ import io.vertigo.lang.Assertion;
 final class SqlUtil {
 
 	private SqlUtil() {
-		//Classe utilitaire, constructeir est privé.
+		//private constructor.
 	}
 
 	/**
@@ -54,19 +55,11 @@ final class SqlUtil {
 		if (domain.getDataType().isPrimitive()) {
 			return retrievePrimitive(domain.getDataType(), mapping, resultSet);
 		}
-		final SqlResultMetaData resultMetaData = createResultMetaData(domain);
-		return retrieveData(resultMetaData, mapping, resultSet);
+		return retrieveData(domain, mapping, resultSet);
 	}
 
-	/*
-	 * Création du gestionnaire des types de sortie des preparedStatement.
-	 */
-	private static SqlResultMetaData createResultMetaData(final Domain domain) {
-		Assertion.checkArgument(!domain.getDataType().isPrimitive(), "le type de retour n''est ni un DTO ni une DTC");
-		//-----
-		final boolean isDtObject = DataType.DtObject.equals(domain.getDataType());
-		//Création des DTO, DTC typés de façon déclarative.
-		return new SqlResultMetaData(domain.getDtDefinition(), isDtObject);
+	private static boolean isDtObject(final Domain domain) {
+		return DataType.DtObject.equals(domain.getDataType());
 	}
 
 	private static SqlQueryResult retrievePrimitive(final DataType dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
@@ -82,53 +75,34 @@ final class SqlUtil {
 		return new SqlQueryResult(null, 0);
 	}
 
-	private static SqlQueryResult retrieveData(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		if (resultMetaData.isDtObject()) {
-			return retrieveDtObject(resultMetaData, mapping, resultSet);
+	private static SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		final Integer limit = isDtObject(domain) ? 1 : null;
+		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, domain, limit);
+		if (isDtObject(domain)) {
+			final DtObject dto = dtc.isEmpty() ? null : dtc.get(0);
+			return new SqlQueryResult(dto, dtc.size());
 		}
-		return retrieveEntityList(resultMetaData, mapping, resultSet);
-	}
-
-	private static SqlQueryResult retrieveDtObject(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final DtObject dto = doRetrieveDtObject(mapping, resultSet, resultMetaData);
-		return new SqlQueryResult(dto, dto != null ? 1 : 0);
-	}
-
-	private static SqlQueryResult retrieveEntityList(final SqlResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, resultMetaData);
 		return new SqlQueryResult(dtc, dtc.size());
 	}
 
-	private static DtList<DtObject> doRetrieveDtList(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
-		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
+	private static DtList<DtObject> doRetrieveDtList(final SqlMapping mapping, final ResultSet resultSet, final Domain domain, final Integer limit) throws SQLException {
+		final DtField[] fields = findFields(domain, resultSet.getMetaData());
 
 		DtObject dto;
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
-		final DtList<DtObject> dtc = new DtList<>(resultMetaData.getDtDefinition());
+		final DtList<DtObject> dtc = new DtList<>(domain.getDtDefinition());
 		while (resultSet.next()) {
-			dto = resultMetaData.createDtObject();
-			readDtObject(mapping, resultSet, dto, fields);
-			dtc.add(dto);
-		}
-		return dtc;
-	}
-
-	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultSet, final SqlResultMetaData resultMetaData) throws SQLException {
-		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
-
-		if (resultSet.next()) {
-			//On est dans le cas de récupération d'un objet, un objet a été trouvé
-			//On vérifie qu'il y en a au plus un.
-			final DtObject dto = resultMetaData.createDtObject();
-			readDtObject(mapping, resultSet, dto, fields);
-			if (resultSet.next()) {
+			if (limit != null && dtc.size() > limit) {
 				throw createTooManyRowsException();
 			}
-			return dto;
+			dto = DtObjectUtil.createDtObject(domain.getDtDefinition());
+			readDtObject(mapping, resultSet, dto, fields);
+			dtc.add(dto);
+			throw createTooManyRowsException();
+
 		}
-		//no result
-		return null;
+		return dtc;
 	}
 
 	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
@@ -139,12 +113,12 @@ final class SqlUtil {
 		}
 	}
 
-	private static DtField[] findFields(final SqlResultMetaData resultMetaData, final ResultSetMetaData resultSetMetaData) throws SQLException {
+	private static DtField[] findFields(final Domain domain, final ResultSetMetaData resultSetMetaData) throws SQLException {
 		final String[] columnNames = getQueryColumnNames(resultSetMetaData);
 		final DtField[] fields = new DtField[columnNames.length];
 		for (int i = 0; i < fields.length; i++) {
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			final DtField f = resultMetaData.getDtDefinition().getField(columnNames[i].toUpperCase(Locale.ENGLISH));
+			final DtField f = domain.getDtDefinition().getField(columnNames[i].toUpperCase(Locale.ENGLISH));
 			Assertion.checkNotNull(f);
 			fields[i] = f;
 		}
