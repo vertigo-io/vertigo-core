@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.net.URL;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -59,8 +60,8 @@ public final class XMLUtil {
 			final Validator validator = schemaFactory
 					.newSchema(xsd)
 					.newValidator();
-			final StreamSource streamSource = new StreamSource(xml.openStream());
-			validate(xml, validator, streamSource);
+			final Source source = new StreamSource(xml.openStream());
+			validate(xml, validator, source);
 		} catch (final SocketException e) {
 			throw WrappedException.wrap(e, "'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag");
 		} catch (final SAXException | IOException e) {
@@ -68,9 +69,9 @@ public final class XMLUtil {
 		}
 	}
 
-	private static void validate(final URL xml, final Validator validator, final StreamSource streamSource) throws IOException {
+	private static void validate(final URL xml, final Validator validator, final Source source) throws IOException {
 		try {
-			validator.validate(streamSource);
+			validator.validate(source);
 		} catch (final SAXException e) {
 			throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
 		}

@@ -259,11 +259,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
-		//-----
+		//---
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -271,10 +271,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
-		//-----
+		//---
 		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		//-----
+		//---
 		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
@@ -284,7 +284,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
-		//-----
+		//---
 		final String tableName = getTableName(dtDefinition);
 		final String requestedFields = getRequestedFields(dtDefinition);
 		final String taskName = getListTaskName(tableName);

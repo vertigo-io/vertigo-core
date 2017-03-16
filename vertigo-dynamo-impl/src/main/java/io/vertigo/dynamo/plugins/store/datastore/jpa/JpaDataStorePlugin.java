@@ -237,7 +237,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Comparable value = (Comparable) dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -397,10 +397,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {
-		final StringBuilder request = new StringBuilder("select t ")
+		return new StringBuilder("select t ")
 				.append(" from ").append(tableName).append(" t")
-				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"));
-		return request.toString();
+				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"))
+				.toString();
 	}
 
 	private static String getListTaskName(final String tableName) {
