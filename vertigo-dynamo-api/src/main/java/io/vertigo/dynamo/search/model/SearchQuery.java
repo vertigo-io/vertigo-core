@@ -46,7 +46,7 @@ public final class SearchQuery implements Serializable {
 	private final DefinitionReference<FacetDefinition> clusteringFacetDefinitionRef;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param facetedQuery facetedQueryDefinition
 	 * @param queryListFilter Filtre principal correspondant aux critères de la recherche
 	 * @param securityListFilter Filtre de sécurité
@@ -55,7 +55,14 @@ public final class SearchQuery implements Serializable {
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final Optional<FacetedQuery> facetedQuery, final ListFilter queryListFilter, final Optional<ListFilter> securityListFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(
+			final Optional<FacetedQuery> facetedQuery,
+			final ListFilter queryListFilter,
+			final Optional<ListFilter> securityListFilter,
+			final FacetDefinition clusteringFacetDefinition,
+			final DtField boostedDocumentDateField,
+			final Integer numDaysOfBoostRefDocument,
+			final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(queryListFilter);
 		Assertion.checkNotNull(securityListFilter);

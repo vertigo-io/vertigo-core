@@ -159,8 +159,19 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 				}
 			}
 			//-----
-			Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType());
-			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType(), webServiceParam.getType());
+			Assertion.checkNotNull(jsonReaderToApply,
+					"Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}",
+					webServiceParam.getFullName(),
+					routeContext.getWebServiceDefinition().getVerb(),
+					routeContext.getWebServiceDefinition().getPath(),
+					webServiceParam.getParamType());
+			Assertion.checkNotNull(jsonConverterToApply,
+					"Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}",
+					webServiceParam.getFullName(),
+					routeContext.getWebServiceDefinition().getVerb(),
+					routeContext.getWebServiceDefinition().getPath(),
+					webServiceParam.getParamType(),
+					webServiceParam.getType());
 			//-----
 			final Object converterSource = jsonReaderToApply.extractData(request, webServiceParam, routeContext);
 			if (converterSource != null) { //On ne convertit pas les null

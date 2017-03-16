@@ -68,14 +68,15 @@ final class SqlUtil {
 
 	private static SqlQueryResult retrievePrimitive(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
-			//On est dans le cas de récupération d'un objet, un objet a été trouvé
-			//On vérifie qu'il y en a au plus un.
+			//We are excepting at most one object.
+			//An exception is thrown if more than one object is found
 			final Object value = mapping.getValueForResultSet(resultSet, 1, domain.getDataType());
 			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
 			return new SqlQueryResult(value, 1);
 		}
+		//no data found
 		return new SqlQueryResult(null, 0);
 	}
 

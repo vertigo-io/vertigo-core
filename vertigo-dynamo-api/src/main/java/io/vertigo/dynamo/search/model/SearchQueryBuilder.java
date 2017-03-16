@@ -138,6 +138,13 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(Optional.ofNullable(myFacetedQuery), myListFilter, Optional.ofNullable(mySecurityListFilter), myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(
+				Optional.ofNullable(myFacetedQuery),
+				myListFilter,
+				Optional.ofNullable(mySecurityListFilter),
+				myClusteringFacetDefinition,
+				myBoostedDocumentDateField,
+				myNumDaysOfBoostRefDocument,
+				myMostRecentBoost);
 	}
 }

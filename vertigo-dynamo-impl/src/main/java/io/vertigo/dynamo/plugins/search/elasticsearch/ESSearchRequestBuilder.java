@@ -207,7 +207,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1D));
 	}
 
-	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
+	private static void appendFacetDefinition(
+			final SearchQuery searchQuery,
+			final SearchRequestBuilder searchRequestBuilder,
+			final SearchIndexDefinition myIndexDefinition,
+			final DtListState myListState) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
