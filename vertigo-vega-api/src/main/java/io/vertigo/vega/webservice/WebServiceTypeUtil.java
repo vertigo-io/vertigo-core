@@ -35,6 +35,10 @@ public final class WebServiceTypeUtil {
 		//nothing
 	}
 
+	private static IllegalArgumentException createIllegalArgumentException(final Type testedType) {
+		return new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
+	}
+
 	/**
 	 * Equivalent to parentClass.isAssignableFrom(testedType);
 	 * @param parentClass Parent Class
@@ -47,7 +51,7 @@ public final class WebServiceTypeUtil {
 		} else if (testedType instanceof ParameterizedType) {
 			return parentClass.isAssignableFrom((Class<?>) ((ParameterizedType) testedType).getRawType());
 		}
-		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
+		throw createIllegalArgumentException(testedType);
 	}
 
 	/**
@@ -64,20 +68,20 @@ public final class WebServiceTypeUtil {
 			return Arrays.stream(typeArguments)
 					.anyMatch(typeArgument -> isAssignableFrom(innerClass, typeArgument));
 		}
-		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
+		throw createIllegalArgumentException(testedType);
 	}
 
 	/**
 	 * Cast as Class;
-	 * @param type Type to test (must be a Class or ParameterizedType)
+	 * @param testedType Type to test (must be a Class or ParameterizedType)
 	 * @return Is testedType assignable from parentClass ?
 	 */
-	public static Class<?> castAsClass(final Type type) {
-		if (type instanceof Class) {
-			return ((Class<?>) type);
-		} else if (type instanceof ParameterizedType) {
-			return (Class<?>) ((ParameterizedType) type).getRawType();
+	public static Class<?> castAsClass(final Type testedType) {
+		if (testedType instanceof Class) {
+			return (Class<?>) testedType;
+		} else if (testedType instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) testedType).getRawType();
 		}
-		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + type);
+		throw createIllegalArgumentException(testedType);
 	}
 }

@@ -69,7 +69,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 	@Override
 	public boolean equals(final Object o) {
 		/* A list equals only the same list */
-		return (o == this);
+		return o == this;
 	}
 
 	@Override

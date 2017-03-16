@@ -94,6 +94,7 @@ public final class WebServiceParam {
 	private final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses;
 
 	/**
+	 * Constructor.
 	 * @param paramType Parameter type
 	 * @param name Parameter name
 	 * @param type Parameter class
@@ -108,7 +109,8 @@ public final class WebServiceParam {
 				.check(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
 		Assertion.when(name.isEmpty())
-				.check(() -> (WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
+				.check(() -> WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
+						"Only DtObject and UiListState can be map from Query parameters");
 	}
 
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {

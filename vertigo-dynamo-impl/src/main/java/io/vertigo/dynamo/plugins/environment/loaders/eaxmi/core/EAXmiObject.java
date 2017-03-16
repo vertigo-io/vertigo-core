@@ -274,7 +274,7 @@ final class EAXmiObject {
 				// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
 				// On ne mets à jour que si on ne l'a pas fait.
 				final String valeur = attributes.getValue(PROPERTY_ALIAS_NAME);
-				isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
+				isId = valeur != null && valeur.contains(PROPERTY_ID_NAME);
 				break;
 			case PROPERTY_MULTIPLICITY:
 				final String lower = attributes.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
