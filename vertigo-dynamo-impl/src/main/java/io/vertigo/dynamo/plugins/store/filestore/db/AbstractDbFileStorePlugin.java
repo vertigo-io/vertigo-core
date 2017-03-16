@@ -54,7 +54,7 @@ abstract class AbstractDbFileStorePlugin {
 	private final String name;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 */
 	AbstractDbFileStorePlugin(@Named("name") final Optional<String> name) {

@@ -54,7 +54,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	SqlServerExceptionHandler() {
 		super();

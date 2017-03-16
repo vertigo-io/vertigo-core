@@ -39,7 +39,7 @@ public enum DslPropertyType implements DslEntityFieldType {
 	private final Class<?> javaClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param javaClass Classe java encapsulée
 	 */

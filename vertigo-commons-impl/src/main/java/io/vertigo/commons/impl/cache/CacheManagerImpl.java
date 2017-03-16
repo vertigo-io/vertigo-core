@@ -35,7 +35,7 @@ public final class CacheManagerImpl implements CacheManager {
 	private final CachePlugin cachePlugin;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param cachePlugin Plugin de gestion du cache
 	 */
 	@Inject

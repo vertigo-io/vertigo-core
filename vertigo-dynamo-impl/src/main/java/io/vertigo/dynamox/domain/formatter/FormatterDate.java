@@ -71,9 +71,8 @@ public final class FormatterDate implements Formatter {
 	private final List<String> patterns;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
-
 	public FormatterDate(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);

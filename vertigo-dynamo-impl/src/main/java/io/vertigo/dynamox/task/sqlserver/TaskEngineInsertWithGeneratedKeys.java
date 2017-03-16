@@ -43,7 +43,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<SqlPreparedStatement> {
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject

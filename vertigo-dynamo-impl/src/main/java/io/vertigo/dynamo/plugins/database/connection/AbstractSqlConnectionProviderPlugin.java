@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
@@ -49,7 +49,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	private final SqlDataBase dataBase;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name ConnectionProvider's name
 	 * @param dataBase Type de base de données
 	 */

@@ -37,7 +37,7 @@ public final class Role implements Definition {
 	private final List<Permission> permissions;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param name Nom du rôle
 	 * @param description Description du rôle

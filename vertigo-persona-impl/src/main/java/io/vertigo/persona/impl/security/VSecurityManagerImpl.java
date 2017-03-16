@@ -56,7 +56,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	private final Map<String, ResourceNameFactory> resourceNameFactories = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Les deux namespace ne sont pas types pour eviter des couplages forts (notamment sur UI).
 	 * @param localeManager Manager des messages localises
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur

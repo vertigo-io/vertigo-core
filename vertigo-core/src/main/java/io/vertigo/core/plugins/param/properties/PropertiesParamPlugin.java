@@ -41,7 +41,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	private final Properties properties;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param resourceManager Selector
 	 * @param url Url du fichier XML de configuration

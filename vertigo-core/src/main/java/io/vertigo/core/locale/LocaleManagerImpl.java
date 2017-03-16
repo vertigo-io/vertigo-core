@@ -35,8 +35,8 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.WrappedException;
@@ -67,7 +67,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 	private LocaleProvider localeProvider;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Les exceptions sont toujours externalisées.
 	 * Les libellés de champs ne le sont pas.
 	 * La première Locale est celle utilisée si il n'y a aucun utilisateur déclaré (cas des batchs).

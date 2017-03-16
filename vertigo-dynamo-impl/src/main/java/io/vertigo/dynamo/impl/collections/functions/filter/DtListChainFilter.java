@@ -35,7 +35,7 @@ public final class DtListChainFilter<D extends DtObject> implements Predicate<D>
 	private final Predicate<D>[] filters;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param filters Liste des filtres.
 	 */
 	public DtListChainFilter(final Predicate<D>... filters) {

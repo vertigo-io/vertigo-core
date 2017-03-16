@@ -55,7 +55,7 @@ public final class URI<E extends Entity> implements Serializable {
 	private final String urn;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param definition Definition de la ressource
 	 * @param id Clé de la ressource
 	 */

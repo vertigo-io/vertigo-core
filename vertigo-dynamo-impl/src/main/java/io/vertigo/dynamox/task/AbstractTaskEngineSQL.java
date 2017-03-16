@@ -122,7 +122,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	private final SqlDataBaseManager sqlDataBaseManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	protected AbstractTaskEngineSQL(

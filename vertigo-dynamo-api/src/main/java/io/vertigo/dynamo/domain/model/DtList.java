@@ -82,7 +82,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dtObjectClass Type d'objet
 	 */
 	public DtList(final Class<? extends DtObject> dtObjectClass) {

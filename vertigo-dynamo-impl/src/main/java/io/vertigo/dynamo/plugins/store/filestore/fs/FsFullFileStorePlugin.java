@@ -72,7 +72,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private final VTransactionManager transactionManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param fileManager File manager
 	 * @param path Root directory

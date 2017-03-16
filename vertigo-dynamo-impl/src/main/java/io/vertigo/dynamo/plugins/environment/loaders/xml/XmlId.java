@@ -29,7 +29,7 @@ public final class XmlId {
 	private final String keyValue;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param keyValue Valeur de l'identiant
 	 */
 	public XmlId(final String keyValue) {

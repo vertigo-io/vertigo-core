@@ -46,7 +46,8 @@ public final class DtListValueFilter<D extends DtObject> implements Predicate<D>
 	private transient DtField dtField;
 
 	/**
-	 * Constructeur champ=valeur.
+	 * Constructor.
+	 * champ=valeur.
 	 * @param fieldName Nom du champ
 	 * @param value Valeur
 	 */

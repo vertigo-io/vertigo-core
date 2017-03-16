@@ -50,7 +50,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	private Node node;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param serversNamesStr URL du serveur ElasticSearch avec le port de communication de cluster (9300 en général)
 	 * @param envIndex Nom de l'index de l'environment

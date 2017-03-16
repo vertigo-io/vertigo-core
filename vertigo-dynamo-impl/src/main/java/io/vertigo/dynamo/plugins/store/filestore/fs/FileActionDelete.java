@@ -40,7 +40,7 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 	private final File file;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param path le chemin de destination du fichier
 	 */

@@ -91,7 +91,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private final VTransactionManager transactionManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param fileManager Manager de gestion des fichiers

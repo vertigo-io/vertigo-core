@@ -35,7 +35,7 @@ abstract class DtListURIForAssociation<A extends AssociationDefinition> extends 
 	private final URI source;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param associationDefinition Définition de l'association
 	 * @param source URI (Clé primaire) du dtObject source
 	 * @param roleName Nom du rôle

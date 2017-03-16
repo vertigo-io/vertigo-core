@@ -49,7 +49,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	private final Map<String, Param> params;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * @param resourceManager Selector
 	 * @param url Url du fichier XML de configuration
 	 */

@@ -59,7 +59,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	private final DtField sortField;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param storeManager Manager de persistence
 	 * @param dtDefinition DtDefinition des éléments à comparer
 	 * @param sortFieldName sort fieldName

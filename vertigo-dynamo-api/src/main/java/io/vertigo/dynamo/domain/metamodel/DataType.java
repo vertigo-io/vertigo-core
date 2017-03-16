@@ -68,8 +68,7 @@ public enum DataType {
 	private final Class<?> javaClass;
 
 	/**
-	 * Constructeur.
-	 *
+	 * Constructor.
 	 * @param javaClass Classe java encapsulée
 	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
 	 */

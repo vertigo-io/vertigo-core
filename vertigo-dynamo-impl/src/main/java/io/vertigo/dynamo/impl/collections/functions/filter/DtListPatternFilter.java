@@ -48,7 +48,7 @@ public final class DtListPatternFilter<D extends DtObject> implements Predicate<
 	private Predicate<D> subDtListFilter;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param filterString Chaine représentant le filtre
 	 */
 	public DtListPatternFilter(final String filterString) {

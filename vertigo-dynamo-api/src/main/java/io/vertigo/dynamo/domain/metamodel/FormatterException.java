@@ -33,7 +33,7 @@ public final class FormatterException extends Exception {
 	private final MessageText messageText;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param key Clé du message externalisé explicitant la raison du non formattage.
 	 * @param params Paramètres de la ressource

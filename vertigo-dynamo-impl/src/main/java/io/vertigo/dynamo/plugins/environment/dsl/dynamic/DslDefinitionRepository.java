@@ -53,7 +53,7 @@ public final class DslDefinitionRepository {
 	private final DslGrammar grammar;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param registry DynamicDefinitionHandler
 	 */
 	public DslDefinitionRepository(final DynamicRegistry registry) {

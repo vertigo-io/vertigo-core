@@ -59,7 +59,7 @@ public abstract class AbstractXmlLoader implements Loader {
 	private final ResourceManager resourceManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param resourceManager the vertigo resourceManager
 	 */
 	public AbstractXmlLoader(final ResourceManager resourceManager) {

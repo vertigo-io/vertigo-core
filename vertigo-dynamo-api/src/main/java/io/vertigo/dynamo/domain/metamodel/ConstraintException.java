@@ -30,7 +30,7 @@ public final class ConstraintException extends Exception {
 	private final MessageText messageText;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param messageText MessageText de l'erreur.
 	 */
 	public ConstraintException(final MessageText messageText) {

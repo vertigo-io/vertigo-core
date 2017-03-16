@@ -50,7 +50,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	private Node node;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * @param elasticSearchHome URL du serveur SOLR
 	 * @param envIndex Nom de l'index de l'environment
 	 * @param rowsPerQuery Nombre d'élément retourné par query

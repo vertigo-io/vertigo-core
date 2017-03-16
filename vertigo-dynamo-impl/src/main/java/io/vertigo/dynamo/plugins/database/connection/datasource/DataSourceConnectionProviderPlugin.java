@@ -46,7 +46,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	private final DataSource dataSource;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name ConnectionProvider's name
 	 * @param dataBaseName Nom du type de base de données
 	 * @param dataSource URL de la dataSource JNDI

@@ -53,7 +53,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	private final CacheManager cacheManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param localeManager Manager des messages localisés
 	 * @param cacheManager Manager des caches
 	 * @param eventBusManager Event manager

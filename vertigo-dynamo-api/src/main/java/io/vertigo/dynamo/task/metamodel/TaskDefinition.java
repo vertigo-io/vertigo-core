@@ -61,7 +61,7 @@ public final class TaskDefinition implements Definition {
 	private final Class<? extends TaskEngine> taskEngineClass;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * @param taskEngineClass Classe réalisant l'implémentation
 	 * @param request Chaine de configuration
 	 */

@@ -54,7 +54,7 @@ public final class StoreManagerImpl implements StoreManager {
 	private final FileStore fileStore;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param cacheManager Manager de gestion du cache
 	 * @param collectionsManager Manager de gestion des collections
 	 */

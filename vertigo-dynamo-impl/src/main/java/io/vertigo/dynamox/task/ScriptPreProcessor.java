@@ -50,7 +50,7 @@ final class ScriptPreProcessor {
 	private final SeparatorType separatorType;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param inTaskAttributes Map des paramètres
 	 * @param separatorType Type de preprocessing CLASSIC ou HTML
 	 */

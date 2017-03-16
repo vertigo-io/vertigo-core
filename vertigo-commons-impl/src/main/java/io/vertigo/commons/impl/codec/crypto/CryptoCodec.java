@@ -25,8 +25,8 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
@@ -81,7 +81,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	private final Key key;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param crypto Algorithme et Taille de clé à utiliser pour crypter le contexte.
 	 */
 	public CryptoCodec(final Crypto crypto) {

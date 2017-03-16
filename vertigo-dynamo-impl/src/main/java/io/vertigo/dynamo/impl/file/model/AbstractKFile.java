@@ -35,7 +35,7 @@ abstract class AbstractVFile implements VFile {
 	private final long length;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Associe un fichier à des méta-données
 	 * @param fileName Nom d'origine du fichier
 	 * @param mimeType Type mime du fichier

@@ -30,7 +30,7 @@ import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
  */
 final class HsqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	HsqlExceptionHandler() {
 		super();

@@ -33,7 +33,7 @@ public final class FSFile extends AbstractVFile {
 	private final File file;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Associe un fichier à des méta-données
 	 * @param fileName Nom d'origine du fichier
 	 * @param mimeType Type mime du fichier

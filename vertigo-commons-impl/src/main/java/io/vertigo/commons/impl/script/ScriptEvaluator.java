@@ -35,7 +35,7 @@ final class ScriptEvaluator {
 	private final ExpressionEvaluatorPlugin expressionEvaluatorPlugin;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param separatorType SeparatorType.CLASSIC ou SeparatorType.XML ou SeparatorType.XML_CODE
 	 */
 	ScriptEvaluator(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final SeparatorType separatorType, final List<ExpressionParameter> parameters) {

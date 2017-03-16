@@ -59,7 +59,7 @@ public final class ScriptSeparator implements Serializable {
 	private final char separatorCar;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * Si le séparateur de début et de fin sont identiques sous forme de char.
 	 * @param separator Séparateur de début et de fin
 	 */
@@ -71,7 +71,7 @@ public final class ScriptSeparator implements Serializable {
 	}
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * Si le séparateur de début et de fin sont différents sous forme de String.
 	 *
 	 * @param beginSeparator Séparateur de début
@@ -117,7 +117,7 @@ public final class ScriptSeparator implements Serializable {
 
 	/**
 	 * Returns the next position of the begin separator.
-	 * 
+	 *
 	 * @param script text
 	 * @param start start
 	 * @return the next position of the begin separator
@@ -132,7 +132,7 @@ public final class ScriptSeparator implements Serializable {
 
 	/**
 	 * Returns the next position of the end separator.
-	 * 
+	 *
 	 * @param script text
 	 * @param start start
 	 * @return the next position of the end separator

@@ -60,7 +60,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	private final DtDefinition storeDtDefinition;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param fileManager Manager de gestion des fichiers

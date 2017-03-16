@@ -42,7 +42,7 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
@@ -52,7 +52,7 @@ public final class MessageText implements Serializable {
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * La clé et/ou le message par défaut doit être non null.
 	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource

@@ -45,7 +45,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param localeManager Manager des messages localisés
 	 * @param analyticsManager Manager de la performance applicative
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.

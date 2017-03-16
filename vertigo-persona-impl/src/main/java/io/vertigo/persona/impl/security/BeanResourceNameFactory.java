@@ -34,7 +34,7 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 	private final List<String> securityPatternTokenized = new ArrayList<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Prend en entrée le pattern de la chaine de resource à produire.
 	 * Il peut être paramétré avec des propriétés de l'objet avec la syntaxe : ${maPropriete}
 	 * @param securityPattern Pattern de la resource.

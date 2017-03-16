@@ -50,7 +50,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	private final I indexDtObject;
 
 	/**
-	 * Constructeur .
+	 * Constructor.
 	 * @param indexDefinition definition de O, I
 	 * @param uri URI de l'objet indexé
 	 */

@@ -49,7 +49,7 @@ import io.vertigo.lang.Assertion;
 public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<Object>> {
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public DslDefinitionBodyRule(final DslEntity entity) {
 		super(createMainRule(entity), entity.getName() + "Body");

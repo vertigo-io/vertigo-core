@@ -54,7 +54,7 @@ public final class FileInfoURI implements Serializable {
 	private final String urn;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param fileInfoDefinition Definition de la ressource
 	 * @param key Clé de la ressource
 	 */

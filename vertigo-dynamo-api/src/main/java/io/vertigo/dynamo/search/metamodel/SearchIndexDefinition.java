@@ -67,7 +67,7 @@ public final class SearchIndexDefinition implements Definition {
 	private final String searchLoaderId;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Index name
 	 * @param keyConceptDtDefinition KeyConcept associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.

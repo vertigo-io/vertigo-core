@@ -36,7 +36,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	private FileInfoURI uri;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Associe un fichier à des méta-données
 	 * @param fileInfoDefinition Definition du FileInfo
 	 * @param vFile Données du fichier

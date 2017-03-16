@@ -33,7 +33,7 @@ import io.vertigo.lang.WrappedException;
  */
 final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	PostgreSqlExceptionHandler() {
 		super();

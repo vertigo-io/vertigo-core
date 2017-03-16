@@ -80,7 +80,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private boolean indexSettingsValid;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param indexName Nom de l'index ES
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec

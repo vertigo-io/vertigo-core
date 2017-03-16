@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl implements SqlCallableStatement {
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param connection Connexion SQL
 	 * @param procName Nom de la procédure

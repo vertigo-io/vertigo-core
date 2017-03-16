@@ -39,7 +39,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private final Criteria<E> criteria;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *  @param dtDefinition Id de la Définition de DT
 	 * @param criteria critere //null = no criteria
 	 * @param maxRows Nombre de ligne max //null = ALL

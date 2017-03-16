@@ -38,7 +38,7 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	private transient D definition;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param definition Définition
 	 */
 	public DefinitionReference(final D definition) {

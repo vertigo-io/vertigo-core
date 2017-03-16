@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -44,7 +44,7 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 	private final Map<String, MemoryCache> cachesPerContext = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 */
 	@Inject

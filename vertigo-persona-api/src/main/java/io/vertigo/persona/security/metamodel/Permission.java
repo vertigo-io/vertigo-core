@@ -34,7 +34,7 @@ public final class Permission implements Definition {
 	private final String filter;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param name Nom de la permission
 	 * @param operation Operation

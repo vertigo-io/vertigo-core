@@ -120,7 +120,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private final List<SqlParameter> parameters = new ArrayList<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param sql Requête SQL
 	 * @param connection Connexion
 	 * @param returnGeneratedKeys true si on récupère les clés générées.

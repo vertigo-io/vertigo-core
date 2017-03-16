@@ -49,7 +49,7 @@ public final class FormatterBoolean implements Formatter {
 	private final String falsePattern;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FormatterBoolean(final String args) {
 		// Les arguments ne doivent pas être vides.

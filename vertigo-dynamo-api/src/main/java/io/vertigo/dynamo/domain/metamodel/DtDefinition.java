@@ -69,7 +69,7 @@ public final class DtDefinition implements Definition {
 	private final String dataSpace;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	DtDefinition(
 			final String name,

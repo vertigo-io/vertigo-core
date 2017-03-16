@@ -47,7 +47,7 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	private final Constraint constraint;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public ConstraintDefinition(final String name, final String constraintClassName, final String msg, final String args) {
 		Assertion.checkArgNotEmpty(constraintClassName);

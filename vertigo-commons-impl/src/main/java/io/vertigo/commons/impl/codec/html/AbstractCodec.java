@@ -51,7 +51,7 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	private int replaceByMaxSize;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Génération des tables de remplacement.
 	 * Contrôle des chaines de remplacement
 	 * Elles doivent commencer par LE caractère d'échappement et finir par le caractère de terminaison.

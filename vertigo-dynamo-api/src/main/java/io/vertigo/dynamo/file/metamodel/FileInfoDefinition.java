@@ -47,7 +47,7 @@ public final class FileInfoDefinition implements Definition {
 	private final String storeName;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Nom de la définition
 	 * @param storeName Nom du store de ces fichiers
 	 */

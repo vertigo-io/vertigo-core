@@ -41,7 +41,7 @@ public final class JpaDataBase implements SqlDataBase {
 	private final EntityManagerFactory entityManagerFactory;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param innerDataBase Base sous jacente
 	 * @param entityManagerFactory entityManagerFactory
 	 */

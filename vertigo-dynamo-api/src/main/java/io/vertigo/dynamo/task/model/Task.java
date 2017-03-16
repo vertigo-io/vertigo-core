@@ -54,7 +54,7 @@ public final class Task {
 	private final TaskDefinition taskDefinition;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {

@@ -50,7 +50,7 @@ final class ScriptParser {
 	private ScriptSeparator currentSeparator;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param separators Séparateurs pris en compte
 	 */
 	ScriptParser(final List<ScriptSeparator> separators) {
@@ -134,7 +134,7 @@ final class ScriptParser {
 			}
 		}
 		/*
-		 * If there is a separator 
+		 * If there is a separator
 		 * then we return its position
 		 */
 		if (found == null) {

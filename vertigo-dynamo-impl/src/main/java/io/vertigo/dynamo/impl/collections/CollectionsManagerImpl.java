@@ -52,7 +52,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	private final DtListProcessor listProcessor;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param indexPlugin Plugin optionnel d'index
 	 */
 	@Inject

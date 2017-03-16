@@ -37,7 +37,7 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dataStorePlugins DataStorePlugins list
 	 * @param cacheManager Manager de gestion du cache
 	 */

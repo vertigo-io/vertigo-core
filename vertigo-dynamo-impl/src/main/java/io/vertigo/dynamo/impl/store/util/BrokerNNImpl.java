@@ -75,7 +75,7 @@ final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param taskManager Manager des Tasks
 	 */
 	BrokerNNImpl(final TaskManager taskManager) {

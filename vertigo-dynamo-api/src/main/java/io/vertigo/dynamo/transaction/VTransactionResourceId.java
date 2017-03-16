@@ -47,7 +47,7 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	private final String name;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param priority Priorité de la ressource.
 	 * @param name Nom de code de la ressource.
 	 */

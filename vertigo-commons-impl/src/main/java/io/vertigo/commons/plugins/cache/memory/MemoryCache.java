@@ -38,7 +38,7 @@ final class MemoryCache {
 	private final Map<Serializable, MemoryCacheValue> cacheDatas = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Nom du cache
 	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */

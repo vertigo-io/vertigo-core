@@ -51,7 +51,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final Optional<FacetedQuery> query;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param query Facettage de la requète
 	 * @param count  Nombre total de résultats
 	 * @param dtc DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.

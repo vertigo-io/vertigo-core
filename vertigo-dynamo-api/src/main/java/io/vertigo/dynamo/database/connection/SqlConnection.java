@@ -39,7 +39,7 @@ public final class SqlConnection implements VTransactionResource {
 	private final boolean closeable;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param jdbcConnection Connexion JDBC
 	 * @param dataBase Base de données

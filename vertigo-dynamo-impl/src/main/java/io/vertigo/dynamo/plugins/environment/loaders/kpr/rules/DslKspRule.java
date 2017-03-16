@@ -26,11 +26,11 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRule.Dummy;
+import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
-import io.vertigo.commons.peg.PegRules;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -48,7 +48,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 	private final DslDefinitionRepository dynamicModelrepository;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dynamicModelrepository Grammaire
 	 */
 	public DslKspRule(final DslDefinitionRepository dynamicModelrepository) {

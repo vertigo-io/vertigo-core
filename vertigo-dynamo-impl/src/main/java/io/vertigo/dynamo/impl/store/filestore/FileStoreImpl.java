@@ -32,7 +32,7 @@ public final class FileStoreImpl implements FileStore {
 	private final FileStoreConfig fileStoreConfig;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param fileStoreConfig Config of the fileStore
 	 */
 	public FileStoreImpl(final FileStoreConfig fileStoreConfig) {

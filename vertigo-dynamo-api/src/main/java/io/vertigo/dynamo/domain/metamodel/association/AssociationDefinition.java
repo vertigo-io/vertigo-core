@@ -53,7 +53,7 @@ public abstract class AssociationDefinition implements Definition {
 	private final AssociationNode associationNodeB;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param associationNodeA Noeud A
 	 * @param associationNodeB Noeud B
 	 */

@@ -40,7 +40,7 @@ import io.vertigo.lang.Assertion;
 public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public DslDefinitionEntryRule(final List<String> fieldNames) {
 		super(createMainRule(fieldNames));

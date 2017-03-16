@@ -54,7 +54,7 @@ final class ESDocumentCodec {
 	private final CodecManager codecManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param codecManager Manager des codecs
 	 */
 	ESDocumentCodec(final CodecManager codecManager) {

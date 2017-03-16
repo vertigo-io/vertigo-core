@@ -50,7 +50,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private final File txNewFile;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param inputStream l'inputStream du fichier
 	 * @param path le chemin de destination du fichier

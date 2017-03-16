@@ -61,7 +61,7 @@ public final class FacetedQueryDefinition implements Definition {
 	private final Class<? extends ListFilterBuilder> listFilterBuilderClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Nom de la definition
 	 * @param keyConceptDtDefinition Definition du keyConcept sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes

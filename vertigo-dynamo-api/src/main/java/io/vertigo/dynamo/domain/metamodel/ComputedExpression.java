@@ -28,7 +28,7 @@ public final class ComputedExpression {
 	private final String javaCode;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param javaCode Code java de l'expression
 	 */
 	public ComputedExpression(final String javaCode) {

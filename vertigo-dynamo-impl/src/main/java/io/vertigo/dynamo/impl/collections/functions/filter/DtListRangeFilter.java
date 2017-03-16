@@ -48,7 +48,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 	private transient DtField dtField;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param fieldName Nom du champ
 	 * @param minValue Valeur min
 	 * @param maxValue Valeur max

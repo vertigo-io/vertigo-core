@@ -45,7 +45,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	private final List<AProcess> subProcesses;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * La duree du processus sera obtenue lors de l'appel a la methode build().
 	 * @param type Type du processus
 	 */

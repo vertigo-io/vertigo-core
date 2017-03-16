@@ -31,7 +31,7 @@ import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
  */
 final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	OracleExceptionHandler() {
 		super();

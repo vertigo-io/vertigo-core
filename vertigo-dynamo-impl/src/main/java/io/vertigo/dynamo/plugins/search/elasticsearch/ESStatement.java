@@ -72,7 +72,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private final ESDocumentCodec esDocumentCodec;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document
 	 * @param indexName Index name
 	 * @param typeName Type name in Index

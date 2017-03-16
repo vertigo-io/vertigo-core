@@ -47,7 +47,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param collectionsManager Manager des collections
 	 */
 	public MasterDataConfigImpl(final CollectionsManager collectionsManager) {

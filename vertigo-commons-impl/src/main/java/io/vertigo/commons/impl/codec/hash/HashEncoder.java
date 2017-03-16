@@ -70,7 +70,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	private final Hash hash;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param hash méthode de hashage
 	 */
 	public HashEncoder(final Hash hash) {
