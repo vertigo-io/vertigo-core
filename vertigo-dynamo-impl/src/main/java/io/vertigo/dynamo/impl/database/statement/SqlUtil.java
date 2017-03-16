@@ -52,6 +52,10 @@ final class SqlUtil {
 	 * @throws SQLException Exception SQL
 	 */
 	static SqlQueryResult buildResult(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		Assertion.checkNotNull(domain);
+		Assertion.checkNotNull(mapping);
+		Assertion.checkNotNull(resultSet);
+		//-----
 		if (domain.getDataType().isPrimitive()) {
 			return retrievePrimitive(domain, mapping, resultSet);
 		}
@@ -87,8 +91,6 @@ final class SqlUtil {
 
 	private static DtList<DtObject> doRetrieveDtList(final Domain domain, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
 		final DtField[] fields = findFields(domain, resultSet.getMetaData());
-
-		DtObject dto;
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
 		final DtList<DtObject> dtc = new DtList<>(domain.getDtDefinition());
@@ -96,20 +98,19 @@ final class SqlUtil {
 			if (limit != null && dtc.size() > limit) {
 				throw createTooManyRowsException();
 			}
-			dto = DtObjectUtil.createDtObject(domain.getDtDefinition());
-			readDtObject(mapping, resultSet, dto, fields);
-			dtc.add(dto);
-
+			dtc.add(readDtObject(mapping, resultSet, domain, fields));
 		}
 		return dtc;
 	}
 
-	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
+	private static DtObject readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Domain domain, final DtField[] fields) throws SQLException {
+		final DtObject dto = DtObjectUtil.createDtObject(domain.getDtDefinition());
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getDomain().getDataType());
 			fields[i].getDataAccessor().setValue(dto, value);
 		}
+		return dto;
 	}
 
 	/**
@@ -118,8 +119,6 @@ final class SqlUtil {
 	 * @return Tableau de codes de champ.
 	 */
 	private static DtField[] findFields(final Domain domain, final ResultSetMetaData resultSetMetaData) throws SQLException {
-		Assertion.checkNotNull(resultSetMetaData);
-		//-----
 		final DtField[] fields = new DtField[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {
