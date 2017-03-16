@@ -38,8 +38,7 @@ import io.vertigo.dynamo.impl.database.vendor.core.SqlDataStreamMappingUtil;
  * @author npiedeloup
  */
 public final class DataStreamType implements UserType {
-
-	private static int[] SQL_TYPES = new int[] { Types.BLOB };
+	private static final int[] SQL_TYPES = new int[] { Types.BLOB };
 
 	/** {@inheritDoc} */
 	@Override
@@ -79,7 +78,11 @@ public final class DataStreamType implements UserType {
 
 	/** {@inheritDoc} */
 	@Override
-	public void nullSafeSet(final PreparedStatement statement, final Object value, final int index, final SharedSessionContractImplementor session) throws SQLException {
+	public void nullSafeSet(
+			final PreparedStatement statement,
+			final Object value,
+			final int index,
+			final SharedSessionContractImplementor session) throws SQLException {
 		if (value == null) {
 			statement.setNull(index, sqlTypes()[0]);
 		} else {
