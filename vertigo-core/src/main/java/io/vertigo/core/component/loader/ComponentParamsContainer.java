@@ -87,7 +87,7 @@ final class ComponentParamsContainer implements Container {
 			return paramManagerOption.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
 					.getParam(property);
 		}
-		return Param.create(paramName, paramValue);
+		return Param.of(paramName, paramValue);
 	}
 
 	/*

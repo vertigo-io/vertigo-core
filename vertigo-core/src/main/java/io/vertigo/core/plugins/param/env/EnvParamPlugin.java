@@ -36,6 +36,6 @@ public final class EnvParamPlugin implements ParamPlugin {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
 		final String paramValue = System.getenv().get(paramName);
-		return paramValue != null ? Optional.<Param> of(Param.create(paramName, paramValue)) : Optional.<Param> empty();
+		return paramValue != null ? Optional.<Param> of(Param.of(paramName, paramValue)) : Optional.<Param> empty();
 	}
 }

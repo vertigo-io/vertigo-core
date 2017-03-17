@@ -61,9 +61,9 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 				.addModule(new ModuleConfigBuilder("bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "100"))
+								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 	}

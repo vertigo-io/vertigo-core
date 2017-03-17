@@ -101,25 +101,25 @@ public final class ComponentSpace3Test {
 				.addModule(new ModuleConfigBuilder("Function")
 						.addComponent(FunctionManager.class, implClass)
 						.addPlugin(FunctionPlugin.class,
-								Param.create("name", "x+1"),
-								Param.create("a", "1"),
-								Param.create("b", "1"))
+								Param.of("name", "x+1"),
+								Param.of("a", "1"),
+								Param.of("b", "1"))
 						.addPlugin(FunctionPlugin.class,
-								Param.create("name", "2x"),
-								Param.create("a", "2"),
-								Param.create("b", "0"))
+								Param.of("name", "2x"),
+								Param.of("a", "2"),
+								Param.of("b", "0"))
 						.addPlugin(FunctionPlugin.class,
-								Param.create("name", "4x+3"),
-								Param.create("a", "4"),
-								Param.create("b", "3"))
+								Param.of("name", "4x+3"),
+								Param.of("a", "4"),
+								Param.of("b", "3"))
 						.addPlugin(FunctionPlugin.class,
-								Param.create("name", (withNullMult ? "0" : "1") + "x+1"),
-								Param.create("a", withNullMult ? "0" : "1"),
-								Param.create("b", "1"))
+								Param.of("name", (withNullMult ? "0" : "1") + "x+1"),
+								Param.of("a", withNullMult ? "0" : "1"),
+								Param.of("b", "1"))
 						.addPlugin(FunctionPlugin.class,
-								Param.create("name", "x-10"),
-								Param.create("a", "1"),
-								Param.create("b", "-10"))
+								Param.of("name", "x-10"),
+								Param.of("a", "1"),
+								Param.of("b", "-10"))
 						.build())
 				.build();
 	}

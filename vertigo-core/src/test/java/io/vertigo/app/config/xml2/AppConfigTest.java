@@ -49,15 +49,15 @@ public final class AppConfigTest {
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(XmlParamPlugin.class,
-						Param.create("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
+						Param.of("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
 				.endBoot()
 
 				.addModule(new ModuleConfigBuilder("bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "${math.test.start}"))
+								Param.of("start", "${math.test.start}"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 

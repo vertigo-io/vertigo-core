@@ -77,8 +77,8 @@ public final class MyAppConfig {
 						.withStore()
 						.withKVStore()
 						.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
-								Param.create("collections", "tokens"),
-								Param.create("timeToLiveSeconds", "120"))
+								Param.of("collections", "tokens"),
+								Param.of("timeToLiveSeconds", "120"))
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")

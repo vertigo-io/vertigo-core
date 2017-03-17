@@ -41,7 +41,7 @@ public final class FormatterDefinition implements Formatter, Definition {
 	private final Formatter formatter;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FormatterDefinition(final String name, final String formatterClassName, final String args) {
 		Assertion.checkArgNotEmpty(formatterClassName);

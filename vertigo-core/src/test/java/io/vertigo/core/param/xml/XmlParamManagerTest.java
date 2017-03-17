@@ -43,7 +43,7 @@ public final class XmlParamManagerTest extends AbstractParamManagerTest {
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin( XmlParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/xml/basic-app-config.xml"))
+						Param.of("url", "io/vertigo/core/param/xml/basic-app-config.xml"))
 			.endBoot()
 			.build();
 		// @formatter:on

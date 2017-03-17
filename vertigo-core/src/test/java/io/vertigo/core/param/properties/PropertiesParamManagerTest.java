@@ -43,7 +43,7 @@ public final class PropertiesParamManagerTest extends AbstractParamManagerTest {
 				.withLocales(locales)
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addPlugin( PropertiesParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/properties/app-config.properties"))
+						Param.of("url", "io/vertigo/core/param/properties/app-config.properties"))
 			.endBoot()
 			.build();
 		// @formatter:on

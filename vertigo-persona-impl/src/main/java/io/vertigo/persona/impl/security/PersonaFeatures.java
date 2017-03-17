@@ -45,7 +45,7 @@ public final class PersonaFeatures extends Features {
 	public PersonaFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
 		getModuleConfigBuilder()
 				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
-						Param.create("userSessionClassName", userSessionClass.getName()));
+						Param.of("userSessionClassName", userSessionClass.getName()));
 		return this;
 	}
 

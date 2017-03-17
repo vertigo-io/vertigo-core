@@ -57,7 +57,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 				.endBoot()
 				.addModule(new ModuleConfigBuilder("test")
 						.addDefinitionProvider(new DefinitionProviderConfigBuilder(TestDefinitionprovider.class)
-								.addParam(Param.create("testParam", "testParamValue"))
+								.addParam(Param.of("testParam", "testParamValue"))
 								.addDefinitionResource("type1", "resource1")
 								.build())
 						.build())

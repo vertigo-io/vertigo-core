@@ -58,7 +58,7 @@ public final class Param {
 	 * @param value the value of the param
 	 * @return new param
 	 */
-	public static Param create(final String name, final String value) {
+	public static Param of(final String name, final String value) {
 		return new Param(name, value);
 	}
 

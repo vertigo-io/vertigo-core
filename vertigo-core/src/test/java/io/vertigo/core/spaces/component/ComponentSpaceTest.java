@@ -51,9 +51,9 @@ public final class ComponentSpaceTest {
 				.addModule(new ModuleConfigBuilder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "100"))
+								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 
@@ -76,9 +76,9 @@ public final class ComponentSpaceTest {
 						//This plugin DummyPlugin is not used By BioManager !!
 						.addPlugin(DummyPlugin.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "100"))
+								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 
@@ -98,9 +98,9 @@ public final class ComponentSpaceTest {
 				.endBoot()
 				.addModule(new ModuleConfigBuilder("Bio-core")
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "100"))
+								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.addModule(new ModuleConfigBuilder("Bio-spe") //This module depends of Bio-core module
 						.addComponent(BioManager.class, BioManagerImpl.class)

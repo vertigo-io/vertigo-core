@@ -119,7 +119,7 @@ final class AppServletStarter {
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
-			webParams.put(name, Param.create(name, servletContext.getInitParameter(name)));
+			webParams.put(name, Param.of(name, servletContext.getInitParameter(name)));
 		}
 		return webParams;
 	}

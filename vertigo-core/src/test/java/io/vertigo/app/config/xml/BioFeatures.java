@@ -41,8 +41,8 @@ public class BioFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.create("start", "100"))
-				.addPlugin(MathPlugin.class, Param.create("factor", "20"));
+				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
+				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
 	}
 
 }

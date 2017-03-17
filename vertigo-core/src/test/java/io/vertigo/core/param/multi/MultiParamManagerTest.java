@@ -44,13 +44,13 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(XmlParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/multi/app-config.xml"))
+						Param.of("url", "io/vertigo/core/param/multi/app-config.xml"))
 				.addPlugin(PropertiesParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/multi/app-config.properties"))
+						Param.of("url", "io/vertigo/core/param/multi/app-config.properties"))
 				.addPlugin(PropertiesParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/multi/app-config2.properties"))
+						Param.of("url", "io/vertigo/core/param/multi/app-config2.properties"))
 				.addPlugin(XmlParamPlugin.class,
-						Param.create("url", "io/vertigo/core/param/multi/app-config2.xml"))
+						Param.of("url", "io/vertigo/core/param/multi/app-config2.xml"))
 				.endBoot()
 				.build();
 	}
