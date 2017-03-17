@@ -101,6 +101,60 @@
 			<regexp pattern="\.getLongValue\(&quot;([a-zA-Z0-9\.]+)&quot;\)" />
 			<substitution expression=".getParam(&quot;\1&quot;).getValueAsLong()" />
 		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.account to io.vertigo.x.account.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.account" />
+			<substitution expression="io.vertigo.x.account.\1" />
+		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.audit to io.vertigo.x.audit.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.audit" />
+			<substitution expression="io.vertigo.x.audit.\1" />
+		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.comment to io.vertigo.x.comment.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.comment" />
+			<substitution expression="io.vertigo.x.comment.\1" />
+		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.notification to io.vertigo.x.notification.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.notification" />
+			<substitution expression="io.vertigo.x.notification.\1" />
+		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.rules to io.vertigo.x.rules.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.rules" />
+			<substitution expression="io.vertigo.x.rules.\1" />
+		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.[a-zA-Z]+.workflow to io.vertigo.x.workflow.\1" />
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.xml" />
+			</fileset>
+			<regexp pattern="io\.vertigo\.x\.[a-zA-Z]+\.workflow" />
+			<substitution expression="io.vertigo.x.workflow.\1" />
+		</replaceregexp>
 	</target>
 
 	<target name="0.9.2 to 0.9.3" description="Usefull renames from 0.9.2 to 0.9.3">
