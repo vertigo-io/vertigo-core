@@ -6,11 +6,18 @@ Running 0.9.5-SNAPSHOT
 
 more to come :)
 
+Release 0.9.4a - 2017/03/15
+----------------------
+__This release is limited to Studio only__
+* [Studio] Fix Studio issue 
+
 Release 0.9.4 - 2017/03/13
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-093-to-094)
 
 __In Bold__ : Potential compatibility problems 
+
+__Warning : You must use 0.9.4a version of Studio module !!__
 * [All] Code cleaning, refactoring and documenting (and Stream java8, Optionnal, Methods refs, ...)
 * [All] Always use WrappedException (wrap & unwrap), and params order changed
 * [All] Moved dsl classes from core to dynamo
