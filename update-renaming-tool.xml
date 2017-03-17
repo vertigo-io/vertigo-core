@@ -57,7 +57,10 @@
 		<replace dir="${src.path}" encoding="${src.encoding}" token=".Injector;" value=".DIInjector;" summary="true">
 			<include name="**/*.java" />
 		</replace>
-		<replace dir="${src.path}" encoding="${src.encoding}" token="Injector." value="DIInjector." summary="true">
+		<replace dir="${src.path}" encoding="${src.encoding}" token=" Injector." value=" DIInjector." summary="true">
+			<include name="**/*.java" />
+		</replace>
+		<replace dir="${src.path}" encoding="${src.encoding}" token="\tInjector." value="\tDIInjector." summary="true">
 			<include name="**/*.java" />
 		</replace>
 
@@ -147,14 +150,28 @@
 			<substitution expression="io.vertigo.x.rules.\1" />
 		</replaceregexp>
 		
-		<echo message="Renamed in *.xml : io.vertigo.x.([a-zA-Z]+).workflow to io.vertigo.x.workflow.\1" />
+		
+		<echo message="Renamed in *.xml : api=&quot;([a-zA-Z]+)Manager&quot; class=&quot;io.vertigo.x.([a-zA-Z\.]+)Manager to api=&quot;\1Services&quot; class=&quot;io.vertigo.x.\2Services" />
 		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
 			<fileset dir="${src.path}">
 				<include name="**/*.xml" />
 			</fileset>
-			<regexp pattern="io\.vertigo\.x\.([a-zA-Z]+)\.workflow" />
-			<substitution expression="io.vertigo.x.workflow.\1" />
+			<regexp pattern="api=&quot;([a-zA-Z]+)Manager&quot; class=&quot;io\.vertigo\.x\.([a-zA-Z\.]+)Manager" />
+			<substitution expression="api=&quot;\1Services&quot; class=&quot;io.vertigo.x.\2Services" />
 		</replaceregexp>
+		
+		<echo message="Renamed in *.xml : api=&quot;WorkflowServices&quot; class=&quot;io.vertigo.x.impl.workflow.WorkflowServices to api=&quot;WorkflowManager&quot; class=&quot;io.vertigo.x.impl.workflow.WorkflowManager" />
+		<replace dir="${src.path}" encoding="${src.encoding}" token="api=&quot;WorkflowServices&quot; class=&quot;io.vertigo.x.impl.workflow.WorkflowServices" value="api=&quot;WorkflowManager&quot; class=&quot;io.vertigo.x.impl.workflow.WorkflowManager" summary="true">
+			<include name="**/*.xml" />
+		</replace>
+		
+		<echo message="Renamed in *.xml : io.vertigo.x.account.impl.services.AccountServicesImpl to io.vertigo.x.account.impl.services.AccountServicesImpl" />
+		<replace dir="${src.path}" encoding="${src.encoding}" token="io.vertigo.x.account.impl.services.AccountServicesImpl" value="io.vertigo.x.account.impl.services.AccountServicesImpl" summary="true">
+			<include name="**/*.xml" />
+		</replace>
+		
+		
+		
 	</target>
 
 	<target name="0.9.2 to 0.9.3" description="Usefull renames from 0.9.2 to 0.9.3">
