@@ -70,7 +70,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		addComponent(
 				LocaleManager.class,
 				LocaleManagerImpl.class,
-				Param.create("locales", locales));
+				Param.of("locales", locales));
 		return this;
 	}
 
