@@ -47,11 +47,12 @@ final class ConfigUtil {
 				id = pluginConfig.getPluginType() + '#' + index;
 				index++;
 			}
-			componentConfigs.add(
-					new ComponentConfig(id,
-							Optional.empty(),
-							pluginConfig.getImplClass(),
-							pluginConfig.getParams()));
+
+			final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.empty(), pluginConfig.getImplClass())
+					.withId(id)
+					.addParams(pluginConfig.getParams())
+					.build();
+			componentConfigs.add(componentConfig);
 		}
 		return componentConfigs;
 	}

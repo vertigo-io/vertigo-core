@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
@@ -71,20 +70,6 @@ public final class ComponentConfig {
 		this.params = params
 				.stream()
 				.collect(Collectors.toMap(Param::getName, Param::getValue));
-	}
-
-	/**
-	 * Builds a new ComponentConfig.
-	 * @param optionalApiClass api of the component
-	 * @param implClass impl class of the component
-	 * @param params params
-	 */
-	static ComponentConfig of(
-			final Optional<Class<? extends Component>> optionalApiClass,
-			final Class<? extends Component> implClass,
-			final List<Param> params) {
-		final String id = DIAnnotationUtil.buildId(optionalApiClass.orElse(implClass));
-		return new ComponentConfig(id, optionalApiClass, implClass, params);
 	}
 
 	/**

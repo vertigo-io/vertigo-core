@@ -19,9 +19,11 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -33,7 +35,7 @@ import io.vertigo.lang.Component;
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
-	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
+	private String myId;
 	private final Optional<Class<? extends Component>> optionalApiClass;
 	private final Class<? extends Component> implClass;
 	private final List<Param> myParams = new ArrayList<>();
@@ -43,12 +45,37 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param apiClassOpt and optional apiClass for the component
 	 * @param implClass the impl class of the component
 	 */
-	public ComponentConfigBuilder(final Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass) {
+	public ComponentConfigBuilder(
+			final Optional<Class<? extends Component>> apiClassOpt,
+			final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClass);
 		//-----
 		this.optionalApiClass = apiClassOpt;
 		this.implClass = implClass;
+	}
+
+	/**
+	 * Adds a list of params to this component config.
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder addParams(final List<Param> params) {
+		Assertion.checkNotNull(params);
+		//-----
+		myParams.addAll(params);
+		return this;
+	}
+
+	/**
+	 * Adds a list of params to this component config.
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder addParams(final Param[] params) {
+		Assertion.checkNotNull(params);
+		//-----
+		return addParams(Arrays.asList(params));
 	}
 
 	/**
@@ -63,9 +90,21 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return this;
 	}
 
+	public ComponentConfigBuilder withId(final String id) {
+		Assertion.checkArgNotEmpty(id);
+		//---
+		this.myId = id;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		return ComponentConfig.of(optionalApiClass, implClass, myParams);
+		if (myId == null) {
+			//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
+			myId = DIAnnotationUtil.buildId(optionalApiClass.orElse(implClass));
+		}
+		return new ComponentConfig(myId, optionalApiClass, implClass, myParams);
 	}
+
 }

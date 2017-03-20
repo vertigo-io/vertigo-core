@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.proxy.ProxyFactory;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -48,6 +49,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
+	private final List<ProxyFactoryConfig> myProxyConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	private boolean myHasApi = true; //par défaut on a une api.
@@ -70,6 +72,16 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
 		myAspectConfigs.add(new AspectConfig(implClass));
+		return this;
+	}
+
+	/**
+	 * Adds a proxy factory.
+	 * @param proxyFactoryClass Class of the proxy factoy
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addProxyFactory(final Class<? extends ProxyFactory> proxyFactoryClass) {
+		myProxyConfigs.add(new ProxyFactoryConfig(proxyFactoryClass));
 		return this;
 	}
 
@@ -104,7 +116,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		return addComponent(ComponentConfig.of(Optional.empty(), implClass, Arrays.asList(params)));
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.empty(), implClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
 	}
 
 	/**
@@ -119,7 +134,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		return addComponent(ComponentConfig.of(Optional.of(apiClass), implClass, Arrays.asList(params)));
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.of(apiClass), implClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
 	}
 
 	/**
@@ -180,7 +198,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
-				myAspectConfigs);
+				myAspectConfigs,
+				myProxyConfigs);
 	}
 
 }

@@ -114,30 +114,21 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	* Adds a component defined by an implementation.
-	 * @param implClass impl of the component
-	 * @param params the list of params
-	 */
-	public void addComponent(final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
-		//---
-		myComponentConfigs.add(ComponentConfig.of(Optional.empty(), implClass, Arrays.asList(params)));
-	}
-
-	/**
 	* Adds a component defined by an api and an implementation.
 	 * @param apiClass api of the component
 	 * @param implClass impl of the component
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		myComponentConfigs.add(ComponentConfig.of(Optional.of(apiClass), implClass, Arrays.asList(params)));
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.of(apiClass), implClass)
+				.addParams(params)
+				.build();
+		myComponentConfigs.add(componentConfig);
 		return this;
 	}
 
