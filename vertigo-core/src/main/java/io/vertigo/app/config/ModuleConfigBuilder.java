@@ -21,7 +21,6 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.aop.Aspect;
@@ -116,7 +115,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.empty(), implClass)
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(implClass)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -134,7 +133,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.of(apiClass), implClass)
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(implClass)
+				.withApi(apiClass)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);

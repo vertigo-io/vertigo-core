@@ -36,23 +36,29 @@ import io.vertigo.lang.Component;
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private String myId;
-	private final Optional<Class<? extends Component>> optionalApiClass;
+	private Class<? extends Component> myApiClass;
 	private final Class<? extends Component> implClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor of a component config
-	 * @param apiClassOpt and optional apiClass for the component
 	 * @param implClass the impl class of the component
 	 */
-	public ComponentConfigBuilder(
-			final Optional<Class<? extends Component>> apiClassOpt,
-			final Class<? extends Component> implClass) {
-		Assertion.checkNotNull(apiClassOpt);
+	public ComponentConfigBuilder(final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.optionalApiClass = apiClassOpt;
 		this.implClass = implClass;
+	}
+
+	/**
+	 * @param apiClass the apiClass for the component
+	 * @return
+	 */
+	public ComponentConfigBuilder withApi(final Class<? extends Component> apiClass) {
+		Assertion.checkNotNull(apiClass);
+		//-----
+		myApiClass = apiClass;
+		return this;
 	}
 
 	/**
@@ -100,11 +106,12 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
+		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
 		if (myId == null) {
 			//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-			myId = DIAnnotationUtil.buildId(optionalApiClass.orElse(implClass));
+			myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClass));
 		}
-		return new ComponentConfig(myId, optionalApiClass, implClass, myParams);
+		return new ComponentConfig(myId, apiClassOpt, implClass, myParams);
 	}
 
 }

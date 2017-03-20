@@ -21,7 +21,6 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.lang.Assertion;
@@ -48,7 +47,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.empty(), pluginConfig.getImplClass())
+			final ComponentConfig componentConfig = new ComponentConfigBuilder(pluginConfig.getImplClass())
 					.withId(id)
 					.addParams(pluginConfig.getParams())
 					.build();

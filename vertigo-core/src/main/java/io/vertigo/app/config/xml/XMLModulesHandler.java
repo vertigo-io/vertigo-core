@@ -148,13 +148,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
 				final Optional<Class<? extends Component>> optionalApiClass;
+				componentConfigBuilder = new ComponentConfigBuilder(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
-					optionalApiClass = Optional.of((Class<? extends Component>) componentApiClass);
-				} else {
-					optionalApiClass = Optional.empty();
+					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);
 				}
-				componentConfigBuilder = new ComponentConfigBuilder(optionalApiClass, componentImplClass);
 				break;
 			case initializer:
 				final String initClass = attrs.getValue("class");

@@ -121,11 +121,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
-		//---
-		final ComponentConfig componentConfig = new ComponentConfigBuilder(Optional.of(apiClass), implClass)
+		final ComponentConfig componentConfig = new ComponentConfigBuilder(implClass)
+				.withApi(apiClass)
 				.addParams(params)
 				.build();
 		myComponentConfigs.add(componentConfig);
