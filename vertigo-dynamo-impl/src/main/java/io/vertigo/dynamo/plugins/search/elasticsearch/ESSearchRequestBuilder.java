@@ -76,6 +76,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	private int myDefaultMaxRows = 10;
+	private boolean useHighlight = false;
 
 	/**
 	 * @param indexName Index name (env name)
@@ -129,6 +130,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return this;
 	}
 
+	/**
+	 * @return this builder
+	 */
+	public ESSearchRequestBuilder withHighlight() {
+		useHighlight = true;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public SearchRequestBuilder build() {
@@ -140,7 +149,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
-		appendSearchQuery(mySearchQuery, searchRequestBuilder);
+		appendSearchQuery(mySearchQuery, searchRequestBuilder, useHighlight);
 		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState);
 		return searchRequestBuilder;
 	}
@@ -168,7 +177,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return sortBuilder;
 	}
 
-	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
+	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final boolean useHighlight) {
 		final BoolQueryBuilder mainBoolQueryBuilder = QueryBuilders.boolQuery();
 
 		//on ajoute les critères de la recherche AVEC impact sur le score
@@ -197,10 +206,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			requestQueryBuilder = mainBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(requestQueryBuilder)
-				//.setHighlighterFilter(true) //We don't highlight the security filter
-				.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
-				.addHighlightedField("*");
+				.setQuery(requestQueryBuilder);
+		if (useHighlight) {
+			//.setHighlighterFilter(true) //We don't highlight the security filter
+			searchRequestBuilder
+					.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
+					.addHighlightedField("*");
+		}
 	}
 
 	private static QueryBuilder appendBoostMostRecent(final SearchQuery searchQuery, final QueryBuilder queryBuilder) {
