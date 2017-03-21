@@ -86,9 +86,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			mocka.setLabel(String.valueOf(i % 100));
 			dtc.add(mocka);
 		}
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LABEL", false);
-		final DtList<Item> sortedDtc = sortState.apply(dtc);
+
+		final DtList<Item> sortedDtc = collectionsManager.<Item> createDtListProcessor()
+				.sort("LABEL", false)
+				.apply(dtc);
+
 		nop(sortedDtc);
 
 	}
