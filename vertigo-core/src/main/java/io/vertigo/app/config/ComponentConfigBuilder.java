@@ -52,7 +52,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 	/**
 	 * @param apiClass the apiClass for the component
-	 * @return
+	 * @return this builder
 	 */
 	public ComponentConfigBuilder withApi(final Class<? extends Component> apiClass) {
 		Assertion.checkNotNull(apiClass);
@@ -99,7 +99,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	public ComponentConfigBuilder withId(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//---
-		this.myId = id;
+		myId = id;
 		return this;
 	}
 
