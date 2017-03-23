@@ -56,6 +56,13 @@ public interface SearchManager extends Manager {
 	void markAsDirty(List<URI<? extends KeyConcept>> keyConceptUris);
 
 	/**
+	 * Mark an uri as dirty. Index of this element will be reindexed.
+	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
+	 * @param keyConceptUri Uri of keyConcept marked as dirty.
+	 */
+	void markAsDirty(URI<? extends KeyConcept> keyConceptUri);
+
+	/**
 	 * Launch a complete reindexation of an index.
 	 * @param indexDefinition Type de l'index
 	 * @return Future of number elements indexed
