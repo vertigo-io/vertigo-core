@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
 
 /**
  * WebServiceDefinition Builder.
@@ -238,10 +238,14 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		myAutoSortAndPagination = autoSortAndPagination;
 
 		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
-		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to webServiceParams
+		//autoSortAndPagination use a Implicit DtListState, this one must be show in API, so we add it to webServiceParams
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
-			addWebServiceParam(new WebServiceParamBuilder(UiListState.class)
+			addWebServiceParam(new WebServiceParamBuilder(String.class)
+					.with(WebServiceParamType.Query, "listServerToken") // We declare listServerToken in query without prefix
+					.optional()
+					.build());
+			addWebServiceParam(new WebServiceParamBuilder(DtListState.class)
 					.with(WebServiceParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}

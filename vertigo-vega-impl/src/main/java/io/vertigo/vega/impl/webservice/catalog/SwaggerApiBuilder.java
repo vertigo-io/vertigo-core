@@ -39,6 +39,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
@@ -52,7 +53,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -430,7 +430,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
-		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
+		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
 			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
@@ -454,7 +454,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private static boolean isOneInMultipleOutParams(final WebServiceParam webServiceParam) {
 		final Class<?> paramClass = webServiceParam.getType();
-		return webServiceParam.getParamType() == WebServiceParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+		return webServiceParam.getParamType() == WebServiceParamType.Query && (DtListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
 	}
 
 	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {

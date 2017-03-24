@@ -39,6 +39,7 @@ import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -60,7 +61,6 @@ import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.EmptyPkValidator;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.webservice.model.ExtendedObject;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
@@ -247,27 +247,27 @@ public final class AdvancedTestWebServices implements WebServices {
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServicePagined(//
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
-			@InnerBodyParam("listState") final UiListState uiListState) {
+			@InnerBodyParam("listState") final DtListState dtListState) {
 		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, uiListState);
+		return applySortAndPagination(result, dtListState);
 	}
 
 	@POST("/_searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact,
-			@QueryParam("") final UiListState uiListState) {
+			@QueryParam("") final DtListState dtListState) {
 		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, uiListState);
+		return applySortAndPagination(result, dtListState);
 	}
 
 	@AutoSortAndPagination
@@ -363,20 +363,20 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
-		if (uiListState.getSortFieldName() != null) {
+		if (dtListState.getSortFieldName().isPresent()) {
 			sortedList = collectionsManager.<D> createDtListProcessor()
-					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
+					.sort(StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get())
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
 		final DtList<D> filteredList;
-		if (uiListState.getTop() > 0) {
+		if (dtListState.getMaxRows().isPresent()) {
 			final int listSize = sortedList.size();
-			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
-			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
+			final int usedSkip = Math.min(dtListState.getSkipRows(), listSize);
+			final int usedTop = Math.min(usedSkip + dtListState.getMaxRows().get(), listSize);
 			filteredList = collectionsManager.<D> createDtListProcessor()
 					.filterSubList(usedSkip, usedTop)
 					.apply(sortedList);

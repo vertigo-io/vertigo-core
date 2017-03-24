@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -32,7 +33,6 @@ import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
-import io.vertigo.vega.webservice.model.UiListState;
 import spark.Request;
 import spark.Response;
 
@@ -41,6 +41,8 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class PaginatorAndSortWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+	public static final String LIST_SERVER_TOKEN = "listServerToken";
+
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
 	private final TokenManager tokenManager;
@@ -72,18 +74,20 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
 		//Criteria in body
-		//UiListState in query //see at WebServiceDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
-		//serverToken in UiListState
+		//DtListState in query //see at WebServiceDefinitionBuilder withAutoSortAndPagination it defined where DtListState was
+		//serverToken in DtListState
 
-		final WebServiceParam uiListWebServiceParams = lookupWebServiceParam(webServiceDefinition, UiListState.class);
+		final WebServiceParam uiListWebServiceParams = lookupWebServiceParam(webServiceDefinition, DtListState.class);
+		final WebServiceParam serverTokenWebServiceParams = lookupWebServiceParam(webServiceDefinition, LIST_SERVER_TOKEN);
 
-		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListWebServiceParams);
-		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
+		final DtListState parsedDtListState = (DtListState) routeContext.getParamValue(uiListWebServiceParams);
+		final DtListState dtListState = checkAndEnsureDefaultValue(parsedDtListState);
 
-		String listServerToken = uiListState.getListServerToken();
+		final Optional<String> listServerToken = (Optional<String>) routeContext.getParamValue(serverTokenWebServiceParams);
 		Optional<DtList<?>> fullListOption = Optional.empty();
-		if (listServerToken != null) {
-			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
+		if (listServerToken.isPresent()) {
+			fullListOption = tokenManager.<DtList<?>> get(listServerToken.get());
+			response.header(LIST_SERVER_TOKEN, listServerToken.get());
 		}
 		final DtList<?> fullList;
 		if (fullListOption.isPresent()) {
@@ -92,52 +96,67 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 			fullList = (DtList<?>) result;
-			listServerToken = tokenManager.put(fullList);
+			final String fullListServerToken = tokenManager.put(fullList);
+			response.header(LIST_SERVER_TOKEN, fullListServerToken);
 		}
-		response.header("listServerToken", listServerToken);
 		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta
-		final DtList<?> filteredList = applySortAndPagination(fullList, uiListState);
+		final DtList<?> filteredList = applySortAndPagination(fullList, dtListState);
 		filteredList.setMetaData(DtList.TOTAL_COUNT_META, fullList.size());
 		return filteredList;
 	}
 
-	private static UiListState checkAndEnsureDefaultValue(final UiListState parsedUiListState) {
-		if (parsedUiListState.getListServerToken() == null && parsedUiListState.getTop() == 0) {//check if parsedUiListState is just not initalized
-			return new UiListState(DEFAULT_RESULT_PER_PAGE, parsedUiListState.getSkip(), parsedUiListState.getSortFieldName(), parsedUiListState.isSortDesc(), null);
+	private static DtListState checkAndEnsureDefaultValue(final DtListState parsedDtListState) {
+		if (!parsedDtListState.getMaxRows().isPresent()) {//check if parsedUiListState is just not initalized
+			return new DtListState(DEFAULT_RESULT_PER_PAGE, parsedDtListState.getSkipRows(), parsedDtListState.getSortFieldName().orElse(null), parsedDtListState.isSortDesc().orElse(null));
 		}
-		return parsedUiListState;
+		return parsedDtListState;
 	}
 
 	/**
 	 * Lookup for a parameter of the asked type, return the first found.
 	 * @param webServiceDefinition WebService definition
 	 * @param paramType Type asked
-	 * @return first WebServiceParam of this type, null if not found
+	 * @return first WebServiceParam of this type, throw exception if not found
 	 */
-	private static WebServiceParam lookupWebServiceParam(final WebServiceDefinition webServiceDefinition, final Class<UiListState> paramType) {
+	private static WebServiceParam lookupWebServiceParam(final WebServiceDefinition webServiceDefinition, final Class<DtListState> paramType) {
 		return webServiceDefinition.getWebServiceParams()
 				.stream()
 				.filter(webServiceParam -> paramType.equals(webServiceParam.getType()))
 				.findFirst()
-				.orElseThrow(() -> new NullPointerException("sort and pagination need a UiListState endpointParams. It should have been added by WebServiceParamBuilder."));
+				.orElseThrow(() -> new NullPointerException("sort and pagination need a DtListState endpointParams. It should have been added by WebServiceParamBuilder."));
 
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+	/**
+	 * Lookup for a parameter of the asked name, return the first found.
+	 * @param webServiceDefinition WebService definition
+	 * @param paramType Type asked
+	 * @return first WebServiceParam of this name, throw exception if not found
+	 */
+	private static WebServiceParam lookupWebServiceParam(final WebServiceDefinition webServiceDefinition, final String paramName) {
+		return webServiceDefinition.getWebServiceParams()
+				.stream()
+				.filter(webServiceParam -> paramName.equals(webServiceParam.getName()))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("sort and pagination need a " + paramName + " endpointParams. It should have been added by WebServiceParamBuilder."));
+
+	}
+
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
-		if (uiListState.getSortFieldName() != null) {
+		if (dtListState.getSortFieldName().isPresent()) {
 			sortedList = collectionsManager.<D> createDtListProcessor()
-					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
+					.sort(StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get())
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
 		final DtList<D> filteredList;
-		if (uiListState.getSkip() >= sortedList.size()) {
+		if (dtListState.getSkipRows() >= sortedList.size()) {
 			filteredList = new DtList<>(unFilteredList.getDefinition());
-		} else if (uiListState.getTop() > 0) {
-			final int start = uiListState.getSkip();
-			final int end = Math.min(start + uiListState.getTop(), sortedList.size());
+		} else if (dtListState.getMaxRows().isPresent()) {
+			final int start = dtListState.getSkipRows();
+			final int end = Math.min(start + dtListState.getMaxRows().get(), sortedList.size());
 			filteredList = collectionsManager.<D> createDtListProcessor()
 					.filterSubList(start, end)
 					.apply(sortedList);

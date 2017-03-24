@@ -52,6 +52,7 @@ import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.JsonExclude;
@@ -338,6 +339,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
+					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
 					.registerTypeAdapter(List.class, new ListJsonSerializer())

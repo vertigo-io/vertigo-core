@@ -30,10 +30,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -66,7 +66,6 @@ public final class WebServiceParam {
 
 	public enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class),
-		//UiListState(UiListState.class),
 		Request(HttpServletRequest.class),
 		Response(HttpServletResponse.class),;
 
@@ -109,8 +108,9 @@ public final class WebServiceParam {
 				.check(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
 		Assertion.when(name.isEmpty())
-				.check(() -> WebServiceTypeUtil.isAssignableFrom(UiListState.class, type) || WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
-						"Only DtObject and UiListState can be map from Query parameters");
+				.check(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
+						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
+						"Only DtObject and DtListState can be map from Query parameters");
 	}
 
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {

@@ -26,7 +26,9 @@ import io.vertigo.lang.Assertion;
 /**
  * List state : page and sort infos.
  * @author npiedeloup (22 juil. 2014 17:31:15)
+ * @deprecated Use dtListState directly
  */
+@Deprecated
 public final class UiListState implements Serializable {
 	private static final long serialVersionUID = 1343925518488701786L;
 	private final int top;
