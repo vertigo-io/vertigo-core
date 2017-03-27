@@ -92,7 +92,7 @@ public interface DataStore {
 	void delete(URI<? extends Entity> uri);
 
 	/**
-	 * Returns a li	st identified by criteria
+	 * Returns a list identified by criteria
 	 * @param dtDefinition the list definition
 	 * @param criteria criteria
 	 * @return list
