@@ -21,6 +21,7 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -87,6 +88,21 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	public DtList(final Class<? extends DtObject> dtObjectClass) {
 		this(DtObjectUtil.findDtDefinition(dtObjectClass));
+	}
+
+	/**
+	 * Static method factory for convenient creation of DtList using 'of' pattern.
+	 * @param dtObjectClass class of the DtList.
+	 * @param dtos Dtos to add.
+	 * @return The created DtList.
+	 * 
+	 */
+	@SafeVarargs
+	public static <D extends DtObject> DtList<D> of(final Class<D> dtObjectClass, final D... dtos) {
+		final DtList<D> dtListRet = new DtList<>(dtObjectClass);
+		//-----
+		dtListRet.addAll(Arrays.asList(dtos));
+		return dtListRet;
 	}
 
 	/** {@inheritDoc} */
