@@ -45,6 +45,8 @@ public interface ScriptManager extends Manager {
 	/**
 	 * Evaluates the script, transforms a script into a text.
 	 * @param script the script
+	 * @param separatorType the type of separator
+	 * @param parameters the parameters
 	 * @return the evaluated script as a simplet text
 	 */
 	String evaluateScript(final String script, final SeparatorType separatorType, final List<ExpressionParameter> parameters);

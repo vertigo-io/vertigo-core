@@ -58,6 +58,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
+	 * @param daemonManager the daemonManager
+	 * @param appName the app name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
 	 */

@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a proxy by a simple annotation
- * @author mlaroche
+ * @author pchretien
  */
 @Target({ ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
