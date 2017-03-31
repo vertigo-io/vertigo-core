@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
@@ -63,7 +63,7 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 		final Artist m1 = createArtist(1, "David Bowie");
 		final Artist m2 = createArtist(2, "Joe Strummer");
 
-		final DtList<Artist> dtList = DtList.of(Artist.class, m1, m2);
+		final DtList<Artist> dtList = DtList.of(m1, m2);
 		// @formatter:off
 		final DtList<Artist> listCollected = dtList.stream()
 											.sorted( (art1, art2) -> art1.getId().compareTo(art2.getId()))
@@ -87,7 +87,7 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 		final Artist m2 = createArtist(2, "Duke Ellington");
 		final Artist m3 = createArtist(3, "Jimmy Hendricks");
 
-		final DtList<Artist> dtList = DtList.of(Artist.class, m1, m2, m3);
+		final DtList<Artist> dtList = DtList.of(m1, m2, m3);
 
 		// @formatter:off
 		final DtList<Artist> listCollected = dtList.stream()

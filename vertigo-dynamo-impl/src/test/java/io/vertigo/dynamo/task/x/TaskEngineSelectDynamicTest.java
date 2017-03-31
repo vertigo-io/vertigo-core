@@ -224,7 +224,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
-			final DtList<SuperHero> ids = DtList.of(SuperHero.class, createSuperHero(10001L + 1), createSuperHero(10001L + 3));
+			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
 					.addValue(DTC_SUPER_HERO_IN, ids)
@@ -249,7 +249,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where\tID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
-			final DtList<SuperHero> ids = DtList.of(SuperHero.class, createSuperHero(10001L + 1), createSuperHero(10001L + 3));
+			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
 					.addValue(DTC_SUPER_HERO_IN, ids)
@@ -274,7 +274,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where\t(ID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#))");
 
-			final DtList<SuperHero> ids = DtList.of(SuperHero.class, createSuperHero(10001L + 1), createSuperHero(10001L + 3));
+			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
 					.addValue(DTC_SUPER_HERO_IN, ids)

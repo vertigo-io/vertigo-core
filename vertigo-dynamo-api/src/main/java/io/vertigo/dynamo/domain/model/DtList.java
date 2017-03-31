@@ -92,17 +92,23 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Static method factory for convenient creation of DtList using 'of' pattern.
-	 * @param dtObjectClass class of the DtList.
+	 * @param dto the mandatory dto to add  which defines the type.
 	 * @param dtos Dtos to add.
-	 * @return The created DtList.
-	 * 
+	 * @return the created DtList.
+	 *
 	 */
 	@SafeVarargs
-	public static <D extends DtObject> DtList<D> of(final Class<D> dtObjectClass, final D... dtos) {
-		final DtList<D> dtListRet = new DtList<>(dtObjectClass);
-		//-----
-		dtListRet.addAll(Arrays.asList(dtos));
-		return dtListRet;
+	public static <D extends DtObject> DtList<D> of(final D dto, final D... dtos) {
+		Assertion.checkNotNull(dto);
+		Assertion.checkNotNull(dtos);
+		Arrays.stream(dtos)
+				.forEach(other -> Assertion.checkArgument(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
+		//---
+		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDtDefinition(dto));
+		//---
+		dtList.add(dto);
+		dtList.addAll(Arrays.asList(dtos));
+		return dtList;
 	}
 
 	/** {@inheritDoc} */
