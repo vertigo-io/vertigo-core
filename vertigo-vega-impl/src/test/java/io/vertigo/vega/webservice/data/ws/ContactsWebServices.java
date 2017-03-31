@@ -86,7 +86,7 @@ public final class ContactsWebServices implements WebServices {
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
 		}
 		//we sheet and use 3 times the same address.
-		final DtList<Address> addresses = DtList.of(Address.class, contact.getAddress(), contact.getAddress(), contact.getAddress());
+		final DtList<Address> addresses = DtList.of(contact.getAddress(), contact.getAddress(), contact.getAddress());
 
 		final ContactView contactView = new ContactView();
 		contactView.setName(contact.getName());
