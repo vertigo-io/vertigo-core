@@ -154,7 +154,7 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testFindMethod() {
-		final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", new Class[] { String.class });
+		final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", String.class);
 		nop(method);
 		assertEquals("lastIndexOf", method.getName());
 	}
@@ -162,7 +162,7 @@ public final class ClassUtilTest {
 	@Test
 	public void testFindMethodWithError() {
 		assertThrows(Exception.class, (() -> {
-			final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", new Class[] { Date.class });
+			final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", Date.class);
 			nop(method);
 		}));
 	}
@@ -172,8 +172,7 @@ public final class ClassUtilTest {
 		final Collection<Field> fields = ClassUtil.getAllFields(String.class);
 		//On vérifi que la propriété 'value' appartient à la liste
 		final boolean found = fields.stream()
-				.filter(field -> "value".equals(field.getName()))
-				.findAny().isPresent();
+				.anyMatch(field -> "value".equals(field.getName()));
 		assertTrue(found);
 	}
 
@@ -211,15 +210,15 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testInvoke() {
-		final Method addMethod = ClassUtil.findMethod(MyMath.class, "add", new Class[] { long.class, long.class });
+		final Method addMethod = ClassUtil.findMethod(MyMath.class, "add", long.class, long.class);
 		final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
-		assertEquals(Long.valueOf(10L), result);
+		assertEquals(10L, result);
 	}
 
 	@Test
 	public void testInvokeWithError() {
 		assertThrows(ArithmeticException.class, (() -> {
-			final Method divMethod = ClassUtil.findMethod(MyMath.class, "div", new Class[] { long.class, long.class });
+			final Method divMethod = ClassUtil.findMethod(MyMath.class, "div", long.class, long.class);
 			final Object result = ClassUtil.invoke(new MyMath(), divMethod, 4L, 0L);
 			nop(result);
 		}));
@@ -228,7 +227,7 @@ public final class ClassUtilTest {
 	@Test
 	public void testInvokeWithException() {
 		assertThrows(VUserException.class, (() -> {
-			final Method addMethod = ClassUtil.findMethod(MyMath.class, "kuser", new Class[] { long.class, long.class });
+			final Method addMethod = ClassUtil.findMethod(MyMath.class, "kuser", long.class, long.class);
 			final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
 			nop(result);
 		}));
@@ -461,19 +460,19 @@ public final class ClassUtilTest {
 
 	}
 
-	public static interface MyInterface1 {
+	public interface MyInterface1 {
 		//rien
 	}
 
-	public static interface MyInterface2 {
+	public interface MyInterface2 {
 		//rien
 	}
 
-	public static interface MyInterface3 {
+	public interface MyInterface3 {
 		//rien
 	}
 
-	public static interface MyInterface4 extends MyInterface3 {
+	public interface MyInterface4 extends MyInterface3 {
 		//rien
 	}
 

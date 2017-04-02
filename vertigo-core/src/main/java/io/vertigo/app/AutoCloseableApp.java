@@ -93,7 +93,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot",
+			componentLoader.injectComponents(Optional.empty(), "boot",
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Load all definitions

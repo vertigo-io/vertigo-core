@@ -86,7 +86,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @param o object
 	 */
-	protected static final void nop(final Object o) {
+	protected static void nop(final Object o) {
 		// rien
 	}
 
@@ -95,7 +95,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doSetUp() throws Exception {
+	protected void doSetUp() {
 		// pour implé spécifique
 	}
 
@@ -104,7 +104,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doTearDown() throws Exception {
+	protected void doTearDown() {
 		// pour implé spécifique
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doAfterTearDown() throws Exception {
+	protected void doAfterTearDown() {
 		// pour implé spécifique
 	}
 
@@ -130,7 +130,7 @@ public abstract class AbstractTestCaseJU4 {
 	* Utilitaire.
 	* @param manager Manager
 	*/
-	protected static final void testDescription(final Component manager) {
+	protected static void testDescription(final Component manager) {
 		if (manager instanceof Describable) {
 			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
 			for (final ComponentInfo componentInfo : componentInfos) {

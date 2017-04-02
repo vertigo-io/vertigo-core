@@ -103,7 +103,7 @@ public final class InjectorTest {
 
 			@Override
 			public Set<String> keySet() {
-				return Collections.EMPTY_SET;
+				return Collections.emptySet();
 			}
 		});
 		nop(a);
@@ -127,7 +127,7 @@ public final class InjectorTest {
 
 						@Override
 						public Set<String> keySet() {
-							return Collections.EMPTY_SET;
+							return Collections.emptySet();
 						}
 					});
 					nop(b);

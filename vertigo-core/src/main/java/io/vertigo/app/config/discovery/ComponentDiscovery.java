@@ -113,16 +113,14 @@ final class ComponentDiscovery {
 		}
 		//---
 		// With API
-		apiImplMap.entrySet()
-				.stream()
-				.forEach((entry) -> moduleConfigBuilder.addComponent(entry.getKey(), entry.getValue()));
+		apiImplMap.forEach((key, value) -> moduleConfigBuilder.addComponent(key, value));
 
 		// Without API
-		myImplClasses.stream()
+		myImplClasses
 				.forEach(moduleConfigBuilder::addComponent);
 
 		//Plugins
-		pluginsImplClasses.stream()
+		pluginsImplClasses
 				.forEach(moduleConfigBuilder::addPlugin);
 	}
 

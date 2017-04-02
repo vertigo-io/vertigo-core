@@ -18,8 +18,6 @@
  */
 package io.vertigo.app.config.discovery;
 
-import io.vertigo.app.config.discovery.ModuleDiscoveryFeatures;
-
 public class TestModuleDiscoveryFeatures extends ModuleDiscoveryFeatures {
 
 	public TestModuleDiscoveryFeatures() {

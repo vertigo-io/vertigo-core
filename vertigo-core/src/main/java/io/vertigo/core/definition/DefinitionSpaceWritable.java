@@ -19,6 +19,7 @@
 package io.vertigo.core.definition;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,7 +85,7 @@ public final class DefinitionSpaceWritable implements Activeable, DefinitionSpac
 				.stream()
 				.filter(definition -> clazz.isAssignableFrom(definition.getClass()))
 				.map(clazz::cast)
-				.sorted((c1, c2) -> c1.getName().compareTo(c2.getName()))
+				.sorted(Comparator.comparing(Definition::getName))
 				.collect(Collectors.toList());
 	}
 

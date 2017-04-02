@@ -177,7 +177,7 @@ public final class SelectorTest {
 	//--- from -> filter -> find
 	@Test
 	public void testUsageException() {
-		Assertions.assertThrows(IllegalStateException.class, () -> testException());
+		Assertions.assertThrows(IllegalStateException.class, this::testException);
 	}
 
 	private void testException() {

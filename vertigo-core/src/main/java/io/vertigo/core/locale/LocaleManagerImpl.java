@@ -89,7 +89,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//-----
 		for (final Locale locale : this.locales) {
-			dictionaries.put(locale, new HashMap<String, String>());
+			dictionaries.put(locale, new HashMap<>());
 		}
 	}
 
@@ -259,7 +259,7 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 	public List<ComponentInfo> getInfos() {
 		final long nbRessources = getDictionaries().values()
 				.stream()
-				.mapToInt(resources -> resources.size()) // each dictionary is count
+				.mapToInt(Map::size) // each dictionary is count
 				.sum();
 
 		return new ListBuilder<ComponentInfo>()

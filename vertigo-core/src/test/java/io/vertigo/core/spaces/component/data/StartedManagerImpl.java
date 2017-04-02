@@ -33,9 +33,7 @@ public final class StartedManagerImpl implements StartedManager, Activeable {
 	 */
 	@Inject
 	public StartedManagerImpl() {
-		Home.getApp().registerPostStartFunction(() -> {
-			componentPostStarted = true;
-		});
+		Home.getApp().registerPostStartFunction(() -> componentPostStarted = true);
 	}
 
 	@Override

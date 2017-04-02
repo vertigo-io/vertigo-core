@@ -18,14 +18,11 @@
  */
 package io.vertigo.lang;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tuples.
@@ -45,7 +42,7 @@ public final class TuplesTest {
 		assertEquals(homer.hashCode(), homer2.hashCode());
 		assertEquals(homer, homer2);
 		assertNotEquals(homer, marge);
-		assertFalse(marge.equals(null));
+		assertNotNull(marge);
 
 		assertEquals("homer", homer.getVal1());
 		assertEquals("simpson", homer.getVal2());
@@ -65,7 +62,7 @@ public final class TuplesTest {
 		assertEquals(homer.hashCode(), homer2.hashCode());
 		assertEquals(homer, homer2);
 		assertNotEquals(homer, marge);
-		assertFalse(marge.equals(null));
+		assertNotNull(marge);
 
 		assertEquals(homer, homer2);
 		assertEquals(homer, homer);

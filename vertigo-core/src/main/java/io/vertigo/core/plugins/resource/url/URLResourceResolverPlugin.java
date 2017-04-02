@@ -41,7 +41,7 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 		//-----
 		try {
 			final URL url = new URL(resource);
-			return checkUrlAvailable(url) ? Optional.of(url) : Optional.<URL> empty();
+			return checkUrlAvailable(url) ? Optional.of(url) : Optional.empty();
 		} catch (final MalformedURLException e) {
 			return Optional.empty();
 		}

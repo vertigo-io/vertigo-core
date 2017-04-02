@@ -58,10 +58,8 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof DefinitionReference<?>) {
-			return definitionName.equals(DefinitionReference.class.cast(o).definitionName);
-		}
-		return false;
+		return o instanceof DefinitionReference<?>
+				&& definitionName.equals(DefinitionReference.class.cast(o).definitionName);
 	}
 
 	/** {@inheritDoc} */

@@ -34,7 +34,7 @@ final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
 		config,
 		path,
-		param;
+		param
 	}
 
 	private final Map<String, Param> params;

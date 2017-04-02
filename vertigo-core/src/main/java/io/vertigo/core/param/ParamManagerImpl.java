@@ -19,6 +19,7 @@
 package io.vertigo.core.param;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -53,8 +54,8 @@ public final class ParamManagerImpl implements ParamManager {
 		return paramPlugins
 				.stream()
 				.map(paramPlugin -> paramPlugin.getParam(paramName))
-				.filter(optionalParam -> optionalParam.isPresent())
-				.map(optionalParam -> optionalParam.get())
+				.filter(Optional::isPresent)
+				.map(Optional::get)
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
 	}

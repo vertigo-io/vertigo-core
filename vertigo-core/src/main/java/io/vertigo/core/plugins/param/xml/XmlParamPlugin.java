@@ -67,7 +67,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	public Optional<Param> getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return Optional.<Param> ofNullable(params.get(paramName));
+		return Optional.ofNullable(params.get(paramName));
 	}
 
 	/**

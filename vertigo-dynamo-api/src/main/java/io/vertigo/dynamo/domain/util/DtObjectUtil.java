@@ -101,7 +101,7 @@ public final class DtObjectUtil {
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
 	 * @param <E>
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto  Object
 	 * @param dtoTargetClass Class of entity of this association
