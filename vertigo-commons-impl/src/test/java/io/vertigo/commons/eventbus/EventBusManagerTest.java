@@ -43,7 +43,7 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 	private int deadEvents = 0;
 
 	@Override
-	protected void doSetUp() throws Exception {
+	protected void doSetUp() {
 		mySuscriber1 = new MySuscriber();
 		eventBusManager.register(mySuscriber1);
 		//-----

@@ -67,7 +67,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testDecode() throws Exception {
+	public void testDecode() {
 		final byte[] encodedValue = codec.encode(TEXT.getBytes());
 		assertEquals(TEXT, new String(codec.decode(encodedValue)));
 
@@ -94,7 +94,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	/** {@inheritDoc} */
 	@Override
 	@Test(expected = RuntimeException.class)
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		// object avec prefix ne correspondant pas à une classe;
 		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
 		assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);

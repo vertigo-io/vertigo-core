@@ -59,15 +59,13 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 
 	/**
 	 * test l'encodage et le décodage avec les chaines null.
-	 * @throws Exception si problème
 	 */
-	public abstract void testNull() throws Exception;
+	public abstract void testNull();
 
 	/**
 	 * test l'encodage de chaines non null.
-	 * @throws Exception si problème
 	 */
-	public abstract void testEncode() throws Exception;
+	public abstract void testEncode();
 
 	protected final void checkEncode(final S value, final T expectedEncodedValue) {
 		final T encodedValue = codec.encode(value);

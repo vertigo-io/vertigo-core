@@ -46,7 +46,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 		//A choice of rules/expressions is like that : (e1 | e2 | e3)
 		expression = "("
 				+ rules.stream()
-						.map(rule -> rule.getExpression())
+						.map(PegRule::getExpression)
 						.collect(Collectors.joining(" | "))
 				+ ")";
 	}

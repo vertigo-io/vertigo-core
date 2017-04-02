@@ -48,7 +48,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 
 		//manages dead event
 		if (emitted == 0) {
-			deadEventListeners.stream()
+			deadEventListeners
 					.forEach(deadEventlistener -> deadEventlistener.onEvent(event));
 		}
 	}

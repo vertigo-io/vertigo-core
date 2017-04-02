@@ -45,14 +45,14 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	/**
 	 * Seuil maximal autorisé pour la compression, ce seuil est exprimé en octets.
 	 */
-	public static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
+	private static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
 
 	/**
 	 * Niveau de compression de 0(pas de compression) à 9 (max compression). se
 	 * référer au classes implémentant zip pour des précisions sur le niveau de
 	 * compression.
 	 */
-	public static final int COMPRESSION_LEVEL = 1;
+	private static final int COMPRESSION_LEVEL = 1;
 
 	private static final byte[] COMPRESS_KEY = { 'C', 'O', 'M', 'P' };
 

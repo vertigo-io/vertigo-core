@@ -163,7 +163,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExpressionVarBoolean() {
 		final Boolean test = scriptManager.evaluateExpression("(age>20 && age <60) && nom.startsWith(\"Du\")", createParameters(), Boolean.class);
-		assertTrue(test.booleanValue());
+		assertTrue(test);
 	}
 
 	//

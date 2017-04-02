@@ -105,7 +105,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
-	void startAllDaemons() {
+	private void startAllDaemons() {
 		for (final DaemonInfo daemonInfo : daemonInfos) {
 			startDaemon(daemonInfo);
 		}

@@ -42,7 +42,7 @@ final class CalculatorRule extends AbstractRule<Integer, List<Object>> {
 			DIGITS //4
 	);
 
-	protected CalculatorRule() {
+	CalculatorRule() {
 		super(EXPRESSION, "Calculator");
 	}
 

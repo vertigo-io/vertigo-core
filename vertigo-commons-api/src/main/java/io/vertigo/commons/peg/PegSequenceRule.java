@@ -50,7 +50,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 		//A sequence of rules/expressions is like that : (e1 e2 e3)
 		expression = "("
 				+ this.rules.stream()
-						.map(rule -> rule.getExpression())
+						.map(PegRule::getExpression)
 						.collect(Collectors.joining(" "))
 				+ ")";
 	}

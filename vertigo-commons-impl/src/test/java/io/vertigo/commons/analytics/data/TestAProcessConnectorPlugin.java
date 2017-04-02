@@ -22,9 +22,9 @@ import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 
 public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
-	public static int count = 0;
-	public static String lastCategory;
-	public static Double lastPrice;
+	private static int count = 0;
+	private static String lastCategory;
+	private static Double lastPrice;
 
 	@Override
 	public void add(final AProcess process) {

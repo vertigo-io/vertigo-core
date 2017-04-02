@@ -120,21 +120,21 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 		TestAProcessConnectorPlugin.reset();
 		Assert.assertEquals(null, TestAProcessConnectorPlugin.getLastPrice());
 		analyticsAspectServices.setMeasure();
-		Assert.assertEquals(100D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+		Assert.assertEquals(100D, TestAProcessConnectorPlugin.getLastPrice(), 0);
 	}
 
 	@Test
 	public void testSetAndIncMeasures() {
 		TestAProcessConnectorPlugin.reset();
 		analyticsAspectServices.setAndIncMeasure();
-		Assert.assertEquals(120D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+		Assert.assertEquals(120D, TestAProcessConnectorPlugin.getLastPrice(), 0);
 	}
 
 	@Test
 	public void testIncMeasures() {
 		TestAProcessConnectorPlugin.reset();
 		analyticsAspectServices.incMeasure();
-		Assert.assertEquals(10D, TestAProcessConnectorPlugin.getLastPrice().doubleValue(), 0);
+		Assert.assertEquals(10D, TestAProcessConnectorPlugin.getLastPrice(), 0);
 	}
 
 	/**

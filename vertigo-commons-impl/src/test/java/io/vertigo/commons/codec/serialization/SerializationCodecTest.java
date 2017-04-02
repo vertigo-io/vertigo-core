@@ -65,7 +65,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testDecode() throws Exception {
+	public void testDecode() {
 		for (final Serializable value : createObjects()) {
 			final byte[] serializedValue = codec.encode(value);
 			assertEquals(value, codec.decode(serializedValue));
@@ -75,7 +75,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	/** {@inheritDoc} */
 	@Override
 	@Test(expected = RuntimeException.class)
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
 		codec.decode(s);
@@ -87,7 +87,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	// ===========================================================================
 	private static List<Serializable> createObjects() {
 		final List<Serializable> values = new ArrayList<>();
-		values.add(Integer.valueOf(54)); // Test d'un entier
+		values.add(54); // Test d'un entier
 		values.add(""); // Test d'une chaine vide
 		values.add("   "); // Test d'une chaine remplie avec des espaces
 		values.add("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ  1234567890"); // Test
@@ -149,7 +149,16 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 		public boolean equals(final Object o) {
 			if (o instanceof TestPerson) {
 				final TestPerson person = (TestPerson) o;
-				return lastName.equals(person.lastName) && firstName.equals(person.firstName) && weight.equals(person.weight) && mother == null && person.mother == null || mother.equals(person.mother) && father == null && person.father == null || father.equals(person.father);
+				return lastName.equals(person.lastName)
+						&& firstName.equals(person.firstName)
+						&& weight.equals(person.weight)
+						&& mother == null
+						&& person.mother == null
+						||
+						mother.equals(person.mother)
+								&& father == null
+								&& person.father == null
+						|| father.equals(person.father);
 			}
 			return false;
 		}

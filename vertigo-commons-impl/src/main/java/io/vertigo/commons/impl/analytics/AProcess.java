@@ -57,9 +57,9 @@ public final class AProcess {
 	/**
 	 * REGEX used to define rules on category, mesaures and tags.
 	 */
-	public static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
-	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
-	public static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	private static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
+	private static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	private static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 
 	public static final String CATEGORY_SEPARATOR = "/";
 	private final String category; //ex : sql, page....

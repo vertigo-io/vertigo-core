@@ -40,7 +40,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testNull() throws Exception {
+	public void testNull() {
 		assertEquals("", codec.encode(null));
 		assertEquals("", codec.encode(""));
 		assertEquals(null, codec.decode(null));
@@ -113,7 +113,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	@Test(expected = Exception.class)
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		codec.decode("&eplat;");
 	}
 
