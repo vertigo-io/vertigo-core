@@ -150,10 +150,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		if (fragment.isPresent()) {
-			return Optional.of(fragment.get().get());
-		}
-		return Optional.empty();
+		return fragment.map(dtDefinitionDefinitionReference -> dtDefinitionDefinitionReference.get());
 	}
 
 	/**

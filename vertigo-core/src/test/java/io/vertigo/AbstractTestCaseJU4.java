@@ -95,7 +95,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doSetUp() {
+	protected void doSetUp() throws Exception {
 		// pour implé spécifique
 	}
 
@@ -104,7 +104,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doTearDown() {
+	protected void doTearDown() throws Exception {
 		// pour implé spécifique
 	}
 

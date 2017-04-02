@@ -103,11 +103,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 			return Optional.empty();
 		}
 		// When collect feature is enabled
-		final Optional<AnalyticsTracerImpl> analyticstracerOpt = doGetCurrentTracer();
-		if (analyticstracerOpt.isPresent()) {
-			return Optional.of(analyticstracerOpt.get());
-		}
-		return Optional.empty();
+		return doGetCurrentTracer().map(a -> a); // convert impl to api
 	}
 
 	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {

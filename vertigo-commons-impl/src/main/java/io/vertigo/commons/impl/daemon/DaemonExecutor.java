@@ -63,7 +63,7 @@ final class DaemonExecutor implements Activeable {
 	List<DaemonStat> getStats() {
 		return daemonListeners
 				.stream()
-				.map(daemonTimerTask -> daemonTimerTask.getStat())
+				.map(DaemonListener::getStat)
 				.collect(Collectors.toList());
 	}
 

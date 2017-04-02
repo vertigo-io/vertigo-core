@@ -76,17 +76,11 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			firstResult = result;
 		}
 		//-----
-		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
-		if (otherFacetValue == null) {
-			otherFacetValue = new FacetValue(resultcode, new ListFilter(resultFilter), new MessageText(resultLabel, resultLabelKey));
-			facetValuePerFilter.put(resultFilter, otherFacetValue);
-		}
+		final FacetValue otherFacetValue = facetValuePerFilter.computeIfAbsent(resultFilter,
+				rf -> new FacetValue(resultcode, new ListFilter(rf), new MessageText(resultLabel, resultLabelKey)));
 
-		List<FacetedQueryResult<?, S>> facetedQueryResults = otherResults.get(otherFacetValue);
-		if (facetedQueryResults == null) {
-			facetedQueryResults = new ArrayList<>();
-			otherResults.put(otherFacetValue, facetedQueryResults);
-		}
+		final List<FacetedQueryResult<?, S>> facetedQueryResults = otherResults.computeIfAbsent(otherFacetValue,
+				k -> new ArrayList<>());
 		facetedQueryResults.add(result);
 		return this;
 	}

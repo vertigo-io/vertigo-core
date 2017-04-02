@@ -62,7 +62,7 @@ public final class FacetDefinition implements Definition {
 	/**
 	 * Facet order : alpha, count, definition
 	 */
-	public static enum FacetOrder {
+	public enum FacetOrder {
 		/** alphabetical */
 		alpha,
 		/** count (default for term) */

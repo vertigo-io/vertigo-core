@@ -37,7 +37,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author  pchretien, npiedeloup
  */
-public abstract class AbstractCodec implements Codec<String, String> {
+abstract class AbstractCodec implements Codec<String, String> {
 	private final char startEscape;
 	private final char endEscape;
 	private final char[] toReplace;
@@ -59,7 +59,7 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	 * @param endEscape Caractère de terminaison
 	 * @param characters table des caracteres HTML
 	 */
-	protected AbstractCodec(final char startEscape, final char endEscape, final String[] characters) {
+	AbstractCodec(final char startEscape, final char endEscape, final String[] characters) {
 		this.startEscape = startEscape;
 		this.endEscape = endEscape;
 		Arrays.sort(characters);
@@ -188,7 +188,7 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	 * @param s Chaine à encoder
 	 * @return Chaine encodée
 	 */
-	protected final String doEncode(final String s) {
+	final String doEncode(final String s) {
 		Assertion.checkNotNull(s);
 		//-----
 		if (s.length() == 0) { // perf
@@ -205,7 +205,7 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	 * @param s Chaine à décoder
 	 * @return Chaine décodée
 	 */
-	protected final String doDecode(final String s) {
+	final String doDecode(final String s) {
 		Assertion.checkNotNull(s);
 		//-----
 		if (s.length() == 0) { // perf

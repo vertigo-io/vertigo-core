@@ -40,7 +40,7 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 		/**
 		 * Priorité normale.
 		 */
-		NORMAL;
+		NORMAL
 	}
 
 	private final Priority priority;

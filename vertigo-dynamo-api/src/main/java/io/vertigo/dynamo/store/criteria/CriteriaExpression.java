@@ -32,7 +32,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 
 	enum CriteriaOperator {
 		OR,
-		AND;
+		AND
 	}
 
 	private final CriteriaOperator operator;
@@ -79,9 +79,9 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 		}
 
 		return Arrays.stream(operands)
-				.map(operand -> operand.toPredicate())
+				.map(Criteria::toPredicate)
 				.reduce(accumulator)
-				.orElseThrow(() -> new IllegalAccessError());
+				.orElseThrow(IllegalAccessError::new);
 	}
 
 	@Override
