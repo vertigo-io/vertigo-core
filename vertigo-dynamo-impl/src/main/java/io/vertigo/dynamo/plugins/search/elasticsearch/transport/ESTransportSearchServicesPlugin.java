@@ -59,7 +59,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	 * @param rowsPerQuery Liste des indexes
 	 * @param codecManager Manager des codecs
 	 * @param clusterName : nom du cluster à rejoindre
-	 * @param nodeName : nom du node
+	 * @param nodeNameOpt : nom du node
 	 * @param configFile fichier de configuration des index
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
@@ -70,7 +70,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("cluster.name") final String clusterName,
 			@Named("config.file") final Optional<String> configFile,
-			@Named("node.name") final Optional<String> nodeName,
+			@Named("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
@@ -84,7 +84,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isPresent() ? nodeName.get() : "es-transport-client-" + System.currentTimeMillis();
+		this.nodeName = nodeNameOpt.orElseGet(() -> "es-transport-client-" + System.currentTimeMillis());
 	}
 
 	/** {@inheritDoc} */

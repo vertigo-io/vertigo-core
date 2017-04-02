@@ -68,7 +68,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		if (value == null) {
 			return true;
 		}
-		final int i = value.intValue();
+		final int i = value;
 		return i > minValue && i < maxValue;
 	}
 

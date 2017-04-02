@@ -106,7 +106,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				taskManager,
 				getCreateMainStoreRequests(),
 				"TK_INIT_MAIN",
-				Optional.<String> empty());
+				Optional.empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
@@ -157,7 +157,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				taskManager,
 				Collections.singletonList("shutdown;"),
 				"TK_SHUT_DOWN",
-				Optional.<String> empty());
+				Optional.empty());
 	}
 
 	@Test

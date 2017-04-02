@@ -136,10 +136,10 @@ final class TaskEngineSQLParam {
 		} catch (final NumberFormatException nfe) {
 			throw WrappedException.wrap(nfe, "Paramètre " + betweenCar + " incohérent : " + betweenPoints + " n'est pas un entier.");
 		}
-		if (dtcRowNumber == null || dtcRowNumber.intValue() < 0) {
+		if (dtcRowNumber == null || dtcRowNumber < 0) {
 			throw new VSystemException("Paramètre {0} incohérent : {1} doit être positif ou null.", betweenCar, betweenPoints);
 		}
-		return dtcRowNumber.intValue();
+		return dtcRowNumber;
 	}
 
 	void setIndex(final int index) {

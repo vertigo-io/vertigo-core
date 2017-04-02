@@ -85,7 +85,7 @@ public final class DslEntity implements DslEntityFieldType {
 		return fields.values()
 				.stream()
 				.filter(field -> field.getType().isProperty())
-				.map(field -> field.getName())
+				.map(DslEntityField::getName)
 				.collect(Collectors.toSet());
 	}
 

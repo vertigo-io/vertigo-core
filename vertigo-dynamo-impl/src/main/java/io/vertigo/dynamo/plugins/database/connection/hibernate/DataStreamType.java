@@ -91,9 +91,7 @@ public final class DataStreamType implements UserType {
 				final DataStream dataStream = (DataStream) value;
 				statement.setBinaryStream(index, dataStream.createInputStream(), (int) dataStream.getLength()); //attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
 			} catch (final IOException e) {
-				final SQLException sqlException = new SQLException("Erreur d'ecriture du flux");
-				sqlException.initCause(e);
-				throw sqlException;
+				throw new SQLException("Erreur d'ecriture du flux", e);
 			}
 		}
 	}

@@ -398,7 +398,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		} else if (param.isList()) {
 			// DtList
 			final DtList<? extends DtObject> dtc = getValue(param.getAttributeName());
-			final DtObject dto = dtc.get(rowNumber.intValue());
+			final DtObject dto = dtc.get(rowNumber);
 			final DtField dtField = dtc.getDefinition().getField(param.getFieldName());
 			value = dtField.getDataAccessor().getValue(dto);
 		} else {

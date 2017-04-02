@@ -99,11 +99,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 
 			for (final String copyFromFieldName : copyFromFieldNames.split(",")) {
 				final DtField dtFieldFrom = indexDtDefinition.getField(copyFromFieldName.trim());
-				List<DtField> dtFieldsTo = copyToFields.get(dtFieldFrom);
-				if (dtFieldsTo == null) {
-					dtFieldsTo = new ArrayList<>();
-					copyToFields.put(dtFieldFrom, dtFieldsTo);
-				}
+				List<DtField> dtFieldsTo = copyToFields.computeIfAbsent(dtFieldFrom, k -> new ArrayList<>());
 				dtFieldsTo.add(dtFieldTo);
 			}
 

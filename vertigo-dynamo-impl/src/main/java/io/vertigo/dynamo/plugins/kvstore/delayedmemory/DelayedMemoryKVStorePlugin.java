@@ -70,7 +70,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
-				.map(collection -> collection.trim())
+				.map(String::trim)
 				.peek(collection -> collectionsData.put(collection, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
 				.collect(Collectors.toList());
 		//-----

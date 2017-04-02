@@ -234,30 +234,19 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 		final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource");
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResource);
 
-		currentTransaction.addBeforeCommit(new Runnable() {
-			@Override
-			public void run() {
-				Assert.assertNull(dataBase.getData());
-				run1BeforeCommit.set(true);
+		currentTransaction.addBeforeCommit(() -> {
+			Assert.assertNull(dataBase.getData());
+			run1BeforeCommit.set(true);
+		});
+
+		currentTransaction.addBeforeCommit(() -> {
+			run2BeforeCommit.set(true);
+			if (beforeCommitError) {
+				throw new ArithmeticException("Can't proceed this code");
 			}
 		});
 
-		currentTransaction.addBeforeCommit(new Runnable() {
-			@Override
-			public void run() {
-				run2BeforeCommit.set(true);
-				if (beforeCommitError) {
-					throw new ArithmeticException("Can't proceed this code");
-				}
-			}
-		});
-
-		currentTransaction.addBeforeCommit(new Runnable() {
-			@Override
-			public void run() {
-				run3BeforeCommit.set(true);
-			}
-		});
+		currentTransaction.addBeforeCommit(() -> run3BeforeCommit.set(true));
 
 		currentTransaction.addAfterCompletion(new VTransactionAfterCompletionFunction() {
 

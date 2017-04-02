@@ -29,7 +29,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitio
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDefinitionEntryRule;
 
 public final class DslDefinitionEntryRuleTest {
-	private static final DslDefinitionEntryRule MAIN = new DslDefinitionEntryRule(Arrays.asList(new String[] { "myFirstProperty", "myLastProperty" }));
+	private static final DslDefinitionEntryRule MAIN = new DslDefinitionEntryRule(Arrays.asList("myFirstProperty", "myLastProperty"));
 
 	@Test
 	public void test0() throws PegNoMatchFoundException {

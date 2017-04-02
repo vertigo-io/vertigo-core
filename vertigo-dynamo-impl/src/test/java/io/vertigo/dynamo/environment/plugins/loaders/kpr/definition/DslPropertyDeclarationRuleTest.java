@@ -33,7 +33,7 @@ public final class DslPropertyDeclarationRuleTest {
 	private static final String LABEL = "LABEL";
 	private static final String SIZE = "SIZE";
 
-	private static DslPropertyDeclarationRule MAIN;
+	private static final DslPropertyDeclarationRule MAIN;
 	static {
 		final Set<String> propertyNames = new HashSet<>();
 		propertyNames.add(LABEL);

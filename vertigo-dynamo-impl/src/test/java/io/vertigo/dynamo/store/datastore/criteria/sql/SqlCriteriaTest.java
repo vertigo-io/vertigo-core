@@ -70,7 +70,7 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICrite
 
 	@Override
 	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Optional.<String> empty());
+		shutDown("TK_SHUT_DOWN", Optional.empty());
 	}
 
 	protected void shutDown(final String taskName, final Optional<String> optDataSpace) {
@@ -89,7 +89,7 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICrite
 				taskManager,
 				getCreateMainStoreRequests(),
 				"TK_INIT_MAIN",
-				Optional.<String> empty());
+				Optional.empty());
 
 		final CarDataBase carDataBase = new CarDataBase();
 		carDataBase.loadDatas();

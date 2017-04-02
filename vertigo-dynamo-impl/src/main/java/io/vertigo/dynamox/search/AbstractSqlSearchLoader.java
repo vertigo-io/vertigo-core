@@ -121,7 +121,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 */
 	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
 		final StringBuilder request = new StringBuilder()
-				.append(" select " + pkFieldName + " from ")
+				.append(" select ").append(pkFieldName).append(" from ")
 				.append(tableName)
 				.append(" where ")
 				.append(pkFieldName)
@@ -133,7 +133,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append("and (").append(sqlQueryFilter).append(')');
 		}
-		request.append(" order by " + pkFieldName + " ASC");
+		request.append(" order by ").append(pkFieldName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
 	}

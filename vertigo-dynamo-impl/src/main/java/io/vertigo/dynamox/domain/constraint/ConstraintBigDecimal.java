@@ -72,10 +72,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		final BigDecimal noZero = value.stripTrailingZeros();
 		final int scale = noZero.scale();
 		final int precision = noZero.precision();
-		if (scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale)) {
-			return false;
-		}
-		return true;
+		return !(scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale));
 	}
 
 	/** {@inheritDoc} */

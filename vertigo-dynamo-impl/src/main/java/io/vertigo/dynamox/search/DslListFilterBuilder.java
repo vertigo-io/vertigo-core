@@ -260,7 +260,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					concat(expressionSep, expressionDefinition.getPreBody()),
-					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
+					Optional.of(monoFieldDefinition), Optional.empty(),
 					dslQuery,
 					expressionDefinition.getPostBody());
 			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
@@ -381,7 +381,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				final List<DslExpression> monoFieldExpressionDefinitions = flattenMultiToMonoFieldExpressionDefinition(dslTermDefinition, userCriteria, criteriaValue, dslMultiField);
 				final DslMultiExpression monoFieldMultiExpressionDefinition = new DslMultiExpression(
 						firstNotEmpty(userCriteria.getOverridedPreModifier(), dslTermDefinition.getPreTerm()), true,
-						monoFieldExpressionDefinitions, Collections.<DslMultiExpression> emptyList(),
+						monoFieldExpressionDefinitions, Collections.emptyList(),
 						"");
 
 				appendMultiExpression(query, monoFieldMultiExpressionDefinition);
@@ -416,7 +416,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					"");
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
+					Optional.of(monoFieldDefinition), Optional.empty(),
 					new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);

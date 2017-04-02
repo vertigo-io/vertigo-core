@@ -84,10 +84,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param indexName Nom de l'index ES
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
-	 * @param configFile Fichier de configuration des indexs
+	 * @param configFileOpt Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Optional<String> configFile,
+	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Optional<String> configFileOpt,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(codecManager);
@@ -97,11 +97,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
 		this.indexName = indexName.toLowerCase(Locale.ENGLISH).trim();
-		if (configFile.isPresent()) {
-			this.configFile = resourceManager.resolve(configFile.get());
-		} else {
-			this.configFile = null;
-		}
+		this.configFile = configFileOpt
+				.map(resourceManager::resolve)
+				.orElse(null);
 	}
 
 	/** {@inheritDoc} */

@@ -121,7 +121,7 @@ public final class FormatterBoolean implements Formatter {
 		if (booleanValue == null) {
 			boolString = null;
 		} else {
-			boolString = booleanValue.booleanValue() ? truePattern : falsePattern;
+			boolString = booleanValue ? truePattern : falsePattern;
 		}
 		return boolString;
 	}

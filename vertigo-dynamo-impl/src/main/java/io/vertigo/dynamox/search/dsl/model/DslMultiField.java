@@ -53,7 +53,7 @@ public final class DslMultiField {
 	public String toString() {
 		return fields
 				.stream()
-				.map(field -> field.toString())
+				.map(DslField::toString)
 				.collect(Collectors.joining(",", preBody + '[', ']' + postBody));
 	}
 

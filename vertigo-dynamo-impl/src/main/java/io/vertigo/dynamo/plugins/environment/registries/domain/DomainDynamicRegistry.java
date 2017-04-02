@@ -312,12 +312,12 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
 			//--
-			final boolean notNull = ((Boolean) field.getPropertyValue(KspProperty.NOT_NULL)).booleanValue();
+			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.NOT_NULL);
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.NOT_NULL), "Not null est une propriété obligatoire.");
 			//--
 			final Boolean tmpPersistent = (Boolean) field.getPropertyValue(KspProperty.PERSISTENT);
 			//Si PERSISTENT est non renseigné on suppose que le champ est à priori persistant .
-			final boolean persistent = tmpPersistent == null || tmpPersistent.booleanValue();
+			final boolean persistent = tmpPersistent == null || tmpPersistent;
 			//--
 			final String fieldName = field.getName();
 			final boolean sort = fieldName.equals(sortFieldName);
@@ -413,12 +413,12 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String fkFieldName = (String) xassociation.getPropertyValue(KspProperty.FK_FIELD_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
-		final boolean navigabilityA = ((Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A)).booleanValue();
+		final boolean navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
 		final String roleA = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
 		final String labelA = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
 
 		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionB"), DtDefinition.class);
-		final boolean navigabilityB = ((Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B)).booleanValue();
+		final boolean navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
 		final String roleB = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
 		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 

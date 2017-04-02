@@ -60,7 +60,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 		initLocalizedParameters(args);
 	}
 
-	private final void initLocalizedParameters(final String args) {
+	private void initLocalizedParameters(final String args) {
 		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
 		if (args != null) {
 			//-----

@@ -57,7 +57,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	 * @param rowsPerQuery Liste des indexes
 	 * @param clusterName : nom du cluster à rejoindre
 	 * @param configFile fichier de configuration des index
-	 * @param nodeName : nom du node
+	 * @param nodeNameOpt : nom du node
 	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
@@ -68,7 +68,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("cluster.name") final String clusterName,
 			@Named("config.file") final Optional<String> configFile,
-			@Named("node.name") final Optional<String> nodeName,
+			@Named("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
@@ -81,8 +81,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isPresent() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
-
+		this.nodeName = nodeNameOpt.orElseGet(() -> "es-client-node-" + System.currentTimeMillis());
 	}
 
 	/** {@inheritDoc} */

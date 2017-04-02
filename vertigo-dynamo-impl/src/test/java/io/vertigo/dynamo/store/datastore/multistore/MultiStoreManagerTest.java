@@ -56,7 +56,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 				taskManager,
 				getCreateOtherStoreRequests(),
 				"TK_INIT_OTHER",
-				Optional.<String> of("otherStore"));
+				Optional.of("otherStore"));
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 				taskManager,
 				Collections.singletonList("shutdown;"),
 				"TK_SHUT_DOWN_OTHER",
-				Optional.<String> of("otherStore"));
+				Optional.of("otherStore"));
 	}
 
 	@Override

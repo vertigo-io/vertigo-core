@@ -356,9 +356,9 @@ final class EAXmiObject {
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder(type + "::" + name);
 		if (type == EAXmiType.Association) {
-			buffer.append(" [roleA=" + getRoleALabel() + ", roleB=" + getRoleBLabel() + "]");
+			buffer.append(" [roleA=").append(getRoleALabel()).append(", roleB=").append(getRoleBLabel()).append("]");
 		} else {
-			buffer.append(" [label=" + label + ", multiplicity=" + multiplicity + "]");
+			buffer.append(" [label=").append(label).append(", multiplicity=").append(multiplicity).append("]");
 		}
 		return buffer.toString();
 	}

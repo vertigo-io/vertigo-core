@@ -121,17 +121,17 @@ public final class SqlMappingImpl implements SqlMapping {
 		} else {
 			switch (dataType) {
 				case Integer:
-					statement.setInt(index, ((Integer) value).intValue());
+					statement.setInt(index, (Integer) value);
 					break;
 				case Long:
-					statement.setLong(index, ((Long) value).longValue());
+					statement.setLong(index, (Long) value);
 					break;
 				case Boolean:
 					final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
 					statement.setInt(index, intValue);
 					break;
 				case Double:
-					statement.setDouble(index, ((Double) value).doubleValue());
+					statement.setDouble(index, (Double) value);
 					break;
 				case BigDecimal:
 					statement.setBigDecimal(index, (BigDecimal) value);
@@ -153,9 +153,7 @@ public final class SqlMappingImpl implements SqlMapping {
 						//attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
 						statement.setBinaryStream(index, dataStream.createInputStream(), (int) dataStream.getLength());
 					} catch (final IOException e) {
-						final SQLException sqlException = new SQLException("Erreur d'ecriture du flux");
-						sqlException.initCause(e);
-						throw sqlException;
+						throw new SQLException("Erreur d'ecriture du flux");
 					}
 					break;
 				case DtList:

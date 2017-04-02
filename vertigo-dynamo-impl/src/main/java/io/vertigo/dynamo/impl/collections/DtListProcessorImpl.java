@@ -113,7 +113,7 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 		//-----
 		return listFunctions
 				.stream()
-				.reduce(UnaryOperator.identity(), (fun1, fun2) -> fun1.andThen(fun2))
+				.reduce(UnaryOperator.identity(), Function::andThen)
 				.apply(input);
 	}
 }
