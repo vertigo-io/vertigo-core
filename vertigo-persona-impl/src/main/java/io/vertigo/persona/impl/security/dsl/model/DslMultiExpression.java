@@ -37,7 +37,7 @@ public final class DslMultiExpression {
 		OR("OR", "Or", "or", "||"),
 		/** AND. */
 		AND("AND", "And", "and", "&&");
-		private String[] asString;
+		private final String[] asString;
 
 		BoolOperator(final String... asString) {
 			this.asString = asString;

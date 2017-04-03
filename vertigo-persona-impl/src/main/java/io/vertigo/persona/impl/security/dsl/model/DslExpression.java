@@ -42,7 +42,7 @@ public final class DslExpression {
 		GTE(">="),
 		/** Not Equals. */
 		NEQ("!=");
-		private String[] asString;
+		private final String[] asString;
 
 		ValueOperator(final String... asString) {
 			this.asString = asString;
@@ -84,11 +84,7 @@ public final class DslExpression {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(fieldName)
-				.append(operator)
-				.append(value)
-				.toString();
+		return fieldName + operator + value;
 	}
 
 	/**
