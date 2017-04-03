@@ -119,7 +119,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 
 	private static Set<String> parseStringToSet(final String param) {
 		return Arrays.stream(param.split(","))
-				.map(value -> value.trim())
+				.map(String::trim)
 				.collect(Collectors.toSet());
 	}
 }

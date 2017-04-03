@@ -171,11 +171,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 	}
 
 	private static String obtainCcFieldName(final DtField dtField, final Map<DtField, String> ccFieldNames) {
-		String ccFieldName = ccFieldNames.get(dtField);
-		if (ccFieldName == null) {
-			ccFieldName = StringUtil.constToLowerCamelCase(dtField.getName());
-			ccFieldNames.put(dtField, ccFieldName);
-		}
-		return ccFieldName;
+		return ccFieldNames.computeIfAbsent(dtField,
+				f -> StringUtil.constToLowerCamelCase(f.getName()));
 	}
 }

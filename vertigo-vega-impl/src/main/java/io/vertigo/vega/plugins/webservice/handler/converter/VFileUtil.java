@@ -123,7 +123,7 @@ final class VFileUtil {
 			if (file == null) {
 				final String sentParts = request.raw().getParts()
 						.stream()
-						.map(part -> part.getName())
+						.map(Part::getName)
 						.collect(Collectors.joining(", "));
 				throw new IllegalArgumentException("File " + webServiceParam.getName() + " not found. Parts sent : " + sentParts);
 			}
@@ -136,8 +136,8 @@ final class VFileUtil {
 	private static void send(final VFile vFile, final boolean isAttachment, final Response response)
 			throws IOException {
 		final Long length = vFile.getLength();
-		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
-				+ length.longValue() / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
+		Assertion.checkArgument(length < Integer.MAX_VALUE, "Too big file to be send. It's "
+				+ length / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
 				+ " Ko.");
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",

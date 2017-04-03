@@ -94,11 +94,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
 			final JsonConverter jsonConverter = DIInjector.newInstance(jsonConverterClass, componentSpace);
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
-				List<JsonConverter> jsonConverterBySourceType = jsonConverters.get(inputType);
-				if (jsonConverterBySourceType == null) {
-					jsonConverterBySourceType = new ArrayList<>();
-					jsonConverters.put(inputType, jsonConverterBySourceType);
-				}
+				List<JsonConverter> jsonConverterBySourceType = jsonConverters.computeIfAbsent(inputType, k -> new ArrayList<>());
 				jsonConverterBySourceType.add(jsonConverter);
 			}
 		}

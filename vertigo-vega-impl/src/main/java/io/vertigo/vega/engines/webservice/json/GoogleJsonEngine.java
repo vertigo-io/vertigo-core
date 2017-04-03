@@ -73,7 +73,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
 		V4(FacetedQueryResultJsonSerializerV4.class); //with highlights and code, label for facet
 
-		private Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
+		private final Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
 
 		<C extends JsonSerializer<FacetedQueryResult<?, ?>>> SearchApiVersion(final Class<C> jsonSerializerClass) {
 			this.jsonSerializerClass = jsonSerializerClass;
