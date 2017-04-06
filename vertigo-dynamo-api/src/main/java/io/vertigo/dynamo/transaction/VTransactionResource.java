@@ -19,32 +19,39 @@
 package io.vertigo.dynamo.transaction;
 
 /**
- * Ressource participant à une transaction.
- * Cette ressource est par exemple :
- * - une connexion à une BDD Oracle, Sybase, MySQL....
- * - un mailer
- * - un fileSystem
- * - un objet java
+ * This resource must be managed by a transaction.
+ * A transaction can have
+ *  - at most one active resource (read/ write)
+ *  - many readonly resources
+ *
+ * This resource is for example :
+ * - a data connaction to a 'classic' DB Oracle, Sybase, MySQL, postgreSQL....
+ * - a mailer
+ * - a connection to a fileSystem
+ *
  *
  * @author  pchretien
  */
 public interface VTransactionResource {
+
 	/**
-	 * Valide la ressource.
-	 * @throws Exception Si impossible.
+	 * Commits the resource.
+	 * @throws Exception
 	 */
 	void commit() throws Exception;
 
 	/**
-	 * Annule la ressource.
-	 * @throws Exception Si impossible.
+	 * Rollbacks the respource.
+	 * @throws Exception
 	 */
 	void rollback() throws Exception;
 
 	/**
-	 * Libère la ressource.
-	 * Appelée systématiquement après un commit ou un rollback.
-	 * @throws Exception Si impossible.
+	 * Releases the resource.
+	 * This methods is Systematically called after a rollback or a commit.
+	 * It's a kind of close.
+	 *
+	 * @throws Exception
 	 */
 	void release() throws Exception;
 }

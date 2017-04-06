@@ -38,6 +38,38 @@ import io.vertigo.lang.WrappedException;
  * @author  pchretien
  */
 final class VTransactionImpl implements VTransactionWritable {
+
+	private enum State {
+		ALIVE,
+		CLOSED;
+
+		/**
+		 * A transaction is alive or closed.
+		 * @return if the transaction is closed.
+		 */
+		boolean isClosed() {
+			return this == State.CLOSED;
+		}
+
+		/**
+		 * Checks if the transaction is alive
+		 */
+		void assertIsAlive() {
+			if (this != State.ALIVE) {
+				throw new IllegalStateException("The transaction must be alive.");
+			}
+		}
+
+		/**
+		 * Checks if the transaction is closed
+		 */
+		void assertIsClosed() {
+			if (this != State.CLOSED) {
+				throw new IllegalStateException("The transaction must be closed");
+			}
+		}
+	}
+
 	/**
 	 * The current transaction is bound to the current thread.
 	 */
@@ -46,7 +78,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * At the start the current transaction is alive (not closed).
 	 */
-	private boolean transactionClosed;
+	private State state = State.ALIVE;
 	private final VTransactionListener transactionListener;
 	/**
 	 * Map des autres ressources de la transaction.
@@ -107,18 +139,10 @@ final class VTransactionImpl implements VTransactionWritable {
 	//==========================================================================
 	//=========================== API ==========================================
 	//==========================================================================
-	/**
-	 * A transaction is alive or closed.
-	 * @return if the transaction is closed.
-	 */
-	boolean isClosed() {
-		return transactionClosed;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public <R extends VTransactionResource> R getResource(final VTransactionResourceId<R> transactionResourceId) {
-		checkStateStarted();
+		state.assertIsAlive();
 		Assertion.checkNotNull(transactionResourceId);
 		//-----
 		return (R) resources.get(transactionResourceId);
@@ -143,7 +167,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	private void addInnerTransaction(final VTransactionImpl newInnerTransaction) {
 		Assertion.checkState(innerTransaction == null, "the current transaction has already an inner transaction");
 		Assertion.checkNotNull(newInnerTransaction);
-		newInnerTransaction.checkStateStarted();
+		newInnerTransaction.state.assertIsAlive();
 		//-----
 		innerTransaction = newInnerTransaction;
 	}
@@ -156,7 +180,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 */
 	private void removeInnerTransaction() {
 		Assertion.checkNotNull(innerTransaction, "The current transaction doesn't have any inner transaction");
-		innerTransaction.checkStateEnded();
+		innerTransaction.state.assertIsClosed();
 		//-----
 		innerTransaction = null;
 	}
@@ -164,7 +188,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/** {@inheritDoc} */
 	@Override
 	public <R extends VTransactionResource> void addResource(final VTransactionResourceId<R> id, final R resource) {
-		checkStateStarted();
+		state.assertIsAlive();
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);
 		//-----
@@ -175,7 +199,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/** {@inheritDoc} */
 	@Override
 	public void commit() {
-		checkStateStarted();
+		state.assertIsAlive();
 		// There must no more inner transaction.
 		if (innerTransaction != null) {
 			throw new IllegalStateException("The inner transaction must be closed(Commit or rollback) before the parent transaction");
@@ -211,7 +235,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * @return Erreur de rollback (null la plupart du temps)
 	 */
 	private Throwable doRollback() {
-		if (isClosed()) {
+		if (state.isClosed()) {
 			//If the transaction is already closed then we do nothing
 			return null;
 		}
@@ -229,24 +253,6 @@ final class VTransactionImpl implements VTransactionWritable {
 	}
 
 	/**
-	 * Checks if the transaction is alive
-	 */
-	private void checkStateStarted() {
-		if (isClosed()) {
-			throw new IllegalStateException("The transaction must be alive.");
-		}
-	}
-
-	/**
-	 * Checks if the transaction is closed
-	 */
-	private void checkStateEnded() {
-		if (!isClosed()) {
-			throw new IllegalStateException("The transaction must be closed");
-		}
-	}
-
-	/**
 	 * End the transaction.
 	 * If an error occures, then the best exception is thrown. (the first exception caught  during the finalization of the resources)
 	 *
@@ -255,7 +261,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 */
 	private Throwable doEnd(final boolean rollback) {
 		//We change the current status of the transaction and force it to closed.
-		transactionClosed = true;
+		state = State.CLOSED;
 
 		Throwable firstThrowable = null;
 		if (!resources.isEmpty()) {
@@ -415,7 +421,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	static VTransactionImpl getLocalCurrentTransaction() {
 		VTransactionImpl transaction = CURRENT_THREAD_LOCAL_TRANSACTION.get();
 		//Si la transaction courante est finie on ne la retourne pas.
-		if (transaction != null && transaction.isClosed()) {
+		if (transaction != null && transaction.state.isClosed()) {
 			transaction = null;
 		}
 		return transaction;

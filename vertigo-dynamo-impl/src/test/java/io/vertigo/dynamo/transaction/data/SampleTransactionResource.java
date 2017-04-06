@@ -62,7 +62,7 @@ public final class SampleTransactionResource implements VTransactionResource, Sa
 	}
 
 	private void check() {
-		Assertion.checkArgument(state == State.Started, "Ressource fermée.");
+		Assertion.checkArgument(state == State.Started, "This resource is already closed.");
 	}
 
 	/** {@inheritDoc} */
