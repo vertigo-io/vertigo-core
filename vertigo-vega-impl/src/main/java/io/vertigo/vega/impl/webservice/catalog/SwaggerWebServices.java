@@ -61,9 +61,7 @@ public final class SwaggerWebServices implements WebServices {
 	@GET("/swaggerApi")
 	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
 		//compute contextPath + servletPath - current Ws url
-		// Spark override getRequestURI and removed contextPath from it, so we put it manualy
-		final String prefixUrl = request.getContextPath()
-				+ request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi"));
+		final String prefixUrl = request.getRequestURI().substring(0, request.getRequestURI().indexOf("/swaggerApi"));
 		return new SwaggerApiBuilder()
 				.withContextPath(prefixUrl)
 				.withWebServiceDefinitions(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class))
