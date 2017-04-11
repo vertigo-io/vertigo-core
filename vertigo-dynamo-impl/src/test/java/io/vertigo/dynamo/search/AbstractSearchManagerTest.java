@@ -811,8 +811,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Car>> databaseCluster = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
-			List<Car> carsByMake = databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH), k -> new ArrayList<>());
-			carsByMake.add(car);
+			databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH),
+					k -> new ArrayList<>())
+					.add(car);
 		}
 		int previousCount = Integer.MAX_VALUE;
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
@@ -902,9 +903,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne
 		final Map<String, Set<Car>> databaseCluster = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
-			Set<Car> carsByMake = databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH),
-					k -> new TreeSet<>((e1, e2) -> e2.getYear().compareTo(e1.getYear())));
-			carsByMake.add(car);
+			databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH),
+					k -> new TreeSet<>((e1, e2) -> e2.getYear().compareTo(e1.getYear())))
+					.add(car);
 		}
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
