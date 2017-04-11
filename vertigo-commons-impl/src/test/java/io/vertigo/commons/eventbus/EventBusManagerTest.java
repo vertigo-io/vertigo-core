@@ -55,6 +55,10 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testSimple() {
+		assertEquals(0, mySuscriber1.getBlueCount());
+		assertEquals(0, mySuscriber1.getRedCount());
+		assertEquals(0, mySuscriber1.getCount());
+
 		eventBusManager.post(new BlueColorEvent());
 		eventBusManager.post(new WhiteColorEvent());
 		eventBusManager.post(new RedColorEvent());

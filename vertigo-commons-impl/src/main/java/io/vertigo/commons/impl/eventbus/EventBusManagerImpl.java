@@ -21,10 +21,10 @@ package io.vertigo.commons.impl.eventbus;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventListener;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -34,7 +34,7 @@ import io.vertigo.util.ClassUtil;
  */
 public final class EventBusManagerImpl implements EventBusManager {
 	private final List<EventBusSubscription> subscriptions = new ArrayList<>();
-	private final List<EventListener> deadEventListeners = new ArrayList<>();
+	private final List<Consumer<Event>> deadEventListeners = new ArrayList<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -42,14 +42,14 @@ public final class EventBusManagerImpl implements EventBusManager {
 		Assertion.checkNotNull(event);
 		//-----
 		final long emitted = subscriptions.stream()
-				.filter(subscription -> subscription.accept(event))
-				.peek(subscription -> subscription.getListener().onEvent(event))
+				.filter(subscription -> subscription.match(event))
+				.peek(subscription -> subscription.getListener().accept(event))
 				.count();
 
 		//manages dead event
 		if (emitted == 0) {
 			deadEventListeners
-					.forEach(deadEventlistener -> deadEventlistener.onEvent(event));
+					.forEach(deadEventlistener -> deadEventlistener.accept(event));
 		}
 	}
 
@@ -69,27 +69,28 @@ public final class EventBusManagerImpl implements EventBusManager {
 			//2. For each method register a listener
 			count++;
 			method.setAccessible(true);
-			register((Class<? extends Event>) method.getParameterTypes()[0],
+			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
+			register(eventType,
 					event -> ClassUtil.invoke(suscriberInstance, method, event));
 		}
-		//3. Check that there is almost one suscriber on this object.
+		//3. Checks that there is almost one suscriber on this object.
 		Assertion.checkState(count > 0, "no suscriber found on class {0}", suscriberInstance.getClass());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Event> void register(final Class<E> eventType, final EventListener<E> eventListener) {
+	public <E extends Event> void register(final Class<E> eventType, final Consumer<E> eventConsumer) {
 		Assertion.checkNotNull(eventType);
-		Assertion.checkNotNull(eventListener);
+		Assertion.checkNotNull(eventConsumer);
 		//-----
-		subscriptions.add(new EventBusSubscription<>(eventType, eventListener));
+		subscriptions.add(new EventBusSubscription<>(eventType, eventConsumer));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerDead(final EventListener<Event> eventListener) {
-		Assertion.checkNotNull(eventListener);
+	public void registerDead(final Consumer<Event> eventConsumer) {
+		Assertion.checkNotNull(eventConsumer);
 		//-----
-		deadEventListeners.add(eventListener);
+		deadEventListeners.add(eventConsumer);
 	}
 }

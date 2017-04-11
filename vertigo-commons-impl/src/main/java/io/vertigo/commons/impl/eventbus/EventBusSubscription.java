@@ -18,15 +18,16 @@
  */
 package io.vertigo.commons.impl.eventbus;
 
+import java.util.function.Consumer;
+
 import io.vertigo.commons.eventbus.Event;
-import io.vertigo.commons.eventbus.EventListener;
 import io.vertigo.lang.Assertion;
 
 final class EventBusSubscription<E extends Event> {
 	private final Class<E> eventType;
-	private final EventListener<E> eventListener;
+	private final Consumer<E> eventListener;
 
-	EventBusSubscription(final Class<E> eventType, final EventListener<E> eventListener) {
+	EventBusSubscription(final Class<E> eventType, final Consumer<E> eventListener) {
 		Assertion.checkNotNull(eventType);
 		Assertion.checkNotNull(eventListener);
 		//-----
@@ -34,13 +35,13 @@ final class EventBusSubscription<E extends Event> {
 		this.eventListener = eventListener;
 	}
 
-	boolean accept(final Event event) {
+	boolean match(final Event event) {
 		Assertion.checkNotNull(event);
 		//-----
 		return eventType.isInstance(event);
 	}
 
-	EventListener<E> getListener() {
+	Consumer<E> getListener() {
 		return eventListener;
 	}
 }
