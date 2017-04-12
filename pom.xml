@@ -48,5 +48,25 @@
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
 		<tag>vertigo-0.9.5-SNAPSHOT</tag>
 	</scm>
+	
+	<build>
+		<plugins>
+			<plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>1.4.5</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+              	<format>ALL</format>
+              </configuration>
+            </plugin>
+		</plugins>
+	</build>
 
 </project>
