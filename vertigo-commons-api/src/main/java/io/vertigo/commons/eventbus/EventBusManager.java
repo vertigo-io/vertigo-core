@@ -53,13 +53,13 @@ public interface EventBusManager extends Manager {
 	void post(Event event);
 
 	/**
-	 * Registers a new listener for this type of Event.
+	 * Subcribes a consumer for the channel definaed as an event type.
 	 * Registration must be executed during the init phase.
 	 *
-	 * @param eventType Type of event
+	 * @param eventType Type of event (aka channel)
 	 * @param eventConsumer the consumer
 	 */
-	<E extends Event> void register(Class<E> eventType, Consumer<E> eventConsumer);
+	<E extends Event> void subscribe(Class<E> eventType, Consumer<E> eventConsumer);
 
 	/**
 	 * Registers all methods annotated with @Suscriber on the object

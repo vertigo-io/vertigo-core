@@ -70,7 +70,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 			count++;
 			method.setAccessible(true);
 			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
-			register(eventType,
+			subscribe(eventType,
 					event -> ClassUtil.invoke(suscriberInstance, method, event));
 		}
 		//3. Checks that there is almost one suscriber on this object.
@@ -79,7 +79,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Event> void register(final Class<E> eventType, final Consumer<E> eventConsumer) {
+	public <E extends Event> void subscribe(final Class<E> eventType, final Consumer<E> eventConsumer) {
 		Assertion.checkNotNull(eventType);
 		Assertion.checkNotNull(eventConsumer);
 		//-----
