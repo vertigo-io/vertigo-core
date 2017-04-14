@@ -5,7 +5,7 @@
 		<aspect class="io.vertigo.dynamo.impl.transaction.VTransactionAspect" />
 	</module>
 	
-	<module name="myApp" api="false">
+	<module name="myApp">
 		<component class="io.vertigo.dynamo.transaction.SampleServices" />
 	</module>
 	

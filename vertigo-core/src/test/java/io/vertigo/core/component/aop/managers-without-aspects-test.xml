@@ -5,7 +5,7 @@
 		<aspect class="io.vertigo.core.component.aop.data.aspects.OneMoreAspect" />
 <!--  		<aspect class="io.vertigo.core.component.aop.data.aspects.TenMoreAspect" />
  --></module> 
-	<module name="components" api="false">
+	<module name="components">
 		<!-- Components declaration -->
 		<component class="io.vertigo.core.component.aop.data.components.ComputerImpl" />
 		<!-- <component class="io.vertigo.core.component.aop.data.components.A" />

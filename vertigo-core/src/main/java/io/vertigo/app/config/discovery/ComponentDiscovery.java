@@ -65,9 +65,6 @@ final class ComponentDiscovery {
 		Assertion.checkNotNull(components);
 		Assertion.checkNotNull(moduleConfigBuilder);
 		// ---
-		//we control the api just bellow
-		moduleConfigBuilder.withNoAPI();
-
 		//API
 		final Collection<Class> apiClasses = new Selector()
 				.from(components)

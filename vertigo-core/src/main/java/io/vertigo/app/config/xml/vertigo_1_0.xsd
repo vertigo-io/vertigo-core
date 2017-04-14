@@ -68,7 +68,6 @@
 			<xs:element name="aspect" type="aspectType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
  		<xs:attribute name="name" type="xs:string" use="required"/>
- 		<xs:attribute name="api" type="xs:boolean" use="optional"/>
 	</xs:complexType>
 	
 	<xs:complexType name="componentType">

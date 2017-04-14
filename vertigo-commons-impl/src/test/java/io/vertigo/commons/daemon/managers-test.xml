@@ -3,7 +3,7 @@
 	<module name="vertigo-commons">
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	</module>
-	<module name="myApp" api="false">
+	<module name="myApp">
 		<component class="io.vertigo.commons.daemon.FakeComponent" />
 	</module>
 </config>

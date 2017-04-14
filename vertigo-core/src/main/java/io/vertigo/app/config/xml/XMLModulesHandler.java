@@ -137,11 +137,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
-				final String api = attrs.getValue("api");
 				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
-				if (api != null && !Boolean.parseBoolean(api)) {
-					moduleConfigBuilder.withNoAPI();
-				}
 				break;
 			case component:
 				current = TagName.component;
