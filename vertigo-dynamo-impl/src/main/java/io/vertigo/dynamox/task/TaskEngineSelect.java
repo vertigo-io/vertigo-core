@@ -58,7 +58,11 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Constructor.
 	 */
 	@Inject
-	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineSelect(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
@@ -66,11 +70,8 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Récupération de l'attribut OUT. Il doit être unique.
 	 */
 	private TaskAttribute getOutTaskAttribute() {
-		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
-			return getTaskDefinition().getOutAttributeOption().get();
-		}
-		throw new VSystemException("TaskEngineSelect must have at least on DtObject or one DtList!");
-
+		return getTaskDefinition().getOutAttributeOption()
+				.orElseThrow(() -> new VSystemException("TaskEngineSelect must have at least one DtObject or one DtList!"));
 	}
 
 	/** {@inheritDoc} */
