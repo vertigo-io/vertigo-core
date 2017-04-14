@@ -88,11 +88,9 @@ public final class MyAppConfig {
 						.build())
 				//-----
 				.addModule(new ModuleConfigBuilder("dao-app")
-						.withNoAPI()
 						.addComponent(ContactDao.class)
 						.build())
 				.addModule(new ModuleConfigBuilder("webservices-app")
-						.withNoAPI()
 						.addComponent(ComponentCmdWebServices.class)
 						.addComponent(CommonWebServices.class)
 						.addComponent(ContactsWebServices.class)

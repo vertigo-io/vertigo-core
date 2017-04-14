@@ -115,7 +115,6 @@ public final class VegaFeatures extends Features {
 		}
 
 		getModuleConfigBuilder()
-				.withNoAPI()
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
