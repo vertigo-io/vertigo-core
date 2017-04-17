@@ -89,9 +89,7 @@ public final class CacheControlFilter extends AbstractFilter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) req;
 		final HttpServletResponse httpResponse = (HttpServletResponse) res;
 
-		for (final Map.Entry entry : headers.entrySet()) {
-			httpResponse.setHeader((String) entry.getKey(), (String) entry.getValue());
-		}
+		headers.forEach((k, v) -> httpResponse.setHeader(k, v));
 
 		chain.doFilter(httpRequest, httpResponse);
 	}

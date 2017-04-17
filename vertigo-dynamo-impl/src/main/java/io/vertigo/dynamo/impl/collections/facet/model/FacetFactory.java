@@ -114,9 +114,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
-			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
-		}
+		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
 		return new Facet(facetDefinition, facetValues);
 	}
 
