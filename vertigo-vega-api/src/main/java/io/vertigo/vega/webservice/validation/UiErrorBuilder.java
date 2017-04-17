@@ -81,12 +81,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 */
 	void clearErrors(final DtObject dtObject) {
-		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
-			final UiError uiError = it.next();
-			if (uiError.getDtObject().equals(dtObject)) {
-				it.remove();
-			}
-		}
+		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject));
 		obtainUiErrorIndex(dtObject).clear();
 	}
 
