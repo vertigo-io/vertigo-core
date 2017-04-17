@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,12 +92,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
-		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
-			final UiError uiError = it.next();
-			if (uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField)) {
-				it.remove();
-			}
-		}
+		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);
 	}
 
