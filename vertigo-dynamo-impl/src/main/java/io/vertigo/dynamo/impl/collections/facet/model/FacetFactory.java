@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -134,9 +133,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
-			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
-		}
+		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
 		return new Facet(facetDefinition, facetValues);
 	}
 
