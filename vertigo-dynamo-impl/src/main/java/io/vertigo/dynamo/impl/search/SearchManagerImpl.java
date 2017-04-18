@@ -223,13 +223,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void markAsDirty(final URI<? extends KeyConcept> keyConceptUri) {
-		Assertion.checkNotNull(keyConceptUri);
-		markAsDirty(Collections.singletonList(keyConceptUri));
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void markAsDirty(final List<URI<? extends KeyConcept>> keyConceptUris) {
 		Assertion.checkNotNull(keyConceptUris);
 		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
