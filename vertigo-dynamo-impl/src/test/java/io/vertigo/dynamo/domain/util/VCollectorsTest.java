@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -95,7 +96,7 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 		assertNotNull(listCollected);
-		assertTrue(listCollected.isEmpty() == false);
+		Assert.assertFalse(listCollected.isEmpty());
 		assertEquals(1, listCollected.size());
 		assertEquals(listCollected.get(0), m2);
 		assertEquals(3, dtList.size());
