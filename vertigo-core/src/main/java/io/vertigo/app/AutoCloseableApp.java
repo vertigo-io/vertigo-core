@@ -18,6 +18,7 @@
  */
 package io.vertigo.app;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +58,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
 
-	//Start Date in milliseconds : used to have 'uptime'
-	private final long start;
+	//Start : used to have 'uptime'
+	private final Instant start;
 	private final AppConfig appConfig;
 	private State state;
 
@@ -75,7 +76,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	public AutoCloseableApp(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//-----
-		start = System.currentTimeMillis();
+		start = Instant.now();
 		this.appConfig = appConfig;
 		Home.setApp(this);
 		state = State.STARTING;
@@ -168,7 +169,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public long getStartDate() {
+	public Instant getStart() {
 		return start;
 	}
 

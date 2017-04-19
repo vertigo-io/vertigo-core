@@ -18,6 +18,8 @@
  */
 package io.vertigo.app;
 
+import java.time.Instant;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -51,9 +53,9 @@ public interface App {
 	void registerPostStartFunction(final Runnable postStartFunction);
 
 	/**
-	 * @return Start Date in milliseconds
+	 * @return Start
 	 */
-	long getStartDate();
+	Instant getStart();
 
 	/**
 	 * @return Application configuration
