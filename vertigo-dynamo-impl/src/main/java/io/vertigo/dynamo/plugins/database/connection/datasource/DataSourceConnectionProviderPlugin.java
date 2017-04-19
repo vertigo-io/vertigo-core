@@ -70,9 +70,13 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnection obtainConnection() throws SQLException {
-		final java.sql.Connection connection = dataSource.getConnection();
-		return new SqlConnection(connection, getDataBase(), true);
+	public SqlConnection obtainConnection() {
+		try {
+			final java.sql.Connection connection = dataSource.getConnection();
+			return new SqlConnection(connection, getDataBase(), true);
+		} catch (final SQLException e) {
+			throw WrappedException.wrap(e, "Can't open connection");
+		}
 	}
 
 	private static SqlDataBase createDataBase(final String dataBaseName) {

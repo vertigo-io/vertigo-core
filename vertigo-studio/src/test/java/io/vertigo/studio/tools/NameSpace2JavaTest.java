@@ -18,8 +18,6 @@
  */
 package io.vertigo.studio.tools;
 
-import java.sql.SQLException;
-
 import org.junit.Test;
 
 import io.vertigo.app.App;
@@ -27,7 +25,6 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Test la génération à partir des oom et ksp.
@@ -67,12 +64,7 @@ public class NameSpace2JavaTest {
 		final ResourceManager resourceManager = app.getComponentSpace().resolve(ResourceManager.class);
 		final SqlDataBaseManager sqlDataBaseManager = app.getComponentSpace().resolve(SqlDataBaseManager.class);
 
-		final SqlConnection connection;
-		try {
-			connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-		} catch (final SQLException e) {
-			throw WrappedException.wrap(e, "Can't open connection");
-		}
+		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		DataBaseScriptUtil.execSqlScript(connection, sqlScript, resourceManager, sqlDataBaseManager);
 	}
 

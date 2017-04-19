@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.database.connection;
 
-import java.sql.SQLException;
-
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 
 /**
@@ -33,9 +31,8 @@ public interface SqlConnectionProvider {
 	 * Provides a sql connection.
 	 *
 	 * @return Connection
-	 * @throws SQLException SQL exception
 	 */
-	SqlConnection obtainConnection() throws SQLException;
+	SqlConnection obtainConnection();
 
 	/**
 	 * @return Type of sql database
