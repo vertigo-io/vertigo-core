@@ -1,0 +1,35 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+	</boot>
+
+	<module name="vertigo-studio">
+		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
+			<param name="projectPackageName" value="io.vertigo.studio" />
+			<param name="targetGenDir" value="target/" />
+			<param name="encoding" value="utf8" />
+ 
+			<plugin class="io.vertigo.studio.plugins.mda.webservice.WsJsGeneratorPlugin">
+				<param name="targetSubDir" value="jsgen" />
+			</plugin>
+		</component>
+	</module>
+
+	<module name="myApp">
+		<definitions>	
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider">
+				<resource type="kpr" path="${boot.kpr}" />
+				<resource type="classes" path="io.vertigo.studio.data.DtDefinitions" />
+			</provider>	
+			<provider class="io.vertigo.persona.plugins.security.loaders.SecurityDefinitionProvider" >
+				<resource type="security" path="META-INF/security/basic-auth-config.xml" />
+			</provider>
+			
+			<provider class="io.vertigo.vega.plugins.webservice.scanner.annotations.WebServiceDefinitionProvider" >
+				<resource type="webservice" path="io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices" />
+				<resource type="webservice" path="io.vertigo.studio.data.webservices.*" />
+			</provider>
+		</definitions>
+	</module>
+</config>

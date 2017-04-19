@@ -40,6 +40,8 @@
 
 		<module>vertigo-tempo-api</module>
 		<module>vertigo-tempo-impl</module>
+		
+		<module>vertigo-studio</module>
 	</modules>
 
 	<scm>
