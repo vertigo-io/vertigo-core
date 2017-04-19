@@ -177,8 +177,8 @@ public final class UiErrorBuilder {
 	 */
 	public void checkFieldNotNull(final DtObject dto, final String fieldName, final MessageText messageText) {
 		final DtField dtField = getDtField(dto, fieldName);
-		final String value = (String) getValue(dto, dtField);
-		if (value == null || value.isEmpty()) {
+		final Object value = getValue(dto, dtField);
+		if (value == null || value.toString().isEmpty()) {
 			addError(dto, dtField, messageText);
 		}
 	}
