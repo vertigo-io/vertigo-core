@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -122,17 +123,26 @@ public final class VCollectors {
 	}
 
 	/**
-	 *
+	 * @param dtDefinition
+	 * @return A collector for DtList
+	 */
+	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//---
+		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtDefinition);
+		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
+			left.addAll(right);
+			return left;
+		}, CH_ID);
+	}
+
+	/**
 	 * @param dtClass
 	 * @return A collector for DtList
 	 */
 	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
 		Assertion.checkNotNull(dtClass);
 		//---
-		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtClass);
-		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
-			left.addAll(right);
-			return left;
-		}, CH_ID);
+		return toDtList(DtObjectUtil.findDtDefinition(dtClass));
 	}
 }
