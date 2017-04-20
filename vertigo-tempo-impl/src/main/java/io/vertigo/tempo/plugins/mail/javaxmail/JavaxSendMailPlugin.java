@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -303,8 +304,6 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	/** {@inheritDoc} */
 	@Override
 	public List<ComponentInfo> getInfos() {
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		componentInfos.add(new ComponentInfo("mail.sent", mailSent));
-		return componentInfos;
+		return Arrays.asList(new ComponentInfo("mail.sent", mailSent));
 	}
 }

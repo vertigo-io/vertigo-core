@@ -184,11 +184,8 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 			final boolean pao = dtDefinition == null || !dtDefinition.isPersistent();
 			if (pao) {
 				//La tache est liée au package. (PAO)
-				List<TaskDefinition> list = taskDefinitionsMap.get(taskDefinition.getPackageName());
-				if (list == null) {
-					list = new ArrayList<>();
-					taskDefinitionsMap.put(taskDefinition.getPackageName(), list);
-				}
+				final List<TaskDefinition> list = taskDefinitionsMap
+						.computeIfAbsent(taskDefinition.getPackageName(), k -> new ArrayList<>());
 				//on ajoute la tache aux taches du package.
 				list.add(taskDefinition);
 			}

@@ -18,9 +18,6 @@
  */
 package io.vertigo.app.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -32,9 +29,9 @@ import io.vertigo.util.ListBuilder;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
-	private final ListBuilder<ModuleConfig> myModuleConfigListBuilder = new ListBuilder<>();
+	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
 	private final BootConfigBuilder myBootConfigBuilder;
-	private final List<ComponentInitializerConfig> myComponentInitializerConfigs = new ArrayList<>();
+	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
 
 	/**
 	 * Constructor.
@@ -59,7 +56,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 * @return this builder
 	 */
 	public AppConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitializerClass) {
-		myComponentInitializerConfigs.add(new ComponentInitializerConfig(componentInitializerClass));
+		myComponentInitializerConfigsBuilder.add(new ComponentInitializerConfig(componentInitializerClass));
 		return this;
 	}
 
@@ -71,7 +68,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	public AppConfigBuilder addModule(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		myModuleConfigListBuilder.add(moduleConfig);
+		myModuleConfigsBuilder.add(moduleConfig);
 		return this;
 	}
 
@@ -81,8 +78,9 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
-		return new AppConfig(myBootConfigBuilder.build(),
-				myModuleConfigListBuilder.unmodifiable().build(),
-				myComponentInitializerConfigs);
+		return new AppConfig(
+				myBootConfigBuilder.build(),
+				myModuleConfigsBuilder.unmodifiable().build(),
+				myComponentInitializerConfigsBuilder.unmodifiable().build());
 	}
 }

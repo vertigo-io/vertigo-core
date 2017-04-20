@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -377,11 +377,9 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 	// méthode permettant de créer une liste de contraintes à partir d'une liste de noms de contrainte
 	private static List<ConstraintDefinition> createConstraints(final DefinitionSpace definitionSpace, final List<String> constraintNames) {
-		final List<ConstraintDefinition> constraints = new ArrayList<>(constraintNames.size());
-		for (final String constraintName : constraintNames) {
-			constraints.add(definitionSpace.resolve(constraintName, ConstraintDefinition.class));
-		}
-		return constraints;
+		return constraintNames.stream()
+				.map(constraintName -> definitionSpace.resolve(constraintName, ConstraintDefinition.class))
+				.collect(Collectors.toList());
 	}
 
 	/**

@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -30,6 +29,7 @@ import org.junit.Test;
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.util.ListBuilder;
 
 /**
  * Test du codec de sérialisation.
@@ -86,32 +86,23 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	// ==============================
 	// ===========================================================================
 	private static List<Serializable> createObjects() {
-		final List<Serializable> values = new ArrayList<>();
-		values.add(54); // Test d'un entier
-		values.add(""); // Test d'une chaine vide
-		values.add("   "); // Test d'une chaine remplie avec des espaces
-		values.add("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ  1234567890"); // Test
-		// d'une
-		// chaine
-		// de
-		// caractères
-		// simples
-		values.add("éèêë üû ïî àäâ öô"); // Test des accents
-		values.add(">< & # @ %"); // Test des caractères HTML XML
-		values.add(" % ' "); // Test des caractères SQL
-		values.add("abcdef aéàè ' () {}  \" ' 12345 \\ / /254sd %§!*-+/"); // Test
-		// d'une
-		// chaine
-		// de
-		// caractères
-		// avec
-		// caractères
-		// spéciaux
-		// mélangés
-
-		values.add(createPerson()); // Test d'un objet
-
-		return values;
+		return new ListBuilder<Serializable>()
+				.add(54) // Test d'un entier
+				.add("") // Test d'une chaine vide
+				.add("   ") // Test d'une chaine remplie avec des espaces
+				.add("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ  1234567890") // Test
+				// d'une
+				// chaine
+				// de
+				// caractères
+				// simples
+				.add("éèêë üû ïî àäâ öô") // Test des accents
+				.add(">< & # @ %") // Test des caractères HTML XML
+				.add(" % ' ") // Test des caractères SQL
+				.add("abcdef aéàè ' () {}  \" ' 12345 \\ / /254sd %§!*-+/")
+				// Test d'une chaine de caractères avec caractères  spéciaux mélangés
+				.add(createPerson()) // Test d'un objet
+				.build();
 	}
 
 	private static TestPerson createPerson() {

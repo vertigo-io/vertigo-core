@@ -131,12 +131,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	}
 
 	private static List<DtDefinitionModel> obtainListDtDefinitionPerDataSpace(final Map<String, List<DtDefinitionModel>> mapListDtDef, final String dataSpace) {
-		List<DtDefinitionModel> listDtDef = mapListDtDef.get(dataSpace);
-		if (listDtDef == null) {
-			listDtDef = new ArrayList<>();
-			mapListDtDef.put(dataSpace, listDtDef);
-		}
-		return listDtDef;
+		return mapListDtDef.computeIfAbsent(dataSpace, k -> new ArrayList<>());
 	}
 
 	private static Collection<AssociationSimpleDefinition> filterAssociationSimple(

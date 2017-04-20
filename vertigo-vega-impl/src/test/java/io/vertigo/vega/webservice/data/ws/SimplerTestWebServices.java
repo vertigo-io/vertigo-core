@@ -215,12 +215,9 @@ public final class SimplerTestWebServices implements WebServices {
 	@Doc("Test ws multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/innerbody")
 	public List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
-		final List<Contact> result = new ArrayList<>(2);
-		result.add(contactFrom);
-		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(contactFrom, contactTo);
 	}
 
 	@Doc("Test ws multipart body with optional objects. Send a body with an object of to field : contactFrom, Optional<contactTo>. Each one should be an json of Contact.")
@@ -229,8 +226,6 @@ public final class SimplerTestWebServices implements WebServices {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
 		contactToOpt.ifPresent(contactTo -> result.add(contactTo));
-		//offset + range ?
-		//code 200
 		return result;
 	}
 
