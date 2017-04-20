@@ -250,7 +250,7 @@ public final class SimplerTestWebServices implements WebServices {
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLongToDtList")
 	public DtList<Contact> testInnerBodyLongToDtList(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
-		DtList.of(
+		return DtList.of(
 				contactDao.get(contactIdFrom),
 				contactDao.get(contactIdTo));
 		//offset + range ?
@@ -371,7 +371,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;
