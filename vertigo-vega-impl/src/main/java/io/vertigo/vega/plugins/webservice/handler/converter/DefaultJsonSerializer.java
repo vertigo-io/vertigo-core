@@ -251,12 +251,12 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		if (list instanceof DtList) {
 			final DtList<?> dtList = (DtList<?>) list;
 			for (final String entry : dtList.getMetaDataNames()) {
-				final Optional<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-				if (value.isPresent()) {
-					if (value.get() instanceof String) {
-						response.header(entry, (String) value.get()); //TODO escape somethings ?
+				final Optional<Serializable> valueOpt = dtList.getMetaData(entry, Serializable.class);
+				if (valueOpt.isPresent()) {
+					if (valueOpt.get() instanceof String) {
+						response.header(entry, (String) valueOpt.get()); //TODO escape somethings ?
 					} else {
-						response.header(entry, jsonWriterEngine.toJson(value.get()));
+						response.header(entry, jsonWriterEngine.toJson(valueOpt.get()));
 					}
 				}
 			}
@@ -266,12 +266,11 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	private static Map<String, Serializable> getListMetas(final DtList<?> dtList) {
 		final Map<String, Serializable> metaDatas = new HashMap<>();
 		for (final String entry : dtList.getMetaDataNames()) {
-			final Optional<Serializable> value = dtList.getMetaData(entry, Serializable.class);
-			if (value.isPresent()) {
-				metaDatas.put(entry, value.get());
-			}
+			final Optional<Serializable> valueOpt = dtList.getMetaData(entry, Serializable.class);
+			valueOpt.ifPresent(value -> metaDatas.put(entry, value));
 		}
 		return metaDatas;
+
 	}
 
 	private String toJson(final Object value, final Map<String, Serializable> metaData, final Set<String> includedFields, final Set<String> excludedFields) {

@@ -55,8 +55,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private final String targetSubDir;
 	private final boolean generateDrop;
 	private final String baseCible;
-	private final Optional<String> tableSpaceData;
-	private final Optional<String> tableSpaceIndex;
+	private final Optional<String> tableSpaceDataOpt;
+	private final Optional<String> tableSpaceIndexOpt;
 
 	/**
 	 * Constructeur.
@@ -78,8 +78,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		this.targetSubDir = targetSubDir;
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
-		this.tableSpaceData = tableSpaceData;
-		this.tableSpaceIndex = tableSpaceIndex;
+		this.tableSpaceDataOpt = tableSpaceData;
+		this.tableSpaceIndexOpt = tableSpaceIndex;
 	}
 
 	/** {@inheritDoc} */
@@ -166,12 +166,12 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				.put("basecible", baseCible)
 				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
 				.put("truncateNames", "Oracle".equals(baseCible));
-		if (tableSpaceData.isPresent()) {
-			modelBuilder.put("tableSpaceData", tableSpaceData.get());
-		}
-		if (tableSpaceIndex.isPresent()) {
-			modelBuilder.put("tableSpaceIndex", tableSpaceIndex.get());
-		}
+
+		tableSpaceDataOpt.ifPresent(
+				tableSpaceData -> modelBuilder.put("tableSpaceData", tableSpaceData));
+		tableSpaceIndexOpt.ifPresent(
+				tableSpaceIndex -> modelBuilder.put("tableSpaceIndex", tableSpaceIndex));
+
 		final Map<String, Object> model = modelBuilder.build();
 		final String templatName = isSqlServer() ? "domain/template/sqlserver.ftl" : "domain/template/sql.ftl";
 

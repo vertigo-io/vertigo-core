@@ -112,11 +112,10 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		return chain.handle(request, response, routeContext);
 	}
 
-	private static String obtainUserKey(final Request request, final Optional<UserSession> userSession) {
-		if (userSession.isPresent()) {
-			return userSession.get().getSessionUUID().toString();
-		}
-		return request.ip() + ":" + request.headers("user-agent");
+	private static String obtainUserKey(final Request request, final Optional<UserSession> userSessionOpt) {
+		return userSessionOpt
+				.map(userSession -> userSession.getSessionUUID().toString())
+				.orElse(request.ip() + ":" + request.headers("user-agent"));
 	}
 
 	private long touch(final String userKey) {
