@@ -58,7 +58,9 @@ public final class SecurityGeneratorPlugin implements GeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	public void generate(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----

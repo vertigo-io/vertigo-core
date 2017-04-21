@@ -76,7 +76,9 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	public void generate(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
@@ -97,7 +99,11 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 
 	}
 
-	private static void generateDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder, final String dictionaryClassName) {
+	private static void generateDtDefinitions(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder,
+			final String dictionaryClassName) {
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".domain")
@@ -116,13 +122,18 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 
 	}
 
-	private void generateDtObjects(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private void generateDtObjects(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			generateDtObject(fileGeneratorConfig, mdaResultBuilder, dtDefinition);
 		}
 	}
 
-	private void generateDtObject(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder, final DtDefinition dtDefinition) {
+	private void generateDtObject(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder,
+			final DtDefinition dtDefinition) {
 		final DtDefinitionModel dtDefinitionModel = new DtDefinitionModel(dtDefinition);
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
@@ -140,7 +151,10 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.generateFile(mdaResultBuilder);
 	}
 
-	private static void generateDtResources(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private static void generateDtResources(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		final String simpleClassName = "DtResources";
 		/**
 		 * Génération des ressources afférentes au DT.

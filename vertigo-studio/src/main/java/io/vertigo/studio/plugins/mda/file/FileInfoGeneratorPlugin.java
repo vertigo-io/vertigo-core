@@ -54,7 +54,9 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	public void generate(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
@@ -62,14 +64,21 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 		generateFileInfos(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 	}
 
-	private static void generateFileInfos(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private static void generateFileInfos(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getApp().getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
 			generateFileInfo(targetSubDir, fileGeneratorConfig, mdaResultBuilder, fileInfoDefinition);
 		}
 	}
 
-	private static void generateFileInfo(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder,
+			final FileInfoDefinition fileInfoDefinition) {
 		final FileInfoDefinitionModel fileInfoDefinitionModel = new FileInfoDefinitionModel(fileInfoDefinition);
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()

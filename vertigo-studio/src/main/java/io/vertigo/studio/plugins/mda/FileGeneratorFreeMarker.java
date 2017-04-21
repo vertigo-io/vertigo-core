@@ -46,7 +46,7 @@ import io.vertigo.studio.plugins.mda.domain.template.TemplateMethodStringUtil;
  *
  * @author dchallas
  */
-public final class FileGeneratorFreeMarker implements FileGenerator {
+final class FileGeneratorFreeMarker implements FileGenerator {
 	private static final Logger LOG = Logger.getLogger(FileGeneratorFreeMarker.class);
 	private static final String EOL = System.getProperty("line.separator");
 
@@ -69,7 +69,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	 * @param encoding Encoding use
 	 * @param referenceClass ReferenceClass for ftl loading
 	 */
-	public FileGeneratorFreeMarker(final Map<String, Object> model, final String filePath, final String templateName, final String encoding, final Class<?> referenceClass) {
+	FileGeneratorFreeMarker(final Map<String, Object> model, final String filePath, final String templateName, final String encoding, final Class<?> referenceClass) {
 		Assertion.checkNotNull(model);
 		Assertion.checkNotNull(filePath);
 		Assertion.checkNotNull(templateName);
