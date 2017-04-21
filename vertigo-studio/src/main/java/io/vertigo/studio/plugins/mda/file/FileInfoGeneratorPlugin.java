@@ -29,7 +29,7 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.file.model.FileInfoDefinitionModel;
 import io.vertigo.util.MapBuilder;
@@ -77,7 +77,7 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 				.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".fileinfo")
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(fileInfoDefinitionModel.getClassSimpleName() + ".java")
 				.withGenSubDir(targetSubDir)

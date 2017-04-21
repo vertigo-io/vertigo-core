@@ -42,6 +42,13 @@ public class MailBuilder implements Builder<Mail> {
 	private final List<VFile> myAttachments = new ArrayList<>();
 
 	/**
+	 * Constructor.
+	 */
+	MailBuilder() {
+		super();
+	}
+
+	/**
 	 * Set subject.
 	 * @param subject mail subject
 	 * @return MailBuilder

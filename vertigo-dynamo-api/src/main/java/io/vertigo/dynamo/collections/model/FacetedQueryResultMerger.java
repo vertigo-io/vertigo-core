@@ -77,7 +77,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		}
 		//-----
 		final FacetValue otherFacetValue = facetValuePerFilter.computeIfAbsent(resultFilter,
-				rf -> new FacetValue(resultcode, new ListFilter(rf), new MessageText(resultLabel, resultLabelKey)));
+				rf -> new FacetValue(resultcode, ListFilter.of(rf), new MessageText(resultLabel, resultLabelKey)));
 
 		otherResults.computeIfAbsent(otherFacetValue, k -> new ArrayList<>())
 				.add(result);

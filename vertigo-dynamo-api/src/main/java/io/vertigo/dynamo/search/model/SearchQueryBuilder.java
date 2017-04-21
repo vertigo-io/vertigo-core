@@ -46,14 +46,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	/**
 	 * Constructor.
-	 * @param query Query
-	 */
-	SearchQueryBuilder(final String query) {
-		this(new ListFilter(query));
-	}
-
-	/**
-	 * Constructor.
 	 * @param listFilter ListFilter
 	 */
 	SearchQueryBuilder(final ListFilter listFilter) {

@@ -22,15 +22,19 @@ import io.vertigo.studio.mda.MdaResultBuilder;
 
 /**
  * Interface des generateurs de fichier.
- * 
+ *
  * @author dchallas
  */
 public interface FileGenerator {
 	/**
 	 * Génèration d'un fichier.
-	 * Si le fichier existe déjà, il est regénéré 
-	 * 
-	 * @param mdaResultBuilder Builder 
+	 * Si le fichier existe déjà, il est regénéré
+	 *
+	 * @param mdaResultBuilder Builder
 	 */
 	void generateFile(final MdaResultBuilder mdaResultBuilder);
+
+	static FileGeneratorBuilder builder(final FileGeneratorConfig fileGeneratorConfig) {
+		return new FileGeneratorBuilder(fileGeneratorConfig);
+	}
 }

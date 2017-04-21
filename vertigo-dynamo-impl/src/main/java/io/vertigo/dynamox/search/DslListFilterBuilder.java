@@ -128,7 +128,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	@Override
 	public ListFilter build() {
 		final String query = buildQueryString();
-		return new ListFilter(query);
+		return ListFilter.of(query);
 	}
 
 	private String buildQueryString() {

@@ -34,6 +34,13 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	private Object myValue; //null by default not required
 	private String myValueInformation; //null by default not required
 
+	/**
+	 * Constructor.
+	 */
+	ReportMetricBuilder() {
+		super();
+	}
+
 	@Override
 	public ReportMetric build() {
 		return new ReportMetric(myStatus, myTitle, myUnit, myValue, myValueInformation);

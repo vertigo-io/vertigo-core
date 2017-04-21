@@ -63,7 +63,7 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	 * @return this builder
 	 */
 	public FacetDefinitionByRangeBuilder addFacetValue(final String code, final String query, final String facetValueLabel) {
-		final ListFilter listFilter = new ListFilter(query);
+		final ListFilter listFilter = ListFilter.of(query);
 		return addFacetValue(new FacetValue(code, listFilter, new MessageText(facetValueLabel, null)));
 	}
 

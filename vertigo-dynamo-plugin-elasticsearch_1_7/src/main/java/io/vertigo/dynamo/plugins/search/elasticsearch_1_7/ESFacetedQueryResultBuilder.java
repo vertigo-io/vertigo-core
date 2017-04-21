@@ -76,7 +76,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	 * @param queryResponse ES Query response
 	 * @param searchQuery Search query
 	 */
-	public ESFacetedQueryResultBuilder(final ESDocumentCodec esDocumentCodec, final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
+	ESFacetedQueryResultBuilder(final ESDocumentCodec esDocumentCodec, final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(queryResponse);
@@ -134,7 +134,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 				final String term = value.getKey();
 				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 				final MessageText label = new MessageText(term, null);
-				facetValue = new FacetValue(term, new ListFilter(query), label);
+				facetValue = new FacetValue(term, ListFilter.of(query), label);
 				populateCluster(value, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
@@ -208,7 +208,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final String term = value.getKey();
 			final MessageText label = new MessageText(term, null);
 			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-			facetValue = new FacetValue(term, new ListFilter(query), label);
+			facetValue = new FacetValue(term, ListFilter.of(query), label);
 			facetValues.put(facetValue, value.getDocCount());
 		}
 

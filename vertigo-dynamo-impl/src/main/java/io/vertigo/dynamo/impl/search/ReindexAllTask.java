@@ -135,6 +135,6 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				.append(lastUri != null ? ("\"" + lastUri + "\"") : "*")
 				.append("]")
 				.toString();
-		return new ListFilter(filterValue);
+		return ListFilter.of(filterValue);
 	}
 }

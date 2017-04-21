@@ -86,15 +86,6 @@ public final class SearchQuery implements Serializable {
 
 	/**
 	 * Static method factory for SearchQueryBuilder
-	 * @param query Query
-	 * @return SearchQueryBuilder
-	 */
-	public static SearchQueryBuilder builder(final String query) {
-		return new SearchQueryBuilder(query);
-	}
-
-	/**
-	 * Static method factory for SearchQueryBuilder
 	 * @param listFilter ListFilter
 	 * @return SearchQueryBuilder
 	 */

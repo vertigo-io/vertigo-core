@@ -43,6 +43,13 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 
 	private final long start = System.currentTimeMillis();
 
+	/**
+	 * Constructor.
+	 */
+	MdaResultBuilder() {
+		super();
+	}
+
 	@Override
 	public MdaResult build() {
 		final long duration = System.currentTimeMillis() - start;

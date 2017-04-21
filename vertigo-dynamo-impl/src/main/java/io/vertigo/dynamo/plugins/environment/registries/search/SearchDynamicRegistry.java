@@ -142,7 +142,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 
 	private static FacetValue createFacetValue(final DslDefinition rangeDefinition) {
 		final String listFilterString = (String) rangeDefinition.getPropertyValue(SearchGrammar.RANGE_FILTER_PROPERTY);
-		final ListFilter listFilter = new ListFilter(listFilterString);
+		final ListFilter listFilter = ListFilter.of(listFilterString);
 		final String labelString = (String) rangeDefinition.getPropertyValue(KspProperty.LABEL);
 		final MessageText label = new MessageText(labelString, null, (Serializable[]) null);
 		final String code = rangeDefinition.getName();

@@ -220,7 +220,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query) {
 		//recherche
-		final SearchQuery searchQuery = SearchQuery.builder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
 
 		return doQuery(searchQuery, null).getCount();
@@ -241,7 +241,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private void doRemove(final String query) {
-		final ListFilter removeQuery = new ListFilter(query);
+		final ListFilter removeQuery = ListFilter.of(query);
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 	}
 

@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
 import io.vertigo.util.MapBuilder;
@@ -90,7 +90,7 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName("DtDefinitions.js")
 				.withGenSubDir(targetSubDir)
@@ -119,7 +119,7 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(simpleClassName + ".js")
 				.withGenSubDir(targetSubDir)

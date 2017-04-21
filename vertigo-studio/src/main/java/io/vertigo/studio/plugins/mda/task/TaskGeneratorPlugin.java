@@ -35,7 +35,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.task.model.DAOModel;
 import io.vertigo.studio.plugins.mda.task.model.PAOModel;
@@ -119,7 +119,7 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 				.put("dao", daoModel)
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(daoModel.getClassSimpleName() + ".java")
 				.withGenSubDir(targetSubDir)
@@ -144,7 +144,7 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 				.put("pao", paoModel)
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(paoModel.getClassSimpleName() + ".java")
 				.withGenSubDir(targetSubDir)

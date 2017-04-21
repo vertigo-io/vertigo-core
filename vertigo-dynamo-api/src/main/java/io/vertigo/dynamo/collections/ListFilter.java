@@ -44,10 +44,14 @@ public final class ListFilter implements Serializable {
 	 *
 	 * @param filterValue Valeur du filtre
 	 */
-	public ListFilter(final String filterValue) {
+	private ListFilter(final String filterValue) {
 		Assertion.checkNotNull(filterValue);
-		//-----
+		//---
 		this.filterValue = filterValue;
+	}
+
+	public static ListFilter of(final String filterValue) {
+		return new ListFilter(filterValue);
 	}
 
 	/**

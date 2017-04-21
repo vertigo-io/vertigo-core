@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.model.MethodAnnotationsModel;
@@ -105,7 +105,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(dictionaryClassName + ".java")
 				.withGenSubDir(targetSubDir)
@@ -130,7 +130,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.put("annotations", new MethodAnnotationsModel(shouldGenerateJpaAnnotations))
 				.build();
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(dtDefinitionModel.getClassSimpleName() + ".java")
 				.withGenSubDir(targetSubDir)
@@ -156,7 +156,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 					.put("dtDefinitions", dtDefinitionCollection)
 					.build();
 
-			new FileGeneratorBuilder(fileGeneratorConfig)
+			FileGenerator.builder(fileGeneratorConfig)
 					.withModel(model)
 					.withFileName(simpleClassName + ".java")
 					.withGenSubDir(targetSubDir)
@@ -168,7 +168,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 			//pour les .properties on force l'ISO-8859-1 comme la norme l'impose
 			final FileGeneratorConfig propertiesFileConfig = new FileGeneratorConfig(fileGeneratorConfig.getTargetGenDir(), fileGeneratorConfig.getProjectPackageName(), "ISO-8859-1");
 
-			new FileGeneratorBuilder(propertiesFileConfig)
+			FileGenerator.builder(propertiesFileConfig)
 					.withModel(model)
 					.withFileName(simpleClassName + ".properties")
 					.withGenSubDir(targetSubDir)

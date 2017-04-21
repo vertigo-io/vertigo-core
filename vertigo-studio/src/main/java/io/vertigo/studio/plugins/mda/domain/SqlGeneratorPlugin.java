@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinitio
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.model.SqlMethodModel;
@@ -170,7 +170,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		final Map<String, Object> model = modelBuilder.build();
 		final String templatName = isSqlServer() ? "domain/template/sqlserver.ftl" : "domain/template/sql.ftl";
 
-		new FileGeneratorBuilder(fileGeneratorConfig)
+		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)
 				.withFileName(fileName)
 				.withGenSubDir(targetSubDir)

@@ -31,7 +31,7 @@ import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.webservice.model.WebServiceDefinitionModel;
 import io.vertigo.util.MapBuilder;
@@ -93,7 +93,7 @@ public final class WsJsGeneratorPlugin implements GeneratorPlugin {
 						.put("routes", entry.getValue())
 						.build();
 
-				new FileGeneratorBuilder(fileGeneratorConfig)
+				FileGenerator.builder(fileGeneratorConfig)
 						.withModel(model)
 						.withFileName(simpleClassName + ".js")
 						.withGenSubDir(targetSubDir)

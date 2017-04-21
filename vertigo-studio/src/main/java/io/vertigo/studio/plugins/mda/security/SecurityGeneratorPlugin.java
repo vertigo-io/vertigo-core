@@ -33,7 +33,7 @@ import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.FileGeneratorBuilder;
+import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.util.MapBuilder;
 
@@ -106,7 +106,7 @@ public final class SecurityGeneratorPlugin implements GeneratorPlugin {
 					.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".security")
 					.build();
 
-			new FileGeneratorBuilder(fileGeneratorConfig)
+			FileGenerator.builder(fileGeneratorConfig)
 					.withModel(model)
 					.withFileName(objectName + ".java")
 					.withGenSubDir(targetSubDir)

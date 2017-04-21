@@ -39,7 +39,7 @@ public final class FileGeneratorBuilder implements Builder<FileGenerator> {
 	/**
 	 * @param fileGeneratorConfig the config of the file generator
 	*/
-	public FileGeneratorBuilder(final FileGeneratorConfig fileGeneratorConfig) {
+	FileGeneratorBuilder(final FileGeneratorConfig fileGeneratorConfig) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		//---
 		this.fileGeneratorConfig = fileGeneratorConfig;

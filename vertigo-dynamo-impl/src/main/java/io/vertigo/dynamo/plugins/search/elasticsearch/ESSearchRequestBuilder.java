@@ -83,7 +83,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @param typeName type name (dtIndex type)
 	 * @param esClient ElasticSearch client
 	 */
-	public ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
+	ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esClient);
