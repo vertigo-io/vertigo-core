@@ -147,15 +147,20 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	}
 
 	private static Collection<AssociationNNDefinition> filterAssociationNN(
-			final Collection<AssociationNNDefinition> collectionNNAll, final String dataSpace) {
+			final Collection<AssociationNNDefinition> collectionNNAll,
+			final String dataSpace) {
 		return collectionNNAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
 				.collect(Collectors.toList());
 	}
 
-	private void generateFile(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder,
-			final List<DtDefinitionModel> list, final Collection<AssociationSimpleDefinition> collectionSimple,
-			final Collection<AssociationNNDefinition> collectionNN, final String fileName) {
+	private void generateFile(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder,
+			final List<DtDefinitionModel> list,
+			final Collection<AssociationSimpleDefinition> collectionSimple,
+			final Collection<AssociationNNDefinition> collectionNN,
+			final String fileName) {
 		final MapBuilder<String, Object> modelBuilder = new MapBuilder<String, Object>()
 				.put("sql", new SqlMethodModel())
 				.put("dtDefinitions", list)
