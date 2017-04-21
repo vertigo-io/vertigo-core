@@ -65,6 +65,15 @@ public final class PluginConfig {
 	}
 
 	/**
+	 * Static method factory for PluginConfigBuilder
+	 * @param pluginImplClass impl of the plugin
+	 * @return PluginConfigBuilder
+	 */
+	public static PluginConfigBuilder builder(final Class<? extends Plugin> pluginImplClass) {
+		return new PluginConfigBuilder(pluginImplClass);
+	}
+
+	/**
 	 * @return the type of the plugin
 	 */
 	public String getPluginType() {

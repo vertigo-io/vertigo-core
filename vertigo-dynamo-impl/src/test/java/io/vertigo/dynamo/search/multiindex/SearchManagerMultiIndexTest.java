@@ -34,7 +34,6 @@ import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 
 /**
  * @author  npiedeloup
@@ -107,7 +106,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(query)
 				.build();
 		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
 		return result.getCount();

@@ -26,9 +26,8 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.FunctionManager;
 import io.vertigo.core.spaces.component.data.FunctionManager1Impl;
@@ -94,11 +93,11 @@ public final class ComponentSpace3Test {
 
 	private static AppConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new ModuleConfigBuilder("Function")
+				.addModule(ModuleConfig.builder("Function")
 						.addComponent(FunctionManager.class, implClass)
 						.addPlugin(FunctionPlugin.class,
 								Param.of("name", "x+1"),

@@ -53,7 +53,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * Constructor.
 	 * @param name Name of the module
 	 */
-	public ModuleConfigBuilder(final String name) {
+	ModuleConfigBuilder(final String name) {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
@@ -102,7 +102,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = new ComponentConfigBuilder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -120,7 +120,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = new ComponentConfigBuilder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();

@@ -55,9 +55,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
-import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.util.ListBuilder;
 
@@ -86,7 +84,7 @@ public final class DomainGrammar implements DslGrammar {
 	public static final DslEntity DOMAIN_ENTITY;
 
 	/**the data types are provided by the language (String, Integer...) */
-	private static final DslEntity DATA_TYPE_ENTITY = new DslEntityBuilder("DataType")
+	private static final DslEntity DATA_TYPE_ENTITY = DslEntity.builder("DataType")
 			.withProvided()
 			.build();
 
@@ -105,17 +103,17 @@ public final class DomainGrammar implements DslGrammar {
 	public static final DslEntity FRAGMENT_ENTITY;
 
 	static {
-		CONSTRAINT_ENTITY = new DslEntityBuilder("Constraint")
+		CONSTRAINT_ENTITY = DslEntity.builder("Constraint")
 				.addRequiredField(CLASS_NAME, String)
 				.addOptionalField(ARGS, String)
 				.addOptionalField(MSG, String)
 				.build();
-		FORMATTER_ENTITY = new DslEntityBuilder("Formatter")
+		FORMATTER_ENTITY = DslEntity.builder("Formatter")
 				.addRequiredField(CLASS_NAME, String)
 				.addOptionalField(ARGS, String)
 				.build();
 
-		DOMAIN_ENTITY = new DslEntityBuilder("Domain")
+		DOMAIN_ENTITY = DslEntity.builder("Domain")
 				.addOptionalField(MAX_LENGTH, Integer)
 				.addOptionalField(TYPE, String)
 				.addOptionalField(UNIT, String)
@@ -126,7 +124,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
-		DT_FIELD_ENTITY = new DslEntityBuilder("Field")
+		DT_FIELD_ENTITY = DslEntity.builder("Field")
 				.addRequiredField(LABEL, String)
 				.addRequiredField(NOT_NULL, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
@@ -134,13 +132,13 @@ public final class DomainGrammar implements DslGrammar {
 				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		final DslEntity computedFieldEntity = new DslEntityBuilder("ComputedField")
+		final DslEntity computedFieldEntity = DslEntity.builder("ComputedField")
 				.addRequiredField(LABEL, String)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
 				.addRequiredField(EXPRESSION, String)
 				.build();
 
-		DT_DEFINITION_ENTITY = new DslEntityBuilder("DtDefinition")
+		DT_DEFINITION_ENTITY = DslEntity.builder("DtDefinition")
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
 				.addManyFields(FIELD, DT_FIELD_ENTITY)
@@ -151,12 +149,12 @@ public final class DomainGrammar implements DslGrammar {
 				.addOptionalField(DATA_SPACE, String)
 				.build();
 
-		final DslEntity fieldAliasEntity = new DslEntityBuilder("fieldAlias")
+		final DslEntity fieldAliasEntity = DslEntity.builder("fieldAlias")
 				.addOptionalField(LABEL, String)
 				.addOptionalField(NOT_NULL, Boolean)
 				.build();
 
-		FRAGMENT_ENTITY = new DslEntityBuilder("Fragment")
+		FRAGMENT_ENTITY = DslEntity.builder("Fragment")
 				.addRequiredField("from", DT_DEFINITION_ENTITY.getLink())
 				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
 				.addOptionalField(DISPLAY_FIELD, String)
@@ -165,7 +163,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields(COMPUTED, computedFieldEntity) //et des computed
 				.build();
 
-		ASSOCIATION_ENTITY = new DslEntityBuilder("Association")
+		ASSOCIATION_ENTITY = DslEntity.builder("Association")
 				.addOptionalField(FK_FIELD_NAME, String)
 				.addRequiredField(MULTIPLICITY_A, String)
 				.addRequiredField(NAVIGABILITY_A, Boolean)
@@ -179,7 +177,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
 				.build();
 
-		ASSOCIATION_NN_ENTITY = new DslEntityBuilder("AssociationNN")
+		ASSOCIATION_NN_ENTITY = DslEntity.builder("AssociationNN")
 				.addRequiredField(TABLE_NAME, String)
 				.addRequiredField(NAVIGABILITY_A, Boolean)
 				.addRequiredField(ROLE_A, String)
@@ -213,7 +211,7 @@ public final class DomainGrammar implements DslGrammar {
 	public List<DslDefinition> getRootDefinitions() {
 		//We are listing all primitives types
 		return Arrays.stream(DataType.values())
-				.map(dataType -> new DslDefinitionBuilder(dataType.name(), DATA_TYPE_ENTITY).build())
+				.map(dataType -> DslDefinition.builder(dataType.name(), DATA_TYPE_ENTITY).build())
 				.collect(Collectors.toList());
 	}
 }

@@ -56,18 +56,11 @@ public final class WebServiceParam {
 	 * Parameter's source types.
 	 */
 	public enum WebServiceParamType {
-		Query,
-		Path,
-		Header,
-		Body,
-		InnerBody,
-		Implicit
+		Query, Path, Header, Body, InnerBody, Implicit
 	}
 
 	public enum ImplicitParam {
-		UiMessageStack(UiMessageStack.class),
-		Request(HttpServletRequest.class),
-		Response(HttpServletResponse.class),;
+		UiMessageStack(UiMessageStack.class), Request(HttpServletRequest.class), Response(HttpServletResponse.class),;
 
 		private Class<?> implicitType;
 
@@ -111,6 +104,15 @@ public final class WebServiceParam {
 				.check(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
 						"Only DtObject and DtListState can be map from Query parameters");
+	}
+
+	/**
+	 * Static method factory for WebServiceDefinitionBuilder
+	 * @param paramType param type
+	 * @return WebServiceDefinitionBuilder
+	 */
+	public static WebServiceParamBuilder builder(final Type paramType) {
+		return new WebServiceParamBuilder(paramType);
 	}
 
 	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {

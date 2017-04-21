@@ -62,7 +62,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * Constructeur.
 	 * @param method Method to bind to this webService
 	 */
-	public WebServiceDefinitionBuilder(final Method method) {
+	WebServiceDefinitionBuilder(final Method method) {
 		Assertion.checkNotNull(method);
 		//-----
 		myMethod = method;
@@ -241,11 +241,11 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		//autoSortAndPagination use a Implicit DtListState, this one must be show in API, so we add it to webServiceParams
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
-			addWebServiceParam(new WebServiceParamBuilder(String.class)
+			addWebServiceParam(WebServiceParam.builder(String.class)
 					.with(WebServiceParamType.Query, "listServerToken") // We declare listServerToken in query without prefix
 					.optional()
 					.build());
-			addWebServiceParam(new WebServiceParamBuilder(DtListState.class)
+			addWebServiceParam(WebServiceParam.builder(DtListState.class)
 					.with(WebServiceParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}

@@ -38,9 +38,7 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
@@ -83,7 +81,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	private DtList<Car> loadCarList(final SearchChunk<Car> searchChunk) {
 		final TaskDefinition taskLoadCars = getTaskLoadCarList(searchChunk);
 
-		final Task task = new TaskBuilder(taskLoadCars)
+		final Task task = Task.builder(taskLoadCars)
 				.build();
 
 		return getTaskManager()
@@ -98,7 +96,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.map(uri -> uri.getId().toString())
 				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));
 
-		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+		return TaskDefinition.builder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())

@@ -47,7 +47,7 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 * @param definitionProviderClass the class of the definitionProvider
 	 */
 
-	public DefinitionProviderConfigBuilder(final Class<? extends DefinitionProvider> definitionProviderClass) {
+	DefinitionProviderConfigBuilder(final Class<? extends DefinitionProvider> definitionProviderClass) {
 		Assertion.checkNotNull(definitionProviderClass);
 		//-----
 		myClass = definitionProviderClass;

@@ -25,7 +25,6 @@ import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
-import io.vertigo.vega.webservice.metamodel.WebServiceDefinitionBuilder;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -46,7 +45,7 @@ public final class SparkJavaOptionsRoute implements Route {
 	SparkJavaOptionsRoute(final HandlerChain handlerChain) {
 		this.handlerChain = handlerChain;
 		//we use a fake webServiceDefinition, to ensure no webservice was called on Options request
-		webServiceCors = new WebServiceDefinitionBuilder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
+		webServiceCors = WebServiceDefinition.builder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
 				.with(Verb.GET, "/_OPTIONS_*")
 				.withCorsProtected(true)
 				.build();

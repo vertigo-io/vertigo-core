@@ -28,7 +28,6 @@ import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRule.Dummy;
 import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
-import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
@@ -86,7 +85,7 @@ public final class DslKspRule extends AbstractRule<Dummy, List<Object>> {
 				case 0:
 					//On positionne le Package
 					final DslDefinition oldDynamicDefinition = (DslDefinition) declarationChoice.getValue();
-					final DslDefinition newDynamicDefinition = new DslDefinitionBuilder(oldDynamicDefinition.getName(), oldDynamicDefinition.getEntity())
+					final DslDefinition newDynamicDefinition = DslDefinition.builder(oldDynamicDefinition.getName(), oldDynamicDefinition.getEntity())
 							.withPackageName(packageName)
 							.merge(oldDynamicDefinition)
 							.build();

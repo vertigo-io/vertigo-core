@@ -92,7 +92,7 @@ final class AnnotationsWebServiceScannerUtil {
 	}
 
 	private static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
-		final WebServiceDefinitionBuilder builder = new WebServiceDefinitionBuilder(method);
+		final WebServiceDefinitionBuilder builder = WebServiceDefinition.builder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
 			builder.withPathPrefix(pathPrefix.value());
@@ -148,7 +148,7 @@ final class AnnotationsWebServiceScannerUtil {
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
-		final WebServiceParamBuilder builder = new WebServiceParamBuilder(paramType);
+		final WebServiceParamBuilder builder = WebServiceParam.builder(paramType);
 		if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)
 				|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);

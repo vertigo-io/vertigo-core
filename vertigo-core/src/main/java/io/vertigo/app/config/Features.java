@@ -28,7 +28,7 @@ public abstract class Features implements Builder<ModuleConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 
 	protected Features(final String name) {
-		moduleConfigBuilder = new ModuleConfigBuilder(name);
+		moduleConfigBuilder = ModuleConfig.builder(name);
 	}
 
 	protected abstract void buildFeatures();

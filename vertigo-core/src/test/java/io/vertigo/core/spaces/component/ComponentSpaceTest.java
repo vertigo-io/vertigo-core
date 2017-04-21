@@ -28,9 +28,8 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
@@ -44,11 +43,11 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome() {
-		final AppConfig appConfig = new AppConfigBuilder()
+		final AppConfig appConfig = AppConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new ModuleConfigBuilder("Bio")
+				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
@@ -67,11 +66,11 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome2() {
-		final AppConfig appConfig = new AppConfigBuilder()
+		final AppConfig appConfig = AppConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new ModuleConfigBuilder("Bio")
+				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						//This plugin DummyPlugin is not used By BioManager !!
 						.addPlugin(DummyPlugin.class)
@@ -92,17 +91,17 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome3() {
-		final AppConfig appConfig = new AppConfigBuilder()
+		final AppConfig appConfig = AppConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new ModuleConfigBuilder("Bio-core")
+				.addModule(ModuleConfig.builder("Bio-core")
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
 								Param.of("factor", "20"))
 						.build())
-				.addModule(new ModuleConfigBuilder("Bio-spe") //This module depends of Bio-core module
+				.addModule(ModuleConfig.builder("Bio-spe") //This module depends of Bio-core module
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.build())
 				.build();

@@ -64,6 +64,15 @@ public final class ModuleConfig {
 		this.proxyFactoryConfigs = proxyFactoryConfigs;
 	}
 
+	/**
+	 * Static method factory for ModuleConfigBuilder
+	 * @param name Name of the module
+	 * @return ModuleConfigBuilder
+	 */
+	public static ModuleConfigBuilder builder(final String name) {
+		return new ModuleConfigBuilder(name);
+	}
+
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
 		return definitionProviders;
 	}

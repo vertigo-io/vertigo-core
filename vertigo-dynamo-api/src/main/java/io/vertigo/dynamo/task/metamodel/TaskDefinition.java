@@ -91,6 +91,15 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/**
+	 * Static method factory for TaskDefinition
+	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
+	 * @return TaskDefinition
+	 */
+	public static TaskDefinitionBuilder builder(final String taskDefinitionName) {
+		return new TaskDefinitionBuilder(taskDefinitionName);
+	}
+
+	/**
 	 * Création  d'une Map non modifiable.
 	 * @param taskAttributes Attributs de la tache
 	 */

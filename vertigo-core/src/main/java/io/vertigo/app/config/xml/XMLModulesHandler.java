@@ -27,11 +27,14 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.definition.DefinitionProvider;
@@ -65,19 +68,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		config,
-		boot,
-		module,
-		init,
+		config, boot, module, init,
 		//---
-		definitions,
-		resource,
-		provider,
+		definitions, resource, provider,
 		//---
-		component,
-		plugin,
-		param,
-		aspect,
+		component, plugin, param, aspect,
 		//-----
 		initializer,
 		//----
@@ -137,14 +132,14 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
-				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
+				moduleConfigBuilder = ModuleConfig.builder(moduleName);
 				break;
 			case component:
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
 				final Optional<Class<? extends Component>> optionalApiClass;
-				componentConfigBuilder = new ComponentConfigBuilder(componentImplClass);
+				componentConfigBuilder = ComponentConfig.builder(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
 					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);
@@ -160,13 +155,13 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
-				pluginConfigBuilder = new PluginConfigBuilder(pluginImplClass);
+				pluginConfigBuilder = PluginConfig.builder(pluginImplClass);
 				break;
 			case provider:
 				current = TagName.provider;
 				final String definitionProviderClassName = attrs.getValue("class");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
-				definitionProviderConfigBuilder = new DefinitionProviderConfigBuilder(definitionProviderClass);
+				definitionProviderConfigBuilder = DefinitionProviderConfig.builder(definitionProviderClass);
 				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");

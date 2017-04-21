@@ -57,7 +57,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder(category, name);
+		final AProcessBuilder processBuilder = AProcess.builder(category, name);
 		this.consumer = consumer;
 		if (parentOpt.isPresent()) {
 			stack = parentOpt.get().stack;

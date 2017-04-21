@@ -51,6 +51,14 @@ public final class AppConfig {
 	}
 
 	/**
+	 * Static method factory for AppConfigBuilder
+	 * @return AppConfigBuilder
+	 */
+	public static AppConfigBuilder builder() {
+		return new AppConfigBuilder();
+	}
+
+	/**
 	 *
 	 * @return the config of the boot
 	 */

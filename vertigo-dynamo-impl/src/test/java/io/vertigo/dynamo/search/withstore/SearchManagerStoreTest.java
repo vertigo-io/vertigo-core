@@ -43,7 +43,6 @@ import io.vertigo.dynamo.search.data.domain.Car;
 import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -221,7 +220,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(query)
 				.build();
 
 		return doQuery(searchQuery, null).getCount();

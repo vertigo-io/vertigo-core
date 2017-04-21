@@ -41,7 +41,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	 * Constructor.
 	 * @param pluginImplClass impl of the plugin
 	 */
-	public PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
+	PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;

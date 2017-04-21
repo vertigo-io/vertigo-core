@@ -31,7 +31,6 @@ import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -131,7 +130,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		sequencePrefix = optSequencePrefix.orElse("SEQ_");
 		this.taskManager = taskManager;
 		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
-		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
+		integerDomain = Domain.builder("DO_INTEGER_SQL", DataType.Integer).build();
 	}
 
 	/**
@@ -187,7 +186,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -195,7 +194,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 
@@ -235,7 +234,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -245,7 +244,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 		final URI uri = dtcUri.getSource();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(fkFieldName, uri.getId())
 				.build();
 
@@ -291,7 +290,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
 		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request);
@@ -306,7 +305,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
+		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
 		}
@@ -379,16 +378,16 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	private long buildNextSequence(final String sequenceName, final String query) {
 		final String taskName = TASK.TK_SELECT.name() + '_' + sequenceName;
-		final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
+		final Domain resultDomain = Domain.builder("DO_HSQL", DataType.Long).build();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(getDataSpace())
 				.withRequest(query)
 				.withOutRequired(SEQUENCE_FIELD, resultDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition).build();
+		final Task task = Task.builder(taskDefinition).build();
 
 		return taskManager
 				.execute(task)
@@ -428,7 +427,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition, sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -436,7 +435,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue("DTO", entity)
 				.build();
 
@@ -467,7 +466,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -475,7 +474,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 
@@ -498,18 +497,18 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_COUNT + "_" + tableName;
-		final Domain countDomain = new DomainBuilder("DO_COUNT", DataType.Long).build();
+		final Domain countDomain = Domain.builder("DO_COUNT", DataType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.withOutRequired("count", countDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.build();
 
 		final Long count = taskManager
@@ -530,7 +529,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String idFieldName = idField.getName();
 		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedFields, idFieldName);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -538,7 +537,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 

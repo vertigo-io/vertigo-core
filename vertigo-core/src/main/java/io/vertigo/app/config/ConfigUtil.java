@@ -47,7 +47,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final ComponentConfig componentConfig = new ComponentConfigBuilder(pluginConfig.getImplClass())
+			final ComponentConfig componentConfig = ComponentConfig.builder(pluginConfig.getImplClass())
 					.withId(id)
 					.addParams(pluginConfig.getParams())
 					.build();

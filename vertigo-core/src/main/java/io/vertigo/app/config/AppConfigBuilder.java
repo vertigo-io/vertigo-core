@@ -39,8 +39,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	/**
 	 * Constructor.
 	 */
-	public AppConfigBuilder() {
-		myBootConfigBuilder = new BootConfigBuilder(this);
+	AppConfigBuilder() {
+		myBootConfigBuilder = BootConfig.builder(this);
 
 	}
 

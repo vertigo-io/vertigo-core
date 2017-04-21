@@ -43,6 +43,14 @@ public final class Properties {
 			this.properties = Collections.unmodifiableMap(new HashMap<>(properties));
 		}
 	}
+	
+	/**
+	 * Static method factory for PropertiesBuilder
+	 * @return PropertiesBuilder
+	 */
+	public static PropertiesBuilder builder() {
+		return new PropertiesBuilder();
+	}
 
 	/**
 	 * Set des propriétés gérées.

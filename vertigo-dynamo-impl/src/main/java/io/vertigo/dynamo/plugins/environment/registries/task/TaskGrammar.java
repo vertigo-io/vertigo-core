@@ -29,7 +29,6 @@ import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.S
 import java.util.List;
 
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
@@ -45,13 +44,13 @@ final class TaskGrammar implements DslGrammar {
 	public static final DslEntity TASK_DEFINITION_ENTITY;
 
 	static {
-		final DslEntity taskAttributeDefinitionEntity = new DslEntityBuilder("Attribute")
+		final DslEntity taskAttributeDefinitionEntity = DslEntity.builder("Attribute")
 				.addRequiredField(NOT_NULL, Boolean)
 				.addRequiredField(IN_OUT, String)
 				.addRequiredField("domain", DomainGrammar.DOMAIN_ENTITY.getLink())
 				.build();
 
-		TASK_DEFINITION_ENTITY = new DslEntityBuilder("Task")
+		TASK_DEFINITION_ENTITY = DslEntity.builder("Task")
 				.addRequiredField(REQUEST, String)
 				.addOptionalField(DATA_SPACE, String)
 				.addRequiredField(CLASS_NAME, String)

@@ -52,7 +52,6 @@ import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -431,20 +430,20 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
 		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "skip").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(String.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(String.class)
 					.with(webServiceParam.getParamType(), prefix + "sortFieldName").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(boolean.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(boolean.class)
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
 		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
-				pseudoWebServiceParams.add(new WebServiceParamBuilder(dtField.getDomain().getDataType().getJavaClass())
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getDataType().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}

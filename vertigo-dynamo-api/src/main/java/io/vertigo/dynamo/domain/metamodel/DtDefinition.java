@@ -113,6 +113,15 @@ public final class DtDefinition implements Definition {
 				.check(() -> !idField.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
 
+	/**
+	 * Static method factory for DtDefinitionBuilder
+	 * @param name the name of the dtDefinition
+	 * @return DtDefinitionBuilder
+	 */
+	public static DtDefinitionBuilder builder(final String name) {
+		return new DtDefinitionBuilder(name);
+	}
+
 	private void registerSort(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!sortField.isPresent(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());

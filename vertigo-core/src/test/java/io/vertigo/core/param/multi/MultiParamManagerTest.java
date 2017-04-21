@@ -22,7 +22,6 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
@@ -39,7 +38,7 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 	protected AppConfig buildAppConfig() {
 		final String locales = "fr_FR";
 
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)

@@ -44,7 +44,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * Constructor of a component config
 	 * @param implClass the impl class of the component
 	 */
-	public ComponentConfigBuilder(final Class<? extends Component> implClass) {
+	ComponentConfigBuilder(final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
 		this.implClass = implClass;

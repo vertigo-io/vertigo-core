@@ -22,9 +22,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
@@ -62,7 +61,7 @@ public final class MyAppConfig {
 	}
 
 	public static AppConfig config() {
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -87,10 +86,10 @@ public final class MyAppConfig {
 						.withEmbeddedServer(WS_PORT)
 						.build())
 				//-----
-				.addModule(new ModuleConfigBuilder("dao-app")
+				.addModule(ModuleConfig.builder("dao-app")
 						.addComponent(ContactDao.class)
 						.build())
-				.addModule(new ModuleConfigBuilder("webservices-app")
+				.addModule(ModuleConfig.builder("webservices-app")
 						.addComponent(ComponentCmdWebServices.class)
 						.addComponent(CommonWebServices.class)
 						.addComponent(ContactsWebServices.class)
@@ -99,8 +98,8 @@ public final class MyAppConfig {
 						.addComponent(AnonymousTestWebServices.class)
 						.addComponent(FileDownloadWebServices.class)
 						.build())
-				.addModule(new ModuleConfigBuilder("myApp")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("classes", DtDefinitions.class.getName())
 								.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
 								.build())

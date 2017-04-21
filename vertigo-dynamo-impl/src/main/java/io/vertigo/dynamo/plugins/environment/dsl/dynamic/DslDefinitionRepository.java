@@ -112,7 +112,7 @@ public final class DslDefinitionRepository {
 	private void mergePartials() {
 		//parts of definitions are merged
 		for (final DslDefinition partial : partials) {
-			final DslDefinition merged = new DslDefinitionBuilder(partial.getName(), partial.getEntity())
+			final DslDefinition merged = DslDefinition.builder(partial.getName(), partial.getEntity())
 					.merge(getDefinition(partial.getName()))
 					.merge(partial).build();
 			dslDefinitions.put(partial.getName(), merged);

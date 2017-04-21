@@ -31,7 +31,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
 public final class TaskDefinitionProvider extends SimpleDefinitionProvider {
@@ -49,7 +48,7 @@ public final class TaskDefinitionProvider extends SimpleDefinitionProvider {
 		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
 		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
 
-		return new TaskDefinitionBuilder(taskDefinitionName)
+		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())

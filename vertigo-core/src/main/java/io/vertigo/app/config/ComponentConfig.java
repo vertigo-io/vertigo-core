@@ -73,6 +73,15 @@ public final class ComponentConfig {
 	}
 
 	/**
+	 * Static method factory for ComponentConfigBuilder
+	 * @param implClass the impl class of the component
+	 * @return ComponentConfigBuilder
+	 */
+	public static ComponentConfigBuilder builder(final Class<? extends Component> implClass) {
+		return new ComponentConfigBuilder(implClass);
+	}
+
+	/**
 	 * @return impl class of the component
 	 */
 	public Class<? extends Component> getImplClass() {

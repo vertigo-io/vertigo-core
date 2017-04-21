@@ -116,6 +116,16 @@ public final class AProcess {
 		this.subProcesses = subProcesses;
 	}
 
+	/**
+	 * Static method factory for AppConfigBuilder
+	 * @param category Categorie 
+	 * @param name Name
+	 * @return AProcessBuilder
+	 */
+	public static AProcessBuilder builder(final String category, final String name) {
+		return new AProcessBuilder(category, name);
+	}
+
 	private static void checkRegex(final String s, final Pattern pattern, final String info) {
 		if (!pattern.matcher(s).matches()) {
 			throw new IllegalArgumentException(info + " " + s + " must match regex :" + pattern.pattern());

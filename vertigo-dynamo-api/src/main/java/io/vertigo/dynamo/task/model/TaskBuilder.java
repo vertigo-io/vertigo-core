@@ -37,7 +37,7 @@ public final class TaskBuilder implements Builder<Task> {
 	 *
 	 * @param taskDefinition the definition of the task
 	 */
-	public TaskBuilder(final TaskDefinition taskDefinition) {
+	TaskBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;

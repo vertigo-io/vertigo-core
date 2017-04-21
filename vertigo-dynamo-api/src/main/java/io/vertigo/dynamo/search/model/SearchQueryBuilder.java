@@ -48,7 +48,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * Constructor.
 	 * @param query Query
 	 */
-	public SearchQueryBuilder(final String query) {
+	SearchQueryBuilder(final String query) {
 		this(new ListFilter(query));
 	}
 
@@ -56,7 +56,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * Constructor.
 	 * @param listFilter ListFilter
 	 */
-	public SearchQueryBuilder(final ListFilter listFilter) {
+	SearchQueryBuilder(final ListFilter listFilter) {
 		Assertion.checkNotNull(listFilter);
 		//-----
 		myListFilter = listFilter;

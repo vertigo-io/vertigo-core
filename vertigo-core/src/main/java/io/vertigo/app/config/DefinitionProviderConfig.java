@@ -49,6 +49,15 @@ public final class DefinitionProviderConfig {
 		definitionResources = Collections.unmodifiableList(new ArrayList<>(definitionResourceConfigs));
 	}
 
+	/**
+	 * Static method factory for DefinitionProviderConfigBuilder
+	 * @param definitionProviderClass the class of the definitionProvider
+	 * @return ComponentConfigBuilder
+	 */
+	public static DefinitionProviderConfigBuilder builder(final Class<? extends DefinitionProvider> definitionProviderClass) {
+		return new DefinitionProviderConfigBuilder(definitionProviderClass);
+	}
+
 	public Class<? extends DefinitionProvider> getDefinitionProviderClass() {
 		return definitionProviderClass;
 	}

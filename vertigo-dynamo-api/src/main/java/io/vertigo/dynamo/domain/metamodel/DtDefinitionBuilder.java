@@ -68,7 +68,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * Constructor.
 	 * @param name the name of the dtDefinition
 	 */
-	public DtDefinitionBuilder(final String name) {
+	DtDefinitionBuilder(final String name) {
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		myName = name;

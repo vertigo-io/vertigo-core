@@ -50,7 +50,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinitio
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
-import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
@@ -131,7 +130,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
 
-		final DomainBuilder domainBuilder = new DomainBuilder(domainName, dataType);
+		final DomainBuilder domainBuilder = Domain.builder(domainName, dataType);
 
 		if (hasFormatter) {
 			final String formatterName = xdomain.getDefinitionLinkName("formatter");
@@ -153,7 +152,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
 
 		//0. clones characteristics
-		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(xdtDefinition.getName())
+		final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(xdtDefinition.getName())
 				.withFragment(from)
 				.withPackageName(xdtDefinition.getPackageName())
 				.withDataSpace(from.getDataSpace())
@@ -227,7 +226,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		//-----
 		//-----
 		final String dtDefinitionName = xdtDefinition.getName();
-		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
+		final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
 				.withDataSpace(dataSpace);
 		if (stereotype != null) {
@@ -451,7 +450,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 * @return Container des propriétés
 	 */
 	private static Properties extractProperties(final DslDefinition dslDefinition) {
-		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
+		final PropertiesBuilder propertiesBuilder = Properties.builder();
 
 		//On associe les propriétés Dt et Ksp par leur nom.
 		for (final String entityPropertyName : dslDefinition.getPropertyNames()) {
@@ -484,7 +483,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return new DslDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -500,7 +499,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//On fait la même chose avec DTC
 
-		return new DslDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT

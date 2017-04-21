@@ -109,7 +109,7 @@ public final class VegaFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 
-		final PluginConfigBuilder corsAllowerPluginConfigBuilder = new PluginConfigBuilder(CorsAllowerWebServiceHandlerPlugin.class);
+		final PluginConfigBuilder corsAllowerPluginConfigBuilder = PluginConfig.builder(CorsAllowerWebServiceHandlerPlugin.class);
 		if (myOriginCORSFilter != null) {
 			corsAllowerPluginConfigBuilder.addParam(Param.of("originCORSFilter", myOriginCORSFilter));
 		}

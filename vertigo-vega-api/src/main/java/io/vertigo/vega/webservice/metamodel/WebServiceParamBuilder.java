@@ -53,7 +53,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * Constructor.
 	 * @param paramType param type
 	 */
-	public WebServiceParamBuilder(final Type paramType) {
+	WebServiceParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
 		//-----
 		optional = WebServiceTypeUtil.isAssignableFrom(Optional.class, paramType);

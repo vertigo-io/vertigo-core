@@ -26,7 +26,6 @@ import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.S
 import java.util.List;
 
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.util.ListBuilder;
 
@@ -50,12 +49,12 @@ public final class PersonGrammar implements DslGrammar {
 	static final String CITY = "city";
 
 	static {
-		ADDRESS_ENTITY = new DslEntityBuilder("address")
+		ADDRESS_ENTITY = DslEntity.builder("address")
 				.addRequiredField(STREET, String)
 				.addOptionalField(POSTAL_CODE, String)
 				.addOptionalField(CITY, String)
 				.build();
-		PERSON_ENTITY = new DslEntityBuilder("person")
+		PERSON_ENTITY = DslEntity.builder("person")
 				.addRequiredField(NAME, String)
 				.addRequiredField(FIRST_NAME, String)
 				.addOptionalField(AGE, Integer)

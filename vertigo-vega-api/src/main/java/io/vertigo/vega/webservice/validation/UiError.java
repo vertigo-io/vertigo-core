@@ -50,6 +50,14 @@ public final class UiError {
 	}
 
 	/**
+	 * Static method factory for UiErrorBuilder
+	 * @return UiErrorBuilder
+	 */
+	public static UiErrorBuilder builder() {
+		return new UiErrorBuilder();
+	}
+
+	/**
 	 * @return Objet porteur de l'erreur
 	 */
 	public DtObject getDtObject() {

@@ -102,6 +102,16 @@ public final class Domain implements Definition {
 		}
 	}
 
+	/**
+	 * Static method factory for DomainBuilder
+	 * @param name the name of the domain
+	 * @param dataType the dataType lof the domain
+	 * @return DomainBuilder
+	 */
+	public static DomainBuilder builder(final String name, final DataType dataType) {
+		return new DomainBuilder(name, dataType);
+	}
+
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
 		return constraintDefinitions
 				.stream()
@@ -110,7 +120,7 @@ public final class Domain implements Definition {
 	}
 
 	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
-		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
+		final PropertiesBuilder propertiesBuilder = Properties.builder();
 		for (final Property property : inputProperties.getProperties()) {
 			propertiesBuilder.addValue(property, inputProperties.getValue(property));
 		}

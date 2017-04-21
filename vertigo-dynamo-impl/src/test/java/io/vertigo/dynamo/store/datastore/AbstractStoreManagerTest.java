@@ -36,7 +36,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -55,9 +54,7 @@ import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoStd;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -175,14 +172,14 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testSelectCountCars() {
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_COUNT_CARS")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_COUNT_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutRequired("count", new DomainBuilder("DO_COUNT", DataType.Long).build())
+				.withOutRequired("count", Domain.builder("DO_COUNT", DataType.Long).build())
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final Task task = new TaskBuilder(taskDefinition).build();
+			final Task task = Task.builder(taskDefinition).build();
 			final long count = taskManager
 					.execute(task)
 					.getResult();
@@ -197,7 +194,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
 						//syntaxe HsqlDb pour sequence.nextval
@@ -205,7 +202,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.addInRequired("DTO_CAR", doCar)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue("DTO_CAR", car)
 				.build();
 		final TaskResult taskResult = taskManager
@@ -217,13 +214,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withOutRequired("dtc", doCarList)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.build();
 		return taskManager
 				.execute(task)

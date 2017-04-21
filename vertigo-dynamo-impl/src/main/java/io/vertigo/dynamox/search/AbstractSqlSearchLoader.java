@@ -37,9 +37,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -89,7 +87,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 			final String idFieldName = idField.getName();
 			final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
-			final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+			final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 					.withEngine(TaskEngineSelect.class)
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
@@ -97,7 +95,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 					.build();
 
-			final Task task = new TaskBuilder(taskDefinition)
+			final Task task = Task.builder(taskDefinition)
 					.addValue(idFieldName, lastId)
 					.build();
 

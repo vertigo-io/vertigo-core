@@ -79,6 +79,14 @@ public final class Mail {
 	}
 
 	/**
+	 * Static method factory for MailBuilder
+	 * @return MailBuilder
+	 */
+	public static MailBuilder builder() {
+		return new MailBuilder();
+	}
+
+	/**
 	 * @return Adresse mail de l'émetteur
 	 */
 	public String getFrom() {

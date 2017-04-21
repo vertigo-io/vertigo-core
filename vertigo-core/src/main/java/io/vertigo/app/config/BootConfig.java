@@ -64,6 +64,15 @@ public final class BootConfig {
 	}
 
 	/**
+	 * Static method factory for AppConfigBuilder
+	 * @param appConfigBuilder Parent AppConfig builder 
+	 * @return AppConfigBuilder
+	 */
+	public static BootConfigBuilder builder(final AppConfigBuilder appConfigBuilder) {
+		return BootConfig.builder(appConfigBuilder);
+	}
+
+	/**
 	 * @return the logconfig
 	 */
 	public Optional<LogConfig> getLogConfig() {

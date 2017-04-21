@@ -117,6 +117,15 @@ public final class WebServiceDefinition implements Definition {
 		this.corsProtected = corsProtected;
 	}
 
+	/**
+	 * Static method factory for WebServiceDefinitionBuilder
+	 * @param method Method to bind to this webService
+	 * @return WebServiceDefinitionBuilder
+	 */
+	public static WebServiceDefinitionBuilder builder(final Method method) {
+		return new WebServiceDefinitionBuilder(method);
+	}
+
 	private static void checkPathParams(final String myPath, final List<WebServiceParam> myWebServiceParams, final String methodName) {
 		final Set<String> inputPathParam = new HashSet<>();
 		final Set<String> urlPathParam = new HashSet<>();

@@ -67,6 +67,15 @@ public final class Task {
 		checkValues();
 	}
 
+	/**
+	 * Static method factory for TaskBuilder
+	 * @param taskDefinition the definition of the task
+	 * @return TaskBuilder
+	 */
+	public static TaskBuilder builder(final TaskDefinition taskDefinition) {
+		return new TaskBuilder(taskDefinition);
+	}
+
 	private void checkValues() {
 		for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
 			//on ne prend que les attributes correspondant au mode.
