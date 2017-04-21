@@ -50,6 +50,14 @@ public final class MdaResult {
 	}
 
 	/**
+	 * Static method factory for MdaResultBuilder
+	 * @return MdaResultBuilder
+	 */
+	public static MdaResultBuilder builder() {
+		return new MdaResultBuilder();
+	}
+
+	/**
 	 * Affichage du résultat de la génération dans la console.
 	 */
 	public void displayResultMessage(final PrintStream out) {

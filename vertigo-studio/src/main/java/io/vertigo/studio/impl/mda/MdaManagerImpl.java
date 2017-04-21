@@ -64,7 +64,7 @@ public final class MdaManagerImpl implements MdaManager {
 	@Override
 	public MdaResult generate() {
 		//Création d'un objet listant les résultats
-		final MdaResultBuilder mdaResultBuilder = new MdaResultBuilder();
+		final MdaResultBuilder mdaResultBuilder = MdaResult.builder();
 		//Génèration des objets issus de la modélisation
 		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
 			generatorPlugin.generate(fileGeneratorConfig, mdaResultBuilder);
@@ -79,7 +79,7 @@ public final class MdaManagerImpl implements MdaManager {
 		Assertion.checkArgument(directory.isDirectory(), "targetGenDir must be a directory");
 		//---
 		// We want to final clean the directory
-		final MdaResultBuilder mdaResultBuilder = new MdaResultBuilder();
+		final MdaResultBuilder mdaResultBuilder = MdaResult.builder();
 		deleteFiles(directory, mdaResultBuilder);
 		return mdaResultBuilder.build();
 	}

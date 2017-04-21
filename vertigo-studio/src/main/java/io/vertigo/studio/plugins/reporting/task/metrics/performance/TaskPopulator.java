@@ -46,7 +46,7 @@ public final class TaskPopulator {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
-		taskBuilder = new TaskBuilder(taskDefinition);
+		taskBuilder = Task.builder(taskDefinition);
 	}
 
 	/**
@@ -74,16 +74,16 @@ public final class TaskPopulator {
 				value = new Date();
 				break;
 			case Double:
-				value = 1d;
+				value = Double.valueOf(1);
 				break;
 			case Integer:
-				value = 1;
+				value = Integer.valueOf(1);
 				break;
 			case BigDecimal:
 				value = BigDecimal.valueOf(1);
 				break;
 			case Long:
-				value = 1L;
+				value = Long.valueOf(1);
 				break;
 			case DtObject:
 				value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());

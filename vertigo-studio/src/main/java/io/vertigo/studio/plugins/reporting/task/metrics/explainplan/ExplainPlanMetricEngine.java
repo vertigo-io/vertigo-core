@@ -42,7 +42,6 @@ import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.ReportMetric;
 import io.vertigo.studio.reporting.ReportMetric.Status;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Plugin qui va lancer la commande de calcul puis d'affichage du plan d'exécution.
@@ -90,7 +89,7 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 		//-----
 		final Integer value = createValue(explainPlan);
 		final String valueInformation = createValueInformation(explainPlan, status, throwable);
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withTitle("Explain Plan")
 				.withStatus(status)
 				.withValue(value)
@@ -122,7 +121,7 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 		final String explainPlanRequest = "explain plan set statement_id = 'PLAN_" + currentSequence + "' for " + taskDefinition.getRequest();
 		//final String explainPlanRequest = "explain plan for " + taskDefinition.getRequest();
 
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
+		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskDefinitionName)
 				.withEngine(taskDefinition.getTaskEngineClass())
 				.withDataSpace(taskDefinition.getDataSpace())
 				.withRequest(explainPlanRequest)

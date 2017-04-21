@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Comptage du nombre de champs.
@@ -36,7 +35,7 @@ public final class FieldsMetricEngine implements ReportMetricEngine<DtDefinition
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final int size = dtDefinition.getFields().size();
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withTitle("Nombre de champs")
 				.withValue(size)
 				.build();

@@ -55,6 +55,14 @@ public final class ReportMetric {
 	}
 
 	/**
+	 * Static method factory for ReportMetricBuilder
+	 * @return ReportMetricBuilder
+	 */
+	public static ReportMetricBuilder builder() {
+		return ReportMetric.builder();
+	}
+
+	/**
 	 * @return Status de la métrique.
 	 */
 	public Status getStatus() {

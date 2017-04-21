@@ -48,7 +48,7 @@ public final class CountMetricEngine implements ReportMetricEngine<DtDefinition>
 	public ReportMetric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final ReportMetricBuilder metricBuilder = new ReportMetricBuilder()
+		final ReportMetricBuilder metricBuilder = ReportMetric.builder()
 				.withTitle("Nbre lignes")
 				.withUnit("rows");
 

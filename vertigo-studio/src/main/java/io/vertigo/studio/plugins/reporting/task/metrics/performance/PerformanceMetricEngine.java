@@ -29,7 +29,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.reporting.ReportMetric;
 import io.vertigo.studio.reporting.ReportMetric.Status;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Plugin de calcul du temps d'exécution d'une requête.
@@ -69,7 +68,7 @@ public final class PerformanceMetricEngine implements ReportMetricEngine<TaskDef
 	}
 
 	private static ReportMetric buildPerformanceMetric(final Status status, final Long executionTime, final String valueInformation) {
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withValue(executionTime)
 				.withTitle("Temps d'exécution")
 				.withUnit("ms")

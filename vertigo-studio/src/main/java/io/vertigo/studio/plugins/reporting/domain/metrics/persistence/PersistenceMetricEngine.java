@@ -24,7 +24,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Vérifier si le DT est persistant.
@@ -57,7 +56,7 @@ public final class PersistenceMetricEngine implements ReportMetricEngine<DtDefin
 			status = ReportMetric.Status.ERROR;
 		}
 
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withTitle("Persistance")
 				.withStatus(status)
 				.withValue(dtDefinition.isPersistent())

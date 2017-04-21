@@ -19,7 +19,6 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
@@ -32,7 +31,7 @@ import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class SqlTestConfigurator {
 	public static AppConfig config() {
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

@@ -24,7 +24,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Plugin qui compte le nombre de jointures déclarées dans la requête.
@@ -39,7 +38,7 @@ public final class JoinMetricEngine implements ReportMetricEngine<TaskDefinition
 		//-----
 		final int joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
 		final int fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withTitle("Nombre de jointures")
 				.withValue(joinCount + fromCount)
 				.build();

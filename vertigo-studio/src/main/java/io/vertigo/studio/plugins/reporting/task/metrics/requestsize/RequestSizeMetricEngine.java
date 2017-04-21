@@ -22,7 +22,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Plugin de calcul de la taille en caractères d'une requête.
@@ -36,7 +35,7 @@ public final class RequestSizeMetricEngine implements ReportMetricEngine<TaskDef
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		final int size = taskDefinition.getRequest().length();
-		return new ReportMetricBuilder()
+		return ReportMetric.builder()
 				.withTitle("Taille requête")
 				.withValue(size)
 				.withUnit("caractères")
