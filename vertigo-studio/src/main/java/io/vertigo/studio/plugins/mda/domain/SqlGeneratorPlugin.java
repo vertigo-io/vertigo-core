@@ -84,14 +84,18 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	public void generate(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
 		generateSql(fileGeneratorConfig, mdaResultBuilder);
 	}
 
-	private void generateSql(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private void generateSql(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		final Map<String, List<DtDefinitionModel>> mapListDtDef = new HashMap<>();
 		for (final DtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			if (dtDefinition.isPersistent()) {
@@ -120,8 +124,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final Collection<AssociationNNDefinition> collectionNN,
 			final String dataSpace,
 			final List<DtDefinitionModel> dtDefinitions) {
-		final StringBuilder filename = new StringBuilder();
-		filename.append("crebas");
+		final StringBuilder filename = new StringBuilder()
+				.append("crebas");
 		if (!StringUtil.isEmpty(dataSpace) && !DEFAULT_DATA_SPACE.equals(dataSpace)) {
 			filename.append('_').append(dataSpace);
 		}
@@ -135,7 +139,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	}
 
 	private static Collection<AssociationSimpleDefinition> filterAssociationSimple(
-			final Collection<AssociationSimpleDefinition> collectionSimpleAll, final String dataSpace) {
+			final Collection<AssociationSimpleDefinition> collectionSimpleAll,
+			final String dataSpace) {
 		return collectionSimpleAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
 				.collect(Collectors.toList());

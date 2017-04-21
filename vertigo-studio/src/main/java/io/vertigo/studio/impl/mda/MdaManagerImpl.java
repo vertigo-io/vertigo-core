@@ -47,7 +47,8 @@ public final class MdaManagerImpl implements MdaManager {
 	 * @param encoding Encoding des fichiers générés.
 	 */
 	@Inject
-	public MdaManagerImpl(final List<GeneratorPlugin> generatorPlugins,
+	public MdaManagerImpl(
+			final List<GeneratorPlugin> generatorPlugins,
 			@Named("targetGenDir") final String targetGenDir,
 			@Named("projectPackageName") final String projectPackageName,
 			@Named("encoding") final String encoding) {

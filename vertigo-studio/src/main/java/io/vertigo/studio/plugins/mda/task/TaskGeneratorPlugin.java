@@ -114,8 +114,8 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
 			final DtDefinition dtDefinition,
-			final Collection<TaskDefinition> taskDefinitionCollection) {
-		final DAOModel daoModel = new DAOModel(fileGeneratorConfig, dtDefinition, taskDefinitionCollection);
+			final Collection<TaskDefinition> taskDefinitions) {
+		final DAOModel daoModel = new DAOModel(fileGeneratorConfig, dtDefinition, taskDefinitions);
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("dao", daoModel)

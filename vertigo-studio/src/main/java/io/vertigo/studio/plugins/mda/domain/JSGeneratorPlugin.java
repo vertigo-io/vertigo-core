@@ -18,14 +18,13 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
@@ -78,11 +77,10 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 	}
 
 	private static void generateJsDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-
-		final List<DtDefinitionModel> dtDefinitions = new ArrayList<>();
-		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
-			dtDefinitions.add(new DtDefinitionModel(dtDefinition));
-		}
+		final List<DtDefinitionModel> dtDefinitions = DomainUtil.getDtDefinitions()
+				.stream()
+				.map(DtDefinitionModel::new)
+				.collect(Collectors.toList());
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".domain")
@@ -105,10 +103,10 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 	 * @param fileGeneratorConfig Configuration du domaine.
 	 */
 	private static void generateDtResourcesJS(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		final List<DtDefinitionModel> dtDefinitions = new ArrayList<>();
-		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
-			dtDefinitions.add(new DtDefinitionModel(dtDefinition));
-		}
+		final List<DtDefinitionModel> dtDefinitions = DomainUtil.getDtDefinitions()
+				.stream()
+				.map(DtDefinitionModel::new)
+				.collect(Collectors.toList());
 
 		final String simpleClassName = "DtDefinitions" + "Label";
 		final String packageName = fileGeneratorConfig.getProjectPackageName() + ".domain";

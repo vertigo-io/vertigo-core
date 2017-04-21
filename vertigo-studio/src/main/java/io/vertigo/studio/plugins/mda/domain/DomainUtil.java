@@ -109,7 +109,7 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à trier
 	 * @return collection triée
 	 */
-	static Collection<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
+	static List<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
 		list.sort(Comparator.comparing(DtDefinition::getName));
 		return list;
@@ -119,16 +119,13 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à traiter
 	 * @return map ayant le package name en clef
 	 */
-	private static Map<String, Collection<DtDefinition>> getDefinitionCollectionMap(final Collection<DtDefinition> definitionCollection) {
+	private static Map<String, Collection<DtDefinition>> getDefinitionCollectionMap(final Collection<DtDefinition> definitions) {
 		final Map<String, Collection<DtDefinition>> map = new LinkedHashMap<>();
 
-		for (final DtDefinition definition : definitionCollection) {
-			Collection<DtDefinition> dtDefinitions = map.get(definition.getPackageName());
-			if (dtDefinitions == null) {
-				dtDefinitions = new ArrayList<>();
-				map.put(definition.getPackageName(), dtDefinitions);
-			}
-			dtDefinitions.add(definition);
+		for (final DtDefinition definition : definitions) {
+			map.computeIfAbsent(definition.getPackageName(),
+					k -> new ArrayList<>())
+					.add(definition);
 		}
 		return map;
 	}
