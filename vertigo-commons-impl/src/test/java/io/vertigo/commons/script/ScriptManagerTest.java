@@ -21,7 +21,7 @@ package io.vertigo.commons.script;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,8 +98,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testComment() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(comment);
+		final List<ScriptSeparator> separators = Arrays.asList(comment);
 
 		final String script = "bla <!--commentaires-->bla";
 
@@ -110,8 +109,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testParameterForgotten() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(comment);
+		final List<ScriptSeparator> separators = Arrays.asList(comment);
 
 		final String script = "bla <!---->bla";
 
@@ -124,8 +122,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	public void testEchappement() {
 		//Si le séparateur est un car.
 		//il suffit de double le séparateur pour l'échapper.
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(new ScriptSeparator('$'));
+		final List<ScriptSeparator> separators = Arrays.asList(new ScriptSeparator('$'));
 		final String script = "le prix du barril est de $price$ $$";
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 		scriptManager.parse(script, scriptHandler, separators);
@@ -134,8 +131,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testOubliCaractereDeFin() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(new ScriptSeparator('$'));
+		final List<ScriptSeparator> separators = Arrays.asList(new ScriptSeparator('$'));
 		final String script = "le prix du barril est de $price";
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 

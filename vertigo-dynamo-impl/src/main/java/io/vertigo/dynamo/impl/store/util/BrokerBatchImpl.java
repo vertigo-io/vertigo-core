@@ -217,11 +217,9 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final Map<O, DtList<E>> map = new HashMap<>();
 		for (final E entity : getListByField(dtDefinition, fieldName, value)) {
 			final O key = (O) field.getDataAccessor().getValue(entity);
-			if (!map.containsKey(key)) {
-				final DtList<E> dtc = new DtList<>(dtDefinition);
-				map.put(key, dtc);
-			}
-			map.get(key).add(entity);
+			map.computeIfAbsent(key,
+					k -> new DtList<>(dtDefinition))
+					.add(entity);
 		}
 		return map;
 	}

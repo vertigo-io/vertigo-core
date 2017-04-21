@@ -19,6 +19,7 @@
 package io.vertigo.vega.webservice.data.ws;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -214,24 +215,17 @@ public final class SimplerTestWebServices implements WebServices {
 	@Doc("Test ws multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/innerbody")
 	public List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
-		final List<Contact> result = new ArrayList<>(2);
-		result.add(contactFrom);
-		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(contactFrom, contactTo);
 	}
 
 	@Doc("Test ws multipart body with optional objects. Send a body with an object of to field : contactFrom, Optional<contactTo>. Each one should be an json of Contact.")
 	@POST("/innerbodyOptional")
-	public List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactTo) {
+	public List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactToOpt) {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
-		if (contactTo.isPresent()) {
-			result.add(contactTo.get());
-		}
-		//offset + range ?
-		//code 200
+		contactToOpt.ifPresent(contactTo -> result.add(contactTo));
 		return result;
 	}
 
@@ -239,12 +233,11 @@ public final class SimplerTestWebServices implements WebServices {
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLong")
 	public List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
-		final List<Contact> result = new ArrayList<>();
-		result.add(contactDao.get(contactIdFrom));
-		result.add(contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(
+				contactDao.get(contactIdFrom),
+				contactDao.get(contactIdTo));
 	}
 
 	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
@@ -252,12 +245,11 @@ public final class SimplerTestWebServices implements WebServices {
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLongToDtList")
 	public DtList<Contact> testInnerBodyLongToDtList(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
-		final DtList<Contact> result = new DtList<>(Contact.class);
-		result.add(contactDao.get(contactIdFrom));
-		result.add(contactDao.get(contactIdTo));
+		return DtList.of(
+				contactDao.get(contactIdFrom),
+				contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
-		return result;
 	}
 
 	@POST("/uiMessage")
@@ -374,7 +366,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;

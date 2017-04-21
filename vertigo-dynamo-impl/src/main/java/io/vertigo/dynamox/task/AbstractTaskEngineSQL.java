@@ -49,7 +49,6 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -417,11 +416,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		if (connection == null) {
 			// On récupère une connexion du pool
 			// Utilise le provider de connexion déclaré sur le Container.
-			try {
-				connection = getConnectionProvider().obtainConnection();
-			} catch (final SQLException e) {
-				throw WrappedException.wrap(e, "Can't connect to database");
-			}
+			connection = getConnectionProvider().obtainConnection();
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}
 		return connection;

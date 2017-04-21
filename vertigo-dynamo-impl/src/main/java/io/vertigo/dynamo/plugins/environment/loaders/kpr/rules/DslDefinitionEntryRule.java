@@ -23,8 +23,8 @@ import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxR
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule.WORDS;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
@@ -49,10 +49,9 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 	private static PegRule<List<Object>> createMainRule(final List<String> fieldNames) {
 		Assertion.checkNotNull(fieldNames);
 		//-----
-		final List<PegRule<?>> fieldNamesRules = new ArrayList<>();
-		for (final String fieldName : fieldNames) {
-			fieldNamesRules.add(PegRules.term(fieldName));
-		}
+		final List<PegRule<?>> fieldNamesRules = fieldNames.stream()
+				.map(fieldName -> PegRules.term(fieldName))
+				.collect(Collectors.toList());
 		//-----
 		return PegRules.sequence(//"DefinitionKey"
 				PegRules.choice(fieldNamesRules), //0

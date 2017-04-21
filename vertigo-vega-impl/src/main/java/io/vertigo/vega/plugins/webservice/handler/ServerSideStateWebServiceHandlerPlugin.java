@@ -112,17 +112,18 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 		}
-		final Optional<Serializable> serverSideObject;
+		final Optional<Serializable> serverSideObjectOpt;
 		if (consumeServerSideToken) {
 			//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
-			serverSideObject = tokenManager.getAndRemove(accessToken);
+			serverSideObjectOpt = tokenManager.getAndRemove(accessToken);
 		} else {
-			serverSideObject = tokenManager.get(accessToken);
+			serverSideObjectOpt = tokenManager.get(accessToken);
 		}
-		if (!serverSideObject.isPresent()) {
-			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
-		}
-		uiObject.setServerSideObject((DtObject) serverSideObject.get());
+		final Serializable serverSideObject = serverSideObjectOpt
+				//same message for no ServerSideToken or bad ServerSideToken
+				.orElseThrow(() -> new VSecurityException(SERVER_SIDE_MANDATORY));
+
+		uiObject.setServerSideObject((DtObject) serverSideObject);
 	}
 
 	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) {

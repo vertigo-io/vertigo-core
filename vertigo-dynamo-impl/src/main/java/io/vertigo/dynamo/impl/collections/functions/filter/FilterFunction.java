@@ -23,6 +23,7 @@ import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -42,11 +43,9 @@ public final class FilterFunction<D extends DtObject> implements UnaryOperator<D
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
 		//-----
-		final DtList<D> filteredDtc = new DtList<>(dtc.getDefinition());
-		dtc
+		return dtc
 				.stream()
 				.filter(filter)
-				.forEach(dto -> filteredDtc.add(dto));
-		return filteredDtc;
+				.collect(VCollectors.toDtList(dtc.getDefinition()));
 	}
 }

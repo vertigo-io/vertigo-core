@@ -73,9 +73,7 @@ final class FacetedQueryResultJsonSerializerV1 implements JsonSerializer<Faceted
 		final JsonObject jsonFacet = new JsonObject();
 		for (final Facet facet : facets) {
 			final JsonObject jsonFacetValues = new JsonObject();
-			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-				jsonFacetValues.addProperty(entry.getKey().getLabel().getDisplay(), entry.getValue());
-			}
+			facet.getFacetValues().forEach((k, v) -> jsonFacetValues.addProperty(k.getLabel().getDisplay(), v));
 			final String facetName = facet.getDefinition().getName();
 			jsonFacet.add(facetName, jsonFacetValues);
 		}

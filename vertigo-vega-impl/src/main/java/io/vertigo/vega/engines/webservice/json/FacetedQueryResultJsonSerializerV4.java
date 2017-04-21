@@ -141,18 +141,16 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		return jsonObject;
 	}
 
-	private Long getFacetCount(final FacetValue key, final FacetedQueryResult<?, ?> facetedQueryResult) {
+	private static Long getFacetCount(final FacetValue key, final FacetedQueryResult<?, ?> facetedQueryResult) {
 		final FacetDefinition clusterFacetDefinition = facetedQueryResult.getClusterFacetDefinition().get();
-		for (final Facet facet : facetedQueryResult.getFacets()) {
-			if (clusterFacetDefinition.equals(facet.getDefinition())) {
-				for (final FacetValue facetValue : facet.getFacetValues().keySet()) {
-					if (key.getCode().equals(facetValue.getCode())) {
-						return facet.getFacetValues().get(key);
-					}
-				}
-			}
-		}
-		throw new IllegalArgumentException("Can't found facet for search cluster");
+		return facetedQueryResult.getFacets()
+				.stream()
+				.filter(facet -> clusterFacetDefinition.equals(facet.getDefinition()))
+				.flatMap(facet -> facet.getFacetValues().entrySet().stream())
+				.filter(facetEntry -> key.getCode().equals(facetEntry.getKey().getCode()))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Can't found facet for search cluster"))
+				.getValue();
 	}
 
 	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {

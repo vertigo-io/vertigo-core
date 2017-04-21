@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -223,12 +224,9 @@ public final class AdvancedTestWebServices implements WebServices {
 	public List<Contact> testInnerBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //
 			@InnerBodyParam("contactTo") @ServerSideRead final Contact contactTo) {
-		final List<Contact> result = new ArrayList<>(2);
-		result.add(contactFrom);
-		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(contactFrom, contactTo);
 	}
 
 	@POST("/search()")

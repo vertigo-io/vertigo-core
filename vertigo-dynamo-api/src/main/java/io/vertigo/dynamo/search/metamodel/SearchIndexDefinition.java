@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import io.vertigo.core.definition.Definition;
@@ -94,9 +93,7 @@ public final class SearchIndexDefinition implements Definition {
 		this.searchLoaderId = searchLoaderId;
 
 		indexCopyToFields = new HashSet<>();
-		for (final Entry<DtField, List<DtField>> entry : indexCopyToFieldsMap.entrySet()) {
-			indexCopyToFields.addAll(entry.getValue());
-		}
+		indexCopyToFieldsMap.forEach((k, v) -> indexCopyToFields.addAll(v));
 	}
 
 	/**

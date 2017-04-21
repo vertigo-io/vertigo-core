@@ -110,7 +110,8 @@ final class ComponentDiscovery {
 		}
 		//---
 		// With API
-		apiImplMap.forEach((key, value) -> moduleConfigBuilder.addComponent(key, value));
+		apiImplMap
+				.forEach((key, value) -> moduleConfigBuilder.addComponent(key, value));
 
 		// Without API
 		myImplClasses

@@ -1,0 +1,108 @@
+package io.vertigo.studio.domain.stereotype
+
+create DtDefinition DT_COMMAND {
+		stereotype : "KeyConcept"
+		key CMD_ID 			{ domain:DO_IDENTIFIANT,label:"id", notNull:"true"}
+}
+
+create DtDefinition DT_COMMAND_TYPE {
+		stereotype : "MasterData",
+		key CTY_ID 			{ domain:DO_IDENTIFIANT,	label:"id",			notNull : "true"}
+		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
+}
+
+create DtDefinition DT_CITY {
+		key CIT_ID 			{ domain:DO_IDENTIFIANT,	label:"id",			notNull : "true"}
+		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}	
+		field POSTAL_CODE	{ domain:DO_KEYWORD, 		label:"Postal code",notNull : "true"}			
+}
+
+alter  DtDefinition DT_CITY {
+	stereotype : "MasterData",
+}
+
+create DtDefinition DT_ATTACHMENT {
+		key ATT_ID 			{ domain:DO_IDENTIFIANT,	label:"id",			notNull : "true"}
+		field URL  			{ domain:DO_KEYWORD, 		label:"Url",		notNull : "true"}	
+}
+
+create DtDefinition DT_COMMAND_VALIDATION {
+		key CVA_ID 			{ domain:DO_IDENTIFIANT,	label:"id",			notNull : "true"}
+		field SIGNER_NAME	{ domain:DO_FULL_TEXT, 		label:"Signer name",notNull : "true"}	
+}
+
+
+create Association A_CMD_ATT {
+  	fkFieldName : "CMD_ID"
+    
+  	dtDefinitionA : DT_ATTACHMENT
+	dtDefinitionB : DT_COMMAND
+			
+	navigabilityA : "true"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "Attachment"
+	labelB : "Command"
+	roleA : "Attachment"
+	roleB : "Command"
+},
+
+
+
+create Association A_CMD_CVA {
+  	fkFieldName : "CMD_ID"
+    
+  	dtDefinitionA : DT_COMMAND_VALIDATION
+	dtDefinitionB : DT_COMMAND
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "Command validation"
+	labelB : "Command"
+	roleA : "CommandValidation"
+	roleB : "Command"
+},
+
+create Association A_CTY_CMD {
+  	fkFieldName : "CTY_ID"
+    
+  	dtDefinitionA : DT_COMMAND,
+	dtDefinitionB : DT_COMMAND_TYPE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "Command"
+	labelB : "Command type"
+	roleA : "Command"
+	roleB : "CommandType"
+},
+
+
+create Association A_CIT_CMD {
+  	fkFieldName : "CIT_ID"
+    
+  	dtDefinitionA : DT_COMMAND
+	dtDefinitionB : DT_CITY
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "Command"
+	labelB : "City"
+	roleA : "Command"
+	roleB : "City"
+},

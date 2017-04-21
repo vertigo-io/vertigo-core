@@ -80,7 +80,11 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlConnection obtainConnection() throws SQLException {
-		return new SqlConnection(pooledDataSource.getConnection(), getDataBase(), true);
+	public SqlConnection obtainConnection() {
+		try {
+			return new SqlConnection(pooledDataSource.getConnection(), getDataBase(), true);
+		} catch (final SQLException e) {
+			throw WrappedException.wrap(e, "Can't open connection");
+		}
 	}
 }

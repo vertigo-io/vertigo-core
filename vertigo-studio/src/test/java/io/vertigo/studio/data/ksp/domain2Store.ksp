@@ -1,0 +1,49 @@
+package io.vertigo.studio.persistence
+
+alter Domain DO_STRING {
+	storeType : "VARCHAR(500)"
+}
+
+alter Domain DO_LONG {
+	storeType : "NUMERIC"
+}
+
+alter Domain DO_DOUBLE {
+	storeType : "NUMERIC"
+}
+
+alter Domain DO_INTEGER {
+	storeType : "NUMERIC"
+}
+
+alter Domain DO_CONSO {
+	storeType: "NUMERIC(8,2)"
+}
+
+alter Domain DO_DATE {
+	storeType : "DATE"
+}
+
+alter Domain DO_BOOLEAN {
+	storeType : "NUMERIC"
+}
+
+alter Domain DO_IDENTIFIANT {
+	storeType : "NUMERIC"
+}
+
+alter Domain DO_LIBELLE_LONG {
+	storeType : "VARCHAR(250)"
+}
+    
+alter Domain DO_STREAM {
+	storeType : "BLOB"
+}
+
+alter Domain DO_FULL_TEXT {
+	storeType : "VARCHAR(2000)"
+}
+
+alter Domain DO_KEYWORD {
+	storeType : "VARCHAR(150)"
+}
