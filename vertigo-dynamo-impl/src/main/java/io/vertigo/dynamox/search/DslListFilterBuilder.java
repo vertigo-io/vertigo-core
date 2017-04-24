@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -429,12 +430,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private static String firstNotEmpty(final String... elements) {
-		for (final String element : elements) {
-			if (!element.isEmpty()) {
-				return element;
-			}
-		}
-		return "";
+		return Arrays.stream(elements)
+				.filter(element -> !element.isEmpty())
+				.findFirst().orElse("");
 	}
 
 	/**
@@ -442,12 +440,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @param elements Nullable elements
 	 * @return Concat string
 	 */
-	static String concat(final String... elements) {
-		final StringBuilder sb = new StringBuilder();
-		for (final String element : elements) {
-			sb.append(element);
-		}
-		return sb.toString();
+	private static String concat(final String... elements) {
+		return Arrays.stream(elements)
+				.collect(Collectors.joining());
 	}
 
 	/**
