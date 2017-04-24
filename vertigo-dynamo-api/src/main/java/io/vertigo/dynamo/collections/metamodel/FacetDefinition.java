@@ -111,7 +111,7 @@ public final class FacetDefinition implements Definition {
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'range'
 	 */
-	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
+	public static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, facetValues, true, order);
 	}
 

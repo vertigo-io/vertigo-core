@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
@@ -32,7 +33,6 @@ import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -117,16 +117,24 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 
 		//Déclaration des ranges
 		final List<DslDefinition> rangeDefinitions = xdefinition.getChildDefinitions("range");
+		final MessageText labelMsg = new MessageText(label, null, (Serializable[]) null);
 		final FacetDefinition facetDefinition;
 		if (rangeDefinitions.isEmpty()) {
-			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(definitionName, dtField, new MessageText(label, null, (Serializable[]) null), order);
+			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(
+					definitionName,
+					dtField,
+					labelMsg,
+					order);
 		} else {
-			final FacetDefinitionByRangeBuilder facetDefinitionByRangeBuilder = new FacetDefinitionByRangeBuilder(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
-			for (final DslDefinition rangeDefinition : rangeDefinitions) {
-				final FacetValue facetValue = createFacetValue(rangeDefinition);
-				facetDefinitionByRangeBuilder.addFacetValue(facetValue);
-			}
-			facetDefinition = facetDefinitionByRangeBuilder.build();
+			final List<FacetValue> facetValues = rangeDefinitions.stream()
+					.map(rangeDefinition -> createFacetValue(rangeDefinition))
+					.collect(Collectors.toList());
+			facetDefinition = FacetDefinition.createFacetDefinitionByRange(
+					definitionName,
+					dtField,
+					labelMsg,
+					facetValues,
+					FacetOrder.definition);
 		}
 		return facetDefinition;
 	}
