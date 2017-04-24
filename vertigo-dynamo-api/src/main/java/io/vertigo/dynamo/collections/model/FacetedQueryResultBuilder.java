@@ -125,14 +125,9 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 				clusterCount += result.getCount();
 			}
 			//cluster result
-			final DtList clusterDtList;
-			if (otherResult.getValue().size() == 1) {
-				clusterDtList = otherResult.getValue().get(0).getDtList();
-			} else {
-				clusterDtList = new DtList(otherResult.getValue().get(0).getDtList().getDefinition());
-				for (final FacetedQueryResult<?, S> result : otherResult.getValue()) {
-					clusterDtList.addAll(result.getDtList());
-				}
+			final DtList clusterDtList = new DtList(otherResult.getValue().get(0).getDtList().getDefinition());
+			for (final FacetedQueryResult<?, S> result : otherResult.getValue()) {
+				clusterDtList.addAll(result.getDtList());
 			}
 			clustersDtc.put(otherResult.getKey(), clusterDtList);
 			clustersCount.put(otherResult.getKey(), clusterCount);
