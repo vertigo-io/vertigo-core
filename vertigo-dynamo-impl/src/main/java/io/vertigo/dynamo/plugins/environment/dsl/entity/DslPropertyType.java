@@ -79,9 +79,17 @@ public enum DslPropertyType implements DslEntityFieldType {
 			case String:
 				return sValue;
 			case Boolean:
-				return java.lang.Boolean.valueOf(sValue);
+				switch (sValue.toLowerCase()) {
+					/* only true and false are accepted*/
+					case "true":
+						return true;
+					case "false":
+						return false;
+					default:
+						throw new IllegalArgumentException("unable to cast boolean property from '" + sValue + "', only. 'true' or 'false' are accepted");
+				}
 			default:
-				throw new IllegalArgumentException("cast de la propriété '" + javaClass + "' non implémenté");
+				throw new IllegalArgumentException("unsupported type of property : '" + javaClass + "'");
 		}
 	}
 
