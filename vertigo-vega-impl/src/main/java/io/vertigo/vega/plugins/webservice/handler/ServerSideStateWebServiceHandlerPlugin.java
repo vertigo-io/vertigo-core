@@ -52,7 +52,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
-	private static final MessageText SERVER_SIDE_MANDATORY = new MessageText("ServerSideToken mandatory");
+	private static final MessageText SERVER_SIDE_MANDATORY = MessageText.of("ServerSideToken mandatory");
 	private final TokenManager tokenManager;
 
 	/**

@@ -295,7 +295,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	}
 
 	private static VUserException createMailException(final MessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
-		final VUserException mailException = new VUserException(new MessageText(messageKey, params));
+		final VUserException mailException = new VUserException(MessageText.of(messageKey, params));
 		mailException.initCause(messagingException);
 		return mailException;
 	}

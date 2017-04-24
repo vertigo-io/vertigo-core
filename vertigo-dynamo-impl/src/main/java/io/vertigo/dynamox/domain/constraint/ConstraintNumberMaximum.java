@@ -50,7 +50,7 @@ public final class ConstraintNumberMaximum implements Constraint<Number, Number>
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 
 	/** {@inheritDoc} */

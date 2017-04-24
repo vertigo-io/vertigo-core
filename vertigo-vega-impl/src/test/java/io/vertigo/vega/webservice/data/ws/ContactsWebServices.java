@@ -72,7 +72,7 @@ public final class ContactsWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
+			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
 		}
 		//200
 		return contact;
@@ -83,7 +83,7 @@ public final class ContactsWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
+			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
 		}
 		//we sheet and use 3 times the same address.
 		final DtList<Address> addresses = DtList.of(contact.getAddress(), contact.getAddress(), contact.getAddress());
@@ -111,10 +111,10 @@ public final class ContactsWebServices implements WebServices {
 	public Contact insert(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getConId() != null) {
-			throw new VUserException(new MessageText("Contact #" + contact.getConId() + " already exist"));
+			throw new VUserException(MessageText.of("Contact #" + contact.getConId() + " already exist"));
 		}
 		if (contact.getName() == null || contact.getName().isEmpty()) {
-			throw new VUserException(new MessageText("Name is mandatory"));
+			throw new VUserException(MessageText.of("Name is mandatory"));
 		}
 		contactDao.post(contact);
 		//code 201 + location header : GET route
@@ -126,10 +126,10 @@ public final class ContactsWebServices implements WebServices {
 	public Contact update(final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory"));
+			throw new VUserException(MessageText.of("Name is mandatory"));
 		}
 		if (contact.getConId() == null) {
-			throw new VUserException(new MessageText("Id is mandatory"));
+			throw new VUserException(MessageText.of("Id is mandatory"));
 		}
 		contactDao.put(contact);
 		//200
@@ -140,11 +140,11 @@ public final class ContactsWebServices implements WebServices {
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
+			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
 		}
 		if (conId < 5) {
 			//401
-			throw new VUserException(new MessageText("You don't have enought rights"));
+			throw new VUserException(MessageText.of("You don't have enought rights"));
 		}
 		//200
 		contactDao.remove(conId);

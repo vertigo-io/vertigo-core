@@ -152,16 +152,16 @@ public final class FacetFactory {
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
-				final String stringLabel;
+				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
-					stringLabel = "<==no label==>";
+					label = "<==no label==>";
 				} else {
-					stringLabel = valueAsString;
+					label = valueAsString;
 				}
-				final MessageText label = new MessageText(stringLabel);
+				final MessageText labelMsg = MessageText.of(label);
 				//on garde la syntaxe Solr pour l'instant
 				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
-				facetValue = new FacetValue(stringLabel, listFilter, label);
+				facetValue = new FacetValue(label, listFilter, labelMsg);
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}

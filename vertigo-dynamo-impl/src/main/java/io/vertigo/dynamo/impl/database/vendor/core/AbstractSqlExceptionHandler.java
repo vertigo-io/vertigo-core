@@ -64,9 +64,9 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 */
 	protected void handleTooLargeValueSqlException(final SQLException sqle) {
 		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
-		LOGGER.warn(new MessageText(key).getDisplay(), sqle);
+		LOGGER.warn(MessageText.of(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(new MessageText(key));
+		throw new VUserException(MessageText.of(key));
 	}
 
 	/**
@@ -81,7 +81,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			msg = msg.substring(i1 + ERROR_CODE_LENGTH, i2);
 		}
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(new MessageText(msg));
+		throw new VUserException(MessageText.of(msg));
 	}
 
 	/**
@@ -102,7 +102,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		final MessageKey constraintKey = new SQLConstraintMessageKey(constraintName);
 
 		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
-		final String defaultConstraintMsg = new MessageText(defaultMsg).getDisplay();
+		final String defaultConstraintMsg = MessageText.of(defaultMsg).getDisplay();
 		final MessageText userContraintMessageText = new MessageText(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);

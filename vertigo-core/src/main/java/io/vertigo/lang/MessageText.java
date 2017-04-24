@@ -47,18 +47,21 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	public MessageText(final MessageKey key, final Serializable... params) {
-		this(null, key, params);
+	public static MessageText of(final MessageKey key, final Serializable... params) {
+		Assertion.checkNotNull(key, "the message key is required");
+		//---
+		return new MessageText(null, key, params);
 	}
 
 	/**
-	 * Constructor.
 	 * Le message par défaut doit être non null.
 	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 */
-	public MessageText(final String defaultMsg, final Serializable... params) {
-		this(defaultMsg, null, params);
+	public static MessageText of(final String defaultMsg, final Serializable... params) {
+		Assertion.checkArgNotEmpty(defaultMsg, "the message is required");
+		//---
+		return new MessageText(defaultMsg, null, params);
 	}
 
 	/**
@@ -69,12 +72,8 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
+	@Deprecated
 	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.when(StringUtil.isEmpty(defaultMsg))
-				.check(() -> key != null, "La clé ou le message dot être renseigné");
-		//params n'est null que si l'on passe explicitement null
-		//dans ce cas on le transforme en en tableau vide.
-		//-----
 		this.key = key;
 		this.defaultMsg = defaultMsg;
 		this.params = params != null ? params : new Serializable[0];

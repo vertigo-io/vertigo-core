@@ -115,7 +115,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 
 		//Déclaration des ranges
 		final List<DslDefinition> rangeDefinitions = xdefinition.getChildDefinitions("range");
-		final MessageText labelMsg = new MessageText(label);
+		final MessageText labelMsg = MessageText.of(label);
 		final FacetDefinition facetDefinition;
 		if (rangeDefinitions.isEmpty()) {
 			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(
@@ -150,7 +150,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 		final String listFilterString = (String) rangeDefinition.getPropertyValue(SearchGrammar.RANGE_FILTER_PROPERTY);
 		final ListFilter listFilter = ListFilter.of(listFilterString);
 		final String label = (String) rangeDefinition.getPropertyValue(KspProperty.LABEL);
-		final MessageText labelMsg = new MessageText(label);
+		final MessageText labelMsg = MessageText.of(label);
 		final String code = rangeDefinition.getName();
 		return new FacetValue(code, listFilter, labelMsg);
 	}

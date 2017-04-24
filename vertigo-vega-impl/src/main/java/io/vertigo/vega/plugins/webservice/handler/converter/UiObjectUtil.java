@@ -73,14 +73,14 @@ final class UiObjectUtil {
 	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
-				throw new VSecurityException(new MessageText(FORBIDDEN_OPERATION_FIELD_MODIFICATION, null, excludedField));
+				throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, excludedField));
 			}
 		}
 		final Set<String> includedFields = webServiceParam.getIncludedFields();
 		if (!includedFields.isEmpty()) {
 			for (final String modifiedField : uiObject.getModifiedFields()) {
 				if (!includedFields.contains(modifiedField)) {
-					throw new VSecurityException(new MessageText(FORBIDDEN_OPERATION_FIELD_MODIFICATION, null, modifiedField));
+					throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, modifiedField));
 				}
 			}
 		}

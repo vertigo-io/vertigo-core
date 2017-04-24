@@ -137,7 +137,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			for (final Bucket value : multiBuckets.getBuckets()) {
 				final String term = value.getKey();
 				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-				final MessageText label = new MessageText(term);
+				final MessageText label = MessageText.of(term);
 				facetValue = new FacetValue(term, ListFilter.of(query), label);
 				populateCluster(value, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
@@ -210,7 +210,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		FacetValue facetValue;
 		for (final Bucket value : multiBuckets.getBuckets()) {
 			final String term = value.getKey();
-			final MessageText label = new MessageText(term);
+			final MessageText label = MessageText.of(term);
 			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
 			facetValue = new FacetValue(term, ListFilter.of(query), label);
 			facetValues.put(facetValue, value.getDocCount());

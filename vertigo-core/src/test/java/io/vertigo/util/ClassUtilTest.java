@@ -422,7 +422,7 @@ public final class ClassUtilTest {
 		}
 
 		public long kuser(final long v1, final long v2) {
-			throw new VUserException(new MessageText("test"));
+			throw new VUserException(MessageText.of("test"));
 		}
 
 	}

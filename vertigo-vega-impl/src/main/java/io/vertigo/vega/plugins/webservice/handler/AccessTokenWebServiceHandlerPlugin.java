@@ -41,7 +41,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 	private static final Serializable TOKEN_DATA = new UniqueToken();
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
-	private static final MessageText INVALID_ACCESS_TOKEN_MSG = new MessageText("Invalid access token"); //Todo make a resource.properties
+	private static final MessageText INVALID_ACCESS_TOKEN_MSG = MessageText.of("Invalid access token"); //Todo make a resource.properties
 	private final TokenManager tokenManager;
 
 	/**

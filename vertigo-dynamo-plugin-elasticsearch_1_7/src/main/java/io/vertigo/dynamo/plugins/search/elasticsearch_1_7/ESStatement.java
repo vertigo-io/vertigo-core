@@ -169,7 +169,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				}
 			}
 		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+			final VUserException vue = new VUserException(MessageText.of(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
 			vue.initCause(e);
 			throw vue;
 		}
@@ -212,7 +212,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.build();
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(
-					new MessageText(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
+					MessageText.of(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR));
 			vue.initCause(e);
 			throw vue;
 		}

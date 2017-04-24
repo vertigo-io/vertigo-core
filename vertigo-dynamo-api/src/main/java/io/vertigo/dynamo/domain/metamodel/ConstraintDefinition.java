@@ -54,7 +54,7 @@ public final class ConstraintDefinition implements Constraint, Definition {
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		this.name = name;
-		this.msg = msg == null ? null : new MessageText(msg);
+		this.msg = msg == null ? null : MessageText.of(msg);
 		//-----
 		constraint = createConstraint(constraintClassName, args);
 	}

@@ -70,7 +70,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testDefaultDisplay() {
-		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
+		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
@@ -79,7 +79,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		//On surcharge le dictionnaire city-guide avec un dictionnaire partiel
 		localeManager.override("io.vertigo.core.locale.data.popular-guide", CityGuide.values());
 
-		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
+		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("salut", helloTxt.getDisplay());
 	}
 
@@ -99,7 +99,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	public void testLocaleProvider() {
 		localeManager.registerLocaleProvider(() -> Locale.GERMANY);
 		assertEquals(Locale.GERMANY, localeManager.getCurrentLocale());
-		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
+		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("guten tag", helloTxt.getDisplay());
 
 	}
@@ -115,7 +115,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	public void testJapanese() {
 		localeManager.registerLocaleProvider(() -> Locale.JAPANESE);
 		//On vérifie que l'on ne connait pas le japonais et que l'on retombe sur la langue par défaut
-		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
+		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
@@ -161,7 +161,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = new MessageText(key);
+		final MessageText helloTxt = MessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 	}
 
@@ -176,19 +176,19 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 			}
 		};
 		final Serializable param = null;
-		MessageText helloTxt = new MessageText(key);
+		MessageText helloTxt = MessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 
-		helloTxt = new MessageText(key, param);
+		helloTxt = MessageText.of(key, param);
 		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText(key, null);
 		//		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
-		helloTxt = new MessageText(key, null, null);
+		helloTxt = MessageText.of(key, null, null);
 		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
-		helloTxt = new MessageText("default");
+		helloTxt = MessageText.of("default");
 		assertEquals("default", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText("default", null, null);

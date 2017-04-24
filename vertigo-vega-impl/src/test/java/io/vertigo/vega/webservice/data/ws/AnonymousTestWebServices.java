@@ -66,7 +66,7 @@ public final class AnonymousTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
+			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
 		}
 		//200
 		return contact;
