@@ -81,7 +81,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			msg = msg.substring(i1 + ERROR_CODE_LENGTH, i2);
 		}
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(new MessageText(msg, null));
+		throw new VUserException(new MessageText(msg));
 	}
 
 	/**

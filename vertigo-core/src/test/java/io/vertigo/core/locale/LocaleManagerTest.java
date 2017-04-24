@@ -188,7 +188,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		helloTxt = new MessageText(key, null, null);
 		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
-		helloTxt = new MessageText("default", null);
+		helloTxt = new MessageText("default");
 		assertEquals("default", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText("default", null, null);

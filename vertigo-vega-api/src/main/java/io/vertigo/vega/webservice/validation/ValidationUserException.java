@@ -38,7 +38,7 @@ import io.vertigo.util.StringUtil;
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
-	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = new MessageText("Il y a des erreurs, vous devez corriger votre saisie :", null);
+	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = new MessageText("Il y a des erreurs, vous devez corriger votre saisie :");
 
 	private final List<UiError> uiErrors = new ArrayList<>();
 

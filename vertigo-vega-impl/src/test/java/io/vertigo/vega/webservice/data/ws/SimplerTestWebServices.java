@@ -116,7 +116,7 @@ public final class SimplerTestWebServices implements WebServices {
 	@GET("/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) {
 		if (!"RtFM".equals(passPhrase)) {
-			throw new VSecurityException(new MessageText("Bad passPhrase, check the doc in /catalog", null));
+			throw new VSecurityException(new MessageText("Bad passPhrase, check the doc in /catalog"));
 		}
 		return contactDao.getList();
 	}
@@ -138,7 +138,7 @@ public final class SimplerTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
 		}
 		//200
 		return contact;
@@ -163,7 +163,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public Contact createContact( //create POST method -> 201 instead of 200 by convention
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException(new MessageText("Name is mandatory"));
 		}
 		contactDao.post(contact);
 		//code 201 + location header : GET route
@@ -176,7 +176,7 @@ public final class SimplerTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException(new MessageText("Name is mandatory"));
 		}
 
 		contactDao.put(contact);
@@ -190,7 +190,7 @@ public final class SimplerTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException(new MessageText("Name is mandatory"));
 		}
 		contact.setConId(conId);
 		contactDao.put(contact);
@@ -202,11 +202,11 @@ public final class SimplerTestWebServices implements WebServices {
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException(new MessageText("Contact #" + conId + " unknown"));
 		}
 		if (conId < 5) {
 			//401
-			throw new VSecurityException(new MessageText("You don't have enought rights", null));
+			throw new VSecurityException(new MessageText("You don't have enought rights"));
 		}
 		//200
 		contactDao.remove(conId);
@@ -270,7 +270,7 @@ public final class SimplerTestWebServices implements WebServices {
 		//offset + range ?
 		//code 200
 		if (contactFrom != null) {
-			throw new ValidationUserException(new MessageText("Process validation error", null), contactFrom, "firstName");
+			throw new ValidationUserException(new MessageText("Process validation error"), contactFrom, "firstName");
 		}
 		return Collections.emptyList();
 	}
@@ -285,7 +285,7 @@ public final class SimplerTestWebServices implements WebServices {
 		for (final Contact contact : myList) {
 			if (contact.getName() == null || contact.getName().isEmpty()) {
 				//400
-				throw new VUserException(new MessageText("Name is mandatory", null));
+				throw new VUserException(new MessageText("Name is mandatory"));
 			}
 		}
 		return "OK : received " + myList.size() + " contacts";
@@ -333,7 +333,7 @@ public final class SimplerTestWebServices implements WebServices {
 			@InnerBodyParam("itsatoolongaliasforfieldcontactname") final String aliasName) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException(new MessageText("Name is mandatory"));
 		}
 		contact.setConId(conId);
 		contact.setName(aliasName);

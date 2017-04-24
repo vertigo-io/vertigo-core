@@ -158,7 +158,7 @@ public final class FacetFactory {
 				} else {
 					stringLabel = valueAsString;
 				}
-				final MessageText label = new MessageText(stringLabel, null);
+				final MessageText label = new MessageText(stringLabel);
 				//on garde la syntaxe Solr pour l'instant
 				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(stringLabel, listFilter, label);

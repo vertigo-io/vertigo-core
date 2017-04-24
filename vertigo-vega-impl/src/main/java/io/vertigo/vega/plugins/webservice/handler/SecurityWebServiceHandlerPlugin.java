@@ -64,7 +64,7 @@ public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerP
 		// 2. Check user is authentified
 		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (!userSessionOption.isPresent() || !userSessionOption.get().isAuthenticated()) {
-			throw new VSecurityException(new MessageText("User unauthentified", null));
+			throw new VSecurityException(new MessageText("User unauthentified"));
 		}
 		return chain.handle(request, response, routeContext);
 	}

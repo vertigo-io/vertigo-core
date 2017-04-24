@@ -37,7 +37,7 @@ public final class EmptyPkValidator<O extends DtObject> extends AbstractDtObject
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
 		if (dtField.getType() == FieldType.ID && !dtObjectErrors.hasError(camelCaseFieldName)) {
-			dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id must not be set", null));
+			dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id must not be set"));
 		}
 	}
 }

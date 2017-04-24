@@ -74,13 +74,13 @@ public class FormatterNumberLocalized extends FormatterNumber {
 
 			//séparateur de décimal
 			if (st.hasMoreTokens()) {
-				decimalSep = new MessageText(st.nextToken().trim(), null);//trim => l'espace ne peut être un séparateur de décimal
+				decimalSep = new MessageText(st.nextToken().trim());//trim => l'espace ne peut être un séparateur de décimal
 				Assertion.checkArgNotEmpty(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
 			}
 
 			//séparateur de millier
 			if (st.hasMoreTokens()) {
-				groupSep = new MessageText(st.nextToken(), null);//pas de trim car il est probable que l'espace soit utilisé
+				groupSep = new MessageText(st.nextToken());//pas de trim car il est probable que l'espace soit utilisé
 			}
 		}
 	}

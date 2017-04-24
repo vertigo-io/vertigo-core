@@ -36,7 +36,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.isRequired()) {
-			dtObjectErrors.addError(getCamelCaseFieldName(dtField), new MessageText("Le champ doit être renseigné", null));
+			dtObjectErrors.addError(getCamelCaseFieldName(dtField), new MessageText("Le champ doit être renseigné"));
 		} else {
 			try {
 				// Le typage est OK

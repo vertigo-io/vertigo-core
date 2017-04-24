@@ -53,6 +53,16 @@ public final class MessageText implements Serializable {
 
 	/**
 	 * Constructor.
+	 * Le message par défaut doit être non null.
+	 *
+	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 */
+	public MessageText(final String defaultMsg, final Serializable... params) {
+		this(defaultMsg, null, params);
+	}
+
+	/**
+	 * Constructor.
 	 * La clé et/ou le message par défaut doit être non null.
 	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource

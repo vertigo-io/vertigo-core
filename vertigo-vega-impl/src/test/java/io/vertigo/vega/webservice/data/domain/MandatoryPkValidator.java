@@ -49,7 +49,7 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 		final String camelCaseFieldName = getCamelCaseFieldName(idField);
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
 			if (DtObjectUtil.getId(entity) == null) {
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
+				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory"));
 			}
 		}
 	}

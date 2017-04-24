@@ -146,7 +146,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 			final FacetDefinition clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(
 					facetDefinitionNameOpt.get(),
 					results.getDefinition().getFields().get(0),
-					new MessageText("cluster", null),
+					new MessageText("cluster"),
 					FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);

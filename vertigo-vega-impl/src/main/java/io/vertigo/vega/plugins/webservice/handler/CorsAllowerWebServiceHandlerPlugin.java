@@ -99,7 +99,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.status(HttpServletResponse.SC_FORBIDDEN);
 				response.raw().resetBuffer();
-				throw new VSecurityException(new MessageText("Invalid CORS Access (Origin:{0}, Method:{1})", null, origin, method));
+				throw new VSecurityException(new MessageText("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);

@@ -39,7 +39,7 @@ public class ContactValidator extends AbstractDtObjectValidator<Contact> {
 		if ("birthday".equals(camelCaseFieldName) && !dtObjectErrors.hasError(camelCaseFieldName)) {
 			final Date birthday = dtObject.getBirthday();
 			if (DateUtil.daysBetween(birthday, DateUtil.newDate()) < (16 * 365)) { //if less than 16
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("You can't add contact younger than 16", null));
+				dtObjectErrors.addError(camelCaseFieldName, new MessageText("You can't add contact younger than 16"));
 			}
 		}
 	}
