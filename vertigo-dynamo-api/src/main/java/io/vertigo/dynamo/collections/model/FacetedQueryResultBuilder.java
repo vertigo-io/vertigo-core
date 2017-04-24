@@ -69,7 +69,12 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	public FacetedQueryResultBuilder<R, S> with(final FacetedQueryResult<?, S> result, final String resultcode, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+	public FacetedQueryResultBuilder<R, S> with(
+			final FacetedQueryResult<?, S> result,
+			final String resultcode,
+			final String resultFilter,
+			final String resultLabel,
+			final MessageKey resultLabelKey) {
 		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
@@ -140,14 +145,28 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 		final Optional<FacetedQuery> facetedQuery = firstResult.getFacetedQuery();
 		final DtList<R> results = new DtList<>(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
 		final S source = firstResult.getSource();
-		FacetDefinition clusterFacetDefinition = null;
 
+		final Optional<FacetDefinition> clusterFacetDefinitionOpt;
 		if (facetDefinitionNameOpt.isPresent()) {
-			clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(facetDefinitionNameOpt.get(), results.getDefinition().getFields().get(0),
-					new MessageText("cluster", null), FacetOrder.definition);
+			final FacetDefinition clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(
+					facetDefinitionNameOpt.get(),
+					results.getDefinition().getFields().get(0),
+					new MessageText("cluster", null),
+					FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);
+			clusterFacetDefinitionOpt = Optional.of(clusterFacetDefinition);
+		} else {
+			clusterFacetDefinitionOpt = Optional.empty();
 		}
-		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, Optional.ofNullable(clusterFacetDefinition), clustersDtc, highlights, source);
+		return new FacetedQueryResult<>(
+				facetedQuery,
+				totalCount,
+				results,
+				facets,
+				clusterFacetDefinitionOpt,
+				clustersDtc,
+				highlights,
+				source);
 	}
 }
