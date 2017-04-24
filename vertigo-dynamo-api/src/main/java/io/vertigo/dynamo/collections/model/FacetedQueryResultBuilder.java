@@ -48,13 +48,17 @@ import io.vertigo.lang.MessageText;
  * @param <R> Result object's type
  * @param <S> Source object's type
  */
-public final class FacetedQueryResultMerger<R extends DtObject, S> implements Builder<FacetedQueryResult<R, S>> {
+public final class FacetedQueryResultBuilder<R extends DtObject, S> implements Builder<FacetedQueryResult<R, S>> {
 
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
 
 	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
 	private FacetedQueryResult<?, S> firstResult;
+
+	FacetedQueryResultBuilder() {
+		super();
+	}
 
 	/**
 	 * Merger should create a facet for this cluster.
@@ -65,7 +69,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	public FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultcode, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+	public FacetedQueryResultBuilder<R, S> with(final FacetedQueryResult<?, S> result, final String resultcode, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
 		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
@@ -89,7 +93,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	 * @param facetDefinitionName FacetDefinitionName
 	 * @return this builder
 	 */
-	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
+	public FacetedQueryResultBuilder<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
 		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
