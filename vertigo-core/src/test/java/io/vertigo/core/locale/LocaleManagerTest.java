@@ -147,7 +147,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = new MessageText("bonjour par défaut", key);
+		final MessageText helloTxt = MessageText.ofDefault("bonjour par défaut", key);
 		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 

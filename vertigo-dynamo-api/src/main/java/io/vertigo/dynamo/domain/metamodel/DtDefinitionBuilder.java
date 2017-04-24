@@ -204,13 +204,23 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		// Le DtField vérifie ses propres règles et gère ses propres optimisations
 		final String id = DtField.PREFIX + shortName + '$' + fieldName;
 
-		Assertion.checkArgNotEmpty(strLabel, "Label must not be empty");
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
-		final MessageText label = new MessageText(strLabel, new MessageKeyImpl(id));
+		final MessageText labelMsg = MessageText.ofDefault(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
-		return new DtField(id, fieldName, type, domain, label, required, persistent, fkDtDefinitionName, computedExpression, sort, display);
+		return new DtField(
+				id,
+				fieldName,
+				type,
+				domain,
+				labelMsg,
+				required,
+				persistent,
+				fkDtDefinitionName,
+				computedExpression,
+				sort,
+				display);
 	}
 
 	/**

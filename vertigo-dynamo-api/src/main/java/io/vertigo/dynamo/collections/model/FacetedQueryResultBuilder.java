@@ -84,7 +84,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 		}
 		//---
 		final FacetValue otherFacetValue = facetValuePerFilter.computeIfAbsent(resultFilter,
-				rf -> new FacetValue(resultcode, ListFilter.of(rf), new MessageText(resultLabel, resultLabelKey)));
+				rf -> new FacetValue(resultcode, ListFilter.of(rf), MessageText.ofDefault(resultLabel, resultLabelKey)));
 
 		otherResults.computeIfAbsent(otherFacetValue, k -> new ArrayList<>())
 				.add(result);

@@ -42,8 +42,6 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * Constructor.
-	 *
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
@@ -54,12 +52,25 @@ public final class MessageText implements Serializable {
 	}
 
 	/**
-	 * Le message par défaut doit être non null.
+	 * @param key Clé de la ressource
+	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 * @param params paramètres de la ressource
+	 */
+	public static MessageText ofDefault(final String defaultMsg, final MessageKey key, final Serializable... params) {
+		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
+		Assertion.checkNotNull(key, "the message key is required");
+		Assertion.checkNotNull(params);
+		//---
+		return new MessageText(defaultMsg, key, params);
+	}
+
+	/**
 	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 * @param params paramètres de la ressource
 	 */
 	public static MessageText of(final String defaultMsg, final Serializable... params) {
-		Assertion.checkArgNotEmpty(defaultMsg, "the message is required");
+		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
 		//---
 		return new MessageText(defaultMsg, null, params);
 	}
@@ -72,11 +83,13 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	@Deprecated
-	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
+	private MessageText(final String defaultMsg, final MessageKey key, final Serializable[] params) {
+		Assertion.checkNotNull(params);
+		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
+		//---
 		this.key = key;
 		this.defaultMsg = defaultMsg;
-		this.params = params != null ? params : new Serializable[0];
+		this.params = params;
 
 	}
 
