@@ -23,6 +23,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.util.DateUtil;
 
@@ -412,10 +413,11 @@ public final class DslListFilterBuilderTest {
 	private void testStringFixedQuery(final String[]... testData) {
 		int i = 0;
 		for (final String[] testParam : testData) {
-			final ListFilterBuilder<String> listFilterBuilder = createListFilterBuilder(String.class)
+			final ListFilter listFilter = createListFilterBuilder(String.class)
 					.withBuildQuery(testParam[0])
-					.withCriteria(testParam[1]);
-			final String result = listFilterBuilder.build().getFilterValue();
+					.withCriteria(testParam[1])
+					.build();
+			final String result = listFilter.getFilterValue();
 			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
 			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
 			i++;
@@ -425,10 +427,11 @@ public final class DslListFilterBuilderTest {
 	private void testObjectFixedQuery(final Object[]... testData) {
 		int i = 0;
 		for (final Object[] testParam : testData) {
-			final ListFilterBuilder<Object> listFilterBuilder = createListFilterBuilder(Object.class)
+			final ListFilter listFilter = createListFilterBuilder(Object.class)
 					.withBuildQuery((String) testParam[0])
-					.withCriteria(testParam[1]);
-			final String result = listFilterBuilder.build().getFilterValue();
+					.withCriteria(testParam[1])
+					.build();
+			final String result = listFilter.getFilterValue();
 			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
 			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
 			i++;

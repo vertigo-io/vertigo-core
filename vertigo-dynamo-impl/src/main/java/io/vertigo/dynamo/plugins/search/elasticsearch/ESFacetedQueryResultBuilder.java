@@ -77,7 +77,11 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	 * @param queryResponse ES Query response
 	 * @param searchQuery Search query
 	 */
-	ESFacetedQueryResultBuilder(final ESDocumentCodec esDocumentCodec, final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
+	ESFacetedQueryResultBuilder(
+			final ESDocumentCodec esDocumentCodec,
+			final SearchIndexDefinition indexDefinition,
+			final SearchResponse queryResponse,
+			final SearchQuery searchQuery) {
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(queryResponse);
