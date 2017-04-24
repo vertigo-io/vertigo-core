@@ -69,7 +69,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	public FacetedQueryResultBuilder<R, S> with(
+	public FacetedQueryResultBuilder<R, S> add(
 			final FacetedQueryResult<?, S> result,
 			final String resultcode,
 			final String resultFilter,
@@ -78,13 +78,11 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 		Assertion.checkArgNotEmpty(resultcode);
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
-		Assertion.when(resultLabelKey == null)
-				.check(() -> resultLabel != null, "You must set a label of all result when merging result");
-		//-----
+		//---
 		if (firstResult == null) {
 			firstResult = result;
 		}
-		//-----
+		//---
 		final FacetValue otherFacetValue = facetValuePerFilter.computeIfAbsent(resultFilter,
 				rf -> new FacetValue(resultcode, ListFilter.of(rf), new MessageText(resultLabel, resultLabelKey)));
 
@@ -146,7 +144,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 			final FacetDefinition clusterFacetDefinition = FacetDefinition.createFacetDefinitionByTerm(
 					facetDefinitionNameOpt.get(),
 					results.getDefinition().getFields().get(0),
-					new MessageText("cluster"),
+					MessageText.of("cluster"),
 					FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);
