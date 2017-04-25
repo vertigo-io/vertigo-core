@@ -97,7 +97,8 @@ public final class DslDefinitionEntryRuleTest {
 		final String text = "myLastProperty : [BLEU;";
 		//on ne ferme pas l'accolade
 		final PegResult<DslDefinitionEntry> cursor = MAIN
-				.parse(text, 0);
+				.parse(text, 0); //<-- an exception is expected here
+		Assert.assertNotNull(cursor);
 	}
 
 	@Test(expected = PegNoMatchFoundException.class)
