@@ -34,6 +34,11 @@ public interface FileGenerator {
 	 */
 	void generateFile(final MdaResultBuilder mdaResultBuilder);
 
+	/**
+	 * Static method factory for FileGeneratorBuilder
+	 * @param fileGeneratorConfig the config of the file generator
+	 * @return FileGeneratorBuilder
+	 */
 	static FileGeneratorBuilder builder(final FileGeneratorConfig fileGeneratorConfig) {
 		return new FileGeneratorBuilder(fileGeneratorConfig);
 	}
