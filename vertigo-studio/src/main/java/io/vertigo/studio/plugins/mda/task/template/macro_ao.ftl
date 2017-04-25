@@ -7,7 +7,7 @@
 	 */
 	private static TaskBuilder createTaskBuilder(final String name) {
 		final TaskDefinition taskDefinition = Home.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
-		return new TaskBuilder(taskDefinition);
+		return Task.builder(taskDefinition);
 	}
 
 <#list taskDefinitions as taskDefinition>
