@@ -19,17 +19,13 @@
 package io.vertigo.commons.impl.codec.crypto;
 
 import java.security.Key;
-import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation du cryptage
@@ -37,7 +33,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author  alauthier, pchretien
  */
-public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
+public final class CryptoCodec implements Codec<byte[], byte[]> {
 	/**
 	 * Méthode de hashage autorisées.
 	 *
@@ -131,15 +127,5 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, crypto.getAlgoName());
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		return new ListBuilder<ComponentInfo>()
-				.add(new ComponentInfo("crypto.algo", crypto.getAlgoName()))
-				.add(new ComponentInfo("crypto.keySize", crypto.getKeySize()))
-				.unmodifiable()
-				.build();
 	}
 }

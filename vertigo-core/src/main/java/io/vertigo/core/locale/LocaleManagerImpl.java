@@ -35,8 +35,6 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.WrappedException;
@@ -45,7 +43,7 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-public final class LocaleManagerImpl implements Describable, LocaleManager {
+public final class LocaleManagerImpl implements LocaleManager {
 	private static final Logger LOG = Logger.getLogger(LocaleManager.class);
 
 	/**
@@ -248,23 +246,5 @@ public final class LocaleManagerImpl implements Describable, LocaleManager {
 		} else {
 			LOG.info("Resource " + resource + " non trouvée");
 		}
-	}
-
-	private Map<Locale, Map<String, String>> getDictionaries() {
-		return Collections.unmodifiableMap(dictionaries);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		final long nbRessources = getDictionaries().values()
-				.stream()
-				.mapToInt(Map::size) // each dictionary is count
-				.sum();
-
-		return new ListBuilder<ComponentInfo>()
-				.add(new ComponentInfo("locale.count", nbRessources))
-				.add(new ComponentInfo("locale.languages", getDictionaries().size()))
-				.build();
 	}
 }

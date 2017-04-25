@@ -224,11 +224,6 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Test
-	public void testDescription() {
-		testDescription(securityManager);
-	}
-
 	private Role getRole(final String name) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(name, Role.class);

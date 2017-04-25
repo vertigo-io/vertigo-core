@@ -48,7 +48,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -286,17 +285,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static final class ComponentInfoJsonSerializer implements JsonSerializer<ComponentInfo> {
-
-		/** {@inheritDoc} */
-		@Override
-		public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
-			final JsonObject jsonObject = new JsonObject();
-			jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
-			return jsonObject;
-		}
-	}
-
 	private static final class URIJsonAdapter implements JsonSerializer<URI>, JsonDeserializer<URI> {
 
 		/** {@inheritDoc} */
@@ -340,7 +328,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
-					.registerTypeAdapter(ComponentInfo.class, new ComponentInfoJsonSerializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
 					.registerTypeAdapter(List.class, new ListJsonSerializer())
 					.registerTypeAdapter(Map.class, new MapJsonSerializer())

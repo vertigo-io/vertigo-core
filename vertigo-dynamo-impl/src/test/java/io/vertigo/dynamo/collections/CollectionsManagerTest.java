@@ -56,14 +56,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Description.
-	 */
-	@Test
-	public void testDescription() {
-		testDescription(collectionsManager);
-	}
-
-	/**
 	 * @see DtListProcessor#sort
 	 */
 	@Test

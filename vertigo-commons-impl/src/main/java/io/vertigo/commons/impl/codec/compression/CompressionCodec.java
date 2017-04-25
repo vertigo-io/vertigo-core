@@ -19,24 +19,20 @@
 package io.vertigo.commons.impl.codec.compression;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.
  *
  * @author pchretien
  */
-public final class CompressionCodec implements Codec<byte[], byte[]>, Describable {
+public final class CompressionCodec implements Codec<byte[], byte[]> {
 	/**
 	 * Seuil exprimé en octets en deça duquel on ne compresse pas les données.
 	 */
@@ -138,15 +134,5 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 			}
 		}
 		return uncompressedObject;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		return new ListBuilder<ComponentInfo>()
-				.add(new ComponentInfo("compression.minSize(bytes)", MIN_SIZE_FOR_COMPRESSION))
-				.add(new ComponentInfo("compression.compressionLevel", COMPRESSION_LEVEL))
-				.unmodifiable()
-				.build();
 	}
 }

@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +44,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -64,7 +61,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author npiedeloup
  */
-public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
+public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private static final String CHARSET_USED = "ISO-8859-1";
 	private final FileManager fileManager;
@@ -75,8 +72,6 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private final Optional<Integer> mailPort;
 	private final Optional<String> mailLogin;
 	private final Optional<String> mailPassword;
-	/** Compteur de mails envoyés. */
-	private int mailSent;
 
 	/**
 	 * Crée le plugin d'envoie de mail.
@@ -132,7 +127,6 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			final Session session = createSession();
 			final Message message = createMessage(mail, session);
 			Transport.send(message);
-			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isPresent() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
@@ -298,11 +292,5 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		final VUserException mailException = new VUserException(MessageText.of(messageKey, params));
 		mailException.initCause(messagingException);
 		return mailException;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		return Arrays.asList(new ComponentInfo("mail.sent", mailSent));
 	}
 }

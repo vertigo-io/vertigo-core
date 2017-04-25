@@ -18,9 +18,6 @@
  */
 package io.vertigo;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.After;
@@ -32,10 +29,7 @@ import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.lang.Component;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -124,19 +118,6 @@ public abstract class AbstractTestCaseJU4 {
 	 */
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "./managers-test.xml", };
-	}
-
-	/**
-	* Utilitaire.
-	* @param manager Manager
-	*/
-	protected static void testDescription(final Component manager) {
-		if (manager instanceof Describable) {
-			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
-			for (final ComponentInfo componentInfo : componentInfos) {
-				assertNotNull(componentInfo);
-			}
-		}
 	}
 
 	/**

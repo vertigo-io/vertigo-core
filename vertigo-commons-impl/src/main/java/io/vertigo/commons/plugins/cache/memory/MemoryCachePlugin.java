@@ -19,9 +19,7 @@
 package io.vertigo.commons.plugins.cache.memory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -29,8 +27,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -38,7 +34,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author npiedeloup
  */
-public final class MemoryCachePlugin implements CachePlugin, Describable {
+public final class MemoryCachePlugin implements CachePlugin {
 	private final CodecManager codecManager;
 	private final Map<String, CacheConfig> cacheConfigsPerContext = new HashMap<>();
 	private final Map<String, MemoryCache> cachesPerContext = new HashMap<>();
@@ -141,29 +137,5 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 		final CacheConfig cacheConfig = cacheConfigsPerContext.get(context);
 		Assertion.checkNotNull(cacheConfig, "Cache {0} are not yet registered.", context);
 		return cacheConfig;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		long hits = 0L;
-		long calls = 0L;
-		//---
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		for (final String cacheName : cachesPerContext.keySet()) {
-			final MemoryCache mapCache = getMapCache(cacheName);
-			componentInfos.add(new ComponentInfo("cache." + cacheName + ".elements", mapCache.getElementCount()));
-			componentInfos.add(new ComponentInfo("cache." + cacheName + ".hits", mapCache.getHits()));
-			componentInfos.add(new ComponentInfo("cache." + cacheName + ".calls", mapCache.getCalls()));
-			componentInfos.add(new ComponentInfo("cache." + cacheName + ".ttl", mapCache.getTimeToLiveSeconds()));
-			hits += mapCache.getHits();
-			calls += mapCache.getCalls();
-		}
-		final double ratio = 100D * (calls > 0 ? (hits / calls) : 1);//Par convention 100%
-		componentInfos.add(new ComponentInfo("cache.hits", hits));
-		componentInfos.add(new ComponentInfo("cache.calls", calls));
-		componentInfos.add(new ComponentInfo("cache.ratio", ratio));
-
-		return componentInfos;
 	}
 }
