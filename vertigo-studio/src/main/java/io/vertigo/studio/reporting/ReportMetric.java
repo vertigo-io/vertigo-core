@@ -45,7 +45,6 @@ public final class ReportMetric {
 		Assertion.checkNotNull(status);
 		Assertion.checkArgNotEmpty(title);
 		Assertion.checkNotNull(unit); //may be empty
-		//Assertion.checkNotNull(value);
 		//-----
 		this.status = status;
 		this.title = title;
@@ -59,7 +58,7 @@ public final class ReportMetric {
 	 * @return ReportMetricBuilder
 	 */
 	public static ReportMetricBuilder builder() {
-		return ReportMetric.builder();
+		return new ReportMetricBuilder();
 	}
 
 	/**
