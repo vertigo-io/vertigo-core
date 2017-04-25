@@ -19,7 +19,6 @@
 package io.vertigo.app.config.xml;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.xml.sax.Attributes;
@@ -138,7 +137,6 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
-				final Optional<Class<? extends Component>> optionalApiClass;
 				componentConfigBuilder = ComponentConfig.builder(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
