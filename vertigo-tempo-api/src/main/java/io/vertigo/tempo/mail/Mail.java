@@ -58,9 +58,16 @@ public final class Mail {
 	 * @param htmlContent Contenu html
 	 * @param attachments Liste des pièces jointes
 	 */
-	Mail(final String subject, final String replyTo, final String fromAddress, final List<String> toAddresses, final List<String> ccAddresses, final String textContent, final String htmlContent, final List<VFile> attachments) {
+	Mail(
+			final String subject,
+			final String replyTo,
+			final String fromAddress,
+			final List<String> toAddresses,
+			final List<String> ccAddresses,
+			final String textContent,
+			final String htmlContent,
+			final List<VFile> attachments) {
 		Assertion.checkArgNotEmpty(subject, "Sujet du mail obligatoire");
-		//Assertion.notEmpty(replyTo);
 		Assertion.checkArgNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire");
 		Assertion.checkNotNull(toAddresses);
 		Assertion.checkArgument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.");
