@@ -2,11 +2,14 @@ package ${packageName};
 
 import java.util.Arrays;
 import java.util.Iterator;
+
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
+ * This class is automatically generated.
  */
+@Generated
 public final class ${classSimpleName} implements Iterable<Class<?>> {
 
 	/**
@@ -62,12 +65,6 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 			@Override
 			public Class<?> next() {
 				return it.next().getDtClass();
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public void remove() {
-				//unsupported
 			}
 		};
 	}

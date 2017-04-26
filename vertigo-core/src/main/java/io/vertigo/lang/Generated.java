@@ -16,20 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.domain.model;
+package io.vertigo.lang;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * An entity placed in a domain model.
- * An entity has an identity and a lifecycle.
- *
- * An entity should be persistent.
- *
+ * This annotation is used to identify all the generated classes.
  * @author pchretien
  */
-public interface Entity extends DtObject {
-
-	/**
-	 * @return URI of this entity
-	 */
-	URI getURI();
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Generated {
+	//
 }

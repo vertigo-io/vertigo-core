@@ -18,8 +18,15 @@
  */
 package io.vertigo.studio.plugins.mda.domain.model;
 
+import java.util.Collection;
+import java.util.NoSuchElementException;
+
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.domain.DomainUtil;
 import io.vertigo.util.StringUtil;
@@ -114,5 +121,19 @@ public final class DtFieldModel {
 	 */
 	public String getJavaCode() {
 		return dtField.getComputedExpression().getJavaCode();
+	}
+
+	public boolean isForeignKey() {
+		return dtField.getType() == FieldType.FOREIGN_KEY;
+	}
+
+	public AssociationModel getAssociation() {
+		final Collection<AssociationSimpleDefinition> associations = Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class);
+		//On recherche l'unique noeud correspondant à la relation du champ
+		final AssociationNode associationNode = associations.stream()
+				.filter(association -> association.getFKField().equals(dtField))
+				.map(association -> association.getPrimaryAssociationNode())
+				.findFirst().orElseThrow(NoSuchElementException::new);
+		return new AssociationModel(associationNode);
 	}
 }

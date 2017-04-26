@@ -39,7 +39,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
- * Objet utilisé par FreeMarker.
+ * Model used by FreeMarker.
  *
  * @author pchretien
  */
@@ -47,7 +47,7 @@ public final class DtDefinitionModel {
 	private final DtDefinition dtDefinition;
 	private final List<DtFieldModel> dtFieldModels = new ArrayList<>();
 	private final List<DtFieldModel> dtComputedFieldModels = new ArrayList<>();
-	private final List<AssociationModel> AssociationModels = new ArrayList<>();
+	private final List<AssociationModel> associationModels = new ArrayList<>();
 
 	/**
 	 * Constructeur.
@@ -77,10 +77,10 @@ public final class DtDefinitionModel {
 	private void addTemplateAssociationNodes(final Collection<? extends AssociationDefinition> associationDefinitions) {
 		for (final AssociationDefinition associationDefinition : associationDefinitions) {
 			if (associationDefinition.getAssociationNodeA().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				AssociationModels.add(new AssociationModel(associationDefinition.getAssociationNodeB()));
+				associationModels.add(new AssociationModel(associationDefinition.getAssociationNodeB()));
 			}
 			if (associationDefinition.getAssociationNodeB().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				AssociationModels.add(new AssociationModel(associationDefinition.getAssociationNodeA()));
+				associationModels.add(new AssociationModel(associationDefinition.getAssociationNodeA()));
 			}
 		}
 	}
@@ -175,6 +175,11 @@ public final class DtDefinitionModel {
 	 * @return Liste des associations
 	 */
 	public List<AssociationModel> getAssociations() {
-		return AssociationModels;
+		return associationModels;
+	}
+
+	public boolean isSimpleVisibleAssociation() {
+		return associationModels.stream()
+				.anyMatch(associationModel -> associationModel.isSimple() && associationModel.isNavigable());
 	}
 }
