@@ -65,8 +65,6 @@ public abstract class AssociationDefinition implements Definition {
 		this.name = name;
 		this.associationNodeA = associationNodeA;
 		this.associationNodeB = associationNodeB;
-		associationNodeA.setAssociationDefinition(this);
-		associationNodeB.setAssociationDefinition(this);
 	}
 
 	/**

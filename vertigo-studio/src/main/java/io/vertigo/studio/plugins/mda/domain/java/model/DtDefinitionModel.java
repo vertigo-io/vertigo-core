@@ -77,10 +77,10 @@ public final class DtDefinitionModel {
 	private void addTemplateAssociationNodes(final Collection<? extends AssociationDefinition> associationDefinitions) {
 		for (final AssociationDefinition associationDefinition : associationDefinitions) {
 			if (associationDefinition.getAssociationNodeA().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				associationModels.add(new AssociationModel(associationDefinition.getAssociationNodeB()));
+				associationModels.add(new AssociationModel(associationDefinition, associationDefinition.getAssociationNodeB()));
 			}
 			if (associationDefinition.getAssociationNodeB().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				associationModels.add(new AssociationModel(associationDefinition.getAssociationNodeA()));
+				associationModels.add(new AssociationModel(associationDefinition, associationDefinition.getAssociationNodeA()));
 			}
 		}
 	}

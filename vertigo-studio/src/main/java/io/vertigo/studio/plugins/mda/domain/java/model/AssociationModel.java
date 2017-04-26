@@ -29,15 +29,18 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AssociationModel {
+	private final AssociationDefinition associationDefinition;
 	private final AssociationNode associationNode;
 
 	/**
 	 * Constructeur.
 	 * @param associationNode Noeud de l'association à générer
 	 */
-	AssociationModel(final AssociationNode associationNode) {
+	AssociationModel(final AssociationDefinition associationDefinition, final AssociationNode associationNode) {
+		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(associationNode);
 		//-----
+		this.associationDefinition = associationDefinition;
 		this.associationNode = associationNode;
 	}
 
@@ -45,7 +48,7 @@ public final class AssociationModel {
 	 * @return Definition d'une association.
 	 */
 	public AssociationDefinition getDefinition() {
-		return associationNode.getAssociationDefinition();
+		return associationDefinition;
 	}
 
 	/**
@@ -94,6 +97,6 @@ public final class AssociationModel {
 	 * @return Urn de la définition de l'association
 	 */
 	public String getUrn() {
-		return associationNode.getAssociationDefinition().getName();
+		return associationDefinition.getName();
 	}
 }
