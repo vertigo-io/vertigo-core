@@ -37,11 +37,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import ${dao.dtClassCanonicalName};
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * ${dao.classSimpleName}
+ * This class is automatically generated.
  */
+ @Generated
 public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, ${dao.idFieldType}> implements StoreServices {
 	<#if dao.keyConcept && dao.hasSearchBehavior()>
 	private final SearchManager searchManager;

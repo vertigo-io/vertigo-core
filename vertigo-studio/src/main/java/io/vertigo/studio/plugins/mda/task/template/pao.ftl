@@ -7,17 +7,18 @@ import javax.inject.Inject;
 import java.util.Optional;
 </#if>
 import io.vertigo.app.Home;
-import io.vertigo.lang.Assertion;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Generated;
 
 /**
- * PAO : Accès aux objects du package. 
- * ${pao.classSimpleName}
+ * This class is automatically generated.
  */
+ @Generated
 public final class ${pao.classSimpleName} implements StoreServices {
 	private final TaskManager taskManager;
 
