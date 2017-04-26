@@ -28,6 +28,7 @@ import freemarker.template.TemplateModelException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.plugins.mda.domain.java.model.DtFieldModel;
 
 /**
  * Méthode Freemarker 'sql'.
@@ -42,13 +43,14 @@ public final class SqlMethodModel implements TemplateMethodModelEx {
 	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
-		if (type instanceof Domain) {
-			return new SimpleScalar(getSqlType((Domain) type));
+		if (type instanceof DtFieldModel) {
+			return new SimpleScalar(getSqlType((DtFieldModel) type));
 		}
 		throw new TemplateModelException("Le paramètre type n'est pas un Domain.");
 	}
 
-	private static String getSqlType(final Domain domain) {
+	private static String getSqlType(final DtFieldModel dtFieldModel) {
+		final Domain domain = dtFieldModel.getSource().getDomain();
 		final String storeType = domain.getProperties().getValue(DtProperty.STORE_TYPE);
 		Assertion.checkNotNull(storeType, "La propriété StoreType est obligatoire dans le cas de génération de Sql. Domaine incriminé : {0}", domain.getName());
 		return storeType;

@@ -21,7 +21,9 @@ package io.vertigo.studio.plugins.mda.domain.java.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -89,10 +91,10 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-	List<String> writeAnnotations(final DtField dtField, final DtDefinition dtDefinition) {
+	List<String> writeAnnotations(final DtField dtField) {
 		final List<String> lines;
-		lines = writeJpaAnnotations(dtField, dtDefinition);
-		lines.addAll(super.writeAnnotations(dtField, dtDefinition));
+		lines = writeJpaAnnotations(dtField);
+		lines.addAll(super.writeAnnotations(dtField));
 		return lines;
 	}
 
@@ -101,20 +103,20 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param field Champ de la DT_DEFINITION
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	private static List<String> writeJpaAnnotations(final DtField field, final DtDefinition dtDefinition) {
+	private static List<String> writeJpaAnnotations(final DtField field) {
 		final List<String> lines = new ArrayList<>();
 
 		//Générations des annotations JPA / hibernate
 		if (field.getType() == DtField.FieldType.ID) {
 			lines.add("@javax.persistence.Id");
 			//TODO la gestion des sequences est propre à Oracle, HSQL, PostgreSql : autres bdd, autres stratégies
-			if (dtDefinition.isPersistent()) {
-				final String sequence = getSequenceName(dtDefinition);
+			if (field.isPersistent()) {
+				final String sequence = getSequenceName(field);
 				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\")");
 				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = \"sequence\")");
 			}
 		}
-		if (dtDefinition.isPersistent()) {
+		if (field.isPersistent()) {
 			final String fieldName = field.getName();
 			lines.add("@javax.persistence.Column(name = \"" + fieldName + "\")");
 			if (!field.isPersistent()) {
@@ -180,7 +182,12 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return String Nom de la sequence
 	 */
-	private static String getSequenceName(final DtDefinition dtDefinition) {
+	private static String getSequenceName(final DtField field) {
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+				.stream()
+				.filter(definition -> definition.getFields().contains(field))
+				.findFirst().orElseThrow(NoSuchElementException::new);
+
 		//oracle n'autorise pas de sequence de plus de 30 char.
 		String seqName = SEQUENCE_PREFIX + getTableName(dtDefinition);
 		if (seqName.length() > 30) {

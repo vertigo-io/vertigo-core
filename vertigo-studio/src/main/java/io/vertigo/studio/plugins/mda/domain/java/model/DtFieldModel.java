@@ -67,16 +67,21 @@ public final class DtFieldModel {
 		return dtDefinition;
 	}
 
+	public boolean isId() {
+		return dtField.getType() == FieldType.ID;
+	}
+
 	/**
 	 * @return DtField
 	 */
-	public DtField getDtField() {
+	public DtField getSource() {
 		return dtField;
 	}
 
-	public String getLabel(){
+	public String getLabel() {
 		return dtField.getLabel().getDisplay();
 	}
+
 	/**
 	 * Nom du champ en CamelCase.
 	 * La premiére lettre est en majuscule
@@ -117,6 +122,10 @@ public final class DtFieldModel {
 	 */
 	public boolean isRequired() {
 		return dtField.isRequired();
+	}
+
+	public boolean isPersistent() {
+		return dtField.isPersistent();
 	}
 
 	/**

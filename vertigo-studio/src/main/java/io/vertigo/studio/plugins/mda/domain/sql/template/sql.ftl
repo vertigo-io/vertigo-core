@@ -41,13 +41,13 @@ create sequence SEQ_${dtDefinition.dtDefinition.localName}
 create table ${dtDefinition.dtDefinition.localName}
 (
 	<#list dtDefinition.fields as field>
-	<#if field.dtField.persistent>
-    ${field.name?right_pad(12)}${"\t"} ${sql(field.dtField.domain)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
+	<#if field.persistent>
+    ${field.name?right_pad(12)}${"\t"} ${sql(field)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
     </#if><#-- field.persistent -->
     </#list><#-- fieldCollection -->
     <#list dtDefinition.fields as field>
-    <#if field.dtField.persistent>
-    <#if "ID" == field.dtField.type >
+    <#if field.persistent>
+    <#if field.id >
     constraint PK_${dtDefinition.dtDefinition.localName} primary key (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
     </#if><#-- field.type -->
     </#if><#-- field.persistent -->
@@ -56,7 +56,7 @@ create table ${dtDefinition.dtDefinition.localName}
 TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 
 <#list dtDefinition.fields as field>
-<#if field.dtField.persistent>
+<#if field.persistent>
 <#if field.display?has_content>
 comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
 '${field.display?replace("'","''")}';

@@ -97,6 +97,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private void generateSql(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
+
 		final Map<String, List<DtDefinitionModel>> mapListDtDef = new HashMap<>();
 		for (final DtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			if (dtDefinition.isPersistent()) {
@@ -112,17 +113,24 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		//
 		for (final Entry<String, List<DtDefinitionModel>> entry : mapListDtDef.entrySet()) {
 			final String dataSpace = entry.getKey();
-			final Collection<AssociationSimpleDefinition> collectionSimple = filterAssociationSimple(collectionSimpleAll, dataSpace);
-			final Collection<AssociationNNDefinition> collectionNN = filterAssociationNN(collectionNNAll, dataSpace);
-			generateSqlByDataSpace(fileGeneratorConfig, mdaResultBuilder, collectionSimple, collectionNN, dataSpace, entry.getValue());
+			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
+			final Collection<AssociationNNDefinition> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
+
+			generateSqlByDataSpace(
+					fileGeneratorConfig,
+					mdaResultBuilder,
+					associationSimpleDefinitions,
+					associationNNDefinitions,
+					dataSpace,
+					entry.getValue());
 		}
 	}
 
 	private void generateSqlByDataSpace(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final Collection<AssociationSimpleDefinition> collectionSimple,
-			final Collection<AssociationNNDefinition> collectionNN,
+			final Collection<AssociationSimpleDefinition> asssociationSimpleDefinitions,
+			final Collection<AssociationNNDefinition> associationNNDefinitions,
 			final String dataSpace,
 			final List<DtDefinitionModel> dtDefinitions) {
 		final StringBuilder filename = new StringBuilder()
@@ -131,7 +139,12 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			filename.append('_').append(dataSpace);
 		}
 		filename.append(".sql");
-		generateFile(fileGeneratorConfig, mdaResultBuilder, dtDefinitions, collectionSimple, collectionNN,
+		generateFile(
+				fileGeneratorConfig,
+				mdaResultBuilder,
+				dtDefinitions,
+				asssociationSimpleDefinitions,
+				associationNNDefinitions,
 				filename.toString());
 	}
 
@@ -158,14 +171,14 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private void generateFile(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final List<DtDefinitionModel> list,
-			final Collection<AssociationSimpleDefinition> collectionSimple,
+			final List<DtDefinitionModel> dtDefinitionModels,
+			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions,
 			final Collection<AssociationNNDefinition> collectionNN,
 			final String fileName) {
 		final MapBuilder<String, Object> modelBuilder = new MapBuilder<String, Object>()
 				.put("sql", new SqlMethodModel())
-				.put("dtDefinitions", list)
-				.put("simpleAssociations", collectionSimple)
+				.put("dtDefinitions", dtDefinitionModels)
+				.put("simpleAssociations", associationSimpleDefinitions)
 				.put("nnAssociations", collectionNN)
 				.put("drop", generateDrop)
 				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur

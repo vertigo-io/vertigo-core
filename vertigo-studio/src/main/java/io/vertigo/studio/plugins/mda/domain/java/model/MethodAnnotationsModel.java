@@ -26,7 +26,6 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
@@ -73,9 +72,8 @@ public final class MethodAnnotationsModel implements TemplateMethodModelEx {
 
 		if (type instanceof DtDefinition) {
 			return new AnnotationsModel(annotationWriter, (DtDefinition) type);
-		} else if (type instanceof DtField) {
-			final Object type2 = ((StringModel) params.get(1)).getWrappedObject();
-			return new AnnotationsModel(annotationWriter, (DtField) type, (DtDefinition) type2);
+		} else if (type instanceof DtFieldModel) {
+			return new AnnotationsModel(annotationWriter, (DtFieldModel) type);
 		} else if (type instanceof AssociationSimpleDefinition) {
 			return new AnnotationsModel(annotationWriter, (AssociationSimpleDefinition) type);
 		} else if (type instanceof AssociationNNDefinition) {

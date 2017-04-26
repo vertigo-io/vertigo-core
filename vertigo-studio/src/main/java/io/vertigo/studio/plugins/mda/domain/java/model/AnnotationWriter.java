@@ -92,10 +92,9 @@ class AnnotationWriter {
 	 * Ectiture des annotations sur un DT_FIELD.
 	 *
 	 * @param dtField Champ de la DT_DEFINITION
-	 * @param dtDefinition DT_DEFINITION
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeAnnotations(final DtField dtField, final DtDefinition dtDefinition) {
+	List<String> writeAnnotations(final DtField dtField) {
 		final List<String> lines = new ArrayList<>();
 		final String fieldName = dtField.getName();
 		// Générations des annotations Dynamo

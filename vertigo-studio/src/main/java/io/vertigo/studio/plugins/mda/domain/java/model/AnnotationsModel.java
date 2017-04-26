@@ -24,7 +24,6 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateSequenceModel;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
@@ -61,8 +60,8 @@ final class AnnotationsModel implements TemplateSequenceModel {
 	 * @param dtField Champ
 	 * @param dtDefinition DtDefinition
 	 */
-	AnnotationsModel(final AnnotationWriter annotationWriter, final DtField dtField, final DtDefinition dtDefinition) {
-		this(annotationWriter.writeAnnotations(dtField, dtDefinition));
+	AnnotationsModel(final AnnotationWriter annotationWriter, final DtFieldModel dtFieldModel) {
+		this(annotationWriter.writeAnnotations(dtFieldModel.getSource()));
 	}
 
 	/**
