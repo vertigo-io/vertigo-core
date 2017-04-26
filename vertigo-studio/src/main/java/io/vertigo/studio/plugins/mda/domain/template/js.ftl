@@ -9,8 +9,8 @@ module.exports = {
         ${dtField.nameCamelCase}: {
             domain: "${dtField.dtField.domain.name}",
             required: ${dtField.required?string("true","false")}
-        }<#if (dtField_index+1) < dtDefinition.dtFields?size>,</#if>
+        }<#sep>,</#sep>
         </#list>
-    }<#if (dtDefinition_index+1) < dtDefinitions?size>,</#if>
+    }<#sep>,</#sep>
 </#list>
 };
