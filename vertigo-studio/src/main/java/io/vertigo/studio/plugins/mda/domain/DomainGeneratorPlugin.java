@@ -160,14 +160,14 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		 * Génération des ressources afférentes au DT.
 		 */
 		for (final Entry<String, Collection<DtDefinition>> entry : DomainUtil.getDtDefinitionCollectionMap().entrySet()) {
-			final Collection<DtDefinition> dtDefinitionCollection = entry.getValue();
-			Assertion.checkNotNull(dtDefinitionCollection);
+			final Collection<DtDefinition> dtDefinitions = entry.getValue();
+			Assertion.checkNotNull(dtDefinitions);
 			final String packageName = entry.getKey();
 
 			final Map<String, Object> model = new MapBuilder<String, Object>()
 					.put("packageName", packageName)
 					.put("simpleClassName", simpleClassName)
-					.put("dtDefinitions", dtDefinitionCollection)
+					.put("dtDefinitions", dtDefinitions)
 					.build();
 
 			FileGenerator.builder(fileGeneratorConfig)
