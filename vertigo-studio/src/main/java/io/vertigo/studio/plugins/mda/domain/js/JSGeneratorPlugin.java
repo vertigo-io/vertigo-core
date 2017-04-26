@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain;
+package io.vertigo.studio.plugins.mda.domain.js;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,8 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.js.model.JSDtDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -76,16 +77,21 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 		}
 	}
 
-	private static void generateJsDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		final List<DtDefinitionModel> dtDefinitions = DomainUtil.getDtDefinitions()
-				.stream()
-				.map(DtDefinitionModel::new)
+	private static List<JSDtDefinitionModel> getJsDtDefinitionModels() {
+		return DomainUtil.getDtDefinitions().stream()
+				.map(JSDtDefinitionModel::new)
 				.collect(Collectors.toList());
+	}
+
+	private static void generateJsDtDefinitions(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".domain")
 				.put("classSimpleName", "DtDefinitions")
-				.put("dtDefinitions", dtDefinitions)
+				.put("dtDefinitions", getJsDtDefinitionModels())
 				.build();
 
 		FileGenerator.builder(fileGeneratorConfig)
@@ -93,7 +99,7 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 				.withFileName("DtDefinitions.js")
 				.withGenSubDir(targetSubDir)
 				.withPackageName(fileGeneratorConfig.getProjectPackageName() + ".domain")
-				.withTemplateName("domain/template/js.ftl")
+				.withTemplateName("domain/js/template/js.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
 	}
@@ -102,19 +108,17 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 	 * Génère les ressources JS pour les traductions.
 	 * @param fileGeneratorConfig Configuration du domaine.
 	 */
-	private static void generateDtResourcesJS(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		final List<DtDefinitionModel> dtDefinitions = DomainUtil.getDtDefinitions()
-				.stream()
-				.map(DtDefinitionModel::new)
-				.collect(Collectors.toList());
-
+	private static void generateDtResourcesJS(
+			final String targetSubDir,
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
 		final String simpleClassName = "DtDefinitions" + "Label";
 		final String packageName = fileGeneratorConfig.getProjectPackageName() + ".domain";
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("packageName", packageName)
 				.put("simpleClassName", simpleClassName)
-				.put("dtDefinitions", dtDefinitions)
+				.put("dtDefinitions", getJsDtDefinitionModels())
 				.build();
 
 		FileGenerator.builder(fileGeneratorConfig)
@@ -122,7 +126,7 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 				.withFileName(simpleClassName + ".js")
 				.withGenSubDir(targetSubDir)
 				.withPackageName(packageName)
-				.withTemplateName("domain/template/propertiesJS.ftl")
+				.withTemplateName("domain/js/template/propertiesJS.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
 	}

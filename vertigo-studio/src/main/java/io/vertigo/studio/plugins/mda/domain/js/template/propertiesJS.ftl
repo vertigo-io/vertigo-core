@@ -5,9 +5,9 @@
 
 module.exports = {
     <#list dtDefinitions as dtDefinition>
-    ${dtDefinition.classSimpleNameCamelCase}: {
-        <#list dtDefinition.dtFields as dtField>
-        ${dtField.nameCamelCase}: "${dtField.display}"<#sep>,</#sep>
+    ${dtDefinition.classSimpleName?uncap_first}: {
+        <#list dtDefinition.fields as dtField>
+        ${dtField.camelCaseName}: "${dtField.label}"<#sep>,</#sep>
         </#list>
     }<#sep>,</#sep>
     </#list>

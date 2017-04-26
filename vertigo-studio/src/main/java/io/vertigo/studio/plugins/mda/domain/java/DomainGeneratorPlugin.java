@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain;
+package io.vertigo.studio.plugins.mda.domain.java;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,8 +32,9 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
-import io.vertigo.studio.plugins.mda.domain.model.MethodAnnotationsModel;
+import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.java.model.MethodAnnotationsModel;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -116,7 +117,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.withFileName(dictionaryClassName + ".java")
 				.withGenSubDir(targetSubDir)
 				.withPackageName(fileGeneratorConfig.getProjectPackageName() + ".domain")
-				.withTemplateName("domain/template/dtdefinitions.ftl")
+				.withTemplateName("domain/java/template/dtdefinitions.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
 
@@ -146,7 +147,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.withFileName(dtDefinitionModel.getClassSimpleName() + ".java")
 				.withGenSubDir(targetSubDir)
 				.withPackageName(dtDefinitionModel.getPackageName())
-				.withTemplateName("domain/template/dto.ftl")
+				.withTemplateName("domain/java/template/dto.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
 	}
@@ -175,7 +176,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 					.withFileName(simpleClassName + ".java")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(packageName)
-					.withTemplateName("domain/template/resources.ftl")
+					.withTemplateName("domain/java/template/resources.ftl")
 					.build()
 					.generateFile(mdaResultBuilder);
 
@@ -187,7 +188,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 					.withFileName(simpleClassName + ".properties")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(packageName)
-					.withTemplateName("domain/template/properties.ftl")
+					.withTemplateName("domain/java/template/properties.ftl")
 					.build()
 					.generateFile(mdaResultBuilder);
 		}

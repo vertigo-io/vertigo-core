@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain;
+package io.vertigo.studio.plugins.mda.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,19 +88,19 @@ public final class DomainUtil {
 		}
 	}
 
-	static Collection<DtDefinition> getDtDefinitions() {
+	public static Collection<DtDefinition> getDtDefinitions() {
 		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(DtDefinition.class));
 	}
 
-	static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
+	public static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
 		return getDefinitionCollectionMap(getDtDefinitions());
 	}
 
-	static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
+	public static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
 		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
 	}
 
-	static Collection<AssociationNNDefinition> getNNAssociations() {
+	public static Collection<AssociationNNDefinition> getNNAssociations() {
 		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationNNDefinition.class));
 	}
 
@@ -109,7 +109,7 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à trier
 	 * @return collection triée
 	 */
-	static List<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
+	public static List<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
 		list.sort(Comparator.comparing(DtDefinition::getName));
 		return list;

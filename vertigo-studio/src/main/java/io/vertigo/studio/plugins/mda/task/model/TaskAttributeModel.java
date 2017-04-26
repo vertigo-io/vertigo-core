@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.task.model;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.mda.domain.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.StringUtil;
 
 /**

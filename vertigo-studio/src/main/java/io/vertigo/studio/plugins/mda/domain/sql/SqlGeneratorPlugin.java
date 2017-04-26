@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain;
+package io.vertigo.studio.plugins.mda.domain.sql;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,8 +38,9 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.model.DtDefinitionModel;
-import io.vertigo.studio.plugins.mda.domain.model.SqlMethodModel;
+import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -178,7 +179,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				tableSpaceIndex -> modelBuilder.put("tableSpaceIndex", tableSpaceIndex));
 
 		final Map<String, Object> model = modelBuilder.build();
-		final String templatName = isSqlServer() ? "domain/template/sqlserver.ftl" : "domain/template/sql.ftl";
+		final String templatName = isSqlServer() ? "domain/sql/template/sqlserver.ftl" : "domain/sql/template/sql.ftl";
 
 		FileGenerator.builder(fileGeneratorConfig)
 				.withModel(model)

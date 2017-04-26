@@ -39,7 +39,7 @@ import freemarker.template.TemplateException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.domain.template.TemplateMethodStringUtil;
+import io.vertigo.studio.plugins.mda.util.TemplateMethodStringUtil;
 
 /**
  * Génération des fichiers avec FreeMarker.

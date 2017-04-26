@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain.model;
+package io.vertigo.studio.plugins.mda.domain.java.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

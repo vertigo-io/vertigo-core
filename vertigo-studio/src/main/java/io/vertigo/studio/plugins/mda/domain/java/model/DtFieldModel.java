@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.domain.model;
+package io.vertigo.studio.plugins.mda.domain.java.model;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.mda.domain.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.StringUtil;
 
 /**
