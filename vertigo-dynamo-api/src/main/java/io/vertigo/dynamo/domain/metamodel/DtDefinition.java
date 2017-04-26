@@ -106,7 +106,6 @@ public final class DtDefinition implements Definition {
 				id = dtField;
 			}
 			doRegisterDtField(dtField);
-
 		}
 		idField = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
@@ -188,7 +187,7 @@ public final class DtDefinition implements Definition {
 		//-----
 		final DtField dtField = mappedFields.get(fieldName);
 		//-----
-		Assertion.checkNotNull(dtField, "champ :{0} non trouvé pour le DT :{1}. Liste des champs disponibles :{2}", fieldName, this, mappedFields.keySet());
+		Assertion.checkNotNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, this, mappedFields.keySet());
 		return dtField;
 	}
 
