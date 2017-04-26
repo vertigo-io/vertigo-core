@@ -67,7 +67,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		<#list annotations(dtField) as annotation>
 	${annotation}
 		</#list>
-	public ${dtField.javaType} get${dtField.upperCamelCaseName?uncap_first}() {
+	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
 		<#if dtField.foreignKey>
 		return (${dtField.javaType})  ${dtField.association.role?uncap_first}Accessor.getId();
 		<#else> 
