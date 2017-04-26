@@ -44,7 +44,7 @@ public final class SqlDtDefinitionModel {
 		//-----
 		this.dtDefinition = dtDefinition;
 		dtFieldModels = dtDefinition.getFields().stream()
-				.filter(dtField -> FieldType.COMPUTED == dtField.getType())
+				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
 				.map(SqlDtFieldModel::new)
 				.collect(Collectors.toList());
 
