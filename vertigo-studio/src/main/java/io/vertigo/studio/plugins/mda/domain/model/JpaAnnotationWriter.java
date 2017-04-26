@@ -41,7 +41,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-			List<String> writeUriAnnotations() {
+	List<String> writeUriAnnotations() {
 		return Collections.singletonList("@javax.persistence.Transient");
 	}
 
@@ -51,7 +51,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-			List<String> writeAnnotations(final DtDefinition dtDefinition) {
+	List<String> writeAnnotations(final DtDefinition dtDefinition) {
 		final List<String> lines;
 		lines = writeJpaAnnotations(dtDefinition);
 		lines.addAll(super.writeAnnotations(dtDefinition));
@@ -78,12 +78,9 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	}
 
 	private static boolean containsDataStreamField(final DtDefinition dtDefinition) {
-		for (final DtField field : dtDefinition.getFields()) {
-			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
-				return true;
-			}
-		}
-		return false;
+		return dtDefinition.getFields()
+				.stream()
+				.anyMatch(field -> (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream));
 	}
 
 	/**
@@ -92,7 +89,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-			List<String> writeAnnotations(final DtField dtField, final DtDefinition dtDefinition) {
+	List<String> writeAnnotations(final DtField dtField, final DtDefinition dtDefinition) {
 		final List<String> lines;
 		lines = writeJpaAnnotations(dtField, dtDefinition);
 		lines.addAll(super.writeAnnotations(dtField, dtDefinition));
@@ -138,7 +135,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-			List<String> writeSimpleAssociationAnnotation(final AssociationSimpleDefinition associationSimple) {
+	List<String> writeSimpleAssociationAnnotation(final AssociationSimpleDefinition associationSimple) {
 		final List<String> lines;
 		lines = writeJpaAnnotations();
 		lines.addAll(super.writeSimpleAssociationAnnotation(associationSimple));
@@ -151,7 +148,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-			List<String> writeNNAssociationAnnotation(final AssociationNNDefinition associationNN) {
+	List<String> writeNNAssociationAnnotation(final AssociationNNDefinition associationNN) {
 		final List<String> lines;
 		lines = writeJpaAnnotations();
 		lines.addAll(super.writeNNAssociationAnnotation(associationNN));
