@@ -38,7 +38,7 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
@@ -98,12 +98,12 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final Map<String, List<DtDefinitionModel>> mapListDtDef = new HashMap<>();
+		final Map<String, List<SqlDtDefinitionModel>> mapListDtDef = new HashMap<>();
 		for (final DtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			if (dtDefinition.isPersistent()) {
-				final DtDefinitionModel templateDef = new DtDefinitionModel(dtDefinition);
+				final SqlDtDefinitionModel templateDef = new SqlDtDefinitionModel(dtDefinition);
 				final String dataSpace = dtDefinition.getDataSpace();
-				final List<DtDefinitionModel> listDtDef = obtainListDtDefinitionPerDataSpace(mapListDtDef, dataSpace);
+				final List<SqlDtDefinitionModel> listDtDef = obtainListDtDefinitionPerDataSpace(mapListDtDef, dataSpace);
 				listDtDef.add(templateDef);
 			}
 		}
@@ -111,7 +111,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		final Collection<AssociationSimpleDefinition> collectionSimpleAll = DomainUtil.getSimpleAssociations();
 		final Collection<AssociationNNDefinition> collectionNNAll = DomainUtil.getNNAssociations();
 		//
-		for (final Entry<String, List<DtDefinitionModel>> entry : mapListDtDef.entrySet()) {
+		for (final Entry<String, List<SqlDtDefinitionModel>> entry : mapListDtDef.entrySet()) {
 			final String dataSpace = entry.getKey();
 			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
 			final Collection<AssociationNNDefinition> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
@@ -132,7 +132,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final Collection<AssociationSimpleDefinition> asssociationSimpleDefinitions,
 			final Collection<AssociationNNDefinition> associationNNDefinitions,
 			final String dataSpace,
-			final List<DtDefinitionModel> dtDefinitions) {
+			final List<SqlDtDefinitionModel> dtDefinitions) {
 		final StringBuilder filename = new StringBuilder()
 				.append("crebas");
 		if (!StringUtil.isEmpty(dataSpace) && !DEFAULT_DATA_SPACE.equals(dataSpace)) {
@@ -148,7 +148,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				filename.toString());
 	}
 
-	private static List<DtDefinitionModel> obtainListDtDefinitionPerDataSpace(final Map<String, List<DtDefinitionModel>> mapListDtDef, final String dataSpace) {
+	private static List<SqlDtDefinitionModel> obtainListDtDefinitionPerDataSpace(final Map<String, List<SqlDtDefinitionModel>> mapListDtDef, final String dataSpace) {
 		return mapListDtDef.computeIfAbsent(dataSpace, k -> new ArrayList<>());
 	}
 
@@ -171,7 +171,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private void generateFile(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final List<DtDefinitionModel> dtDefinitionModels,
+			final List<SqlDtDefinitionModel> dtDefinitionModels,
 			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions,
 			final Collection<AssociationNNDefinition> collectionNN,
 			final String fileName) {
