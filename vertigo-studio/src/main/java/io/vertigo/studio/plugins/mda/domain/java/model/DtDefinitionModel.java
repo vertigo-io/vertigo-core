@@ -61,9 +61,9 @@ public final class DtDefinitionModel {
 
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (FieldType.COMPUTED == dtField.getType()) {
-				dtComputedFieldModels.add(new DtFieldModel(dtDefinition, dtField));
+				dtComputedFieldModels.add(new DtFieldModel(dtField));
 			} else {
-				dtFieldModels.add(new DtFieldModel(dtDefinition, dtField));
+				dtFieldModels.add(new DtFieldModel(dtField));
 			}
 		}
 

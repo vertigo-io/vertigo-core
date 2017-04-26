@@ -18,12 +18,9 @@
  */
 package io.vertigo.studio.plugins.mda.domain.sql.model;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -31,18 +28,15 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class SqlDtFieldModel {
-	private final DtDefinition dtDefinition;
 	private final DtField dtField;
 
 	/***
 	 * Constructeur.
 	 * @param dtField Champ à générer
 	 */
-	SqlDtFieldModel(final DtDefinition dtDefinition, final DtField dtField) {
-		Assertion.checkNotNull(dtDefinition);
+	SqlDtFieldModel(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
-		this.dtDefinition = dtDefinition;
 		this.dtField = dtField;
 	}
 
@@ -54,13 +48,6 @@ public final class SqlDtFieldModel {
 		return dtField.getName();
 	}
 
-	/**
-	 * @return DtDefinition
-	 */
-	public DtDefinition getDtDefinition() {
-		return dtDefinition;
-	}
-
 	public boolean isId() {
 		return dtField.getType() == FieldType.ID;
 	}
@@ -70,38 +57,6 @@ public final class SqlDtFieldModel {
 	 */
 	public DtField getSource() {
 		return dtField;
-	}
-
-	public String getLabel() {
-		return dtField.getLabel().getDisplay();
-	}
-
-	/**
-	 * Nom du champ en CamelCase.
-	 * La premiére lettre est en majuscule
-	 * si besoin la première lettre en miniscule avec FreeMarker : ${dtField.nameLowerCase?uncap_first}
-	 * @return UnNom
-	 */
-	public String getNameLowerCase() {
-		return StringUtil.constToUpperCamelCase(dtField.getName());
-	}
-
-	public String getNameCamelCase() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
-	}
-
-	/**
-	 * @return Type du champ (
-	 */
-	public String getType() {
-		return dtField.getType().name();
-	}
-
-	/**
-	 * @return Type java du champ
-	 */
-	public String getJavaType() {
-		return DomainUtil.buildJavaType(dtField.getDomain());
 	}
 
 	/**
@@ -120,16 +75,5 @@ public final class SqlDtFieldModel {
 
 	public boolean isPersistent() {
 		return dtField.isPersistent();
-	}
-
-	/**
-	 * @return Code java correspondant à l'expression de ce champ calculé
-	 */
-	public String getJavaCode() {
-		return dtField.getComputedExpression().getJavaCode();
-	}
-
-	public boolean isForeignKey() {
-		return dtField.getType() == FieldType.FOREIGN_KEY;
 	}
 }

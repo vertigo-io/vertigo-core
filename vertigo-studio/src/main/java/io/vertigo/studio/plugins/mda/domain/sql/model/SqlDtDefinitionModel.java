@@ -18,20 +18,12 @@
  */
 package io.vertigo.studio.plugins.mda.domain.sql.model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used by FreeMarker.
@@ -40,8 +32,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class SqlDtDefinitionModel {
 	private final DtDefinition dtDefinition;
-	private final List<SqlDtFieldModel> dtFieldModels = new ArrayList<>();
-	private final List<SqlDtFieldModel> dtComputedFieldModels = new ArrayList<>();
+	private final List<SqlDtFieldModel> dtFieldModels;
 
 	/**
 	 * Constructeur.
@@ -52,93 +43,15 @@ public final class SqlDtDefinitionModel {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		this.dtDefinition = dtDefinition;
+		dtFieldModels = dtDefinition.getFields().stream()
+				.filter(dtField -> FieldType.COMPUTED == dtField.getType())
+				.map(SqlDtFieldModel::new)
+				.collect(Collectors.toList());
 
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (FieldType.COMPUTED == dtField.getType()) {
-				dtComputedFieldModels.add(new SqlDtFieldModel(dtDefinition, dtField));
-			} else {
-				dtFieldModels.add(new SqlDtFieldModel(dtDefinition, dtField));
-			}
-		}
 	}
 
-	/**
-	 * @return DT définition
-	 */
-	public DtDefinition getDtDefinition() {
-		return dtDefinition;
-	}
-
-	/**
-	 * @return Nom canonique (i.e. avec le package) de la classe d'implémentation du DtObject
-	 */
-	public String getClassCanonicalName() {
-		return dtDefinition.getClassCanonicalName();
-	}
-
-	/**
-	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
-	 */
-	public String getClassSimpleName() {
-		return dtDefinition.getClassSimpleName();
-	}
-
-	/**
-	 * Retourne le nom camelCase de la classe.
-	 * @return Simple Nom (i.e. sans le package) de la definition du DtObject
-	 */
-	public String getClassSimpleNameCamelCase() {
-		return StringUtil.constToLowerCamelCase(dtDefinition.getLocalName());
-	}
-
-	/**
-	 * @return Nom du package
-	 */
-	public String getPackageName() {
-		return dtDefinition.getPackageName();
-	}
-
-	public String getStereotypePackageName() {
-		return getStereotypeClass().getCanonicalName();
-	}
-
-	public boolean isEntity() {
-		return Entity.class.isAssignableFrom(getStereotypeClass());
-	}
-
-	public boolean isFragment() {
-		return Fragment.class.isAssignableFrom(getStereotypeClass());
-	}
-
-	public String getEntityClassSimpleName() {
-		return dtDefinition.getFragment().get().getClassSimpleName();
-	}
-
-	/**
-	 * @return Nom simple de l'nterface associé au Sterotype de l'objet (DtObject, DtMasterData ou KeyConcept)
-	 */
-	public String getStereotypeInterfaceName() {
-		if (dtDefinition.getStereotype() == DtStereotype.Fragment) {
-			return getStereotypeClass().getSimpleName() + "<" + getEntityClassSimpleName() + ">";
-		}
-		return getStereotypeClass().getSimpleName();
-	}
-
-	private Class getStereotypeClass() {
-		switch (dtDefinition.getStereotype()) {
-			case Entity:
-				return Entity.class;
-			case ValueObject:
-				return DtObject.class;
-			case MasterData:
-				return DtMasterData.class;
-			case KeyConcept:
-				return KeyConcept.class;
-			case Fragment:
-				return Fragment.class;
-			default:
-				throw new IllegalArgumentException("Stereotype " + dtDefinition.getStereotype().name() + " non géré");
-		}
+	public String getLocalName() {
+		return dtDefinition.getLocalName();
 	}
 
 	/**
@@ -148,10 +61,4 @@ public final class SqlDtDefinitionModel {
 		return dtFieldModels;
 	}
 
-	//	/**
-	//	 * @return Liste des champs calculés
-	//	 */
-	//	public List<DtFieldModel> getDtComputedFields() {
-	//		return dtComputedFieldModels;
-	//	}
 }

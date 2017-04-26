@@ -10,7 +10,7 @@
 drop table ${associationDefinition.getTableName()} cascade;
 </#list>
 <#list dtDefinitions as dtDefinition>
-drop table ${dtDefinition.dtDefinition.localName} cascade;
+drop table ${dtDefinition.localName} cascade;
 </#list>
 
 </#if>
@@ -29,16 +29,16 @@ drop table ${dtDefinition.dtDefinition.localName} cascade;
 --   Sequences                                      
 -- ============================================================
 <#list dtDefinitions as dtDefinition>
-create sequence SEQ_${dtDefinition.dtDefinition.localName}
+create sequence SEQ_${dtDefinition.localName}
 	start with 1000 cache 20; 
 
 </#list>
 
 <#list dtDefinitions as dtDefinition>
 -- ============================================================
---   Table : ${dtDefinition.dtDefinition.localName}                                        
+--   Table : ${dtDefinition.localName}                                        
 -- ============================================================
-create table ${dtDefinition.dtDefinition.localName}
+create table ${dtDefinition.localName}
 (
 	<#list dtDefinition.fields as field>
 	<#if field.persistent>
@@ -48,7 +48,7 @@ create table ${dtDefinition.dtDefinition.localName}
     <#list dtDefinition.fields as field>
     <#if field.persistent>
     <#if field.id >
-    constraint PK_${dtDefinition.dtDefinition.localName} primary key (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
+    constraint PK_${dtDefinition.localName} primary key (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
     </#if><#-- field.type -->
     </#if><#-- field.persistent -->
     </#list>
@@ -58,7 +58,7 @@ TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 <#list dtDefinition.fields as field>
 <#if field.persistent>
 <#if field.display?has_content>
-comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
+comment on column ${dtDefinition.localName}.${field.name} is
 '${field.display?replace("'","''")}';
 
 </#if>

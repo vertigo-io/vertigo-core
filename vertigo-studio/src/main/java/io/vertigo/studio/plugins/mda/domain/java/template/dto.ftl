@@ -25,7 +25,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		<#if dtField.foreignKey>
 	private final VAccessor<${dtField.association.returnType}> ${dtField.association.role?uncap_first}Accessor = new VAccessor(${dtField.association.returnType}.class);
 		<#else>
-	private ${dtField.javaType} ${dtField.nameLowerCase?uncap_first};
+	private ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
 	</#list>
 	<#list dtDefinition.associations as association>
@@ -62,29 +62,29 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'.
-	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
 		</#list>
-	public ${dtField.javaType} get${dtField.nameLowerCase}() {
+	public ${dtField.javaType} get${dtField.upperCamelCaseName?uncap_first}() {
 		<#if dtField.foreignKey>
 		return (${dtField.javaType})  ${dtField.association.role?uncap_first}Accessor.getId();
 		<#else> 
-		return ${dtField.nameLowerCase?uncap_first};
+		return ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
 	}
 
 	/**
 	 * Champ : ${dtField.type}.
 	 * Définit la valeur de la propriété '${dtField.display}'.
-	 * @param ${dtField.nameLowerCase?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
-	public void set${dtField.nameLowerCase}(final ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}) {
+	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		<#if dtField.foreignKey>
-		${dtField.association.role?uncap_first}Accessor.setId(${dtField.nameLowerCase?uncap_first});
+		${dtField.association.role?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
 		<#else> 
-		this.${dtField.nameLowerCase?uncap_first} = ${dtField.nameLowerCase?uncap_first};
+		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
 	}
 
@@ -93,12 +93,12 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété calculée '${dtField.display}'.
-	 * @return ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
 		</#list>
-	public ${dtField.javaType} get${dtField.nameLowerCase}() {
+	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
 		${dtField.javaCode}
 	}
 

@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
@@ -37,18 +36,15 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class DtFieldModel {
-	private final DtDefinition dtDefinition;
 	private final DtField dtField;
 
 	/***
 	 * Constructeur.
 	 * @param dtField Champ à générer
 	 */
-	DtFieldModel(final DtDefinition dtDefinition, final DtField dtField) {
-		Assertion.checkNotNull(dtDefinition);
+	DtFieldModel(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
-		this.dtDefinition = dtDefinition;
 		this.dtField = dtField;
 	}
 
@@ -58,17 +54,6 @@ public final class DtFieldModel {
 	 */
 	public String getName() {
 		return dtField.getName();
-	}
-
-	/**
-	 * @return DtDefinition
-	 */
-	public DtDefinition getDtDefinition() {
-		return dtDefinition;
-	}
-
-	public boolean isId() {
-		return dtField.getType() == FieldType.ID;
 	}
 
 	/**
@@ -88,12 +73,8 @@ public final class DtFieldModel {
 	 * si besoin la première lettre en miniscule avec FreeMarker : ${dtField.nameLowerCase?uncap_first}
 	 * @return UnNom
 	 */
-	public String getNameLowerCase() {
+	public String getUpperCamelCaseName() {
 		return StringUtil.constToUpperCamelCase(dtField.getName());
-	}
-
-	public String getNameCamelCase() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	/**
@@ -122,10 +103,6 @@ public final class DtFieldModel {
 	 */
 	public boolean isRequired() {
 		return dtField.isRequired();
-	}
-
-	public boolean isPersistent() {
-		return dtField.isPersistent();
 	}
 
 	/**
