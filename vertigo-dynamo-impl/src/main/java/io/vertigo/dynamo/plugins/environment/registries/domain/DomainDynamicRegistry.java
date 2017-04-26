@@ -156,7 +156,9 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 				.withFragment(from)
 				.withPackageName(xdtDefinition.getPackageName())
 				.withDataSpace(from.getDataSpace())
-				.withPackageName(from.getPackageName());
+				.withPackageName(from.getPackageName())
+				.withSortField(sortFieldName)
+				.withDisplayField(displayFieldName);
 
 		//1. adds aliases
 		for (final DslDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
@@ -175,19 +177,17 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 					label,
 					aliasDtField.getDomain(),
 					required,
-					aliasDtField.isPersistent(),
-					aliasDtField.getName().equals(sortFieldName),
-					aliasDtField.getName().equals(displayFieldName));
+					aliasDtField.isPersistent());
 		}
 
 		//2. adds data and computed fields
 		//Déclaration des champs du DT
 		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
-		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields, sortFieldName, displayFieldName);
+		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
 		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
-		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
+		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder
 				.build();
@@ -200,9 +200,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 					idField.getLabel().getDisplay(),
 					idField.getDomain(),
 					true,
-					from.getName(),
-					idField.getName().equals(sortFieldName),
-					idField.getName().equals(displayFieldName));
+					from.getName());
 		}
 
 		return dtDefinition;
@@ -242,15 +240,15 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//Déclaration de la clé primaire
 		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
-		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys, sortFieldName, displayFieldName);
+		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys);
 
 		//Déclaration des champs du DT
 		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
-		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields, sortFieldName, displayFieldName);
+		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
 		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
-		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields, sortFieldName, displayFieldName);
+		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder.build();
 
@@ -276,9 +274,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	private static void populateIdDtField(
 			final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DslDefinition> fields,
-			final String sortFieldName,
-			final String displayFieldName) {
+			final List<DslDefinition> fields) {
 
 		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
@@ -287,10 +283,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
 			//--
 			final String fieldName = field.getName();
-			final boolean sort = fieldName.equals(sortFieldName);
-			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.addIdField(fieldName, label, domain, sort, display);
+			dtDefinitionBuilder.addIdField(fieldName, label, domain);
 		}
 	}
 
@@ -301,9 +295,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 */
 	private static void populateDataDtField(final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DslDefinition> fields,
-			final String sortFieldName,
-			final String displayFieldName) {
+			final List<DslDefinition> fields) {
 
 		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
@@ -319,10 +311,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final boolean persistent = tmpPersistent == null || tmpPersistent;
 			//--
 			final String fieldName = field.getName();
-			final boolean sort = fieldName.equals(sortFieldName);
-			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.addDataField(fieldName, label, domain, notNull, persistent, sort, display);
+			dtDefinitionBuilder.addDataField(fieldName, label, domain, notNull, persistent);
 		}
 	}
 
@@ -334,9 +324,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	private static void populateComputedDtField(
 			final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
-			final List<DslDefinition> fields,
-			final String sortFieldName,
-			final String displayFieldName) {
+			final List<DslDefinition> fields) {
 
 		for (final DslDefinition field : fields) {
 			final Domain domain = definitionSpace.resolve(field.getDefinitionLinkName("domain"), Domain.class);
@@ -348,10 +336,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final ComputedExpression computedExpression = new ComputedExpression(expression);
 			//--
 			final String fieldName = field.getName();
-			final boolean sort = fieldName.equals(sortFieldName);
-			final boolean display = fieldName.equals(displayFieldName);
 
-			dtDefinitionBuilder.addComputedField(fieldName, label, domain, computedExpression, sort, display);
+			dtDefinitionBuilder.addComputedField(fieldName, label, domain, computedExpression);
 		}
 	}
 
@@ -435,8 +421,9 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		LOGGER.trace("" + xassociation.getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
 
 		final String label = primaryAssociationNode.getLabel();
-		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(),
-				fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
+		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName())
+				.addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName());
+		//On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
 
 		return associationSimpleDefinition;
 	}

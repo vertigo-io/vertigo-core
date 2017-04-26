@@ -74,7 +74,7 @@ public final class DtField {
 		COMPUTED;
 
 		/**
-		 * @return if the field type is the 'id'
+		 * @return if the field is the 'id'
 		 */
 		public boolean isId() {
 			return this == ID;
@@ -98,8 +98,6 @@ public final class DtField {
 
 	@JsonExclude
 	private final DataAccessor dataAccessor;
-	private final boolean sort;
-	private final boolean display;
 
 	/**
 	 * Constructor.
@@ -114,8 +112,6 @@ public final class DtField {
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic if the field is dynamic
-	 * @param sort if this field is used for sorting
-	 * @param display if this field is used for display
 	 */
 	DtField(final String id,
 			final String fieldName,
@@ -125,9 +121,7 @@ public final class DtField {
 			final boolean required,
 			final boolean persistent,
 			final String fkDtDefinitionName,
-			final ComputedExpression computedExpression,
-			final boolean sort,
-			final boolean display) {
+			final ComputedExpression computedExpression) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(domain);
@@ -162,9 +156,6 @@ public final class DtField {
 			Assertion.checkState(computedExpression == null, "the field {0}, not declared as computed, must have an empty expression", fieldName);
 		}
 		this.computedExpression = computedExpression;
-		//-----
-		this.sort = sort;
-		this.display = display;
 		//-----
 		dataAccessor = new DataAccessor(this);
 	}
@@ -245,19 +236,5 @@ public final class DtField {
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
-	}
-
-	/**
-	 * @return if this field is used for sorting
-	 */
-	boolean isSort() {
-		return sort;
-	}
-
-	/**
-	 * @return if this field is used for display
-	 */
-	boolean isDisplay() {
-		return display;
 	}
 }

@@ -63,6 +63,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DtField myIdField;
 	private final List<DtField> myFields = new ArrayList<>();
 	private String myDataSpace;
+	private String mySortFieldName;
+	private String myDisplayFieldName;
 
 	/**
 	 * Constructor.
@@ -120,15 +122,12 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label the label of the field
 	 * @param domain the domain of the field
 	 * @param required if the field is required
-	 * @param sort if this field is use for sorting
-	 * @param display if this field is use for display
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName,
-			final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean required, final String fkDtDefinitionName) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
-		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, required, persistent, fkDtDefinitionName, null, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, required, persistent, fkDtDefinitionName, null);
 		//On suppose que le build est déjà effectué.
 		dtDefinition.registerDtField(dtField);
 		return this;
@@ -141,13 +140,11 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label the label of the field
 	 * @param domain the domain of the field
 	 * @param computedExpression the expression use to compute the field
-	 * @param sort if this field is use for sorting
-	 * @param display if this field is use for display
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression) {
 		final boolean persistent = false;
-		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, persistent, null, computedExpression, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, persistent, null, computedExpression);
 		myFields.add(dtField);
 		return this;
 	}
@@ -160,13 +157,11 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label the label of the field
 	 * @param required if the field is required
 	 * @param persistent if the fiels is persistent
-	 * @param sort if this field is use for sorting
-	 * @param display if this field is use for display
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean required, final boolean persistent, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean required, final boolean persistent) {
 		//the field is dynamic if and only if the dtDefinition is dynamic
-		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, required, persistent, null, null, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, required, persistent, null, null);
 		myFields.add(dtField);
 		return this;
 	}
@@ -178,11 +173,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fieldName the name of the field
 	 * @param domain the domain of the field
 	 * @param label the label of the field
-	 * @param sort if this field is use for sorting
-	 * @param display if this field is use for display
 	 * @return this builder
 	 */
-	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain) {
 		Assertion.checkArgument(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
 		//---
 		//le champ ID est tjrs required
@@ -190,14 +183,14 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = true;
 		//le champ  est dynamic SSI la définition est dynamique
-		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null, sort, display);
+		final DtField dtField = createField(fieldName, DtField.FieldType.ID, domain, label, required, persistent, null, null);
 		myIdField = dtField;
 		myFields.add(dtField);
 		return this;
 	}
 
 	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean required, final boolean persistent,
-			final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
+			final String fkDtDefinitionName, final ComputedExpression computedExpression) {
 
 		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
 		//-----
@@ -218,9 +211,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				required,
 				persistent,
 				fkDtDefinitionName,
-				computedExpression,
-				sort,
-				display);
+				computedExpression);
 	}
 
 	/**
@@ -235,6 +226,16 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	public DtDefinitionBuilder withSortField(final String sortFieldName) {
+		this.mySortFieldName = sortFieldName;
+		return this;
+	}
+
+	public DtDefinitionBuilder withDisplayField(final String displayFieldName) {
+		this.myDisplayFieldName = displayFieldName;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
@@ -243,7 +244,16 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myStereotype == null) {
 			myStereotype = (myIdField == null) ? DtStereotype.ValueObject : DtStereotype.Entity;
 		}
-		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDataSpace == null ? StoreManager.MAIN_DATA_SPACE_NAME : myDataSpace);
+		final Optional<DtField> sortFieldOpt = myFields.stream()
+				.filter(dtField -> dtField.getName().equals(mySortFieldName)).findFirst();
+		Assertion.when(mySortFieldName != null).check(() -> sortFieldOpt.isPresent(), "No field found for sort field {0}", mySortFieldName);
+
+		final Optional<DtField> displayFieldOpt = myFields.stream()
+				.filter(dtField -> dtField.getName().equals(myDisplayFieldName)).findFirst();
+		Assertion.when(myDisplayFieldName != null).check(() -> displayFieldOpt.isPresent(), "No field found for display field {0}", myDisplayFieldName);
+
+		dtDefinition = new DtDefinition(myName, Optional.ofNullable(myFragment), myPackageName, myStereotype, myFields, myDataSpace == null ? StoreManager.MAIN_DATA_SPACE_NAME : myDataSpace, sortFieldOpt, displayFieldOpt);
 		return dtDefinition;
 	}
+
 }

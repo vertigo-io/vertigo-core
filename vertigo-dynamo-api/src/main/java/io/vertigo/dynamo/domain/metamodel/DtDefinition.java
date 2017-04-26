@@ -63,8 +63,8 @@ public final class DtDefinition implements Definition {
 	/** id Field */
 	private final Optional<DtField> idField;
 
-	private Optional<DtField> sortField = Optional.empty();
-	private Optional<DtField> displayField = Optional.empty();
+	private final Optional<DtField> sortFieldOpt;
+	private final Optional<DtField> displayFieldOpt;
 
 	private final String dataSpace;
 
@@ -77,13 +77,17 @@ public final class DtDefinition implements Definition {
 			final String packageName,
 			final DtStereotype stereotype,
 			final List<DtField> dtFields,
-			final String dataSpace) {
+			final String dataSpace,
+			final Optional<DtField> sortField,
+			final Optional<DtField> displayField) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
 		Assertion.checkNotNull(fragment);
 		Assertion.checkNotNull(stereotype);
 		Assertion.checkNotNull(dtFields);
 		Assertion.checkArgNotEmpty(dataSpace);
 		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
+		Assertion.checkNotNull(sortField);
+		Assertion.checkNotNull(displayField);
 		//-----
 		this.name = name;
 		//
@@ -92,6 +96,9 @@ public final class DtDefinition implements Definition {
 		this.stereotype = stereotype;
 		this.packageName = packageName;
 		DtField id = null;
+
+		this.sortFieldOpt = sortField;
+		this.displayFieldOpt = displayField;
 
 		for (final DtField dtField : dtFields) {
 			if (dtField.getType().isId()) {
@@ -122,20 +129,6 @@ public final class DtDefinition implements Definition {
 		return new DtDefinitionBuilder(name);
 	}
 
-	private void registerSort(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!sortField.isPresent(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
-		//-----
-		sortField = Optional.of(dtField);
-	}
-
-	private void registerDisplay(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!displayField.isPresent(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
-		//-----
-		displayField = Optional.of(dtField);
-	}
-
 	//TODO A fermer
 	void registerDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
@@ -150,12 +143,6 @@ public final class DtDefinition implements Definition {
 		//-----
 		fields.add(dtField);
 		mappedFields.put(dtField.getName(), dtField);
-		if (dtField.isSort()) {
-			registerSort(dtField);
-		}
-		if (dtField.isDisplay()) {
-			registerDisplay(dtField);
-		}
 	}
 
 	public Optional<DtDefinition> getFragment() {
@@ -264,14 +251,14 @@ public final class DtDefinition implements Definition {
 	 * @return Champ représentant l'affichage
 	 */
 	public Optional<DtField> getDisplayField() {
-		return displayField;
+		return displayFieldOpt;
 	}
 
 	/**
 	 * @return Champ représentant le tri
 	 */
 	public Optional<DtField> getSortField() {
-		return sortField;
+		return sortFieldOpt;
 	}
 
 	/**

@@ -32,8 +32,6 @@ public final class ComputedExpression {
 	 * @param javaCode a java block or expression
 	 */
 	public ComputedExpression(final String javaCode) {
-		Assertion.checkArgNotEmpty(javaCode, "a java expression is required.");
-		//-----
 		this.javaCode = javaCode;
 	}
 
@@ -41,6 +39,8 @@ public final class ComputedExpression {
 	 * @return the java code or expression
 	 */
 	public String getJavaCode() {
+		Assertion.checkArgNotEmpty(javaCode, "a java expression is required.");
+		//-----
 		return javaCode;
 	}
 }
