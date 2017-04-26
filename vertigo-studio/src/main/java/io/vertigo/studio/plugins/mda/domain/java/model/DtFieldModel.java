@@ -74,6 +74,9 @@ public final class DtFieldModel {
 		return dtField;
 	}
 
+	public String getLabel(){
+		return dtField.getLabel().getDisplay();
+	}
 	/**
 	 * Nom du champ en CamelCase.
 	 * La premiére lettre est en majuscule

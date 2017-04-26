@@ -43,7 +43,7 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 	 */
 	public enum ${dtDefinition.classSimpleName}Fields implements DtFieldName<${dtDefinition.classCanonicalName}> {
 		<#list dtDefinition.fields as dtField>
-		/** Propriété '${dtField.label.display}'. */
+		/** Propriété '${dtField.label}'. */
 		${dtField.name}<#sep>,<#sep>
 		</#list>
 	}

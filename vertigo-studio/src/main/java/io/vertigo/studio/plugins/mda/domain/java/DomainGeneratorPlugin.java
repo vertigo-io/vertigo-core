@@ -19,9 +19,11 @@
 package io.vertigo.studio.plugins.mda.domain.java;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -109,7 +111,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("packageName", fileGeneratorConfig.getProjectPackageName() + ".domain")
 				.put("classSimpleName", dictionaryClassName)
-				.put("dtDefinitions", DomainUtil.getDtDefinitions())
+				.put("dtDefinitions", toModels(DomainUtil.getDtDefinitions()))
 				.build();
 
 		FileGenerator.builder(fileGeneratorConfig)
@@ -152,6 +154,12 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.generateFile(mdaResultBuilder);
 	}
 
+	private static List<DtDefinitionModel> toModels(final Collection<DtDefinition> dtDefinitions) {
+		return dtDefinitions.stream()
+				.map(DtDefinitionModel::new)
+				.collect(Collectors.toList());
+	}
+
 	private static void generateDtResources(
 			final String targetSubDir,
 			final FileGeneratorConfig fileGeneratorConfig,
@@ -168,7 +176,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 			final Map<String, Object> model = new MapBuilder<String, Object>()
 					.put("packageName", packageName)
 					.put("simpleClassName", simpleClassName)
-					.put("dtDefinitions", dtDefinitions)
+					.put("dtDefinitions", toModels(dtDefinitions))
 					.build();
 
 			FileGenerator.builder(fileGeneratorConfig)

@@ -21,7 +21,7 @@ ${annotation}
 public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.stereotypeInterfaceName} {
 	private static final long serialVersionUID = 1L;
 
-	<#list dtDefinition.dtFields as dtField>
+	<#list dtDefinition.fields as dtField>
 		<#if dtField.foreignKey>
 	private final VAccessor<${dtField.association.returnType}> ${dtField.association.role?uncap_first}Accessor = new VAccessor(${dtField.association.returnType}.class);
 		<#else>
@@ -58,7 +58,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	}
 	</#if>
 
-	<#list dtDefinition.dtFields as dtField>
+	<#list dtDefinition.fields as dtField>
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'.

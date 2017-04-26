@@ -93,6 +93,13 @@ public final class DtDefinitionModel {
 	}
 
 	/**
+	 * @return Nom canonique (i.e. avec le package) de la classe d'implémentation du DtObject
+	 */
+	public String getClassCanonicalName() {
+		return dtDefinition.getClassCanonicalName();
+	}
+
+	/**
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassSimpleName() {
@@ -160,7 +167,7 @@ public final class DtDefinitionModel {
 	/**
 	 * @return Liste de champs
 	 */
-	public List<DtFieldModel> getDtFields() {
+	public List<DtFieldModel> getFields() {
 		return dtFieldModels;
 	}
 

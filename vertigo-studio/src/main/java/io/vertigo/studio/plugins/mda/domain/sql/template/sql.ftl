@@ -40,12 +40,12 @@ create sequence SEQ_${dtDefinition.dtDefinition.localName}
 -- ============================================================
 create table ${dtDefinition.dtDefinition.localName}
 (
-	<#list dtDefinition.dtFields as field>
+	<#list dtDefinition.fields as field>
 	<#if field.dtField.persistent>
     ${field.name?right_pad(12)}${"\t"} ${sql(field.dtField.domain)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
     </#if><#-- field.persistent -->
     </#list><#-- fieldCollection -->
-    <#list dtDefinition.dtFields as field>
+    <#list dtDefinition.fields as field>
     <#if field.dtField.persistent>
     <#if "ID" == field.dtField.type >
     constraint PK_${dtDefinition.dtDefinition.localName} primary key (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
@@ -55,7 +55,7 @@ create table ${dtDefinition.dtDefinition.localName}
 )<#if tableSpaceData?has_content>
 TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 
-<#list dtDefinition.dtFields as field>
+<#list dtDefinition.fields as field>
 <#if field.dtField.persistent>
 <#if field.display?has_content>
 comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
