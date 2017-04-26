@@ -19,7 +19,6 @@
 package io.vertigo.studio.plugins.mda.domain.sql.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -49,7 +48,7 @@ public final class SqlDtFieldModel {
 	}
 
 	public boolean isId() {
-		return dtField.getType() == FieldType.ID;
+		return dtField.getType().isId();
 	}
 
 	/**

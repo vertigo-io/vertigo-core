@@ -94,7 +94,7 @@ public final class DtDefinition implements Definition {
 		DtField id = null;
 
 		for (final DtField dtField : dtFields) {
-			if (DtField.FieldType.ID.equals(dtField.getType())) {
+			if (dtField.getType().isId()) {
 				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;
 			}
@@ -139,7 +139,7 @@ public final class DtDefinition implements Definition {
 	//TODO A fermer
 	void registerDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!DtField.FieldType.ID.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
+		Assertion.checkArgument(!dtField.getType().isId(), "interdit d'ajouter les champs ID ");
 		//-----
 		doRegisterDtField(dtField);
 	}

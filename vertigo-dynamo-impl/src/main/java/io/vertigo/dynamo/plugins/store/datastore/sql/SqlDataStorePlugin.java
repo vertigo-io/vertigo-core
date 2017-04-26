@@ -368,7 +368,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 				.append(dtDefinition.getFields()
 						.stream()
-						.filter(dtField -> dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID)
+						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
 						.map(dtField -> dtField.getName() + " =#DTO." + dtField.getName() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")

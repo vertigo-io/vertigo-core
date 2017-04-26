@@ -107,7 +107,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 		final List<String> lines = new ArrayList<>();
 
 		//Générations des annotations JPA / hibernate
-		if (field.getType() == DtField.FieldType.ID) {
+		if (field.getType().isId()) {
 			lines.add("@javax.persistence.Id");
 			//TODO la gestion des sequences est propre à Oracle, HSQL, PostgreSql : autres bdd, autres stratégies
 			if (field.isPersistent()) {

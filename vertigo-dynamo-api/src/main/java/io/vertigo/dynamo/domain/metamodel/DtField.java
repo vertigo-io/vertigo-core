@@ -71,7 +71,14 @@ public final class DtField {
 		/**
 		 * a computed field
 		 */
-		COMPUTED
+		COMPUTED;
+
+		/**
+		 * @return if the field type is the 'id'
+		 */
+		public boolean isId() {
+			return this == ID;
+		}
 	}
 
 	private final String name;
@@ -243,14 +250,14 @@ public final class DtField {
 	/**
 	 * @return if this field is used for sorting
 	 */
-	public boolean isSort() {
+	boolean isSort() {
 		return sort;
 	}
 
 	/**
 	 * @return if this field is used for display
 	 */
-	public boolean isDisplay() {
+	boolean isDisplay() {
 		return display;
 	}
 }

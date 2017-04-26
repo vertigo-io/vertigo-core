@@ -47,7 +47,7 @@ final class H2SqlDialect implements SqlDialect {
 	}
 
 	private static String mapField(final DtField dtField, final String sequencePrefix, final String tableName) {
-		if (dtField.getType() != DtField.FieldType.ID) {
+		if (!dtField.getType().isId()) {
 			return " #DTO." + dtField.getName() + '#';
 		}
 		return "nextval('" + sequencePrefix + tableName + "')";

@@ -21,7 +21,7 @@ package io.vertigo.dynamo.domain.metamodel;
 import io.vertigo.lang.Assertion;
 
 /**
- * Expression d'un champs Computed.
+ * This class contains the java code used to define a computed field.
  * @author npiedeloup
  */
 public final class ComputedExpression {
@@ -29,18 +29,18 @@ public final class ComputedExpression {
 
 	/**
 	 * Constructor.
-	 * @param javaCode Code java de l'expression
+	 * @param javaCode a java block or expression
 	 */
 	public ComputedExpression(final String javaCode) {
+		Assertion.checkArgNotEmpty(javaCode, "a java expression is required.");
+		//-----
 		this.javaCode = javaCode;
 	}
 
 	/**
-	 * @return Code java associée à cette expression
+	 * @return the java code or expression
 	 */
 	public String getJavaCode() {
-		Assertion.checkArgNotEmpty(javaCode, "Le code java de l'expression est obligatoire.");
-		//-----
 		return javaCode;
 	}
 }

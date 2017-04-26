@@ -19,7 +19,6 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
@@ -36,7 +35,7 @@ public final class EmptyPkValidator<O extends DtObject> extends AbstractDtObject
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
-		if (dtField.getType() == FieldType.ID && !dtObjectErrors.hasError(camelCaseFieldName)) {
+		if (dtField.getType().isId() && !dtObjectErrors.hasError(camelCaseFieldName)) {
 			dtObjectErrors.addError(camelCaseFieldName, MessageText.of("Id must not be set"));
 		}
 	}
