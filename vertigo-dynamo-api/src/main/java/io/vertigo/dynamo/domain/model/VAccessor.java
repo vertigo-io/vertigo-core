@@ -100,7 +100,7 @@ public final class VAccessor<E extends Entity> {
 	 * @param id the entity id
 	 */
 	public void setId(final Serializable id) {
-		Assertion.checkNotNull(id);
+		//id final may be null
 		//---
 		targetURI = id == null ? null : new URI(targetDtDefinition, id);
 		//we have to reset the value and the state
