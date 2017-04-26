@@ -206,8 +206,4 @@ public final class Domain implements Definition {
 	public String toString() {
 		return name;
 	}
-
-	public boolean hasDtDefinition() {
-		return !getDataType().isPrimitive();
-	}
 }

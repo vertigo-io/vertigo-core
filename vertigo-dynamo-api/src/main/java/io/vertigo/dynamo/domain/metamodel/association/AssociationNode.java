@@ -44,7 +44,13 @@ public final class AssociationNode {
 	 * @param isMultiple Si la cardinalité max est multiple (au plus)
 	 * @param isNotNull Si la cardinalité min est non null (au moins)
 	 */
-	public AssociationNode(final DtDefinition dtDefinition, final boolean isNavigable, final String role, final String label, final boolean isMultiple, final boolean isNotNull) {
+	public AssociationNode(
+			final DtDefinition dtDefinition,
+			final boolean isNavigable,
+			final String role,
+			final String label,
+			final boolean isMultiple,
+			final boolean isNotNull) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(role);

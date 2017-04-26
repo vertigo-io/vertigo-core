@@ -61,7 +61,7 @@ public final class DependencyMetricEngine implements ReportMetricEngine<DtDefini
 
 	private static int count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
 		int count = 0;
-		if (taskAttribute.getDomain().hasDtDefinition()) {
+		if (!taskAttribute.getDomain().getDataType().isPrimitive()) {
 			if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
 				count++;
 			}

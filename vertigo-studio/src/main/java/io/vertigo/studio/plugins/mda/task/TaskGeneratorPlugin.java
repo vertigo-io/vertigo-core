@@ -164,7 +164,7 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 		if (templateTaskDefinition.isOut()) {
 			//si out on regarde si en sortie on a un DTO ou une DTC typé.
 			final Domain outDomain = templateTaskDefinition.getOutAttribute().getDomain();
-			if (outDomain.hasDtDefinition()) {
+			if (!outDomain.getDataType().isPrimitive()) {
 				return outDomain.getDtDefinition();
 			}
 		}
