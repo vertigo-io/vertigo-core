@@ -57,9 +57,7 @@ public final class MessageText implements Serializable {
 	 * @param params paramètres de la ressource
 	 */
 	public static MessageText ofDefault(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
-		Assertion.checkNotNull(key, "the message key is required");
-		Assertion.checkNotNull(params);
+		// key or default message may be null
 		//---
 		return new MessageText(defaultMsg, key, params);
 	}
