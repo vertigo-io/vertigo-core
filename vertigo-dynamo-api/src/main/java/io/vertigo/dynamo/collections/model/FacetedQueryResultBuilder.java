@@ -56,7 +56,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
 	private FacetedQueryResult<?, S> firstResult;
 
-	FacetedQueryResultBuilder() {
+	public FacetedQueryResultBuilder() {
 		super();
 	}
 
