@@ -43,13 +43,15 @@ public final class SqlMethodModel implements TemplateMethodModelEx {
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
 		if (type instanceof SqlDtFieldModel) {
-			return new SimpleScalar(getSqlType((SqlDtFieldModel) type));
+			final Domain domain = ((SqlDtFieldModel) type).getSource().getDomain();
+			return new SimpleScalar(getSqlType((domain)));
+		} else if (type instanceof Domain) {
+			return new SimpleScalar(getSqlType(((Domain) type)));
 		}
 		throw new TemplateModelException("Le paramètre type n'est pas un Domain.");
 	}
 
-	private static String getSqlType(final SqlDtFieldModel dtFieldModel) {
-		final Domain domain = dtFieldModel.getSource().getDomain();
+	private static String getSqlType(final Domain domain) {
 		final String storeType = domain.getProperties().getValue(DtProperty.STORE_TYPE);
 		Assertion.checkNotNull(storeType, "La propriété StoreType est obligatoire dans le cas de génération de Sql. Domaine incriminé : {0}", domain.getName());
 		return storeType;

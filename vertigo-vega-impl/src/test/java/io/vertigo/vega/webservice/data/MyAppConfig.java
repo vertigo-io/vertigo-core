@@ -27,6 +27,7 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.node.status.HttpNodeInfosPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -65,6 +66,7 @@ public final class MyAppConfig {
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(HttpNodeInfosPlugin.class)
 				.endBoot()
 				.addModule(new PersonaFeatures()
 						.withUserSession(TestUserSession.class)

@@ -18,13 +18,11 @@
  */
 package io.vertigo.studio.plugins.mda.domain.java.model;
 
-import java.util.Collection;
 import java.util.NoSuchElementException;
 
-import io.vertigo.app.Home;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.StringUtil;
@@ -35,15 +33,18 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class DtFieldModel {
+	private final DtDefinition dtDefinition;
 	private final DtField dtField;
 
 	/***
 	 * Constructeur.
 	 * @param dtField Champ à générer
 	 */
-	DtFieldModel(final DtField dtField) {
+	DtFieldModel(final DtDefinition dtDefinition, final DtField dtField) {
+		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtField);
 		//-----
+		this.dtDefinition = dtDefinition;
 		this.dtField = dtField;
 	}
 
@@ -111,16 +112,23 @@ public final class DtFieldModel {
 		return dtField.getComputedExpression().getJavaCode();
 	}
 
+	private boolean isChildOfEntity() {
+		return !dtDefinition.getFragment().isPresent();
+	}
+
 	public boolean isForeignKey() {
-		return dtField.getType() == FieldType.FOREIGN_KEY;
+		return isChildOfEntity() && dtField.getType() == FieldType.FOREIGN_KEY;
 	}
 
 	public AssociationModel getAssociation() {
-		final Collection<AssociationSimpleDefinition> associations = Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class);
-		//On recherche l'unique noeud correspondant à la relation du champ
-		final AssociationSimpleDefinition associationSimpleDefinition = associations.stream()
+		Assertion.checkState(isChildOfEntity(), "an association must be declared on an entity");
+		//---
+		return DomainUtil.getSimpleAssociations()
+				.stream()
 				.filter(association -> association.getFKField().equals(dtField))
-				.findFirst().orElseThrow(NoSuchElementException::new);
-		return new AssociationModel(associationSimpleDefinition, associationSimpleDefinition.getPrimaryAssociationNode());
+				.map(association -> new AssociationModel(association, association.getPrimaryAssociationNode()))
+				.findFirst()
+				.orElseThrow(NoSuchElementException::new);
 	}
+
 }

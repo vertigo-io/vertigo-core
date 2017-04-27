@@ -61,9 +61,9 @@ public final class DtDefinitionModel {
 
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (FieldType.COMPUTED == dtField.getType()) {
-				dtComputedFieldModels.add(new DtFieldModel(dtField));
+				dtComputedFieldModels.add(new DtFieldModel(dtDefinition, dtField));
 			} else {
-				dtFieldModels.add(new DtFieldModel(dtField));
+				dtFieldModels.add(new DtFieldModel(dtDefinition, dtField));
 			}
 		}
 
@@ -185,8 +185,11 @@ public final class DtDefinitionModel {
 		return associationModels;
 	}
 
-	public boolean isSimpleVisibleAssociation() {
-		return associationModels.stream()
-				.anyMatch(associationModel -> associationModel.isSimple() && associationModel.isNavigable());
+	public boolean containsAccessor() {
+		return dtDefinition.getStereotype() != DtStereotype.Fragment &&
+				dtDefinition.getFields()
+						.stream()
+						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY);
+
 	}
 }

@@ -4,7 +4,7 @@ import ${dtDefinition.stereotypePackageName};
 <#if dtDefinition.entity || dtDefinition.fragment>
 import io.vertigo.dynamo.domain.model.URI;
 </#if>
-<#if dtDefinition.simpleVisibleAssociation>
+<#if dtDefinition.containsAccessor()>
 import io.vertigo.dynamo.domain.model.VAccessor;
 </#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -23,7 +23,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 
 	<#list dtDefinition.fields as dtField>
 		<#if dtField.foreignKey>
-	private final VAccessor<${dtField.association.returnType}> ${dtField.association.role?uncap_first}Accessor = new VAccessor(${dtField.association.returnType}.class);
+	private final VAccessor<${dtField.association.returnType}> ${dtField.association.role?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class);
 		<#else>
 	private ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
