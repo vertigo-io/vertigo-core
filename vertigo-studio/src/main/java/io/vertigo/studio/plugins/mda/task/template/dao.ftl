@@ -2,7 +2,9 @@
 package ${dao.packageName};
 
 import javax.inject.Inject;
+
 <#if dao.hasSearchBehavior()>
+import java.util.Arrays;
 import java.util.List;
 </#if>
 <#if dao.options >
@@ -18,10 +20,12 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import ${dao.indexDtClassCanonicalName};
 </#if>
 <#if !dao.taskDefinitions.empty >
@@ -103,7 +107,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
 		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = DIInjector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getApp().getComponentSpace());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return new SearchQueryBuilder(criteriaListFilter).withFacetStrategy(facetedQueryDefinition, listFilters);
+		return SearchQuery.builder(criteriaListFilter).withFacetStrategy(facetedQueryDefinition, listFilters);
 	}
 	</#list>
 
@@ -127,7 +131,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	public void markAsDirty(final URI<${dao.dtClassSimpleName}> entityUri) {
 		transactionManager.getCurrentTransaction().addAfterCompletion((final boolean txCommitted) -> {
 			if (txCommitted) {// reindex only is tx successful
-				searchManager.markAsDirty(entityUri);
+				searchManager.markAsDirty(Arrays.asList(entityUri));
 			}
 		});
 	}

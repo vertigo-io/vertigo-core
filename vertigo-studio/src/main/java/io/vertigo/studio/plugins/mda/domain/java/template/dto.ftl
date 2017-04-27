@@ -23,7 +23,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 
 	<#list dtDefinition.fields as dtField>
 		<#if dtField.foreignKey>
-	private final VAccessor<${dtField.association.returnType}> ${dtField.association.role?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class);
+	private final VAccessor<${dtField.association.returnType}> ${dtField.upperCamelCaseName?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class);
 		<#else>
 	private ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
@@ -69,7 +69,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		</#list>
 	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
 		<#if dtField.foreignKey>
-		return (${dtField.javaType})  ${dtField.association.role?uncap_first}Accessor.getId();
+		return (${dtField.javaType})  ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
 		<#else> 
 		return ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
@@ -82,7 +82,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 */
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		<#if dtField.foreignKey>
-		${dtField.association.role?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
+		${dtField.upperCamelCaseName?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
 		<#else> 
 		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
@@ -139,7 +139,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 
 				<#else>
 	public ${association.returnType} get${association.role?cap_first}() {
-		return ${association.role?uncap_first}Accessor.get();
+		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.get();
 	}
 
 	/**
@@ -150,7 +150,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 					</#list>
 	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
-		return ${association.role?uncap_first}Accessor.getURI();
+		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getURI();
 	}
 
 				</#if>

@@ -226,7 +226,10 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String dtDefinitionName = xdtDefinition.getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
-				.withDataSpace(dataSpace);
+				.withDataSpace(dataSpace)
+				.withSortField(sortFieldName)
+				.withDisplayField(displayFieldName);
+
 		if (stereotype != null) {
 			dtDefinitionBuilder.withStereoType(stereotype);
 		}
@@ -250,20 +253,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
-		final DtDefinition dtDefinition = dtDefinitionBuilder.build();
-
-		//--Vérification du champ sort et display--
-		final boolean sortEmpty = sortFieldName == null && !dtDefinition.getSortField().isPresent();
-		final boolean sortNotEmpty = sortFieldName != null && dtDefinition.getSortField().isPresent();
-
-		Assertion.checkState(sortEmpty || sortNotEmpty, "Champ de tri {0} inconnu", sortFieldName);
-
-		final boolean displayEmpty = displayFieldName == null && !dtDefinition.getDisplayField().isPresent();
-		final boolean displayNotEmpty = displayFieldName != null && dtDefinition.getDisplayField().isPresent();
-
-		Assertion.checkState(displayEmpty || displayNotEmpty, "Champ d'affichage {0} inconnu", displayFieldName);
-		//--Vérification OK
-		return dtDefinition;
+		return dtDefinitionBuilder.build();
 	}
 
 	/**

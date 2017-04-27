@@ -29,6 +29,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class must be used to build a DtDefinition.
@@ -283,12 +284,12 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	public DtDefinitionBuilder withSortField(final String sortFieldName) {
-		this.mySortFieldName = sortFieldName;
+		mySortFieldName = sortFieldName;
 		return this;
 	}
 
 	public DtDefinitionBuilder withDisplayField(final String displayFieldName) {
-		this.myDisplayFieldName = displayFieldName;
+		myDisplayFieldName = displayFieldName;
 		return this;
 	}
 
@@ -300,8 +301,22 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myStereotype == null) {
 			myStereotype = (myIdField == null) ? DtStereotype.ValueObject : DtStereotype.Entity;
 		}
-		final DtField sortField = mySortFieldName != null ? dtDefinition.getField(mySortFieldName) : null;
-		final DtField displayField = myDisplayFieldName != null ? dtDefinition.getField(myDisplayFieldName) : null;
+
+		final DtField sortField;
+		if (mySortFieldName != null) {
+			sortField = findFieldByName(mySortFieldName)
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dtDefinition.getName())));
+		} else {
+			sortField = null;
+		}
+
+		final DtField displayField;
+		if (myDisplayFieldName != null) {
+			displayField = findFieldByName(myDisplayFieldName)
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dtDefinition.getName())));
+		} else {
+			displayField = null;
+		}
 
 		dtDefinition = new DtDefinition(
 				myName,
@@ -313,6 +328,14 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				Optional.ofNullable(sortField),
 				Optional.ofNullable(displayField));
 		return dtDefinition;
+	}
+
+	private Optional<DtField> findFieldByName(final String fieldName) {
+		Assertion.checkArgNotEmpty(fieldName);
+		return myFields
+				.stream()
+				.filter(dtField -> fieldName.equals(dtField.getName()))
+				.findFirst();
 	}
 
 }
