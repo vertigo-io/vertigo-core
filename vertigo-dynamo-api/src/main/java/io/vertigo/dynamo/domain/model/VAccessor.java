@@ -2,6 +2,7 @@ package io.vertigo.dynamo.domain.model;
 
 import java.io.Serializable;
 
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.datastore.DataStore;
@@ -15,14 +16,16 @@ import io.vertigo.lang.Assertion;
  *
  * @param <E> the type of entity
  */
-public final class VAccessor<E extends Entity> {
+public final class VAccessor<E extends Entity> implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private static enum State {
 		LOADED,
 		NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
-	private final DtDefinition targetDtDefinition;
+	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
 	private URI<E> targetURI;
 	private E value;
 
@@ -31,9 +34,7 @@ public final class VAccessor<E extends Entity> {
 	 * @param clazz the entity class
 	 */
 	public VAccessor(final Class<E> clazz) {
-		Assertion.checkNotNull(clazz);
-		//---
-		this.targetDtDefinition = DtObjectUtil.findDtDefinition(clazz);
+		this(DtObjectUtil.findDtDefinition(clazz));
 	}
 
 	/**
@@ -43,7 +44,7 @@ public final class VAccessor<E extends Entity> {
 	public VAccessor(final DtDefinition targetDtDefinition) {
 		Assertion.checkNotNull(targetDtDefinition);
 		//---
-		this.targetDtDefinition = targetDtDefinition;
+		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
 	}
 
 	private static DataStore getDataStore() {
@@ -102,7 +103,7 @@ public final class VAccessor<E extends Entity> {
 	public void setId(final Serializable id) {
 		//id final may be null
 		//---
-		targetURI = id == null ? null : new URI(targetDtDefinition, id);
+		targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
 		//we have to reset the value and the state
 		value = null;
 		status = State.NOT_LOADED;
