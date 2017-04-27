@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -59,8 +58,6 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
 
-	private final String name = "main";
-	private final String uuid;
 	//Start : used to have 'uptime'
 	private final Instant start;
 	private final AppConfig appConfig;
@@ -79,7 +76,6 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	public AutoCloseableApp(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//-----
-		uuid = UUID.randomUUID().toString();
 		start = Instant.now();
 		this.appConfig = appConfig;
 		Home.setApp(this);
@@ -203,13 +199,4 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		}
 	}
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String getId() {
-		return uuid;
-	}
 }

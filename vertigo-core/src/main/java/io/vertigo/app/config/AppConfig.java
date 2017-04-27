@@ -33,18 +33,21 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AppConfig {
+	private final String appName;
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
 	private final List<ComponentInitializerConfig> initializers;
 
-	AppConfig(
+	AppConfig(final String appName,
 			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs,
 			final List<ComponentInitializerConfig> componentInitializerConfigs) {
+		Assertion.checkArgNotEmpty(appName);
 		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
 		Assertion.checkNotNull(componentInitializerConfigs);
 		//---
+		this.appName = appName;
 		this.bootConfig = bootConfig;
 		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
@@ -56,6 +59,15 @@ public final class AppConfig {
 	 */
 	public static AppConfigBuilder builder() {
 		return new AppConfigBuilder();
+	}
+
+	/**
+	 * An app is composed of multiple nodes.
+	 * AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
+	 * @return the logical name of the app
+	 */
+	public String getAppName() {
+		return appName;
 	}
 
 	/**

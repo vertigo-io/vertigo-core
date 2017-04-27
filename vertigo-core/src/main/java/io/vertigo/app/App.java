@@ -74,9 +74,4 @@ public interface App {
 	 */
 	ComponentSpace getComponentSpace();
 
-	// added
-
-	String getName();
-
-	String getId();
 }

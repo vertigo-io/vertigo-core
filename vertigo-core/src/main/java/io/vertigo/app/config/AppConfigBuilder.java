@@ -29,6 +29,7 @@ import io.vertigo.util.ListBuilder;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
+	private String myAppName;
 	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
 	private final BootConfigBuilder myBootConfigBuilder;
 	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
@@ -48,6 +49,14 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public BootConfigBuilder beginBoot() {
 		return myBootConfigBuilder;
+	}
+
+	public void withAppName(final String appName) {
+		Assertion.checkState(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName);
+		Assertion.checkArgNotEmpty(appName);
+		// ---
+		myAppName = appName;
+
 	}
 
 	/**
@@ -78,9 +87,15 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
+		if (myAppName == null) {
+			myAppName = "myApp";
+		}
+
 		return new AppConfig(
+				myAppName,
 				myBootConfigBuilder.build(),
 				myModuleConfigsBuilder.unmodifiable().build(),
 				myComponentInitializerConfigsBuilder.unmodifiable().build());
 	}
+
 }

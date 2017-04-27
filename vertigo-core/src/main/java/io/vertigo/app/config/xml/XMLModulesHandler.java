@@ -67,7 +67,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		config, boot, module, init,
+		app, config, boot, module, init,
 		//---
 		definitions, resource, provider,
 		//---
@@ -81,6 +81,8 @@ final class XMLModulesHandler extends DefaultHandler {
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
+			case app:
+				break;
 			case boot:
 				bootConfigBuilder.endBoot();
 				bootConfigBuilder = null;
@@ -121,6 +123,9 @@ final class XMLModulesHandler extends DefaultHandler {
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
 		switch (TagName.valueOf(qName)) {
+			case app:
+				final String appName = attrs.getValue("name");
+				appConfigBuilder.withAppName(appName);
 			case boot:
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
