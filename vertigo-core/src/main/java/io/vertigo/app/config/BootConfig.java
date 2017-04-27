@@ -32,7 +32,7 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class BootConfig {
-	private final Optional<LogConfig> logConfigOption;
+	private final Optional<LogConfig> logConfigOpt;
 	private final boolean verbose;
 	@JsonExclude
 	private final AopPlugin aopPlugin;
@@ -46,17 +46,17 @@ public final class BootConfig {
 	 * @param verbose if logs are enabled during startup
 	 */
 	BootConfig(
-			final Optional<LogConfig> logConfigOption,
+			final Optional<LogConfig> logConfigOpt,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
 			final boolean verbose) {
-		Assertion.checkNotNull(logConfigOption);
+		Assertion.checkNotNull(logConfigOpt);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
-		this.logConfigOption = logConfigOption;
+		this.logConfigOpt = logConfigOpt;
 		this.componentConfigs = componentConfigs;
 		this.pluginConfigs = pluginConfigs;
 		this.verbose = verbose;
@@ -76,7 +76,7 @@ public final class BootConfig {
 	 * @return the logconfig
 	 */
 	public Optional<LogConfig> getLogConfig() {
-		return logConfigOption;
+		return logConfigOpt;
 	}
 
 	/**

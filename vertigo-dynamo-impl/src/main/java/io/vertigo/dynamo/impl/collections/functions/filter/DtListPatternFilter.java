@@ -59,10 +59,10 @@ public final class DtListPatternFilter<D extends DtObject> implements Predicate<
 
 		//On test les patterns dans l'ordre
 		for (final FilterPattern filterPatternTemp : FilterPattern.values()) {
-			final Optional<String[]> parsedFilterOption = DtListPatternFilterUtil.parseFilter(filterString, filterPatternTemp.getPattern());
-			if (parsedFilterOption.isPresent()) {
+			final Optional<String[]> parsedFilterOpt = DtListPatternFilterUtil.parseFilter(filterString, filterPatternTemp.getPattern());
+			if (parsedFilterOpt.isPresent()) {
 				foundFilterPattern = filterPatternTemp;
-				foundParsedFilter = parsedFilterOption.get();
+				foundParsedFilter = parsedFilterOpt.get();
 				break;
 			}
 		}

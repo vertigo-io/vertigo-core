@@ -44,11 +44,11 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final DtList<R> dtc;
 	private final List<Facet> facets;
 	private final Map<R, Map<DtField, String>> highlights;
-	private final Optional<FacetDefinition> clusterFacetDefinition;
+	private final Optional<FacetDefinition> clusterFacetDefinitionOpt;
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
 	private final S source;
-	private final Optional<FacetedQuery> query;
+	private final Optional<FacetedQuery> fecetedQueryOpt;
 
 	/**
 	 * Constructor.
@@ -71,11 +71,11 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		Assertion.checkNotNull(clusteredDtc);
 		Assertion.checkNotNull(highlights);
 		//-----
-		this.query = query;
+		this.fecetedQueryOpt = query;
 		this.count = count;
 		this.dtc = dtc;
 		this.facets = facets;
-		this.clusterFacetDefinition = clusterFacetDefinition;
+		this.clusterFacetDefinitionOpt = clusterFacetDefinition;
 		this.clusteredDtc = clusteredDtc;
 		this.highlights = highlights;
 		this.source = source;
@@ -93,7 +93,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return Facettes de requète
 	 */
 	public Optional<FacetedQuery> getFacetedQuery() {
-		return query;
+		return fecetedQueryOpt;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return FacetDefinition du cluster des documents par valeur de facette, si demandé lors de la requête.
 	 */
 	public Optional<FacetDefinition> getClusterFacetDefinition() {
-		return clusterFacetDefinition;
+		return clusterFacetDefinitionOpt;
 	}
 
 	/**

@@ -58,7 +58,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	private DtDefinition dtDefinition;
 	private final String myName;
-	private DefinitionReference<DtDefinition> myFragment;
+	private DefinitionReference<DtDefinition> myFragmentRef;
 	private String myPackageName;
 	private DtStereotype myStereotype;
 	private DtField myIdField;
@@ -98,7 +98,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.checkNotNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
-		myFragment = new DefinitionReference<>(fragment);
+		myFragmentRef = new DefinitionReference<>(fragment);
 		return this;
 	}
 
@@ -320,7 +320,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		dtDefinition = new DtDefinition(
 				myName,
-				Optional.ofNullable(myFragment),
+				Optional.ofNullable(myFragmentRef),
 				myPackageName,
 				myStereotype,
 				myFields,

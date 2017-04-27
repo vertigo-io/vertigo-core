@@ -46,20 +46,20 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
-	private final Optional<IndexPlugin> indexPlugin;
+	private final Optional<IndexPlugin> indexPluginOpt;
 
 	private final FacetFactory facetFactory;
 	private final DtListProcessor listProcessor;
 
 	/**
 	 * Constructor.
-	 * @param indexPlugin Plugin optionnel d'index
+	 * @param indexPluginOpt Plugin optionnel d'index
 	 */
 	@Inject
-	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPlugin) {
-		Assertion.checkNotNull(indexPlugin);
+	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPluginOpt) {
+		Assertion.checkNotNull(indexPluginOpt);
 		//-----
-		this.indexPlugin = indexPlugin;
+		this.indexPluginOpt = indexPluginOpt;
 		facetFactory = new FacetFactory(this);
 		listProcessor = new DtListProcessorImpl();
 	}
@@ -108,8 +108,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
-		Assertion.checkState(indexPlugin.isPresent(), "An IndexPlugin is required to use this function");
+		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
-		return new IndexDtListFunctionBuilderImpl<>(indexPlugin.get());
+		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
 	}
 }

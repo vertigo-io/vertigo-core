@@ -45,7 +45,7 @@ import io.vertigo.lang.Plugin;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Optional<LogConfig> myLogConfigOption = Optional.empty(); //par défaut
+	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean myVerbose;
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
@@ -84,7 +84,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		myLogConfigOption = Optional.of(logConfig);
+		myLogConfigOpt = Optional.of(logConfig);
 		return this;
 	}
 
@@ -163,7 +163,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				.addComponent(NodeManager.class, NodeManagerImpl.class);
 
 		return new BootConfig(
-				myLogConfigOption,
+				myLogConfigOpt,
 				myComponentConfigs,
 				myPluginConfigs,
 				myAopPlugin,

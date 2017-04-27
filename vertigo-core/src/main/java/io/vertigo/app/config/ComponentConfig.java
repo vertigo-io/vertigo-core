@@ -41,7 +41,7 @@ import io.vertigo.lang.Component;
 public final class ComponentConfig {
 	private final String id;
 	private final Class<? extends Component> implClass;
-	private final Optional<Class<? extends Component>> apiClass;
+	private final Optional<Class<? extends Component>> apiClassOpt;
 	private final Map<String, String> params;
 
 	/**
@@ -64,7 +64,7 @@ public final class ComponentConfig {
 		//-----
 		this.id = id;
 		//-----
-		this.apiClass = apiClassOpt;
+		this.apiClassOpt = apiClassOpt;
 		this.implClass = implClass;
 
 		this.params = params
@@ -92,7 +92,7 @@ public final class ComponentConfig {
 	 * @return api of the component
 	 */
 	public Optional<Class<? extends Component>> getApiClass() {
-		return apiClass;
+		return apiClassOpt;
 	}
 
 	/**

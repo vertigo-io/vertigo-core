@@ -135,7 +135,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 		}
 
 		//On garde les infos qui sont basés sur le premier élément
-		final Optional<FacetedQuery> facetedQuery = firstResult.getFacetedQuery();
+		final Optional<FacetedQuery> facetedQueryOpt = firstResult.getFacetedQuery();
 		final DtList<R> results = new DtList<>(firstResult.getDtList().getDefinition()); //faux : le type de la liste est incorrect, mais heureusement elle est vide.
 		final S source = firstResult.getSource();
 
@@ -153,7 +153,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 			clusterFacetDefinitionOpt = Optional.empty();
 		}
 		return new FacetedQueryResult<>(
-				facetedQuery,
+				facetedQueryOpt,
 				totalCount,
 				results,
 				facets,

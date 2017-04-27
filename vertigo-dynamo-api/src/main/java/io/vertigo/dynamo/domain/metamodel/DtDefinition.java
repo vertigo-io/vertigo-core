@@ -44,7 +44,7 @@ public final class DtDefinition implements Definition {
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
 
 	/** if the definition is a fragment. */
-	private final Optional<DefinitionReference<DtDefinition>> fragment;
+	private final Optional<DefinitionReference<DtDefinition>> fragmentOpt;
 
 	/** name of the definition. */
 	private final String name;
@@ -61,7 +61,7 @@ public final class DtDefinition implements Definition {
 	private final DtStereotype stereotype;
 
 	/** id Field */
-	private final Optional<DtField> idField;
+	private final Optional<DtField> idFieldOpt;
 
 	private final Optional<DtField> sortFieldOpt;
 	private final Optional<DtField> displayFieldOpt;
@@ -91,7 +91,7 @@ public final class DtDefinition implements Definition {
 		//-----
 		this.name = name;
 		//
-		this.fragment = fragment;
+		this.fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
 		this.packageName = packageName;
@@ -107,16 +107,16 @@ public final class DtDefinition implements Definition {
 			}
 			doRegisterDtField(dtField);
 		}
-		idField = Optional.ofNullable(id);
+		idFieldOpt = Optional.ofNullable(id);
 		this.dataSpace = dataSpace;
 		//-----
 		Assertion.when(fragment.isPresent())
 				.check(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
 		//Persistent => ID
 		Assertion.when(stereotype.isPersistent())
-				.check(() -> idField.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+				.check(() -> idFieldOpt.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
 		Assertion.when(!stereotype.isPersistent())
-				.check(() -> !idField.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
+				.check(() -> !idFieldOpt.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		return fragment.map(dtDefinitionDefinitionReference -> dtDefinitionDefinitionReference.get());
+		return fragmentOpt.map(dtDefinitionDefinitionReference -> dtDefinitionDefinitionReference.get());
 	}
 
 	/**
@@ -222,7 +222,7 @@ public final class DtDefinition implements Definition {
 	 * @return Champ identifiant l'identifiant
 	 */
 	public Optional<DtField> getIdField() {
-		return idField;
+		return idFieldOpt;
 	}
 
 	/**

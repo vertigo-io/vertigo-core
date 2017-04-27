@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
@@ -96,11 +97,9 @@ public abstract class UserSession implements Serializable {
 	 * @return Set des roles.
 	 */
 	public final Set<Role> getRoles() {
-		final Set<Role> roleSet = new HashSet<>();
-		for (final DefinitionReference<Role> roleReference : roleRefs) {
-			roleSet.add(roleReference.get());
-		}
-		return Collections.unmodifiableSet(roleSet);
+		return roleRefs.stream()
+				.map(roleRef -> roleRef.get())
+				.collect(Collectors.toSet());
 	}
 
 	/**

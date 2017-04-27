@@ -41,10 +41,10 @@ public interface IndexPlugin extends Plugin {
 	 * @param searchedFields Liste des champs sur lesquel porte la recherche  (non null)
 	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
 	 * @param listState List state (sort, skip, limit)
-	 * @param boostedField Champ boosté (optionnel : aucun)
+	 * @param boostedFieldOpt Champ boosté (optionnel : aucun)
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
 	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState,
-			final Optional<DtField> boostedField, final DtList<D> dtc);
+			final Optional<DtField> boostedFieldOpt, final DtList<D> dtc);
 }

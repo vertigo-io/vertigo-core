@@ -67,27 +67,27 @@ public final class ComponentLoader {
 
 	/**
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
-	 * @param optionalParamManager optional paramManager
+	 * @param paramManagerOpt optional paramManager
 	 * @param moduleConfigs the config of the module to add.
 	 */
-	public void injectAllComponentsAndAspects(final Optional<ParamManager> optionalParamManager, final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponentsAndAspects(final Optional<ParamManager> paramManagerOpt, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponents(optionalParamManager, moduleConfig.getName(), moduleConfig.getComponentConfigs());
+			injectComponents(paramManagerOpt, moduleConfig.getName(), moduleConfig.getComponentConfigs());
 			injectAspects(moduleConfig.getAspectConfigs());
 		}
 	}
 
 	/**
 	 * Adds all the components defined by theur configs.
-	 * @param paramManagerOption the optional manager of params
+	 * @param paramManagerOpt the optional manager of params
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	public void injectComponents(final Optional<ParamManager> paramManagerOption, final String moduleName, final List<ComponentConfig> componentConfigs) {
+	public void injectComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(componentSpace);
-		Assertion.checkNotNull(paramManagerOption);
+		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
 		Assertion.checkNotNull(componentConfigs);
 		//---
@@ -116,7 +116,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant (y compris plugin)
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Component component = createComponentWithOptions(paramManagerOption, componentProxyContainer, componentConfig);
+				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			}
@@ -182,13 +182,20 @@ public final class ComponentLoader {
 		return instance;
 	}
 
-	private static <C extends Component> C createInstance(final Container container, final Optional<ParamManager> paramManagerOption, final ComponentConfig componentConfig) {
-		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOption, componentConfig.getParams());
+	private static <C extends Component> C createInstance(
+			final Container container,
+			final Optional<ParamManager> paramManagerOpt,
+			final ComponentConfig componentConfig) {
+		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams());
 	}
 
-	private Component createComponentWithOptions(final Optional<ParamManager> paramManagerOption, final ComponentProxyContainer componentContainer, final ComponentConfig componentConfig) {
+	//ici
+	private Component createComponentWithOptions(
+			final Optional<ParamManager> paramManagerOpt,
+			final ComponentProxyContainer componentContainer,
+			final ComponentConfig componentConfig) {
 		// 1. An instance is created
-		final Component instance = createInstance(componentContainer, paramManagerOption, componentConfig);
+		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		return injectAspects(instance, componentConfig.getImplClass());
@@ -198,15 +205,19 @@ public final class ComponentLoader {
 	 * Creates a component that use the injector but adds params support.
 	 * @param clazz the clazz of the object to create
 	 * @param container the container of the known components
-	 * @param paramManagerOption the optional ParamManager needed to use global params resolution
+	 * @param paramManagerOpt the optional ParamManager needed to use global params resolution
 	 * @param params the local params
 	 * @return the component created
 	 */
-	public static <T> T createInstance(final Class<T> clazz, final Container container, final Optional<ParamManager> paramManagerOption, final Map<String, String> params) {
-		Assertion.checkNotNull(paramManagerOption);
+	public static <T> T createInstance(
+			final Class<T> clazz,
+			final Container container,
+			final Optional<ParamManager> paramManagerOpt,
+			final Map<String, String> params) {
+		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(params);
 		// ---
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOption, params);
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
 		//---
 		final T component = DIInjector.newInstance(clazz, dualContainer);
