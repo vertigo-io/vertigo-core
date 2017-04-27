@@ -67,11 +67,20 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		app, config, boot, module, init,
+		app,
+		config,
+		boot,
+		module,
+		init,
 		//---
-		definitions, resource, provider,
+		definitions,
+		resource,
+		provider,
 		//---
-		component, plugin, param, aspect,
+		component,
+		plugin,
+		param,
+		aspect,
 		//-----
 		initializer,
 		//----
@@ -126,6 +135,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case app:
 				final String appName = attrs.getValue("name");
 				appConfigBuilder.withAppName(appName);
+				break;
 			case boot:
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
