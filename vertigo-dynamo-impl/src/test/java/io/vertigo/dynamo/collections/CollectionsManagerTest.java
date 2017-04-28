@@ -472,14 +472,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		testTermFilter("ID:\"2\"", 0);
 	}
 
-	/**
-	 * @see DtListProcessor#filterByRange
-	 */
 	@Test
 	public void testCreateFilterByRange() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByRange("Label", Optional.ofNullable("a"), Optional.ofNullable("b"));
-		Assert.assertNotNull(filter);
+		final DtList<Item> items = createItems();
+		final DtList<Item> filteredItems = collectionsManager.filterByRange(items, "LABEL", Optional.ofNullable("a"), Optional.ofNullable("b"));
+		Assert.assertNotNull(filteredItems);
+		Assert.assertEquals(1, filteredItems.size());
 	}
 
 	/**

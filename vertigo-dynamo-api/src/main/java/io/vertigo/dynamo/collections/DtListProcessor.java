@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -47,16 +46,6 @@ public interface DtListProcessor<D extends DtObject> {
 	 * @return Filtre
 	 */
 	DtListProcessor<D> filterByValue(final String fieldName, final Serializable value);
-
-	/**
-	 * Constructeur d'un filtre de range.
-	 * @param fieldName Nom du champ
-	 * @param min Valeur minimale
-	 * @param max Valeur maximale
-	 * @return Filtre
-	 * @param <C> Type des bornes
-	 */
-	<C extends Comparable<?>> DtListProcessor<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.

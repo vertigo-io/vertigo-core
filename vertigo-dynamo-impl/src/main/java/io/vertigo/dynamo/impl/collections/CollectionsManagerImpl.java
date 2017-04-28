@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,9 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
@@ -151,5 +154,13 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
+	}
+
+	@Override
+	public <C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max) {
+		final Predicate<D> predicate = new DtListRangeFilter<>(fieldName, min, max, true, true);
+		return list.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(list.getDefinition()));
 	}
 }

@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.util.Optional;
+
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -34,21 +36,31 @@ import io.vertigo.lang.Manager;
 public interface CollectionsManager extends Manager {
 	/**
 	 * Builds a sub list from a list without changing it.
-	 * @param dtc the list to filter
+	 * @param list the list to filter
 	 * @param start the start index (Included)
 	 * @param end the end index (exculed)
 	 * @return the filtered list
 	 */
-	<D extends DtObject> DtList<D> subList(final DtList<D> dtc, final int start, final int end);
+	<D extends DtObject> DtList<D> subList(final DtList<D> list, final int start, final int end);
 
 	/**
 	 * Sorts a list from a column.
-	 * @param dtc the list to sort
+	 * @param list the list to sort
 	 * @param fieldName the field name
 	 * @param desc if the sotr is desc
 	 * @return the sorted list
 	 */
-	<D extends DtObject> DtList<D> sort(final DtList<D> dtc, final String fieldName, final boolean desc);
+	<D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
+
+	/**
+	 * Constructeur d'un filtre de range.
+	 * @param fieldName Nom du champ
+	 * @param min Valeur minimale
+	 * @param max Valeur maximale
+	 * @return Filtre
+	 * @param <C> Type des bornes
+	 */
+	<C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.

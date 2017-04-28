@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.collections;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -31,7 +30,6 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.Assertion;
@@ -75,13 +73,6 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 	@Override
 	public DtListProcessor<D> filter(final ListFilter listFilter) {
 		final Predicate<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
-		return add(new FilterFunction<>(filter));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <C extends Comparable<?>> DtListProcessor<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
-		final Predicate<D> filter = new DtListRangeFilter<>(fieldName, min, max, true, true);
 		return add(new FilterFunction<>(filter));
 	}
 
