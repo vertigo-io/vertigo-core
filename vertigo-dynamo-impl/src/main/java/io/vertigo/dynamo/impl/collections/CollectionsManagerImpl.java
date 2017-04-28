@@ -25,9 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 
@@ -48,7 +46,6 @@ import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
@@ -117,7 +114,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
-		final DtList<R> filteredDtList = filter(dtList, facetedQuery);
+		final DtList<R> filteredDtList = dtList.stream().filter(filter(facetedQuery)).collect(VCollectors.toDtList(dtList.getDefinition()));
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
 
@@ -136,13 +133,13 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	//=======================Filtrage==========================================
 	//=========================================================================
-	private <D extends DtObject> DtList<D> filter(final DtList<D> dtList, final FacetedQuery facetedQuery) {
+	private <D extends DtObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
-		Function<DtList<D>, DtList<D>> filter = list -> list;
+		Predicate<D> predicate = list -> true;
 		for (final ListFilter listFilter : listFilters) {
-			filter = filter.andThen(this.<D> filter(listFilter));
+			predicate = predicate.and(this.<D> filter(listFilter));
 		}
-		return filter.apply(dtList);
+		return predicate;
 	}
 
 	/** {@inheritDoc} */
@@ -162,16 +159,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	@Override
-	public <D extends DtObject> DtList<D> filterByValue(final DtList<D> list, final String fieldName, final Serializable value) {
-		final Predicate<D> predicate = new DtListValueFilter<>(fieldName, value);
-		return list.stream()
-				.filter(predicate)
-				.collect(VCollectors.toDtList(list.getDefinition()));
+	public <D extends DtObject> Predicate<D> filterByValue(final String fieldName, final Serializable value) {
+		return new DtListValueFilter<>(fieldName, value);
 	}
 
 	@Override
-	public <D extends DtObject> UnaryOperator<DtList<D>> filter(final ListFilter listFilter) {
-		final Predicate<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
-		return new FilterFunction<>(filter);
+	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
+		return new DtListPatternFilter<>(listFilter.getFilterValue());
 	}
 }

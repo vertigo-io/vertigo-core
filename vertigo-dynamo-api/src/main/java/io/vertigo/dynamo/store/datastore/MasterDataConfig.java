@@ -19,11 +19,11 @@
 package io.vertigo.dynamo.store.datastore;
 
 import java.io.Serializable;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
  * Configuration des données de référence.
@@ -75,5 +75,5 @@ public interface MasterDataConfig {
 	 * @param uri URI de la liste
 	 * @return Fonction à appliquer sur la liste (par rapport à la liste complète).
 	 */
-	Function<DtList, DtList> getFilter(final DtListURIForMasterData uri);
+	Predicate<? super DtObject> getFilter(final DtListURIForMasterData uri);
 }

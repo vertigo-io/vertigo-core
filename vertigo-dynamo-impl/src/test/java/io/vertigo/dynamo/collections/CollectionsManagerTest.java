@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.VCollectors;
 
 /**
  * @author pchretien
@@ -121,18 +123,22 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFilter() {
-		final DtList<Item> result = collectionsManager.filterByValue(createItems(), "LABEL", aaa_ba);
+		final DtList<Item> result = createItems()
+				.stream()
+				.filter(collectionsManager.filterByValue("LABEL", aaa_ba))
+				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testFilterTwoValues() {
-		final Function<DtList, DtList> filterA = list -> collectionsManager.filterByValue(list, "LABEL", "aaa");
-		final Function<DtList, DtList> filterB = list -> collectionsManager.filterByValue(list, "ID", 13L);
+		final Predicate<Item> filterA = collectionsManager.filterByValue("LABEL", "aaa");
+		final Predicate<Item> filterB = collectionsManager.filterByValue("ID", 13L);
 
-		final DtList<Item> result = filterA
-				.andThen(filterB)
-				.apply(createItemsForRangeTest());
+		final DtList<Item> result = createItemsForRangeTest()
+				.stream()
+				.filter(filterA.and(filterB))
+				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(1, result.size());
 	}
 
@@ -354,7 +360,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Item> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final Function<DtList<Item>, DtList<Item>> filter = (list) -> collectionsManager.filterByValue(list, "LABEL", aaa_ba);
+		final Predicate<Item> predicate = collectionsManager.filterByValue("LABEL", aaa_ba);
 		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();
@@ -363,7 +369,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== sort/filter
 		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
-		filterDtc = filter.apply(sortDtc);
+		filterDtc = sortDtc.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sort/sublist
@@ -373,13 +381,13 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sort
-		filterDtc = filter.apply(dtc);
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		sortDtc = sort.apply(filterDtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sublist
-		filterDtc = filter.apply(dtc);
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		subList = subList(filterDtc, 0, filterDtc.size() - 1);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
@@ -393,7 +401,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== sublist/filter
 		subList = subList(dtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		filterDtc = filter.apply(subList);
+		filterDtc = subList.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// === dtc non modifié
@@ -403,9 +411,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testCreateFilterForValue() {
-		final UnaryOperator<DtList<DtObject>> filter = collectionsManager
+		final Predicate predicate = collectionsManager
 				.filter(ListFilter.of("LABEL" + ":\"aaa\""));
-		Assert.assertNotNull(filter);
+		Assert.assertNotNull(predicate);
 	}
 
 	@Test
@@ -431,8 +439,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testCreateFilter() {
-		final UnaryOperator<DtList<DtObject>> filter = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
-		Assert.assertNotNull(filter);
+		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
+		Assert.assertNotNull(predicate);
 	}
 
 	//	/**
@@ -479,17 +487,19 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {
-		final DtList<Item> result = collectionsManager
-				.<Item> filter(ListFilter.of(filterString))
-				.apply(createItemsForRangeTest());
+		final DtList<Item> result = createItemsForRangeTest()
+				.stream()
+				.filter(collectionsManager.<Item> filter(ListFilter.of(filterString)))
+				.collect(VCollectors.toDtList(Item.class));
+
 		Assert.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final UnaryOperator<DtList<Item>> filter = collectionsManager
+		final Predicate<Item> predicate = collectionsManager
 				.filter(ListFilter.of(filterString));
-		Assert.assertNotNull(filter);
-		final DtList<Item> result = filter.apply(createItemsForRangeTest());
+		Assert.assertNotNull(predicate);
+		final DtList<Item> result = createItemsForRangeTest().stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(countEspected, result.size());
 	}
 

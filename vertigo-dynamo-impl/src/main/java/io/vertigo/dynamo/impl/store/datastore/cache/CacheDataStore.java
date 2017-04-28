@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -141,7 +142,10 @@ public final class CacheDataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList list = storeManager.getMasterDataConfig().getFilter(uri).apply(unFilteredDtc);
+		final DtList list = unFilteredDtc
+				.stream()
+				.filter(storeManager.getMasterDataConfig().getFilter(uri))
+				.collect(VCollectors.toDtList(unFilteredDtc.getDefinition()));
 		return collectionsManager.sort(list, uri.getDtDefinition().getSortField().get().getName(), false);
 	}
 

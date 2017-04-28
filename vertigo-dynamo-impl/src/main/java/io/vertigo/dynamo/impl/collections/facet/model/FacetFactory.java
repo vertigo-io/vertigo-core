@@ -36,6 +36,7 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
@@ -95,8 +96,9 @@ public final class FacetFactory {
 
 	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
-		return collectionManager.<D> filter(listFilter)
-				.apply(fullDtList);
+		return fullDtList.stream()
+				.filter(collectionManager.<D> filter(listFilter))
+				.collect(VCollectors.toDtList(fullDtList.getDefinition()));
 	}
 
 	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {

@@ -20,7 +20,7 @@ package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
+import java.util.function.Predicate;
 
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -37,12 +37,22 @@ import io.vertigo.lang.Manager;
  */
 public interface CollectionsManager extends Manager {
 	/**
+	 * Constructeur d'un filtre de range.
+	 * @param fieldName Nom du champ
+	 * @param min Valeur minimale
+	 * @param max Valeur maximale
+	 * @return Filtre
+	 * @param <C> Type des bornes
+	 */
+	<C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max);
+
+	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
 	 *
 	 * @param listFilter Filtre de liste
 	 * @return Function de filtrage
 	 */
-	<D extends DtObject> UnaryOperator<DtList<D>> filter(final ListFilter listFilter);
+	<D extends DtObject> Predicate<D> filter(final ListFilter listFilter);
 
 	/**
 	 * Constructeur d'un filtre champ = valeur.
@@ -50,7 +60,7 @@ public interface CollectionsManager extends Manager {
 	 * @param value Valeur
 	 * @return Filtre
 	 */
-	<D extends DtObject> DtList<D> filterByValue(final DtList<D> list, final String fieldName, final Serializable value);
+	<D extends DtObject> Predicate<D> filterByValue(final String fieldName, final Serializable value);
 
 	/**
 	 * Builds a sub list from a list without changing it.
@@ -69,16 +79,6 @@ public interface CollectionsManager extends Manager {
 	 * @return the sorted list
 	 */
 	<D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
-
-	/**
-	 * Constructeur d'un filtre de range.
-	 * @param fieldName Nom du champ
-	 * @param min Valeur minimale
-	 * @param max Valeur maximale
-	 * @return Filtre
-	 * @param <C> Type des bornes
-	 */
-	<C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
