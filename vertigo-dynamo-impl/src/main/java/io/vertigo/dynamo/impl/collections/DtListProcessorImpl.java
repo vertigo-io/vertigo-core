@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -35,8 +34,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 
@@ -56,11 +53,6 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 		this.listFunctions = listFunctions;
 	}
 
-	// Getteur sur Home car dépendance cyclique entre CollectionsManager et StoreManager
-	private static StoreManager getStoreManager() {
-		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
-	}
-
 	private DtListProcessorImpl<D> createNewDtListProcessor(final Function<DtList<D>, DtList<D>> listFunction) {
 		Assertion.checkNotNull(listFunction);
 		return new DtListProcessorImpl<>(new ListBuilder<Function<DtList<D>, DtList<D>>>().addAll(listFunctions).add(listFunction).unmodifiable().build());
@@ -70,12 +62,6 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 	@Override
 	public DtListProcessor<D> add(final UnaryOperator<DtList<D>> listFunction) {
 		return createNewDtListProcessor(listFunction);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor<D> sort(final String fieldName, final boolean desc) {
-		return add(new SortFunction<>(fieldName, desc, getStoreManager()));
 	}
 
 	/** {@inheritDoc} */

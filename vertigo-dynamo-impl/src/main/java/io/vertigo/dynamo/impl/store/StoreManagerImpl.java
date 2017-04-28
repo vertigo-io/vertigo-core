@@ -76,7 +76,7 @@ public final class StoreManagerImpl implements StoreManager {
 		//---
 		//On enregistre le plugin principal du broker
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
-		dataStore = new DataStoreImpl(this, transactionManager, eventBusManager, dataStoreConfig);
+		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, dataStoreConfig);
 		//-----
 		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);

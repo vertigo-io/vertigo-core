@@ -18,13 +18,16 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
@@ -38,6 +41,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -76,6 +80,28 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 			subDtc.add(dtc.get(i));
 		}
 		return subDtc;
+	}
+
+	private static StoreManager getStoreManager() {
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
+	}
+
+	@Override
+	public <D extends DtObject> DtList<D> sort(final DtList<D> dtc, final String fieldName, final boolean desc) {
+		Assertion.checkNotNull(dtc);
+		Assertion.checkArgNotEmpty(fieldName);
+		//-----
+		//On crée une liste triable par l'utilitaire java.util.Collections
+		final List<D> list = new ArrayList<>(dtc);
+
+		//On trie.
+		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), dtc.getDefinition(), fieldName, desc);
+		list.sort(comparator);
+
+		//On reconstitue la collection.
+		final DtList<D> sortedDtc = new DtList<>(dtc.getDefinition());
+		sortedDtc.addAll(list);
+		return sortedDtc;
 	}
 
 	/** {@inheritDoc} */

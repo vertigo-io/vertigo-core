@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.store.datastore.cache;
 
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -42,6 +43,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class CacheDataStore {
+	private final CollectionsManager collectionsManager;
 	private final StoreManager storeManager;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
 	private final LogicalDataStoreConfig logicalStoreConfig;
@@ -52,11 +54,13 @@ public final class CacheDataStore {
 	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig Data store configuration
 	 */
-	public CacheDataStore(final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public CacheDataStore(final CollectionsManager collectionsManager, final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
+		this.collectionsManager = collectionsManager;
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
@@ -137,9 +141,8 @@ public final class CacheDataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		return storeManager.getMasterDataConfig().getFilter(uri)
-				.sort(uri.getDtDefinition().getSortField().get().getName(), false)
-				.apply(unFilteredDtc);
+		final DtList list = storeManager.getMasterDataConfig().getFilter(uri).apply(unFilteredDtc);
+		return collectionsManager.sort(list, uri.getDtDefinition().getSortField().get().getName(), false);
 	}
 
 	/**

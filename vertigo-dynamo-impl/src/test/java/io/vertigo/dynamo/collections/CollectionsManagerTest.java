@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
@@ -54,19 +55,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		dtDefinitionItem = DtObjectUtil.findDtDefinition(Item.class);
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
-	@Test
-	public void testCreateSortState() {
-		final DtListProcessor sortStateAsc = collectionsManager.createDtListProcessor()
-				.sort("Label", false);
-		Assert.assertNotNull(sortStateAsc);
-	}
-
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testHeavySort() {
 		// final DtList<Item> sortDtc;
@@ -78,17 +66,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			dtc.add(mocka);
 		}
 
-		final DtList<Item> sortedDtc = collectionsManager.<Item> createDtListProcessor()
-				.sort("LABEL", false)
-				.apply(dtc);
+		final DtList<Item> sortedDtc = collectionsManager.sort(dtc, "LABEL", false);
 
 		nop(sortedDtc);
 
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testSort() {
 		DtList<Item> sortDtc;
@@ -99,10 +82,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager
-				.<Item> createDtListProcessor()
-				.sort("LABEL", false)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "LABEL", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
@@ -110,16 +90,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createDtListProcessor()
-				.sort("LABEL", true)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "LABEL", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testNumericSort() {
 		DtList<Item> sortDtc;
@@ -130,10 +105,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager
-				.<Item> createDtListProcessor()
-				.sort("ID", false)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "ID", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
@@ -141,9 +113,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createDtListProcessor()
-				.sort("ID", true)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "ID", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
@@ -306,9 +276,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(2000, result.size(), 0);
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testSortWithIndex() {
 		DtList<Item> sortDtc;
@@ -334,9 +301,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testNumericSortWithIndex() {
 		DtList<Item> sortDtc;
@@ -431,22 +395,21 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Item> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByValue("LABEL", aaa_ba);
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LABEL", false);
+		final Function<DtList<Item>, DtList<Item>> filter = (list) -> collectionsManager.<Item> createDtListProcessor()
+				.filterByValue("LABEL", aaa_ba).apply(list);
+		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();
 
 		DtList<Item> sortDtc, filterDtc, subList;
 		// ======================== sort/filter
-		sortDtc = sortState.apply(dtc);
+		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		filterDtc = filter.apply(sortDtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sort/sublist
-		sortDtc = sortState.apply(dtc);
+		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		subList = subList(sortDtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
@@ -454,7 +417,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== filter/sort
 		filterDtc = filter.apply(dtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-		sortDtc = sortState.apply(filterDtc);
+		sortDtc = sort.apply(filterDtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sublist
@@ -466,7 +429,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== sublist/sort
 		subList = subList(dtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		sortDtc = sortState.apply(subList);
+		sortDtc = sort.apply(subList);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sublist/filter

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -52,14 +53,15 @@ public final class DataStoreImpl implements DataStore {
 	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig config of the dataStore
 	 */
-	public DataStoreImpl(final StoreManager storeManager, final VTransactionManager transactionManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public DataStoreImpl(final CollectionsManager collectionsManager, final StoreManager storeManager, final VTransactionManager transactionManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(storeManager, eventBusManager, dataStoreConfig);
+		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, eventBusManager, dataStoreConfig);
 		this.eventBusManager = eventBusManager;
 		this.transactionManager = transactionManager;
 	}

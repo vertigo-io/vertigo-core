@@ -39,14 +39,6 @@ public interface DtListProcessor<D extends DtObject> {
 	 */
 	DtListProcessor<D> add(UnaryOperator<DtList<D>> listFunction);
 
-	/**
-	 * Création d'un tri de colonne.
-	 * @param fieldName Nom du champ concerné par le tri
-	 * @param desc Si tri descendant
-	 * @return Etat du tri
-	 */
-	DtListProcessor<D> sort(final String fieldName, final boolean desc);
-
 	//=======================FILTER============================================
 	/**
 	 * Constructeur d'un filtre champ = valeur.
