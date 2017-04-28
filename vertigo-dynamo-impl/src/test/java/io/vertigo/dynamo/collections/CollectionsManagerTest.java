@@ -431,8 +431,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testCreateFilterByRange() {
-		final DtList<Item> items = createItems();
-		final DtList<Item> filteredItems = collectionsManager.filterByRange(items, "LABEL", Optional.ofNullable("a"), Optional.ofNullable("b"));
+		final DtList<Item> filteredItems = createItems()
+				.stream()
+				.filter(collectionsManager.filterByRange("LABEL", Optional.ofNullable("a"), Optional.ofNullable("b")))
+				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertNotNull(filteredItems);
 		Assert.assertEquals(1, filteredItems.size());
 	}

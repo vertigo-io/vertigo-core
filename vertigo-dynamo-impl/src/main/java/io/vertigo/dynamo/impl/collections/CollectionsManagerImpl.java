@@ -151,11 +151,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	@Override
-	public <C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max) {
-		final Predicate<D> predicate = new DtListRangeFilter<>(fieldName, min, max, true, true);
-		return list.stream()
-				.filter(predicate)
-				.collect(VCollectors.toDtList(list.getDefinition()));
+	public <C extends Comparable<?>, D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
+		return new DtListRangeFilter<>(fieldName, min, max, true, true);
 	}
 
 	@Override

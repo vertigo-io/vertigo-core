@@ -44,7 +44,7 @@ public interface CollectionsManager extends Manager {
 	 * @return Filtre
 	 * @param <C> Type des bornes
 	 */
-	<C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max);
+	<C extends Comparable<?>, D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
