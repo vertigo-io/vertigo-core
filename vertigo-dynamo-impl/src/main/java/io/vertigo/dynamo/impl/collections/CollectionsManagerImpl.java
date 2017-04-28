@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +45,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
@@ -159,6 +161,14 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Override
 	public <C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max) {
 		final Predicate<D> predicate = new DtListRangeFilter<>(fieldName, min, max, true, true);
+		return list.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(list.getDefinition()));
+	}
+
+	@Override
+	public <D extends DtObject> DtList<D> filterByValue(final DtList<D> list, final String fieldName, final Serializable value) {
+		final Predicate<D> predicate = new DtListValueFilter<>(fieldName, value);
 		return list.stream()
 				.filter(predicate)
 				.collect(VCollectors.toDtList(list.getDefinition()));

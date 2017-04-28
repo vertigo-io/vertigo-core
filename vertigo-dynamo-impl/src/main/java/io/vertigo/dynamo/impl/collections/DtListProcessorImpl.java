@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,7 +29,6 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -60,13 +58,6 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 	@Override
 	public DtListProcessor<D> add(final UnaryOperator<DtList<D>> listFunction) {
 		return createNewDtListProcessor(listFunction);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor<D> filterByValue(final String fieldName, final Serializable value) {
-		final Predicate<D> filter = new DtListValueFilter<>(fieldName, value);
-		return add(new FilterFunction<>(filter));
 	}
 
 	/** {@inheritDoc} */

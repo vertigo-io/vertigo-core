@@ -118,48 +118,19 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
-	@Test
-	public void testCreateValueFilter() {
-		final DtListProcessor filter = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("Label", "a");
-		Assert.assertNotNull(filter);
-	}
-
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
-	@Test
-	public void testCreateTwoValuesFilter() {
-		final DtList<Item> items = createItems();
-		final DtList<Item> filteredItems = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", Ba_aa)
-				.filterByValue("LABEL", "b")
-				.apply(items);
-		Assert.assertNotNull(filteredItems);
-	}
-
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
 	@Test
 	public void testFilter() {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", aaa_ba)
-				.apply(createItems());
+		final DtList<Item> result = collectionsManager.filterByValue(createItems(), "LABEL", aaa_ba);
 		Assert.assertEquals(1, result.size());
 	}
 
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
 	@Test
 	public void testFilterTwoValues() {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", "aaa")
-				.filterByValue("ID", 13L)
+		final Function<DtList, DtList> filterA = list -> collectionsManager.filterByValue(list, "LABEL", "aaa");
+		final Function<DtList, DtList> filterB = list -> collectionsManager.filterByValue(list, "ID", 13L);
+
+		final DtList<Item> result = filterA
+				.andThen(filterB)
 				.apply(createItemsForRangeTest());
 		Assert.assertEquals(1, result.size());
 	}
@@ -395,8 +366,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Item> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final Function<DtList<Item>, DtList<Item>> filter = (list) -> collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", aaa_ba).apply(list);
+		final Function<DtList<Item>, DtList<Item>> filter = (list) -> collectionsManager.filterByValue(list, "LABEL", aaa_ba);
 		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();

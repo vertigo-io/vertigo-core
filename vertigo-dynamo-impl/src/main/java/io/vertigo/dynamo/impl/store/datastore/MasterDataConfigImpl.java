@@ -21,10 +21,11 @@ package io.vertigo.dynamo.impl.store.datastore;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.lang.Assertion;
@@ -38,12 +39,12 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/**
 	 * Fonction de DtList acceptant tout (pour rester not null).
 	 */
-	private final DtListProcessor identityFunction;
+	private final Function<DtList, DtList> identityFunction = list -> list;
 
 	/** CollectionsManager.*/
 	private final CollectionsManager collectionsManager;
 
-	private final Map<DtListURIForMasterData, DtListProcessor> mdlUriFilterMap = new HashMap<>();
+	private final Map<DtListURIForMasterData, Function<DtList, DtList>> mdlUriFilterMap = new HashMap<>();
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/**
@@ -54,8 +55,6 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(collectionsManager);
 		//-----
 		this.collectionsManager = collectionsManager;
-		//identity function do nothing
-		identityFunction = collectionsManager.createDtListProcessor();
 	}
 
 	/** {@inheritDoc} */
@@ -64,9 +63,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//-----
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
-				.filterByValue(fieldName, value);
-		register(uri, dtListFilter);
+		register(uri, (list) -> collectionsManager.filterByValue(list, fieldName, value));
 	}
 
 	/** {@inheritDoc} */
@@ -76,10 +73,10 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
 		//-----
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
-				.filterByValue(fieldName1, value1)
-				.filterByValue(fieldName2, value2);
-		register(uri, dtListFilter);
+		final Function<DtList, DtList> filter1 = (list) -> collectionsManager.filterByValue(list, fieldName1, value1);
+		final Function<DtList, DtList> filter2 = (list) -> collectionsManager.filterByValue(list, fieldName2, value2);
+		final Function<DtList, DtList> filter = filter1.andThen(filter2);
+		register(uri, filter);
 	}
 
 	/** {@inheritDoc} */
@@ -90,7 +87,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		register(uri, identityFunction);
 	}
 
-	private void register(final DtListURIForMasterData uri, final DtListProcessor dtListFilter) {
+	private void register(final DtListURIForMasterData uri, final Function<DtList, DtList> dtListFilter) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri);
 		//Criteria peut être null
@@ -126,10 +123,10 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor getFilter(final DtListURIForMasterData uri) {
+	public Function<DtList, DtList> getFilter(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtListProcessor function = mdlUriFilterMap.get(uri);
+		final Function<DtList, DtList> function = mdlUriFilterMap.get(uri);
 		return function != null ? function : identityFunction;
 	}
 }

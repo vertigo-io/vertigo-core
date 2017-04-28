@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.collections;
 
-import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -39,13 +38,6 @@ public interface DtListProcessor<D extends DtObject> {
 	DtListProcessor<D> add(UnaryOperator<DtList<D>> listFunction);
 
 	//=======================FILTER============================================
-	/**
-	 * Constructeur d'un filtre champ = valeur.
-	 * @param fieldName Nom du champ
-	 * @param value Valeur
-	 * @return Filtre
-	 */
-	DtListProcessor<D> filterByValue(final String fieldName, final Serializable value);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.

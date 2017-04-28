@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -34,6 +35,14 @@ import io.vertigo.lang.Manager;
  * @author  pchretien
  */
 public interface CollectionsManager extends Manager {
+	/**
+	 * Constructeur d'un filtre champ = valeur.
+	 * @param fieldName Nom du champ
+	 * @param value Valeur
+	 * @return Filtre
+	 */
+	<D extends DtObject> DtList<D> filterByValue(final DtList<D> list, final String fieldName, final Serializable value);
+
 	/**
 	 * Builds a sub list from a list without changing it.
 	 * @param list the list to filter
