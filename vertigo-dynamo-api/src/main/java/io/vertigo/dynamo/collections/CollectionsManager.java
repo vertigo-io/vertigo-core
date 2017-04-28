@@ -33,6 +33,15 @@ import io.vertigo.lang.Manager;
  */
 public interface CollectionsManager extends Manager {
 	/**
+	 * Builds a sub list from a list without changing it.
+	 * @param dtc the listt to filter
+	 * @param start Ithe start index (Included)
+	 * @param end the end index (exculed)
+	 * @return the filtered list
+	 */
+	<D extends DtObject> DtList<D> subList(final DtList<D> dtc, final int start, final int end);
+
+	/**
 	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
 	 * @param <D> Type de l'objet de la liste
 	 * @return DtListProcessor

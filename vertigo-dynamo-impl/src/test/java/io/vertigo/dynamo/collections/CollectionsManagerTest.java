@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.collections;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -367,15 +366,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test
 	public void testSubListWithIndex() {
 		// on test une implémentation de référence ArrayList
-		final List<String> list = new ArrayList<>();
-		list.add("a");
-		list.add("b");
+		final List<String> list = Arrays.asList("a", "b");
 		Assert.assertEquals(0, list.subList(0, 0).size());
 		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
 		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
@@ -394,15 +388,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.apply(dtc);
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test
 	public void testSubList() {
 		// on test une implémentation de référence ArrayList
-		final List<String> list = new ArrayList<>();
-		list.add("a");
-		list.add("b");
+		final List<String> list = Arrays.asList("a", "b");
 		Assert.assertEquals(0, list.subList(0, 0).size());
 		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
 		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
@@ -415,14 +404,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Item> subList(final DtList<Item> dtc, final int start, final int end) {
-		return collectionsManager.<Item> createDtListProcessor()
-				.filterSubList(start, end)
-				.apply(dtc);
+		return collectionsManager.subList(dtc, start, end);
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testSubListFail1() {
 		// On teste les dépassements.
@@ -430,9 +414,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// "[Assertion.precondition] IndexOutOfBoundException....
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testSubListFail2() {
 		// On teste les dépassements.

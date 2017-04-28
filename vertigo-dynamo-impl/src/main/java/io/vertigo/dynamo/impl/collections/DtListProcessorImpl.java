@@ -36,7 +36,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
-import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -91,12 +90,6 @@ final class DtListProcessorImpl<D extends DtObject> implements DtListProcessor<D
 	public DtListProcessor<D> filter(final ListFilter listFilter) {
 		final Predicate<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
 		return add(new FilterFunction<>(filter));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor<D> filterSubList(final int start, final int end) {
-		return add(new SubListFunction<D>(start, end));
 	}
 
 	/** {@inheritDoc} */

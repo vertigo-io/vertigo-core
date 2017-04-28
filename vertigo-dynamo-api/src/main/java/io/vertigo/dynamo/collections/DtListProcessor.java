@@ -74,15 +74,6 @@ public interface DtListProcessor<D extends DtObject> {
 	 */
 	DtListProcessor<D> filter(final ListFilter listFilter);
 
-	//=======================SUB LIST==========================================
-	/**
-	 * Sous Liste d'une DTC, ne modifie pas la collection d'origine.
-	 * @param start Indexe de début (Inclus)
-	 * @param end Indexe de fin (Exclus)
-	 * @return Collection filtrée
-	 */
-	DtListProcessor<D> filterSubList(final int start, final int end);
-
 	//=========================================================================
 	//=========================================================================
 	/**

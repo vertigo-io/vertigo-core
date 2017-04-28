@@ -151,18 +151,13 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		} else {
 			sortedList = unFilteredList;
 		}
-		final DtList<D> filteredList;
 		if (dtListState.getSkipRows() >= sortedList.size()) {
-			filteredList = new DtList<>(unFilteredList.getDefinition());
+			return new DtList<>(unFilteredList.getDefinition());
 		} else if (dtListState.getMaxRows().isPresent()) {
 			final int start = dtListState.getSkipRows();
 			final int end = Math.min(start + dtListState.getMaxRows().get(), sortedList.size());
-			filteredList = collectionsManager.<D> createDtListProcessor()
-					.filterSubList(start, end)
-					.apply(sortedList);
-		} else {
-			filteredList = sortedList;
+			return collectionsManager.subList(sortedList, start, end);
 		}
-		return filteredList;
+		return sortedList;
 	}
 }

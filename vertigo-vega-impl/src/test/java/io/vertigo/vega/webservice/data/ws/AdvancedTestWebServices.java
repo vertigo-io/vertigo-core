@@ -257,7 +257,8 @@ public final class AdvancedTestWebServices implements WebServices {
 
 	@POST("/_searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact,
+	public List<Contact> testSearchServiceQueryPagined(
+			final ContactCriteria contact,
 			@QueryParam("") final DtListState dtListState) {
 		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
@@ -281,7 +282,8 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	@POST("/uploadFile")
-	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
+	public VFile testUploadFile(
+			final @QueryParam("upfile") VFile inputFile, //
 			final @QueryParam("id") Integer id, //
 			final @QueryParam("note") String note) {
 
@@ -342,7 +344,8 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	@PUT("/contactExtended/{conId}")
-	public ExtendedObject<Contact> testGetExtended(@PathParam("conId") final long conId,
+	public ExtendedObject<Contact> testGetExtended(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("vanillaUnsupportedMultipleIds") final int[] multipleIds) {
 		contact.setConId(conId);
@@ -370,18 +373,13 @@ public final class AdvancedTestWebServices implements WebServices {
 		} else {
 			sortedList = unFilteredList;
 		}
-		final DtList<D> filteredList;
 		if (dtListState.getMaxRows().isPresent()) {
 			final int listSize = sortedList.size();
 			final int usedSkip = Math.min(dtListState.getSkipRows(), listSize);
 			final int usedTop = Math.min(usedSkip + dtListState.getMaxRows().get(), listSize);
-			filteredList = collectionsManager.<D> createDtListProcessor()
-					.filterSubList(usedSkip, usedTop)
-					.apply(sortedList);
-		} else {
-			filteredList = sortedList;
+			return collectionsManager.subList(sortedList, usedSkip, usedTop);
 		}
-		return filteredList;
+		return sortedList;
 	}
 
 	private static <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
