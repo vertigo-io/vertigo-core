@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -45,8 +45,10 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
@@ -59,7 +61,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	private final Optional<IndexPlugin> indexPluginOpt;
 
 	private final FacetFactory facetFactory;
-	private final DtListProcessor listProcessor;
 
 	/**
 	 * Constructor.
@@ -71,7 +72,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//-----
 		this.indexPluginOpt = indexPluginOpt;
 		facetFactory = new FacetFactory(this);
-		listProcessor = new DtListProcessorImpl();
 	}
 
 	@Override
@@ -138,17 +138,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	private <D extends DtObject> DtList<D> filter(final DtList<D> dtList, final FacetedQuery facetedQuery) {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
-		Function<DtList, DtList> filter = createDtListProcessor();
+		Function<DtList<D>, DtList<D>> filter = list -> list;
 		for (final ListFilter listFilter : listFilters) {
-			filter = filter.andThen(createDtListProcessor().filter(listFilter));
+			filter = filter.andThen(this.<D> filter(listFilter));
 		}
 		return filter.apply(dtList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor createDtListProcessor() {
-		return listProcessor;
 	}
 
 	/** {@inheritDoc} */
@@ -173,5 +167,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		return list.stream()
 				.filter(predicate)
 				.collect(VCollectors.toDtList(list.getDefinition()));
+	}
+
+	@Override
+	public <D extends DtObject> UnaryOperator<DtList<D>> filter(final ListFilter listFilter) {
+		final Predicate<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
+		return new FilterFunction<>(filter);
 	}
 }

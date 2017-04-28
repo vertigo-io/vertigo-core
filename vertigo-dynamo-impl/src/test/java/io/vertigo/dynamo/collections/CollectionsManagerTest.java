@@ -35,6 +35,7 @@ import io.vertigo.dynamo.collections.data.domain.Item;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -135,9 +136,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(1, result.size());
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullText() {
 		final DtList<Item> result = collectionsManager.<Item> createIndexDtListFunctionBuilder()
@@ -148,9 +146,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextTokenizer() {
 		final DtList<Item> dtc = createItems();
@@ -180,9 +175,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.apply(dtc);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextElision() {
 		final DtList<Item> dtc = createItems();
@@ -201,9 +193,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue("La recherche ne supporte pas l'elision", filter(dtc, "ouest", 1000, searchedDtFields).size() == 1);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextMultiKeyword() {
 		final DtList<Item> dtc = createItems();
@@ -228,7 +217,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * Vérifie le comportement quand la recherche en commence par addresse trop de term du dictionnaire.
 	 * Par défaut Lucene envoi une erreur TooMany...., le collectionsManager limite aux premiers terms.
-	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
@@ -413,28 +401,19 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testCreateFilterForValue() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
+		final UnaryOperator<DtList<DtObject>> filter = collectionsManager
 				.filter(ListFilter.of("LABEL" + ":\"aaa\""));
 		Assert.assertNotNull(filter);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testTermFilterString() {
 		testTermFilter("LABEL:\"aaa\"", 2);
 		testTermFilter("LABEL:\"aaab\"", 1);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testTermFilterLong() {
 		testTermFilter("ID:\"1\"", 1);
@@ -450,45 +429,35 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(1, filteredItems.size());
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testCreateFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filter(ListFilter.of("LABEL" + ":[a TO b]"));
+		final UnaryOperator<DtList<DtObject>> filter = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
 		Assert.assertNotNull(filter);
 	}
 
-	/**
-	 * @see DtListProcessor#add
-	 */
-	@Test
-	public void testAddDtListFunction() {
-		final DtList<Item> Items = collectionsManager.<Item> createDtListProcessor()
-				.add(input -> {
-					final DtList<Item> result = new DtList<>(Item.class);
-					for (final Item family : input) {
-						if (family.getId() != null && family.getId() == 3L) {
-							result.add(family);
-						}
-					}
-					return result;
-				}).apply(createItemsForRangeTest());
-		Assert.assertEquals(1L, Items.size());
-	}
+	//	/**
+	//	 * @see DtListProcessor#add
+	//	 */
+	//	@Test
+	//	public void testAddDtListFunction() {
+	//		final DtList<Item> Items = collectionsManager.<Item> createDtListProcessor()
+	//				.add(input -> {
+	//					final DtList<Item> result = new DtList<>(Item.class);
+	//					for (final Item family : input) {
+	//						if (family.getId() != null && family.getId() == 3L) {
+	//							result.add(family);
+	//						}
+	//					}
+	//					return result;
+	//				}).apply(createItemsForRangeTest());
+	//		Assert.assertEquals(1L, Items.size());
+	//	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilter() {
 		testRangeFilter("LABEL" + ":[a TO b]", 5);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilterLong() {
 		testRangeFilter("ID:[1 TO 10]", 3);
@@ -499,9 +468,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		testRangeFilter("ID:[* TO *[", 10);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilterString() {
 		testRangeFilter("LABEL:[a TO b]", 5);
@@ -513,14 +479,14 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filter(ListFilter.of(filterString))
+		final DtList<Item> result = collectionsManager
+				.<Item> filter(ListFilter.of(filterString))
 				.apply(createItemsForRangeTest());
 		Assert.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final DtListProcessor<Item> filter = collectionsManager.<Item> createDtListProcessor()
+		final UnaryOperator<DtList<Item>> filter = collectionsManager
 				.filter(ListFilter.of(filterString));
 		Assert.assertNotNull(filter);
 		final DtList<Item> result = filter.apply(createItemsForRangeTest());

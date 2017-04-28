@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -35,6 +36,14 @@ import io.vertigo.lang.Manager;
  * @author  pchretien
  */
 public interface CollectionsManager extends Manager {
+	/**
+	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
+	 *
+	 * @param listFilter Filtre de liste
+	 * @return Function de filtrage
+	 */
+	<D extends DtObject> UnaryOperator<DtList<D>> filter(final ListFilter listFilter);
+
 	/**
 	 * Constructeur d'un filtre champ = valeur.
 	 * @param fieldName Nom du champ
@@ -70,13 +79,6 @@ public interface CollectionsManager extends Manager {
 	 * @param <C> Type des bornes
 	 */
 	<C extends Comparable<?>, D extends DtObject> DtList<D> filterByRange(final DtList<D> list, final String fieldName, final Optional<C> min, final Optional<C> max);
-
-	/**
-	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
-	 * @param <D> Type de l'objet de la liste
-	 * @return DtListProcessor
-	 */
-	<D extends DtObject> DtListProcessor<D> createDtListProcessor();
 
 	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
