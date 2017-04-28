@@ -18,57 +18,132 @@
  */
 package io.vertigo.persona.security.metamodel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 
 /**
- * Une permission est l'association d'une opération et d'une ressource.
+ * Une permission est un droit sur une fonction de l'application.
+ * Ou sur une opération sur une entite.
+ * Sous condition d'un ensemble de règles.
  *
- * @author prahmoune
+ * @author prahmoune, npiedeloup
  */
 @DefinitionPrefix("PRM_")
 public final class Permission implements Definition {
+	//soit permission globale (sans règle)
+	//soit permission une opé sur une entity
 	private final String name;
-	private final String operation;
-	private final String filter;
+	private final String label;
+
+	private final List<String> overrides;
+	private final List<String> grants;
+	private final List<DslMultiExpression> rules; //empty -> always true
+
+	private final Optional<DtDefinition> entityOpt;
+	private final Optional<String> operationOpt;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param name Nom de la permission
-	 * @param operation Operation
+	 * @param code Code de la permission
+	 * @param label Label
 	 */
-	public Permission(final String name, final String operation, final String filter) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(operation);
-		Assertion.checkArgNotEmpty(filter);
+	public Permission(final String code, final String label) {
+		Assertion.checkArgNotEmpty(code);
+		Assertion.checkArgNotEmpty(label);
 		//-----
-		this.name = name;
-		this.operation = operation;
-		this.filter = filter;
+		name = "PRM_" + code;
+		this.label = label;
+
+		overrides = Collections.emptyList();
+		grants = Collections.emptyList();
+		entityOpt = Optional.empty();
+		operationOpt = Optional.empty();
+		rules = Arrays.asList();
 	}
 
 	/**
-	 * @return Filter used to check permission
+	 * Constructor.
+	 *
+	 * @param operation Nom de l'opération
+	 * @param label Label
+	 * @param entityDefinition Entity definition
+	 * @param overrides Liste des opérations overridé par cette opération
+	 * @param grants Liste des opérations données par cette opération
+	 * @param rules Règles d'évaluation
 	 */
-	public String getFilter() {
-		return filter;
+	public Permission(final String operation, final String label, final List<String> overrides, final List<String> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules) {
+		Assertion.checkArgNotEmpty(operation);
+		Assertion.checkArgNotEmpty(label);
+		Assertion.checkNotNull(overrides);
+		Assertion.checkNotNull(grants);
+		Assertion.checkNotNull(entityDefinition);
+		Assertion.checkNotNull(rules);
+		//-----
+		name = "PRM_" + entityDefinition.getLocalName() + Definition.SEPARATOR + operation;
+		this.label = label;
+		this.overrides = new ArrayList<>(overrides);
+		this.grants = new ArrayList<>(grants);
+		entityOpt = Optional.of(entityDefinition);
+		operationOpt = Optional.of(operation);
+		this.rules = new ArrayList<>(rules);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return Label de la permission
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @return Overrides for this permission
+	 */
+	public List<String> getOverrides() {
+		return overrides;
+	}
+
+	/**
+	 * @return Grants for this permission
+	 */
+	public List<String> getGrants() {
+		return grants;
+	}
+
+	/**
+	 * @return Rules used to check permission (empty->Always true)
+	 */
+	public List<DslMultiExpression> getRules() {
+		return rules;
+	}
+
+	/**
+	 * @return entity definition
+	 */
+	public Optional<DtDefinition> getEntityDefinition() {
+		return entityOpt;
 	}
 
 	/**
 	 * @return Operation
 	 */
-	public String getOperation() {
-		return operation;
-	}
-
-	/**
-	 * @return Nom de la permission
-	 */
-	@Override
-	public String getName() {
-		return name;
+	public Optional<String> getOperation() {
+		return operationOpt;
 	}
 
 }

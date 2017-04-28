@@ -18,25 +18,30 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.persona.security.metamodel.OperationName;
 import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.persona.security.metamodel.PermissionName;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -122,92 +127,81 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasRole(final UserSession userSession, final Set<Role> authorizedRoleSet) {
-		Assertion.checkNotNull(userSession);
-		Assertion.checkNotNull(authorizedRoleSet);
-		//-----
-		if (authorizedRoleSet.isEmpty()) {
-			return true;
-		}
-		// Si il existe au moins un role parmi la liste des roles autorises
-		// il faut alors regarder si l'utilisateur possede un role de la liste.
-		final Set<Role> userProfiles = userSession.getRoles();
-		for (final Role role : authorizedRoleSet) {
-			Assertion.checkArgument(Home.getApp().getDefinitionSpace().contains(role.getName()), "Le role {0} n est pas defini dans RoleRegistry.", role);
-			if (userProfiles.contains(role)) {
-				return true;
-			}
-		}
-		// Si on a trouve aucun des roles autorises alors l'acces est interdit
-		return false;
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isAuthorized(final String resource, final String operation) {
-		// Note: il s'agit d'une implementation naïve non optimisee,
-		// réalisée pour valider le modèle
+	public boolean hasPermission(final PermissionName permissionName) {
+		Assertion.checkNotNull(permissionName);
 		final Optional<UserSession> userSessionOption = getCurrentUserSession();
-
 		if (!userSessionOption.isPresent()) {
-			//Si il n'y a pas de session alors pas d'autorisation.
+			// Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}
 		final UserSession userSession = userSessionOption.get();
-		final Map<String, String> securityKeys = userSessionOption.get().getSecurityKeys();
-		return userSession.getRoles().stream()
-				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
-	}
+		return userSession.hasPermission(permissionName);
 
-	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, String> securityKeys) {
-		return role.getPermissions().stream()
-				.anyMatch(permission -> isAuthorized(permission, resource, operation, securityKeys));
-	}
-
-	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, String> securityKeys) {
-		final String filter = permission.getFilter();
-		final String personalFilter = applySecurityKeys(filter, securityKeys);
-		final Pattern pFilter = Pattern.compile(personalFilter);
-		final Pattern pOperation = Pattern.compile(permission.getOperation());
-		return pFilter.matcher(resource).matches() && pOperation.matcher(operation).matches();
-	}
-
-	private static String applySecurityKeys(final String filter, final Map<String, String> securityKeys) {
-		final StringBuilder personalFilter = new StringBuilder();
-		int previousIndex = 0;
-		int nextIndex = filter.indexOf("${", previousIndex);
-		while (nextIndex >= 0) {
-			personalFilter.append(filter.substring(previousIndex, nextIndex));
-			final int endIndex = filter.indexOf('}', nextIndex + "${".length());
-			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
-			final String key = filter.substring(nextIndex + "${".length(), endIndex);
-			final String securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
-			personalFilter.append(securityValue);
-			previousIndex = endIndex + "}".length();
-			nextIndex = filter.indexOf("${", previousIndex);
-		}
-		if (previousIndex < filter.length()) {
-			personalFilter.append(filter.substring(previousIndex, filter.length()));
-		}
-		return personalFilter.toString();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
-		final ResourceNameFactory resourceNameFactory = resourceNameFactories.get(resourceType);
-		Assertion.checkNotNull(resourceNameFactory, "Ce type de resource : {0}, ne possède pas de ResourceNameFactory.", resourceType);
-		final String resourceName = resourceNameFactory.toResourceName(resource);
-		return isAuthorized(resourceName, operation);
+	public <K extends KeyConcept> boolean isAuthorized(final K keyConcept, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConcept);
+		Assertion.checkNotNull(operationName);
+		final Optional<UserSession> userSessionOption = getCurrentUserSession();
+		if (!userSessionOption.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return false;
+		}
+		final UserSession userSession = userSessionOption.get();
+
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		return userSession.getEntityPermissions(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
+				.flatMap(permission -> permission.getRules().stream())
+				.anyMatch(rule -> new CriteriaSecurityRuleTranslator()
+						.on(dtDefinition)
+						.withRule(rule)
+						.withCriteria(userSession.getSecurityKeys())
+						.toCriteria()
+						.toPredicate().test(keyConcept));
+	}
+
+	@Override
+	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConcept);
+		Assertion.checkNotNull(operationName);
+		final Optional<UserSession> userSessionOption = getCurrentUserSession();
+		if (!userSessionOption.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return ""; //Attention : pas de *:*
+		}
+		final UserSession userSession = userSessionOption.get();
+		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
+		securityRuleTranslator.withCriteria(userSession.getSecurityKeys());
+
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final List<Permission> permissions = userSession.getEntityPermissions(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
+				.collect(Collectors.toList());
+		for (final Permission permission : permissions) {
+			for (final DslMultiExpression ruleExpression : permission.getRules()) {
+				securityRuleTranslator.withRule(ruleExpression);
+			}
+		}
+		return securityRuleTranslator.toSearchQuery();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourceNameFactory);
-		//-----
-		resourceNameFactories.put(resourceType, resourceNameFactory);
+	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
+		Assertion.checkNotNull(keyConcept);
+		final Optional<UserSession> userSessionOption = getCurrentUserSession();
+		if (!userSessionOption.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return new ArrayList<>();
+		}
+		final UserSession userSession = userSessionOption.get();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		return userSession.getEntityPermissions(dtDefinition).stream()
+				.map(permission -> permission.getOperation().get())
+				.collect(Collectors.toList());
 	}
+
 }

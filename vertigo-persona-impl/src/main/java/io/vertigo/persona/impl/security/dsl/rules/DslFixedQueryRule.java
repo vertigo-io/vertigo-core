@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.persona.impl.security.dsl.model.DslFixedValue;
+import io.vertigo.persona.security.dsl.model.DslFixedValue;
 
 /**
  * Parsing rule for fixedValue.

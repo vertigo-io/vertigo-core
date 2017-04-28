@@ -1,0 +1,18 @@
+package io.vertigo.persona.security.model
+
+
+create DtDefinition DT_DOSSIER {
+	stereotype : "KeyConcept"
+	key	  DOS_ID				{domain: DO_ID 		label: "Id" 				notNull:"true" }
+	
+	field REG_ID 				{domain: DO_ID label: "Region" notNull:"false" }
+  	field DEP_ID 				{domain: DO_ID label: "Département" notNull:"false" }
+  	field COM_ID 				{domain: DO_ID label: "Commune" notNull:"false" }
+  
+  	field TYP_ID 				{domain: DO_ID label: "Type du dossier" 	notNull:"true"}
+	field TITRE 				{domain: DO_LIBELLE label: "Titre du dossier" 	notNull:"true"}
+	field MONTANT 				{domain: DO_MONTANT label: "Montant du dossier" 	notNull:"true"}
+	field UTI_ID_OWNER 			{domain: DO_ID label: "Utilisateur créateur" notNull:"true" }
+  
+  	field ETA_CD 				{domain: DO_CODE label: "Etat du dossier" 	notNull:"true"}	
+}

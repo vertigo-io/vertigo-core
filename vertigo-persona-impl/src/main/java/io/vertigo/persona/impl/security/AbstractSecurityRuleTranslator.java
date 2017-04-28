@@ -23,16 +23,37 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 
+	private DtDefinition dtDefinition;
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
-	private Map<String, String[]> myUserCriteria;
+	private Map<String, Comparable[]> myUserCriteria;
+
+	public S on(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//-----
+		this.dtDefinition = dtDefinition;
+		return (S) this;
+	}
+
+	/**
+	 * Set security pattern.
+	 * @param securityMultiExpression security parsed expression
+	 * @return this builder
+	 */
+	public final S withRule(final DslMultiExpression securityMultiExpression) {
+		Assertion.checkNotNull(securityMultiExpression);
+		//-----
+		myMultiExpressions.add(securityMultiExpression);
+		return (S) this;
+	}
 
 	/**
 	 * Set security pattern.
@@ -60,7 +81,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
-	public final S withCriteria(final Map<String, String[]> userCriteria) {
+	public final S withCriteria(final Map<String, Comparable[]> userCriteria) {
 		Assertion.checkNotNull(userCriteria);
 		Assertion.checkState(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
 		//-----
@@ -68,11 +89,19 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return (S) this;
 	}
 
+	protected final DtDefinition getDtDefinition() {
+		return dtDefinition;
+	}
+
 	protected final List<DslMultiExpression> getMultiExpressions() {
+		Assertion.checkNotNull(myMultiExpressions, "MultiExpressions was not set");
+		//----
 		return myMultiExpressions;
 	}
 
-	protected final String[] getUserCriteria(final String userProperty) {
+	protected final Comparable[] getUserCriteria(final String userProperty) {
+		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
+		//----
 		return myUserCriteria.get(userProperty);
 	}
 }

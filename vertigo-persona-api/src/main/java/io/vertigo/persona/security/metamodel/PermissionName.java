@@ -16,29 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.rules;
+package io.vertigo.persona.security.metamodel;
 
-import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import java.io.Serializable;
 
 /**
- * Util for parsing security rules.
- * @author npiedeloup
+ * Nom de permission (marqueur).
+ * @author jgarnier, npiedeloup
  */
-public final class DslParserUtil {
+public interface PermissionName extends Serializable {
 
-	private DslParserUtil() {
-		//nothing
-	}
+	/** @return nom de la permission (const case) */
+	String name();
 
-	/**
-	 * @param buildQuery Builder pattern
-	 * @return Parsed pattern
-	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
-	 */
-	public static DslMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
-		return new DslMultiExpressionRule()
-				.parse(buildQuery, 0)
-				.getValue();
-	}
 }

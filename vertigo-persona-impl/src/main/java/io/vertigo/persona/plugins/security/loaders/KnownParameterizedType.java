@@ -16,38 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.rules;
+package io.vertigo.persona.plugins.security.loaders;
 
-import java.util.List;
-
-import io.vertigo.commons.peg.AbstractRule;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
-import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
- * Parsing rule for userProperty.
- * ${(userProperty)}
+ * ParameterizedType use for JsonDeserializer.
  * @author npiedeloup
  */
-final class DslUserPropertyValueRule extends AbstractRule<DslUserPropertyValue, List<Object>> {
+final class KnownParameterizedType implements ParameterizedType {
+	private final Class<?> rawClass;
+	private final Type[] typeArguments;
 
-	DslUserPropertyValueRule() {
-		super(createMainRule(), "userProperty");
+	KnownParameterizedType(final Class<?> rawClass, final Type paramType) {
+		this(rawClass, new Type[] { paramType });
 	}
 
-	private static PegRule<List<Object>> createMainRule() {
-		return PegRules.sequence(
-				DslSyntaxRules.PRE_USER_PROPERTY_VALUE, //0
-				DslSyntaxRules.WORD, //1
-				DslSyntaxRules.POST_USER_PROPERTY_VALUE); //2
+	KnownParameterizedType(final Class<?> rawClass, final Type[] typeArguments) {
+		this.rawClass = rawClass;
+		this.typeArguments = typeArguments;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslUserPropertyValue handle(final List<Object> parsing) {
-		final String userProperty = (String) parsing.get(1);
-		return new DslUserPropertyValue(userProperty);
+	public Type[] getActualTypeArguments() {
+		return typeArguments;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Type getOwnerType() {
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Type getRawType() {
+		return rawClass;
+	}
 }

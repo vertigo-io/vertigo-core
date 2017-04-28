@@ -24,9 +24,9 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.persona.impl.security.dsl.model.DslExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslExpression.ValueOperator;
-import io.vertigo.persona.impl.security.dsl.model.DslValue;
+import io.vertigo.persona.security.dsl.model.DslExpression;
+import io.vertigo.persona.security.dsl.model.DslExpression.ValueOperator;
+import io.vertigo.persona.security.dsl.model.DslValue;
 
 /**
  * Parsing rule for SecurityRuleBuidler's expression.

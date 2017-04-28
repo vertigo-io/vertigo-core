@@ -18,11 +18,11 @@
  */
 package io.vertigo.persona.impl.security;
 
-import io.vertigo.persona.impl.security.dsl.model.DslExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslFixedValue;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression.BoolOperator;
-import io.vertigo.persona.impl.security.dsl.model.DslUserPropertyValue;
+import io.vertigo.persona.security.dsl.model.DslExpression;
+import io.vertigo.persona.security.dsl.model.DslFixedValue;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression.BoolOperator;
+import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
 
 /**
  *
@@ -80,16 +80,17 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private void appendExpression(final StringBuilder query, final DslExpression expressionDefinition) {
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final String[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			final Comparable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
+				query.append(expressionDefinition.getFieldName())
+						.append(":(");
 				String inSep = "";
-				for (final String userValue : userValues) {
+				for (final Comparable userValue : userValues) {
 					query.append(inSep)
-							.append(expressionDefinition.getFieldName())
-							.append(':')
 							.append(userValue);
 					inSep = " ";
 				}
+				query.append(')');
 			}
 		} else if (expressionDefinition.getValue() instanceof DslFixedValue) {
 			query.append(expressionDefinition.getFieldName())

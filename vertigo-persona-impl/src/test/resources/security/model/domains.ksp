@@ -1,0 +1,50 @@
+package io.vertigo.persona.security.model
+
+/**************************************************************************************************/
+/********************************* Formatters *****************************************************/
+/**************************************************************************************************/
+create Formatter FMT_DEFAULT{
+	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
+
+/**************************************************************************************************/
+/********************************* Constraints ****************************************************/
+/**************************************************************************************************/
+
+create Constraint CK_MAX_LENGTH_10 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+	args :"10"
+}
+create Constraint CK_MAX_LENGTH_100 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+	args :"100"
+}
+/**************************************************************************************************/
+/********************************* Domains ********************************************************/
+/**************************************************************************************************/
+
+create Domain DO_MONTANT {
+	dataType : Double
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_ID {
+	dataType : Long
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_CODE {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_10]
+	storeType : "VARCHAR(10)"
+}
+
+create Domain DO_LIBELLE {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
+}

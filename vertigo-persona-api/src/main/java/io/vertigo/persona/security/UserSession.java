@@ -26,18 +26,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.PermissionName;
 
 /**
  * Session d'un utilisateur.
  * Un utilisateur
  * <ul>
  * <li>est authentifie ou non,</li>
- * <li>possede une liste de roles (prealablement enregistres dans la RoleRegistry),</li>
+ * <li>possede une liste de permissions (prealablement enregistres dans la PermissionRegistry),</li>
  * <li>possède une liste d'attributs serialisables</li>.
  * </ul>
  *
@@ -55,9 +56,14 @@ public abstract class UserSession implements Serializable {
 	private final UUID sessionUUID = createUUID();
 
 	/**
-	 * Set des roles autorises pour la session utilisateur.
+	 * Set des permissions global autorisees pour la session utilisateur.
 	 */
-	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
+	private final Map<String, DefinitionReference<Permission>> permissionRefs = new HashMap<>();
+
+	/**
+	 * Set des permissions autorisees par entity pour la session utilisateur.
+	 */
+	private final Map<DefinitionReference<DtDefinition>, Set<DefinitionReference<Permission>>> permissionMapRefs = new HashMap<>();
 
 	/**
 	 * Attributs supplémentaires associées à la session.
@@ -79,45 +85,56 @@ public abstract class UserSession implements Serializable {
 	//=======================GESTION DES ROLES===================================
 	//===========================================================================
 	/**
-	 * Ajoute un role pour l'utilisateur courant.
-	 * Le role doit avoir ete prealablement enregistre.
+	 * Ajoute une permission pour l'utilisateur courant.
+	 * La permission doit avoir ete prealablement enregistree.
 	 *
-	 * @param role Role e ajouter.
+	 * @param permission Permission à ajouter.
+	 * @return This UserSession
 	 */
-	public final UserSession addRole(final Role role) {
-		Assertion.checkNotNull(role);
+	public final UserSession addPermission(final Permission permission) {
+		Assertion.checkNotNull(permission);
 		//-----
-		roleRefs.add(new DefinitionReference<>(role));
+		permissionRefs.put(permission.getName(), new DefinitionReference<>(permission));
+		if (permission.getEntityDefinition().isPresent()) {
+			permissionMapRefs.computeIfAbsent(new DefinitionReference<>(permission.getEntityDefinition().get()), key -> new HashSet<>())
+					.add(new DefinitionReference<>(permission));
+		}
 		return this;
 	}
 
 	/**
-	 * Retourne la liste des roles de securite pour l'utilisateur.
-	 *
-	 * @return Set des roles.
+	 * Retourne la liste des permissions de securite d'une entity pour l'utilisateur.
+	 * @param entityDefinition Entity definition
+	 * @return Set des permissions.
 	 */
-	public final Set<Role> getRoles() {
-		return roleRefs.stream()
-				.map(roleRef -> roleRef.get())
-				.collect(Collectors.toSet());
+	public final Set<Permission> getEntityPermissions(final DtDefinition entityDefinition) {
+		final Set<DefinitionReference<Permission>> entityPermissionRef = permissionMapRefs.get(new DefinitionReference<>(entityDefinition));
+		final Set<Permission> permissionSet = new HashSet<>();
+		if (entityPermissionRef != null) {
+			for (final DefinitionReference<Permission> permissionReference : entityPermissionRef) {
+				permissionSet.add(permissionReference.get());
+			}
+		}
+		return Collections.unmodifiableSet(permissionSet);
 	}
 
 	/**
-	 * @param role Role
-	 * @return Vrai si le role est present
+	 * @param permissionName Permission
+	 * @return Vrai si la permission est presente
 	 */
-	public final boolean hasRole(final Role role) {
-		Assertion.checkNotNull(role);
+	public final boolean hasPermission(final PermissionName permissionName) {
+		Assertion.checkNotNull(permissionName);
 		//-----
-		return roleRefs.contains(new DefinitionReference<>(role));
+		return permissionRefs.containsKey(permissionName.name());
 	}
 
 	/**
-	 * Retrait de tous les roles possedes par l'utilisateur.
+	 * Retrait de toutes les permissions possedes par l'utilisateur.
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
-	public final void clearRoles() {
-		roleRefs.clear();
+	public final void clearPermissions() {
+		permissionRefs.clear();
+		permissionMapRefs.clear();
 	}
 
 	//===========================================================================
@@ -178,7 +195,7 @@ public abstract class UserSession implements Serializable {
 	 * Gestion de la sécurité.
 	 * @return Liste des clés de sécurité et leur valeur.
 	 */
-	public Map<String, String> getSecurityKeys() {
+	public Map<String, Comparable[]> getSecurityKeys() {
 		return Collections.emptyMap();
 	}
 }

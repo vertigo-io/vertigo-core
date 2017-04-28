@@ -16,29 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.rules;
+package io.vertigo.persona.security.dsl.model;
 
-import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.lang.Assertion;
 
 /**
- * Util for parsing security rules.
+ * Fixed content.
+ * (fixedValue)
  * @author npiedeloup
  */
-public final class DslParserUtil {
+public final class DslFixedValue implements DslValue {
+	private final String fixedValue;
 
-	private DslParserUtil() {
-		//nothing
+	/**
+	 * @param fixedValue Fixed content
+	 */
+	public DslFixedValue(final String fixedValue) {
+		Assertion.checkNotNull(fixedValue);
+		//-----
+		this.fixedValue = fixedValue;
 	}
 
 	/**
-	 * @param buildQuery Builder pattern
-	 * @return Parsed pattern
-	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
+	 * @return fixedValue
 	 */
-	public static DslMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
-		return new DslMultiExpressionRule()
-				.parse(buildQuery, 0)
-				.getValue();
+	public String getFixedValue() {
+		return fixedValue;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return fixedValue;
 	}
 }

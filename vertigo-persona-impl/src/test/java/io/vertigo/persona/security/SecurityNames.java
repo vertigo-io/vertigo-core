@@ -16,13 +16,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.model;
+package io.vertigo.persona.security;
 
-/**
- * Query definition.
- * @author npiedeloup
- */
-public interface DslValue {
+import io.vertigo.persona.security.metamodel.OperationName;
+import io.vertigo.persona.security.metamodel.PermissionName;
+import io.vertigo.persona.security.model.Dossier;
 
-	//nothing
+public final class SecurityNames {
+
+	/**
+	 * Enumération des Permissions globales.
+	 */
+	public enum Permissions implements PermissionName {
+		PRM_ADMUSR,
+		PRM_ADMPRO,
+		PRM_ADMAPP
+	}
+
+	/**
+	 * Enumération des Permissions globales.
+	 */
+	public enum DossierPermissions implements PermissionName {
+		PRM_DOSSIER_READ,
+		PRM_DOSSIER_READ_HP,
+		PRM_DOSSIER_WRITE,
+		PRM_DOSSIER_CREATE,
+		PRM_DOSSIER_DELETE
+	}
+
+	/**
+	 * Enumération des opérations de Dossier.
+	 */
+	public enum DossierOperations implements OperationName<Dossier> {
+		READ,
+		READ_HP,
+		WRITE,
+		CREATE,
+		DELETE,
+	}
 }

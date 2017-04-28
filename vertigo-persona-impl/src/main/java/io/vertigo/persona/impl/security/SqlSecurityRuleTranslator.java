@@ -18,10 +18,10 @@
  */
 package io.vertigo.persona.impl.security;
 
-import io.vertigo.persona.impl.security.dsl.model.DslExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslFixedValue;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslUserPropertyValue;
+import io.vertigo.persona.security.dsl.model.DslExpression;
+import io.vertigo.persona.security.dsl.model.DslFixedValue;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
 
 /**
  *
@@ -79,7 +79,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		query.append(expressionDefinition.getFieldName());
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final String[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			final Comparable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
 				if (userValues.length == 1) {
 					query
@@ -88,7 +88,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 				} else {
 					query.append(" IN (");
 					String inSep = "";
-					for (final String userValue : userValues) {
+					for (final Comparable userValue : userValues) {
 						query.append(inSep);
 						query.append(userValue);
 						inSep = ",";

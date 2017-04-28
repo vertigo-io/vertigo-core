@@ -25,9 +25,9 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.persona.impl.security.dsl.model.DslExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression;
-import io.vertigo.persona.impl.security.dsl.model.DslMultiExpression.BoolOperator;
+import io.vertigo.persona.security.dsl.model.DslExpression;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.persona.security.dsl.model.DslMultiExpression.BoolOperator;
 
 /**
  * Parsing rule for query.

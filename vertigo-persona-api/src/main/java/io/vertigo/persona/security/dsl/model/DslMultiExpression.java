@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.model;
+package io.vertigo.persona.security.dsl.model;
 
 import java.util.List;
 

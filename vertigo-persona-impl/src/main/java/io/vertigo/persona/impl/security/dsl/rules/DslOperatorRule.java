@@ -27,7 +27,7 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
-import io.vertigo.persona.impl.security.dsl.model.Operator;
+import io.vertigo.persona.security.dsl.model.Operator;
 
 /**
  * Parsing rule for boolean operator.

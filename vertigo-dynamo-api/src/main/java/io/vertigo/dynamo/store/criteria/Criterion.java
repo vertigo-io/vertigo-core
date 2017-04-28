@@ -51,7 +51,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	}
 
 	@Override
-	String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
+	public String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
 				return dtFieldName.name() + " is not null";

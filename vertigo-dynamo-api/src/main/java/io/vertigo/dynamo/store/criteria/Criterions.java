@@ -152,7 +152,7 @@ public final class Criterions {
 		}
 
 		@Override
-		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
+		public String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 			return "1=1";
 		}
 	}

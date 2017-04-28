@@ -16,37 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.model;
-
-import io.vertigo.lang.Assertion;
+package io.vertigo.persona.security.dsl.model;
 
 /**
- * User property value definition.
- * \$\{userProperty\}
+ * Query definition.
  * @author npiedeloup
  */
-public final class DslUserPropertyValue implements DslValue {
-	private final String userProperty;
+public interface DslValue {
 
-	/**
-	 * @param userProperty User property name
-	 */
-	public DslUserPropertyValue(final String userProperty) {
-		Assertion.checkArgNotEmpty(userProperty);
-		//-----
-		this.userProperty = userProperty;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return userProperty;
-	}
-
-	/**
-	 * @return userProperty
-	 */
-	public String getUserProperty() {
-		return userProperty;
-	}
+	//nothing
 }

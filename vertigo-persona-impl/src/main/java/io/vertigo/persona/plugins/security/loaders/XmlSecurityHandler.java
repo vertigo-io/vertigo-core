@@ -122,8 +122,9 @@ final class XmlSecurityHandler extends DefaultHandler {
 		return new Role(name, description, permissions);
 	}
 
-	//case of <permission id="PRM_READ_ALL_PRODUCTSè" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
+	//case of <permission id="PRM_READ_ALL_PRODUCTS" operation="READ" filter="/products/.*" description="Lire tous les produits"/>
 	private static DefinitionSupplier supplyPermissions(final String id, final String operation, final String filter) {
-		return definitionSpace -> new Permission(id, operation, filter);
+		throw new UnsupportedOperationException("Deprecated use json instead");
+		//return definitionSpace -> new Permission(id, operation, filter);
 	}
 }

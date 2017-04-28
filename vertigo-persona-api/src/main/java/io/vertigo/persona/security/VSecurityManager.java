@@ -18,11 +18,13 @@
  */
 package io.vertigo.persona.security;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Manager;
-import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.persona.security.metamodel.OperationName;
+import io.vertigo.persona.security.metamodel.PermissionName;
 
 /**
  * Gestion centralisee des droits d'acces.
@@ -60,55 +62,42 @@ public interface VSecurityManager extends Manager {
 	<U extends UserSession> U createUserSession();
 
 	/**
-	 * Contrôle d'accès basé sur les rôles.
+	 * Contrôle d'accès basé sur les permissions.
+	 * Indique si l'utilisateur dispose de la permission nécessaire.
 	 *
-	 * L'utilisateur dispose-t-il des droits nécessaires.
-	 * <br/>
-	 * <ul>
-	 * <li>Si la liste des rôles autorisés est vide, on considère que l'objet n'est pas soumis à autorisation et donc l'accès est accordé.</li>
-	 * <li>Si la liste contient au moins un élément alors l'objet est sécurisé et il est nécessaire que
-	 * l'utilisateur dispose d'au moins un des rôles autorisés pour que l'accès soit accordé.</li>
-	 * </ul>
-	 *
-	 * La fonction d'accès autorise la session utilisateur <code>null</code> : il faut alors que la liste des droits soit vide.
-	 *
-	 * @param userSession Session utilisateur. (non null)
-	 * @param authorizedRoleSet Set des roles autorisés. (non null)
-	 *
+	 * @param permissionName permission. (non null)
 	 * @return Si les droits de l'utilisateur lui permettent un accès.
 	 */
-	boolean hasRole(UserSession userSession, Set<Role> authorizedRoleSet);
+	boolean hasPermission(PermissionName permissionName);
 
 	/**
-	 * Controle d'acces base sur les permissions.
-	 *
 	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
 	 * donnee sur la ressource donnee.
 	 *
-	 * @param resource la ressource
+	 * @param keyConcept la ressource
 	 * @param operation l'operation
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
-	 * donnée sur la ressource donnee
+	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation donnée sur la ressource donnee
+	 * @param <K> Type du keyConcept
 	 */
-	boolean isAuthorized(String resource, String operation);
+	<K extends KeyConcept> boolean isAuthorized(final K keyConcept, OperationName<K> operation);
 
 	/**
-	 * Contrôle d'accès basé sur les permissions.
+	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
+	 * donnee sur la ressource donnee.
 	 *
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'opération
-	 * donnée sur la ressource donnée.
-	 * @param resourceType Type de la resource
-	 * @param resource la ressource
-	 * @param operation l'opération
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'opération
-	 * donnée sur la ressource donnée
+	 * @param keyConcept la ressource
+	 * @param operation l'operation
+	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation donnée sur la ressource donnee
+	 * @param <K> Type du keyConcept
 	 */
-	boolean isAuthorized(String resourceType, Object resource, String operation);
+	<K extends KeyConcept> String getSearchSecurity(final K keyConcept, OperationName<K> operation);
 
 	/**
-	 * Enregistre une ResourceNameFactory spécifique pour un type donnée.
-	 * @param resourceType Type de la resource
-	 * @param resourceNameFactory ResourceNameFactory spécifique
+	 * Retourne la liste des opérations autorisées sur le keyConcept.
+	 *
+	 * @param keyConcept objet sécurisé.
+	 * @return liste d'opérations.
+	 * @param <K> Type du keyConcept
 	 */
-	void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory);
+	<K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept);
 }

@@ -16,37 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.impl.security.dsl.model;
-
-import io.vertigo.lang.Assertion;
+package io.vertigo.persona.security.dsl.model;
 
 /**
- * Fixed content.
- * (fixedValue)
+ * Operators.
  * @author npiedeloup
  */
-public final class DslFixedValue implements DslValue {
-	private final String fixedValue;
+public interface Operator {
 
 	/**
-	 * @param fixedValue Fixed content
+	 * @return List of authorized string for this operator
 	 */
-	public DslFixedValue(final String fixedValue) {
-		Assertion.checkNotNull(fixedValue);
-		//-----
-		this.fixedValue = fixedValue;
-	}
-
-	/**
-	 * @return fixedValue
-	 */
-	public String getFixedValue() {
-		return fixedValue;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return fixedValue;
-	}
+	String[] authorizedString();
 }
