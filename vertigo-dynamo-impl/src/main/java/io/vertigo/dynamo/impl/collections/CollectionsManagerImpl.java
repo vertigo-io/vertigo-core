@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
@@ -137,11 +138,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	private <D extends DtObject> DtList<D> filter(final DtList<D> dtList, final FacetedQuery facetedQuery) {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
-		DtListProcessor dtListProcessor = createDtListProcessor();
+		Function<DtList, DtList> filter = createDtListProcessor();
 		for (final ListFilter listFilter : listFilters) {
-			dtListProcessor = dtListProcessor.filter(listFilter);
+			filter = filter.andThen(createDtListProcessor().filter(listFilter));
 		}
-		return dtListProcessor.apply(dtList);
+		return filter.apply(dtList);
 	}
 
 	/** {@inheritDoc} */

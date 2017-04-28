@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -29,15 +30,13 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * @author pchretien
  * @param <D> Type of list's element
  */
-public interface DtListProcessor<D extends DtObject> {
+public interface DtListProcessor<D extends DtObject> extends Function<DtList<D>, DtList<D>> {
 	/**
 	 * Add any function that transform a list into an another list.
 	 * @param listFunction List function
 	 * @return new DtListProcessor completed with this function
 	 */
 	DtListProcessor<D> add(UnaryOperator<DtList<D>> listFunction);
-
-	//=======================FILTER============================================
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
@@ -46,13 +45,4 @@ public interface DtListProcessor<D extends DtObject> {
 	 * @return Function de filtrage
 	 */
 	DtListProcessor<D> filter(final ListFilter listFilter);
-
-	//=========================================================================
-	//=========================================================================
-	/**
-	 * Apply composed functions to list
-	 * @param input List ( will be unchanged)
-	 * @return a new List
-	 */
-	DtList<D> apply(final DtList<D> input);
 }
