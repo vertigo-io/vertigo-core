@@ -45,8 +45,8 @@ import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -157,7 +157,9 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	@Override
 	public <D extends DtObject> Predicate<D> filterByValue(final String fieldName, final Serializable value) {
-		return new DtListValueFilter<>(fieldName, value);
+		//we have to deal with with th null case (isNull).
+		final Predicate predicate = (value == null ? Criterions.isNull(() -> fieldName) : Criterions.isEqualTo(() -> fieldName, (Comparable) value)).toPredicate();
+		return predicate;
 	}
 
 	@Override

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -29,6 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.DateUtil;
@@ -108,7 +108,13 @@ public final class DtListPatternFilterUtil {
 
 	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final Optional<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
-		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.orElse(null));
+		final Predicate predicate;
+		if (filterValue.isPresent()) {
+			predicate = Criterions.isEqualTo(() -> fieldName, filterValue.get()).toPredicate();
+		} else {
+			predicate = Criterions.isNotNull(() -> fieldName).toPredicate();
+		}
+		return predicate;
 	}
 
 	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
