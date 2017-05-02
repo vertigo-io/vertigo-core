@@ -28,14 +28,14 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.data.movies.Movie2;
+import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.data.domain.car.Car;
-import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -56,14 +56,11 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	@Inject
 	protected TaskManager taskManager;
 
-	protected DtDefinition dtDefinitionFamille;
-	private DtDefinition dtDefinitionCar;
+	private DtDefinition dtDefinitionMovie;
 
 	@Override
 	protected void doSetUp() throws Exception {
-		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-		//allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-
+		dtDefinitionMovie = DtObjectUtil.findDtDefinition(Movie2.class);
 		initMainStore();
 	}
 
@@ -86,55 +83,31 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 		SqlUtil.execRequests(
 				transactionManager,
 				taskManager,
-				getCreateMainStoreRequests(),
+				getCreateMovies(),
 				"TK_INIT_MAIN",
 				Optional.empty());
 
-		final CarDataBase carDataBase = new CarDataBase();
-		carDataBase.loadDatas();
+		final Movie2DataBase movie2DataBase = new Movie2DataBase();
+		movie2DataBase.loadDatas();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final Car car : carDataBase.getAllCars()) {
-				car.setId(null);
-				storeManager.getDataStore().create(car);
+			for (final Movie2 movie2 : movie2DataBase.getAllMovies()) {
+				storeManager.getDataStore().create(movie2);
 			}
 			transaction.commit();
 		}
 	}
 
-	protected List<String> getCreateMainStoreRequests() {
+	protected final List<String> getCreateMovies() {
 		return new ListBuilder<String>()
-				.addAll(getCreateFamilleRequests())
-				.addAll(getCreateCarRequests())
-				.addAll(getCreateFileInfoRequests())
-				.build();
-	}
-
-	protected final List<String> getCreateFamilleRequests() {
-		return new ListBuilder<String>()
-				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
-				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
-				.build();
-	}
-
-	protected final List<String> getCreateCarRequests() {
-		return new ListBuilder<String>()
-				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
-				.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
-				.build();
-	}
-
-	protected final List<String> getCreateFileInfoRequests() {
-		return new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
-				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+				.add(" create table movie_2(id BIGINT , TITLE varchar(50), YEAR INT);")
+				.add(" create sequence SEQ_MOVIE_2 start with 1 increment by 1;")
 				.build();
 	}
 
 	@Override
-	public void assertCriteria(final long expected, final Criteria<Car> criteria) {
+	public void assertCriteria(final long expected, final Criteria<Movie2> criteria) {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final long count = storeManager.getDataStore().find(dtDefinitionCar, criteria).size();
+			final long count = storeManager.getDataStore().find(dtDefinitionMovie, criteria).size();
 			Assert.assertEquals(expected, count);
 		}
 	}

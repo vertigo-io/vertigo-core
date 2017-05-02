@@ -6,8 +6,8 @@
 	<module name="myApp">
 		<definitions>
 			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
-				<resource type="kpr" path="io/vertigo/dynamo/store/data/executionWfileinfo.kpr" />
-				<resource type="classes" path="io.vertigo.dynamo.store.data.DtDefinitions" />
+				<resource type="kpr" path="io/vertigo/dynamo/criteria/data/execution.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.criteria.data.DtDefinitions" />
 			</provider>
 		</definitions>
 	</module>

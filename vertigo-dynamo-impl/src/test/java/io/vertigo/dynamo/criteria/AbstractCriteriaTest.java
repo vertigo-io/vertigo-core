@@ -18,141 +18,136 @@
  */
 package io.vertigo.dynamo.criteria;
 
-import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MAKE;
-import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MOTOR_TYPE;
-import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.YEAR;
-
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.store.data.domain.car.Car;
+import io.vertigo.dynamo.criteria.data.movies.Movie2;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
-	abstract public void assertCriteria(final long expected, final Criteria<Car> criteriaBool);
+	private static final DtFieldName<Movie2> YEAR = () -> "YEAR";
+	private static final DtFieldName<Movie2> TITLE = () -> "TITLE";
+
+	abstract public void assertCriteria(final long expected, final Criteria<Movie2> criteriaBool);
 
 	@Test
 	public final void testIsEqualTo() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot");
-		assertCriteria(4, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984);
+		assertCriteria(3, criteriaBool);
 	}
 
 	@Test
 	public final void testAnd() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isEqualTo(MOTOR_TYPE, "diesel"));
-		assertCriteria(3, criteriaBool);
-	}
-
-	@Test
-	public final void testOr() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.or(Criterions.isEqualTo(MAKE, "Volkswagen"));
-		assertCriteria(6, criteriaBool);
-	}
-
-	@Test
-	public final void testAndOr() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isGreaterThan(YEAR, 2000))
-				.or(Criterions.isEqualTo(MAKE, "Volkswagen"));
-		assertCriteria((4 - 2) + 2, criteriaBool);
-	}
-
-	@Test
-	public final void testOrAnd() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.or(Criterions.isGreaterThan(YEAR, 2008))
-				.and(Criterions.isEqualTo(MAKE, "Volkswagen"));
-		assertCriteria(4 + (2 - 1), criteriaBool);
-	}
-
-	@Test
-	public final void testAndOrAnd() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isGreaterThan(YEAR, 2000))
-				.or(
-						Criterions.isGreaterThan(YEAR, 2008)
-								.and(Criterions.isEqualTo(MAKE, "Volkswagen")));
-		assertCriteria(3, criteriaBool);
-	}
-
-	@Test
-	public final void testOrAndOr() {
-		final Criteria<Car> criteriaBool = Criterions.isLessThan(YEAR, 1999)
-				.or(Criterions.isGreaterThan(YEAR, 2001)
-						.and(Criterions.isEqualTo(MAKE, "Peugeot")));
-		assertCriteria(2, criteriaBool);
-	}
-
-	@Test
-	public final void testIsNotEqualTo() {
-		final Criteria<Car> criteriaBool = Criterions.isNotEqualTo(MAKE, "Peugeot");
-		assertCriteria(5, criteriaBool);
-	}
-
-	@Test
-	public final void testIsNull() {
-		final Criteria<Car> criteriaBool = Criterions.isNull(MAKE);
-		assertCriteria(0, criteriaBool);
-	}
-
-	@Test
-	public final void testIsNotNull() {
-		final Criteria<Car> criteriaBool = Criterions.isNotNull(MAKE);
-		assertCriteria(9, criteriaBool);
-	}
-
-	@Test
-	public final void testIsGreaterThan() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isGreaterThan(YEAR, 2001));
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.and(Criterions.isEqualTo(TITLE, "1984"));
 		assertCriteria(1, criteriaBool);
 	}
 
 	@Test
+	public final void testOr() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.or(Criterions.isEqualTo(YEAR, 2014));
+		assertCriteria(5, criteriaBool);
+	}
+
+	@Test
+	public final void testAndOr() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.and(Criterions.startsWith(TITLE, "a"))
+				.or(Criterions.isEqualTo(YEAR, 2014));
+		assertCriteria((3 - 2) + 2, criteriaBool);
+	}
+
+	@Test
+	public final void testOrAnd() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.or(Criterions.isGreaterThanOrEqualTo(YEAR, 2000))
+				.and(Criterions.startsWith(TITLE, "m"));
+		assertCriteria(3 + (3 - 2), criteriaBool);
+	}
+
+	@Test
+	public final void testAndOrAnd() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.and(Criterions.startsWith(TITLE, "a"))
+				.or(
+						Criterions.isGreaterThan(YEAR, 2000)
+								.and(Criterions.isEqualTo(TITLE, "mommy")));
+		assertCriteria(1 + 1, criteriaBool);
+	}
+
+	@Test
+	public final void testOrAndOr() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
+				.or(Criterions.isGreaterThan(YEAR, 2000)
+						.and(Criterions.isEqualTo(YEAR, 2014)));
+		assertCriteria(3 + 2, criteriaBool);
+	}
+
+	@Test
+	public final void testIsNotEqualTo() {
+		final Criteria<Movie2> criteriaBool = Criterions.isNotEqualTo(YEAR, 1984);
+		assertCriteria(13 - 3, criteriaBool);
+	}
+
+	@Test
+	public final void testIsNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isNull(YEAR);
+		assertCriteria(1, criteriaBool);
+	}
+
+	@Test
+	public final void testIsNotNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isNotNull(YEAR);
+		assertCriteria(12, criteriaBool);
+	}
+
+	@Test
+	public final void testIsGreaterThan() {
+		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThan(YEAR, 2000);
+		assertCriteria(2, criteriaBool);
+	}
+
+	@Test
 	public final void testIsGreaterThanOrEqualTo() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isGreaterThanOrEqualTo(YEAR, 2001));
-		assertCriteria(2, criteriaBool);
-	}
-
-	@Test
-	public final void testIsLessThan() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isLessThan(YEAR, 2001));
-		assertCriteria(2, criteriaBool);
-	}
-
-	@Test
-	public final void testIsLessThanOrEqualTo() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isLessThanOrEqualTo(YEAR, 2001));
+		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThanOrEqualTo(YEAR, 2000);
 		assertCriteria(3, criteriaBool);
 	}
 
 	@Test
+	public final void testIsLessThan() {
+		final Criteria<Movie2> criteriaBool = Criterions.isLessThan(YEAR, 2000);
+		assertCriteria(9, criteriaBool);
+	}
+
+	@Test
+	public final void testIsLessThanOrEqualTo() {
+		final Criteria<Movie2> criteriaBool = Criterions.isLessThanOrEqualTo(YEAR, 2000);
+		assertCriteria(10, criteriaBool);
+	}
+
+	@Test
 	public final void testIsBetween() {
-		final Criteria<Car> criteriaBool = Criterions.isEqualTo(MAKE, "Peugeot")
-				.and(Criterions.isBetween(YEAR, 1999, 2001));
-		assertCriteria(2, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1999, 2015);
+		assertCriteria(3, criteriaBool);
 	}
 
 	@Test
 	public final void testStartsWith() {
-		final Criteria<Car> criteriaBool = Criterions.startsWith(MAKE, "P");
-		assertCriteria(4, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.startsWith(TITLE, "a");
+		assertCriteria(2, criteriaBool);
+	}
+
+	@Test
+	public final void testInNumber() {
+		final Criteria<Movie2> criteriaBool = Criterions.in(YEAR, 1984, 1933);
+		assertCriteria(3 + 1, criteriaBool);
 	}
 
 	@Test
 	public final void testInString() {
-		final Criteria<Car> criteriaBool = Criterions.in(MAKE, "Peugeot", "Volkswagen");
-		assertCriteria(4 + 2, criteriaBool);
-	}
-
-	@Test
-	public final void testInNumnber() {
-		final Criteria<Car> criteriaBool = Criterions.in(YEAR, 2002, 2006);
-		assertCriteria(1 + 2, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.in(TITLE, "terminator", "amadeus");
+		assertCriteria(2, criteriaBool);
 	}
 
 }

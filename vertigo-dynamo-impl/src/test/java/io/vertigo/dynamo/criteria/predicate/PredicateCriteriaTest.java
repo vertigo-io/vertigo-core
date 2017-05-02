@@ -27,30 +27,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
-import io.vertigo.dynamo.store.data.domain.car.Car;
-import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.data.movies.Movie2;
+import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 
 /**
  *
  */
 @RunWith(JUnitPlatform.class)
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
-	private final CarDataBase carDataBase = new CarDataBase();
+	private final Movie2DataBase movie2DataBase = new Movie2DataBase();
 
 	@BeforeEach
 	public void before() {
-		carDataBase.loadDatas();
+		movie2DataBase.loadDatas();
 	}
 
-	private static Predicate<Car> predicate(final Criteria<Car> criteria) {
+	private static Predicate<Movie2> predicate(final Criteria<Movie2> criteria) {
 		return criteria.toPredicate();
 	}
 
 	@Override
-	public void assertCriteria(final long expected, final Criteria<Car> criteria) {
-		final long count = carDataBase.getAllCars()
+	public void assertCriteria(final long expected, final Criteria<Movie2> criteria) {
+		final long count = movie2DataBase.getAllMovies()
 				.stream()
 				.filter(predicate(criteria))
 				.count();
@@ -59,10 +59,10 @@ public final class PredicateCriteriaTest extends AbstractCriteriaTest {
 
 	@Test
 	public void test() {
-		final long count = carDataBase.getAllCars()
+		final long count = movie2DataBase.getAllMovies()
 				.stream()
-				.filter(car -> true)
+				.filter(movie -> true)
 				.count();
-		assertEquals(9, count);
+		assertEquals(13, count);
 	}
 }
