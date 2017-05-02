@@ -19,6 +19,7 @@
 package io.vertigo.vega.webservice.data.ws;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
@@ -380,7 +380,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private static <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
+	private <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
 		final List<Predicate<O>> filters = new ArrayList<>();
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
@@ -399,7 +399,7 @@ public final class AdvancedTestWebServices implements WebServices {
 						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
 						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
 					} else {
-						filters.add(new DtListValueFilter<O>(field.getName(), (String) value));
+						filters.add(collectionsManager.filterByValue(fieldName, Serializable.class.cast(value)));
 					}
 				}
 			}
