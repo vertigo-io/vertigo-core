@@ -151,7 +151,6 @@ public final class Criterions {
 	}
 
 	private static class AlwaysTrueCriteria<E extends Entity> extends Criteria<E> {
-
 		private static final long serialVersionUID = 2967018427662007659L;
 
 		@Override
@@ -166,7 +165,6 @@ public final class Criterions {
 	}
 
 	private static class AlwaysFalseCriteria<E extends Entity> extends Criteria<E> {
-
 		private static final long serialVersionUID = 1710256016389045206L;
 
 		@Override

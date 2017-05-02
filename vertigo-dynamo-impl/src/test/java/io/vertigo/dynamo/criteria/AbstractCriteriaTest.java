@@ -37,6 +37,12 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public final void testIsEqualToNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, null);
+		assertCriteria(1, criteriaBool);
+	}
+
+	@Test
 	public final void testAnd() {
 		final Criteria<Movie2> criteriaBool = Criterions.isEqualTo(YEAR, 1984)
 				.and(Criterions.isEqualTo(TITLE, "1984"));
@@ -109,9 +115,21 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public final void testIsGreaterThanNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThan(YEAR, null);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
 	public final void testIsGreaterThanOrEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThanOrEqualTo(YEAR, 2000);
 		assertCriteria(3, criteriaBool);
+	}
+
+	@Test
+	public final void testIsGreaterThanOrEqualToNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isGreaterThanOrEqualTo(YEAR, null);
+		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
@@ -121,21 +139,51 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public final void testIsLessThanNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isLessThan(YEAR, null);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
 	public final void testIsLessThanOrEqualTo() {
 		final Criteria<Movie2> criteriaBool = Criterions.isLessThanOrEqualTo(YEAR, 2000);
 		assertCriteria(10, criteriaBool);
 	}
 
 	@Test
+	public final void testIsLessThanOrEqualToNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.isLessThanOrEqualTo(YEAR, null);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
 	public final void testIsBetween() {
-		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1999, 2015);
-		assertCriteria(3, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1980, 2000);
+		assertCriteria(6, criteriaBool);
+	}
+
+	@Test
+	public final void testIsBetweenWithNull1() {
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, null, 2000);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
+	public final void testIsBetweenWithNull2() {
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1980, null);
+		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
 	public final void testStartsWith() {
 		final Criteria<Movie2> criteriaBool = Criterions.startsWith(TITLE, "a");
 		assertCriteria(2, criteriaBool);
+	}
+
+	@Test
+	public final void testStartsWithNull() {
+		final Criteria<Movie2> criteriaBool = Criterions.startsWith(TITLE, null);
+		assertCriteria(0, criteriaBool);
 	}
 
 	@Test

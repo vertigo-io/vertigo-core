@@ -145,7 +145,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				}
 				return values[0].compareTo(value) >= 0;
 			case BETWEEN:
-				if (values[0] == null || value == null) {
+				if (values[0] == null || value == null || values[1] == null) {
 					return false;
 				}
 				return values[0].compareTo(value) <= 0 && values[1].compareTo(value) >= 0;

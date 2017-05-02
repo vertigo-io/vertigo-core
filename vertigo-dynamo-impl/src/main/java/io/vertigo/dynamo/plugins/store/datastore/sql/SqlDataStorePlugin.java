@@ -296,9 +296,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withRequest(request);
 
 		final CriteriaCtx ctx = tuple.getVal2();
-		//IN, obligatoire
+		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
+			taskDefinitionBuilder.addInOptional(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
