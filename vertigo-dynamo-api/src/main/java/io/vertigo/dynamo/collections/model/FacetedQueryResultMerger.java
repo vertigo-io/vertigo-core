@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 
@@ -48,7 +47,7 @@ import io.vertigo.lang.MessageText;
  * @param <R> Result object's type
  * @param <S> Source object's type
  */
-public final class FacetedQueryResultBuilder<R extends DtObject, S> implements Builder<FacetedQueryResult<R, S>> {
+public final class FacetedQueryResultMerger<R extends DtObject, S> {
 
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
@@ -56,8 +55,13 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
 	private FacetedQueryResult<?, S> firstResult;
 
-	public FacetedQueryResultBuilder() {
+	/**
+	 * Constructor merger should create a facet for this cluster.
+	 */
+	public FacetedQueryResultMerger() {
+		//no param for easier code when results size is variable.
 		super();
+
 	}
 
 	/**
@@ -69,7 +73,7 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	public FacetedQueryResultBuilder<R, S> add(
+	public FacetedQueryResultMerger<R, S> add(
 			final FacetedQueryResult<?, S> result,
 			final String resultcode,
 			final String resultFilter,
@@ -96,16 +100,18 @@ public final class FacetedQueryResultBuilder<R extends DtObject, S> implements B
 	 * @param facetDefinitionName FacetDefinitionName
 	 * @return this builder
 	 */
-	public FacetedQueryResultBuilder<R, S> withFacet(final String facetDefinitionName) {
+	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
 		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
 		return this;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public FacetedQueryResult<R, S> build() {
+	/**
+	 * Merge data.
+	 * @return get merged result as a new result
+	 */
+	public FacetedQueryResult<R, S> toFacetedQueryResult() {
 		Assertion.checkArgument(otherResults.size() > 0, "You need at least one FacetedQueryResult in order to build a FacetedQueryResult");
 		//On accepte de ne pas avoir de FacetedQueryResults pour les cas ou les resultats sont filtrés par la sécurité, certains éléments à merger sont peut-être absent.
 
