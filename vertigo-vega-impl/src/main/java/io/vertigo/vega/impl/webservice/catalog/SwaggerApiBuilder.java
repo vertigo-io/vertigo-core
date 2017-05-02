@@ -59,7 +59,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
-public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
+public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static final String REQUIRED = "required";
 
@@ -111,10 +111,10 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, Object> build() {
+	public SwaggerApi build() {
 		Assertion.checkNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
-		final Map<String, Object> swagger = new LinkedHashMap<>();
+		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", 2.0);
 		swagger.put("info", createInfoObject());
 		swagger.put("basePath", builderContextPath);
