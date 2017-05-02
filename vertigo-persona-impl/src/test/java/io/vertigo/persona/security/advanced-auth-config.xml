@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<authorisationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="vertigo-security_1_1.xsd">
+	
+	<!-- Globals Permissions -->
+	<permission id="PRM_ADMUSR" label="Administration utilisateurs"/>		
+	<permission id="PRM_ADMPRO" label="Administration profiles"/>	
+	<permission id="PRM_ADMAPP" label="Administration application"/>	
+	
+	<secured-entity entity="MARCHE" security-fields="OWNER_UTI_ID, TYP_ID, ENVELOPPE_GLOBALE">
+		<advanced-axes>
+			<advanced-axe field="ETA_CD" type="ENUM" values="CRE, VAL, PUB, NOT, REA, ARC"/>
+		</advanced-axes>
+		<operations>
+			<!-- Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur. -->
+			<operation name="READ" label="Lecture">
+				<filter rule="ENVELOPPE_GLOBALE&lt;=${montantMax}"/> <!-- multiple filter are OR -->
+				<filter rule="OWNER_UTI_ID=${utiId}"/>
+			</operation>
+			
+			<!-- Visibilité globale attribuée avec une opération transverser Hors Périmètre. Sans règles = toujours ok. -->
+			<operation name="READ_HP" label="Lecture hors périmètre" overrides="READ" filter="always"/>
+			
+			<!-- Ecriture possible par l'utilisateur créateur avant que le marché ne soit Archivé, ou avec un montant max avant Archivé. -->
+			<operation name="WRITE" grants="READ" label="Edition">
+				<filter rule="OWNER_UTI_ID=${utiId} and ETA_CD&lt;'ARC'"/> <!-- OR -->
+				<filter rule="TYP_ID=${typId} and ENVELOPPE_GLOBALE&lt;=${montantMax} and ETA_CD&lt;'ARC'"/>
+			</operation>
+			
+			<!-- Création attribuable par type et par montant maximum. -->
+			<operation name="CREATE" grants="READ" label="Creation" filter="TYP_ID=${typId} and ENVELOPPE_GLOBALE&lt;=${montantMax}"/>
+			
+			<!-- "Suppression attribuable par type de marché ou pour le créateur tant que non Publié (Attribué sans type = règle non vérifiée). -->
+			<operation name="DELETE" grants="READ, WRITE"  label="Suppression">
+				<filter rule="TYP_ID=${typId}"/> <!-- OR -->
+				<filter rule="OWNER_UTI_ID,=${utiId} and ETA_CD&lt;'PUB'"/>
+			</operation>
+		</operations>		
+	</secured-entity>	
+</authorisationConfig>
