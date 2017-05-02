@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.criteria;
+package io.vertigo.dynamo.criteria;
 
 import java.util.function.Predicate;
 

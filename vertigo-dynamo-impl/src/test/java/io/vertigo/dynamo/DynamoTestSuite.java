@@ -24,6 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
+import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
+import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
@@ -57,8 +59,6 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.criteria.predicate.PredicateCriteriaTest;
-import io.vertigo.dynamo.store.datastore.criteria.sql.SqlCriteriaTest;
 import io.vertigo.dynamo.store.datastore.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
@@ -137,6 +137,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//Criteria
 		SqlCriteriaTest.class,
 		PredicateCriteriaTest.class,
+		//---
 		EnvironmentManagerTest.class
 
 })

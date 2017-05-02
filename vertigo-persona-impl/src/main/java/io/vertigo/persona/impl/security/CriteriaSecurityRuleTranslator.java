@@ -20,10 +20,10 @@ package io.vertigo.persona.impl.security;
 
 import java.io.Serializable;
 
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.dsl.model.DslExpression;
 import io.vertigo.persona.security.dsl.model.DslExpression.ValueOperator;

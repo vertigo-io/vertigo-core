@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -36,8 +38,6 @@ import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;

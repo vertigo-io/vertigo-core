@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.criteria;
+package io.vertigo.dynamo.criteria;
 
 import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MAKE;
 import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.MOTOR_TYPE;
@@ -25,11 +25,9 @@ import static io.vertigo.dynamo.store.data.domain.car.Car.CarFields.YEAR;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 
-public abstract class ICriteriaTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 	abstract public void assertCriteria(final long expected, final Criteria<Car> criteriaBool);
 
 	@Test
@@ -95,13 +93,13 @@ public abstract class ICriteriaTest extends AbstractTestCaseJU4 {
 	@Test
 	public final void testIsNull() {
 		final Criteria<Car> criteriaBool = Criterions.isNull(MAKE);
-		assertCriteria(1, criteriaBool);
+		assertCriteria(0, criteriaBool);
 	}
 
 	@Test
 	public final void testIsNotNull() {
 		final Criteria<Car> criteriaBool = Criterions.isNotNull(MAKE);
-		assertCriteria(8, criteriaBool);
+		assertCriteria(9, criteriaBool);
 	}
 
 	@Test

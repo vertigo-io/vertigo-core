@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.criteria;
+package io.vertigo.dynamo.criteria;
 
+import io.vertigo.dynamo.criteria.CriteriaExpression.CriteriaOperator;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.store.criteria.CriteriaExpression.CriteriaOperator;
 
 final class CriteriaUtil {
 

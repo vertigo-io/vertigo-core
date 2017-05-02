@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.criteria.predicate;
+package io.vertigo.dynamo.criteria.predicate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,16 +27,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
-import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
 
 /**
  *
  */
 @RunWith(JUnitPlatform.class)
-public final class PredicateCriteriaTest extends ICriteriaTest {
+public final class PredicateCriteriaTest extends AbstractCriteriaTest {
 	private final CarDataBase carDataBase = new CarDataBase();
 
 	@BeforeEach

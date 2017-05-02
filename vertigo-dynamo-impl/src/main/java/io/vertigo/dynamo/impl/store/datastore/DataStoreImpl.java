@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;

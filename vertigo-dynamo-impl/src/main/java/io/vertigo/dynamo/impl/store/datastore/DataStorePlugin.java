@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.lang.Plugin;
 
 /**

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.criteria.sql;
+package io.vertigo.dynamo.criteria.sql;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,15 +28,15 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
-import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -46,7 +46,7 @@ import io.vertigo.util.ListBuilder;
  *
  */
 @RunWith(JUnitPlatform.class)
-public final class SqlCriteriaTest extends ICriteriaTest {
+public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	@Inject
 	protected StoreManager storeManager;
 	@Inject

@@ -24,11 +24,11 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.DateUtil;

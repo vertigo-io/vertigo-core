@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.store.datastore;
 
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.criteria.Criteria;
 
 /**
  * Defines the way to acces and store all the data.
