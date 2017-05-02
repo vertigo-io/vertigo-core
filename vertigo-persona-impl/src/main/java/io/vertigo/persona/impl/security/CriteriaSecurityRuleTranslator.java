@@ -108,9 +108,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				}
 				Assertion.checkNotNull(firstCriteria);//can't be null
 				return firstCriteria;
-			} else {
-				return Criterions.alwaysFalse();
 			}
+			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof DslFixedValue) {
 			return toCriteria(expression::getFieldName, expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
 		} else {

@@ -33,14 +33,14 @@ import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 
-	private DtDefinition dtDefinition;
+	private DtDefinition myDtDefinition;
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
 	private Map<String, Serializable[]> myUserCriteria;
 
 	public S on(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		this.dtDefinition = dtDefinition;
+		this.myDtDefinition = dtDefinition;
 		return (S) this;
 	}
 
@@ -91,7 +91,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final DtDefinition getDtDefinition() {
-		return dtDefinition;
+		return myDtDefinition;
 	}
 
 	protected final List<DslMultiExpression> getMultiExpressions() {
