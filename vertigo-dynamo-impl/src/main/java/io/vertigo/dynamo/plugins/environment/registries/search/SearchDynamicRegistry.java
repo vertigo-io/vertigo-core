@@ -111,7 +111,6 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 		final String dtFieldName = (String) xdefinition.getPropertyValue(SearchGrammar.FIELD_NAME);
 		final DtField dtField = indexDtDefinition.getField(dtFieldName);
 		final String label = (String) xdefinition.getPropertyValue(KspProperty.LABEL);
-		final FacetOrder order = getFacetOrder(xdefinition);
 
 		//Déclaration des ranges
 		final List<DslDefinition> rangeDefinitions = xdefinition.getChildDefinitions("range");
@@ -122,7 +121,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					definitionName,
 					dtField,
 					labelMsg,
-					order);
+					getFacetOrder(xdefinition, FacetOrder.count));
 		} else {
 			final List<FacetValue> facetValues = rangeDefinitions.stream()
 					.map(rangeDefinition -> createFacetValue(rangeDefinition))
@@ -132,18 +131,18 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					dtField,
 					labelMsg,
 					facetValues,
-					FacetOrder.definition);
+					getFacetOrder(xdefinition, FacetOrder.definition));
 		}
 		return facetDefinition;
 	}
 
-	private static FacetOrder getFacetOrder(final DslDefinition xdefinition) {
+	private static FacetOrder getFacetOrder(final DslDefinition xdefinition, final FacetOrder defaultOrder) {
 		final String orderStr = (String) xdefinition.getPropertyValue(SearchGrammar.FACET_ORDER);
 		Assertion.checkArgument(orderStr == null
 				|| FacetOrder.alpha.name().equals(orderStr)
 				|| FacetOrder.count.name().equals(orderStr)
 				|| FacetOrder.definition.name().equals(orderStr), "Facet order must be one of {0}", Arrays.toString(FacetOrder.values()));
-		return orderStr != null ? FacetOrder.valueOf(orderStr) : FacetOrder.count;
+		return orderStr != null ? FacetOrder.valueOf(orderStr) : defaultOrder;
 	}
 
 	private static FacetValue createFacetValue(final DslDefinition rangeDefinition) {
