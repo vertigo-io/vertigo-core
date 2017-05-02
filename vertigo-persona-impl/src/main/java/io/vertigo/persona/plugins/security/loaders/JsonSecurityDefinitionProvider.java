@@ -23,7 +23,7 @@ import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.SecuredEntity;
 
 /**
@@ -77,7 +77,7 @@ public class JsonSecurityDefinitionProvider implements DefinitionProvider {
 				.setPrettyPrinting()
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 				.registerTypeAdapter(SecuredEntity.class, new SecuredEntityDeserializer())
-				.registerTypeAdapter(Permission.class, new PermissionDeserializer())
+				.registerTypeAdapter(Permission2.class, new PermissionDeserializer())
 				.create();
 	}
 
@@ -100,7 +100,7 @@ public class JsonSecurityDefinitionProvider implements DefinitionProvider {
 		registerSecurityEntities(config.getSecuredEntities());
 	}
 
-	private void registerPermissions(final List<Permission> permissions) {
+	private void registerPermissions(final List<Permission2> permissions) {
 		permissions.stream()
 				.forEach(prm -> definitionSuppliers.add(ds -> prm)); //on register les Permissions globales
 	}
