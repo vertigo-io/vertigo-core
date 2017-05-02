@@ -28,7 +28,6 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -47,7 +46,7 @@ import io.vertigo.util.ListBuilder;
  *
  */
 @RunWith(JUnitPlatform.class)
-public final class SqlCriteriaTest extends AbstractTestCaseJU4 implements ICriteriaTest {
+public final class SqlCriteriaTest extends ICriteriaTest {
 	@Inject
 	protected StoreManager storeManager;
 	@Inject
