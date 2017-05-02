@@ -18,6 +18,8 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.io.Serializable;
+
 import io.vertigo.persona.security.dsl.model.DslExpression;
 import io.vertigo.persona.security.dsl.model.DslFixedValue;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
@@ -80,12 +82,12 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private void appendExpression(final StringBuilder query, final DslExpression expressionDefinition) {
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final Comparable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
 				query.append(expressionDefinition.getFieldName())
 						.append(":(");
 				String inSep = "";
-				for (final Comparable userValue : userValues) {
+				for (final Serializable userValue : userValues) {
 					query.append(inSep)
 							.append(userValue);
 					inSep = " ";

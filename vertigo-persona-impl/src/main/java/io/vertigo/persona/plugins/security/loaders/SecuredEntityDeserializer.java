@@ -21,7 +21,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
-import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.SecuredEntity;
 import io.vertigo.persona.security.metamodel.SecurityAxeType;
 import io.vertigo.persona.security.metamodel.SecurityAxes;
@@ -50,7 +50,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 			advancedAxes.add(deserializeSecurityAxes(entityDefinition, advancedAxe.getAsJsonObject(), context));
 		}
 
-		final List<Permission> operations = new ArrayList<>();
+		final List<Permission2> operations = new ArrayList<>();
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
 			operations.add(deserializeOperations(entityDefinition, operation.getAsJsonObject(), context));
 		}
@@ -58,7 +58,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 		return new SecuredEntity(entityDefinition, securityFields, advancedAxes, operations);
 	}
 
-	private static Permission deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context) {
+	private static Permission2 deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
 
@@ -75,7 +75,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 				.map(SecuredEntityDeserializer::parseRule)
 				.collect(Collectors.toList());
 
-		return new Permission(code, label, overrides, grants, entityDefinition, rules);
+		return new Permission2(code, label, overrides, grants, entityDefinition, rules);
 	}
 
 	private final static DslMultiExpression parseRule(final String securityRule) {

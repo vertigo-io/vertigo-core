@@ -1,0 +1,123 @@
+{
+	"permissions": [{
+		"code": "PRM_ADMUSR",
+		"label": "security.permission.admin.user"
+	}, {
+		"code": "PRM_ADMPRO",
+		"label": "security.permission.admin.profil"
+	}, {
+		"code": "PRM_ADMAPP",
+		"label": "security.permission.admin.appli"
+	}],
+	"operations": [{
+		"code": "READ",
+		"label": "security.operation.read"
+	}, {
+		"code": "CREATE",
+		"label": "security.operation.create"
+	}, {
+		"code": "WRITE",
+		"label": "security.operation.write"
+	}, {
+		"code": "DELETE",
+		"label": "security.operation.delete"
+	}, {
+		"code": "READ_HP",
+		"label": "security.operation.globalread"
+	}, {
+		"code": "WRITE_HP",
+		"label": "security.operation.globalwrite"
+	}],
+	"securityEntity": [{
+		"entity": "MARCHE",
+		"axes": [
+			{
+				"type": "SIMPLE",
+				"field": "UTI_ID"
+			}, {
+				"type": "SIMPLE",
+				"field": "TYP_ID"
+			}, {
+				"type": "SIMPLE",
+				"field": "ENVELOPPE_GLOBALE"
+			}, {
+				"type": "ENUM",
+				"field": "ETA_CD",
+				"values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC"]
+			}
+		],
+		"operations": [{
+			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
+			"operation": "READ",
+			"rules": [
+				["ENVELOPPE_GLOBALE<=${montantMax}"],
+				["UTI_ID=${utiId}"]
+			]
+		}, {
+			"__comment": "Visibilité globale attribuée avec une opération transverser Hors Périmètre. Sans règles = toujours ok.",
+			"operation": "READ_HP",
+			"alias": "READ",
+			"rules": [[]]
+		}, {
+			"__comment": "Ecriture possible par l'utilisateur créateur avant que le marché ne soit Archivé, ou avec un montant max avant Archivé.",
+			"operation": "WRITE",
+			"alias": "READ",
+			"rules": [
+				["UTI_ID=${utiId}", "ETA_CD<ARC"],
+				["TYP_ID=${typId}", "ENVELOPPE_GLOBALE<=${montantMax}", "ETA_CD<ARC"]
+			]
+		}, {
+			"__comment": "Création attribuable par type et par montant maximum.",
+			"operation": "CREATE",
+			"alias": "READ",
+			"rules": [
+				["TYP_ID=${typId}", "ENVELOPPE_GLOBALE<=${montantMax}"]
+			]
+		}, {
+			"__comment": "Suppression attribuable par type de marché ou pour le créateur tant que non Publié (Attribué sans type = règle non vérifiée).",
+			"operation": "DELETE",
+			"alias": "READ, WRITE",
+			"rules": [
+				["TYP_ID=${typId}"],
+				["UTI_ID=${utiId}", "ETA_CD<PUB"]
+			]
+		}]
+	},{
+		"entity": "FOURNISSEUR",
+		"axes": [{
+				"type": "SIMPLE",
+				"field": "UTI_ID"
+			}
+		],
+		"operations": [{
+			"__comment": "Tous les fournisseurs sont visibles de tout le monde.",
+			"operation": "READ",
+			"rules": [[]]
+		}, {
+			"__comment": "Ecriture possible par l'utilisateur créateur ou par portée géographique inférieure (ex: profil attribué sur la région donne le droit sur tous les départements).",
+			"operation": "WRITE",
+			"alias": "READ",
+			"rules": [
+				["UTI_ID=${utiId}"]
+			]
+		}, {
+			"__comment": "Création attribuable par portée géographique (la même que celle de l'utilisateur).",
+			"operation": "CREATE",
+			"alias": "READ",
+			"rules": [[]]
+		}, {
+			"__comment": "Suppression attribuable par l'utilisateur créateur ou par portée géographique inférieure (ex: profil attribué sur la région donne le droit sur tous les départements).",
+			"operation": "DELETE",
+			"alias": "READ",
+			"rules": [
+				["UTI_ID=${utiId}"]
+			]
+		}, {
+			"__comment": "Pouvoir global sur les fournisseurs.",
+			"operation": "WRITE_HP",
+			"alias": "WRITE, DELETE, READ",
+			"rules": [[]]
+		}]
+	
+	}]
+}

@@ -7,21 +7,21 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Permission2;
 
 /**
  * Deserializer json
  *
  * @author npiedeloup
  */
-public class PermissionDeserializer implements JsonDeserializer<Permission> {
+public class PermissionDeserializer implements JsonDeserializer<Permission2> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Permission deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+	public Permission2 deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 		final JsonObject jsonPermission = json.getAsJsonObject();
 		final String code = jsonPermission.get("name").getAsString();
 		final String label = jsonPermission.get("label").getAsString();
-		return new Permission(code, label);
+		return new Permission2(code, label);
 	}
 }

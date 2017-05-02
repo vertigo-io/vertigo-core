@@ -18,6 +18,7 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	private DtDefinition dtDefinition;
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
-	private Map<String, Comparable[]> myUserCriteria;
+	private Map<String, Serializable[]> myUserCriteria;
 
 	public S on(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
@@ -81,7 +82,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
-	public final S withCriteria(final Map<String, Comparable[]> userCriteria) {
+	public final S withCriteria(final Map<String, Serializable[]> userCriteria) {
 		Assertion.checkNotNull(userCriteria);
 		Assertion.checkState(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
 		//-----
@@ -99,7 +100,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return myMultiExpressions;
 	}
 
-	protected final Comparable[] getUserCriteria(final String userProperty) {
+	protected final Serializable[] getUserCriteria(final String userProperty) {
 		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
 		//----
 		return myUserCriteria.get(userProperty);

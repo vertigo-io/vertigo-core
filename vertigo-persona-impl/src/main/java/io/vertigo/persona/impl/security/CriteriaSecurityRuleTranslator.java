@@ -18,13 +18,11 @@
  */
 package io.vertigo.persona.impl.security;
 
-import java.util.function.Predicate;
+import java.io.Serializable;
 
-import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.CriteriaCtx;
 import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.dsl.model.DslExpression;
@@ -39,18 +37,18 @@ import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
  *
  * @author npiedeloup
  */
-public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTranslator<CriteriaSecurityRuleTranslator> {
+public final class CriteriaSecurityRuleTranslator<E extends Entity> extends AbstractSecurityRuleTranslator<CriteriaSecurityRuleTranslator<E>> {
 
 	/**
 	 * @return This security rule as search Query
 	 */
-	public Criteria toCriteria() {
+	public Criteria<E> toCriteria() {
 		if (getMultiExpressions().isEmpty()) {
 			return Criterions.alwaysTrue();
 		}
-		Criteria mainCriteria = null;
+		Criteria<E> mainCriteria = null;
 		for (final DslMultiExpression expression : getMultiExpressions()) {
-			final Criteria criteria = toCriteria(expression);
+			final Criteria<E> criteria = toCriteria(expression);
 			if (mainCriteria == null) {
 				mainCriteria = criteria;
 			} else {
@@ -61,10 +59,10 @@ public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTr
 		return mainCriteria;
 	}
 
-	private Criteria toCriteria(final DslMultiExpression multiExpression) {
-		Criteria firstCriteria = null;
+	private Criteria<E> toCriteria(final DslMultiExpression multiExpression) {
+		Criteria<E> firstCriteria = null;
 		for (final DslExpression expression : multiExpression.getExpressions()) {
-			final Criteria criteria = toCriteria(expression);
+			final Criteria<E> criteria = toCriteria(expression);
 			if (firstCriteria == null) {
 				firstCriteria = criteria;
 			} else {
@@ -76,7 +74,7 @@ public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTr
 			}
 		}
 		for (final DslMultiExpression expression : multiExpression.getMultiExpressions()) {
-			final Criteria criteria = toCriteria(expression);
+			final Criteria<E> criteria = toCriteria(expression);
 			if (firstCriteria == null) {
 				firstCriteria = criteria;
 			} else {
@@ -91,14 +89,17 @@ public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTr
 		return firstCriteria;
 	}
 
-	private Criteria toCriteria(final DslExpression expression) {
+	private Criteria<E> toCriteria(final DslExpression expression) {
 		if (expression.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expression.getValue();
-			final Comparable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
-				Criteria firstCriteria = null; //comment collecter en stream ?
-				for (final Comparable userValue : userValues) {
-					final Criteria criteria = toCriteria(toDtFieldName(expression.getFieldName()), expression.getOperator(), userValue);
+				Criteria<E> firstCriteria = null; //comment collecter en stream ?
+				for (final Serializable userValue : userValues) {
+					Assertion.checkNotNull(userValue);
+					Assertion.checkArgument(userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
+					//----
+					final Criteria<E> criteria = toCriteria(expression::getFieldName, expression.getOperator(), (Comparable<?>) userValue);
 					if (firstCriteria == null) {
 						firstCriteria = criteria;
 					} else {
@@ -108,16 +109,16 @@ public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTr
 				Assertion.checkNotNull(firstCriteria);//can't be null
 				return firstCriteria;
 			} else {
-				return new AlwaysFalseCriteria();
+				return Criterions.alwaysFalse();
 			}
 		} else if (expression.getValue() instanceof DslFixedValue) {
-			return toCriteria(toDtFieldName(expression.getFieldName()), expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
+			return toCriteria(expression::getFieldName, expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expression.getValue().getClass().getName());
 		}
 	}
 
-	private static Criteria toCriteria(final DtFieldName fieldName, final ValueOperator operator, final Comparable value) {
+	private Criteria<E> toCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Comparable<?> value) {
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
@@ -133,32 +134,6 @@ public final class CriteriaSecurityRuleTranslator extends AbstractSecurityRuleTr
 				return Criterions.isNotEqualTo(fieldName, value);
 			default:
 				throw new IllegalArgumentException("Operator not supported " + operator.name());
-		}
-	}
-
-	private static DtFieldName toDtFieldName(final String fieldName) {
-		return new DtFieldName() {
-
-			@Override
-			public String name() {
-				return fieldName;
-			}
-
-		};
-	}
-
-	private static class AlwaysFalseCriteria<E extends Entity> extends Criteria<E> {
-
-		private static final long serialVersionUID = 1710256016389045206L;
-
-		@Override
-		public Predicate<E> toPredicate() {
-			return entity -> false;
-		}
-
-		@Override
-		public String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
-			return "0=1";
 		}
 	}
 

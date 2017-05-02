@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.persona.security.model.Dossier;
 
@@ -113,8 +113,8 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorized() {
-		final Permission admUsr = getPermission("PRM_ADMUSR");
-		final Permission admPro = getPermission("PRM_ADMPRO");
+		final Permission2 admUsr = getPermission("PRM_ADMUSR");
+		final Permission2 admPro = getPermission("PRM_ADMPRO");
 
 		final UserSession userSession = securityManager.createUserSession()
 				.addPermission(admUsr)
@@ -147,7 +147,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		dossierOtherUserAndTooExpensive.setMontant(10000d);
 
-		final Permission dossierRead = getPermission("PRM_DOSSIER_READ");
+		final Permission2 dossierRead = getPermission("PRM_DOSSIER_READ");
 		final UserSession userSession = securityManager.createUserSession()
 				.addPermission(dossierRead);
 		try {
@@ -192,9 +192,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		//TODO
 	}
 
-	private Permission getPermission(final String name) {
+	private Permission2 getPermission(final String name) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		return definitionSpace.resolve(name, Permission.class);
+		return definitionSpace.resolve(name, Permission2.class);
 	}
 
 }
