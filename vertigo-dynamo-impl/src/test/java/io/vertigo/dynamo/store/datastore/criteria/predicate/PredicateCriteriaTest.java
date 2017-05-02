@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
@@ -37,7 +36,7 @@ import io.vertigo.dynamo.store.datastore.criteria.ICriteriaTest;
  *
  */
 @RunWith(JUnitPlatform.class)
-public final class PredicateCriteriaTest extends AbstractTestCaseJU4 implements ICriteriaTest {
+public final class PredicateCriteriaTest extends ICriteriaTest {
 	private final CarDataBase carDataBase = new CarDataBase();
 
 	@BeforeEach
