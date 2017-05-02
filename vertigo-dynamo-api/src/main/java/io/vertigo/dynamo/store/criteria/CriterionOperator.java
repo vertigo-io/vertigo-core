@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.criteria;
 enum CriterionOperator {
 	IS_NULL(0),
 	IS_NOT_NULL(0),
-	EQ(1),
+	EQ(1), //or is null
 	NEQ(1),
 	GT(1),
 	GTE(1),

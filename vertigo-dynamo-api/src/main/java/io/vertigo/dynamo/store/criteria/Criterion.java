@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.store.criteria;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,9 +59,15 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case IS_NULL:
 				return dtFieldName.name() + " is null";
 			case EQ:
+				if (values[0] == null) {
+					return dtFieldName.name() + " is null ";
+				}
 				return dtFieldName.name() + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case NEQ:
-				return dtFieldName.name() + " != #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				if (values[0] == null) {
+					return dtFieldName.name() + " is not null ";
+				}
+				return "(" + dtFieldName.name() + " is null or " + dtFieldName.name() + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
 			case GT:
 				return dtFieldName.name() + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case GTE:
@@ -74,10 +81,9 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case STARTS_WITH:
 				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
-				final String paramValues = Stream.of(values)
+				return Stream.of(values)
 						.map(Criterion::prepareSqlInArgument)
-						.collect(Collectors.joining(", "));
-				return dtFieldName.name() + " in(" + paramValues + ")";
+						.collect(Collectors.joining(", ", dtFieldName.name() + " in(", ")"));
 			default:
 				throw new IllegalAccessError();
 		}
@@ -114,22 +120,40 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case IS_NULL:
 				return value == null;
 			case EQ:
-				return values[0].equals(value);
+				return Objects.equals(value, values[0]);
 			case NEQ:
-				return !values[0].equals(value);
+				return !Objects.equals(value, values[0]);
 			//with Comparable(s)
 			case GT:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return values[0].compareTo(value) < 0;
 			case GTE:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return values[0].compareTo(value) <= 0;
 			case LT:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return values[0].compareTo(value) > 0;
 			case LTE:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return values[0].compareTo(value) >= 0;
 			case BETWEEN:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return values[0].compareTo(value) <= 0 && values[1].compareTo(value) >= 0;
 			//with String
 			case STARTS_WITH:
+				if (values[0] == null || value == null) {
+					return false;
+				}
 				return String.class.cast(value).startsWith((String) values[0]);
 			//with list of comparables
 			case IN:
