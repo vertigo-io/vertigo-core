@@ -142,6 +142,14 @@ public final class Criterions {
 		return new AlwaysTrueCriteria<>();
 	}
 
+	/**
+	 * An always false criteria.
+	 * @return true
+	 */
+	public static <E extends Entity> Criteria<E> alwaysFalse() {
+		return new AlwaysFalseCriteria<>();
+	}
+
 	private static class AlwaysTrueCriteria<E extends Entity> extends Criteria<E> {
 
 		private static final long serialVersionUID = 2967018427662007659L;
@@ -152,8 +160,23 @@ public final class Criterions {
 		}
 
 		@Override
-		public String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
+		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 			return "1=1";
+		}
+	}
+
+	private static class AlwaysFalseCriteria<E extends Entity> extends Criteria<E> {
+
+		private static final long serialVersionUID = 1710256016389045206L;
+
+		@Override
+		public Predicate<E> toPredicate() {
+			return entity -> false;
+		}
+
+		@Override
+		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
+			return "0=1";
 		}
 	}
 }

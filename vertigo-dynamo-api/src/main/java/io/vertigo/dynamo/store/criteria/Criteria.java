@@ -60,7 +60,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 */
 	public abstract Predicate<E> toPredicate();
 
-	public abstract String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect);
+	abstract String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect);
 
 	/**
 	 * Translate the criteria to a SQL statement

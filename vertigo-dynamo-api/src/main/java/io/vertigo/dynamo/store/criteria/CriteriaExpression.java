@@ -85,7 +85,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	}
 
 	@Override
-	public String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
+	String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 		return Arrays.stream(operands)
 				.map(operand -> operand.toSql(ctx, sqlDialect))
 				.collect(Collectors.joining(" " + operator.name() + " ", "( ", " ) "));
