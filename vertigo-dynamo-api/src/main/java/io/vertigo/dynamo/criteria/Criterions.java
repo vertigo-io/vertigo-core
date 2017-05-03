@@ -139,7 +139,7 @@ public final class Criterions {
 	 * @return true
 	 */
 	public static <E extends Entity> Criteria<E> alwaysTrue() {
-		return new AlwaysTrueCriteria<>();
+		return AlwaysCriteria.ALWAYS_TRUE;
 	}
 
 	/**
@@ -147,34 +147,27 @@ public final class Criterions {
 	 * @return true
 	 */
 	public static <E extends Entity> Criteria<E> alwaysFalse() {
-		return new AlwaysFalseCriteria<>();
+		return AlwaysCriteria.ALWAYS_FALSE;
 	}
 
-	private static class AlwaysTrueCriteria<E extends Entity> extends Criteria<E> {
+	private static class AlwaysCriteria<E extends Entity> extends Criteria<E> {
 		private static final long serialVersionUID = 2967018427662007659L;
+		private static final Criteria ALWAYS_TRUE = new AlwaysCriteria<>(true);
+		private static final Criteria ALWAYS_FALSE = new AlwaysCriteria<>(false);
+		private final boolean result;
+
+		private AlwaysCriteria(final boolean result) {
+			this.result = result;
+		}
 
 		@Override
 		public Predicate<E> toPredicate() {
-			return entity -> true;
+			return entity -> result;
 		}
 
 		@Override
 		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
-			return "1=1";
-		}
-	}
-
-	private static class AlwaysFalseCriteria<E extends Entity> extends Criteria<E> {
-		private static final long serialVersionUID = 1710256016389045206L;
-
-		@Override
-		public Predicate<E> toPredicate() {
-			return entity -> false;
-		}
-
-		@Override
-		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
-			return "0=1";
+			return result ? "1=1" : "0=1";
 		}
 	}
 }
