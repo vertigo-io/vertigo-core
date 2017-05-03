@@ -18,8 +18,10 @@
  */
 package io.vertigo.persona.security;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -28,22 +30,13 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.persona.security.metamodel.Permission2;
+import io.vertigo.persona.impl.security.BeanResourceNameFactory;
 import io.vertigo.persona.security.metamodel.Role;
-import io.vertigo.persona.security.model.Dossier;
 
 /**
  * @author pchretien
  */
 public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
-
-	private static final long REG_ID_IDF = 1L;
-	private static final long DEP_ID_YVELINES = 2L;
-	private static final long COM_ID_VERSAILLE = 3L;
-	private static final long UTI_ID = 1000L;
-	private static final long TYP_ID_1 = 1L;
-
-	private long currentDosId = 1;
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -103,98 +96,149 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAccess() {
-		//TODO
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final Role admin = definitionSpace.resolve("R_ADMIN", Role.class);
+		final Role user = definitionSpace.resolve("R_USER", Role.class);
+		final Role manager = definitionSpace.resolve("R_MANAGER", Role.class);
+		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
+
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(admin)
+				.addRole(manager);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+
+			final Set<Role> roles = new HashSet<>();
+			roles.add(admin);
+			roles.add(secretary);
+			Assert.assertTrue(securityManager.hasRole(userSession, roles));
+
+			roles.clear();
+			roles.add(secretary);
+			Assert.assertFalse(securityManager.hasRole(userSession, roles));
+
+			roles.clear(); //Si aucun droit necessaire alors c'est bon
+			Assert.assertTrue(securityManager.hasRole(userSession, roles));
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
 	}
 
 	@Test
 	public void testNotAuthorized() {
-		//TODO
+		final Role reader = getRole("R_READER");
+		final Role writer = getRole("R_WRITER");
+
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(reader)
+				.addRole(writer);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean authorized = securityManager.isAuthorized("not", "authorized");
+			Assert.assertFalse(authorized);
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
 	}
 
 	@Test
 	public void testAuthorized() {
-		final Permission2 admUsr = getPermission("PRM_ADMUSR");
-		final Permission2 admPro = getPermission("PRM_ADMPRO");
+		final Role reader = getRole("R_READER");
+		final Role writer = getRole("R_WRITER");
 
 		final UserSession userSession = securityManager.createUserSession()
-				.addPermission(admUsr)
-				.addPermission(admPro);
+				.addRole(reader)
+				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canAdmUsr = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMUSR);
-			Assert.assertTrue(canAdmUsr);
-			final boolean canAdmPro = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMPRO);
-			Assert.assertTrue(canAdmPro);
-
-			final boolean canAdmApp = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMAPP);
-			Assert.assertFalse(canAdmApp);
+			final boolean canread = securityManager.isAuthorized("/products/12", "READ");
+			Assert.assertTrue(canread);
+			final boolean canwrite = securityManager.isAuthorized("/products/12", "WRITE");
+			Assert.assertTrue(canwrite);
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
-	}
-
-	@Test
-	public void testAuthorizedOnEntity() {
-		final Dossier dossier = createDossier();
-
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
-
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setUtiIdOwner(2000L);
-
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
-
-		final Permission2 dossierRead = getPermission("PRM_DOSSIER_READ");
-		final UserSession userSession = securityManager.createUserSession()
-				.addPermission(dossierRead);
-		try {
-			securityManager.startCurrentUserSession(userSession);
-			final boolean canReadDossier = securityManager.hasPermission(SecurityNames.DossierPermissions.PRM_DOSSIER_READ);
-			Assert.assertTrue(canReadDossier);
-
-			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			boolean canReadThisDossier = securityManager.isAuthorized(dossier, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
-
-			canReadThisDossier = securityManager.isAuthorized(dossierTooExpensive, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
-
-			canReadThisDossier = securityManager.isAuthorized(dossierOtherUser, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
-
-			canReadThisDossier = securityManager.isAuthorized(dossierOtherUserAndTooExpensive, SecurityNames.DossierOperations.READ);
-			Assert.assertFalse(canReadThisDossier);
-
-		} finally {
-			securityManager.stopCurrentUserSession();
-		}
-	}
-
-	private Dossier createDossier() {
-		final Dossier dossier = new Dossier();
-		dossier.setDosId(++currentDosId);
-		dossier.setRegId(REG_ID_IDF);
-		dossier.setDepId(DEP_ID_YVELINES);
-		dossier.setComId(COM_ID_VERSAILLE);
-		dossier.setTypId(TYP_ID_1);
-		dossier.setTitre("Dossier de test #" + currentDosId);
-		dossier.setMontant(100d);
-		dossier.setUtiIdOwner(UTI_ID);
-		dossier.setEtaCd("CRE");
-		return dossier;
 	}
 
 	@Test
 	public void testNoWriterRole() {
-		//TODO
+		final Role reader = getRole("R_READER");
+
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(reader);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canread = securityManager.isAuthorized("/products/12", "READ");
+			Assert.assertTrue(canread);
+			final boolean cannotwrite = securityManager.isAuthorized("/products/12", "WRITE");
+			Assert.assertFalse(cannotwrite);
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
 	}
 
-	private Permission2 getPermission(final String name) {
+	@Test
+	public void testAuthorizedAllWithResourceNameFactory() {
+		securityManager.registerResourceNameFactory(Famille.class.getSimpleName(), new BeanResourceNameFactory("/famille/${famId}"));
+		final Famille famille12 = new Famille();
+		famille12.setFamId(12L);
+
+		final Famille famille13 = new Famille();
+		famille13.setFamId(13L);
+
+		//Test toutes familles
+		final Role readAllFamillies = getRole("R_ALL_FAMILLES");
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(readAllFamillies);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "READ");
+			Assert.assertTrue(canRead12);
+			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "READ");
+			Assert.assertTrue(canRead13);
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testAuthorizedSessionPropertyWithResourceNameFactory() {
+		securityManager.registerResourceNameFactory(Famille.class.getSimpleName(), new BeanResourceNameFactory("/famille/${famId}"));
+		final Famille famille12 = new Famille();
+		famille12.setFamId(12L);
+
+		final Famille famille13 = new Famille();
+		famille13.setFamId(13L);
+
+		//Test ma famille
+		final Role readMyFamilly = getRole("R_MY_FAMILLE");
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(readMyFamilly);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "READ");
+			Assert.assertTrue(canRead12);
+			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "READ");
+			Assert.assertFalse(canRead13);
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	private Role getRole(final String name) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		return definitionSpace.resolve(name, Permission2.class);
+		return definitionSpace.resolve(name, Role.class);
 	}
 
+	public static final class Famille {
+		private long id;
+
+		public void setFamId(final long id) {
+			this.id = id;
+		}
+
+		public long getFamId() {
+			return id;
+		}
+	}
 }
