@@ -56,7 +56,12 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 	 * @param isMaxInclude Si valeur max incluse
 	 *
 	 */
-	public DtListRangeFilter(final String fieldName, final Optional<C> minValue, final Optional<C> maxValue, final boolean isMinInclude, final boolean isMaxInclude) {
+	public DtListRangeFilter(
+			final String fieldName,
+			final Optional<C> minValue,
+			final Optional<C> maxValue,
+			final boolean isMinInclude,
+			final boolean isMaxInclude) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(minValue);
 		Assertion.checkNotNull(maxValue);
