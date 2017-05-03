@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -43,10 +42,10 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
@@ -231,12 +230,13 @@ public final class AdvancedTestWebServices implements WebServices {
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearch(//
 			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		//offset + range ?
 		//code 200
-		return result;
+		return allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 	}
 
 	@POST("/searchPagined()")
@@ -244,13 +244,16 @@ public final class AdvancedTestWebServices implements WebServices {
 	public List<Contact> testSearchServicePagined(//
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
 			@InnerBodyParam("listState") final DtListState dtListState) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+
+		final DtList<Contact> filteredContacts = allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, dtListState);
+		return applySortAndPagination(filteredContacts, dtListState);
 	}
 
 	@POST("/_searchQueryPagined")
@@ -258,25 +261,28 @@ public final class AdvancedTestWebServices implements WebServices {
 	public List<Contact> testSearchServiceQueryPagined(
 			final ContactCriteria contact,
 			@QueryParam("") final DtListState dtListState) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+		final DtList<Contact> filteredContacts = allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, dtListState);
+		return applySortAndPagination(filteredContacts, dtListState);
 	}
 
 	@AutoSortAndPagination
 	@POST("/_searchAutoPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		//offset + range ?
 		//code 200
-		return result;
+		return allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 	}
 
 	@POST("/uploadFile")
@@ -378,7 +384,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
+	private <C extends DtObject, O extends DtObject> Predicate<O> createFilterFunction(final C criteria, final Class<O> resultClass) {
 		Predicate<O> filter = (o) -> true;
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
@@ -403,7 +409,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			}
 			//si null, alors on ne filtre pas
 		}
-		return new FilterFunction<>(filter);
+		return filter;
 	}
 
 }
