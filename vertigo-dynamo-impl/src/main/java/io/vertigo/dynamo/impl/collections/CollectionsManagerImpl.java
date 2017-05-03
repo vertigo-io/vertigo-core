@@ -38,6 +38,7 @@ import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.criteria.CriterionLimit;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -45,7 +46,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
@@ -151,8 +151,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	@Override
-	public <C extends Comparable<?>, D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max) {
-		return new DtListRangeFilter<>(fieldName, min, max, true, true);
+	public <D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<? extends Serializable> min, final Optional<? extends Serializable> max) {
+		final Predicate predicate = Criterions
+				.isBetween(() -> fieldName, CriterionLimit.ofIncluded(min.orElse(null)), CriterionLimit.ofIncluded(max.orElse(null)))
+				.toPredicate();
+		return predicate;
 	}
 
 	@Override

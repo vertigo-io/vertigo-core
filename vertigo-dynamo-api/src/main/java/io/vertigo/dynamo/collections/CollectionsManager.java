@@ -42,9 +42,8 @@ public interface CollectionsManager extends Manager {
 	 * @param min Valeur minimale
 	 * @param max Valeur maximale
 	 * @return Filtre
-	 * @param <C> Type des bornes
 	 */
-	<C extends Comparable<?>, D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<C> min, final Optional<C> max);
+	<D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<? extends Serializable> min, final Optional<? extends Serializable> max);
 
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
