@@ -591,9 +591,9 @@ public final class WebServiceManagerTest {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"))
+				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"))
 				.build();
 
 		newContactView.remove("address");
@@ -616,9 +616,9 @@ public final class WebServiceManagerTest {
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
+				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress(38L, "38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
 				.build();
 
 		newContactView.remove("address");
@@ -1754,7 +1754,7 @@ public final class WebServiceManagerTest {
 
 	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
 		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"),
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
 	}
@@ -1773,8 +1773,9 @@ public final class WebServiceManagerTest {
 				.build();
 	}
 
-	private static Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
+	private static Map<String, Object> createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
 		return new MapBuilder<String, Object>()
+				.put("adrId", adrId)
 				.put("street1", street1)
 				.put("street2", street2)
 				.put("city", city)

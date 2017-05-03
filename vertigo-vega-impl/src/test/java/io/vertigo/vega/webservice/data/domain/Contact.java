@@ -25,6 +25,7 @@ import java.util.List;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -45,8 +46,11 @@ public final class Contact implements Entity {
 	@Field(domain = "DO_EMAIL", label = "Email")
 	private String email;
 
+	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
+	private Long adrId;
+
 	private List<String> tels;
-	private Address address;
+	private final VAccessor<Address> adrIdAccessor = new VAccessor<>(Address.class, "address");
 
 	/** {@inheritDoc} */
 	@Override
@@ -103,11 +107,19 @@ public final class Contact implements Entity {
 	}
 
 	public Address getAddress() {
-		return address;
+		return adrIdAccessor.get();
 	}
 
 	public void setAddress(final Address address) {
-		this.address = address;
+		adrIdAccessor.set(address);
+	}
+
+	public Long getAdrId() {
+		return adrId;
+	}
+
+	public void setAdrId(final Long adrId) {
+		this.adrId = adrId;
 	}
 
 	public List<String> getTels() {

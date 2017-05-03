@@ -19,6 +19,7 @@
 package io.vertigo.vega.engines.webservice.json;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,20 +44,29 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.lang.Tuples;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.ClassUtil;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -254,6 +265,80 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	private final class DtObjectJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final D src, final Type typeOfSrc, final JsonSerializationContext context) {
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(src.getClass());
+			final JsonObject jsonObject = new JsonObject();
+
+			dtDefinition.getFields()
+					.stream()
+					.forEach(field -> {
+						jsonObject.add(StringUtil.constToLowerCamelCase(field.getName()), context.serialize(field.getDataAccessor().getValue(src)));
+					});
+
+			Stream.of(src.getClass().getDeclaredFields())
+					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> getAccessor(field, src))
+					.filter(VAccessor::isLoaded)
+					.forEach(accessor -> {
+						jsonObject.add(accessor.getRole(), context.serialize(accessor.get()));
+					});
+			return jsonObject;
+
+		}
+
+		@Override
+		public D deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition((Class<D>) typeOfT);
+
+			// we use as base the default deserialization
+			final D dtObject = (D) gson.getDelegateAdapter(null, TypeToken.get(typeOfT)).fromJsonTree(json);
+			final JsonObject jsonObject = json.getAsJsonObject();
+
+			// case of the lazy objet passed
+			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
+					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> Tuples.of(field, getAccessor(field, dtObject)))
+					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
+					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
+
+			// case of the fk we need to handle after because it's the primary information
+			dtDefinition.getFields()
+					.stream()
+					.filter(field -> field.getType() == FieldType.FOREIGN_KEY)
+					.forEach(field -> field.getDataAccessor()
+							.setValue(
+									dtObject,
+									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getDataType().getJavaClass())));
+
+			return dtObject;
+
+		}
+
+	}
+
+	private static VAccessor getAccessor(final Field field, final Object object) {
+		try {
+			field.setAccessible(true);
+			return (VAccessor) field.get(object);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static final class VAccessorJsonSerializer implements JsonSerializer<VAccessor> {
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final VAccessor src, final Type typeOfSrc, final JsonSerializationContext context) {
+			return null;
+
+		}
+
+	}
+
 	private static final class DefinitionReferenceJsonSerializer implements JsonSerializer<DefinitionReference> {
 		/** {@inheritDoc} */
 		@Override
@@ -316,11 +401,12 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static Gson createGson(final SearchApiVersion searchApiVersion) {
+	private Gson createGson(final SearchApiVersion searchApiVersion) {
 		try {
 			return new GsonBuilder()
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
 					//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
@@ -333,6 +419,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(Map.class, new MapJsonSerializer())
 					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
+					.registerTypeAdapter(VAccessor.class, new VAccessorJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
 					.registerTypeAdapter(URI.class, new URIJsonAdapter())
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())

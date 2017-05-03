@@ -20,12 +20,12 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
-		LOADED,
-		NOT_LOADED
+		LOADED, NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
 	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
+	private final String role;
 	private URI<E> targetURI;
 	private E value;
 
@@ -33,18 +33,20 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	 * Constructor.
 	 * @param clazz the entity class
 	 */
-	public VAccessor(final Class<E> clazz) {
-		this(DtObjectUtil.findDtDefinition(clazz));
+	public VAccessor(final Class<E> clazz, final String role) {
+		this(DtObjectUtil.findDtDefinition(clazz), role);
 	}
 
 	/**
 	 * Constructor.
 	 * @param targetDtDefinition the entity definition
 	 */
-	public VAccessor(final DtDefinition targetDtDefinition) {
+	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
 		Assertion.checkNotNull(targetDtDefinition);
+		Assertion.checkArgNotEmpty(role);
 		//---
 		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
+		this.role = role;
 	}
 
 	private static DataStore getDataStore() {
@@ -120,5 +122,13 @@ public final class VAccessor<E extends Entity> implements Serializable {
 		//we have to reset the value and the state
 		value = null;
 		status = State.NOT_LOADED;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public boolean isLoaded() {
+		return status == State.LOADED;
 	}
 }

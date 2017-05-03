@@ -24,7 +24,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 
 	<#list dtDefinition.fields as dtField>
 		<#if dtField.foreignKey>
-	private final VAccessor<${dtField.association.returnType}> ${dtField.upperCamelCaseName?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class);
+	private final VAccessor<${dtField.association.returnType}> ${dtField.upperCamelCaseName?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role?uncap_first}");
 		<#else>
 	private ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
