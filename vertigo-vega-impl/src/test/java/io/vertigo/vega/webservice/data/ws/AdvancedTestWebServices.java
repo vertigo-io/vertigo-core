@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -46,7 +45,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.MessageText;
@@ -381,7 +379,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	private <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
-		final List<Predicate<O>> filters = new ArrayList<>();
+		Predicate<O> filter = (o) -> true;
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
@@ -397,15 +395,15 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
 						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
 						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
-						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
+						filter = filter.and(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
 					} else {
-						filters.add(collectionsManager.filterByValue(fieldName, Serializable.class.cast(value)));
+						filter = filter.and(collectionsManager.filterByValue(fieldName, Serializable.class.cast(value)));
 					}
 				}
 			}
 			//si null, alors on ne filtre pas
 		}
-		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new Predicate[filters.size()])));
+		return new FilterFunction<>(filter);
 	}
 
 }
