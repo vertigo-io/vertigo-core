@@ -158,7 +158,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Override
 	public <D extends DtObject> Predicate<D> filterByValue(final String fieldName, final Serializable value) {
 		//we have to deal with with th null case (isNull).
-		final Predicate predicate = Criterions.isEqualTo(() -> fieldName, (Comparable) value).toPredicate();
+		final Predicate predicate = Criterions.isEqualTo(() -> fieldName, value).toPredicate();
 		return predicate;
 	}
 

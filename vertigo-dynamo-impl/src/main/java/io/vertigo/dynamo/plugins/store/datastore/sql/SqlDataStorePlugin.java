@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.sql;
 
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -260,7 +261,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//---
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Comparable value = (Comparable) dtcUri.getSource().getId();
+		final Serializable value = dtcUri.getSource().getId();
 
 		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
 	}

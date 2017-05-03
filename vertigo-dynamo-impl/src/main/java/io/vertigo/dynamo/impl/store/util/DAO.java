@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -248,7 +249,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	@Deprecated
 	public final DtList<E> getListByDtField(final String fieldName, final Object value, final int maxRows) {
 		// we assume that this method was always used with comparable objects (String, Long, Integer, Boolean...)
-		return getListByDtFieldName(() -> fieldName, (Comparable) value, maxRows);
+		return getListByDtFieldName(() -> fieldName, (Serializable) value, maxRows);
 	}
 
 	/**
@@ -257,7 +258,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param maxRows Nombre maximum de ligne
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Comparable value, final int maxRows) {
+	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final int maxRows) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);

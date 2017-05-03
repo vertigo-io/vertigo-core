@@ -99,7 +99,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 					Assertion.checkNotNull(userValue);
 					Assertion.checkArgument(userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					//----
-					final Criteria<E> criteria = toCriteria(expression::getFieldName, expression.getOperator(), (Comparable<?>) userValue);
+					final Criteria<E> criteria = toCriteria(expression::getFieldName, expression.getOperator(), userValue);
 					if (firstCriteria == null) {
 						firstCriteria = criteria;
 					} else {
@@ -117,7 +117,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Criteria<E> toCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Comparable<?> value) {
+	private Criteria<E> toCriteria(final DtFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);

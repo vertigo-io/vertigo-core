@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.criteria;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -35,9 +36,9 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = -7797854063455062775L;
 	private final DtFieldName dtFieldName;
 	private final CriterionOperator criterionOperator;
-	private final Comparable[] values;
+	private final Serializable[] values;
 
-	Criterion(final DtFieldName dtFieldName, final CriterionOperator criterionOperator, final Comparable... values) {
+	Criterion(final DtFieldName dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
 		Assertion.checkNotNull(dtFieldName);
 		Assertion.checkNotNull(criterionOperator);
 		Assertion.when(!CriterionOperator.IN.equals(criterionOperator))
@@ -77,7 +78,23 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case LTE:
 				return dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case BETWEEN:
-				return "(" + dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "# and " + dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[1]) + "# )";
+				final CriterionLimit min = CriterionLimit.class.cast(values[0]);
+				final CriterionLimit max = CriterionLimit.class.cast(values[1]);
+				final StringBuilder sql = new StringBuilder();
+				if (min.isDefined()) {
+					sql.append(dtFieldName.name())
+							.append(min.isIncluded() ? " >= " : " > ")
+							.append("#").append(ctx.attributeName(dtFieldName, min.getValue())).append("#");
+				}
+				if (max.isDefined()) {
+					if (sql.length() > 0) {
+						sql.append(" and ");
+					}
+					sql.append(dtFieldName.name())
+							.append(max.isIncluded() ? " <= " : " < ")
+							.append("#").append(ctx.attributeName(dtFieldName, max.getValue())).append("#");
+				}
+				return "( " + sql.toString() + " )";
 			case STARTS_WITH:
 				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
@@ -89,12 +106,12 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		}
 	}
 
-	private static String prepareSqlInArgument(final Comparable value) {
+	private static String prepareSqlInArgument(final Serializable value) {
 		Assertion.checkArgument(
 				value instanceof String
 						|| value instanceof Integer
 						|| value instanceof Long,
-				"Only String,Long and Integers are allowed in a where in clause");
+				"Only String,Long and Integers are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
 		Assertion.when(value instanceof String)
 				.check(() -> ((String) value).matches("[A-Za-z0-9_]*"), "Only simple characters are allowed");
@@ -128,27 +145,47 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return values[0].compareTo(value) < 0;
+				return ((Comparable) values[0]).compareTo(value) < 0;
 			case GTE:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return values[0].compareTo(value) <= 0;
+				return ((Comparable) values[0]).compareTo(value) <= 0;
 			case LT:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return values[0].compareTo(value) > 0;
+				return ((Comparable) values[0]).compareTo(value) > 0;
 			case LTE:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return values[0].compareTo(value) >= 0;
+				return ((Comparable) values[0]).compareTo(value) >= 0;
 			case BETWEEN:
-				if (values[0] == null || value == null || values[1] == null) {
+				if (value == null) {
 					return false;
 				}
-				return values[0].compareTo(value) <= 0 && values[1].compareTo(value) >= 0;
+				final CriterionLimit min = CriterionLimit.class.cast(values[0]);
+				final CriterionLimit max = CriterionLimit.class.cast(values[1]);
+				if (!min.isDefined() && !max.isDefined()) {
+					return true;//there is no limit
+				}
+				boolean test = true;
+				if (min.isDefined()) {
+					if (min.isIncluded()) {
+						test = test && min.getValue().compareTo(value) <= 0;
+					} else {
+						test = test && min.getValue().compareTo(value) < 0;
+					}
+				}
+				if (max.isDefined()) {
+					if (max.isIncluded()) {
+						test = test && max.getValue().compareTo(value) >= 0;
+					} else {
+						test = test && max.getValue().compareTo(value) > 0;
+					}
+				}
+				return test;
 			//with String
 			case STARTS_WITH:
 				if (values[0] == null || value == null) {

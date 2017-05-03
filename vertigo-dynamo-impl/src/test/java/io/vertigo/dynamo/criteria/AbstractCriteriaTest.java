@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.criteria;
 
+import static io.vertigo.dynamo.criteria.CriterionLimit.ofExcluded;
+import static io.vertigo.dynamo.criteria.CriterionLimit.ofIncluded;
+
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -158,20 +161,20 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public final void testIsBetween() {
-		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1980, 2000);
-		assertCriteria(6, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, ofIncluded(1980), ofExcluded(2000));
+		assertCriteria(5, criteriaBool);
 	}
 
 	@Test
 	public final void testIsBetweenWithNull1() {
-		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, null, 2000);
-		assertCriteria(0, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, ofIncluded(null), ofExcluded(2000));
+		assertCriteria(9, criteriaBool);
 	}
 
 	@Test
 	public final void testIsBetweenWithNull2() {
-		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, 1980, null);
-		assertCriteria(0, criteriaBool);
+		final Criteria<Movie2> criteriaBool = Criterions.isBetween(YEAR, ofIncluded(1980), ofExcluded(null));
+		assertCriteria(8, criteriaBool);
 	}
 
 	@Test

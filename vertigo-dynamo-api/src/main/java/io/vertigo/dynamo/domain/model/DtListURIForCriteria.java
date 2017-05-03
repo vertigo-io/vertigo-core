@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -84,7 +86,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 					//si String et pas une FK : on met en préfix
 					criteria = criteria.and(Criterions.startsWith(() -> fieldName, (String) value));
 				} else if (value != null) {
-					criteria = criteria.and(Criterions.isEqualTo(() -> fieldName, (Comparable) value));
+					criteria = criteria.and(Criterions.isEqualTo(() -> fieldName, (Serializable) value));
 				}
 			}
 			//si null, alors on ne filtre pas

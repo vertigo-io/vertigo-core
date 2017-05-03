@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -110,7 +111,7 @@ public final class DtListPatternFilterUtil {
 		final Optional<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
 		final Predicate predicate;
 		if (filterValue.isPresent()) {
-			predicate = Criterions.isEqualTo(() -> fieldName, filterValue.get()).toPredicate();
+			predicate = Criterions.isEqualTo(() -> fieldName, (Serializable) filterValue.get()).toPredicate();
 		} else {
 			predicate = Criterions.isNotNull(() -> fieldName).toPredicate();
 		}

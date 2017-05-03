@@ -18,11 +18,13 @@
  */
 package io.vertigo.dynamo.criteria;
 
+import java.io.Serializable;
 import java.util.function.Predicate;
 
 import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.lang.Assertion;
 
 /**
  *
@@ -57,7 +59,7 @@ public final class Criterions {
 	 * @return is equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.EQ, value);
 	}
 
@@ -66,7 +68,7 @@ public final class Criterions {
 	 * @return is not equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isNotEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isNotEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
 		return new Criterion<>(dtFieldName, CriterionOperator.NEQ, value);
 	}
 
@@ -75,7 +77,9 @@ public final class Criterions {
 	 * @return is greater than the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isGreaterThan(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isGreaterThan(final DtFieldName<E> dtFieldName, final Serializable value) {
+		Assertion.checkArgument(value == null || value instanceof Comparable, "value must be comparable");
+		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GT, value);
 	}
 
@@ -84,7 +88,9 @@ public final class Criterions {
 	 * @return is greater than or equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isGreaterThanOrEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isGreaterThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+		Assertion.checkArgument(value == null || value instanceof Comparable, "value must be comparable");
+		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.GTE, value);
 	}
 
@@ -93,7 +99,9 @@ public final class Criterions {
 	 * @return is less than the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isLessThan(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isLessThan(final DtFieldName<E> dtFieldName, final Serializable value) {
+		Assertion.checkArgument(value == null || value instanceof Comparable, "value must be comparable");
+		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LT, value);
 	}
 
@@ -102,7 +110,9 @@ public final class Criterions {
 	 * @return is less than or equal to the value
 	 * @param value the value
 	 */
-	public static <E extends Entity> Criteria<E> isLessThanOrEqualTo(final DtFieldName<E> dtFieldName, final Comparable value) {
+	public static <E extends Entity> Criteria<E> isLessThanOrEqualTo(final DtFieldName<E> dtFieldName, final Serializable value) {
+		Assertion.checkArgument(value == null || value instanceof Comparable, "value must be comparable");
+		//---
 		return new Criterion<>(dtFieldName, CriterionOperator.LTE, value);
 	}
 
@@ -121,7 +131,9 @@ public final class Criterions {
 	 * @param min the min value
 	 * @param max the max value
 	 */
-	public static <E extends Entity> Criteria<E> isBetween(final DtFieldName<E> dtFieldName, final Comparable min, final Comparable max) {
+	public static <E extends Entity> Criteria<E> isBetween(final DtFieldName<E> dtFieldName, final CriterionLimit<E> min, final CriterionLimit<E> max) {
+		Assertion.checkNotNull(min);
+		Assertion.checkNotNull(max);
 		return new Criterion<>(dtFieldName, CriterionOperator.BETWEEN, min, max);
 	}
 
@@ -130,7 +142,7 @@ public final class Criterions {
 	 * @return is in a list of values
 	 * @param values list of allowed values
 	 */
-	public static <E extends Entity> Criteria<E> in(final DtFieldName<E> dtFieldName, final Comparable... values) {
+	public static <E extends Entity> Criteria<E> in(final DtFieldName<E> dtFieldName, final Serializable... values) {
 		return new Criterion<>(dtFieldName, CriterionOperator.IN, values);
 	}
 
