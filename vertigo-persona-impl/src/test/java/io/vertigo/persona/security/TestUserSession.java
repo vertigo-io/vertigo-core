@@ -30,6 +30,7 @@ public final class TestUserSession extends UserSession {
 
 	public TestUserSession() {
 		final Map<String, Serializable[]> securityKeys = new HashMap<>();
+		securityKeys.put("famId", new Long[] { 12L });
 		securityKeys.put("utiId", new Long[] { 1000L });
 		securityKeys.put("typId", new Long[] { 10L });
 		securityKeys.put("montantMax", new Double[] { 100d });
