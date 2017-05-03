@@ -26,5 +26,6 @@ import java.util.LinkedHashMap;
  * @author npiedeloup
  */
 public final class SwaggerApi extends LinkedHashMap<String, Object> {
+	private static final long serialVersionUID = -5805457718453386171L;
 	//nothing more than Map
 }
