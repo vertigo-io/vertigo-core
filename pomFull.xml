@@ -45,24 +45,7 @@ limitations under the License. -->
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
 
-		<module>vertigo-tempo-api</module>
-		<module>vertigo-tempo-impl</module>
-		
-		<module>..\vertigo-quarto</module>
-		
-		<module>..\vertigo-studio</module>
-
-		<module>..\vertigo-struts2</module>
-		
-		<module>..\vertigo-shell</module>
-		
-		<module>..\vertigo-stella</module>
-		
-		<module>vertigo-bundle</module>
-
 		<module>..\vertigo-extensions</module>
-		
-		<module>..\vertigo-orchestra</module>
 	</modules>
 	
 	<scm>
