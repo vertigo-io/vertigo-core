@@ -1,4 +1,4 @@
-package io.vertigo.core.plugins.node.registry;
+package io.vertigo.core.plugins.node.registry.single;
 
 import java.util.Arrays;
 import java.util.Collections;

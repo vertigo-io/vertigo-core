@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.plugins.node.registry.SingleNodeRegistryPlugin;
+import io.vertigo.core.plugins.node.registry.single.SingleNodeRegistryPlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 

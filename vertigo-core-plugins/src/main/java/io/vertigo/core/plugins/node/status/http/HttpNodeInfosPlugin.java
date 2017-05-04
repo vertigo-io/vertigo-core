@@ -1,4 +1,4 @@
-package io.vertigo.core.plugins.node.status;
+package io.vertigo.core.plugins.node.status.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
