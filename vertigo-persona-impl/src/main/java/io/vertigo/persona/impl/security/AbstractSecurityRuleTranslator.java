@@ -24,23 +24,24 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
+import io.vertigo.persona.security.metamodel.SecuredEntity;
+import io.vertigo.persona.security.metamodel.SecurityAxe;
 import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 
-	private DtDefinition myDtDefinition;
+	private SecuredEntity mySecuredEntity;
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
 	private Map<String, Serializable[]> myUserCriteria;
 
-	public S on(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+	public S on(final SecuredEntity securedEntity) {
+		Assertion.checkNotNull(securedEntity);
 		//-----
-		this.myDtDefinition = dtDefinition;
+		this.mySecuredEntity = securedEntity;
 		return (S) this;
 	}
 
@@ -90,8 +91,20 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return (S) this;
 	}
 
-	protected final DtDefinition getDtDefinition() {
-		return myDtDefinition;
+	protected final SecuredEntity getSecuredEntity() {
+		return mySecuredEntity;
+	}
+
+	protected final boolean isSimpleSecurityField(final String fieldName) {
+		return mySecuredEntity.getSecurityFields().stream()
+				.anyMatch(field -> fieldName.equals(field.getName()));
+	}
+
+	protected final SecurityAxe getSecurityAxe(final String fieldName) {
+		return mySecuredEntity.getSecurityAxes().stream()
+				.filter(securityAxe -> fieldName.equals(securityAxe.getName()))
+				.findFirst()//findFirst car pas le moment de vérifier qu'il y en qu'un seul
+				.get();
 	}
 
 	protected final List<DslMultiExpression> getMultiExpressions() {

@@ -26,8 +26,8 @@ import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.SecuredEntity;
+import io.vertigo.persona.security.metamodel.SecurityAxe;
 import io.vertigo.persona.security.metamodel.SecurityAxeType;
-import io.vertigo.persona.security.metamodel.SecurityAxes;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -48,7 +48,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 			securityFields.add(deserializeDtField(entityDefinition, securityField.getAsString()));
 		}
 
-		final List<SecurityAxes> advancedAxes = new ArrayList<>();
+		final List<SecurityAxe> advancedAxes = new ArrayList<>();
 		for (final JsonElement advancedAxe : jsonSecuredEntity.get("advancedAxes").getAsJsonArray()) {//TODO if null ?
 			advancedAxes.add(deserializeSecurityAxes(entityDefinition, advancedAxe.getAsJsonObject(), context));
 		}
@@ -113,12 +113,15 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 		}
 	}
 
-	private static SecurityAxes deserializeSecurityAxes(final DtDefinition entityDefinition, final JsonObject advancedAxe, final JsonDeserializationContext context) {
+	private static SecurityAxe deserializeSecurityAxes(final DtDefinition entityDefinition, final JsonObject advancedAxe, final JsonDeserializationContext context) {
+		final String name = advancedAxe.get("name").getAsString();
 		final SecurityAxeType type = SecurityAxeType.valueOf(advancedAxe.get("type").getAsString());
-		final DtField field = deserializeDtField(entityDefinition, advancedAxe.get("field").getAsString());
-		final List<String> values = context.deserialize(advancedAxe.get("values"), createParameterizedType(List.class, String.class));
-
-		return new SecurityAxes(type, field, values);
+		final List<String> fieldNames = context.deserialize(advancedAxe.get("fields"), createParameterizedType(List.class, String.class));
+		final List<DtField> fields = fieldNames.stream()
+				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
+				.collect(Collectors.toList());
+		final List<String> values = deserializeList(advancedAxe.get("values"), String.class, context);
+		return new SecurityAxe(name, type, fields, values);
 	}
 
 	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {
@@ -128,6 +131,13 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 
 	private static DtField deserializeDtField(final DtDefinition entityDefinition, final String fieldName) {
 		return entityDefinition.getField(fieldName);
+	}
+
+	private static <T> List<T> deserializeList(final JsonElement jsonElement, final Class<T> elementClass, final JsonDeserializationContext context) {
+		if (jsonElement == null) {
+			return Collections.emptyList();
+		}
+		return context.deserialize(jsonElement, createParameterizedType(List.class, elementClass));
 	}
 
 	private static DtDefinition findDtDefinition(final String entityName) {

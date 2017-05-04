@@ -35,7 +35,7 @@ public final class SecuredEntity implements Definition {
 	private final String name;
 	private final DtDefinition entityDefinition;
 	private final List<DtField> securityFields;
-	private final List<SecurityAxes> advancedAxes;
+	private final List<SecurityAxe> advancedAxes;
 	private final List<Permission2> operations;
 
 	/**
@@ -46,7 +46,7 @@ public final class SecuredEntity implements Definition {
 	 * @param advancedAxes axes avancés de sécurité.
 	 * @param operations opérations attribuées.
 	 */
-	public SecuredEntity(final DtDefinition entityDefinition, final List<DtField> securityFields, final List<SecurityAxes> advancedAxes, final List<Permission2> operations) {
+	public SecuredEntity(final DtDefinition entityDefinition, final List<DtField> securityFields, final List<SecurityAxe> advancedAxes, final List<Permission2> operations) {
 		name = "SEC_" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;
 		this.securityFields = securityFields;
@@ -83,7 +83,7 @@ public final class SecuredEntity implements Definition {
 	 *
 	 * @return the value of axes.
 	 */
-	public List<SecurityAxes> getSecurityAxes() {
+	public List<SecurityAxe> getSecurityAxes() {
 		return advancedAxes;
 	}
 

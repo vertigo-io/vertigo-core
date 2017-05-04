@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,6 +49,7 @@ import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.PermissionName;
 import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.persona.security.metamodel.SecuredEntity;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -158,12 +160,14 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		final UserSession userSession = userSessionOption.get();
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
 		return userSession.getEntityPermissions(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
 				.flatMap(permission -> permission.getRules().stream())
 				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
-						.on(dtDefinition)
+						.on(securedEntity)
 						.withRule(rule)
 						.withCriteria(userSession.getSecurityKeys())
 						.toCriteria()
@@ -309,6 +313,18 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		Assertion.checkNotNull(resourceNameFactory);
 		//-----
 		resourceNameFactories.put(resourceType, resourceNameFactory);
+	}
+
+	/**
+	 * Finds the SecuredEntity from a type of 'dtDefinition'
+	 * @param dtDefinition the 'dtDefinition'
+	 * @return SecuredEntity
+	 */
+	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//-----
+		final String name = DefinitionUtil.getPrefix(SecuredEntity.class) + dtDefinition.getName();
+		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
 	}
 
 }

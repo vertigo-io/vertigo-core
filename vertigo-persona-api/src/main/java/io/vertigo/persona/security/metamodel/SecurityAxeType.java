@@ -13,6 +13,6 @@ public enum SecurityAxeType {
 	SIMPLE, //
 	/** Enumeration. */
 	ENUM,
-	/** Hierarchy. */
-	HIERARCHY;
+	/** Hierarchy tree. */
+	TREE;
 }

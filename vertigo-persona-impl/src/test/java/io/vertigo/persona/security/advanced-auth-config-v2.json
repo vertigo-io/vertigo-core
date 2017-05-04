@@ -13,9 +13,11 @@
 		"entity": "DOSSIER",
 		"securityFields" : ["UTI_ID_OWNER","TYP_ID","MONTANT" ],
 		"advancedAxes": [{
-				"field": "ETA_CD", "type": "ENUM",
+				"name": "ETA_CD", "type": "ENUM", "fields": [ "ETA_CD" ], 
 				"values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
-			}
+			}, {
+				"name": "GEO", "type": "TREE", "fields": [ "REG_ID", "DEP_ID", "COM_ID" ]
+			}			
 		],
 		"operations": [{
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",

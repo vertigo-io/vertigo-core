@@ -19,6 +19,7 @@
 package io.vertigo.persona.impl.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -31,6 +32,7 @@ import io.vertigo.persona.security.dsl.model.DslFixedValue;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression.BoolOperator;
 import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
+import io.vertigo.persona.security.metamodel.SecurityAxe;
 
 /**
  *
@@ -100,7 +102,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 					Assertion.checkNotNull(userValue);
 					Assertion.checkArgument(userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					//----
-					final Criteria<E> criteria = toCriteria(expression::getFieldName, expression.getOperator(), userValue);
+					final Criteria<E> criteria = toCriteria(expression.getFieldName(), expression.getOperator(), userValue);
 					if (firstCriteria == null) {
 						firstCriteria = criteria;
 					} else {
@@ -112,9 +114,30 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof DslFixedValue) {
-			return toCriteria(expression::getFieldName, expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
+			return toCriteria(expression.getFieldName(), expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expression.getValue().getClass().getName());
+		}
+	}
+
+	private Criteria<E> toCriteria(final String fieldName, final ValueOperator operator, final Serializable value) {
+		if (isSimpleSecurityField(fieldName)) {
+			//field normal
+			return toCriteria(fieldName::toString, operator, value);
+		} else {
+			final SecurityAxe securityAxe = getSecurityAxe(fieldName);
+			switch (securityAxe.getType()) {
+				case SIMPLE: //TODO not use yet ?
+					return toCriteria(fieldName::toString, operator, value);
+				case ENUM:
+					Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+					//----
+					return enumToCriteria(securityAxe, operator, String.class.cast(value));
+				case TREE:
+					return treeToCriteria(securityAxe, operator, value);
+				default:
+					throw new IllegalArgumentException("securityAxeType not supported " + securityAxe.getType());
+			}
 		}
 	}
 
@@ -135,6 +158,42 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			default:
 				throw new IllegalArgumentException("Operator not supported " + operator.name());
 		}
+	}
+
+	private Criteria<E> enumToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final String value) {
+		final DtFieldName<E> fieldName = securityAxe.getFields().get(0)::getName;
+		switch (operator) {
+			case EQ:
+				return Criterions.isEqualTo(fieldName, value);
+			case GT:
+				return Criterions.in(fieldName, subValues(securityAxe.getValues(), false, value, false));
+			case GTE:
+				return Criterions.in(fieldName, subValues(securityAxe.getValues(), false, value, true));
+			case LT:
+				return Criterions.in(fieldName, subValues(securityAxe.getValues(), true, value, false));
+			case LTE:
+				return Criterions.in(fieldName, subValues(securityAxe.getValues(), true, value, true));
+			case NEQ:
+				return Criterions.isNotEqualTo(fieldName, value);
+			default:
+				throw new IllegalArgumentException("Operator not supported " + operator.name());
+		}
+	}
+
+	private Criteria<E> treeToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final Serializable value) {
+		//on détermine le dernier field non null du user
+		throw new IllegalArgumentException("treeToCriteria not supported yet" + securityAxe.getName());
+	}
+
+	private static Serializable[] subValues(final List<String> values, final boolean includeHead, final String value, final boolean valueIncluded) {
+		final int indexof = values.indexOf(value);
+		Assertion.checkArgument(indexof >= 0, "Current value ({0}) of security axe {1} not found in authorized values", value);
+		//----
+		final List<String> subValues = includeHead ? values.subList(0, indexof) : values.subList(indexof + 1, values.size() - 1);
+		if (valueIncluded) {
+			subValues.add(value);
+		}
+		return subValues.toArray(new String[subValues.size()]);
 	}
 
 }
