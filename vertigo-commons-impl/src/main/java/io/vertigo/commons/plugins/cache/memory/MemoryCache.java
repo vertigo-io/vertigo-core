@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
  */
 final class MemoryCache {
 	private final String name;
-	private final long timeToLiveSeconds;
+	private final int timeToLiveSeconds;
 	private long totalHits;
 	private long totalCalls;
 	private final Map<Serializable, MemoryCacheValue> cacheDatas = new HashMap<>();
@@ -42,7 +42,7 @@ final class MemoryCache {
 	 * @param name Nom du cache
 	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */
-	MemoryCache(final String name, final long timeToLiveSeconds) {
+	MemoryCache(final String name, final int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		this.name = name;
@@ -59,7 +59,7 @@ final class MemoryCache {
 	/**
 	 * @return Conf : temps de vie en seconde des éléments
 	 */
-	long getTimeToLiveSeconds() {
+	int getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
 	}
 
@@ -104,7 +104,7 @@ final class MemoryCache {
 	private boolean isAlive(final MemoryCacheValue cacheValue) {
 		//Data is alive
 		// - if its age is less than than 'timeToLiveSeconds'
-		return System.currentTimeMillis() - cacheValue.getCreateTime() < timeToLiveSeconds * 1000;
+		return (System.currentTimeMillis() - cacheValue.getCreateTime()) < timeToLiveSeconds * 1000L;
 	}
 
 	/**

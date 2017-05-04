@@ -34,8 +34,8 @@ public final class CacheConfig {
 	private final String cacheType;
 	private final boolean serializeElements;
 	private final int maxElementsInMemory;
-	private final long timeToLiveSeconds;
-	private final long timeToIdleSeconds;
+	private final int timeToLiveSeconds;
+	private final int timeToIdleSeconds;
 
 	/**
 	 * Constructor.
@@ -45,7 +45,7 @@ public final class CacheConfig {
 	 * @param timeToLiveSeconds Time to live (in seconds)
 	 * @param timeToIdleSeconds Time to live when idle (in seconds)
 	 */
-	public CacheConfig(final String cacheType, final boolean serializeElements, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
+	public CacheConfig(final String cacheType, final boolean serializeElements, final int maxElementsInMemory, final int timeToLiveSeconds, final int timeToIdleSeconds) {
 		Assertion.checkArgNotEmpty(cacheType);
 		//-----
 		this.cacheType = cacheType;
@@ -79,14 +79,14 @@ public final class CacheConfig {
 	/**
 	 * @return Time to live (in seconds)
 	 */
-	public long getTimeToLiveSeconds() {
+	public int getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
 	}
 
 	/**
 	 * @return Time tio idle (in seconds)
 	 */
-	public long getTimeToIdleSeconds() {
+	public int getTimeToIdleSeconds() {
 		return timeToIdleSeconds;
 	}
 }
