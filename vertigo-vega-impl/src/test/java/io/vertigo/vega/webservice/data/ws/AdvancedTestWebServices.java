@@ -45,6 +45,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.domain.util.VLists;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.MessageText;
@@ -380,7 +381,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			final int listSize = sortedList.size();
 			final int usedSkip = Math.min(dtListState.getSkipRows(), listSize);
 			final int usedTop = Math.min(usedSkip + dtListState.getMaxRows().get(), listSize);
-			return collectionsManager.subList(sortedList, usedSkip, usedTop);
+			return VLists.subList(sortedList, usedSkip, usedTop);
 		}
 		return sortedList;
 	}
