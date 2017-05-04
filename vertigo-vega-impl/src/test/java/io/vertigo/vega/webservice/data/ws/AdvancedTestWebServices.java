@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.CriterionLimit;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -45,7 +47,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
@@ -399,11 +400,15 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField resultDtField = resultDefinition.getField(filteredField);
 						final DtField minField = fieldName.endsWith("_MIN") ? field : criteriaDefinition.getField(filteredField + "_MIN");
 						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
-						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
-						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
-						filter = filter.and(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
+						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
+						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
+						filter = filter.and(Criterions.isBetween(() -> resultDtField.getName(),
+								CriterionLimit.ofIncluded(minValue),
+								CriterionLimit.ofExcluded(maxValue))
+								.toPredicate());
 					} else {
-						filter = filter.and(collectionsManager.filterByValue(fieldName, Serializable.class.cast(value)));
+						final Predicate predicate = Criterions.isEqualTo(() -> fieldName, Serializable.class.cast(value)).toPredicate();
+						filter.and(predicate);
 					}
 				}
 			}
