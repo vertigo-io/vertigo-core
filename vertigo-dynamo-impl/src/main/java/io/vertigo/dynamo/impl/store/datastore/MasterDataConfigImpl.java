@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
@@ -34,21 +34,14 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class MasterDataConfigImpl implements MasterDataConfig {
-
-	/** CollectionsManager.*/
-	private final CollectionsManager collectionsManager;
-
 	private final Map<DtListURIForMasterData, Predicate> mdlUriFilterMap = new HashMap<>();
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/**
 	 * Constructor.
-	 * @param collectionsManager Manager des collections
 	 */
-	public MasterDataConfigImpl(final CollectionsManager collectionsManager) {
-		Assertion.checkNotNull(collectionsManager);
-		//-----
-		this.collectionsManager = collectionsManager;
+	public MasterDataConfigImpl() {
+		super();
 	}
 
 	/** {@inheritDoc} */
@@ -57,7 +50,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//-----
-		register(uri, collectionsManager.filterByValue(fieldName, value));
+		register(uri, Criterions.isEqualTo(() -> fieldName, value).toPredicate());
 	}
 
 	/** {@inheritDoc} */
@@ -67,8 +60,8 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
 		//-----
-		final Predicate filter1 = collectionsManager.filterByValue(fieldName1, value1);
-		final Predicate filter2 = collectionsManager.filterByValue(fieldName2, value2);
+		final Predicate filter1 = Criterions.isEqualTo(() -> fieldName1, value1).toPredicate();
+		final Predicate filter2 = Criterions.isEqualTo(() -> fieldName2, value2).toPredicate();
 		final Predicate predicate = filter1.and(filter2);
 		register(uri, predicate);
 	}

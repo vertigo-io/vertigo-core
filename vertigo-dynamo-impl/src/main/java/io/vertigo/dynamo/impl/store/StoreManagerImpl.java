@@ -72,7 +72,7 @@ public final class StoreManagerImpl implements StoreManager {
 		Assertion.checkNotNull(fileStorePlugins);
 		Assertion.checkNotNull(eventBusManager);
 		//-----
-		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
+		masterDataConfig = new MasterDataConfigImpl();
 		//---
 		//On enregistre le plugin principal du broker
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
