@@ -40,6 +40,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.domain.util.VLists;
 
 /**
  * @author pchretien
@@ -334,7 +335,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Item> subList(final DtList<Item> dtc, final int start, final int end) {
-		return collectionsManager.subList(dtc, start, end);
+		return VLists.subList(dtc, start, end);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

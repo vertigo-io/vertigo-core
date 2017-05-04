@@ -43,15 +43,6 @@ public interface CollectionsManager extends Manager {
 	<D extends DtObject> Predicate<D> filter(final ListFilter listFilter);
 
 	/**
-	 * Builds a sub list from a list without changing it.
-	 * @param list the list to filter
-	 * @param start the start index (Included)
-	 * @param end the end index (exculed)
-	 * @return the filtered list
-	 */
-	<D extends DtObject> DtList<D> subList(final DtList<D> list, final int start, final int end);
-
-	/**
 	 * Sorts a list from a column.
 	 * @param list the list to sort
 	 * @param fieldName the field name

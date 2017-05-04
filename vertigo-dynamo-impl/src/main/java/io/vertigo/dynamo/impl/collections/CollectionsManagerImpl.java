@@ -68,20 +68,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		facetFactory = new FacetFactory(this);
 	}
 
-	@Override
-	public <D extends DtObject> DtList<D> subList(final DtList<D> dtc, final int start, final int end) {
-		Assertion.checkNotNull(dtc);
-		Assertion.checkArgument(start >= 0 && start <= end && end <= dtc.size(),
-				"IndexOutOfBoundException, le subList n''est pas possible avec les index passés (start:{0}, end:{1}, size:{2})",
-				String.valueOf(start), String.valueOf(end), String.valueOf(dtc.size())); //condition tirée de la javadoc de subList sur java.util.List
-		//-----
-		final DtList<D> subDtc = new DtList<>(dtc.getDefinition());
-		for (int i = start; i < end; i++) {
-			subDtc.add(dtc.get(i));
-		}
-		return subDtc;
-	}
-
 	private static StoreManager getStoreManager() {
 		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
