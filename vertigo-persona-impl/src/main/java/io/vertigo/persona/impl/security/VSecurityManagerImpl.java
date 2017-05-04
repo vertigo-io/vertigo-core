@@ -159,7 +159,8 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
 		return userSession.getEntityPermissions(dtDefinition).stream()
-				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
+				.filter(permission -> permission.getOperation().get().equals(operationName.name())
+						|| permission.getOverrides().contains(operationName.name()))
 				.flatMap(permission -> permission.getRules().stream())
 				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
 						.on(dtDefinition)

@@ -149,6 +149,11 @@ public abstract class UserSession implements Serializable {
 		if (permission.getEntityDefinition().isPresent()) {
 			permissionMapRefs.computeIfAbsent(new DefinitionReference<>(permission.getEntityDefinition().get()), key -> new HashSet<>())
 					.add(new DefinitionReference<>(permission));
+			for (final Permission2 grantedPermission : permission.getGrants()) {
+				if (!hasPermission(grantedPermission::getName)) { //On test pour ne pas créer de boucle
+					addPermission(grantedPermission);
+				}
+			}
 		}
 		return this;
 	}

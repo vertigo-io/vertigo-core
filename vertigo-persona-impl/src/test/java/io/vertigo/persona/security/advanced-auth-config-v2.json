@@ -28,7 +28,7 @@
 			"__comment": "Visibilité globale attribuée avec une opération transverser Hors Périmètre. Sans règles = toujours ok.",
 			"name": "READ_HP", "label" : "Lecture hors périmètre",
 			"overrides": ["READ"],
-			"rules": [] 
+			"rules": ["true"] 
 		}, {
 			"__comment": "Ecriture possible par l'utilisateur créateur avant que le marché ne soit Archivé, ou avec un montant max avant Archivé.",
 			"name": "WRITE", "label" : "Edition",
@@ -47,7 +47,7 @@
 		}, {
 			"__comment": "Suppression attribuable par type de marché ou pour le créateur tant que non Publié (Attribué sans type = règle non vérifiée).",
 			"name": "DELETE", "label" : "Suppression",
-			"grants": ["READ, WRITE"],
+			"grants": ["READ", "WRITE"],
 			"rules": [
 				"TYP_ID=${typId}",
 				"UTI_ID_OWNER=${utiId} and ETA_CD<PUB"

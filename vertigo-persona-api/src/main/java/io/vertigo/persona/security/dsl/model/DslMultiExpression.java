@@ -18,6 +18,7 @@
  */
 package io.vertigo.persona.security.dsl.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
@@ -60,9 +61,23 @@ public final class DslMultiExpression {
 	}
 
 	private final boolean block;
+	private final boolean alwaysTrue;
 	private final BoolOperator boolOperator;
 	private final List<DslExpression> expressions;
 	private final List<DslMultiExpression> multiExpressions;
+
+	/**
+	 * @param alwaysTrue Is alwaysTrue
+	 */
+	public DslMultiExpression(final boolean alwaysTrue) {
+		Assertion.checkArgument(alwaysTrue, "Always true constructor, must be use when rule mean alwaysTrue");
+		//-----
+		block = false;
+		this.alwaysTrue = true;
+		boolOperator = BoolOperator.AND;
+		expressions = Collections.emptyList();
+		multiExpressions = Collections.emptyList();
+	}
 
 	/**
 	 * @param block Is mode block
@@ -79,6 +94,7 @@ public final class DslMultiExpression {
 		Assertion.checkNotNull(multiExpressions);
 		//-----
 		this.block = block;
+		alwaysTrue = false;
 		this.boolOperator = boolOperator;
 		this.expressions = expressions;
 		this.multiExpressions = multiExpressions;
@@ -99,6 +115,13 @@ public final class DslMultiExpression {
 	}
 
 	/**
+	 * @return alwaysTrue
+	 */
+	public boolean isAlwaysTrue() {
+		return alwaysTrue;
+	}
+
+	/**
 	 * @return expressions
 	 */
 	public List<DslExpression> getExpressions() {
@@ -116,17 +139,18 @@ public final class DslMultiExpression {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder()
+				.append(alwaysTrue ? "true" : "")
 				.append(block ? "(" : "");
 		String sep = "";
 		for (final DslExpression expression : expressions) {
 			sb.append(sep);
 			sb.append(expression);
-			sep = boolOperator.toString();
+			sep = " " + boolOperator.toString() + " ";
 		}
 		for (final DslMultiExpression multiExpression : multiExpressions) {
 			sb.append(sep);
 			sb.append(multiExpression);
-			sep = boolOperator.toString();
+			sep = " " + boolOperator.toString() + " ";
 		}
 		sb.append(block ? ")" : "");
 		return sb.toString();

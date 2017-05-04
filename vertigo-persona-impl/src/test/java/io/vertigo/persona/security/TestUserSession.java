@@ -19,22 +19,20 @@
 package io.vertigo.persona.security;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;
-	private final Map<String, Serializable[]> mySecurityKeys;
+	private final Map<String, Serializable[]> mySecurityKeys = new HashMap<>();
 
 	public TestUserSession() {
-		final Map<String, Serializable[]> securityKeys = new HashMap<>();
-		securityKeys.put("famId", new Long[] { 12L });
-		securityKeys.put("utiId", new Long[] { 1000L });
-		securityKeys.put("typId", new Long[] { 10L });
-		securityKeys.put("montantMax", new Double[] { 100d });
-		mySecurityKeys = Collections.unmodifiableMap(securityKeys);
+		//		final Map<String, Serializable[]> securityKeys = new HashMap<>();
+		//		securityKeys.put("famId", new Long[] { 12L });
+		//		securityKeys.put("utiId", new Long[] { 1000L });
+		//		securityKeys.put("typId", new Long[] { 10L });
+		//		securityKeys.put("montantMax", new Double[] { 100d });
 	}
 
 	/** {@inheritDoc} */
@@ -48,4 +46,15 @@ public final class TestUserSession extends UserSession {
 	public Map<String, Serializable[]> getSecurityKeys() {
 		return mySecurityKeys;
 	}
+
+	public TestUserSession withSecurityKeys(final String securityKey, final Serializable... values) {
+		mySecurityKeys.put(securityKey, values);
+		return this;
+	}
+
+	public TestUserSession clearSecurityKeys() {
+		mySecurityKeys.clear();
+		return this;
+	}
+
 }

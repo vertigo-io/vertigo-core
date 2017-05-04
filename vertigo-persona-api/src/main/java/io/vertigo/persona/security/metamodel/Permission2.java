@@ -21,8 +21,10 @@ package io.vertigo.persona.security.metamodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
@@ -44,8 +46,8 @@ public final class Permission2 implements Definition {
 	private final String name;
 	private final String label;
 
-	private final List<String> overrides;
-	private final List<String> grants;
+	private final Set<String> overrides;
+	private final Set<Permission2> grants;
 	private final List<DslMultiExpression> rules; //empty -> always true
 
 	private final Optional<DtDefinition> entityOpt;
@@ -64,8 +66,8 @@ public final class Permission2 implements Definition {
 		name = "PRM_" + code;
 		this.label = label;
 
-		overrides = Collections.emptyList();
-		grants = Collections.emptyList();
+		overrides = Collections.emptySet();
+		grants = Collections.emptySet();
 		entityOpt = Optional.empty();
 		operationOpt = Optional.empty();
 		rules = Arrays.asList();
@@ -81,7 +83,7 @@ public final class Permission2 implements Definition {
 	 * @param grants Liste des opérations données par cette opération
 	 * @param rules Règles d'évaluation
 	 */
-	public Permission2(final String operation, final String label, final List<String> overrides, final List<String> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules) {
+	public Permission2(final String operation, final String label, final Set<String> overrides, final Set<Permission2> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkNotNull(overrides);
@@ -91,8 +93,8 @@ public final class Permission2 implements Definition {
 		//-----
 		name = "PRM_" + entityDefinition.getLocalName() + Definition.SEPARATOR + operation;
 		this.label = label;
-		this.overrides = new ArrayList<>(overrides);
-		this.grants = new ArrayList<>(grants);
+		this.overrides = new HashSet<>(overrides);
+		this.grants = new HashSet<>(grants);
 		entityOpt = Optional.of(entityDefinition);
 		operationOpt = Optional.of(operation);
 		this.rules = new ArrayList<>(rules);
@@ -114,14 +116,14 @@ public final class Permission2 implements Definition {
 	/**
 	 * @return Overrides for this permission
 	 */
-	public List<String> getOverrides() {
+	public Set<String> getOverrides() {
 		return overrides;
 	}
 
 	/**
 	 * @return Grants for this permission
 	 */
-	public List<String> getGrants() {
+	public Set<Permission2> getGrants() {
 		return grants;
 	}
 

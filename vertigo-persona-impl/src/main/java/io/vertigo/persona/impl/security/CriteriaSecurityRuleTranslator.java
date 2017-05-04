@@ -43,16 +43,13 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	 * @return This security rule as search Query
 	 */
 	public Criteria<E> toCriteria() {
-		if (getMultiExpressions().isEmpty()) {
-			return Criterions.alwaysTrue();
-		}
 		Criteria<E> mainCriteria = null;
 		for (final DslMultiExpression expression : getMultiExpressions()) {
 			final Criteria<E> criteria = toCriteria(expression);
 			if (mainCriteria == null) {
 				mainCriteria = criteria;
 			} else {
-				mainCriteria.or(criteria);
+				mainCriteria = mainCriteria.or(criteria);
 			}
 		}
 		Assertion.checkNotNull(mainCriteria);//can't be null
@@ -61,15 +58,19 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 
 	private Criteria<E> toCriteria(final DslMultiExpression multiExpression) {
 		Criteria<E> firstCriteria = null;
+		if (multiExpression.isAlwaysTrue()) {
+			return Criterions.alwaysTrue();
+		}
+
 		for (final DslExpression expression : multiExpression.getExpressions()) {
 			final Criteria<E> criteria = toCriteria(expression);
 			if (firstCriteria == null) {
 				firstCriteria = criteria;
 			} else {
 				if (multiExpression.getBoolOperator() == BoolOperator.AND) {
-					firstCriteria.and(toCriteria(expression));
+					firstCriteria = firstCriteria.and(toCriteria(expression));
 				} else {
-					firstCriteria.or(toCriteria(expression));
+					firstCriteria = firstCriteria.or(toCriteria(expression));
 				}
 			}
 		}
@@ -79,9 +80,9 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				firstCriteria = criteria;
 			} else {
 				if (multiExpression.getBoolOperator() == BoolOperator.AND) {
-					firstCriteria.and(toCriteria(expression));
+					firstCriteria = firstCriteria.and(toCriteria(expression));
 				} else {
-					firstCriteria.or(toCriteria(expression));
+					firstCriteria = firstCriteria.or(toCriteria(expression));
 				}
 			}
 		}
@@ -103,7 +104,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 					if (firstCriteria == null) {
 						firstCriteria = criteria;
 					} else {
-						firstCriteria.or(criteria);
+						firstCriteria = firstCriteria.or(criteria);
 					}
 				}
 				Assertion.checkNotNull(firstCriteria);//can't be null

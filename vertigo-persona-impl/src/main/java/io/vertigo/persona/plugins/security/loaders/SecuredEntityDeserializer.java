@@ -3,7 +3,10 @@ package io.vertigo.persona.plugins.security.loaders;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonDeserializationContext;
@@ -50,32 +53,50 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 			advancedAxes.add(deserializeSecurityAxes(entityDefinition, advancedAxe.getAsJsonObject(), context));
 		}
 
-		final List<Permission2> operations = new ArrayList<>();
+		final Map<String, Permission2> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
-			operations.add(deserializeOperations(entityDefinition, operation.getAsJsonObject(), context));
+			final Permission2 permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
+			Assertion.checkArgument(!permissionPerOperations.containsKey(permission.getOperation().get()), "Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
+			permissionPerOperations.put(permission.getOperation().get(), permission);
 		}
 
-		return new SecuredEntity(entityDefinition, securityFields, advancedAxes, operations);
+		return new SecuredEntity(entityDefinition, securityFields, advancedAxes, new ArrayList<>(permissionPerOperations.values()));
 	}
 
-	private static Permission2 deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context) {
+	private static Permission2 deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context, final Map<String, Permission2> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
 
-		List<String> overrides = context.deserialize(operation.get("overrides"), createParameterizedType(List.class, String.class));
+		Set<String> overrides = context.deserialize(operation.get("overrides"), createParameterizedType(Set.class, String.class));
 		if (overrides == null) {
-			overrides = Collections.emptyList();
+			overrides = Collections.emptySet();
 		}
-		List<String> grants = context.deserialize(operation.get("grants"), createParameterizedType(List.class, String.class));
-		if (grants == null) {
-			grants = Collections.emptyList();
+		final Set<Permission2> grants;
+		final Set<String> strGrants = context.deserialize(operation.get("grants"), createParameterizedType(Set.class, String.class));
+		if (strGrants == null) {
+			grants = Collections.emptySet();
+		} else {
+			grants = strGrants.stream()
+					.map((strGrant) -> resolvePermission(strGrant, permissionPerOperations, entityDefinition))
+					.collect(Collectors.toSet());
 		}
-		final List<String> strRules = context.deserialize(operation.get("rules"), createParameterizedType(List.class, String.class));
-		final List<DslMultiExpression> rules = strRules.stream()
-				.map(SecuredEntityDeserializer::parseRule)
-				.collect(Collectors.toList());
 
+		final List<DslMultiExpression> rules;
+		final List<String> strRules = context.deserialize(operation.get("rules"), createParameterizedType(List.class, String.class));
+		if (!strRules.isEmpty()) {
+			rules = strRules.stream()
+					.map(SecuredEntityDeserializer::parseRule)
+					.collect(Collectors.toList());
+		} else {
+			rules = Collections.emptyList(); //if empty -> always true
+		}
 		return new Permission2(code, label, overrides, grants, entityDefinition, rules);
+	}
+
+	private static Permission2 resolvePermission(final String operationName, final Map<String, Permission2> permissionPerOperations, final DtDefinition entityDefinition) {
+		Assertion.checkArgument(permissionPerOperations.containsKey(operationName), "Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
+		//-----
+		return permissionPerOperations.get(operationName);
 	}
 
 	private final static DslMultiExpression parseRule(final String securityRule) {

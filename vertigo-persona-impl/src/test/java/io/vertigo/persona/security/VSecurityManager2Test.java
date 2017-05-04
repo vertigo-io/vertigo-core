@@ -28,7 +28,11 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.persona.security.SecurityNames.DossierOperations;
+import io.vertigo.persona.security.SecurityNames.DossierPermissions;
+import io.vertigo.persona.security.SecurityNames.Permissions;
 import io.vertigo.persona.security.metamodel.Permission2;
+import io.vertigo.persona.security.metamodel.PermissionName;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.persona.security.model.Dossier;
 
@@ -37,11 +41,12 @@ import io.vertigo.persona.security.model.Dossier;
  */
 public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 
-	private static final long REG_ID_IDF = 1L;
-	private static final long DEP_ID_YVELINES = 2L;
-	private static final long COM_ID_VERSAILLE = 3L;
-	private static final long UTI_ID = 1000L;
-	private static final long TYP_ID_1 = 1L;
+	private static final long DEFAULT_REG_ID = 1L;
+	private static final long DEFAULT_DEP_ID = 2L;
+	private static final long DEFAULT_COM_ID = 3L;
+	private static final long DEFAULT_UTI_ID = 1000L;
+	private static final long DEFAULT_TYPE_ID = 10L;
+	private static final double DEFAULT_MONTANT_MAX = 100d;
 
 	private long currentDosId = 1;
 
@@ -118,21 +123,20 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorized() {
-		final Permission2 admUsr = getPermission("PRM_ADMUSR");
-		final Permission2 admPro = getPermission("PRM_ADMPRO");
+		final Permission2 admUsr = getPermission(Permissions.PRM_ADMUSR);
+		final Permission2 admPro = getPermission(Permissions.PRM_ADMPRO);
 
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
+				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 				.addPermission(admUsr)
 				.addPermission(admPro);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canAdmUsr = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMUSR);
-			Assert.assertTrue(canAdmUsr);
-			final boolean canAdmPro = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMPRO);
-			Assert.assertTrue(canAdmPro);
-
-			final boolean canAdmApp = securityManager.hasPermission(SecurityNames.Permissions.PRM_ADMAPP);
-			Assert.assertFalse(canAdmApp);
+			Assert.assertTrue(securityManager.hasPermission(Permissions.PRM_ADMUSR));
+			Assert.assertTrue(securityManager.hasPermission(Permissions.PRM_ADMPRO));
+			Assert.assertFalse(securityManager.hasPermission(Permissions.PRM_ADMAPP));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -140,6 +144,7 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorizedOnEntity() {
+
 		final Dossier dossier = createDossier();
 
 		final Dossier dossierTooExpensive = createDossier();
@@ -152,26 +157,105 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		dossierOtherUserAndTooExpensive.setMontant(10000d);
 
-		final Permission2 dossierRead = getPermission("PRM_DOSSIER_READ");
-		final UserSession userSession = securityManager.createUserSession()
+		final Permission2 dossierRead = getPermission(DossierPermissions.PRM_DOSSIER_READ);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
+				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 				.addPermission(dossierRead);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canReadDossier = securityManager.hasPermission(SecurityNames.DossierPermissions.PRM_DOSSIER_READ);
+			final boolean canReadDossier = securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_READ);
 			Assert.assertTrue(canReadDossier);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			boolean canReadThisDossier = securityManager.isAuthorized(dossier, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
 
-			canReadThisDossier = securityManager.isAuthorized(dossierTooExpensive, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
 
-			canReadThisDossier = securityManager.isAuthorized(dossierOtherUser, SecurityNames.DossierOperations.READ);
-			Assert.assertTrue(canReadThisDossier);
+	@Test
+	public void testAuthorizedOnEntityGrant() {
+		final Dossier dossier = createDossier();
 
-			canReadThisDossier = securityManager.isAuthorized(dossierOtherUserAndTooExpensive, SecurityNames.DossierOperations.READ);
-			Assert.assertFalse(canReadThisDossier);
+		final Dossier dossierTooExpensive = createDossier();
+		dossierTooExpensive.setMontant(10000d);
+
+		final Dossier dossierOtherUser = createDossier();
+		dossierOtherUser.setUtiIdOwner(2000L);
+
+		final Dossier dossierOtherUserAndTooExpensive = createDossier();
+		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		dossierOtherUserAndTooExpensive.setMontant(10000d);
+
+		final Dossier dossierArchivedNotWriteable = createDossier();
+		dossierArchivedNotWriteable.setEtaCd("ARC");
+
+		final Permission2 dossierWrite = getPermission(DossierPermissions.PRM_DOSSIER_WRITE);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
+				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+				.addPermission(dossierWrite);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canReadDossier = securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_READ);
+			Assert.assertTrue(canReadDossier);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.READ));
+
+			//write -> (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.WRITE));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testAuthorizedOnEntityOverride() {
+		final Dossier dossier = createDossier();
+
+		final Dossier dossierTooExpensive = createDossier();
+		dossierTooExpensive.setMontant(10000d);
+
+		final Dossier dossierOtherUser = createDossier();
+		dossierOtherUser.setUtiIdOwner(2000L);
+
+		final Dossier dossierOtherUserAndTooExpensive = createDossier();
+		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		dossierOtherUserAndTooExpensive.setMontant(10000d);
+
+		final Permission2 dossierRead = getPermission(DossierPermissions.PRM_DOSSIER_READ_HP);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
+				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+				.addPermission(dossierRead);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canReadDossier = securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_READ_HP);
+			Assert.assertTrue(canReadDossier);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -181,14 +265,14 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 	private Dossier createDossier() {
 		final Dossier dossier = new Dossier();
 		dossier.setDosId(++currentDosId);
-		dossier.setRegId(REG_ID_IDF);
-		dossier.setDepId(DEP_ID_YVELINES);
-		dossier.setComId(COM_ID_VERSAILLE);
-		dossier.setTypId(TYP_ID_1);
+		dossier.setRegId(DEFAULT_REG_ID);
+		dossier.setDepId(DEFAULT_DEP_ID);
+		dossier.setComId(DEFAULT_COM_ID);
+		dossier.setTypId(DEFAULT_TYPE_ID);
 		dossier.setTitre("Dossier de test #" + currentDosId);
-		dossier.setMontant(100d);
-		dossier.setUtiIdOwner(UTI_ID);
-		dossier.setEtaCd("CRE");
+		dossier.setMontant(DEFAULT_MONTANT_MAX);
+		dossier.setUtiIdOwner(DEFAULT_UTI_ID);
+		dossier.setEtaCd("AACRE");
 		return dossier;
 	}
 
@@ -197,9 +281,9 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 		//TODO
 	}
 
-	private Permission2 getPermission(final String name) {
+	private Permission2 getPermission(final PermissionName permissionName) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		return definitionSpace.resolve(name, Permission2.class);
+		return definitionSpace.resolve(permissionName.name(), Permission2.class);
 	}
 
 }
