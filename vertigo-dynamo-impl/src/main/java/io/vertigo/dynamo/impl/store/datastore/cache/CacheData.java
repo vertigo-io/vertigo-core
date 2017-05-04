@@ -54,10 +54,10 @@ public final class CacheData {
 	 * @param timeToLiveSeconds Time to live in cache
 	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
-	void registerContext(final DtDefinition dtDefinition, final long timeToLiveSeconds, final boolean serializeElements) {
+	void registerContext(final DtDefinition dtDefinition, final int timeToLiveSeconds, final boolean serializeElements) {
 		final String context = getContext(dtDefinition);
 		final int maxElementsInMemory = 1000;
-		final long timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
+		final int timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
 		cacheManager.addCache(context, new CacheConfig("dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 

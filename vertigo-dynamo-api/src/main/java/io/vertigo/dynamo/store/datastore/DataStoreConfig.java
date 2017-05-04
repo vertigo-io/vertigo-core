@@ -34,7 +34,11 @@ public interface DataStoreConfig {
 	 * @param isReloadedByList Set if reload should be done by full list or one by one when missing
 	 * @param serializeElements Set if elements should be serialized or not (serialization guarantee elements are cloned and not modified)
 	 */
-	void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, boolean serializeElements);
+	void registerCacheable(
+			final DtDefinition dtDefinition,
+			final int timeToLiveInSeconds,
+			final boolean isReloadedByList,
+			boolean serializeElements);
 
 	/**
 	 * @param dataSpace the dataSpace

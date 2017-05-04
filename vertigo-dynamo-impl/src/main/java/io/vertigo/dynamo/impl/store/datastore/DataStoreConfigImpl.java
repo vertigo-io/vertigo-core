@@ -57,7 +57,7 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	 * @param serializeElements Set if elements should be serialized or not (serialization guarantee elements are cloned and not modified)
 	 */
 	@Override
-	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
+	public void registerCacheable(final DtDefinition dtDefinition, final int timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
 		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList, serializeElements);
 	}
 
