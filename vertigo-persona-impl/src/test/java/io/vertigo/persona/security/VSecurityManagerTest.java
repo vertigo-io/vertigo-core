@@ -98,7 +98,6 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testAccess() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Role admin = definitionSpace.resolve("R_ADMIN", Role.class);
-		final Role user = definitionSpace.resolve("R_USER", Role.class);
 		final Role manager = definitionSpace.resolve("R_MANAGER", Role.class);
 		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
 
