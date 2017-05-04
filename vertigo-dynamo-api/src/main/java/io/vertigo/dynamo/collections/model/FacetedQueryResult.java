@@ -61,8 +61,15 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @param highlights Liste des extraits avec mise en valeur par objet et par champs
 	 * @param source Object source permettant rerentrer dans le mechanisme de filtrage
 	 */
-	public FacetedQueryResult(final Optional<FacetedQuery> query, final long count, final DtList<R> dtc, final List<Facet> facets, final Optional<FacetDefinition> clusterFacetDefinition,
-			final Map<FacetValue, DtList<R>> clusteredDtc, final Map<R, Map<DtField, String>> highlights, final S source) {
+	public FacetedQueryResult(
+			final Optional<FacetedQuery> query,
+			final long count,
+			final DtList<R> dtc,
+			final List<Facet> facets,
+			final Optional<FacetDefinition> clusterFacetDefinition,
+			final Map<FacetValue, DtList<R>> clusteredDtc,
+			final Map<R, Map<DtField, String>> highlights,
+			final S source) {
 		Assertion.checkNotNull(query);
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(facets);
@@ -129,8 +136,8 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return Extrait avec mise en valeur par champs. (Peut être vide jamais null)
 	 */
 	public Map<DtField, String> getHighlights(final R document) {
-		final Map<DtField, String> documentHightlights = highlights.get(document);
-		return documentHightlights != null ? documentHightlights : Collections.<DtField, String> emptyMap();
+		return highlights
+				.computeIfAbsent(document, k -> Collections.emptyMap());
 	}
 
 	/**
