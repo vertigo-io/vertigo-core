@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
@@ -61,18 +60,15 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	/**
 	 * Constructor.
 	 * @param storeManager Manager de persistence
-	 * @param dtDefinition DtDefinition des éléments à comparer
-	 * @param sortFieldName sort fieldName
+	 * @param sortField the sort field
 	 * @param sortDesc sort order
 	 */
-	DtObjectComparator(final StoreManager storeManager, final DtDefinition dtDefinition, final String sortFieldName, final boolean sortDesc) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(sortFieldName);
+	DtObjectComparator(final StoreManager storeManager, final DtField sortField, final boolean sortDesc) {
+		Assertion.checkNotNull(sortField);
 		//-----
+		this.sortField = sortField;
 		//On recherche le comparateur associé au champ de la collection
 		//Si il n'y a pas de comparateur alors on applique la comparaison standard.
-		this.sortField = dtDefinition.getField(sortFieldName);
-
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
 		if (sortField.getType() == FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(sortField.getFkDtDefinition())) {
 			//Il existe une Liste de référence associée

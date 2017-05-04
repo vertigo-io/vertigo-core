@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -73,21 +72,14 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	@Override
-	public <D extends DtObject> DtList<D> sort(final DtList<D> dtc, final String fieldName, final boolean desc) {
-		Assertion.checkNotNull(dtc);
+	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+		Assertion.checkNotNull(list);
 		Assertion.checkArgNotEmpty(fieldName);
 		//-----
-		//On crée une liste triable par l'utilitaire java.util.Collections
-		final List<D> list = new ArrayList<>(dtc);
-
-		//On trie.
-		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), dtc.getDefinition(), fieldName, desc);
-		list.sort(comparator);
-
-		//On reconstitue la collection.
-		final DtList<D> sortedDtc = new DtList<>(dtc.getDefinition());
-		sortedDtc.addAll(list);
-		return sortedDtc;
+		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), list.getDefinition().getField(fieldName), desc);
+		return list.stream()
+				.sorted(comparator)
+				.collect(VCollectors.toDtList(list.getDefinition()));
 	}
 
 	/** {@inheritDoc} */
@@ -97,7 +89,10 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
-		final DtList<R> filteredDtList = dtList.stream().filter(filter(facetedQuery)).collect(VCollectors.toDtList(dtList.getDefinition()));
+		final DtList<R> filteredDtList = dtList.stream()
+				.filter(filter(facetedQuery))
+				.collect(VCollectors.toDtList(dtList.getDefinition()));
+
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
 
@@ -110,7 +105,15 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Optional.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, clusterFacetDefinition, resultCluster, highlights, dtList);
+		return new FacetedQueryResult<>(
+				Optional.of(facetedQuery),
+				filteredDtList.size(),
+				filteredDtList,
+				facets,
+				clusterFacetDefinition,
+				resultCluster,
+				highlights,
+				dtList);
 	}
 
 	//=========================================================================
