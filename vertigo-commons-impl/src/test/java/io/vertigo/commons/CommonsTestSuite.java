@@ -23,7 +23,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.commons.analytics.AnalyticsManagerTest;
-import io.vertigo.commons.cache.CacheManagerTest;
+import io.vertigo.commons.cache.ehcache.EhCacheManagerTest;
+import io.vertigo.commons.cache.memory.MemoryCacheManagerTest;
+import io.vertigo.commons.cache.redis.RedisCacheManagerTest;
+import io.vertigo.commons.cache.memory.MemoryCacheManagerTest;
+import io.vertigo.commons.cache.redis.RedisCacheManagerTest;
 import io.vertigo.commons.codec.base64.Base64CodecTest;
 import io.vertigo.commons.codec.compressedSerialization.CompressedSerializationCodecTest;
 import io.vertigo.commons.codec.compression.CompressionCodecTest;
@@ -52,7 +56,9 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		//--analytics
 		AnalyticsManagerTest.class,
 		//--cache
-		CacheManagerTest.class,
+		EhCacheManagerTest.class,
+		MemoryCacheManagerTest.class,
+		RedisCacheManagerTest.class,
 		//--codec
 		Base64CodecTest.class,
 		CompressedSerializationCodecTest.class,

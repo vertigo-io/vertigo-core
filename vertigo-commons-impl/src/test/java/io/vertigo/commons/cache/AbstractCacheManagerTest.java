@@ -38,7 +38,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author dchallas
  */
-public final class CacheManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	private static final String KEY = "ma clé";
 	private static final String CONTEXT = CacheManagerInitializer.CONTEXT_EDITABLE;
 	private static final String CONTEXT_RO = CacheManagerInitializer.CONTEXT_READONLY;
@@ -114,7 +114,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT, key), "key [" + i + "] not found");
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
