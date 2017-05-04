@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -36,15 +35,6 @@ import io.vertigo.lang.Manager;
  * @author  pchretien
  */
 public interface CollectionsManager extends Manager {
-	/**
-	 * Constructeur d'un filtre de range.
-	 * @param fieldName Nom du champ
-	 * @param min Valeur minimale
-	 * @param max Valeur maximale
-	 * @return Filtre
-	 */
-	<D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<? extends Serializable> min, final Optional<? extends Serializable> max);
-
 	/**
 	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
 	 *

@@ -38,7 +38,6 @@ import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.criteria.CriterionLimit;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -148,14 +147,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
-	}
-
-	@Override
-	public <D extends DtObject> Predicate<D> filterByRange(final String fieldName, final Optional<? extends Serializable> min, final Optional<? extends Serializable> max) {
-		final Predicate predicate = Criterions
-				.isBetween(() -> fieldName, CriterionLimit.ofIncluded(min.orElse(null)), CriterionLimit.ofIncluded(max.orElse(null)))
-				.toPredicate();
-		return predicate;
 	}
 
 	@Override

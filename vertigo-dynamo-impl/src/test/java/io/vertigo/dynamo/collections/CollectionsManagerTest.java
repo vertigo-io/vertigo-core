@@ -21,7 +21,6 @@ package io.vertigo.dynamo.collections;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -430,38 +429,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testCreateFilterByRange() {
-		final DtList<Item> filteredItems = createItems()
-				.stream()
-				.filter(collectionsManager.filterByRange("LABEL", Optional.ofNullable("a"), Optional.ofNullable("b")))
-				.collect(VCollectors.toDtList(Item.class));
-		Assert.assertNotNull(filteredItems);
-		Assert.assertEquals(1, filteredItems.size());
-	}
-
-	@Test
 	public void testCreateFilter() {
 		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
 		Assert.assertNotNull(predicate);
 	}
-
-	//	/**
-	//	 * @see DtListProcessor#add
-	//	 */
-	//	@Test
-	//	public void testAddDtListFunction() {
-	//		final DtList<Item> Items = collectionsManager.<Item> createDtListProcessor()
-	//				.add(input -> {
-	//					final DtList<Item> result = new DtList<>(Item.class);
-	//					for (final Item family : input) {
-	//						if (family.getId() != null && family.getId() == 3L) {
-	//							result.add(family);
-	//						}
-	//					}
-	//					return result;
-	//				}).apply(createItemsForRangeTest());
-	//		Assert.assertEquals(1L, Items.size());
-	//	}
 
 	@Test
 	public void testRangeFilter() {
