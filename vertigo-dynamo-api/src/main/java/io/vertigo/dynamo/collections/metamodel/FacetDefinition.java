@@ -79,13 +79,21 @@ public final class FacetDefinition implements Definition {
 	 * @param rangeFacet if the facet is of type 'range'
 	 * @param order Facet Order
 	 */
-	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean rangeFacet, final FacetOrder order) {
+	private FacetDefinition(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final List<FacetValue> facetValues,
+			final boolean rangeFacet,
+			final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
-		Assertion.when(rangeFacet).check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
-		Assertion.when(!rangeFacet).check(() -> facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+		Assertion.when(rangeFacet)
+				.check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.when(!rangeFacet)
+				.check(() -> facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
@@ -111,7 +119,12 @@ public final class FacetDefinition implements Definition {
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'range'
 	 */
-	public static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
+	public static FacetDefinition createFacetDefinitionByRange(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final List<FacetValue> facetValues,
+			final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, facetValues, true, order);
 	}
 
@@ -124,7 +137,11 @@ public final class FacetDefinition implements Definition {
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'term'
 	 */
-	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label, final FacetOrder order) {
+	public static FacetDefinition createFacetDefinitionByTerm(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false, order);
 	}
 
