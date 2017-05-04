@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import io.vertigo.dynamo.collections.data.domain.Item;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
@@ -31,5 +32,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 				Item.class,
 				SmartCar.class
 		}).iterator();
+	}
+
+	public enum Fields implements DtFieldName<Item> {
+		ID,
+		LABEL
 	}
 }

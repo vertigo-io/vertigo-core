@@ -31,7 +31,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -124,15 +126,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testFilter() {
 		final DtList<Item> result = createItems()
 				.stream()
-				.filter(collectionsManager.filterByValue("LABEL", aaa_ba))
+				.filter(Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate())
 				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testFilterTwoValues() {
-		final Predicate<Item> filterA = collectionsManager.filterByValue("LABEL", "aaa");
-		final Predicate<Item> filterB = collectionsManager.filterByValue("ID", 13L);
+		final Predicate<Item> filterA = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, "aaa").toPredicate();
+		final Predicate<Item> filterB = Criterions.isEqualTo(DtDefinitions.Fields.ID, 13L).toPredicate();
 
 		final DtList<Item> result = createItemsForRangeTest()
 				.stream()
@@ -359,7 +361,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Item> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final Predicate<Item> predicate = collectionsManager.filterByValue("LABEL", aaa_ba);
+		final Predicate<Item> predicate = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate();
 		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();

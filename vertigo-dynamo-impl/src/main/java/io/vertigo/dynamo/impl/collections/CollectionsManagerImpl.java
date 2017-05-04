@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +37,6 @@ import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -147,13 +145,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
-	}
-
-	@Override
-	public <D extends DtObject> Predicate<D> filterByValue(final String fieldName, final Serializable value) {
-		//we have to deal with with th null case (isNull).
-		final Predicate predicate = Criterions.isEqualTo(() -> fieldName, value).toPredicate();
-		return predicate;
 	}
 
 	@Override
