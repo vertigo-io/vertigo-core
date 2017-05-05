@@ -355,7 +355,6 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 		dossierNational.setComId(null);
 
 		final Permission2 dossierNotify = getPermission(DossierPermissions.PRM_DOSSIER_NOTIFY);
-		final Permission2 dossierWrite = getPermission(DossierPermissions.PRM_DOSSIER_WRITE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
 				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 				.withSecurityKeys("typId", DEFAULT_TYPE_ID)

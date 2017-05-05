@@ -108,20 +108,19 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		if (isSimpleSecurityField(fieldName)) {
 			//field normal
 			return toCriteria(fieldName::toString, operator, value);
-		} else {
-			final SecurityAxe securityAxe = getSecurityAxe(fieldName);
-			switch (securityAxe.getType()) {
-				case SIMPLE: //TODO not use yet ?
-					return toCriteria(fieldName::toString, operator, value);
-				case ENUM:
-					Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
-					//----
-					return enumToCriteria(securityAxe, operator, String.class.cast(value));
-				case TREE:
-					return treeToCriteria(securityAxe, operator, value);
-				default:
-					throw new IllegalArgumentException("securityAxeType not supported " + securityAxe.getType());
-			}
+		}
+		final SecurityAxe securityAxe = getSecurityAxe(fieldName);
+		switch (securityAxe.getType()) {
+			case SIMPLE: //TODO not use yet ?
+				return toCriteria(fieldName::toString, operator, value);
+			case ENUM:
+				Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+				//----
+				return enumToCriteria(securityAxe, operator, String.class.cast(value));
+			case TREE:
+				return treeToCriteria(securityAxe, operator, value);
+			default:
+				throw new IllegalArgumentException("securityAxeType not supported " + securityAxe.getType());
 		}
 	}
 
@@ -267,17 +266,15 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private Criteria<E> andCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
 		if (oldCriteria == null) {
 			return newCriteria;
-		} else {
-			return oldCriteria.and(newCriteria);
 		}
+		return oldCriteria.and(newCriteria);
 	}
 
 	private Criteria<E> orCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
 		if (oldCriteria == null) {
 			return newCriteria;
-		} else {
-			return oldCriteria.or(newCriteria);
 		}
+		return oldCriteria.or(newCriteria);
 	}
 
 	private static <K> int lastIndexNotNull(final K[] value) {
