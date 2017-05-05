@@ -26,8 +26,8 @@ import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.security.metamodel.Permission2;
 import io.vertigo.persona.security.metamodel.SecuredEntity;
-import io.vertigo.persona.security.metamodel.SecurityAxe;
-import io.vertigo.persona.security.metamodel.SecurityAxeType;
+import io.vertigo.persona.security.metamodel.SecurityDimension;
+import io.vertigo.persona.security.metamodel.SecurityDimensionType;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -48,9 +48,9 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 			securityFields.add(deserializeDtField(entityDefinition, securityField.getAsString()));
 		}
 
-		final List<SecurityAxe> advancedAxes = new ArrayList<>();
-		for (final JsonElement advancedAxe : jsonSecuredEntity.get("advancedAxes").getAsJsonArray()) {//TODO if null ?
-			advancedAxes.add(deserializeSecurityAxes(entityDefinition, advancedAxe.getAsJsonObject(), context));
+		final List<SecurityDimension> advancedDimensions = new ArrayList<>();
+		for (final JsonElement advancedDimension : jsonSecuredEntity.get("securityDimensions").getAsJsonArray()) {//TODO if null ?
+			advancedDimensions.add(deserializeSecurityDimensions(entityDefinition, advancedDimension.getAsJsonObject(), context));
 		}
 
 		final Map<String, Permission2> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
@@ -60,7 +60,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 			permissionPerOperations.put(permission.getOperation().get(), permission);
 		}
 
-		return new SecuredEntity(entityDefinition, securityFields, advancedAxes, new ArrayList<>(permissionPerOperations.values()));
+		return new SecuredEntity(entityDefinition, securityFields, advancedDimensions, new ArrayList<>(permissionPerOperations.values()));
 	}
 
 	private static Permission2 deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context, final Map<String, Permission2> permissionPerOperations) {
@@ -113,15 +113,15 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 		}
 	}
 
-	private static SecurityAxe deserializeSecurityAxes(final DtDefinition entityDefinition, final JsonObject advancedAxe, final JsonDeserializationContext context) {
-		final String name = advancedAxe.get("name").getAsString();
-		final SecurityAxeType type = SecurityAxeType.valueOf(advancedAxe.get("type").getAsString());
-		final List<String> fieldNames = deserializeList(advancedAxe.get("fields"), String.class, context);
+	private static SecurityDimension deserializeSecurityDimensions(final DtDefinition entityDefinition, final JsonObject advancedDimension, final JsonDeserializationContext context) {
+		final String name = advancedDimension.get("name").getAsString();
+		final SecurityDimensionType type = SecurityDimensionType.valueOf(advancedDimension.get("type").getAsString());
+		final List<String> fieldNames = deserializeList(advancedDimension.get("fields"), String.class, context);
 		final List<DtField> fields = fieldNames.stream()
 				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
 				.collect(Collectors.toList());
-		final List<String> values = deserializeList(advancedAxe.get("values"), String.class, context);
-		return new SecurityAxe(name, type, fields, values);
+		final List<String> values = deserializeList(advancedDimension.get("values"), String.class, context);
+		return new SecurityDimension(name, type, fields, values);
 	}
 
 	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {

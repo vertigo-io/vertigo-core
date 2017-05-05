@@ -12,7 +12,7 @@
 	"securedEntities": [{
 		"entity": "DOSSIER",
 		"securityFields" : ["UTI_ID_OWNER","TYP_ID","MONTANT" ],
-		"advancedAxes": [{
+		"securityDimensions": [{
 				"name": "ETA_CD", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
 			},{
 				"name": "GEO", "type": "TREE", "fields": [ "REG_ID", "DEP_ID", "COM_ID" ]

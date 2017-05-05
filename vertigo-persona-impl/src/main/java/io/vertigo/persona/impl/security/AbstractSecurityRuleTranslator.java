@@ -29,7 +29,7 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.impl.security.dsl.rules.DslParserUtil;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.security.metamodel.SecuredEntity;
-import io.vertigo.persona.security.metamodel.SecurityAxe;
+import io.vertigo.persona.security.metamodel.SecurityDimension;
 import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
@@ -100,9 +100,9 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 				.anyMatch(field -> fieldName.equals(field.getName()));
 	}
 
-	protected final SecurityAxe getSecurityAxe(final String fieldName) {
-		return mySecuredEntity.getSecurityAxes().stream()
-				.filter(securityAxe -> fieldName.equals(securityAxe.getName()))
+	protected final SecurityDimension getSecurityDimension(final String fieldName) {
+		return mySecuredEntity.getSecurityDimensions().stream()
+				.filter(securityDimension -> fieldName.equals(securityDimension.getName()))
 				.findFirst()//findFirst car pas le moment de vérifier qu'il y en qu'un seul
 				.get();
 	}

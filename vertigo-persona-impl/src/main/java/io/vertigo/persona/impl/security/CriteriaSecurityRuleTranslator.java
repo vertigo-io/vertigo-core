@@ -34,7 +34,7 @@ import io.vertigo.persona.security.dsl.model.DslFixedValue;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression;
 import io.vertigo.persona.security.dsl.model.DslMultiExpression.BoolOperator;
 import io.vertigo.persona.security.dsl.model.DslUserPropertyValue;
-import io.vertigo.persona.security.metamodel.SecurityAxe;
+import io.vertigo.persona.security.metamodel.SecurityDimension;
 
 /**
  *
@@ -109,18 +109,18 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			//field normal
 			return toCriteria(fieldName::toString, operator, value);
 		}
-		final SecurityAxe securityAxe = getSecurityAxe(fieldName);
-		switch (securityAxe.getType()) {
+		final SecurityDimension securityDimension = getSecurityDimension(fieldName);
+		switch (securityDimension.getType()) {
 			case SIMPLE: //TODO not use yet ?
 				return toCriteria(fieldName::toString, operator, value);
 			case ENUM:
 				Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
 				//----
-				return enumToCriteria(securityAxe, operator, String.class.cast(value));
+				return enumToCriteria(securityDimension, operator, String.class.cast(value));
 			case TREE:
-				return treeToCriteria(securityAxe, operator, value);
+				return treeToCriteria(securityDimension, operator, value);
 			default:
-				throw new IllegalArgumentException("securityAxeType not supported " + securityAxe.getType());
+				throw new IllegalArgumentException("securityDimensionType not supported " + securityDimension.getType());
 		}
 	}
 
@@ -143,19 +143,19 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Criteria<E> enumToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final String value) {
-		final DtFieldName<E> fieldName = securityAxe::getName;
+	private Criteria<E> enumToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final String value) {
+		final DtFieldName<E> fieldName = securityDimension::getName;
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
 			case GT:
-				return Criterions.in(fieldName, subValues(securityAxe.getValues(), false, value, false));
+				return Criterions.in(fieldName, subValues(securityDimension.getValues(), false, value, false));
 			case GTE:
-				return Criterions.in(fieldName, subValues(securityAxe.getValues(), false, value, true));
+				return Criterions.in(fieldName, subValues(securityDimension.getValues(), false, value, true));
 			case LT:
-				return Criterions.in(fieldName, subValues(securityAxe.getValues(), true, value, false));
+				return Criterions.in(fieldName, subValues(securityDimension.getValues(), true, value, false));
 			case LTE:
-				return Criterions.in(fieldName, subValues(securityAxe.getValues(), true, value, true));
+				return Criterions.in(fieldName, subValues(securityDimension.getValues(), true, value, true));
 			case NEQ:
 				return Criterions.isNotEqualTo(fieldName, value);
 			default:
@@ -163,36 +163,36 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Criteria<E> treeToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final Serializable value) {
+	private Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
 		Assertion.checkArgument(value instanceof String[]
 				|| value instanceof Integer[]
-				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityAxe.getName(), value.getClass().getName());
+				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityDimension.getName(), value.getClass().getName());
 		if (value instanceof String[]) {
-			return treeToCriteria(securityAxe, operator, (String[]) value);
+			return treeToCriteria(securityDimension, operator, (String[]) value);
 		} else if (value instanceof Integer[]) {
-			return treeToCriteria(securityAxe, operator, (Integer[]) value);
+			return treeToCriteria(securityDimension, operator, (Integer[]) value);
 		} else {
-			return treeToCriteria(securityAxe, operator, (Long[]) value);
+			return treeToCriteria(securityDimension, operator, (Long[]) value);
 		}
 	}
 
-	private <K extends Serializable> Criteria<E> treeToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final K[] treeKeys) {
+	private <K extends Serializable> Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
 		//on vérifie qu'on a bien toutes les clées.
-		final List<String> strAxefields = securityAxe.getFields().stream()
+		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toList());
-		Assertion.checkArgument(strAxefields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strAxefields);
+		Assertion.checkArgument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		Criteria<E> mainCriteria = null;
 
 		//cas particuliers du == et du !=
 		if (operator == ValueOperator.EQ) {
-			for (int i = 0; i < strAxefields.size(); i++) {
-				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+			for (int i = 0; i < strDimensionfields.size(); i++) {
+				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
 			}
 		} else if (operator == ValueOperator.NEQ) {
-			for (int i = 0; i < strAxefields.size(); i++) {
-				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+			for (int i = 0; i < strDimensionfields.size(); i++) {
+				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				mainCriteria = andCriteria(mainCriteria, Criterions.isNotEqualTo(fieldName, treeKeys[i]));
 			}
 		} else { //cas des < , <= , > et >=
@@ -203,13 +203,13 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
 			for (int i = 0; i < lastIndexNotNull; i++) {
-				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
 			}
 
 			//2- règles pour le point de pivot
 			if (lastIndexNotNull >= 0) {
-				final DtFieldName<E> fieldName = strAxefields.get(lastIndexNotNull)::toString;
+				final DtFieldName<E> fieldName = strDimensionfields.get(lastIndexNotNull)::toString;
 				switch (operator) {
 					case GT:
 						//pour > : doit être null (car non inclus)
@@ -235,8 +235,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			}
 
 			//3- règles après le point de pivot (les null du user donc)
-			for (int i = lastIndexNotNull + 1; i < strAxefields.size(); i++) {
-				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+			for (int i = lastIndexNotNull + 1; i < strDimensionfields.size(); i++) {
+				final DtFieldName<E> fieldName = strDimensionfields.get(i)::toString;
 				switch (operator) {
 					case GT:
 					case GTE:

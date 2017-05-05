@@ -211,7 +211,8 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test ma famille
 		final Role readMyFamilly = getRole("R_MY_FAMILLE");
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("famId", famille12.id)
 				.addRole(readMyFamilly);
 		try {
 			securityManager.startCurrentUserSession(userSession);

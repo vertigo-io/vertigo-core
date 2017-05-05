@@ -4,11 +4,11 @@
 package io.vertigo.persona.security.metamodel;
 
 /**
- * Types d'axe implémentés.
+ * Types de dimension implémentés.
  *
  * @author jgarnier
  */
-public enum SecurityAxeType {
+public enum SecurityDimensionType {
 	/** Simple. */
 	SIMPLE, //
 	/** Enumeration. */
