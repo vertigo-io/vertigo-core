@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -50,31 +49,31 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	@Override
 	public void start() {
-		register(Home.getApp());
-		executor.scheduleAtFixedRate(() -> nodeRegistryPlugin.updateStatus(Home.getApp()), 0, 5, TimeUnit.SECONDS);
+		nodeRegistryPlugin.register(toAppNode(Home.getApp()));
+		executor.scheduleAtFixedRate(() -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), 0, 5, TimeUnit.SECONDS);
 
-	}
-
-	private void register(final App app) {
-		Assertion.checkNotNull(app);
-		//---
-		nodeRegistryPlugin.register(toAppNode(app));
 	}
 
 	@Override
 	public void stop() {
 		executor.shutdownNow();
+		nodeRegistryPlugin.unregister(toAppNode(Home.getApp()));
 
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeName) {
-		return nodeRegistryPlugin.find(nodeName);
+	public Optional<Node> find(final String nodeId) {
+		return nodeRegistryPlugin.find(nodeId);
 	}
 
 	@Override
 	public List<Node> locateSkills(final String... skills) {
 		return nodeRegistryPlugin.locateSkills(skills);
+	}
+
+	@Override
+	public List<Node> getTopology() {
+		return nodeRegistryPlugin.getTopology();
 	}
 
 	@Override
@@ -110,7 +109,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	private static Node toAppNode(final App app) {
 		return new Node(
-				UUID.randomUUID().toString(),
+				app.getConfig().getNodeId(),
 				app.getConfig().getAppName(),
 				"OK",
 				Instant.now(),

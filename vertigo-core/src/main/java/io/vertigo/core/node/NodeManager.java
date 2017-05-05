@@ -13,9 +13,11 @@ import io.vertigo.lang.Manager;
  */
 public interface NodeManager extends Manager {
 
-	Optional<Node> find(String nodeName);
+	Optional<Node> find(String nodeId);
 
 	List<Node> locateSkills(String... skills);
+
+	List<Node> getTopology();
 
 	Map<String, String> getStatus();
 

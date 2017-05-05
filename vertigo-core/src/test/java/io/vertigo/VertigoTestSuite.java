@@ -30,7 +30,7 @@ import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
 import io.vertigo.core.component.di.reactor.ReactorTest;
 import io.vertigo.core.locale.LocaleManagerTest;
-import io.vertigo.core.node.NodeManagerTest;
+import io.vertigo.core.node.SingleNodeManagerTest;
 import io.vertigo.core.param.multi.MultiParamManagerTest;
 import io.vertigo.core.param.properties.PropertiesParamManagerTest;
 import io.vertigo.core.param.xml.XmlParamManagerTest;
@@ -71,7 +71,7 @@ import io.vertigo.util.StringUtilTest;
 		AspectTest.class,
 		Aspect2Test.class,
 		DiscoveryTest.class,
-		NodeManagerTest.class,
+		SingleNodeManagerTest.class,
 		//Lang
 		AssertionTest.class,
 		TuplesTest.class,

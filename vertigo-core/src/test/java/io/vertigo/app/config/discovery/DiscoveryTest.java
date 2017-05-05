@@ -40,7 +40,7 @@ public final class DiscoveryTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testComponentSpace() {
 		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
-		assertEquals(componentSpace.keySet().size(), 2 + 2 + 1); //ParamManager and ResourceManager and NodeManager are automaticaly declared
+		assertEquals(componentSpace.keySet().size(), 2 + 2); //ParamManager and ResourceManager are automaticaly declared
 		final DiscoveryB discoveryB = componentSpace.resolve(DiscoveryB.class);
 		assertTrue(DiscoveryA.class.getName().equals(discoveryB.getClass().getName()));
 	}

@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
 
@@ -34,6 +35,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class AppConfig {
 	private final String appName;
+	private final String nodeId;
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
 	private final List<ComponentInitializerConfig> initializers;
@@ -48,6 +50,7 @@ public final class AppConfig {
 		Assertion.checkNotNull(componentInitializerConfigs);
 		//---
 		this.appName = appName;
+		nodeId = UUID.randomUUID().toString();
 		this.bootConfig = bootConfig;
 		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
@@ -68,6 +71,14 @@ public final class AppConfig {
 	 */
 	public String getAppName() {
 		return appName;
+	}
+
+	/**
+	 * An app is composed of multiple nodes.
+	 * @return the random uuid of a node
+	 */
+	public String getNodeId() {
+		return nodeId;
 	}
 
 	/**

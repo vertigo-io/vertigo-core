@@ -3,7 +3,6 @@ package io.vertigo.core.node;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.app.App;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -15,12 +14,14 @@ public interface NodeRegistryPlugin extends Plugin {
 
 	void register(Node node);
 
+	void unregister(Node node);
+
 	List<Node> getTopology();
 
-	Optional<Node> find(String nodeName);
+	Optional<Node> find(String nodeId);
 
 	List<Node> locateSkills(String... skills);
 
-	void updateStatus(App node);
+	void updateStatus(Node node);
 
 }

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.NodeRegistryPlugin;
@@ -31,6 +30,11 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	}
 
 	@Override
+	public synchronized void unregister(final Node node) {
+		localNode = null;
+	}
+
+	@Override
 	public Optional<Node> find(final String nodeName) {
 		if (Home.getApp().getConfig().getAppName().equals(nodeName)) {
 			return Optional.of(localNode);
@@ -48,14 +52,17 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	}
 
 	@Override
-	public void updateStatus(final App node) {
+	public void updateStatus(final Node node) {
 		// Nothing
 
 	}
 
 	@Override
 	public List<Node> getTopology() {
-		return Collections.singletonList(localNode);
+		if (localNode != null) {
+			return Collections.singletonList(localNode);
+		}
+		return Collections.emptyList();
 	}
 
 }

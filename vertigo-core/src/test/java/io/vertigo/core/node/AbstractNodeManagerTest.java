@@ -4,26 +4,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.ModuleConfig;
 
-@RunWith(JUnitPlatform.class)
-public class NodeManagerTest extends AbstractTestCaseJU4 {
-
-	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
-				.beginBoot()
-				.endBoot()
-				.addModule(ModuleConfig.builder("db")
-						.build())
-				.build();
-	}
+public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	void testRegisterNode() {
