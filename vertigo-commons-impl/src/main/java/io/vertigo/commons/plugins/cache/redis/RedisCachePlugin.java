@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.core.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;

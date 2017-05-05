@@ -29,10 +29,10 @@ import io.vertigo.util.ListBuilder;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
-	private String myAppName;
 	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
 	private final BootConfigBuilder myBootConfigBuilder;
 	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
+	private NodeConfig myNodeConfig;
 
 	/**
 	 * Constructor.
@@ -49,14 +49,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public BootConfigBuilder beginBoot() {
 		return myBootConfigBuilder;
-	}
-
-	public void withAppName(final String appName) {
-		Assertion.checkState(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName);
-		Assertion.checkArgNotEmpty(appName);
-		// ---
-		myAppName = appName;
-
 	}
 
 	/**
@@ -82,20 +74,32 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
+	 * Adds a a moduleConfig.
+	 * @param moduleConfig the moduleConfig
+	 * @return this builder
+	 */
+	public AppConfigBuilder withNodeConfig(final NodeConfig nodeConfig) {
+		Assertion.checkNotNull(nodeConfig);
+		//-----
+		myNodeConfig = nodeConfig;
+		return this;
+	}
+
+	/**
 	 * Builds the appConfig.
 	 * @return appConfig.
 	 */
 	@Override
 	public AppConfig build() {
-		if (myAppName == null) {
-			myAppName = "myApp";
+		if (myNodeConfig == null) {
+			myNodeConfig = NodeConfig.builder().build();// a default one
 		}
-
+		//---
 		return new AppConfig(
-				myAppName,
 				myBootConfigBuilder.build(),
 				myModuleConfigsBuilder.unmodifiable().build(),
-				myComponentInitializerConfigsBuilder.unmodifiable().build());
+				myComponentInitializerConfigsBuilder.unmodifiable().build(),
+				myNodeConfig);
 	}
 
 }

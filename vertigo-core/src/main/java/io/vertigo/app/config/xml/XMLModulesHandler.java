@@ -33,6 +33,7 @@ import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.aop.Aspect;
@@ -63,24 +64,16 @@ final class XMLModulesHandler extends DefaultHandler {
 		Assertion.checkNotNull(params);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
+		this.appConfigBuilder.withNodeConfig(NodeConfig.builder().build());
 		this.params = params;
 	}
 
 	enum TagName {
-		app,
-		config,
-		boot,
-		module,
-		init,
+		app, config, boot, module, init,
 		//---
-		definitions,
-		resource,
-		provider,
+		definitions, resource, provider,
 		//---
-		component,
-		plugin,
-		param,
-		aspect,
+		component, plugin, param, aspect,
 		//-----
 		initializer,
 		//----
@@ -134,7 +127,7 @@ final class XMLModulesHandler extends DefaultHandler {
 		switch (TagName.valueOf(qName)) {
 			case app:
 				final String appName = attrs.getValue("name");
-				appConfigBuilder.withAppName(appName);
+				//appConfigBuilder.withNodeConfig(NodeConfig.builder().build());
 				break;
 			case boot:
 				current = TagName.boot;

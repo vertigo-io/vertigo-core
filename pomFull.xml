@@ -31,7 +31,6 @@ limitations under the License. -->
 	<modules>
 		<module>vertigo-parent</module>
 		<module>vertigo-core</module>
-		<module>vertigo-core-plugins</module>
 
 		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>

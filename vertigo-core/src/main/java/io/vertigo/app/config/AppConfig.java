@@ -22,7 +22,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
 
@@ -34,26 +33,25 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AppConfig {
-	private final String appName;
-	private final String nodeId;
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
 	private final List<ComponentInitializerConfig> initializers;
+	private final NodeConfig nodeConfig;
 
-	AppConfig(final String appName,
+	AppConfig(
 			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs,
-			final List<ComponentInitializerConfig> componentInitializerConfigs) {
-		Assertion.checkArgNotEmpty(appName);
+			final List<ComponentInitializerConfig> componentInitializerConfigs,
+			final NodeConfig nodeConfig) {
 		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
 		Assertion.checkNotNull(componentInitializerConfigs);
+		Assertion.checkNotNull(nodeConfig);
 		//---
-		this.appName = appName;
-		nodeId = UUID.randomUUID().toString();
 		this.bootConfig = bootConfig;
 		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
+		this.nodeConfig = nodeConfig;
 	}
 
 	/**
@@ -62,23 +60,6 @@ public final class AppConfig {
 	 */
 	public static AppConfigBuilder builder() {
 		return new AppConfigBuilder();
-	}
-
-	/**
-	 * An app is composed of multiple nodes.
-	 * AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
-	 * @return the logical name of the app
-	 */
-	public String getAppName() {
-		return appName;
-	}
-
-	/**
-	 * An app is composed of multiple nodes.
-	 * @return the random uuid of a node
-	 */
-	public String getNodeId() {
-		return nodeId;
 	}
 
 	/**
@@ -102,6 +83,14 @@ public final class AppConfig {
 	 */
 	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
 		return initializers;
+	}
+
+	/**
+	 *
+	 * @return the config of the node
+	 */
+	public NodeConfig getNodeConfig() {
+		return nodeConfig;
 	}
 
 	//=========================================================================
@@ -159,4 +148,5 @@ public final class AppConfig {
 		final String result = (value != null ? value : "") + "                                                                  ";
 		return result.substring(0, size);
 	}
+
 }
