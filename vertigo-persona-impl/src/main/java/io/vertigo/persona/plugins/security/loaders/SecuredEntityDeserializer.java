@@ -116,7 +116,7 @@ public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity
 	private static SecurityAxe deserializeSecurityAxes(final DtDefinition entityDefinition, final JsonObject advancedAxe, final JsonDeserializationContext context) {
 		final String name = advancedAxe.get("name").getAsString();
 		final SecurityAxeType type = SecurityAxeType.valueOf(advancedAxe.get("type").getAsString());
-		final List<String> fieldNames = context.deserialize(advancedAxe.get("fields"), createParameterizedType(List.class, String.class));
+		final List<String> fieldNames = deserializeList(advancedAxe.get("fields"), String.class, context);
 		final List<DtField> fields = fieldNames.stream()
 				.map(fieldName -> deserializeDtField(entityDefinition, fieldName))
 				.collect(Collectors.toList());

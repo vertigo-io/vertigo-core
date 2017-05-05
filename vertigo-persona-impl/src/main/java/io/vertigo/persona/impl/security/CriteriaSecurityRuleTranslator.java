@@ -20,9 +20,11 @@ package io.vertigo.persona.impl.security;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
@@ -47,49 +49,34 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	public Criteria<E> toCriteria() {
 		Criteria<E> mainCriteria = null;
 		for (final DslMultiExpression expression : getMultiExpressions()) {
-			final Criteria<E> criteria = toCriteria(expression);
-			if (mainCriteria == null) {
-				mainCriteria = criteria;
-			} else {
-				mainCriteria = mainCriteria.or(criteria);
-			}
+			mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 		}
 		Assertion.checkNotNull(mainCriteria);//can't be null
 		return mainCriteria;
 	}
 
 	private Criteria<E> toCriteria(final DslMultiExpression multiExpression) {
-		Criteria<E> firstCriteria = null;
+		Criteria<E> mainCriteria = null;
 		if (multiExpression.isAlwaysTrue()) {
 			return Criterions.alwaysTrue();
 		}
 
 		for (final DslExpression expression : multiExpression.getExpressions()) {
-			final Criteria<E> criteria = toCriteria(expression);
-			if (firstCriteria == null) {
-				firstCriteria = criteria;
+			if (multiExpression.getBoolOperator() == BoolOperator.AND) {
+				mainCriteria = andCriteria(mainCriteria, toCriteria(expression));
 			} else {
-				if (multiExpression.getBoolOperator() == BoolOperator.AND) {
-					firstCriteria = firstCriteria.and(toCriteria(expression));
-				} else {
-					firstCriteria = firstCriteria.or(toCriteria(expression));
-				}
+				mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 			}
 		}
 		for (final DslMultiExpression expression : multiExpression.getMultiExpressions()) {
-			final Criteria<E> criteria = toCriteria(expression);
-			if (firstCriteria == null) {
-				firstCriteria = criteria;
+			if (multiExpression.getBoolOperator() == BoolOperator.AND) {
+				mainCriteria = andCriteria(mainCriteria, toCriteria(expression));
 			} else {
-				if (multiExpression.getBoolOperator() == BoolOperator.AND) {
-					firstCriteria = firstCriteria.and(toCriteria(expression));
-				} else {
-					firstCriteria = firstCriteria.or(toCriteria(expression));
-				}
+				mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 			}
 		}
-		Assertion.checkNotNull(firstCriteria);//can be null ?
-		return firstCriteria;
+		Assertion.checkNotNull(mainCriteria);//can be null ?
+		return mainCriteria;
 	}
 
 	private Criteria<E> toCriteria(final DslExpression expression) {
@@ -97,20 +84,16 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expression.getValue();
 			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues != null && userValues.length > 0) {
-				Criteria<E> firstCriteria = null; //comment collecter en stream ?
+
+				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.checkNotNull(userValue);
 					Assertion.checkArgument(userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					//----
-					final Criteria<E> criteria = toCriteria(expression.getFieldName(), expression.getOperator(), userValue);
-					if (firstCriteria == null) {
-						firstCriteria = criteria;
-					} else {
-						firstCriteria = firstCriteria.or(criteria);
-					}
+					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
-				Assertion.checkNotNull(firstCriteria);//can't be null
-				return firstCriteria;
+				Assertion.checkNotNull(mainCriteria);//can't be null
+				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
 		} else if (expression.getValue() instanceof DslFixedValue) {
@@ -161,7 +144,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> enumToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final String value) {
-		final DtFieldName<E> fieldName = securityAxe.getFields().get(0)::getName;
+		final DtFieldName<E> fieldName = securityAxe::getName;
 		switch (operator) {
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
@@ -181,8 +164,128 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> treeToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final Serializable value) {
-		//on détermine le dernier field non null du user
-		throw new IllegalArgumentException("treeToCriteria not supported yet" + securityAxe.getName());
+		Assertion.checkArgument(value instanceof String[]
+				|| value instanceof Integer[]
+				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityAxe.getName(), value.getClass().getName());
+		if (value instanceof String[]) {
+			return treeToCriteria(securityAxe, operator, (String[]) value);
+		} else if (value instanceof Integer[]) {
+			return treeToCriteria(securityAxe, operator, (Integer[]) value);
+		} else {
+			return treeToCriteria(securityAxe, operator, (Long[]) value);
+		}
+	}
+
+	private <K extends Serializable> Criteria<E> treeToCriteria(final SecurityAxe securityAxe, final ValueOperator operator, final K[] treeKeys) {
+		//on vérifie qu'on a bien toutes les clées.
+		final List<String> strAxefields = securityAxe.getFields().stream()
+				.map(DtField::getName)
+				.collect(Collectors.toList());
+		Assertion.checkArgument(strAxefields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strAxefields);
+		Criteria<E> mainCriteria = null;
+
+		//cas particuliers du == et du !=
+		if (operator == ValueOperator.EQ) {
+			for (int i = 0; i < strAxefields.size(); i++) {
+				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+			}
+		} else if (operator == ValueOperator.NEQ) {
+			for (int i = 0; i < strAxefields.size(); i++) {
+				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+				mainCriteria = andCriteria(mainCriteria, Criterions.isNotEqualTo(fieldName, treeKeys[i]));
+			}
+		} else { //cas des < , <= , > et >=
+			//le < signifie au-dessus dans la hierachie et > en-dessous
+
+			//on détermine le dernier field non null du user, les règles pivotent sur ce point là
+			final int lastIndexNotNull = lastIndexNotNull(treeKeys);
+
+			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
+			for (int i = 0; i < lastIndexNotNull; i++) {
+				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+				mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[i]));
+			}
+
+			//2- règles pour le point de pivot
+			if (lastIndexNotNull >= 0) {
+				final DtFieldName<E> fieldName = strAxefields.get(lastIndexNotNull)::toString;
+				switch (operator) {
+					case GT:
+						//pour > : doit être null (car non inclus)
+						mainCriteria = andCriteria(mainCriteria, Criterions.isNull(fieldName));
+						break;
+					case GTE:
+						//pour >= : doit être égale à la clé du user ou null (supérieur)
+						final Criteria<E> equalsCriteria = Criterions.isEqualTo(fieldName, treeKeys[lastIndexNotNull]);
+						final Criteria<E> greaterCriteria = Criterions.isNull(fieldName);
+						final Criteria<E> gteCriteria = greaterCriteria.or(equalsCriteria);
+						mainCriteria = andCriteria(mainCriteria, gteCriteria);
+						break;
+					case LT:
+					case LTE:
+						//pour < et <= on test l'égalité
+						mainCriteria = andCriteria(mainCriteria, Criterions.isEqualTo(fieldName, treeKeys[lastIndexNotNull]));
+						break;
+					case EQ:
+					case NEQ:
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
+			}
+
+			//3- règles après le point de pivot (les null du user donc)
+			for (int i = lastIndexNotNull + 1; i < strAxefields.size(); i++) {
+				final DtFieldName<E> fieldName = strAxefields.get(i)::toString;
+				switch (operator) {
+					case GT:
+					case GTE:
+						//pour > et >= on test l'égalité (isNull donc)
+						mainCriteria = andCriteria(mainCriteria, Criterions.isNull(fieldName));
+						break;
+					case LT:
+						//pout < : le premier non null, puis pas de filtre : on accepte toutes valeurs
+						if (i == lastIndexNotNull + 1) {
+							mainCriteria = andCriteria(mainCriteria, Criterions.isNotNull(fieldName));
+						}
+						break;
+					case LTE:
+						//pour <= : pas de filtre on accepte toutes valeurs
+						break;
+					case EQ:
+					case NEQ:
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
+			}
+		}
+		Assertion.checkNotNull(mainCriteria);//can be null ?
+		return mainCriteria;
+	}
+
+	private Criteria<E> andCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
+		if (oldCriteria == null) {
+			return newCriteria;
+		} else {
+			return oldCriteria.and(newCriteria);
+		}
+	}
+
+	private Criteria<E> orCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
+		if (oldCriteria == null) {
+			return newCriteria;
+		} else {
+			return oldCriteria.or(newCriteria);
+		}
+	}
+
+	private static <K> int lastIndexNotNull(final K[] value) {
+		for (int i = value.length - 1; i >= 0; i--) {
+			if (value[i] != null) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private static Serializable[] subValues(final List<String> values, final boolean includeHead, final String value, final boolean valueIncluded) {

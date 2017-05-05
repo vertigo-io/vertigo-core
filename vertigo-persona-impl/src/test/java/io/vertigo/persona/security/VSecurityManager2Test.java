@@ -310,6 +310,54 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public void testAuthorizedOnEntityTreeAxes() {
+		final Dossier dossier = createDossier();
+
+		final Dossier dossierTooExpensive = createDossier();
+		dossierTooExpensive.setMontant(10000d);
+
+		final Dossier dossierOtherUser = createDossier();
+		dossierOtherUser.setUtiIdOwner(2000L);
+
+		final Dossier dossierOtherUserAndTooExpensive = createDossier();
+		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		dossierOtherUserAndTooExpensive.setMontant(10000d);
+
+		final Dossier dossierArchivedNotWriteable = createDossier();
+		dossierArchivedNotWriteable.setEtaCd("ARC");
+
+		final Permission2 dossierWrite = getPermission(DossierPermissions.PRM_DOSSIER_WRITE);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
+				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
+				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+				.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, DEFAULT_COM_ID })
+				.addPermission(dossierWrite);
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			final boolean canReadDossier = securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_WRITE);
+			Assert.assertTrue(canReadDossier);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.READ));
+
+			//write -> (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.WRITE));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
 	public void testNoWriterRole() {
 		//TODO
 	}

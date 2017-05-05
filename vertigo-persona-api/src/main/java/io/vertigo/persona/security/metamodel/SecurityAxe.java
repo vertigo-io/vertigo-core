@@ -25,7 +25,7 @@ public class SecurityAxe {
 	 *
 	 * @param name name.
 	 * @param type type.
-	 * @param fields Ordered list of fields (multiple for TREE, only one for ENUM).
+	 * @param fields Ordered list of fields (multiple for TREE, empty for ENUM).
 	 * @param values Ordered list of values (empty for TREE, multiple for ENUM).
 	 */
 	public SecurityAxe(final String name, final SecurityAxeType type, final List<DtField> fields, final List<String> values) {
@@ -33,7 +33,7 @@ public class SecurityAxe {
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(fields);
 		Assertion.checkNotNull(values);
-		Assertion.when(SecurityAxeType.ENUM.equals(type)).check(() -> fields.size() == 1 && !values.isEmpty(), "SecurityAxe of type ENUM ({0}) needs one and only one field and the ordered list of values", name);
+		Assertion.when(SecurityAxeType.ENUM.equals(type)).check(() -> fields.isEmpty() && values.size() > 1, "SecurityAxe of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
 		Assertion.when(SecurityAxeType.TREE.equals(type)).check(() -> fields.size() > 1 && values.isEmpty(), "SecurityAxe of type TREE ({0}) needs more than on fields and the no values", name);
 		//----
 		this.name = name;
@@ -61,7 +61,7 @@ public class SecurityAxe {
 	}
 
 	/**
-	 * Give the ordered list of fields (multiple for TREE, only one for ENUM)
+	 * Give the ordered list of fields (multiple for TREE, empty for ENUM)
 	 *
 	 * @return the ordered list of fields.
 	 */
