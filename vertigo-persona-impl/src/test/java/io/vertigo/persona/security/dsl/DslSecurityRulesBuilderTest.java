@@ -72,7 +72,7 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSqlQuery(final String[] testParam, final int i) {
 		final SqlSecurityRuleTranslator securityRuleTranslator = new SqlSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
+				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSql();
 		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
 		Assert.assertEquals("Built sql query #" + i + " incorrect", expectedResult, result);
@@ -81,7 +81,7 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSearchQuery(final String[] testParam, final int i) {
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
 				.withRule(testParam[0])
-				.withCriteria(Collections.singletonMap("query", new String[] { testParam[1] }));
+				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSearchQuery();
 		final String expectedResult = testParam[Math.min(getSearchResult(), testParam.length - 1)];
 		Assert.assertEquals("Built search query #" + i + " incorrect", expectedResult, result);

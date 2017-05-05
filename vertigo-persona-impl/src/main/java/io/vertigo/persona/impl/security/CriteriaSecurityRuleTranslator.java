@@ -82,13 +82,14 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private Criteria<E> toCriteria(final DslExpression expression) {
 		if (expression.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expression.getValue();
-			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.length > 0) {
+			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			if (userValues != null && userValues.size() > 0) {
 
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.checkNotNull(userValue);
-					Assertion.checkArgument(userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
+					Assertion.when(!userValue.getClass().isArray()).check(() -> userValue instanceof Comparable, "Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
+					Assertion.when(userValue.getClass().isArray()).check(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()), "Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}

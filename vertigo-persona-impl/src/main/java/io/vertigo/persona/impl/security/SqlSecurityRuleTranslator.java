@@ -19,6 +19,7 @@
 package io.vertigo.persona.impl.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 import io.vertigo.persona.security.dsl.model.DslExpression;
 import io.vertigo.persona.security.dsl.model.DslFixedValue;
@@ -81,12 +82,12 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		query.append(expressionDefinition.getFieldName());
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.length > 0) {
-				if (userValues.length == 1) {
+			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			if (userValues != null && userValues.size() > 0) {
+				if (userValues.size() == 1) {
 					query
 							.append(expressionDefinition.getOperator())
-							.append(userValues[0]);
+							.append(userValues.get(0));
 				} else {
 					query.append(" IN (");
 					String inSep = "";

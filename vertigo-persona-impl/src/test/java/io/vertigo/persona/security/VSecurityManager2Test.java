@@ -312,45 +312,89 @@ public final class VSecurityManager2Test extends AbstractTestCaseJU4 {
 	@Test
 	public void testAuthorizedOnEntityTreeAxes() {
 		final Dossier dossier = createDossier();
+		dossier.setEtaCd("PUB");
 
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
+		final Dossier dossierOtherType = createDossier();
+		dossierOtherType.setEtaCd("PUB");
+		dossierOtherType.setTypId(11L);
+
+		final Dossier dossierOtherEtat = createDossier();
+		dossierOtherEtat.setEtaCd("CRE");
 
 		final Dossier dossierOtherUser = createDossier();
+		dossierOtherUser.setEtaCd("PUB");
 		dossierOtherUser.setUtiIdOwner(2000L);
 
 		final Dossier dossierOtherUserAndTooExpensive = createDossier();
+		dossierOtherUserAndTooExpensive.setEtaCd("PUB");
 		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		dossierOtherUserAndTooExpensive.setMontant(10000d);
 
-		final Dossier dossierArchivedNotWriteable = createDossier();
-		dossierArchivedNotWriteable.setEtaCd("ARC");
+		final Dossier dossierOtherCommune = createDossier();
+		dossierOtherCommune.setEtaCd("PUB");
+		dossierOtherCommune.setComId(3L);
 
+		final Dossier dossierDepartement = createDossier();
+		dossierDepartement.setEtaCd("PUB");
+		dossierDepartement.setComId(null);
+
+		final Dossier dossierOtherDepartement = createDossier();
+		dossierOtherDepartement.setEtaCd("PUB");
+		dossierOtherDepartement.setDepId(10L);
+		dossierOtherDepartement.setComId(null);
+
+		final Dossier dossierRegion = createDossier();
+		dossierRegion.setEtaCd("PUB");
+		dossierRegion.setDepId(null);
+		dossierRegion.setComId(null);
+
+		final Dossier dossierNational = createDossier();
+		dossierNational.setEtaCd("PUB");
+		dossierNational.setRegId(null);
+		dossierNational.setDepId(null);
+		dossierNational.setComId(null);
+
+		final Permission2 dossierNotify = getPermission(DossierPermissions.PRM_DOSSIER_NOTIFY);
 		final Permission2 dossierWrite = getPermission(DossierPermissions.PRM_DOSSIER_WRITE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession()
 				.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 				.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 				.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-				.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, DEFAULT_COM_ID })
-				.addPermission(dossierWrite);
+				.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
+				.addPermission(dossierNotify);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canReadDossier = securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_WRITE);
-			Assert.assertTrue(canReadDossier);
+			Assert.assertTrue(securityManager.hasPermission(DossierPermissions.PRM_DOSSIER_NOTIFY));
 
-			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			//grant read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
 			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
 			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.READ));
 
-			//write -> (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
+			//notify -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
+			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.NOTIFY));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherType, DossierOperations.NOTIFY));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherEtat, DossierOperations.NOTIFY));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.NOTIFY));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.NOTIFY));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherCommune, DossierOperations.NOTIFY));
+			Assert.assertTrue(securityManager.isAuthorized(dossierDepartement, DossierOperations.NOTIFY));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherDepartement, DossierOperations.NOTIFY));
+			Assert.assertFalse(securityManager.isAuthorized(dossierRegion, DossierOperations.NOTIFY));
+			Assert.assertFalse(securityManager.isAuthorized(dossierNational, DossierOperations.NOTIFY));
+
+			//override write -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
+			//default write don't apply : (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
 			Assert.assertTrue(securityManager.isAuthorized(dossier, DossierOperations.WRITE));
-			Assert.assertTrue(securityManager.isAuthorized(dossierTooExpensive, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherType, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherEtat, DossierOperations.WRITE));
 			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUser, DossierOperations.WRITE));
-			Assert.assertFalse(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
-			Assert.assertFalse(securityManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierOtherCommune, DossierOperations.WRITE));
+			Assert.assertTrue(securityManager.isAuthorized(dossierDepartement, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierOtherDepartement, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierRegion, DossierOperations.WRITE));
+			Assert.assertFalse(securityManager.isAuthorized(dossierNational, DossierOperations.WRITE));
 
 		} finally {
 			securityManager.stopCurrentUserSession();

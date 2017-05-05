@@ -19,6 +19,7 @@
 package io.vertigo.persona.impl.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 import io.vertigo.persona.security.dsl.model.DslExpression;
 import io.vertigo.persona.security.dsl.model.DslFixedValue;
@@ -82,8 +83,8 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private void appendExpression(final StringBuilder query, final DslExpression expressionDefinition) {
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
-			final Serializable[] userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.length > 0) {
+			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
+			if (userValues != null && userValues.size() > 0) {
 				query.append(expressionDefinition.getFieldName())
 						.append(":(");
 				String inSep = "";

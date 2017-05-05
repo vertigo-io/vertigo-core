@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -251,7 +252,7 @@ public abstract class UserSession implements Serializable {
 	 * Gestion de la sécurité.
 	 * @return Liste des clés de sécurité et leur valeur.
 	 */
-	public Map<String, Serializable[]> getSecurityKeys() {
+	public Map<String, List<Serializable>> getSecurityKeys() {
 		return Collections.emptyMap();
 	}
 }

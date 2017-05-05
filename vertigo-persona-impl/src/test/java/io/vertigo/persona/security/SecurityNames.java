@@ -41,7 +41,8 @@ public final class SecurityNames {
 		PRM_DOSSIER_READ_HP,
 		PRM_DOSSIER_WRITE,
 		PRM_DOSSIER_CREATE,
-		PRM_DOSSIER_DELETE
+		PRM_DOSSIER_DELETE,
+		PRM_DOSSIER_NOTIFY
 	}
 
 	/**
@@ -53,5 +54,6 @@ public final class SecurityNames {
 		WRITE,
 		CREATE,
 		DELETE,
+		NOTIFY,
 	}
 }

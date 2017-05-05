@@ -53,6 +53,14 @@
 				"TYP_ID=${typId}",
 				"UTI_ID_OWNER=${utiId} and ETA_CD<PUB"
 			]
+		}, {
+			"__comment": "Notification par type de marché et dans le respect de la hierachy geographique. Overrides WRITE : donne l'opération WRITE en conservant le périmètre de l'opération NOTIFY",
+			"name": "NOTIFY", "label" : "Notification",
+			"grants": ["READ"],
+			"overrides": ["WRITE"], 
+			"rules": [
+				"TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}"
+			]
 		}]
 	}]
 }

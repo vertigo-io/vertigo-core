@@ -36,7 +36,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	private SecuredEntity mySecuredEntity;
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
-	private Map<String, Serializable[]> myUserCriteria;
+	private Map<String, List<Serializable>> myUserCriteria;
 
 	public S on(final SecuredEntity securedEntity) {
 		Assertion.checkNotNull(securedEntity);
@@ -83,7 +83,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
-	public final S withCriteria(final Map<String, Serializable[]> userCriteria) {
+	public final S withCriteria(final Map<String, List<Serializable>> userCriteria) {
 		Assertion.checkNotNull(userCriteria);
 		Assertion.checkState(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
 		//-----
@@ -113,7 +113,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return myMultiExpressions;
 	}
 
-	protected final Serializable[] getUserCriteria(final String userProperty) {
+	protected final List<Serializable> getUserCriteria(final String userProperty) {
 		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
 		//----
 		return myUserCriteria.get(userProperty);

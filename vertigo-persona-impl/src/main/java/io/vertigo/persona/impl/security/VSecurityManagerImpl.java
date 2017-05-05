@@ -256,17 +256,17 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			return false;
 		}
 		final UserSession userSession = userSessionOption.get();
-		final Map<String, Serializable[]> securityKeys = userSessionOption.get().getSecurityKeys();
+		final Map<String, List<Serializable>> securityKeys = userSessionOption.get().getSecurityKeys();
 		return userSession.getRoles().stream()
 				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
 	}
 
-	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, Serializable[]> securityKeys) {
+	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, List<Serializable>> securityKeys) {
 		return role.getPermissions().stream()
 				.anyMatch(permission -> isAuthorized(permission, resource, operation, securityKeys));
 	}
 
-	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, Serializable[]> securityKeys) {
+	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, List<Serializable>> securityKeys) {
 		final String filter = permission.getFilter();
 		final String personalFilter = applySecurityKeys(filter, securityKeys);
 		final Pattern pFilter = Pattern.compile(personalFilter);
@@ -274,7 +274,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		return pFilter.matcher(resource).matches() && pOperation.matcher(operation).matches();
 	}
 
-	private static String applySecurityKeys(final String filter, final Map<String, Serializable[]> securityKeys) {
+	private static String applySecurityKeys(final String filter, final Map<String, List<Serializable>> securityKeys) {
 		final StringBuilder personalFilter = new StringBuilder();
 		int previousIndex = 0;
 		int nextIndex = filter.indexOf("${", previousIndex);
@@ -283,9 +283,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			final int endIndex = filter.indexOf('}', nextIndex + "${".length());
 			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
 			final String key = filter.substring(nextIndex + "${".length(), endIndex);
-			final Serializable[] securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
-			Assertion.checkArgument(securityValue == null || securityValue.length == 1, "Support one value only for securityKey:{0}", key);
-			personalFilter.append(securityValue == null ? "null" : securityValue[0]);
+			final List<Serializable> securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
+			Assertion.checkArgument(securityValue == null || securityValue.size() == 1, "Support one value only for securityKey:{0}", key);
+			personalFilter.append(securityValue == null ? "null" : securityValue.get(0));
 			previousIndex = endIndex + "}".length();
 			nextIndex = filter.indexOf("${", previousIndex);
 		}
