@@ -4,7 +4,7 @@ import io.vertigo.commons.cache.AbstractCacheManagerTest;
 
 /**
  * RedisCache Manager test class.
- * Uses RedisConnector from {@link io.vertigo.core.connectors.redis.RedisConnector}
+ * Uses RedisConnector from {@link io.vertigo.commons.impl.connectors.redis.RedisConnector}
  *
  * @author pchretien, dszniten
  */

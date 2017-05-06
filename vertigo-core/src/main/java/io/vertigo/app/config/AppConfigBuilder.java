@@ -75,7 +75,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	/**
 	 * Adds a a moduleConfig.
-	 * @param moduleConfig the moduleConfig
+	 * @param nodeConfig the nodeConfig
 	 * @return this builder
 	 */
 	public AppConfigBuilder withNodeConfig(final NodeConfig nodeConfig) {

@@ -72,7 +72,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-
+	
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -102,7 +102,7 @@ public final class CommonsFeatures extends Features {
 	 * Adds a REDIS connector.
 	 * @param host the REDIS host
 	 * @param port the REDIS port
-	 * @param password the REDIS password
+	 * @param passwordOpt the REDIS password
 	 * @param database the index of the REDIS database
 	 * @return these features
 	 */
