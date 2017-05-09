@@ -64,7 +64,6 @@ final class XMLModulesHandler extends DefaultHandler {
 		Assertion.checkNotNull(params);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
-		this.appConfigBuilder.withNodeConfig(NodeConfig.builder().build());
 		this.params = params;
 	}
 
@@ -127,7 +126,13 @@ final class XMLModulesHandler extends DefaultHandler {
 		switch (TagName.valueOf(qName)) {
 			case app:
 				final String appName = attrs.getValue("name");
-				//appConfigBuilder.withNodeConfig(NodeConfig.builder().build());
+				final String nodeId = attrs.getValue("nodeId");
+				final String endPoint = attrs.getValue("endPoint");
+				appConfigBuilder.withNodeConfig(NodeConfig.builder()
+						.withAppName(appName)
+						.withNodeId(nodeId)
+						.withEndPoint(endPoint)
+						.build());
 				break;
 			case boot:
 				current = TagName.boot;

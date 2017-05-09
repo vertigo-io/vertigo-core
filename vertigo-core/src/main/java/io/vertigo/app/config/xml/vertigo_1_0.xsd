@@ -24,7 +24,7 @@
 	<xs:element name="config">
 		<xs:complexType>
 	    	<xs:sequence>
-	    		<xs:element name="app" type="appNameType" minOccurs="0" maxOccurs="1"/>
+	    		<xs:element name="app" type="appType" minOccurs="0" maxOccurs="1"/>
 	        	<xs:element name="boot" type="bootType" minOccurs="0" maxOccurs="1"/>
 	        	<xs:choice minOccurs="0" maxOccurs="unbounded">
 	        		<xs:element name="module" type="moduleType" minOccurs="0" maxOccurs="1"/>
@@ -35,8 +35,10 @@
 		</xs:complexType>
   	</xs:element>
   	
-  	<xs:complexType name="appNameType">
+  	<xs:complexType name="appType">
     	<xs:attribute name="name" type="xs:string" use="required"/>
+    	<xs:attribute name="nodeId" type="xs:string" use="required"/>
+    	<xs:attribute name="endPoint" type="xs:string" use="required"/>
 	</xs:complexType>
 		
 	<xs:complexType name="definitionsType">

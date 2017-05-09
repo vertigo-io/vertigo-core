@@ -35,27 +35,30 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	private String myNodeId;
 	private String myEndPoint;
 
-	public void withAppName(final String appName) {
+	public NodeConfigBuilder withAppName(final String appName) {
 		Assertion.checkState(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName);
 		Assertion.checkArgNotEmpty(appName);
 		// ---
 		myAppName = appName;
+		return this;
 
 	}
 
-	public void withNodeId(final String nodeId) {
+	public NodeConfigBuilder withNodeId(final String nodeId) {
 		Assertion.checkState(myNodeId == null, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId);
 		Assertion.checkArgNotEmpty(nodeId);
 		// ---
 		myNodeId = nodeId;
+		return this;
 
 	}
 
-	public void withEndPoint(final String endPoint) {
-		Assertion.checkState(myNodeId == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint);
+	public NodeConfigBuilder withEndPoint(final String endPoint) {
+		Assertion.checkState(myEndPoint == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint);
 		Assertion.checkArgNotEmpty(endPoint);
 		// ---
 		myEndPoint = endPoint;
+		return this;
 
 	}
 
