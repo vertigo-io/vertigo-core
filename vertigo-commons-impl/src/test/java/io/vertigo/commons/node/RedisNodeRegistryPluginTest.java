@@ -6,7 +6,6 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.node.registry.redis.RedisNodeRegistryPlugin;
 
@@ -20,14 +19,10 @@ public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
 		final int redisPort = 6379;
 		final int redisDatabase = 11;
 
-		return AppConfig.builder()
-				.beginBoot()
-				.endBoot()
+		return buildRootAppConfig()
 				.addModule(new CommonsFeatures()
 						.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty())
 						.withNodeRegistryPlugin(RedisNodeRegistryPlugin.class)
-						.build())
-				.addModule(ModuleConfig.builder("db")
 						.build())
 				.build();
 	}

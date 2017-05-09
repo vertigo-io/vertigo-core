@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,6 +13,7 @@ import javax.inject.Inject;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeInfosPlugin;
 import io.vertigo.commons.node.NodeManager;
@@ -34,12 +32,12 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
 
-	private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
 	@Inject
 	public NodeManagerImpl(
+			final DaemonManager daemonManager,
 			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
+		Assertion.checkNotNull(daemonManager);
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());
@@ -49,18 +47,18 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 					//---
 					nodeInfosPluginMap.put(plugin.getProtocol(), plugin);
 				});
+
+		// register a daemon
+		daemonManager.registerDaemon("updateNodeStatus", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), 5);
 	}
 
 	@Override
 	public void start() {
 		nodeRegistryPlugin.register(toAppNode(Home.getApp()));
-		executor.scheduleAtFixedRate(() -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), 0, 5, TimeUnit.SECONDS);
-
 	}
 
 	@Override
 	public void stop() {
-		executor.shutdownNow();
 		nodeRegistryPlugin.unregister(toAppNode(Home.getApp()));
 
 	}

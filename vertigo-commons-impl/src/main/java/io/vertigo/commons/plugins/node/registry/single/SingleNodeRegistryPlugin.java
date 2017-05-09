@@ -35,8 +35,8 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	}
 
 	@Override
-	public Optional<Node> find(final String nodeName) {
-		if (Home.getApp().getConfig().getNodeConfig().getAppName().equals(nodeName)) {
+	public Optional<Node> find(final String nodeId) {
+		if (Home.getApp().getConfig().getNodeConfig().getNodeId().equals(nodeId)) {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();
@@ -52,8 +52,8 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	}
 
 	@Override
-	public void updateStatus(final Node node) {
-		// Nothing
+	public synchronized void updateStatus(final Node node) {
+		localNode = node;
 
 	}
 

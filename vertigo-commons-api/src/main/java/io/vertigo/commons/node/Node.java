@@ -10,8 +10,8 @@ public final class Node {
 	private final String id;
 	private final String name;
 
-	//	private final String lastStatus;
-	//	private final Instant lastTouch;
+	private final String lastStatus;
+	private final Instant lastTouch;
 	private final Instant startDate;
 
 	private final List<String> skills;
@@ -35,8 +35,8 @@ public final class Node {
 		// ---
 		this.id = id;
 		this.name = name;
-		//		this.lastStatus = lastStatus;
-		//		this.lastTouch = lastTouch;
+		this.lastStatus = lastStatus;
+		this.lastTouch = lastTouch;
 		this.startDate = startDate;
 		this.endPoint = endPoint;
 		this.skills = skills;
@@ -64,5 +64,13 @@ public final class Node {
 
 	public List<String> getSkills() {
 		return skills;
+	}
+
+	public String getLastStatus() {
+		return lastStatus;
+	}
+
+	public Instant getLastTouch() {
+		return lastTouch;
 	}
 }

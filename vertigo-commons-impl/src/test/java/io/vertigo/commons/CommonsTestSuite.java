@@ -40,7 +40,7 @@ import io.vertigo.commons.codec.serialization.SerializationCodecTest;
 import io.vertigo.commons.daemon.DaemonManagerTest;
 import io.vertigo.commons.eventbus.EventBusManagerTest;
 import io.vertigo.commons.node.RedisNodeRegistryPluginTest;
-import io.vertigo.commons.node.SingleNodeManagerTest;
+import io.vertigo.commons.node.SingleNodeRegistryPluginTest;
 import io.vertigo.commons.peg.CalculatorTest;
 import io.vertigo.commons.peg.ParserTest;
 import io.vertigo.commons.peg.PegRulesTest;
@@ -74,7 +74,7 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		//--daemon
 		DaemonManagerTest.class,
 		//--node
-		SingleNodeManagerTest.class,
+		SingleNodeRegistryPluginTest.class,
 		RedisNodeRegistryPluginTest.class,
 		//--script
 		ScriptManagerTest.class,
