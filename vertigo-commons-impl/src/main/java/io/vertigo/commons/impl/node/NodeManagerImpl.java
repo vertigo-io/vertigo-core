@@ -113,7 +113,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 		return new Node(
 				app.getConfig().getNodeConfig().getNodeId(),
 				app.getConfig().getNodeConfig().getAppName(),
-				"OK",
+				NodeStatus.UP.name(),
 				Instant.now(),
 				app.getStart(),
 				app.getConfig().getNodeConfig().getEndPoint(),
@@ -124,6 +124,11 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 		return app.getConfig().getModuleConfigs().stream()
 				.map(ModuleConfig::getName)
 				.collect(Collectors.toList());
+	}
+
+	public enum NodeStatus {
+		UP, DOWN;
+
 	}
 
 }
