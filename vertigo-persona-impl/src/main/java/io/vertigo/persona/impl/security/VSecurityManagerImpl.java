@@ -18,38 +18,25 @@
  */
 package io.vertigo.persona.impl.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.persona.security.dsl.model.DslMultiExpression;
-import io.vertigo.persona.security.metamodel.OperationName;
 import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Permission2;
-import io.vertigo.persona.security.metamodel.PermissionName;
 import io.vertigo.persona.security.metamodel.Role;
-import io.vertigo.persona.security.metamodel.SecuredEntity;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -69,7 +56,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	private final Map<String, ResourceNameFactory> resourceNameFactories = new HashMap<>();
 
 	/**
-	 * Constructor.
+	 * Constructeur.
 	 * Les deux namespace ne sont pas types pour eviter des couplages forts (notamment sur UI).
 	 * @param localeManager Manager des messages localises
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
@@ -135,93 +122,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasPermission(final PermissionName permissionName) {
-		Assertion.checkNotNull(permissionName);
-		final Optional<UserSession> userSessionOption = getCurrentUserSession();
-		if (!userSessionOption.isPresent()) {
-			// Si il n'y a pas de session alors pas d'autorisation.
-			return false;
-		}
-		final UserSession userSession = userSessionOption.get();
-		return userSession.hasPermission(permissionName);
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <K extends KeyConcept> boolean isAuthorized(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConcept);
-		Assertion.checkNotNull(operationName);
-		final Optional<UserSession> userSessionOption = getCurrentUserSession();
-		if (!userSessionOption.isPresent()) {
-			// Si il n'y a pas de session alors pas d'autorisation.
-			return false;
-		}
-		final UserSession userSession = userSessionOption.get();
-
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
-
-		return userSession.getEntityPermissions(dtDefinition).stream()
-				.filter(permission -> permission.getOperation().get().equals(operationName.name())
-						|| permission.getOverrides().contains(operationName.name()))
-				.flatMap(permission -> permission.getRules().stream())
-				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
-						.on(securedEntity)
-						.withRule(rule)
-						.withCriteria(userSession.getSecurityKeys())
-						.toCriteria()
-						.toPredicate().test(keyConcept));
-	}
-
-	@Override
-	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConcept);
-		Assertion.checkNotNull(operationName);
-		final Optional<UserSession> userSessionOption = getCurrentUserSession();
-		if (!userSessionOption.isPresent()) {
-			// Si il n'y a pas de session alors pas d'autorisation.
-			return ""; //Attention : pas de *:*
-		}
-		final UserSession userSession = userSessionOption.get();
-		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
-		securityRuleTranslator.withCriteria(userSession.getSecurityKeys());
-
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		final List<Permission2> permissions = userSession.getEntityPermissions(dtDefinition).stream()
-				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
-				.collect(Collectors.toList());
-		for (final Permission2 permission : permissions) {
-			for (final DslMultiExpression ruleExpression : permission.getRules()) {
-				securityRuleTranslator.withRule(ruleExpression);
-			}
-		}
-		return securityRuleTranslator.toSearchQuery();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
-		Assertion.checkNotNull(keyConcept);
-		final Optional<UserSession> userSessionOption = getCurrentUserSession();
-		if (!userSessionOption.isPresent()) {
-			// Si il n'y a pas de session alors pas d'autorisation.
-			return new ArrayList<>();
-		}
-		final UserSession userSession = userSessionOption.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		return userSession.getEntityPermissions(dtDefinition).stream()
-				.map(permission -> permission.getOperation().get())
-				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Compatibility API.
-	 */
-
-	/** {@inheritDoc} */
-	@Deprecated
-	@Override
 	public boolean hasRole(final UserSession userSession, final Set<Role> authorizedRoleSet) {
 		Assertion.checkNotNull(userSession);
 		Assertion.checkNotNull(authorizedRoleSet);
@@ -244,7 +144,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
-	@Deprecated
 	@Override
 	public boolean isAuthorized(final String resource, final String operation) {
 		// Note: il s'agit d'une implementation naïve non optimisee,
@@ -256,17 +155,17 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			return false;
 		}
 		final UserSession userSession = userSessionOption.get();
-		final Map<String, List<Serializable>> securityKeys = userSessionOption.get().getSecurityKeys();
+		final Map<String, String> securityKeys = userSessionOption.get().getSecurityKeys();
 		return userSession.getRoles().stream()
 				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
 	}
 
-	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, List<Serializable>> securityKeys) {
+	private static boolean isAuthorized(final Role role, final String resource, final String operation, final Map<String, String> securityKeys) {
 		return role.getPermissions().stream()
 				.anyMatch(permission -> isAuthorized(permission, resource, operation, securityKeys));
 	}
 
-	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, List<Serializable>> securityKeys) {
+	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, String> securityKeys) {
 		final String filter = permission.getFilter();
 		final String personalFilter = applySecurityKeys(filter, securityKeys);
 		final Pattern pFilter = Pattern.compile(personalFilter);
@@ -274,7 +173,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		return pFilter.matcher(resource).matches() && pOperation.matcher(operation).matches();
 	}
 
-	private static String applySecurityKeys(final String filter, final Map<String, List<Serializable>> securityKeys) {
+	private static String applySecurityKeys(final String filter, final Map<String, String> securityKeys) {
 		final StringBuilder personalFilter = new StringBuilder();
 		int previousIndex = 0;
 		int nextIndex = filter.indexOf("${", previousIndex);
@@ -283,9 +182,8 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			final int endIndex = filter.indexOf('}', nextIndex + "${".length());
 			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
 			final String key = filter.substring(nextIndex + "${".length(), endIndex);
-			final List<Serializable> securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
-			Assertion.checkArgument(securityValue == null || securityValue.size() == 1, "Support one value only for securityKey:{0}", key);
-			personalFilter.append(securityValue == null ? "null" : securityValue.get(0));
+			final String securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
+			personalFilter.append(securityValue);
 			previousIndex = endIndex + "}".length();
 			nextIndex = filter.indexOf("${", previousIndex);
 		}
@@ -296,7 +194,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
-	@Deprecated
 	@Override
 	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
 		final ResourceNameFactory resourceNameFactory = resourceNameFactories.get(resourceType);
@@ -306,7 +203,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
-	@Deprecated
 	@Override
 	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
 		Assertion.checkArgNotEmpty(resourceType);
@@ -314,17 +210,4 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		//-----
 		resourceNameFactories.put(resourceType, resourceNameFactory);
 	}
-
-	/**
-	 * Finds the SecuredEntity from a type of 'dtDefinition'
-	 * @param dtDefinition the 'dtDefinition'
-	 * @return SecuredEntity
-	 */
-	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
-		//-----
-		final String name = DefinitionUtil.getPrefix(SecuredEntity.class) + dtDefinition.getName();
-		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
-	}
-
 }

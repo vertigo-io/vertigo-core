@@ -18,14 +18,10 @@
  */
 package io.vertigo.persona.security;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Manager;
-import io.vertigo.persona.security.metamodel.OperationName;
-import io.vertigo.persona.security.metamodel.PermissionName;
 import io.vertigo.persona.security.metamodel.Role;
 
 /**
@@ -64,50 +60,6 @@ public interface VSecurityManager extends Manager {
 	<U extends UserSession> U createUserSession();
 
 	/**
-	 * Contrôle d'accès basé sur les permissions.
-	 * Indique si l'utilisateur dispose de la permission nécessaire.
-	 *
-	 * @param permissionName permission. (non null)
-	 * @return Si les droits de l'utilisateur lui permettent un accès.
-	 */
-	boolean hasPermission(PermissionName permissionName);
-
-	/**
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
-	 * donnee sur la ressource donnee.
-	 *
-	 * @param keyConcept la ressource
-	 * @param operation l'operation
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation donnée sur la ressource donnee
-	 * @param <K> Type du keyConcept
-	 */
-	<K extends KeyConcept> boolean isAuthorized(final K keyConcept, OperationName<K> operation);
-
-	/**
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
-	 * donnee sur la ressource donnee.
-	 *
-	 * @param keyConcept la ressource
-	 * @param operation l'operation
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation donnée sur la ressource donnee
-	 * @param <K> Type du keyConcept
-	 */
-	<K extends KeyConcept> String getSearchSecurity(final K keyConcept, OperationName<K> operation);
-
-	/**
-	 * Retourne la liste des opérations autorisées sur le keyConcept.
-	 *
-	 * @param keyConcept objet sécurisé.
-	 * @return liste d'opérations.
-	 * @param <K> Type du keyConcept
-	 */
-	<K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept);
-
-	/**
-	 * Compatibility api.
-	 */
-
-	/**
 	 * Contrôle d'accès basé sur les rôles.
 	 *
 	 * L'utilisateur dispose-t-il des droits nécessaires.
@@ -124,9 +76,7 @@ public interface VSecurityManager extends Manager {
 	 * @param authorizedRoleSet Set des roles autorisés. (non null)
 	 *
 	 * @return Si les droits de l'utilisateur lui permettent un accès.
-	 * @Deprecated
 	 */
-	@Deprecated
 	boolean hasRole(UserSession userSession, Set<Role> authorizedRoleSet);
 
 	/**
@@ -139,9 +89,7 @@ public interface VSecurityManager extends Manager {
 	 * @param operation l'operation
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
 	 * donnée sur la ressource donnee
-	  * @Deprecated
 	 */
-	@Deprecated
 	boolean isAuthorized(String resource, String operation);
 
 	/**
@@ -154,18 +102,13 @@ public interface VSecurityManager extends Manager {
 	 * @param operation l'opération
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'opération
 	 * donnée sur la ressource donnée
-	  * @Deprecated
 	 */
-	@Deprecated
 	boolean isAuthorized(String resourceType, Object resource, String operation);
 
 	/**
 	 * Enregistre une ResourceNameFactory spécifique pour un type donnée.
 	 * @param resourceType Type de la resource
 	 * @param resourceNameFactory ResourceNameFactory spécifique
-	 * @Deprecated
 	 */
-	@Deprecated
 	void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory);
-
 }

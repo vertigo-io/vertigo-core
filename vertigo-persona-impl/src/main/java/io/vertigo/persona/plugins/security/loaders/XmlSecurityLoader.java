@@ -69,7 +69,7 @@ final class XmlSecurityLoader {
 	private final URL authURL;
 
 	/**
-	 * Constructor.
+	 * Constructeur
 	 * @param resourceManager Resource manager
 	 * @param url Url du fichier XML de configuration
 	 */

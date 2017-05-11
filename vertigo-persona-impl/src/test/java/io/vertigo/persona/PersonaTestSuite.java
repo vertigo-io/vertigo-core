@@ -23,7 +23,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.persona.security.VSecurityManagerTest;
-import io.vertigo.persona.security.dsl.DslSecurityRulesBuilderTest;
 
 /**
  * Test de l'implementation standard.
@@ -32,8 +31,7 @@ import io.vertigo.persona.security.dsl.DslSecurityRulesBuilderTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		VSecurityManagerTest.class,
-		DslSecurityRulesBuilderTest.class
+		VSecurityManagerTest.class
 })
 public final class PersonaTestSuite {
 	//

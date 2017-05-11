@@ -18,16 +18,13 @@
  */
 package io.vertigo.persona.security;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;
-	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
+	private final Map<String, String> mySecurityKeys = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -37,12 +34,12 @@ public final class TestUserSession extends UserSession {
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, List<Serializable>> getSecurityKeys() {
+	public Map<String, String> getSecurityKeys() {
 		return mySecurityKeys;
 	}
 
-	public TestUserSession withSecurityKeys(final String securityKey, final Serializable value) {
-		mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
+	public TestUserSession withSecurityKeys(final String securityKey, final String value) {
+		mySecurityKeys.put(securityKey, value);
 		return this;
 	}
 
