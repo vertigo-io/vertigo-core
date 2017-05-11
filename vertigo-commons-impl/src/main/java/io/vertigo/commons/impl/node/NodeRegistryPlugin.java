@@ -1,8 +1,9 @@
-package io.vertigo.commons.node;
+package io.vertigo.commons.impl.node;
 
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.commons.node.Node;
 import io.vertigo.lang.Plugin;
 
 /**

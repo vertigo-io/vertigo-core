@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.impl.node.NodeRegistryPlugin;
 import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeRegistryPlugin;
 import io.vertigo.lang.Assertion;
 
 /**

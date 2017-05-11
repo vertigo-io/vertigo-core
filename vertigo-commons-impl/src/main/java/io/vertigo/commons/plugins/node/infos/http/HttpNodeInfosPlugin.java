@@ -8,8 +8,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 
+import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeInfosPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

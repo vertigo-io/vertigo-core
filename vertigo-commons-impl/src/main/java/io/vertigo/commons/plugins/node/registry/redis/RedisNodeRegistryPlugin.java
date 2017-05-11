@@ -17,8 +17,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.node.NodeRegistryPlugin;
 import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeRegistryPlugin;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;

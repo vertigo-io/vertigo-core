@@ -39,6 +39,7 @@ import io.vertigo.commons.codec.html.HtmlCodecTest;
 import io.vertigo.commons.codec.serialization.SerializationCodecTest;
 import io.vertigo.commons.daemon.DaemonManagerTest;
 import io.vertigo.commons.eventbus.EventBusManagerTest;
+import io.vertigo.commons.node.DbNodeRegistryPluginTest;
 import io.vertigo.commons.node.RedisNodeRegistryPluginTest;
 import io.vertigo.commons.node.SingleNodeRegistryPluginTest;
 import io.vertigo.commons.peg.CalculatorTest;
@@ -76,6 +77,7 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		//--node
 		SingleNodeRegistryPluginTest.class,
 		RedisNodeRegistryPluginTest.class,
+		DbNodeRegistryPluginTest.class,
 		//--script
 		ScriptManagerTest.class,
 		//--parser

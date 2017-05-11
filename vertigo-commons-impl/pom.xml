@@ -27,11 +27,10 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+			<optional>true</optional>
 		</dependency>
 	
 		<!--script -->
@@ -65,6 +64,28 @@
 		    <groupId>redis.clients</groupId>
 		    <artifactId>jedis</artifactId>
    			 <version>2.9.0</version>
+		</dependency>
+		
+		
+		<!-- tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.193</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+			<scope>test</scope>
 		</dependency>
 		
 	</dependencies>
