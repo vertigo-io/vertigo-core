@@ -1,6 +1,8 @@
 package io.vertigo.commons.impl.node;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
@@ -21,6 +24,7 @@ import io.vertigo.commons.node.NodeRegistryPlugin;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 /**
  * Implementation of the NodeManager.
@@ -31,15 +35,19 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
+	private final int heartBeatSeconds;
 
 	@Inject
 	public NodeManagerImpl(
+			@Named("heartBeatSeconds") final Optional<Integer> heartBeatSecondsOpt,
 			final DaemonManager daemonManager,
 			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
+		Assertion.checkNotNull(heartBeatSecondsOpt);
 		Assertion.checkNotNull(daemonManager);
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
+		heartBeatSeconds = heartBeatSecondsOpt.orElse(5);
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
@@ -49,7 +57,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 				});
 
 		// register a daemon
-		daemonManager.registerDaemon("updateNodeStatus", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), 5);
+		daemonManager.registerDaemon("updateNodeStatus", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds);
 	}
 
 	@Override
@@ -70,12 +78,31 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	@Override
 	public List<Node> locateSkills(final String... skills) {
-		return nodeRegistryPlugin.locateSkills(skills);
+		return getTopology()
+				.stream()
+				.filter(node -> node.getSkills().containsAll(Arrays.asList(skills)))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Node> getTopology() {
 		return nodeRegistryPlugin.getTopology();
+	}
+
+	@Override
+	public Node getCurrentNode() {
+		final String currentNodeId = Home.getApp().getConfig().getNodeConfig().getNodeId();
+		return find(currentNodeId)
+				.orElseThrow(() -> new VSystemException("Current node with '{0}' cannot be found in the registry", currentNodeId));
+	}
+
+	@Override
+	public List<Node> getDeadNodes() {
+		return getTopology()
+				.stream()
+				// we wait two heartbeat to decide that a node is dead
+				.filter(node -> node.getLastTouch().plus(2 * heartBeatSeconds, ChronoUnit.SECONDS).isBefore(Instant.now()))
+				.collect(Collectors.toList());
 	}
 
 	@Override

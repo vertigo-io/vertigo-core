@@ -2,7 +2,6 @@ package io.vertigo.commons.plugins.node.registry.redis;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,14 +84,6 @@ public final class RedisNodeRegistryPlugin implements NodeRegistryPlugin {
 			}
 			return Optional.empty();
 		}
-	}
-
-	@Override
-	public List<Node> locateSkills(final String... skills) {
-		return getTopology()
-				.stream()
-				.filter(node -> node.getSkills().containsAll(Arrays.asList(skills)))
-				.collect(Collectors.toList());
 	}
 
 	@Override

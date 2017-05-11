@@ -19,6 +19,10 @@ public interface NodeManager extends Manager {
 
 	List<Node> getTopology();
 
+	Node getCurrentNode();
+
+	List<Node> getDeadNodes();
+
 	Map<String, String> getStatus();
 
 	Map<String, Object> getStats();

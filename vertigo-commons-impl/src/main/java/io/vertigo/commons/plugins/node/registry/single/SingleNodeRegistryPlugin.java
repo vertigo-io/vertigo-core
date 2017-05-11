@@ -1,6 +1,5 @@
 package io.vertigo.commons.plugins.node.registry.single;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,15 +39,6 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();
-	}
-
-	@Override
-	public List<Node> locateSkills(final String... skills) {
-		if (localNode != null) {
-			final boolean hasSkills = localNode.getSkills().containsAll(Arrays.asList(skills));
-			return hasSkills ? Collections.singletonList(localNode) : Collections.emptyList();
-		}
-		return Collections.emptyList();
 	}
 
 	@Override

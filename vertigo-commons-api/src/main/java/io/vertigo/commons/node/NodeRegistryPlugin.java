@@ -20,8 +20,6 @@ public interface NodeRegistryPlugin extends Plugin {
 
 	Optional<Node> find(String nodeId);
 
-	List<Node> locateSkills(String... skills);
-
 	void updateStatus(Node node);
 
 }
