@@ -173,7 +173,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
-			throw WrappedException.wrap(e, "Impossible de trouver la classe : " + javaClassName);
+			throw WrappedException.wrap(e, "Impossible de trouver la classe : '" + javaClassName + "'");
 		} catch (final ClassCastException e) {
 			throw WrappedException.wrap(e, "La classe " + javaClassName + " doit être une sous-class de : " + type.getSimpleName());
 		}
