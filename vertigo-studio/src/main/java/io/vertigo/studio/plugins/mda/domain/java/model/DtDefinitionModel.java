@@ -115,6 +115,14 @@ public final class DtDefinitionModel {
 	}
 
 	/**
+	 * Retourne le nom local de la definition (const case, sans prefix)
+	 * @return Simple Nom (i.e. sans le package) de la definition du DtObject
+	 */
+	public String getLocalName() {
+		return dtDefinition.getLocalName();
+	}
+
+	/**
 	 * @return Nom du package
 	 */
 	public String getPackageName() {

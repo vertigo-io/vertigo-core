@@ -63,6 +63,10 @@ public final class DtFieldModel {
 		return dtField;
 	}
 
+	public String getResourceKey() {
+		return dtField.getResourceKey();
+	}
+
 	public String getLabel() {
 		return dtField.getLabel().getDisplay();
 	}

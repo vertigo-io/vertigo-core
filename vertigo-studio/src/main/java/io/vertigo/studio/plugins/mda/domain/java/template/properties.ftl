@@ -5,7 +5,7 @@
 
 <#list dtDefinitions as dtDefinition>
 <#list dtDefinition.fields as dtField>
-${dtField.resourceKey} = ${dtField.label.display}
+${dtField.resourceKey} = ${dtField.label}
 </#list>
 
 ################################################################################");
