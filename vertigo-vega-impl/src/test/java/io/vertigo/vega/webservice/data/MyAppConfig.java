@@ -26,7 +26,6 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.node.infos.http.HttpNodeInfosPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -72,7 +71,6 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
-						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
