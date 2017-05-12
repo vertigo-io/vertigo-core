@@ -10,7 +10,7 @@
 			<param name="targetGenDir" value="target/" />
 			<param name="encoding" value="utf8" />
  
-			<plugin class="io.vertigo.studio.plugins.mda.domain.DomainGeneratorPlugin">
+			<plugin class=" io.vertigo.studio.plugins.mda.domain.java.DomainGeneratorPlugin">
 				<param name="targetSubDir" value="javagen" />
 				<param name="generateDtResources" value="true" />
 				<param name="generateJpaAnnotations" value="true" />
@@ -19,13 +19,13 @@
 				<param name="generateDtObject" value="true" />
 			</plugin>
 			
-			<plugin class="io.vertigo.studio.plugins.mda.domain.SqlGeneratorPlugin">
+			<plugin class="io.vertigo.studio.plugins.mda.domain.sql.SqlGeneratorPlugin">
 				<param name="targetSubDir" value="databasegen" />
 				<param name="baseCible" value="PostgreSql" />
 				<param name="generateDrop" value="true" />
 			</plugin>
 			
-			<plugin class="io.vertigo.studio.plugins.mda.domain.JSGeneratorPlugin">
+			<plugin class="io.vertigo.studio.plugins.mda.domain.js.JSGeneratorPlugin">
 				<param name="targetSubDir" value="jsgen" />
 				<param name="generateDtResourcesJS" value="true" />
 				<param name="generateJsDtDefinitions" value="true" />
