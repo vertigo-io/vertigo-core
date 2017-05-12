@@ -14,7 +14,7 @@ drop table ${associationDefinition.getTableName()};
 </#list>
 <#list dtDefinitions as dtDefinition>
 
-drop table ${dtDefinition.dtDefinition.localName};
+drop table ${dtDefinition.localName};
 </#list>
 
 </#if>
@@ -30,38 +30,36 @@ drop table ${dtDefinition.dtDefinition.localName};
 
 
 <#list dtDefinitions as dtDefinition>
-<#if dtDefinition.dtDefinition.persistent>
 -- ============================================================
---   Table : ${dtDefinition.dtDefinition.localName}                                        
+--   Table : ${dtDefinition.localName}                                        
 -- ============================================================
-create table ${dtDefinition.dtDefinition.localName}
+create table ${dtDefinition.localName}
 (
-	<#list dtDefinition.dtFields as field>
-	<#if field.dtField.persistent>
+	<#list dtDefinition.fields as field>
+	<#if field.persistent>
 	<#-- For primary key we use the domain datatype to add 'identity'  -->
-    ${field.name?right_pad(12)}${"\t"} ${sql(field.dtField.domain)?right_pad(12)}${"\t"}<#if ("ID" == field.dtField.type) && ("String" != field.dtField.getDomain().getDataType().name()) >identity<#elseif field.required>not null<#else></#if>,
+    ${field.name?right_pad(12)}${"\t"} ${sql(field)?right_pad(12)}${"\t"}<#if (field.id) && ("String" != field.javaType) >identity<#elseif field.required>not null<#else></#if>,
     </#if><#-- field.persistent -->
     </#list><#-- fieldCollection -->
-    <#list dtDefinition.dtFields as field>
-    <#if field.dtField.persistent>
-    <#if "ID" == field.dtField.type >
-    constraint PK_${dtDefinition.dtDefinition.localName} primary key nonclustered (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
+    <#list dtDefinition.fields as field>
+    <#if field.persistent>
+    <#if field.id >
+    constraint PK_${dtDefinition.localName} primary key nonclustered (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
     </#if><#-- field.type -->
     </#if><#-- field.persistent -->
     </#list>
 )<#if tableSpaceData?has_content>
 TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 
-<#list dtDefinition.dtFields as field>
-<#if field.dtField.persistent>
+<#list dtDefinition.fields as field>
+<#if field.persistent>
 <#if field.display?has_content>
-comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
+comment on column ${dtDefinition.localName}.${field.name} is
 '${field.display?replace("'","''")}';
 
 </#if>
 </#if>
 </#list>
-</#if>
 </#list>
 
 <#list simpleAssociations as associationDefinition>

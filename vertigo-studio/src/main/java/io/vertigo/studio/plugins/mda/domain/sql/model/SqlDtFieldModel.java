@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain.sql.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
 /**
  * Model used to define a DtField.
@@ -56,6 +57,13 @@ public final class SqlDtFieldModel {
 	 */
 	public DtField getSource() {
 		return dtField;
+	}
+
+	/**
+	 * @return Type java du champ
+	 */
+	public String getJavaType() {
+		return DomainUtil.buildJavaType(dtField.getDomain());
 	}
 
 	/**
