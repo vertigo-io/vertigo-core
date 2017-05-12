@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.lang.reflect.Type;
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -34,7 +35,6 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -339,7 +339,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
-	private DataType getDataTypeParameter(final TaskEngineSQLParam param) {
+	private Type getDataTypeParameter(final TaskEngineSQLParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -360,7 +360,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		} else {
 			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
 		}
-		return domain.getDataType();
+		return domain.toVType();
 	}
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {

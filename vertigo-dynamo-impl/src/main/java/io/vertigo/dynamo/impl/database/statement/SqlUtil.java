@@ -18,20 +18,26 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.BeanUtil;
+import io.vertigo.util.ClassUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * Centralisation du peuplement des beans.
@@ -51,26 +57,26 @@ final class SqlUtil {
 	 * @return Résultat de la requête.
 	 * @throws SQLException Exception SQL
 	 */
-	static SqlQueryResult buildResult(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		Assertion.checkNotNull(domain);
+	static SqlQueryResult buildResult(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		Assertion.checkNotNull(dataType);
 		Assertion.checkNotNull(mapping);
 		Assertion.checkNotNull(resultSet);
 		//-----
-		if (domain.getDataType().isPrimitive()) {
-			return retrievePrimitive(domain, mapping, resultSet);
+		if (isPrimitive(dataType)) {
+			return retrievePrimitive(dataType, mapping, resultSet);
 		}
-		return retrieveData(domain, mapping, resultSet);
+		return retrieveData(dataType, mapping, resultSet);
 	}
 
-	private static boolean isDtObject(final Domain domain) {
-		return DataType.DtObject.equals(domain.getDataType());
+	private static boolean isDtObject(final Type dataType) {
+		return ((Class) dataType).isAssignableFrom(DtObject.class);
 	}
 
-	private static SqlQueryResult retrievePrimitive(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static SqlQueryResult retrievePrimitive(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
 			//We are excepting at most one object.
 			//An exception is thrown if more than one object is found
-			final Object value = mapping.getValueForResultSet(resultSet, 1, domain.getDataType());
+			final Object value = mapping.getValueForResultSet(resultSet, 1, dataType);
 			if (resultSet.next()) {
 				throw createTooManyRowsException();
 			}
@@ -80,36 +86,45 @@ final class SqlUtil {
 		return new SqlQueryResult(null, 0);
 	}
 
-	private static SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final Integer limit = isDtObject(domain) ? 1 : null;
-		final DtList<DtObject> dtc = doRetrieveDtList(domain, mapping, resultSet, limit);
-		if (isDtObject(domain)) {
+	private static SqlQueryResult retrieveData(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+		final Type retieveDataType;
+		final boolean isObject = !dataType.getTypeName().startsWith("$");
+		// case list
+		if (isObject) {
+			retieveDataType = dataType;
+		} else {
+			retieveDataType = ClassUtil.classForName(dataType.getTypeName().substring(1));
+		}
+
+		final Integer limit = isObject ? 1 : null;
+		final DtList<DtObject> dtc = doRetrieveList(retieveDataType, mapping, resultSet, limit);
+		if (isObject) {
 			final DtObject dto = dtc.isEmpty() ? null : dtc.get(0);
 			return new SqlQueryResult(dto, dtc.size());
 		}
 		return new SqlQueryResult(dtc, dtc.size());
 	}
 
-	private static DtList<DtObject> doRetrieveDtList(final Domain domain, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
-		final DtField[] fields = findFields(domain, resultSet.getMetaData());
+	private static DtList<DtObject> doRetrieveList(final Type dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
+		final Field[] fields = findFields(dataType, resultSet.getMetaData());
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
-		final DtList<DtObject> dtc = new DtList<>(domain.getDtDefinition());
+		final DtList<DtObject> dtc = new DtList<>(DtObjectUtil.findDtDefinition((Class) dataType));
 		while (resultSet.next()) {
 			if (limit != null && dtc.size() > limit) {
 				throw createTooManyRowsException();
 			}
-			dtc.add(readDtObject(mapping, resultSet, domain, fields));
+			dtc.add(readDtObject(mapping, resultSet, dataType, fields));
 		}
 		return dtc;
 	}
 
-	private static DtObject readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Domain domain, final DtField[] fields) throws SQLException {
-		final DtObject dto = DtObjectUtil.createDtObject(domain.getDtDefinition());
+	private static DtObject readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Type dataType, final Field[] fields) throws SQLException {
+		final DtObject dto = DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition((Class) dataType));
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
-			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getDomain().getDataType());
-			fields[i].getDataAccessor().setValue(dto, value);
+			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getType());
+			BeanUtil.setValue(dto, fields[i].getName(), value);
 		}
 		return dto;
 	}
@@ -119,13 +134,17 @@ final class SqlUtil {
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
 	 * @return Tableau de codes de champ.
 	 */
-	private static DtField[] findFields(final Domain domain, final ResultSetMetaData resultSetMetaData) throws SQLException {
-		final DtField[] fields = new DtField[resultSetMetaData.getColumnCount()];
+	private static Field[] findFields(final Type dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
+		final Field[] fields = new Field[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {
 			columnLabel = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			fields[i] = domain.getDtDefinition().getField(columnLabel.toUpperCase(Locale.ENGLISH));
+			try {
+				fields[i] = ((Class) dataType).getDeclaredField(StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH)));
+			} catch (final Exception e) {
+				throw WrappedException.wrap(e);
+			}
 		}
 		return fields;
 	}
@@ -133,4 +152,14 @@ final class SqlUtil {
 	private static RuntimeException createTooManyRowsException() {
 		return new IllegalStateException("load TooManyRows");
 	}
+
+	private static boolean isPrimitive(final Type dataType) {
+		if (dataType instanceof Class) {
+			final Class[] primiviteTypes = new Class[] { Integer.class, Double.class, Boolean.class, String.class, Date.class, BigDecimal.class, Long.class };
+			return Stream.of(primiviteTypes)
+					.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom((Class) dataType));
+		}
+		return false;
+	}
+
 }

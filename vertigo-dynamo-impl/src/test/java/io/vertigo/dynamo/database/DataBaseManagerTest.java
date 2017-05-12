@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.database;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
@@ -83,8 +84,8 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into movie values (?, ?)";
 		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.registerParameter(0, DataType.Long, true);
-			callableStatement.registerParameter(1, DataType.String, true);
+			callableStatement.registerParameter(0, Long.class, true);
+			callableStatement.registerParameter(1, String.class, true);
 			//-----
 			callableStatement.init();
 			//-----
@@ -119,8 +120,14 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	public void testSelectEntities() throws Exception {
 		createDatas();
 		//----
-		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTC", Domain.class);
-		final SqlQueryResult result = executeQuery(domain, "select * from movie");
+		final SqlQueryResult result = executeQuery(new Type() {
+
+			@Override
+			public String getTypeName() {
+				return "$" + Movie.class.getName();
+			}
+
+		}, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
 
@@ -138,8 +145,14 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	public void testSelectSimpleObjects() throws Exception {
 		createDatas();
 		//----
-		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_INFO_DTC", Domain.class);
-		final SqlQueryResult result = executeQuery(domain, "select title from movie");
+		final SqlQueryResult result = executeQuery(new Type() {
+
+			@Override
+			public String getTypeName() {
+				return "$" + MovieInfo.class.getName();
+			}
+
+		}, "select title from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());
 
@@ -163,24 +176,22 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	public void testSelectObject() throws Exception {
 		createDatas();
 		//----
-		final Domain domain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
-		final SqlQueryResult result = executeQuery(domain, "select * from movie where id=1");
+
+		final SqlQueryResult result = executeQuery(Movie.class, "select * from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		final Movie movie = (Movie) result.getValue();
 		Assert.assertEquals("citizen kane", movie.getTitle());
 	}
 
-	private SqlQueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
-		return executeQuery(domain, sql, dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
+	private SqlQueryResult executeQuery(final Type dataType, final String sql) throws SQLException, Exception {
+		return executeQuery(dataType, sql, dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
 	}
 
-	private SqlQueryResult executeQuery(final Domain domain, final String sql, final SqlConnectionProvider sqlConnectionProvider) throws SQLException, Exception {
+	private SqlQueryResult executeQuery(final Type dataType, final String sql, final SqlConnectionProvider sqlConnectionProvider) throws SQLException, Exception {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
 			preparedStatement.init();
-			return preparedStatement.executeQuery(domain);
-		} finally {
-			connection.commit();
+			return preparedStatement.executeQuery(dataType);
 		}
 	}
 
@@ -190,7 +201,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = Domain.builder("DO_INTEGER", DataType.Integer).build();
-		final SqlQueryResult result = executeQuery(domain, "select count(*) from movie");
+		final SqlQueryResult result = executeQuery(Integer.class, "select count(*) from movie");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
 	}
@@ -202,7 +213,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = Domain.builder("DO_LIB", DataType.String).build();
-		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
+		final SqlQueryResult result = executeQuery(String.class, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
 	}
@@ -230,14 +241,14 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 			final Domain domain = Domain.builder("DO_INTEGER", DataType.Integer).build();
 			final Domain movieDomain = definitionSpace.resolve("DO_DT_MOVIE_DTO", Domain.class);
 
-			final SqlQueryResult result2 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
+			final SqlQueryResult result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"));
 			Assert.assertEquals(1, result2.getSQLRowCount());
 			Assert.assertEquals(4, result2.getValue());
-			final SqlQueryResult resultMovie1 = executeQuery(movieDomain, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"));
+			final SqlQueryResult resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"));
 			Assert.assertEquals(1, resultMovie1.getSQLRowCount());
 			Assert.assertEquals("Star wars", ((Movie) resultMovie1.getValue()).getTitle());
 
-			final SqlQueryResult result1 = executeQuery(domain, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
+			final SqlQueryResult result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME));
 			Assert.assertEquals(1, result1.getSQLRowCount());
 			Assert.assertEquals(3, result1.getValue());
 		} finally {

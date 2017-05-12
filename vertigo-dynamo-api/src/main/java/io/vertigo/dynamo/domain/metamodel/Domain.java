@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -193,6 +195,26 @@ public final class Domain implements Definition {
 			throw new VSystemException("the domain {0} is not a DtList/DtObject", getName());
 		}
 		throw new VSystemException("The domain is a dynamic DtList/DtObject, so there is no DtDefinition", getName());
+	}
+
+	public Type toVType() {
+		if (dataType.isPrimitive()) {
+			return dataType.getJavaClass();
+		}
+		// object
+		if (dataType == DataType.DtObject) {
+			return ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
+		}
+		// list
+		if (dataType == DataType.DtList) {
+			return new Type() {
+				@Override
+				public String getTypeName() {
+					return "$" + getDtDefinition().getClassCanonicalName();
+				}
+			};
+		}
+		throw new IllegalArgumentException("Type '" + dataType + "is not supported");
 	}
 
 	/** {@inheritDoc} */

@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
+import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 /**
@@ -37,8 +37,8 @@ final class PostgresqlMapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public int getSqlType(final DataType dataType) {
-		if (dataType == DataType.Boolean) {
+	public int getSqlType(final Type dataType) {
+		if (Boolean.class.isAssignableFrom((Class) dataType)) {
 			return Types.BOOLEAN;
 		}
 		return defaultSQLMapping.getSqlType(dataType);
@@ -46,10 +46,10 @@ final class PostgresqlMapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final DataType dataType, final Object value) throws SQLException {
+	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Type dataType, final Object value) throws SQLException {
 		if (value == null) {
 			defaultSQLMapping.setValueOnStatement(statement, index, dataType, null /*value*/);
-		} else if (dataType == DataType.Boolean) {
+		} else if (Boolean.class.isAssignableFrom((Class) dataType)) {
 			statement.setBoolean(index, Boolean.TRUE.equals(value));
 		} else {
 			defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
@@ -58,14 +58,14 @@ final class PostgresqlMapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final DataType dataType) throws SQLException {
+	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Type dataType) throws SQLException {
 		return defaultSQLMapping.getValueForCallableStatement(callableStatement, index, dataType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet resultSet, final int col, final DataType dataType) throws SQLException {
-		if (dataType == DataType.Boolean) {
+	public Object getValueForResultSet(final ResultSet resultSet, final int col, final Type dataType) throws SQLException {
+		if (Boolean.class.isAssignableFrom((Class) dataType)) {
 			final boolean vb = resultSet.getBoolean(col);
 			return resultSet.wasNull() ? null : vb;
 		}
@@ -74,7 +74,7 @@ final class PostgresqlMapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public DataType getDataType(final int typeSQL) {
+	public Type getDataType(final int typeSQL) {
 		return defaultSQLMapping.getDataType(typeSQL);
 	}
 }

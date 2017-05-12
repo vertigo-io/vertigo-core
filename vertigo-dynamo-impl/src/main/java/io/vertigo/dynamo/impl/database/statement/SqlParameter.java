@@ -18,7 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import java.lang.reflect.Type;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -27,7 +28,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class SqlParameter {
-	private final DataType dataType;
+	private final Type dataType;
 	private final boolean in;
 	private Object value;
 
@@ -36,7 +37,7 @@ final class SqlParameter {
 	 * @param dataType the param type
 	 * @param in if the param is an input (or an output)
 	 */
-	SqlParameter(final DataType dataType, final boolean in) {
+	SqlParameter(final Type dataType, final boolean in) {
 		Assertion.checkNotNull(dataType);
 		//---
 		this.dataType = dataType;
@@ -68,7 +69,7 @@ final class SqlParameter {
 	/**
 	 * @return the param type
 	 */
-	DataType getDataType() {
+	Type getDataType() {
 		return dataType;
 	}
 

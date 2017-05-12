@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -26,7 +27,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -93,7 +93,7 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 		Assertion.checkArgument(parameter.isOut(), "Les Getters ne peuvent se faire que sur des paramètres OUT");
 		//-----
 		//On récupère le type saisi en amont par la méthode register
-		final DataType dataType = parameter.getDataType();
+		final Type dataType = parameter.getDataType();
 		return getConnection().getDataBase().getSqlMapping().getValueForCallableStatement(getCallableStatement(), index + 1, dataType);
 	}
 
