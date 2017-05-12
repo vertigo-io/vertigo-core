@@ -84,7 +84,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				if (min.isDefined()) {
 					sql.append(dtFieldName.name())
 							.append(min.isIncluded() ? " >= " : " > ")
-							.append("#").append(ctx.attributeName(dtFieldName, min.getValue())).append("#");
+							.append('#').append(ctx.attributeName(dtFieldName, min.getValue())).append('#');
 				}
 				if (max.isDefined()) {
 					if (sql.length() > 0) {
@@ -92,7 +92,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 					}
 					sql.append(dtFieldName.name())
 							.append(max.isIncluded() ? " <= " : " < ")
-							.append("#").append(ctx.attributeName(dtFieldName, max.getValue())).append("#");
+							.append('#').append(ctx.attributeName(dtFieldName, max.getValue())).append('#');
 				}
 				return "( " + sql.toString() + " )";
 			case STARTS_WITH:

@@ -43,6 +43,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.domain.util.VLists;
@@ -386,8 +387,8 @@ public final class AdvancedTestWebServices implements WebServices {
 		return sortedList;
 	}
 
-	private <C extends DtObject, O extends DtObject> Predicate<O> createFilterFunction(final C criteria, final Class<O> resultClass) {
-		Predicate<O> filter = (o) -> true;
+	private <C extends DtObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
+		Predicate<E> filter = (o) -> true;
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();

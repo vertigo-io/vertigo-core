@@ -93,7 +93,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
-			Logger.getRootLogger().info(e);
+			Logger.getRootLogger().info("Cannot retrieve hostname", e);
 			return "UnknownHost";
 		}
 	}

@@ -19,11 +19,11 @@ public final class CriterionLimit<E extends Entity> implements Serializable {
 	private final Serializable value;
 	private final boolean included;// else excluded
 
-	public static <E extends Entity> CriterionLimit ofIncluded(final Serializable value) {
+	public static <E extends Entity> CriterionLimit<E> ofIncluded(final Serializable value) {
 		return new CriterionLimit<>(value, true);
 	}
 
-	public static <E extends Entity> CriterionLimit ofExcluded(final Serializable value) {
+	public static <E extends Entity> CriterionLimit<E> ofExcluded(final Serializable value) {
 		return new CriterionLimit<>(value, false);
 	}
 

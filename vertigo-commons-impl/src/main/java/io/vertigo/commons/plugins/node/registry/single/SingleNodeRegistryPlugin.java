@@ -19,7 +19,7 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	private Node localNode;
 
 	@Override
-	public synchronized void register(final Node node) {
+	public void register(final Node node) {
 		Assertion.checkState(localNode == null, "SingleNode has already been registered");
 		// ---
 		Assertion.checkNotNull(node);
@@ -42,7 +42,7 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 	}
 
 	@Override
-	public synchronized void updateStatus(final Node node) {
+	public void updateStatus(final Node node) {
 		localNode = node;
 
 	}
