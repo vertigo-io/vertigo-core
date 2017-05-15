@@ -1,9 +1,0 @@
-package io.vertigo.dynamo.database.data.domain
-
-create Domain DO_STRING {
-	dataType : String
-}
-
-create Domain DO_ID {
-	dataType : Long
-}

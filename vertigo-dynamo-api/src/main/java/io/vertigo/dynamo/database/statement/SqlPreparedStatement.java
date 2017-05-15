@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.database.statement;
 
-import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * PreparedStatement.
@@ -47,7 +47,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @param dataType Type
 	 * @param in Type du paramètre
 	 */
-	void registerParameter(final int index, final Type dataType, final boolean in);
+	<O> void registerParameter(final int index, final Class<O> dataType, final boolean in);
 
 	//=========================================================================
 	//-----Clôture des affectations et 1ere Etape
@@ -81,7 +81,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @return Résultat comprenant Objet créé (dto ou dtc)
 	 * @throws SQLException Exception sql
 	 */
-	SqlQueryResult executeQuery(final Type dataType) throws SQLException;
+	<O> List<O> executeQuery(final Class<O> dataType, final Integer limit) throws SQLException;
 
 	/**
 	 * Exécute la requête.
@@ -110,7 +110,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @param domain Domain de la clé
 	 * @throws SQLException Exception SQL
 	 */
-	Object getGeneratedKey(final String columnName, final Type dataType) throws SQLException;
+	<O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException;
 
 	/**
 	 * Ferme le PreparedStatement.

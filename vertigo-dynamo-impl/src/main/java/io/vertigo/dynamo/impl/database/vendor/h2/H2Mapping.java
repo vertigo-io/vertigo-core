@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.h2;
 
-import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +36,8 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public int getSqlType(final Type dataType) {
-		if (Boolean.class.isAssignableFrom((Class) dataType)) {
+	public int getSqlType(final Class dataType) {
+		if (Boolean.class.isAssignableFrom(dataType)) {
 			return Types.BOOLEAN;
 		}
 		return defaultSQLMapping.getSqlType(dataType);
@@ -46,8 +45,8 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Type dataType, final Object value) throws SQLException {
-		if (Boolean.class.isAssignableFrom((Class) dataType)) {
+	public <O> void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Class<O> dataType, final O value) throws SQLException {
+		if (Boolean.class.isAssignableFrom(dataType)) {
 			if (value == null) {
 				statement.setNull(index, Types.BOOLEAN);
 			} else {
@@ -60,23 +59,23 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Type dataType) throws SQLException {
+	public <O> O getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Class<O> dataType) throws SQLException {
 		return defaultSQLMapping.getValueForCallableStatement(callableStatement, index, dataType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet resultSet, final int col, final Type dataType) throws SQLException {
-		if (Boolean.class.isAssignableFrom((Class) dataType)) {
+	public <O> O getValueForResultSet(final ResultSet resultSet, final int col, final Class<O> dataType) throws SQLException {
+		if (Boolean.class.isAssignableFrom(dataType)) {
 			final boolean vb = resultSet.getBoolean(col);
-			return resultSet.wasNull() ? null : vb;
+			return resultSet.wasNull() ? null : dataType.cast(vb);
 		}
 		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Type getDataType(final int typeSQL) {
+	public Class getDataType(final int typeSQL) {
 		return defaultSQLMapping.getDataType(typeSQL);
 	}
 }

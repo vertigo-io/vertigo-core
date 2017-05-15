@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
-import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +31,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -185,7 +183,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final void registerParameter(final int index, final Type dataType, final boolean in) {
+	public final <O> void registerParameter(final int index, final Class<O> dataType, final boolean in) {
 		state.assertRegisteringState();
 		//---
 		final SqlParameter parameter = new SqlParameter(dataType, in);
@@ -241,7 +239,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkArgument(parameter.isIn(), "Les Setters ne peuvent se faire que sur des paramètres IN");
 		//---
 		//On récupère le type saisi en amont par la méthode register
-		final Type dataType = parameter.getDataType();
+		final Class dataType = parameter.getDataType();
 		connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, dataType, o);
 		//On sauvegarde la valeur du paramètre
 		parameter.setValue(o);
@@ -253,13 +251,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final SqlQueryResult executeQuery(final Type dataType) throws SQLException {
+	public final <O> List<O> executeQuery(final Class<O> dataType, final Integer limit) throws SQLException {
 		state.assertDefinedState();
 		Assertion.checkNotNull(dataType);
 		//-----
 		boolean success = false;
 		try {
-			final SqlQueryResult result = traceWithReturn(tracer -> doExecuteQuery(tracer, dataType));
+			final List<O> result = traceWithReturn(tracer -> doExecuteQuery(tracer, dataType, limit));
 			success = true;
 			return result;
 		} catch (final WrappedSqlException e) {
@@ -270,13 +268,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private SqlQueryResult doExecuteQuery(final AnalyticsTracer tracer, final Type dataType) {
+	private <O> List<O> doExecuteQuery(final AnalyticsTracer tracer, final Class<O> dataType, final Integer limit) {
 		// ResultSet JDBC
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final SqlQueryResult result = SqlUtil.buildResult(dataType, mapping, resultSet);
-			tracer.setMeasure("nbSelectedRow", result.getSQLRowCount());
+			final List<O> result = SqlUtil.buildResult(dataType, mapping, resultSet, limit);
+			tracer.setMeasure("nbSelectedRow", result.size());
 			return result;
 		} catch (final SQLException e) {
 			//SQl Exception is Wrapped for lambda
@@ -422,7 +420,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final Object getGeneratedKey(final String columnName, final Type dataType) throws SQLException {
+	public final <O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
 		Assertion.checkArgument(returnGeneratedKeys, "Statement non créé pour retourner les clés générées");
@@ -447,7 +445,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final Object id = mapping.getValueForResultSet(rs, pkRsCol, dataType); //attention le pkRsCol correspond au n° de column dans le RETURNING
+			final O id = mapping.getValueForResultSet(rs, pkRsCol, dataType); //attention le pkRsCol correspond au n° de column dans le RETURNING
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}

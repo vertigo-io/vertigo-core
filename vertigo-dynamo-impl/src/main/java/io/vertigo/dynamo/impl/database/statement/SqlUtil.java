@@ -19,20 +19,17 @@
 package io.vertigo.dynamo.impl.database.statement;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
@@ -57,76 +54,46 @@ final class SqlUtil {
 	 * @return Résultat de la requête.
 	 * @throws SQLException Exception SQL
 	 */
-	static SqlQueryResult buildResult(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
+	static <O> List<O> buildResult(final Class<O> dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
 		Assertion.checkNotNull(dataType);
 		Assertion.checkNotNull(mapping);
 		Assertion.checkNotNull(resultSet);
 		//-----
-		if (isPrimitive(dataType)) {
-			return retrievePrimitive(dataType, mapping, resultSet);
-		}
-		return retrieveData(dataType, mapping, resultSet);
+		return retrieveData(dataType, mapping, resultSet, limit);
 	}
 
-	private static boolean isDtObject(final Type dataType) {
-		return ((Class) dataType).isAssignableFrom(DtObject.class);
-	}
+	private static <O> List<O> retrieveData(final Class<O> dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
+		final boolean isPrimitive = isPrimitive(dataType);
 
-	private static SqlQueryResult retrievePrimitive(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		if (resultSet.next()) {
-			//We are excepting at most one object.
-			//An exception is thrown if more than one object is found
-			final Object value = mapping.getValueForResultSet(resultSet, 1, dataType);
-			if (resultSet.next()) {
-				throw createTooManyRowsException();
-			}
-			return new SqlQueryResult(value, 1);
-		}
-		//no data found
-		return new SqlQueryResult(null, 0);
-	}
-
-	private static SqlQueryResult retrieveData(final Type dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
-		final Type retieveDataType;
-		final boolean isObject = !dataType.getTypeName().startsWith("$");
-		// case list
-		if (isObject) {
-			retieveDataType = dataType;
-		} else {
-			retieveDataType = ClassUtil.classForName(dataType.getTypeName().substring(1));
-		}
-
-		final Integer limit = isObject ? 1 : null;
-		final DtList<DtObject> dtc = doRetrieveList(retieveDataType, mapping, resultSet, limit);
-		if (isObject) {
-			final DtObject dto = dtc.isEmpty() ? null : dtc.get(0);
-			return new SqlQueryResult(dto, dtc.size());
-		}
-		return new SqlQueryResult(dtc, dtc.size());
-	}
-
-	private static DtList<DtObject> doRetrieveList(final Type dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
-		final Field[] fields = findFields(dataType, resultSet.getMetaData());
+		final Field[] fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
-		final DtList<DtObject> dtc = new DtList<>(DtObjectUtil.findDtDefinition((Class) dataType));
+		final List<O> list = new ArrayList<>();
 		while (resultSet.next()) {
-			if (limit != null && dtc.size() > limit) {
+			if (limit != null && list.size() > limit) {
 				throw createTooManyRowsException();
 			}
-			dtc.add(readDtObject(mapping, resultSet, dataType, fields));
+			if (isPrimitive) {
+				list.add(readPrimitive(mapping, resultSet, dataType));
+			} else {
+				list.add(readRow(mapping, resultSet, dataType, fields));
+			}
 		}
-		return dtc;
+		return list;
 	}
 
-	private static DtObject readDtObject(final SqlMapping mapping, final ResultSet resultSet, final Type dataType, final Field[] fields) throws SQLException {
-		final DtObject dto = DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition((Class) dataType));
+	private static <O> O readPrimitive(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType) throws SQLException {
+		return mapping.getValueForResultSet(resultSet, 1, dataType);
+	}
+
+	private static <O> O readRow(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType, final Field[] fields) throws SQLException {
+		final O bean = ClassUtil.newInstance(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getType());
-			BeanUtil.setValue(dto, fields[i].getName(), value);
+			BeanUtil.setValue(bean, fields[i].getName(), value);
 		}
-		return dto;
+		return bean;
 	}
 
 	/**
@@ -134,14 +101,14 @@ final class SqlUtil {
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
 	 * @return Tableau de codes de champ.
 	 */
-	private static Field[] findFields(final Type dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
+	private static Field[] findFields(final Class dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
 		final Field[] fields = new Field[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {
 			columnLabel = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
 			try {
-				fields[i] = ((Class) dataType).getDeclaredField(StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH)));
+				fields[i] = dataType.getDeclaredField(StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH)));
 			} catch (final Exception e) {
 				throw WrappedException.wrap(e);
 			}
@@ -153,13 +120,10 @@ final class SqlUtil {
 		return new IllegalStateException("load TooManyRows");
 	}
 
-	private static boolean isPrimitive(final Type dataType) {
-		if (dataType instanceof Class) {
-			final Class[] primiviteTypes = new Class[] { Integer.class, Double.class, Boolean.class, String.class, Date.class, BigDecimal.class, Long.class };
-			return Stream.of(primiviteTypes)
-					.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom((Class) dataType));
-		}
-		return false;
+	private static boolean isPrimitive(final Class dataType) {
+		final Class[] primiviteTypes = new Class[] { Integer.class, Double.class, Boolean.class, String.class, Date.class, BigDecimal.class, Long.class };
+		return Stream.of(primiviteTypes)
+				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}
 
 }

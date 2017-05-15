@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,11 +27,16 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.statement.SqlQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>
@@ -79,9 +85,28 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		setInParameters(statement);
 		final TaskAttribute outAttribute = getOutTaskAttribute();
-		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain().toVType());
-		setResult(result.getValue());
-		return result.getSQLRowCount();
+		final List<?> result;
+		if (outAttribute.getDomain().getDataType().isPrimitive()) {
+			result = statement.executeQuery(outAttribute.getDomain().getDataType().getJavaClass(), 1);
+			Assertion.checkState(result.size() <= 1, "Limit exceeded");
+			setResult(result.isEmpty() ? null : result.get(0));
+		} else if (outAttribute.getDomain().getDataType() == DataType.DtObject) {
+			result = statement.executeQuery(ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1);
+			Assertion.checkState(result.size() <= 1, "Limit exceeded");
+			setResult(result.isEmpty() ? null : result.get(0));
+		} else if (outAttribute.getDomain().getDataType() == DataType.DtList) {
+			result = statement.executeQuery(ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null);
+
+			final DtList<?> dtList = result
+					.stream()
+					.map(obj -> DtObject.class.cast(obj))
+					.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
+			setResult(dtList);
+
+		} else {
+			throw new IllegalArgumentException("Task out attribute type " + outAttribute.getDomain().getDataType() + "is not allowed");
+		}
+		return result.size();
 	}
 
 	/** {@inheritDoc} */

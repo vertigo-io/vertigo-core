@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamox.task;
 
-import java.lang.reflect.Type;
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -339,7 +338,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
-	private Type getDataTypeParameter(final TaskEngineSQLParam param) {
+	private Class getDataTypeParameter(final TaskEngineSQLParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -360,7 +359,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		} else {
 			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
 		}
-		return domain.toVType();
+		return domain.getDataType().getJavaClass();
 	}
 
 	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {

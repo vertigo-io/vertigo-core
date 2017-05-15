@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
-import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,7 +35,7 @@ public interface SqlMapping {
 	 * @param sqlType Type SQL
 	 * @return Type Vertigo correspondant
 	 */
-	Type getDataType(int sqlType);
+	Class getDataType(int sqlType);
 
 	/**
 	 * Retourne le type SQL correspondant à un type vertigo 'DataType'.
@@ -44,7 +43,7 @@ public interface SqlMapping {
 	 * @param dataType Type Vertigo primitif
 	 * @return Type SQL correspondant à un type
 	 */
-	int getSqlType(Type dataType);
+	int getSqlType(Class dataType);
 
 	/**
 	 * Affecte les valeurs sur un statement.
@@ -55,7 +54,7 @@ public interface SqlMapping {
 	 * @param value Valeur à affecter sur le statement à l'index indiqué
 	 * @throws SQLException Exception sql
 	 */
-	void setValueOnStatement(PreparedStatement statement, int index, Type dataType, Object value) throws SQLException;
+	<O> void setValueOnStatement(PreparedStatement statement, int index, Class<O> dataType, O value) throws SQLException;
 
 	/**
 	 * Retourne la valeur typée vertigo d'un callablestatement.
@@ -66,7 +65,7 @@ public interface SqlMapping {
 	 * @return Valeur obtenue par le CallableStatement à l'indexe indiqué
 	 * @throws SQLException Exception sql
 	 */
-	Object getValueForCallableStatement(CallableStatement callableStatement, int index, Type dataType) throws SQLException;
+	<O> O getValueForCallableStatement(CallableStatement callableStatement, int index, Class<O> dataType) throws SQLException;
 
 	/**
 	 * Retourne la valeur typée vertigo d'un resultSet.
@@ -77,5 +76,5 @@ public interface SqlMapping {
 	 * @return Valeur typée d'un resultSet
 	 * @throws SQLException Exception sql
 	 */
-	Object getValueForResultSet(ResultSet resultSet, int col, Type dataType) throws SQLException;
+	<O> O getValueForResultSet(ResultSet resultSet, int col, Class<O> dataType) throws SQLException;
 }

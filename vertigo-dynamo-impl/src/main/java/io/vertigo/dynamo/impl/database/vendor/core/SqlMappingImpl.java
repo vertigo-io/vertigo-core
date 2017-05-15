@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.database.vendor.core;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
@@ -43,75 +42,64 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Type getDataType(final int typeSQL) {
-		final Type dataType;
+	public Class getDataType(final int typeSQL) {
 		switch (typeSQL) {
 			case Types.SMALLINT:
 			case Types.TINYINT:
 			case Types.INTEGER:
 			case Types.NUMERIC:
-				dataType = Integer.class;
-				break;
+				return Integer.class;
 			case Types.CHAR:
 			case Types.VARCHAR:
 			case Types.LONGVARCHAR:
-				dataType = String.class;
-				break;
+				return String.class;
 			case Types.DATE:
 			case Types.TIME:
 			case Types.TIMESTAMP:
-				dataType = Date.class;
-				break;
+				return Date.class;
 			case Types.BIGINT:
-				dataType = Long.class;
-				break;
+				return Long.class;
 			case Types.BOOLEAN:
 			case Types.BIT:
-				dataType = Boolean.class;
-				break;
+				return Boolean.class;
 			case Types.DECIMAL:
-				dataType = BigDecimal.class;
-				break;
+				return BigDecimal.class;
 			case Types.DOUBLE:
 			case Types.FLOAT:
 			case Types.REAL:
-				dataType = Double.class;
-				break;
+				return Double.class;
 			case Types.BLOB:
-				dataType = DataStream.class;
-				break;
+				return DataStream.class;
 			default:
 				throw new IllegalArgumentException("Type SQL non géré (" + typeSQL + ')');
 		}
-		return dataType;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int getSqlType(final Type dataType) {
-		final Class clazz = (Class) dataType;
-		if (Integer.class.isAssignableFrom(clazz)) {
+	public int getSqlType(final Class dataType) {
+		if (Integer.class.isAssignableFrom(dataType)) {
 			return Types.INTEGER;
 		}
-		if (Boolean.class.isAssignableFrom(clazz)) {
+		if (Boolean.class.isAssignableFrom(dataType)) {
 			return Types.BIT;
 		}
-		if (Long.class.isAssignableFrom(clazz)) {
+		if (Long.class.isAssignableFrom(dataType)) {
 			return Types.BIGINT;
 		}
-		if (Double.class.isAssignableFrom(clazz)) {
+		if (Double.class.isAssignableFrom(dataType)) {
 			return Types.DOUBLE;
 		}
-		if (BigDecimal.class.isAssignableFrom(clazz)) {
+		if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return Types.DECIMAL;
 		}
-		if (String.class.isAssignableFrom(clazz)) {
+		if (String.class.isAssignableFrom(dataType)) {
 			return Types.VARCHAR;
 		}
-		if (Date.class.isAssignableFrom(clazz)) {
+		if (Date.class.isAssignableFrom(dataType)) {
 			return Types.TIMESTAMP;
 		}
-		if (DataStream.class.isAssignableFrom(clazz)) {
+		if (DataStream.class.isAssignableFrom(dataType)) {
 			return Types.BLOB;
 		}
 		throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
@@ -119,33 +107,32 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Type dataType, final Object value) throws SQLException {
-		final Class clazz = (Class) dataType;
+	public <O> void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Class<O> dataType, final O value) throws SQLException {
 		if (value == null) {
 			final int typeSQL = getSqlType(dataType);
 			statement.setNull(index, typeSQL);
 		} else {
-			if (Integer.class.isAssignableFrom(clazz)) {
+			if (Integer.class.isAssignableFrom(dataType)) {
 				statement.setInt(index, (Integer) value);
-			} else if (Long.class.isAssignableFrom(clazz)) {
+			} else if (Long.class.isAssignableFrom(dataType)) {
 				statement.setLong(index, (Long) value);
-			} else if (Boolean.class.isAssignableFrom(clazz)) {
+			} else if (Boolean.class.isAssignableFrom(dataType)) {
 				final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
 				statement.setInt(index, intValue);
-			} else if (Double.class.isAssignableFrom(clazz)) {
+			} else if (Double.class.isAssignableFrom(dataType)) {
 				statement.setDouble(index, (Double) value);
-			} else if (BigDecimal.class.isAssignableFrom(clazz)) {
+			} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 				statement.setBigDecimal(index, (BigDecimal) value);
-			} else if (String.class.isAssignableFrom(clazz)) {
+			} else if (String.class.isAssignableFrom(dataType)) {
 				statement.setString(index, (String) value);
-			} else if (Date.class.isAssignableFrom(clazz)) {
+			} else if (Date.class.isAssignableFrom(dataType)) {
 				if (value instanceof Timestamp) {
 					statement.setTimestamp(index, (Timestamp) value);
 				} else {
 					final Timestamp ts = new Timestamp(((java.util.Date) value).getTime());
 					statement.setTimestamp(index, ts);
 				}
-			} else if (DataStream.class.isAssignableFrom(clazz)) {
+			} else if (DataStream.class.isAssignableFrom(dataType)) {
 				try {
 					final DataStream dataStream = (DataStream) value;
 					//attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
@@ -162,22 +149,21 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Type dataType) throws SQLException {
-		final Class clazz = (Class) dataType;
+	public <O> O getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Class<O> dataType) throws SQLException {
 		Object o;
-		if (Integer.class.isAssignableFrom(clazz)) {
+		if (Integer.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getInt(index);
-		} else if (Long.class.isAssignableFrom(clazz)) {
+		} else if (Long.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getLong(index);
-		} else if (Boolean.class.isAssignableFrom(clazz)) {
+		} else if (Boolean.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getBoolean(index);
-		} else if (Double.class.isAssignableFrom(clazz)) {
+		} else if (Double.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getDouble(index);
-		} else if (BigDecimal.class.isAssignableFrom(clazz)) {
+		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getBigDecimal(index);
-		} else if (String.class.isAssignableFrom(clazz)) {
+		} else if (String.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getString(index);
-		} else if (Date.class.isAssignableFrom(clazz)) {
+		} else if (Date.class.isAssignableFrom(dataType)) {
 			//Pour avoir une date avec les heures (Sens Java !)
 			//il faut récupérer le timeStamp
 			//Puis le transformer en java.util.Date (Date+heure)
@@ -193,16 +179,15 @@ public final class SqlMappingImpl implements SqlMapping {
 		if (callableStatement.wasNull()) {
 			o = null;
 		}
-		return o;
+		return dataType.cast(o);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getValueForResultSet(final ResultSet resultSet, final int col, final Type dataType) throws SQLException {
-		final Class clazz = (Class) dataType;
+	public <O> O getValueForResultSet(final ResultSet resultSet, final int col, final Class<O> dataType) throws SQLException {
 		final Object value;
 
-		if (String.class.isAssignableFrom(clazz)) {
+		if (String.class.isAssignableFrom(dataType)) {
 			if (resultSet.getMetaData().getColumnType(col) == Types.CLOB) {
 				final Clob clob = resultSet.getClob(col);
 				//Si la valeur est null rs renvoie bien null
@@ -216,22 +201,22 @@ public final class SqlMappingImpl implements SqlMapping {
 				//Si la valeur est null rs renvoie bien null
 				value = resultSet.getString(col);
 			}
-		} else if (Integer.class.isAssignableFrom(clazz)) {
+		} else if (Integer.class.isAssignableFrom(dataType)) {
 			final int vi = resultSet.getInt(col);
 			value = resultSet.wasNull() ? null : vi;
-		} else if (Long.class.isAssignableFrom(clazz)) {
+		} else if (Long.class.isAssignableFrom(dataType)) {
 			final long vl = resultSet.getLong(col);
 			value = resultSet.wasNull() ? null : vl;
-		} else if (Boolean.class.isAssignableFrom(clazz)) {
+		} else if (Boolean.class.isAssignableFrom(dataType)) {
 			final int vb = resultSet.getInt(col);
 			value = resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
-		} else if (Double.class.isAssignableFrom(clazz)) {
+		} else if (Double.class.isAssignableFrom(dataType)) {
 			final double vd = resultSet.getDouble(col);
 			value = resultSet.wasNull() ? null : vd;
-		} else if (BigDecimal.class.isAssignableFrom(clazz)) {
+		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			//Si la valeur est null rs renvoie bien null
 			value = resultSet.getBigDecimal(col);
-		} else if (Date.class.isAssignableFrom(clazz)) {
+		} else if (Date.class.isAssignableFrom(dataType)) {
 			//Si la valeur est null rs renvoie bien null
 			final Timestamp timestamp = resultSet.getTimestamp(col);
 
@@ -239,13 +224,13 @@ public final class SqlMappingImpl implements SqlMapping {
 			//il faut récupérer le timeStamp
 			//Puis le transformer en java.util.Date (Date+heure)
 			value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
-		} else if (DataStream.class.isAssignableFrom(clazz)) {
+		} else if (DataStream.class.isAssignableFrom(dataType)) {
 			value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
 		} else {
 			throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 
-		return value;
+		return dataType.cast(value);
 	}
 
 }
