@@ -45,6 +45,7 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
@@ -95,7 +96,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	public static final VTransactionResourceId<SqlConnection> SQL_MAIN_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-main");
+	public static final VTransactionResourceId SQL_MAIN_RESOURCE_ID = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Sql-main");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
@@ -411,25 +412,25 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private SqlConnection obtainConnection() {
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
-		SqlConnection connection = transaction.getResource(getVTransactionResourceId());
-		if (connection == null) {
+		SqlConnectionAdapter connectionAdapter = SqlConnectionAdapter.class.cast(transaction.getResource(getVTransactionResourceId()));
+		if (connectionAdapter == null) {
 			// On récupère une connexion du pool
 			// Utilise le provider de connexion déclaré sur le Container.
-			connection = getConnectionProvider().obtainConnection();
-			transaction.addResource(getVTransactionResourceId(), connection);
+			connectionAdapter = new SqlConnectionAdapter(getConnectionProvider().obtainConnection());
+			transaction.addResource(getVTransactionResourceId(), connectionAdapter);
 		}
-		return connection;
+		return connectionAdapter.getSqlConnection();
 	}
 
 	/**
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
-	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
+	protected VTransactionResourceId getVTransactionResourceId() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
 		if (StoreManager.MAIN_DATA_SPACE_NAME.equals(dataSpace)) {
 			return SQL_MAIN_RESOURCE_ID;
 		}
-		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
+		return new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
 	}
 
 	/**
@@ -457,5 +458,44 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
 		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
+	}
+
+	/**
+	 * Loose coupling between SqlConnection and VTransactionResource
+	 * @author mlaroche
+	 *
+	 */
+	static class SqlConnectionAdapter implements VTransactionResource {
+
+		private final SqlConnection sqlConnection;
+
+		SqlConnectionAdapter(final SqlConnection sqlConnection) {
+			Assertion.checkNotNull(sqlConnection);
+			// ---
+			this.sqlConnection = sqlConnection;
+		}
+
+		@Override
+		public void commit() throws Exception {
+			sqlConnection.commit();
+
+		}
+
+		@Override
+		public void rollback() throws Exception {
+			sqlConnection.rollback();
+
+		}
+
+		@Override
+		public void release() throws Exception {
+			sqlConnection.release();
+
+		}
+
+		SqlConnection getSqlConnection() {
+			return sqlConnection;
+		}
+
 	}
 }

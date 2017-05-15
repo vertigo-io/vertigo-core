@@ -49,7 +49,7 @@ import io.vertigo.lang.WrappedException;
  */
 final class BerkeleyDatabase {
 	private static final Logger LOGGER = Logger.getLogger(BerkeleyDatabase.class);
-	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
+	private final VTransactionResourceId berkeleyResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "berkeley-db");
 	private final TupleBinding<Serializable> dataBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final VTransactionManager transactionManager;
@@ -80,7 +80,7 @@ final class BerkeleyDatabase {
 
 	private Transaction getCurrentBerkeleyTransaction() {
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
-		BerkeleyResource berkeleyResource = transaction.getResource(berkeleyResourceId);
+		BerkeleyResource berkeleyResource = BerkeleyResource.class.cast(transaction.getResource(berkeleyResourceId));
 		if (berkeleyResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
 			berkeleyResource = new BerkeleyResource(database.getEnvironment());

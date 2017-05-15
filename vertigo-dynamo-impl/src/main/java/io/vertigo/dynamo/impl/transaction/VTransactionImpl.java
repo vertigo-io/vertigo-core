@@ -40,8 +40,7 @@ import io.vertigo.lang.WrappedException;
 final class VTransactionImpl implements VTransactionWritable {
 
 	private enum State {
-		ALIVE,
-		CLOSED;
+		ALIVE, CLOSED;
 
 		/**
 		 * A transaction is alive or closed.
@@ -83,7 +82,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * Map des autres ressources de la transaction.
 	 */
-	private final Map<VTransactionResourceId<?>, VTransactionResource> resources = new LinkedHashMap<>();
+	private final Map<VTransactionResourceId, VTransactionResource> resources = new LinkedHashMap<>();
 
 	private final List<Runnable> beforeCommitFunctions = new ArrayList<>();
 	private final List<VTransactionAfterCompletionFunction> afterCompletionFunctions = new ArrayList<>();
@@ -141,11 +140,11 @@ final class VTransactionImpl implements VTransactionWritable {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public <R extends VTransactionResource> R getResource(final VTransactionResourceId<R> transactionResourceId) {
+	public VTransactionResource getResource(final VTransactionResourceId transactionResourceId) {
 		state.assertIsAlive();
 		Assertion.checkNotNull(transactionResourceId);
 		//-----
-		return (R) resources.get(transactionResourceId);
+		return resources.get(transactionResourceId);
 	}
 
 	/**
@@ -187,7 +186,7 @@ final class VTransactionImpl implements VTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends VTransactionResource> void addResource(final VTransactionResourceId<R> id, final R resource) {
+	public void addResource(final VTransactionResourceId id, final VTransactionResource resource) {
 		state.assertIsAlive();
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);
@@ -299,7 +298,7 @@ final class VTransactionImpl implements VTransactionWritable {
 		Throwable firstThrowable = null;
 		boolean shouldRollback = rollback;
 		//On traite les ressources par ordre de priorité
-		for (final VTransactionResourceId<?> id : getOrderedListByPriority()) {
+		for (final VTransactionResourceId id : getOrderedListByPriority()) {
 			final VTransactionResource ktr = resources.remove(id);
 			//On termine toutes les resources utilisées en les otant de la map.
 			Assertion.checkNotNull(ktr);
@@ -319,18 +318,18 @@ final class VTransactionImpl implements VTransactionWritable {
 	//=========================================================================
 	//=============TRI de la liste des id de ressouces par priorité============
 	//=========================================================================
-	private List<VTransactionResourceId<?>> getOrderedListByPriority() {
+	private List<VTransactionResourceId> getOrderedListByPriority() {
 		//On termine les ressources dans l'ordre DEFAULT, A, B...F
-		final List<VTransactionResourceId<?>> list = new ArrayList<>(resources.size());
+		final List<VTransactionResourceId> list = new ArrayList<>(resources.size());
 
 		populate(list, VTransactionResourceId.Priority.TOP);
 		populate(list, VTransactionResourceId.Priority.NORMAL);
 		return list;
 	}
 
-	private void populate(final List<VTransactionResourceId<?>> list, final VTransactionResourceId.Priority priority) {
+	private void populate(final List<VTransactionResourceId> list, final VTransactionResourceId.Priority priority) {
 		// Ajout des ressources ayant une ceraine priorité à la liste.
-		for (final VTransactionResourceId<?> id : resources.keySet()) {
+		for (final VTransactionResourceId id : resources.keySet()) {
 			if (id.getPriority().equals(priority)) {
 				list.add(id);
 			}

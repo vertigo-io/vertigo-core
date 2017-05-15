@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.store.datastore.sql;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -426,7 +427,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
 
-		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition, sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
+		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().getName(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
@@ -448,6 +449,15 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
 		}
 		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
+	}
+
+	private static List<String> getDataFields(final DtDefinition dtDefinition) {
+		return dtDefinition.getFields()
+				.stream()
+				.filter(dtField -> !dtField.getType().isId())
+				.filter(DtField::isPersistent)
+				.map(DtField::getName)
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */

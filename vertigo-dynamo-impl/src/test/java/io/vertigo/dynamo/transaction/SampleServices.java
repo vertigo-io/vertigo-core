@@ -36,7 +36,7 @@ public class SampleServices implements Component {
 
 	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase sampleDataBase, final String resourceId) {
 		// --- resource 1
-		final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, resourceId);
+		final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, resourceId);
 
 		final SampleTransactionResource transactionResourceMock = new SampleTransactionResource(sampleDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResourceMock);

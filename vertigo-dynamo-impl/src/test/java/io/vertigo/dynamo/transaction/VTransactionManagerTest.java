@@ -252,7 +252,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	//Utilitaire
 	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
 		// --- resource 1
-		final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, resourceId);
+		final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, resourceId);
 
 		final SampleTransactionResource sampleTransactionResource = new SampleTransactionResource(myDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
@@ -268,8 +268,8 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
 			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "test-memory-1");
-			final SampleTransactionResource sampleDataBaseTransactionResource = currentTransaction.getResource(transactionResourceId);
+			final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "test-memory-1");
+			final SampleTransactionResource sampleDataBaseTransactionResource = SampleTransactionResource.class.cast(currentTransaction.getResource(transactionResourceId));
 
 			// --- modification des deux bdd
 			final String value1 = createData();
@@ -358,7 +358,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		try {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+				final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
 				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
 				currentTransaction.commit();
 			}
@@ -383,7 +383,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		try {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+				final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
 				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
 
 				currentTransaction.commit();
@@ -410,11 +410,11 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		try {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResource1Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
+				final VTransactionResourceId transactionResource1Id = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
 				transactionManager.getCurrentTransaction().addResource(transactionResource1Id, sampleTransactionResource1);
 
 				// --- resource 2
-				final VTransactionResourceId<VTransactionResource> transactionResource2Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
+				final VTransactionResourceId transactionResource2Id = new VTransactionResourceId(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
 				transactionManager.getCurrentTransaction().addResource(transactionResource2Id, sampleTransactionResource2);
 
 				currentTransaction.commit();

@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  * @param <R> Ressource transactionnelle.
  */
-public final class VTransactionResourceId<R extends VTransactionResource> {
+public final class VTransactionResourceId {
 	/**
 	 * Ordre dans lequel les ressources sont commitées.
 	 * @author pchretien
@@ -75,8 +75,8 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object object) {
-		if (object instanceof VTransactionResourceId<?>) {
-			return name.equals(((VTransactionResourceId<?>) object).name);
+		if (object instanceof VTransactionResourceId) {
+			return name.equals(((VTransactionResourceId) object).name);
 		}
 		return false;
 	}

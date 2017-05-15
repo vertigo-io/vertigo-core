@@ -18,11 +18,10 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.sqlserver;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.database.vendor.SqlDialect;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 
 final class SqlServerDialect implements SqlDialect {
@@ -34,19 +33,20 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public String createInsertQuery(final DtDefinition dtDefinition, final String sequencePrefix, final String tableName) {
+	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+		Assertion.checkArgNotEmpty(idFieldName);
+		Assertion.checkNotNull(dataFieldsName);
+		Assertion.checkArgNotEmpty(tableName);
+		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" ( ")
-				.append(dtDefinition.getFields()
+				.append(dataFieldsName
 						.stream()
-						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(DtField::getName)
 						.collect(Collectors.joining(", ")))
 				.append(") values ( ")
-				.append(dtDefinition.getFields()
+				.append(dataFieldsName
 						.stream()
-						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(dtField -> " #DTO." + dtField.getName() + '#')
+						.map(fieldName -> " #DTO." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(") ")
 				.toString();

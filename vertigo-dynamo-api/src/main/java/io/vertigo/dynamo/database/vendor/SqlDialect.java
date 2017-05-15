@@ -18,9 +18,8 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
+import java.util.List;
 import java.util.Optional;
-
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
  * The database dialect.
@@ -48,12 +47,13 @@ public interface SqlDialect {
 
 	/**
 	 * Creates the insert request.
-	 * @param dtDefinition the dtDefinition
+	 * @param idFieldName the id field's name
+	 * @param dataFieldsName data fields
 	 * @param sequencePrefix the prefix to use for sequence
 	 * @param tableName the name of the table in which we want to insert
 	 * @return the sql request
 	 */
-	String createInsertQuery(final DtDefinition dtDefinition, String sequencePrefix, String tableName);
+	String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, String sequencePrefix, String tableName);
 
 	/**
 	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.

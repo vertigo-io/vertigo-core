@@ -18,12 +18,13 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.hsql;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.dynamo.database.vendor.SqlDialect;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
 
 /**
  * Dialect for HSQL databases.
@@ -35,19 +36,20 @@ public final class HSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public String createInsertQuery(final DtDefinition dtDefinition, final String sequencePrefix, final String tableName) {
+	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+		Assertion.checkArgNotEmpty(idFieldName);
+		Assertion.checkNotNull(dataFieldsName);
+		Assertion.checkArgNotEmpty(tableName);
+		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")
-				.append(dtDefinition.getFields()
+				.append(idFieldName).append(", ")
+				.append(dataFieldsName
 						.stream()
-						.filter(DtField::isPersistent)
-						.map(DtField::getName)
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
-				.append(dtDefinition.getFields()
-						.stream()
-						.filter(DtField::isPersistent)
-						.map(dtField -> " #DTO." + dtField.getName() + '#')
+				.append(Stream.concat(Stream.of(idFieldName), dataFieldsName.stream())
+						.map(fieldName -> " #DTO." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();

@@ -54,7 +54,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	//Utilitaire
 	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
 		// --- resource 1
-		final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, resourceId);
+		final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, resourceId);
 
 		final SampleTransactionResource sampleTransactionResource = new SampleTransactionResource(myDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
@@ -231,7 +231,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 
 	private void registerBeforeAfterCommit(final VTransaction currentTransaction, final ErronousTransactionResource transactionResource, final boolean beforeCommitError, final boolean afterCommitError) {
 
-		final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource");
+		final VTransactionResourceId transactionResourceId = new VTransactionResourceId(VTransactionResourceId.Priority.TOP, "Ressource");
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResource);
 
 		currentTransaction.addBeforeCommit(() -> {

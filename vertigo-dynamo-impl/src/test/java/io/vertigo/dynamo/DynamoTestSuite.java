@@ -27,6 +27,11 @@ import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
+import io.vertigo.dynamo.database.vendor.H2SqlDialectTest;
+import io.vertigo.dynamo.database.vendor.HSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.OracleDialectTest;
+import io.vertigo.dynamo.database.vendor.PostgreSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.SqlServerDialectTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -80,6 +85,11 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		FacetManagerTest.class,
 		//--database
 		DataBaseManagerTest.class,
+		H2SqlDialectTest.class,
+		HSqlDialectTest.class,
+		OracleDialectTest.class,
+		PostgreSqlDialectTest.class,
+		SqlServerDialectTest.class,
 		//--domain
 		ConstraintTest.class,
 		BooleanFormatterTest.class,

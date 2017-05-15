@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -33,7 +32,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien, npiedeloup
  */
-public final class SqlConnection implements VTransactionResource {
+public final class SqlConnection {
 	private final Connection jdbcConnection;
 	private final SqlDataBase dataBase;
 	private final boolean closeable;
@@ -74,19 +73,16 @@ public final class SqlConnection implements VTransactionResource {
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public void commit() throws SQLException {
 		jdbcConnection.commit();
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public void rollback() throws SQLException {
 		jdbcConnection.rollback();
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public void release() throws SQLException {
 		if (closeable) {
 			jdbcConnection.close();

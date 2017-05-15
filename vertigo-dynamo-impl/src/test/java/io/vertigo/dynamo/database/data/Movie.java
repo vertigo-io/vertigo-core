@@ -16,14 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.data.domain;
+package io.vertigo.dynamo.database.data;
 
 /**
- * Title of the Movie.
+ * Movie.
  */
-public final class MovieInfo {
+public final class Movie {
 
+	private Long id;
 	private String title;
+
+	public final Long getId() {
+		return id;
+	}
+
+	public final void setId(final Long id) {
+		this.id = id;
+	}
 
 	public final String getTitle() {
 		return title;
