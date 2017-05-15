@@ -112,8 +112,9 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			//TODO la gestion des sequences est propre à Oracle, HSQL, PostgreSql : autres bdd, autres stratégies
 			if (field.isPersistent()) {
 				final String sequence = getSequenceName(field);
-				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\")");
-				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = \"sequence\")");
+				//allocationSize=1 pour Hibernate 5
+				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\", allocationSize=1)");
+				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"sequence\")");
 			}
 		}
 		if (field.isPersistent()) {
