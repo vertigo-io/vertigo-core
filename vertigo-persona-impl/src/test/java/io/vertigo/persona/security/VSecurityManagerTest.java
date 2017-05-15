@@ -101,7 +101,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role manager = definitionSpace.resolve("R_MANAGER", Role.class);
 		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
 
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<PersonaUserSession> createUserSession()
 				.addRole(admin)
 				.addRole(manager);
 		try {
@@ -110,14 +110,14 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			final Set<Role> roles = new HashSet<>();
 			roles.add(admin);
 			roles.add(secretary);
-			Assert.assertTrue(securityManager.hasRole(userSession, roles));
+			Assert.assertTrue(securityManager.hasRole(roles));
 
 			roles.clear();
 			roles.add(secretary);
-			Assert.assertFalse(securityManager.hasRole(userSession, roles));
+			Assert.assertFalse(securityManager.hasRole(roles));
 
 			roles.clear(); //Si aucun droit necessaire alors c'est bon
-			Assert.assertTrue(securityManager.hasRole(userSession, roles));
+			Assert.assertTrue(securityManager.hasRole(roles));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -128,7 +128,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<PersonaUserSession> createUserSession()
 				.addRole(reader)
 				.addRole(writer);
 		try {
@@ -145,7 +145,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<PersonaUserSession> createUserSession()
 				.addRole(reader)
 				.addRole(writer);
 		try {
@@ -163,7 +163,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testNoWriterRole() {
 		final Role reader = getRole("R_READER");
 
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<PersonaUserSession> createUserSession()
 				.addRole(reader);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -187,7 +187,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test toutes familles
 		final Role readAllFamillies = getRole("R_ALL_FAMILLES");
-		final UserSession userSession = securityManager.createUserSession()
+		final UserSession userSession = securityManager.<PersonaUserSession> createUserSession()
 				.addRole(readAllFamillies);
 		try {
 			securityManager.startCurrentUserSession(userSession);

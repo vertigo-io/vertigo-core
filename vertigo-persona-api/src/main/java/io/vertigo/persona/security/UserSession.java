@@ -19,28 +19,20 @@
 package io.vertigo.persona.security;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-
-import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.metamodel.Role;
 
 /**
  * Session d'un utilisateur.
  * Un utilisateur
  * <ul>
  * <li>est authentifie ou non,</li>
- * <li>possede une liste de roles (prealablement enregistres dans la RoleRegistry),</li>
  * <li>possède une liste d'attributs serialisables</li>.
  * </ul>
  *
- * @author alauthier, pchretien
+ * @author alauthier, pchretien, npiedeloup
  */
 public abstract class UserSession implements Serializable {
 	/**
@@ -52,11 +44,6 @@ public abstract class UserSession implements Serializable {
 	 * Cle de la session (utilise comme cle unique de connexion).
 	 */
 	private final UUID sessionUUID = createUUID();
-
-	/**
-	 * Set des roles autorises pour la session utilisateur.
-	 */
-	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
 
 	/**
 	 * Attributs supplémentaires associées à la session.
@@ -72,53 +59,6 @@ public abstract class UserSession implements Serializable {
 	private static UUID createUUID() {
 		//On utilise le mecanisme de creation standard.
 		return UUID.randomUUID();
-	}
-
-	//===========================================================================
-	//=======================GESTION DES ROLES===================================
-	//===========================================================================
-	/**
-	 * Ajoute un role pour l'utilisateur courant.
-	 * Le role doit avoir ete prealablement enregistre.
-	 *
-	 * @param role Role e ajouter.
-	 */
-	public final UserSession addRole(final Role role) {
-		Assertion.checkNotNull(role);
-		//-----
-		roleRefs.add(new DefinitionReference<>(role));
-		return this;
-	}
-
-	/**
-	 * Retourne la liste des roles de securite pour l'utilisateur.
-	 *
-	 * @return Set des roles.
-	 */
-	public final Set<Role> getRoles() {
-		final Set<Role> roleSet = new HashSet<>();
-		for (final DefinitionReference<Role> roleReference : roleRefs) {
-			roleSet.add(roleReference.get());
-		}
-		return Collections.unmodifiableSet(roleSet);
-	}
-
-	/**
-	 * @param role Role
-	 * @return Vrai si le role est present
-	 */
-	public final boolean hasRole(final Role role) {
-		Assertion.checkNotNull(role);
-		//-----
-		return roleRefs.contains(new DefinitionReference<>(role));
-	}
-
-	/**
-	 * Retrait de tous les roles possedes par l'utilisateur.
-	 * Attention, cela signifie qu'il n'a plus aucun droit.
-	 */
-	public final void clearRoles() {
-		roleRefs.clear();
 	}
 
 	//===========================================================================
@@ -143,8 +83,8 @@ public abstract class UserSession implements Serializable {
 	}
 
 	/**
-	* Méthode permettant d'indiquer que l'utilisateur est authentifié.
-	*/
+	 * Méthode permettant d'indiquer que l'utilisateur est authentifié.
+	 */
 	public final void authenticate() {
 		authenticated = true;
 	}
@@ -182,11 +122,4 @@ public abstract class UserSession implements Serializable {
 	 */
 	public abstract Locale getLocale();
 
-	/**
-	 * Gestion de la sécurité.
-	 * @return Liste des clés de sécurité et leur valeur.
-	 */
-	public Map<String, String> getSecurityKeys() {
-		return Collections.emptyMap();
-	}
 }

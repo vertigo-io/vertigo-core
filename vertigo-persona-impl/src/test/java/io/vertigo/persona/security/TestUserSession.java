@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public final class TestUserSession extends UserSession {
+public final class TestUserSession extends PersonaUserSession {
 	private static final long serialVersionUID = 1L;
 	private final Map<String, String> mySecurityKeys = new HashMap<>();
 

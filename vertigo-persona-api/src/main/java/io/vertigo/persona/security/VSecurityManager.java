@@ -72,12 +72,13 @@ public interface VSecurityManager extends Manager {
 	 *
 	 * La fonction d'accès autorise la session utilisateur <code>null</code> : il faut alors que la liste des droits soit vide.
 	 *
-	 * @param userSession Session utilisateur. (non null)
 	 * @param authorizedRoleSet Set des roles autorisés. (non null)
 	 *
 	 * @return Si les droits de l'utilisateur lui permettent un accès.
+	 * @deprecated Use AccessControlManager instead
 	 */
-	boolean hasRole(UserSession userSession, Set<Role> authorizedRoleSet);
+	@Deprecated
+	boolean hasRole(Set<Role> authorizedRoleSet);
 
 	/**
 	 * Controle d'acces base sur les permissions.
@@ -89,7 +90,9 @@ public interface VSecurityManager extends Manager {
 	 * @param operation l'operation
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
 	 * donnée sur la ressource donnee
+	 * @deprecated Use AccessControlManager instead
 	 */
+	@Deprecated
 	boolean isAuthorized(String resource, String operation);
 
 	/**
@@ -102,13 +105,17 @@ public interface VSecurityManager extends Manager {
 	 * @param operation l'opération
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'opération
 	 * donnée sur la ressource donnée
+	 * @deprecated Use AccessControlManager instead
 	 */
+	@Deprecated
 	boolean isAuthorized(String resourceType, Object resource, String operation);
 
 	/**
 	 * Enregistre une ResourceNameFactory spécifique pour un type donnée.
 	 * @param resourceType Type de la resource
 	 * @param resourceNameFactory ResourceNameFactory spécifique
+	 * @deprecated Use AccessControlManager instead
 	 */
+	@Deprecated
 	void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory);
 }

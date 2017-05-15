@@ -32,6 +32,7 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.persona.security.PersonaUserSession;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -122,8 +123,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasRole(final UserSession userSession, final Set<Role> authorizedRoleSet) {
-		Assertion.checkNotNull(userSession);
+	public boolean hasRole(final Set<Role> authorizedRoleSet) {
 		Assertion.checkNotNull(authorizedRoleSet);
 		//-----
 		if (authorizedRoleSet.isEmpty()) {
@@ -131,7 +131,10 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		}
 		// Si il existe au moins un role parmi la liste des roles autorises
 		// il faut alors regarder si l'utilisateur possede un role de la liste.
-		final Set<Role> userProfiles = userSession.getRoles();
+		final Optional<PersonaUserSession> userSessionOpt = getCurrentUserSession();
+		Assertion.checkState(userSessionOpt.isPresent(), "User not logged");
+
+		final Set<Role> userProfiles = userSessionOpt.get().getRoles();
 		for (final Role role : authorizedRoleSet) {
 			Assertion.checkArgument(Home.getApp().getDefinitionSpace().contains(role.getName()), "Le role {0} n est pas defini dans RoleRegistry.", role);
 			if (userProfiles.contains(role)) {
@@ -148,13 +151,13 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	public boolean isAuthorized(final String resource, final String operation) {
 		// Note: il s'agit d'une implementation naïve non optimisee,
 		// réalisée pour valider le modèle
-		final Optional<UserSession> userSessionOption = getCurrentUserSession();
+		final Optional<PersonaUserSession> userSessionOption = getCurrentUserSession();
 
 		if (!userSessionOption.isPresent()) {
 			//Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}
-		final UserSession userSession = userSessionOption.get();
+		final PersonaUserSession userSession = userSessionOption.get();
 		final Map<String, String> securityKeys = userSessionOption.get().getSecurityKeys();
 		return userSession.getRoles().stream()
 				.anyMatch(role -> isAuthorized(role, resource, operation, securityKeys));
