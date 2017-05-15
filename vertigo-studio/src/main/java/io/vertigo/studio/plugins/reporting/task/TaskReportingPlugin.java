@@ -24,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -49,15 +50,19 @@ import io.vertigo.util.ListBuilder;
 public final class TaskReportingPlugin implements ReportingPlugin {
 	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
+	private final SqlDataBaseManager sqlDataBaseManager;
+
 	private final List<ReportMetricEngine<TaskDefinition>> metricEngines;
 
 	@Inject
-	public TaskReportingPlugin(final VTransactionManager transactionManager, final TaskManager taskManager) {
+	public TaskReportingPlugin(final VTransactionManager transactionManager, final TaskManager taskManager, final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;
+		this.sqlDataBaseManager = sqlDataBaseManager;
 		metricEngines = createMetricEngines();
 
 	}
@@ -85,7 +90,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 		return new ListBuilder<ReportMetricEngine<TaskDefinition>>()
 				.add(new PerformanceMetricEngine(taskManager))
 				.add(new RequestSizeMetricEngine())
-				.add(new ExplainPlanMetricEngine(taskManager))
+				.add(new ExplainPlanMetricEngine(taskManager, sqlDataBaseManager))
 				.add(new JoinMetricEngine())
 				.add(new SubRequestMetricEngine())
 				.unmodifiable()

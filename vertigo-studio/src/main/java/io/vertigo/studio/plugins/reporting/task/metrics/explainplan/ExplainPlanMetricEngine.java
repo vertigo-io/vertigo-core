@@ -25,16 +25,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.vertigo.app.Home;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -52,15 +49,18 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 	private int sequence;
 
 	private final TaskManager taskManager;
+	private final SqlDataBaseManager sqlDataBaseManager;
 
 	/**
 	 * Constructeur apr défaut.
 	 * @param taskManager Manager des tasks
 	 */
-	public ExplainPlanMetricEngine(final TaskManager taskManager) {
+	public ExplainPlanMetricEngine(final TaskManager taskManager, final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.taskManager = taskManager;
+		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
 	/** {@inheritDoc} */
@@ -68,16 +68,23 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 	public ReportMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
+		final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		try {
 			if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
 				final int currentSequence = sequence++;
-				final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence);
+				final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence, sqlConnection);
 				return createMetric(explainPlan, Status.EXECUTED, null);
 			}
 
 			return createMetric(null, Status.REJECTETD, null);
 		} catch (final Exception e) {
 			return createMetric(null, Status.ERROR, e);
+		} finally {
+			try {
+				sqlConnection.release();
+			} catch (final SQLException e) {
+				throw WrappedException.wrap(e);
+			}
 		}
 	}
 
@@ -116,7 +123,7 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 		return "Rejected";
 	}
 
-	private String getExplainPlanElement(final TaskDefinition taskDefinition, final int currentSequence) {
+	private String getExplainPlanElement(final TaskDefinition taskDefinition, final int currentSequence, final SqlConnection sqlConnection) {
 		final String taskDefinitionName = truncate("TK_EXPLAIN_" + taskDefinition.getName(), 59, "_");
 		final String explainPlanRequest = "explain plan set statement_id = 'PLAN_" + currentSequence + "' for " + taskDefinition.getRequest();
 		//final String explainPlanRequest = "explain plan for " + taskDefinition.getRequest();
@@ -145,7 +152,7 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 
 			/*TaskResult taskResult =*/taskManager.execute(currentTask);
 			//On n'exploite pas le résultat
-			return readExplainPlan(currentSequence);
+			return readExplainPlan(currentSequence, sqlConnection);
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, "explainPlanElement");
 		}
@@ -158,11 +165,10 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 		return value.substring(0, maxSize - endTruncString.length()) + endTruncString;
 	}
 
-	private static String readExplainPlan(final int currentSequence) throws SQLException {
+	private static String readExplainPlan(final int currentSequence, final SqlConnection sqlConnection) throws SQLException {
 		final StringBuilder sb = new StringBuilder();
 		final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'PLAN_" + currentSequence + "'))";
-		final SqlConnection kConnection = getCurrentConnection();
-		final Connection connection = kConnection.getJdbcConnection();
+		final Connection connection = sqlConnection.getJdbcConnection();
 		try (final PreparedStatement statement = connection.prepareStatement(sql)) {
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				while (resultSet.next()) {
@@ -171,15 +177,6 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 				return sb.toString();
 			}
 		}
-	}
-
-	/**
-	 * Retourne la connexion SQL de cette transaction en la demandant au pool de connexion si nécessaire.
-	 * @return Connexion SQL
-	 */
-	private static SqlConnection getCurrentConnection() {
-		final VTransaction transaction = Home.getApp().getComponentSpace().resolve(VTransactionManager.class).getCurrentTransaction();
-		return transaction.getResource(AbstractTaskEngineSQL.SQL_MAIN_RESOURCE_ID);
 	}
 
 }
