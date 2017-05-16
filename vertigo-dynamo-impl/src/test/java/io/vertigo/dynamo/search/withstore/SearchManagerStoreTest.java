@@ -33,7 +33,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
@@ -108,9 +108,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.init();
-			callableStatement.executeUpdate();
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+			preparedStatement.init();
+			preparedStatement.executeUpdate();
 		}
 	}
 

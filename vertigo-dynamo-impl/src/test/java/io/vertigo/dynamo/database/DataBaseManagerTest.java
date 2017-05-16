@@ -31,7 +31,6 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.Movie;
 import io.vertigo.dynamo.database.data.MovieInfo;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 
 /**
@@ -68,23 +67,23 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
-		callableStatement.init();
-		callableStatement.executeUpdate();
+		final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false);
+		preparedStatement.init();
+		preparedStatement.executeUpdate();
 	}
 
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into movie values (?, ?)";
-		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.registerParameter(0, Long.class, true);
-			callableStatement.registerParameter(1, String.class, true);
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+			preparedStatement.registerParameter(0, Long.class, true);
+			preparedStatement.registerParameter(1, String.class, true);
 			//-----
-			callableStatement.init();
+			preparedStatement.init();
 			//-----
-			callableStatement.setValue(0, key);
-			callableStatement.setValue(1, libelle);
+			preparedStatement.setValue(0, key);
+			preparedStatement.setValue(1, libelle);
 			//-----
-			callableStatement.executeUpdate();
+			preparedStatement.executeUpdate();
 		}
 	}
 
