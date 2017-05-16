@@ -181,12 +181,14 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
-	/** {@inheritDoc} */
-	@Override
-	public final <O> void registerParameter(final int index, final Class<O> dataType, final boolean in) {
+	public final <O> void registerOutParameter(final int index, final Class<O> dataType) {
 		state.assertRegisteringState();
 		//---
-		final SqlParameter parameter = new SqlParameter(dataType, in);
+		registerParameter(index, dataType, null, false);
+	}
+
+	private final <O> void registerParameter(final int index, final Class<O> dataType, final O value, final boolean in) {
+		final SqlParameter parameter = new SqlParameter(dataType, value, in);
 		parameters.add(index, parameter);
 	}
 
@@ -233,16 +235,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final void setValue(final int index, final Object o) throws SQLException {
+	public final <O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException {
 		state.assertDefinedState();
-		final SqlParameter parameter = getParameter(index);
-		Assertion.checkArgument(parameter.isIn(), "Les Setters ne peuvent se faire que sur des paramètres IN");
-		//---
-		//On récupère le type saisi en amont par la méthode register
-		final Class dataType = parameter.getDataType();
-		connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, dataType, o);
-		//On sauvegarde la valeur du paramètre
-		parameter.setValue(o);
+		registerParameter(index, dataType, value, true);
+		connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, dataType, value);
 	}
 
 	//=========================================================================

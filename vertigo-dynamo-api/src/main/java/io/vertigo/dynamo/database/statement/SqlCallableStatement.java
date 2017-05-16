@@ -26,6 +26,15 @@ import java.sql.SQLException;
  * @author pchretien
  */
 public interface SqlCallableStatement extends SqlPreparedStatement {
+
+	/**
+	 * Ajoute un paramètre en précisant son type.
+	 * @param index Indexe du paramètre
+	 * @param dataType Type
+	 * @param in Type du paramètre
+	 */
+	<O> void registerOutParameter(final int index, final Class<O> dataType);
+
 	/**
 	 * Getter générique.
 	 * @param index Index du paramètre dans la requête SQL

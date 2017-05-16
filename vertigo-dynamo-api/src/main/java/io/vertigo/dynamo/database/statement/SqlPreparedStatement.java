@@ -38,18 +38,6 @@ import java.util.List;
  */
 public interface SqlPreparedStatement extends AutoCloseable {
 	//=========================================================================
-	//------------------1ere Etape : Enregistrement-----------------------
-	//=========================================================================
-
-	/**
-	 * Ajoute un paramètre en précisant son type.
-	 * @param index Indexe du paramètre
-	 * @param dataType Type
-	 * @param in Type du paramètre
-	 */
-	<O> void registerParameter(final int index, final Class<O> dataType, final boolean in);
-
-	//=========================================================================
 	//-----Clôture des affectations et 1ere Etape
 	//=========================================================================
 	/**
@@ -67,7 +55,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @param o Valeur du paramètre
 	 * @throws SQLException Exception sql
 	 */
-	void setValue(final int index, final Object o) throws SQLException;
+	<O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException;
 
 	//=========================================================================
 	//-----3ème Etape : Exécution

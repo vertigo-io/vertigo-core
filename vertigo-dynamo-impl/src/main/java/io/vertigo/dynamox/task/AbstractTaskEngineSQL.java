@@ -162,7 +162,9 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		final String sql = prepareParams(getSqlQuery().trim());
 		try (final S statement = createStatement(sql, connection)) {
 			//Inialise les paramètres.
-			registerParameters(statement);
+			if (statement instanceof SqlCallableStatement) {
+				registerOutParameters(SqlCallableStatement.class.cast(statement));
+			}
 			try {
 				//Initialise le statement JDBC.
 				statement.init();
@@ -296,9 +298,11 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * Initialise les paramètres en entrée du statement
 	 * @param statement Statement
 	 */
-	private void registerParameters(final SqlPreparedStatement statement) {
+	private void registerOutParameters(final SqlCallableStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
-			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
+			if (!param.isIn()) {
+				statement.registerOutParameter(param.getIndex(), getDataTypeParameter(param));
+			}
 		}
 	}
 
@@ -335,7 +339,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @throws SQLException Erreur sql
 	 */
 	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
-		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
+		ps.setValue(param.getIndex(), getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
 	private Class getDataTypeParameter(final TaskEngineSQLParam param) {

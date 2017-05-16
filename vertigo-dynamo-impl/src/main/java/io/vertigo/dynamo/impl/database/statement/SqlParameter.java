@@ -25,28 +25,21 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class SqlParameter {
-	private final Class dataType;
+final class SqlParameter<O> {
+	private final Class<O> dataType;
 	private final boolean in;
-	private Object value;
+	private final O value;
 
 	/**
 	 * Constructor.
 	 * @param dataType the param type
 	 * @param in if the param is an input (or an output)
 	 */
-	SqlParameter(final Class dataType, final boolean in) {
+	SqlParameter(final Class<O> dataType, final O value, final boolean in) {
 		Assertion.checkNotNull(dataType);
 		//---
 		this.dataType = dataType;
 		this.in = in;
-	}
-
-	/**
-	 * Sauvegarde des valeurs des paramètres de la Requêtes
-	 * @param value Valeur du paramètre
-	 */
-	void setValue(final Object value) {
 		this.value = value;
 	}
 
