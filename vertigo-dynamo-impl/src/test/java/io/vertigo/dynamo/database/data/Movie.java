@@ -22,7 +22,6 @@ package io.vertigo.dynamo.database.data;
  * Movie.
  */
 public final class Movie {
-
 	private Long id;
 	private String title;
 
@@ -41,5 +40,4 @@ public final class Movie {
 	public final void setTitle(final String title) {
 		this.title = title;
 	}
-
 }

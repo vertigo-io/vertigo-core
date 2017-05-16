@@ -27,7 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.Movie;
@@ -46,14 +45,12 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String TITLE_MOVIE_4 = "Jurassic Park";
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
-	private DefinitionSpace definitionSpace;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
-		definitionSpace = getApp().getDefinitionSpace();
 	}
 
 	@Override
@@ -61,7 +58,6 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		execCallableStatement(connection, "shutdown;");
-		definitionSpace = null;
 	}
 
 	@Test

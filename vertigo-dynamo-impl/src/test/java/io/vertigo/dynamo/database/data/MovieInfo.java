@@ -22,7 +22,6 @@ package io.vertigo.dynamo.database.data;
  * Title of the Movie.
  */
 public final class MovieInfo {
-
 	private String title;
 
 	public final String getTitle() {
@@ -32,5 +31,4 @@ public final class MovieInfo {
 	public final void setTitle(final String title) {
 		this.title = title;
 	}
-
 }
