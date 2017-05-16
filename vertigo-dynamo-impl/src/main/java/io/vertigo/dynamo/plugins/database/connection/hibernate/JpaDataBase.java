@@ -35,7 +35,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class JpaDataBase implements SqlDataBase {
 	//This Resource must be commited AFTER the KConnection ones. The release of EntityManager close the DB Connection and KConnection can't be commited anymore
-	private static final VTransactionResourceId JPA_RESOURCE_ID = new VTransactionResourceId(VTransactionResourceId.Priority.NORMAL, "Jpa");
+	private static final VTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Jpa");
 
 	private final SqlDataBase innerDataBase;
 	private final EntityManagerFactory entityManagerFactory;
@@ -76,7 +76,7 @@ public final class JpaDataBase implements SqlDataBase {
 	 * @return ResourceJpa de la transaction, elle est crée si nécessaire.
 	 * */
 	public JpaResource obtainJpaResource(final VTransaction transaction) {
-		JpaResource resource = JpaResource.class.cast(transaction.getResource(JPA_RESOURCE_ID));
+		JpaResource resource = transaction.getResource(JPA_RESOURCE_ID);
 
 		if (resource == null) {
 			// Si aucune ressource de type JPA existe sur la transaction, on la créé

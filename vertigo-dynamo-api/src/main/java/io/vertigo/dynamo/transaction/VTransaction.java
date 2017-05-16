@@ -36,14 +36,14 @@ public interface VTransaction {
 	 * @param resource Ressource transactionnelle
 	 * @param <R> Ressource transactionnelle
 	 */
-	void addResource(VTransactionResourceId id, VTransactionResource resource);
+	<R extends VTransactionResource> void addResource(VTransactionResourceId<R> id, R resource);
 
 	/**
 	 * @param transactionResourceId Identifiant/type de ressource transactionnelle.
 	 * @return Ressource transactionnelle correspondant à l'id
 	 * @param <R> Ressource transactionnelle
 	 */
-	VTransactionResource getResource(VTransactionResourceId transactionResourceId);
+	<R extends VTransactionResource> R getResource(VTransactionResourceId<R> transactionResourceId);
 
 	/**
 	 * Adds function that is executed just before transaction commit.
