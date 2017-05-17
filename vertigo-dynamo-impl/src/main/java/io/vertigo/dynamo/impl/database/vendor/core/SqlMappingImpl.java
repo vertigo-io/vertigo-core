@@ -42,41 +42,6 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class getDataType(final int typeSQL) {
-		switch (typeSQL) {
-			case Types.SMALLINT:
-			case Types.TINYINT:
-			case Types.INTEGER:
-			case Types.NUMERIC:
-				return Integer.class;
-			case Types.CHAR:
-			case Types.VARCHAR:
-			case Types.LONGVARCHAR:
-				return String.class;
-			case Types.DATE:
-			case Types.TIME:
-			case Types.TIMESTAMP:
-				return Date.class;
-			case Types.BIGINT:
-				return Long.class;
-			case Types.BOOLEAN:
-			case Types.BIT:
-				return Boolean.class;
-			case Types.DECIMAL:
-				return BigDecimal.class;
-			case Types.DOUBLE:
-			case Types.FLOAT:
-			case Types.REAL:
-				return Double.class;
-			case Types.BLOB:
-				return DataStream.class;
-			default:
-				throw new IllegalArgumentException("Type SQL non géré (" + typeSQL + ')');
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public int getSqlType(final Class dataType) {
 		if (Integer.class.isAssignableFrom(dataType)) {
 			return Types.INTEGER;
@@ -107,7 +72,11 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Class<O> dataType, final O value) throws SQLException {
+	public <O> void setValueOnStatement(
+			final java.sql.PreparedStatement statement,
+			final int index,
+			final Class<O> dataType,
+			final O value) throws SQLException {
 		if (value == null) {
 			final int typeSQL = getSqlType(dataType);
 			statement.setNull(index, typeSQL);
@@ -149,7 +118,10 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Class<O> dataType) throws SQLException {
+	public <O> O getValueForCallableStatement(
+			final CallableStatement callableStatement,
+			final int index,
+			final Class<O> dataType) throws SQLException {
 		Object o;
 		if (Integer.class.isAssignableFrom(dataType)) {
 			o = callableStatement.getInt(index);
@@ -184,7 +156,10 @@ public final class SqlMappingImpl implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O getValueForResultSet(final ResultSet resultSet, final int col, final Class<O> dataType) throws SQLException {
+	public <O> O getValueForResultSet(
+			final ResultSet resultSet,
+			final int col,
+			final Class<O> dataType) throws SQLException {
 		final Object value;
 
 		if (String.class.isAssignableFrom(dataType)) {
@@ -232,5 +207,4 @@ public final class SqlMappingImpl implements SqlMapping {
 
 		return dataType.cast(value);
 	}
-
 }

@@ -70,10 +70,4 @@ final class PostgresqlMapping implements SqlMapping {
 		}
 		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Class getDataType(final int typeSQL) {
-		return defaultSQLMapping.getDataType(typeSQL);
-	}
 }

@@ -286,21 +286,23 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		boolean success = false;
 		try {
 			//execution de la Requête
-			final int result = traceWithReturn(tracer -> {
-				try {
-					final int res = statement.executeUpdate();
-					tracer.setMeasure("nbModifiedRow", res);
-					return res;
-				} catch (final SQLException e) {
-					throw new WrappedSqlException(e);
-				}
-			});
+			final int result = traceWithReturn(this::doExecute);
 			success = true;
 			return result;
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
+		}
+	}
+
+	private Integer doExecute(final AnalyticsTracer tracer) {
+		try {
+			final int res = statement.executeUpdate();
+			tracer.setMeasure("nbModifiedRow", res);
+			return res;
+		} catch (final SQLException e) {
+			throw new WrappedSqlException(e);
 		}
 	}
 
@@ -334,26 +336,30 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//---
 		boolean success = false;
 		try {
-			final int result = traceWithReturn(tracer -> {
-				try {
-					final int[] res = statement.executeBatch();
-					//Calcul du nombre total de lignes affectées par le batch.
-					int count = 0;
-					for (final int rowCount : res) {
-						count += rowCount;
-					}
-					tracer.setMeasure("nbModifiedRow", res.length);
-					return count;
-				} catch (final SQLException e) {
-					throw new WrappedSqlException(e);
-				}
-			});
+			final int result = traceWithReturn(this::doExecuteBatch);
 			success = true;
 			return result;
-		} catch (final WrappedSqlException e) {
+		} catch (
+
+		final WrappedSqlException e) {
 			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
+		}
+	}
+
+	private Integer doExecuteBatch(final AnalyticsTracer tracer) {
+		try {
+			final int[] res = statement.executeBatch();
+			//Calcul du nombre total de lignes affectées par le batch.
+			int count = 0;
+			for (final int rowCount : res) {
+				count += rowCount;
+			}
+			tracer.setMeasure("nbModifiedRow", res.length);
+			return count;
+		} catch (final SQLException e) {
+			throw new WrappedSqlException(e);
 		}
 	}
 

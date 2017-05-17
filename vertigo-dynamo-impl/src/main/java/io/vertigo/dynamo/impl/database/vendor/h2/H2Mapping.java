@@ -72,10 +72,4 @@ final class H2Mapping implements SqlMapping {
 		}
 		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Class getDataType(final int typeSQL) {
-		return defaultSQLMapping.getDataType(typeSQL);
-	}
 }
