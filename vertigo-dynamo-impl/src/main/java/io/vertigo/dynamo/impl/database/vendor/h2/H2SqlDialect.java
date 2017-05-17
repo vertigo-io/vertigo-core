@@ -41,7 +41,7 @@ final class H2SqlDialect implements SqlDialect {
 						.stream()
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
-				.append("nextval('" + sequencePrefix + tableName + "')")
+				.append("nextval('" + sequencePrefix + tableName + "')").append(", ")
 				.append(dataFieldsName
 						.stream()
 						.map(fieldName -> " #DTO." + fieldName + '#')
