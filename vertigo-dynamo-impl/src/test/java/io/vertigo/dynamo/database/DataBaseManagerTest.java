@@ -45,31 +45,51 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 
+	private SqlConnection obtainMainConnection() {
+		return dataBaseManager
+				.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME)
+				.obtainConnection();
+	}
+
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
-		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+		final SqlConnection connection = obtainMainConnection();
+		try {
+			execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+		} finally {
+			connection.release();
+		}
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		//A chaque fin de test on arrête la base.
-		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-		execCallableStatement(connection, "shutdown;");
+		final SqlConnection connection = obtainMainConnection();
+		try {
+			execCallableStatement(connection, "shutdown;");
+		} finally {
+			connection.release();
+		}
+
 	}
 
 	@Test
 	public void testConnection() throws Exception {
-		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-		Assert.assertNotNull(connection);
-		connection.commit();
+		final SqlConnection connection = obtainMainConnection();
+		try {
+			Assert.assertNotNull(connection);
+			connection.commit();
+		} finally {
+			connection.release();
+		}
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false);
-		preparedStatement.init();
-		preparedStatement.executeUpdate();
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+			preparedStatement.init();
+			preparedStatement.executeUpdate();
+		}
 	}
 
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
@@ -85,7 +105,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	public void createDatas() throws Exception {
-		final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		final SqlConnection connection = obtainMainConnection();
 		try {
 			execCallableStatement(connection, "insert into movie values (1, 'citizen kane')");
 			//-----
@@ -93,8 +113,9 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 			//-----
 			//On passe par une requête bindée
 			insert(connection, 3, TITLE_MOVIE_3);
-		} finally {
 			connection.commit();
+		} finally {
+			connection.release();
 		}
 	}
 
@@ -124,9 +145,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final List<MovieInfo> movieInfos = executeQuery(MovieInfo.class, "select title from movie", null);
-
 		Assert.assertEquals(3, movieInfos.size());
-
 	}
 
 	private static void checkTitle(final long id, final String title) {
@@ -155,11 +174,19 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		return executeQuery(dataType, sql, dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), limit);
 	}
 
-	private <O> List<O> executeQuery(final Class<O> dataType, final String sql, final SqlConnectionProvider sqlConnectionProvider, final Integer limit) throws SQLException, Exception {
+	private <O> List<O> executeQuery(
+			final Class<O> dataType,
+			final String sql,
+			final SqlConnectionProvider sqlConnectionProvider,
+			final Integer limit) throws SQLException, Exception {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.init();
-			return preparedStatement.executeQuery(dataType, limit);
+		try {
+			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+				preparedStatement.init();
+				return preparedStatement.executeQuery(dataType, limit);
+			}
+		} finally {
+			connection.release();
 		}
 	}
 
@@ -207,8 +234,9 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 				//-----
 				//On passe par une requête bindée
 				insert(connection, 4, TITLE_MOVIE_4);
-			} finally {
 				connection.commit();
+			} finally {
+				connection.release();
 			}
 			//----
 			final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
@@ -229,12 +257,20 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private void setupSecondary() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
-		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+		try {
+			execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+		} finally {
+			connection.release();
+		}
 	}
 
 	private void shutdownSecondaryDown() throws Exception {
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+		try {
 		execCallableStatement(connection, "shutdown;");
+		} finally {
+			connection.release();
+		}
 	}
 }
