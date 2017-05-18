@@ -18,6 +18,8 @@
  */
 package io.vertigo.app.config;
 
+import java.util.Optional;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -29,18 +31,19 @@ import io.vertigo.lang.Assertion;
 public final class NodeConfig {
 	private final String appName;
 	private final String nodeId;
-	private final String endPoint;
+	private final Optional<String> endPointOpt;
 
-	NodeConfig(final String appName,
+	NodeConfig(
+			final String appName,
 			final String nodeId,
-			final String endPoint) {
+			final Optional<String> endPointOpt) {
 		Assertion.checkArgNotEmpty(appName);
 		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkArgNotEmpty(endPoint);
+		Assertion.checkNotNull(endPointOpt);
 		//---
 		this.appName = appName;
 		this.nodeId = nodeId;
-		this.endPoint = endPoint;
+		this.endPointOpt = endPointOpt;
 	}
 
 	/**
@@ -68,8 +71,8 @@ public final class NodeConfig {
 		return nodeId;
 	}
 
-	public String getEndPoint() {
-		return endPoint;
+	public Optional<String> getEndPoint() {
+		return endPointOpt;
 	}
 
 }
