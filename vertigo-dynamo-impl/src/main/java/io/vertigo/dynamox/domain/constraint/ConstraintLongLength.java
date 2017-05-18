@@ -73,6 +73,10 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED)
+				.withParams(minValue, maxValue)
+				.build();
 	}
 }

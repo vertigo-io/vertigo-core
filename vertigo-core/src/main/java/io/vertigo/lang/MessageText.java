@@ -42,35 +42,30 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * @param key Clé de la ressource
-	 * @param params paramètres de la ressource
+	 * static Builder of a messageText.
 	 */
-	public static MessageText of(final MessageKey key, final Serializable... params) {
+	public static MessageTextBuilder builder() {
+		return new MessageTextBuilder();
+	}
+
+	/**
+	 * static Builder of a messageText by its key.
+	 * @param key Clé de la ressource
+	 */
+	public static MessageText of(final MessageKey key) {
 		Assertion.checkNotNull(key, "the message key is required");
 		//---
-		return new MessageText(null, key, params);
+		return new MessageText(null, key, new Serializable[0]);
 	}
 
 	/**
-	 * @param key Clé de la ressource
+	 * static Builder of a messageText by its default message.
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
-	 * @param params paramètres de la ressource
 	 */
-	public static MessageText ofDefault(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		// key or default message may be null
-		//---
-		return new MessageText(defaultMsg, key, params);
-	}
-
-	/**
-	 *
-	 * @param defaultMsg Message par défaut (non formatté) de la ressource
-	 * @param params paramètres de la ressource
-	 */
-	public static MessageText of(final String defaultMsg, final Serializable... params) {
+	public static MessageText of(final String defaultMsg) {
 		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
 		//---
-		return new MessageText(defaultMsg, null, params);
+		return new MessageText(defaultMsg, null, new Serializable[0]);
 	}
 
 	/**
@@ -81,7 +76,8 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	private MessageText(final String defaultMsg, final MessageKey key, final Serializable[] params) {
+	@Deprecated //use builder or of methods
+	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.checkNotNull(params);
 		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
 		//---
@@ -89,6 +85,17 @@ public final class MessageText implements Serializable {
 		this.defaultMsg = defaultMsg;
 		this.params = params;
 
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param key Clé de la ressource
+	 * @param params paramètres de la ressource
+	 */
+	@Deprecated //use builder or of methods
+	public MessageText(final MessageKey key, final Serializable... params) {
+		this(null, key, params);
 	}
 
 	/**
