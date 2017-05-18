@@ -3,4 +3,7 @@
 	<module name="vertigo-commons">
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 	</module>
+	<module name="myApp">
+		<component class="io.vertigo.commons.eventbus.data.MySubscriber" />
+	</module>
 </config>

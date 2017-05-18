@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
@@ -36,6 +38,17 @@ import io.vertigo.util.ClassUtil;
 public final class EventBusManagerImpl implements EventBusManager {
 	private final List<EventBusSubscription> subscriptions = new ArrayList<>();
 	private final List<Consumer<Event>> deadEventListeners = new ArrayList<>();
+
+	public EventBusManagerImpl() {
+		Home.getApp().registerPostStartFunction(this::registerAllSubscribers);
+	}
+
+	private void registerAllSubscribers() {
+		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
+		for (final String componentId : componentSpace.keySet()) {
+			registerSubscribers(componentSpace.resolve(componentId, Component.class));
+		}
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -54,12 +67,13 @@ public final class EventBusManagerImpl implements EventBusManager {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void register(final Component suscriberInstance) {
+	/**
+	 * Registers all methods annotated with @Suscriber on the object
+	 * @param suscriberInstance
+	 */
+	private void registerSubscribers(final Component suscriberInstance) {
 		Assertion.checkNotNull(suscriberInstance);
 		//-----
-		int count = 0;
 		//1. search all methods
 		for (final Method method : ClassUtil.getAllMethods(suscriberInstance.getClass(), EventSuscriber.class)) {
 			Assertion.checkArgument(void.class.equals(method.getReturnType()), "suscriber's methods  of class {0} must be void instead of {1}", suscriberInstance.getClass(), method.getReturnType());
@@ -68,13 +82,10 @@ public final class EventBusManagerImpl implements EventBusManager {
 			Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "suscriber's methods of class {0} must be 'void onXXX(E extends Event)'", suscriberInstance.getClass());
 			//-----
 			//2. For each method register a listener
-			count++;
 			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
 			subscribe(eventType,
 					event -> ClassUtil.invoke(suscriberInstance, method, event));
 		}
-		//3. Checks that there is almost one suscriber on this object.
-		Assertion.checkState(count > 0, "no suscriber found on class {0}", suscriberInstance.getClass());
 	}
 
 	/** {@inheritDoc} */

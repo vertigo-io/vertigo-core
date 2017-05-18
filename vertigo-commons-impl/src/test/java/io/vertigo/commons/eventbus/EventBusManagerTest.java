@@ -27,7 +27,7 @@ import org.junit.Test;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.eventbus.data.BlueColorEvent;
 import io.vertigo.commons.eventbus.data.DummyEvent;
-import io.vertigo.commons.eventbus.data.MySuscriber;
+import io.vertigo.commons.eventbus.data.MySubscriber;
 import io.vertigo.commons.eventbus.data.RedColorEvent;
 import io.vertigo.commons.eventbus.data.WhiteColorEvent;
 
@@ -39,37 +39,40 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private EventBusManager eventBusManager;
 
-	private MySuscriber mySuscriber1, mySuscriber2;
+	@Inject
+	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
+	private int red = 0;
 
 	@Override
 	protected void doSetUp() {
-		mySuscriber1 = new MySuscriber();
-		eventBusManager.register(mySuscriber1);
-		//-----
-		mySuscriber2 = new MySuscriber();
-		eventBusManager.register(mySuscriber2);
+		eventBusManager.subscribe(RedColorEvent.class, this::onEvent);
 		//-----
 		eventBusManager.registerDead(event -> deadEvents++);
 	}
 
+	private void onEvent(final RedColorEvent event) {
+		red++;
+	}
+
 	@Test
 	public void testSimple() {
-		assertEquals(0, mySuscriber1.getBlueCount());
-		assertEquals(0, mySuscriber1.getRedCount());
-		assertEquals(0, mySuscriber1.getCount());
+		assertEquals(0, mySubscriber.getBlueCount());
+		assertEquals(0, mySubscriber.getRedCount());
+		assertEquals(0, mySubscriber.getCount());
+
+		assertEquals(0, red);
 
 		eventBusManager.post(new BlueColorEvent());
 		eventBusManager.post(new WhiteColorEvent());
 		eventBusManager.post(new RedColorEvent());
+		eventBusManager.post(new RedColorEvent());
 
-		assertEquals(1, mySuscriber1.getBlueCount());
-		assertEquals(1, mySuscriber1.getRedCount());
-		assertEquals(3, mySuscriber1.getCount());
+		assertEquals(1, mySubscriber.getBlueCount());
+		assertEquals(2, mySubscriber.getRedCount());
+		assertEquals(4, mySubscriber.getCount());
 
-		assertEquals(1, mySuscriber2.getBlueCount());
-		assertEquals(1, mySuscriber2.getRedCount());
-		assertEquals(3, mySuscriber2.getCount());
+		assertEquals(2, red);
 
 		assertEquals(0, deadEvents);
 	}

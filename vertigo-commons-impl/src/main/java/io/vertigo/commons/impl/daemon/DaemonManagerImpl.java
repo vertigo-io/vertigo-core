@@ -47,7 +47,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	@Inject
 	public DaemonManagerImpl() {
 		Home.getApp().registerPostStartFunction(() -> {
-			DaemonManagerImpl.this.startAllDaemons();
+			this.startAllDaemons();
 			appStarted = true;
 		});
 	}
