@@ -66,7 +66,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
 		LOGGER.warn(MessageText.of(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(MessageText.of(key));
+		throw new VUserException(key);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			msg = msg.substring(i1 + ERROR_CODE_LENGTH, i2);
 		}
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(MessageText.of(msg));
+		throw new VUserException(msg);
 	}
 
 	/**

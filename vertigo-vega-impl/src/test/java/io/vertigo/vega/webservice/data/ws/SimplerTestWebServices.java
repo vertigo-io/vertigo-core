@@ -138,7 +138,7 @@ public final class SimplerTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -163,7 +163,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public Contact createContact( //create POST method -> 201 instead of 200 by convention
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 		contactDao.post(contact);
 		//code 201 + location header : GET route
@@ -176,7 +176,7 @@ public final class SimplerTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -186,11 +186,12 @@ public final class SimplerTestWebServices implements WebServices {
 
 	//PUT is indempotent : ID mandatory
 	@PUT("/contact/{conId}")
-	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+	public Contact testUpdateByPath(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 		contact.setConId(conId);
 		contactDao.put(contact);
@@ -202,7 +203,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
-			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		if (conId < 5) {
 			//401
@@ -285,7 +286,7 @@ public final class SimplerTestWebServices implements WebServices {
 		for (final Contact contact : myList) {
 			if (contact.getName() == null || contact.getName().isEmpty()) {
 				//400
-				throw new VUserException(MessageText.of("Name is mandatory"));
+				throw new VUserException("Name is mandatory");
 			}
 		}
 		return "OK : received " + myList.size() + " contacts";
@@ -328,12 +329,13 @@ public final class SimplerTestWebServices implements WebServices {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactAliasName/{conId}")
-	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+	public Contact testUpdateByPath(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("itsatoolongaliasforfieldcontactname") final String aliasName) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 		contact.setConId(conId);
 		contact.setName(aliasName);
@@ -366,7 +368,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;

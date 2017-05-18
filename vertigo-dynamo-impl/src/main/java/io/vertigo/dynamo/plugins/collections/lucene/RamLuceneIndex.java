@@ -62,7 +62,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -146,7 +145,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			//2. Traduction du résultat Lucene en une Collection
 			return translateDocs(searcher, topDocs, skip, top);
 		} catch (final TooManyClauses e) {
-			throw new VUserException(MessageText.of(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES));
+			throw new VUserException(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES);
 		}
 	}
 

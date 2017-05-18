@@ -148,7 +148,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -162,7 +162,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) @ServerSideRead @ExcludedFields({ "conId", "name" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -180,7 +180,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			@IncludedFields({ "firstName", "email" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(MessageText.of("Name is mandatory"));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -336,7 +336,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@Doc("Just send x-test-param:\"i'ts fine\"")
 	public String testHeaderParams(final @HeaderParam("x-test-param") String testParam) {
 		if (!"i'ts fine".equals(testParam)) {
-			throw new VUserException(MessageText.of("Bad param value. Read doc."));
+			throw new VUserException("Bad param value. Read doc.");
 		}
 		return "OK";
 	}
