@@ -109,7 +109,6 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.init();
 			preparedStatement.executeUpdate();
 		}
 	}

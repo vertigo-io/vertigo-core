@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 
@@ -51,7 +51,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> {
+public class TaskEngineProc extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructeur.
@@ -67,16 +67,9 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
+	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		setInParameters(statement);
-		final int sqlRowcount = statement.executeUpdate();
-		setOutParameters(statement);
-		return sqlRowcount;
+		return statement.executeUpdate();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
-		return getDataBaseManager().createCallableStatement(connection, procName);
-	}
 }

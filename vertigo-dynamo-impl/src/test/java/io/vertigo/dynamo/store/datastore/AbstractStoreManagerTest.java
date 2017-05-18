@@ -21,7 +21,6 @@ package io.vertigo.dynamo.store.datastore;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -125,34 +124,50 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	protected final List<String> getCreateFamilleRequests() {
+	protected List<String> getCreateFamilleRequests() {
 		return new ListBuilder<String>()
-				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255));")
-				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1;")
+				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255))")
+				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1")
 				.build();
 	}
 
-	protected final List<String> getCreateCarRequests() {
+	protected List<String> getCreateCarRequests() {
 		return new ListBuilder<String>()
-				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT);")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );")
-				.add(" create sequence SEQ_CAR start with 10001 increment by 1;")
+				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT)")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) )")
+				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
 				.build();
 	}
 
-	protected final List<String> getCreateFileInfoRequests() {
+	protected List<String> getCreateFileInfoRequests() {
 		return new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);")
-				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1;")
+				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB)")
+				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
+				.build();
+	}
+
+	protected List<String> getDropRequests() {
+		return new ListBuilder<String>()
+				.add(" drop table if exists VX_FILE_INFO ")
+				.add(" drop sequence if exists SEQ_VX_FILE_INFO")
+				.add(" drop table if exists fam_car_location")
+				.add(" drop table if exists car")
+				.add(" drop sequence if exists SEQ_CAR")
+				.add(" drop table if exists famille")
+				.add(" drop sequence if exists SEQ_FAMILLE")
 				.build();
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
+		cleanDb();
+	}
+
+	protected void cleanDb() {
 		SqlUtil.execRequests(
 				transactionManager,
 				taskManager,
-				Collections.singletonList("shutdown;"),
+				getDropRequests(),
 				"TK_SHUT_DOWN",
 				Optional.empty());
 	}
@@ -188,7 +203,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	protected final void nativeInsertCar(final Car car) {
+	protected void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();

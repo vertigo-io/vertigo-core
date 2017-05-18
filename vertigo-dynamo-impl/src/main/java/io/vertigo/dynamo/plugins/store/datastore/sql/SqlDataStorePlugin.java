@@ -34,6 +34,7 @@ import io.vertigo.dynamo.criteria.CriteriaCtx;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -401,7 +402,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 * @return Classe du moteur de tache à utiliser
 	 */
 	private Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		if (insert && sqlDialect.generatedKeys()) {
+		if (insert && sqlDialect.getGenerationMode() != GenerationMode.NONE) {
 			return TaskEngineInsertWithGeneratedKeys.class;
 		}
 		return TaskEngineProc.class;

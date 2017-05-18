@@ -58,7 +58,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement> {
+public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
@@ -109,9 +109,4 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 		return result.size();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		return getDataBaseManager().createPreparedStatement(connection, sql, false);
-	}
 }

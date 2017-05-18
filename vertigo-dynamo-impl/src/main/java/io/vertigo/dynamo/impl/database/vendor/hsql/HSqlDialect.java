@@ -76,8 +76,8 @@ public final class HSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean generatedKeys() {
-		return false;
+	public GenerationMode getGenerationMode() {
+		return GenerationMode.NONE;
 	}
 
 }

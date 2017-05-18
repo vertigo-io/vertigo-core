@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -40,7 +39,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author jmforhan
  */
-public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatement> {
+public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	/**
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
@@ -52,13 +51,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallable
 
 	/** {@inheritDoc} */
 	@Override
-	protected SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
-		return getDataBaseManager().createCallableStatement(connection, procName);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
+	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
@@ -82,9 +75,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallable
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : getParams()) {
-			if (param.isIn()) {
-				setInParameter(statement, param, rowNumber);
-			}
+			setInParameter(statement, param, rowNumber);
 		}
 	}
 

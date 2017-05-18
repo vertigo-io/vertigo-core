@@ -33,6 +33,7 @@ import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.impl.transaction.VTransactionAspect;
 import io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl;
@@ -132,6 +133,18 @@ public final class DynamoFeatures extends Features {
 	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(connectionProviderPluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Add a plugin to store files
+	 * @param  fileStorePluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures addFileStorePlugin(final Class<? extends FileStorePlugin> fileStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(fileStorePluginClass, params);
 		return this;
 	}
 

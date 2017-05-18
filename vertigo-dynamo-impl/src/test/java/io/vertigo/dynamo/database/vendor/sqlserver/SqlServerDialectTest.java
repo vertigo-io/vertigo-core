@@ -16,47 +16,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.vendor;
+package io.vertigo.dynamo.database.vendor.sqlserver;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.dynamo.database.AbstractSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.dynamo.impl.database.vendor.sqlserver.SqlServerDataBase;
 
 /**
  *
  * @author mlaroche
  */
-public final class PostgreSqlDialectTest extends AbstractSqlDialectTest {
+public final class SqlServerDialectTest extends AbstractSqlDialectTest {
 
 	@Override
-	protected SqlDialect getDialect() {
-		return new PostgreSqlDataBase().getSqlDialect();
+	public SqlDialect getDialect() {
+		return new SqlServerDataBase().getSqlDialect();
 
 	}
 
 	@Override
-	protected String getExpectedInsertQuery() {
+	public String getExpectedInsertQuery() {
 		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateWildCardQuery() {
-		return " select * from MOVIE where ID = #ID# for update ";
+	public String getExpectedSelectForUpdateWildCardQuery() {
+		return " select * from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #ID#";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateFieldsQuery() {
-		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
+	public String getExpectedSelectForUpdateFieldsQuery() {
+		return " select ID, TITLE from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #ID#";
 	}
 
 	@Override
-	protected Optional<String> getExpectedCreatePrimaryKeyQuery() {
+	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
 		return Optional.empty();
 	}
 
 	@Override
-	protected String getExpectedAppendMaxRowsQuery() {
-		return "select * from MOVIE limit 100";
+	public String getExpectedAppendMaxRowsQuery() {
+		return "select  top 100 * from MOVIE";
 	}
 
 }

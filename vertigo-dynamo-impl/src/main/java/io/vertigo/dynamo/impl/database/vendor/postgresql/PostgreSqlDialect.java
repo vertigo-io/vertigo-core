@@ -58,8 +58,8 @@ final class PostgreSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean generatedKeys() {
-		return true;
+	public GenerationMode getGenerationMode() {
+		return GenerationMode.GENERATED_KEYS;
 	}
 
 }

@@ -37,7 +37,7 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
  *
  * @author pchretien
  */
-public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String TITLE_MOVIE_1 = "citizen kane";
 	private static final String TITLE_MOVIE_2 = "vertigo";
 	private static final String TITLE_MOVIE_3 = "gone girl";
@@ -45,7 +45,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 
-	private SqlConnection obtainMainConnection() {
+	protected SqlConnection obtainMainConnection() {
 		return dataBaseManager
 				.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME)
 				.obtainConnection();
@@ -85,9 +85,8 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
+	protected void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.init();
 			preparedStatement.executeUpdate();
 		}
 	}
@@ -95,8 +94,6 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into movie values (?, ?)";
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.init();
-			//-----
 			preparedStatement.setValue(0, Long.class, key);
 			preparedStatement.setValue(1, String.class, libelle);
 			//-----
@@ -182,7 +179,6 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-				preparedStatement.init();
 				return preparedStatement.executeQuery(dataType, limit);
 			}
 		} finally {
@@ -268,7 +264,7 @@ public final class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		try {
-		execCallableStatement(connection, "shutdown;");
+			execCallableStatement(connection, "shutdown;");
 		} finally {
 			connection.release();
 		}

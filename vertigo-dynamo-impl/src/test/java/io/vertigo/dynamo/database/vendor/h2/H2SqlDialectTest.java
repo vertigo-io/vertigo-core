@@ -16,47 +16,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.vendor;
+package io.vertigo.dynamo.database.vendor.h2;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase;
+import io.vertigo.dynamo.database.AbstractSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.dynamo.impl.database.vendor.h2.H2DataBase;
 
 /**
  *
  * @author mlaroche
  */
-public final class HSqlDialectTest extends AbstractSqlDialectTest {
+public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
-	protected SqlDialect getDialect() {
-		return new HsqlDataBase().getSqlDialect();
+	public SqlDialect getDialect() {
+		return new H2DataBase().getSqlDialect();
 
 	}
 
 	@Override
-	protected String getExpectedInsertQuery() {
+	public String getExpectedInsertQuery() {
 		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateWildCardQuery() {
+	public String getExpectedSelectForUpdateWildCardQuery() {
 		return " select * from MOVIE where ID = #ID# for update ";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateFieldsQuery() {
+	public String getExpectedSelectForUpdateFieldsQuery() {
 		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
 	}
 
 	@Override
-	protected Optional<String> getExpectedCreatePrimaryKeyQuery() {
-		return Optional.of("select next value for SEQ_MOVIE  as SEQUENCE from information_schema.system_sequences  where sequence_name = upper('SEQ_MOVIE')");
+	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
+		return Optional.empty();
 	}
 
 	@Override
-	protected String getExpectedAppendMaxRowsQuery() {
-		return "select * from MOVIE and rownum() <= 100";
+	public String getExpectedAppendMaxRowsQuery() {
+		return "select * from MOVIE limit 100";
 	}
 
 }

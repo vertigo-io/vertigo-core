@@ -26,6 +26,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -40,7 +41,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
  * <br>
  * @author  jmainaud, evernat
  */
-public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<SqlPreparedStatement> {
+public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
@@ -74,7 +75,15 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<Sql
 	/** {@inheritDoc} */
 	@Override
 	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		final boolean generatedKeys = true;
-		return getDataBaseManager().createPreparedStatement(connection, sql, generatedKeys);
+		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
+		switch (generationMode) {
+			case GENERATED_KEYS:
+				return getDataBaseManager().createPreparedStatement(connection, sql, true);
+			case GENERATED_COLUMNS:
+				final String idFieldName = getTaskDefinition().getInAttribute("DTO").getDomain().getDtDefinition().getIdField().get().getName();
+				return getDataBaseManager().createPreparedStatement(connection, sql, idFieldName);
+			default:
+				throw new IllegalArgumentException("TaskEngineInsertWithGeneratedKeys is not supported with generation mode +'" + generationMode + "'");
+		}
 	}
 }

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
-import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,17 +46,6 @@ public interface SqlMapping {
 	 * @throws SQLException Exception sql
 	 */
 	<O> void setValueOnStatement(PreparedStatement statement, int index, Class<O> dataType, O value) throws SQLException;
-
-	/**
-	 * Retourne la valeur typée vertigo d'un callablestatement.
-	 *
-	 * @param callableStatement CallableStatement SQL à affecter
-	 * @param index Indexe de la variable dans le statement
-	 * @param dataType Type primitif vertigo
-	 * @return Valeur obtenue par le CallableStatement à l'indexe indiqué
-	 * @throws SQLException Exception sql
-	 */
-	<O> O getValueForCallableStatement(CallableStatement callableStatement, int index, Class<O> dataType) throws SQLException;
 
 	/**
 	 * Retourne la valeur typée vertigo d'un resultSet.

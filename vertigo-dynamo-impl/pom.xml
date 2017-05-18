@@ -52,6 +52,21 @@
 			<version>2.3.4</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.193</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>oracle</groupId>
+			<artifactId>ojdbc7</artifactId> 
+			<version>12.1.0.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/test/lib/ojdbc7.jar</systemPath>
+		</dependency>
 
 		<!-- libs -->
 		<!-- kvdatastore -->

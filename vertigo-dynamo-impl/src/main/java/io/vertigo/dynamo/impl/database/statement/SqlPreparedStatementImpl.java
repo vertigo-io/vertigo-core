@@ -40,7 +40,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author pchretien
  */
-public class SqlPreparedStatementImpl implements SqlPreparedStatement {
+public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
 
 	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
@@ -62,11 +62,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		REGISTERING,
 
 		/**
-		 * Etat Défini (Clôture la phase d'enregistrement, permet d'exévuter une requête)
-		 */
-		DEFINED,
-
-		/**
 		 * Etat Exécuté (Permet de lire les données)
 		 */
 		EXECUTED,
@@ -78,10 +73,6 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 		void assertRegisteringState() {
 			Assertion.checkArgument(this == State.REGISTERING, "register methods and init() requires REGISTERING state.");
-		}
-
-		void assertDefinedState() {
-			Assertion.checkArgument(this == State.DEFINED, "setValues and execution requires DEFINED state");
 		}
 
 		void assertExecutedState() {
@@ -105,6 +96,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** Si on récupère les clés générées.*/
 	private final boolean returnGeneratedKeys;
+	private final String[] generatedColumns;
 
 	private final AnalyticsManager analyticsManager;
 
@@ -126,7 +118,8 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final AnalyticsManager analyticsManager,
 			final SqlConnection connection,
 			final String sql,
-			final boolean returnGeneratedKeys) {
+			final boolean returnGeneratedKeys,
+			final String... generatedColumns) {
 		Assertion.checkNotNull(connection);
 		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(analyticsManager);
@@ -134,25 +127,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		this.connection = connection;
 		this.sql = sql;
 		this.returnGeneratedKeys = returnGeneratedKeys;
+		this.generatedColumns = generatedColumns;
 		//Initialistaion de l'état interne de l'automate
 		state = State.REGISTERING;
 		this.analyticsManager = analyticsManager;
-	}
-
-	/**
-	 * Retourne l'état de l'automate
-	 * @return Etat de l'automate
-	 */
-	final State getState() {
-		return state;
-	}
-
-	/**
-	 * Récupération de la liste des paramètres
-	 * @return Liste des paramètres
-	 */
-	protected final List<SqlParameter> getParameters() {
-		return parameters;
 	}
 
 	/**
@@ -160,7 +138,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @param index Indexe du paramètre
 	 * @return Valeur du paramètre
 	 */
-	final SqlParameter getParameter(final int index) {
+	private SqlParameter getParameter(final int index) {
 		final SqlParameter parameter = parameters.get(index);
 		Assertion.checkNotNull(parameter, "Le paramètre à l''index {0} n''a pas été enregistré préalablement !", index);
 		return parameter;
@@ -181,39 +159,16 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
-	public final <O> void registerOutParameter(final int index, final Class<O> dataType) {
-		state.assertRegisteringState();
-		//---
-		registerParameter(index, dataType, null, false);
-	}
 
-	private final <O> void registerParameter(final int index, final Class<O> dataType, final O value, final boolean in) {
-		final SqlParameter parameter = new SqlParameter(dataType, value, in);
-		parameters.add(index, parameter);
-	}
-
-	//=========================================================================
-	//-----Clôture des affectations et 1ere Etape
-	//=========================================================================
-	/** {@inheritDoc} */
-	@Override
-	public final void init() throws SQLException {
+	private void init() throws SQLException {
 		state.assertRegisteringState();
 		//-----
 		statement = createStatement();
-		//On passe à l'état Défini, l'enregistrement des types  est clôt.
-		state = State.DEFINED;
 		//-----
-		postInit();
-	}
-
-	/**
-	 * Permet d'enregistrer les variables OUT dans le cas du callableStatement.
-	 *
-	 * @throws SQLException Si erreur lors de la construction
-	 */
-	void postInit() throws SQLException {
-		//Ne fait rien dans le cas du preparestatement.
+		for (int index = 0; index < parameters.size(); index++) {
+			final SqlParameter parameter = parameters.get(index);
+			connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, parameter.getDataType(), parameter.getValue());
+		}
 	}
 
 	/**
@@ -224,8 +179,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @return PreparedStatement JDBC
 	 */
 	PreparedStatement createStatement() throws SQLException {
+		final PreparedStatement preparedStatement;
 		final int autoGeneratedKeys = returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
-		final PreparedStatement preparedStatement = connection.getJdbcConnection().prepareStatement(sql, autoGeneratedKeys);
+		if (generatedColumns.length > 0) {
+			preparedStatement = connection.getJdbcConnection().prepareStatement(sql, generatedColumns);
+		} else {
+			preparedStatement = connection.getJdbcConnection().prepareStatement(sql, autoGeneratedKeys);
+		}
 		preparedStatement.setFetchSize(FETCH_SIZE); //empiriquement 150 est une bonne valeur (Oracle initialise à 10 ce qui est insuffisant)
 		return preparedStatement;
 	}
@@ -236,9 +196,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public final <O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException {
-		state.assertDefinedState();
-		registerParameter(index, dataType, value, true);
-		connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, dataType, value);
+		state.assertRegisteringState();
+		//---
+		final SqlParameter parameter = new SqlParameter(dataType, value);
+		parameters.add(index, parameter);
 	}
 
 	//=========================================================================
@@ -248,8 +209,10 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public final <O> List<O> executeQuery(final Class<O> dataType, final Integer limit) throws SQLException {
-		state.assertDefinedState();
+		state.assertRegisteringState();
 		Assertion.checkNotNull(dataType);
+		//-----
+		init();
 		//-----
 		boolean success = false;
 		try {
@@ -281,7 +244,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public final int executeUpdate() throws SQLException {
-		state.assertDefinedState();
+		state.assertRegisteringState();
+		//---
+		init();
 		//---
 		boolean success = false;
 		try {
@@ -309,8 +274,12 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public void addBatch() throws SQLException {
-		state.assertDefinedState();
+		state.assertRegisteringState();
 		//---
+		if (statement == null) {
+			init();
+		}
+		//----
 		statement.addBatch();
 	}
 
@@ -332,7 +301,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public int executeBatch() throws SQLException {
-		state.assertDefinedState();
+		state.assertRegisteringState();
 		//---
 		boolean success = false;
 		try {
@@ -384,40 +353,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//-----> Récupération de la connection
 	//=========================================================================
 
-	/**
-	 * Retourne la chaine SQL de la requête.
-	 * @return Chaine SQL de la Requête
-	 */
-	final String getSql() {
-		return sql;
-	}
-
-	/**
-	 * Retourne la connexion utilisée
-	 * @return Connexion utilisée
-	 */
-	final SqlConnection getConnection() {
-		return connection;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
-		return getParameters()
+		return parameters
 				.stream()
 				.map(SqlParameter::toString)
-				.collect(Collectors.joining(", ", getSql() + '(', ")"));
-	}
-
-	/**
-	 * Retourne le preparedStatement
-	 *
-	 * @return PreparedStatement
-	 */
-	final PreparedStatement getPreparedStatement() {
-		Assertion.checkNotNull(statement, "Le statement est null, l'exécution est elle OK ?");
-		//-----
-		return statement;
+				.collect(Collectors.joining(", ", sql + '(', ")"));
 	}
 
 	/** {@inheritDoc} */
@@ -425,7 +367,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	public final <O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
-		Assertion.checkArgument(returnGeneratedKeys, "Statement non créé pour retourner les clés générées");
+		Assertion.checkArgument(returnGeneratedKeys || generatedColumns.length > 0, "Statement non créé pour retourner les clés générées");
 		state.assertExecutedState();
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
@@ -458,4 +400,5 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			return id;
 		}
 	}
+
 }

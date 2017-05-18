@@ -28,6 +28,12 @@ import java.util.Optional;
  *
  */
 public interface SqlDialect {
+	public enum GenerationMode {
+		GENERATED_KEYS, // H2, SQLServer, PostgreSQL...
+		GENERATED_COLUMNS, //Oracle...
+		NONE //HSQL...
+	}
+
 	/**
 	 * @return The operator for string concatenation.
 	 */
@@ -80,7 +86,7 @@ public interface SqlDialect {
 	}
 
 	/**
-	 * @return if keys are generated
+	 * @return how keys are generated
 	 */
-	boolean generatedKeys();
+	GenerationMode getGenerationMode();
 }

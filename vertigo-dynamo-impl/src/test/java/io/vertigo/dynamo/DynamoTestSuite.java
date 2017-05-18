@@ -26,12 +26,12 @@ import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
-import io.vertigo.dynamo.database.DataBaseManagerTest;
-import io.vertigo.dynamo.database.vendor.H2SqlDialectTest;
-import io.vertigo.dynamo.database.vendor.HSqlDialectTest;
-import io.vertigo.dynamo.database.vendor.OracleDialectTest;
-import io.vertigo.dynamo.database.vendor.PostgreSqlDialectTest;
-import io.vertigo.dynamo.database.vendor.SqlServerDialectTest;
+import io.vertigo.dynamo.database.AbstractSqlDataBaseManagerTest;
+import io.vertigo.dynamo.database.vendor.h2.H2SqlDialectTest;
+import io.vertigo.dynamo.database.vendor.hsql.HSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.oracle.OracleDialectTest;
+import io.vertigo.dynamo.database.vendor.postgresql.PostgreSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.sqlserver.SqlServerDialectTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -64,9 +64,9 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
@@ -84,7 +84,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--database
-		DataBaseManagerTest.class,
+		AbstractSqlDataBaseManagerTest.class,
 		H2SqlDialectTest.class,
 		HSqlDialectTest.class,
 		OracleDialectTest.class,
@@ -132,7 +132,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		SearchManagerStoreTest.class,
 		//--store
 		CachedStoreManagerTest.class,
-		StoreManagerTest.class,
+		AbstractSqlStoreManagerTest.class,
 		JpaStoreManagerTest.class,
 		MultiStoreManagerTest.class,
 		//--task

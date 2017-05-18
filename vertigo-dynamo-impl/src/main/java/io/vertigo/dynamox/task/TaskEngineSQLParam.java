@@ -40,11 +40,7 @@ final class TaskEngineSQLParam {
 		/**
 		 * Paramètre SQL de type IN.
 		 */
-		SQL_IN('#'),
-		/**
-		 * Paramètre SQL de type OUT.
-		 */
-		SQL_OUT('%');
+		SQL_IN('#');
 
 		private final char separator;
 
@@ -67,9 +63,6 @@ final class TaskEngineSQLParam {
 				case '#':
 					//IN
 					return true;
-				case '%':
-					//OUT
-					return false;
 				default:
 					throw new IllegalArgumentException(separator + " non reconnu");
 			}
@@ -79,7 +72,6 @@ final class TaskEngineSQLParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
-	private final boolean in;
 	private int index = -1;
 
 	/**
@@ -88,7 +80,7 @@ final class TaskEngineSQLParam {
 	 * @param betweenCar String
 	 * @param in If the param is in
 	 */
-	TaskEngineSQLParam(final String betweenCar, final boolean in) {
+	TaskEngineSQLParam(final String betweenCar) {
 		final String newAttributeName;
 		final String newfieldName;
 		final Integer dtcRowNumber;
@@ -124,7 +116,6 @@ final class TaskEngineSQLParam {
 		Assertion.when(dtcRowNumber != null).check(() -> newfieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 		//-----
 		attributeName = newAttributeName;
-		this.in = in;
 		fieldName = newfieldName;
 		rowNumber = dtcRowNumber;
 	}
@@ -190,10 +181,6 @@ final class TaskEngineSQLParam {
 		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
 		//-----
 		return rowNumber;
-	}
-
-	boolean isIn() {
-		return in;
 	}
 
 	/**

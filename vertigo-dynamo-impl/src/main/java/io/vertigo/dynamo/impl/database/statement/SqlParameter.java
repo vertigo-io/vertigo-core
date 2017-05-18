@@ -27,7 +27,6 @@ import io.vertigo.lang.Assertion;
  */
 final class SqlParameter<O> {
 	private final Class<O> dataType;
-	private final boolean in;
 	private final O value;
 
 	/**
@@ -35,26 +34,11 @@ final class SqlParameter<O> {
 	 * @param dataType the param type
 	 * @param in if the param is an input (or an output)
 	 */
-	SqlParameter(final Class<O> dataType, final O value, final boolean in) {
+	SqlParameter(final Class<O> dataType, final O value) {
 		Assertion.checkNotNull(dataType);
 		//---
 		this.dataType = dataType;
-		this.in = in;
 		this.value = value;
-	}
-
-	/**
-	 * @return if the param is an input
-	 */
-	boolean isIn() {
-		return in;
-	}
-
-	/**
-	 * @return if the param is an output
-	 */
-	boolean isOut() {
-		return !in;
 	}
 
 	/**
@@ -64,12 +48,12 @@ final class SqlParameter<O> {
 		return dataType;
 	}
 
+	O getValue() {
+		return value;
+	}
+
 	@Override
 	public String toString() {
-		return new StringBuilder()
-				.append(in ? "in" : "out")
-				.append('=')
-				.append(value != null ? value : "null")
-				.toString();
+		return value != null ? value.toString() : "null";
 	}
 }

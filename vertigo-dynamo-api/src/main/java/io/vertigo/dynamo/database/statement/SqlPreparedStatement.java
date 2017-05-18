@@ -37,17 +37,9 @@ import java.util.List;
  * @author pchretien
  */
 public interface SqlPreparedStatement extends AutoCloseable {
-	//=========================================================================
-	//-----Clôture des affectations et 1ere Etape
-	//=========================================================================
-	/**
-	 * Construit le PreparedStatement JDBC.
-	 * @throws SQLException Si erreur lors de la construction
-	 */
-	void init() throws SQLException;
 
 	//=========================================================================
-	//-----2ème Etape : Setters
+	//-----1ère Etape : Setters
 	//=========================================================================
 	/**
 	 * Setter générique.
@@ -58,7 +50,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	<O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException;
 
 	//=========================================================================
-	//-----3ème Etape : Exécution
+	//-----2ème Etape : Exécution
 	//=========================================================================
 
 	/**

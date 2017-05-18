@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.vendor;
+package io.vertigo.dynamo.database;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.impl.database.vendor.sqlserver.SqlServerDataBase;
 
 /**
@@ -71,16 +72,16 @@ public abstract class AbstractSqlDialectTest {
 		Assert.assertEquals(getExpectedAppendMaxRowsQuery(), query);
 	}
 
-	abstract SqlDialect getDialect();
+	public abstract SqlDialect getDialect();
 
-	abstract String getExpectedInsertQuery();
+	public abstract String getExpectedInsertQuery();
 
-	abstract String getExpectedSelectForUpdateWildCardQuery();
+	public abstract String getExpectedSelectForUpdateWildCardQuery();
 
-	abstract String getExpectedSelectForUpdateFieldsQuery();
+	public abstract String getExpectedSelectForUpdateFieldsQuery();
 
-	abstract Optional<String> getExpectedCreatePrimaryKeyQuery();
+	public abstract Optional<String> getExpectedCreatePrimaryKeyQuery();
 
-	abstract String getExpectedAppendMaxRowsQuery();
+	public abstract String getExpectedAppendMaxRowsQuery();
 
 }

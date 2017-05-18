@@ -29,7 +29,7 @@ import java.sql.SQLException;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -63,8 +63,7 @@ public final class DataBaseScriptUtil {
 	}
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
-		try (final SqlCallableStatement callableStatement = sqlDataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.init();
+		try (final SqlPreparedStatement callableStatement = sqlDataBaseManager.createPreparedStatement(connection, sql, false)) {
 			callableStatement.executeUpdate();
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);

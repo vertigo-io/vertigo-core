@@ -32,7 +32,6 @@ import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,7 +47,6 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -91,7 +89,7 @@ import io.vertigo.util.ListBuilder;
  * @author  pchretien, npiedeloup
  * @param <S> Type de Statement utilisé
  */
-public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
+public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
@@ -107,7 +105,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
 	 */
-	private static final List<ScriptSeparator> SQL_SEPARATORS = createSqlSeparators();
+	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(InOutType.SQL_IN.getSeparator());
 
 	/**
 	 * Liste des paramètres
@@ -139,13 +137,6 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
-	private static List<ScriptSeparator> createSqlSeparators() {
-		return new ListBuilder<ScriptSeparator>()
-				.add(new ScriptSeparator(InOutType.SQL_IN.getSeparator()))
-				.add(new ScriptSeparator(InOutType.SQL_OUT.getSeparator()))
-				.unmodifiable().build();
-	}
-
 	/**
 	 * Exécution de la requête.
 	 * @param connection Connexion BDD
@@ -153,21 +144,15 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final SqlConnection connection, final S statement) throws SQLException;
+	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 		final String sql = prepareParams(getSqlQuery().trim());
-		try (final S statement = createStatement(sql, connection)) {
-			//Inialise les paramètres.
-			if (statement instanceof SqlCallableStatement) {
-				registerOutParameters(SqlCallableStatement.class.cast(statement));
-			}
+		try (final SqlPreparedStatement statement = createStatement(sql, connection)) {
 			try {
-				//Initialise le statement JDBC.
-				statement.init();
 				//Execute le Statement JDBC.
 				final int sqlRowcount = doExecute(connection, statement);
 				//On positionne le nombre de lignes affectées.
@@ -249,39 +234,9 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		Assertion.checkState(params == null, "La query a déjà été préparée !");
 		//-----
 		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
-		scriptManager.parse(query, scriptHandler, SQL_SEPARATORS);
+		scriptManager.parse(query, scriptHandler, Collections.singletonList(SQL_SEPARATOR));
 		params = scriptHandler.getParams();
 		return scriptHandler.getSql();
-	}
-
-	//==========================================================================
-	//========================CallableStatement=================================
-	//==========================================================================
-	/**
-	 * Met à jour les paramètres de sorties
-	 *
-	 * @param cs CallableStatement
-	 * @throws SQLException Si erreur */
-	protected final void setOutParameters(final SqlCallableStatement cs) throws SQLException {
-		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
-		//-----
-		for (final TaskEngineSQLParam param : params) {
-			if (!param.isIn()) {
-				setOutParameter(cs, param);
-			}
-		}
-	}
-
-	/**
-	 * Met à jour une valeur de sortie à partir du résultat de la requête.
-	 *
-	 * @param cs CallableStatement
-	 * @param param Paramètre traité
-	 * @throws SQLException Si erreur avec la base
-	 */
-	private void setOutParameter(final SqlCallableStatement cs, final TaskEngineSQLParam param) throws SQLException {
-		final Object value = cs.getValue(param.getIndex());
-		setValueParameter(param, value);
 	}
 
 	/**
@@ -292,18 +247,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param connection Connexion vers la base de données
 	 * @return Statement StatementSQL
 	 */
-	protected abstract S createStatement(String sql, SqlConnection connection);
-
-	/**
-	 * Initialise les paramètres en entrée du statement
-	 * @param statement Statement
-	 */
-	private void registerOutParameters(final SqlCallableStatement statement) {
-		for (final TaskEngineSQLParam param : params) {
-			if (!param.isIn()) {
-				statement.registerOutParameter(param.getIndex(), getDataTypeParameter(param));
-			}
-		}
+	protected SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
+		return getDataBaseManager().createPreparedStatement(connection, sql, false);
 	}
 
 	/**
@@ -317,10 +262,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		Assertion.checkNotNull(statement);
 		//-----
 		for (final TaskEngineSQLParam param : params) {
-			if (param.isIn()) {
-				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-				setInParameter(statement, param, rowNumber);
-			}
+			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+			setInParameter(statement, param, rowNumber);
 		}
 	}
 

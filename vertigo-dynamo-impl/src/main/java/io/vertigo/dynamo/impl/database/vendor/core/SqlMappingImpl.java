@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.database.vendor.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -114,44 +113,6 @@ public final class SqlMappingImpl implements SqlMapping {
 			}
 
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <O> O getValueForCallableStatement(
-			final CallableStatement callableStatement,
-			final int index,
-			final Class<O> dataType) throws SQLException {
-		Object o;
-		if (Integer.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getInt(index);
-		} else if (Long.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getLong(index);
-		} else if (Boolean.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getBoolean(index);
-		} else if (Double.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getDouble(index);
-		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getBigDecimal(index);
-		} else if (String.class.isAssignableFrom(dataType)) {
-			o = callableStatement.getString(index);
-		} else if (Date.class.isAssignableFrom(dataType)) {
-			//Pour avoir une date avec les heures (Sens Java !)
-			//il faut récupérer le timeStamp
-			//Puis le transformer en java.util.Date (Date+heure)
-			final Timestamp timestamp = callableStatement.getTimestamp(index); //peut etre null !!
-			if (timestamp != null) {
-				o = new java.util.Date(timestamp.getTime());
-			} else {
-				o = null;
-			}
-		} else {
-			throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
-		}
-		if (callableStatement.wasNull()) {
-			o = null;
-		}
-		return dataType.cast(o);
 	}
 
 	/** {@inheritDoc} */

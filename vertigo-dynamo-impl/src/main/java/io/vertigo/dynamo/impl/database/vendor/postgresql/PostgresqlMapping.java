@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
-import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -53,12 +52,6 @@ final class PostgresqlMapping implements SqlMapping {
 		} else {
 			defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <O> O getValueForCallableStatement(final CallableStatement callableStatement, final int index, final Class<O> dataType) throws SQLException {
-		return defaultSQLMapping.getValueForCallableStatement(callableStatement, index, dataType);
 	}
 
 	/** {@inheritDoc} */

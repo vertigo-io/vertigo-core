@@ -16,10 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.vendor;
+package io.vertigo.dynamo.database.vendor.oracle;
 
 import java.util.Optional;
 
+import io.vertigo.dynamo.database.AbstractSqlDialectTest;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.dynamo.impl.database.vendor.oracle.OracleDataBase;
 
 /**
@@ -29,33 +31,33 @@ import io.vertigo.dynamo.impl.database.vendor.oracle.OracleDataBase;
 public final class OracleDialectTest extends AbstractSqlDialectTest {
 
 	@Override
-	protected SqlDialect getDialect() {
+	public SqlDialect getDialect() {
 		return new OracleDataBase().getSqlDialect();
 
 	}
 
 	@Override
-	protected String getExpectedInsertQuery() {
+	public String getExpectedInsertQuery() {
 		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateWildCardQuery() {
+	public String getExpectedSelectForUpdateWildCardQuery() {
 		return " select * from MOVIE where ID = #ID# for update ";
 	}
 
 	@Override
-	protected String getExpectedSelectForUpdateFieldsQuery() {
+	public String getExpectedSelectForUpdateFieldsQuery() {
 		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
 	}
 
 	@Override
-	protected Optional<String> getExpectedCreatePrimaryKeyQuery() {
+	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
 		return Optional.empty();
 	}
 
 	@Override
-	protected String getExpectedAppendMaxRowsQuery() {
+	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE and rownum <= 100";
 	}
 

@@ -35,7 +35,7 @@ final class OracleDialect implements SqlDialect {
 		//---
 		// ---
 		return new StringBuilder()
-				.append("begin insert into ").append(tableName).append(" (")
+				.append("insert into ").append(tableName).append(" (")
 				.append(idFieldName).append(", ")
 				.append(dataFieldsName
 						.stream()
@@ -46,8 +46,7 @@ final class OracleDialect implements SqlDialect {
 						.stream()
 						.map(fieldName -> " #DTO." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
-				.append(") returning ").append(idFieldName)
-				.append(" into %DTO.").append(idFieldName).append("%;").append("end;")
+				.append(")")
 				.toString();
 	}
 
@@ -73,7 +72,7 @@ final class OracleDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean generatedKeys() {
-		return false;
+	public GenerationMode getGenerationMode() {
+		return GenerationMode.GENERATED_COLUMNS;
 	}
 }

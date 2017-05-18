@@ -1,0 +1,24 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+	</boot>
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+	</module>
+
+	<module name="vertigo-dynamo">
+		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.oracle.OracleDataBase" />
+				<param name="jdbcDriver" value="oracle.jdbc.OracleDriver" />
+				<param name="jdbcUrl" value="jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8" />
+			</plugin>
+			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="name" value="secondary" />
+				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.h2.H2DataBase" />
+				<param name="jdbcDriver" value="org.h2.Driver" />
+				<param name="jdbcUrl" value="jdbc:h2:mem:secondaryDatabase" />
+			</plugin>
+		</component>
+	</module>
+</config>

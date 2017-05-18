@@ -26,7 +26,6 @@ import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -61,7 +60,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 		// Et on teste s'il s'agit d'un attribut du service.
 		// Dans le cas des DTO on ne teste que le nom du DTO et non (pour l'instant) son paramètre
 
-		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression, InOutType.isIn(separator.getSeparator()));
+		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression);
 		addParam(param);
 		//On binde paramètre, en le remplaçant par un "?"
 		appendSql("?");
