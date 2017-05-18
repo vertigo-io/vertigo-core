@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -422,7 +421,7 @@ public final class ClassUtilTest {
 		}
 
 		public long kuser(final long v1, final long v2) {
-			throw new VUserException(MessageText.of("test"));
+			throw new VUserException("test");
 		}
 
 	}

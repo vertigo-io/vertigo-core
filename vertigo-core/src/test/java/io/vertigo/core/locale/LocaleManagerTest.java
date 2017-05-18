@@ -147,7 +147,11 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = MessageText.ofDefault("bonjour par défaut", key);
+		final MessageText helloTxt = MessageText
+				.builder()
+				.withDefaultMsg("bonjour par défaut")
+				.withKey(key)
+				.build();
 		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
@@ -179,13 +183,21 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		MessageText helloTxt = MessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText.of(key, param);
+		helloTxt = MessageText
+				.builder()
+				.withKey(key)
+				.withParams(param)
+				.build();
 		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText(key, null);
 		//		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText.of(key, null, null);
+		helloTxt = MessageText
+				.builder()
+				.withKey(key)
+				.withParams(null, null)
+				.build();
 		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
 		helloTxt = MessageText.of("default");

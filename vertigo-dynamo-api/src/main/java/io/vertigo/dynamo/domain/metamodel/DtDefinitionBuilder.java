@@ -256,7 +256,11 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
-		final MessageText labelMsg = MessageText.ofDefault(strLabel, new MessageKeyImpl(id));
+		final MessageText labelMsg = MessageText
+				.builder()
+				.withKey(new MessageKeyImpl(id))
+				.withDefaultMsg(strLabel)
+				.build();
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
 		return new DtField(

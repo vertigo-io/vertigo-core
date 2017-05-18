@@ -20,7 +20,6 @@ package io.vertigo.vega.webservice.data.ws;
 
 import javax.inject.Inject;
 
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -66,7 +65,7 @@ public final class AnonymousTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;

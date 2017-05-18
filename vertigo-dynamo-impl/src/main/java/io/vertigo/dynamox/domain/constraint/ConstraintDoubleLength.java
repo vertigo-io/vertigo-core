@@ -67,6 +67,10 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED)
+				.withParams(minValue, maxValue)
+				.build();
 	}
 }

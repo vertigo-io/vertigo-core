@@ -55,7 +55,11 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_REGEXP)
+				.withParams(pattern.pattern())
+				.build();
 	}
 
 	/** {@inheritDoc} */

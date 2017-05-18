@@ -39,7 +39,7 @@ public final class FormatterException extends Exception {
 	 * @param params Paramètres de la ressource
 	 */
 	public FormatterException(final MessageKey key, final Serializable... params) {
-		messageText = MessageText.of(key, params);
+		messageText = MessageText.builder().withKey(key).withParams(params).build();
 	}
 
 	public MessageText getMessageText() {

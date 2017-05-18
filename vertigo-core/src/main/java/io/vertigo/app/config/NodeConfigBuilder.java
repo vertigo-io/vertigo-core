@@ -18,8 +18,7 @@
  */
 package io.vertigo.app.config;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
@@ -75,22 +74,9 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 		if (myNodeId == null) {
 			myNodeId = UUID.randomUUID().toString();
 		}
-		if (myEndPoint == null) {
-			myEndPoint = retrieveHostName();
-		}
-
 		return new NodeConfig(
 				myAppName,
 				myNodeId,
-				myEndPoint);
+				Optional.ofNullable(myEndPoint));
 	}
-
-	private static String retrieveHostName() {
-		try {
-			return InetAddress.getLocalHost().getCanonicalHostName();
-		} catch (final UnknownHostException e) {
-			return "UnknownHost";
-		}
-	}
-
 }
