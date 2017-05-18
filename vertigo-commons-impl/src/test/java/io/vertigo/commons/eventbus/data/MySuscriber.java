@@ -19,8 +19,9 @@
 package io.vertigo.commons.eventbus.data;
 
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.lang.Component;
 
-public final class MySuscriber {
+public final class MySuscriber implements Component {
 	private int count = 0;
 	private int redCount = 0;
 	private int blueCount = 0;

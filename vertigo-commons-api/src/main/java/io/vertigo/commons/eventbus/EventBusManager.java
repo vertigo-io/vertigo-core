@@ -20,6 +20,7 @@ package io.vertigo.commons.eventbus;
 
 import java.util.function.Consumer;
 
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Manager;
 
 /**
@@ -65,7 +66,7 @@ public interface EventBusManager extends Manager {
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	void register(final Object suscriberInstance);
+	void register(final Component suscriberInstance);
 
 	/**
 	 * Registers a dead event consumer.

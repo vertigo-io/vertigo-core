@@ -49,7 +49,6 @@ import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.domain.util.VLists;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
@@ -135,7 +134,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(MessageText.of("Contact #" + conId + " unknown"));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;

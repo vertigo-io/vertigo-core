@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -65,7 +64,9 @@ public final class CacheDataStore {
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		eventBusManager.register(this);
+		eventBusManager.subscribe(
+				StoreEvent.class,
+				event -> clearCache(event.getUri().getDefinition()));
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -189,15 +190,5 @@ public final class CacheDataStore {
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
-	}
-
-	/**
-	 * Receive store event.
-	 * @param event Store event
-	 */
-	@EventSuscriber
-	public void onEvent(final StoreEvent event) {
-		final URI<?> uri = event.getUri();
-		clearCache(uri.getDefinition());
 	}
 }

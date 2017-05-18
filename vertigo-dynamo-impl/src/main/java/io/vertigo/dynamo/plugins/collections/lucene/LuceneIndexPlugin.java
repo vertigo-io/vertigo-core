@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -37,7 +36,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.lang.Assertion;
@@ -59,13 +57,18 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	 * @param eventBusManager Event manager
 	 */
 	@Inject
-	public LuceneIndexPlugin(final LocaleManager localeManager, final CacheManager cacheManager, final EventBusManager eventBusManager) {
+	public LuceneIndexPlugin(
+			final LocaleManager localeManager,
+			final CacheManager cacheManager,
+			final EventBusManager eventBusManager) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
-		eventBusManager.register(this);
+		eventBusManager.subscribe(
+				StoreEvent.class,
+				event -> cacheManager.clear(getIndexCacheContext(event.getUri().getDefinition())));
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
@@ -104,8 +107,13 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState,
-			final Optional<DtField> boostedField, final DtList<D> dtc) {
+	public <D extends DtObject> DtList<D> getCollection(
+			final String keywords,
+			final Collection<DtField> searchedFields,
+			final List<ListFilter> listFilters,
+			final DtListState listState,
+			final Optional<DtField> boostedField,
+			final DtList<D> dtc) {
 		Assertion.checkArgument(listState.getMaxRows().isPresent(), "Can't return all results, you must define maxRows");
 		try {
 			final RamLuceneIndex<D> index = indexList(dtc, false);
@@ -114,15 +122,4 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			throw WrappedException.wrap(e, "Erreur d'indexation");
 		}
 	}
-
-	/**
-	 * Receive store event.
-	 * @param event Store event
-	 */
-	@EventSuscriber
-	public void onEvent(final StoreEvent event) {
-		final URI<?> uri = event.getUri();
-		cacheManager.clear(getIndexCacheContext(uri.getDefinition()));
-	}
-
 }

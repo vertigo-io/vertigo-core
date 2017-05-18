@@ -27,6 +27,7 @@ import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -55,7 +56,7 @@ public final class EventBusManagerImpl implements EventBusManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void register(final Object suscriberInstance) {
+	public void register(final Component suscriberInstance) {
 		Assertion.checkNotNull(suscriberInstance);
 		//-----
 		int count = 0;
@@ -68,7 +69,6 @@ public final class EventBusManagerImpl implements EventBusManager {
 			//-----
 			//2. For each method register a listener
 			count++;
-			method.setAccessible(true);
 			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
 			subscribe(eventType,
 					event -> ClassUtil.invoke(suscriberInstance, method, event));
