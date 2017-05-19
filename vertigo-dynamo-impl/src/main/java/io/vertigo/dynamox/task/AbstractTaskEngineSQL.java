@@ -45,7 +45,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.transaction.VTransaction;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
-import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -101,10 +100,11 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	//Qui utilise ça ?? // peut on revenir à une forme explicite
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
+	private static final char SEPARATOR = '#';
 	/**
 	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
 	 */
-	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(InOutType.SQL_IN.getSeparator());
+	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(SEPARATOR);
 
 	/**
 	 * Liste des paramètres

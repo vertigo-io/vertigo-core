@@ -26,7 +26,6 @@ import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
-import io.vertigo.dynamo.database.AbstractSqlDataBaseManagerTest;
 import io.vertigo.dynamo.database.vendor.h2.H2SqlDialectTest;
 import io.vertigo.dynamo.database.vendor.hsql.HSqlDialectTest;
 import io.vertigo.dynamo.database.vendor.oracle.OracleDialectTest;
@@ -84,7 +83,6 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--database
-		AbstractSqlDataBaseManagerTest.class,
 		H2SqlDialectTest.class,
 		HSqlDialectTest.class,
 		OracleDialectTest.class,

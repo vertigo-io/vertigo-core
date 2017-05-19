@@ -32,43 +32,6 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien
  */
 final class TaskEngineSQLParam {
-	/**
-	 * Liste énumérée des différents types de paramètre SQL Il existe trois types dont inout qui n'a pas d'équivalent en
-	 * java pour les objets simples (non mutables).
-	 */
-	enum InOutType {
-		/**
-		 * Paramètre SQL de type IN.
-		 */
-		SQL_IN('#');
-
-		private final char separator;
-
-		InOutType(final char separator) {
-			this.separator = separator;
-		}
-
-		char getSeparator() {
-			return separator;
-		}
-
-		/**
-		 * Permet de connaitre le type du paramètre SQL en fonction du séparateur trouvé.
-		 *
-		 * @param separator Séparateur
-		 * @return Type de paramètre SQL
-		 */
-		static boolean isIn(final char separator) {
-			switch (separator) {
-				case '#':
-					//IN
-					return true;
-				default:
-					throw new IllegalArgumentException(separator + " non reconnu");
-			}
-		}
-	}
-
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;

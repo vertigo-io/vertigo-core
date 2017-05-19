@@ -297,9 +297,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final int result = traceWithReturn(this::doExecuteBatch);
 			success = true;
 			return result;
-		} catch (
-
-		final WrappedSqlException e) {
+		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
 		} finally {
 			state = success ? State.EXECUTED : State.ABORTED;
