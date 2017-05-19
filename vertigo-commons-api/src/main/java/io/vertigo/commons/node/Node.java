@@ -2,13 +2,14 @@ package io.vertigo.commons.node;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 
 public final class Node {
 
 	private final String id;
-	private final String name;
+	private final String appName;
 
 	private final String lastStatus;
 	private final Instant lastTouch;
@@ -16,29 +17,29 @@ public final class Node {
 
 	private final List<String> skills;
 
-	private final String endPoint;
+	private final Optional<String> endPointOpt;
 
 	public Node(
 			final String id,
-			final String name,
+			final String appName,
 			final String lastStatus,
 			final Instant lastTouch,
 			final Instant startDate,
-			final String endPoint,
+			final Optional<String> endPointOpt,
 			final List<String> skills) {
 		Assertion.checkArgNotEmpty(id);
-		Assertion.checkArgNotEmpty(name);
+		Assertion.checkArgNotEmpty(appName);
 		Assertion.checkNotNull(lastStatus);
 		Assertion.checkNotNull(lastTouch);
-		Assertion.checkArgNotEmpty(endPoint);
+		Assertion.checkNotNull(endPointOpt);
 		Assertion.checkNotNull(skills);
 		// ---
 		this.id = id;
-		this.name = name;
+		this.appName = appName;
 		this.lastStatus = lastStatus;
 		this.lastTouch = lastTouch;
 		this.startDate = startDate;
-		this.endPoint = endPoint;
+		this.endPointOpt = endPointOpt;
 		this.skills = skills;
 	}
 
@@ -46,19 +47,22 @@ public final class Node {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getAppName() {
+		return appName;
 	}
 
 	public long getStartDate() {
 		return startDate.toEpochMilli();
 	}
 
-	public String getEndPoint() {
-		return endPoint;
+	public Optional<String> getEndPoint() {
+		return endPointOpt;
 	}
 
 	public String getProtocol() {
+		Assertion.checkState(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
+		// ---
+		final String endPoint = endPointOpt.get();
 		return endPoint.substring(0, endPoint.indexOf(':'));
 	}
 

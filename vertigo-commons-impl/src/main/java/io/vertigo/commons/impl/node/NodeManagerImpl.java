@@ -123,7 +123,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 				.getTopology()
 				.stream()
 				.collect(Collectors.toMap(
-						Node::getName,
+						Node::getId,
 						app -> functionToApply.apply(app)));
 
 	}

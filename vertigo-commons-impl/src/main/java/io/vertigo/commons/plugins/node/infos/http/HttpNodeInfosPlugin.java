@@ -22,7 +22,7 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 
 	@Override
 	public String getConfig(final Node app) {
-		return callRestWS(app.getEndPoint() + "/vertigo/components", String.class);
+		return callRestWS(app.getEndPoint().get() + "/vertigo/components", String.class);
 	}
 
 	@Override
