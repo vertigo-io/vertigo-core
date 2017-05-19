@@ -90,19 +90,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	protected void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			preparedStatement.executeUpdate(Collections.emptyList());
 		}
 	}
 
-	private void insert(final SqlConnection connection, final long key, final String libelle, final Mail mail) throws SQLException {
-		final String sql = "insert into movie values (?, ?, ?)";
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
+		final String sql = "insert into movie values (?, ?)";
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			final List<SqlParameter> sqlParameters = new ListBuilder<SqlParameter>()
 					.add(new SqlParameter(Long.class, key))
 					.add(new SqlParameter(String.class, libelle))
-					.add(new SqlParameter(Mail.class, mail))
 					.build();
 			//-----
 			preparedStatement.executeUpdate(sqlParameters);

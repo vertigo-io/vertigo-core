@@ -24,15 +24,14 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mchange.v2.c3p0.PooledDataSource;
 
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
@@ -42,8 +41,8 @@ import io.vertigo.util.ClassUtil;
  *
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
  */
-public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
-	private final DataSource pooledDataSource;
+public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin implements Activeable {
+	private final ComboPooledDataSource pooledDataSource;
 
 	/**
 	 * Constructor.
@@ -65,7 +64,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 		pooledDataSource = createPooledDataSource(jdbcDriver, jdbcUrl);
 	}
 
-	private static PooledDataSource createPooledDataSource(final String jdbcDriver, final String jdbcUrl) {
+	private static ComboPooledDataSource createPooledDataSource(final String jdbcDriver, final String jdbcUrl) {
 		final ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			//loads the jdbc driver
@@ -86,5 +85,17 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't open connection");
 		}
+	}
+
+	@Override
+	public void start() {
+		// nothing
+
+	}
+
+	@Override
+	public void stop() {
+		// at app stop we close all the connections of the pool
+		pooledDataSource.close();
 	}
 }
