@@ -157,7 +157,8 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
-			connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, parameter.getDataType(), parameter.getValue());
+			connection.getDataBase().getSqlMapping()
+					.setValueOnStatement(statement, index + 1, parameter.getDataType(), parameter.getValue());
 		}
 	}
 

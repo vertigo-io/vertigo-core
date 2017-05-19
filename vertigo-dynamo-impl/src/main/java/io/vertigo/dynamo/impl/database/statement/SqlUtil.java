@@ -54,7 +54,11 @@ final class SqlUtil {
 	 * @return Résultat de la requête.
 	 * @throws SQLException Exception SQL
 	 */
-	static <O> List<O> buildResult(final Class<O> dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
+	static <O> List<O> buildResult(
+			final Class<O> dataType,
+			final SqlMapping mapping,
+			final ResultSet resultSet,
+			final Integer limit) throws SQLException {
 		Assertion.checkNotNull(dataType);
 		Assertion.checkNotNull(mapping);
 		Assertion.checkNotNull(resultSet);
@@ -62,7 +66,11 @@ final class SqlUtil {
 		return retrieveData(dataType, mapping, resultSet, limit);
 	}
 
-	private static <O> List<O> retrieveData(final Class<O> dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
+	private static <O> List<O> retrieveData(
+			final Class<O> dataType,
+			final SqlMapping mapping,
+			final ResultSet resultSet,
+			final Integer limit) throws SQLException {
 		final boolean isPrimitive = isPrimitive(dataType);
 
 		final MyField[] fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
@@ -82,11 +90,18 @@ final class SqlUtil {
 		return list;
 	}
 
-	private static <O> O readPrimitive(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType) throws SQLException {
+	private static <O> O readPrimitive(
+			final SqlMapping mapping,
+			final ResultSet resultSet,
+			final Class<O> dataType) throws SQLException {
 		return mapping.getValueForResultSet(resultSet, 1, dataType);
 	}
 
-	private static <O> O readRow(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType, final MyField[] fields) throws SQLException {
+	private static <O> O readRow(
+			final SqlMapping mapping,
+			final ResultSet resultSet,
+			final Class<O> dataType,
+			final MyField[] fields) throws SQLException {
 		final O bean = ClassUtil.newInstance(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
@@ -138,7 +153,14 @@ final class SqlUtil {
 	}
 
 	private static boolean isPrimitive(final Class dataType) {
-		final Class[] primiviteTypes = new Class[] { Integer.class, Double.class, Boolean.class, String.class, Date.class, BigDecimal.class, Long.class };
+		final Class[] primiviteTypes = new Class[] {
+				Integer.class,
+				Double.class,
+				Boolean.class,
+				String.class,
+				Date.class,
+				BigDecimal.class,
+				Long.class };
 		return Stream.of(primiviteTypes)
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}

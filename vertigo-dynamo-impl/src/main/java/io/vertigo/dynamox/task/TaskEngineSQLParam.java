@@ -25,7 +25,6 @@ import io.vertigo.lang.WrappedException;
 /**
  * Paramètres créés par l'analyseur et utilisés par le Handler.
  *
- * Ces paramètres sont de trois types :
  * - IN 	: le séparateur utilisé est #
  *
  * @author pchretien
@@ -42,43 +41,35 @@ final class TaskEngineSQLParam {
 	 * @param in If the param is in
 	 */
 	TaskEngineSQLParam(final String betweenCar) {
-		final String newAttributeName;
-		final String newfieldName;
-		final Integer dtcRowNumber;
-
 		final int indexOfFirstPoint = betweenCar.indexOf('.');
 		if (indexOfFirstPoint > -1) {
 			final int indexOfLastPoint = betweenCar.lastIndexOf('.');
 			// cas du DTO/DTC
 			// exemple : DTO_PERSONNE.NOM
-			newAttributeName = betweenCar.substring(0, indexOfFirstPoint);
-			newfieldName = betweenCar.substring(indexOfLastPoint + 1);
+			attributeName = betweenCar.substring(0, indexOfFirstPoint);
+			fieldName = betweenCar.substring(indexOfLastPoint + 1);
 
 			if (indexOfFirstPoint != indexOfLastPoint) {
 				// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
 				// qui doit être un entier >= 0
 				// exemple : DTC_PERSONNE.12.Nom
 				final String betweenPoints = betweenCar.substring(indexOfFirstPoint + 1, indexOfLastPoint);
-				dtcRowNumber = parseDtcRowNumber(betweenCar, betweenPoints);
+				rowNumber = parseDtcRowNumber(betweenCar, betweenPoints);
 			} else {
-				dtcRowNumber = null;
+				rowNumber = null;
 			}
 		} else {
 			//Cas du input natif (ex: CODE)
-			newAttributeName = betweenCar;
-			dtcRowNumber = null;
-			newfieldName = null;
+			attributeName = betweenCar;
+			rowNumber = null;
+			fieldName = null;
 		}
 
 		//-----
-		// Le paramètre n'est pas encore indexé
-		Assertion.checkNotNull(newAttributeName);
-		// Si le numéro de ligne est renseignée alors le champ doit l'être aussi
-		Assertion.when(dtcRowNumber != null).check(() -> newfieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
-		//-----
-		attributeName = newAttributeName;
-		fieldName = newfieldName;
-		rowNumber = dtcRowNumber;
+		Assertion.checkNotNull(attributeName);
+		//Si le numéro de ligne est renseignée alors le champ doit l'être aussi
+		Assertion.when(rowNumber != null)
+				.check(() -> fieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 	}
 
 	private static int parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
