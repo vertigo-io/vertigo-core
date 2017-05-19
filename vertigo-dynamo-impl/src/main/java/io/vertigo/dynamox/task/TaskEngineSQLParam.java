@@ -35,7 +35,6 @@ final class TaskEngineSQLParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
-	private int index = -1;
 
 	/**
 	 * Constructor.
@@ -96,10 +95,6 @@ final class TaskEngineSQLParam {
 		return dtcRowNumber;
 	}
 
-	void setIndex(final int index) {
-		this.index = index;
-	}
-
 	/**
 	 * Un paramètre est primitif si il ne correspond pas à une DTC ou un DTO.
 	 *
@@ -144,12 +139,5 @@ final class TaskEngineSQLParam {
 		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
 		//-----
 		return rowNumber;
-	}
-
-	/**
-	 * @return Index de l'attribut
-	 */
-	int getIndex() {
-		return index;
 	}
 }

@@ -260,9 +260,10 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	protected final void setInParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
-		for (final TaskEngineSQLParam param : params) {
+		for (int index = 0; index < params.size(); index++) {
+			final TaskEngineSQLParam param = params.get(index);
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-			setInParameter(statement, param, rowNumber);
+			setInParameter(statement, index, param, rowNumber);
 		}
 	}
 
@@ -280,8 +281,8 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param rowNumber Ligne des données d'entrée.
 	 * @throws SQLException Erreur sql
 	 */
-	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) {
-		ps.setValue(param.getIndex(), getDataTypeParameter(param), getValueParameter(param, rowNumber));
+	protected final void setInParameter(final SqlPreparedStatement ps, final int index, final TaskEngineSQLParam param, final Integer rowNumber) {
+		ps.setValue(index, getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
 	private Class getDataTypeParameter(final TaskEngineSQLParam param) {
