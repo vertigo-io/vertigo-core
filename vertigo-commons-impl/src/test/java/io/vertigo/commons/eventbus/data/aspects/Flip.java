@@ -16,43 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.eventbus.data;
+package io.vertigo.commons.eventbus.data.aspects;
 
-import io.vertigo.commons.eventbus.EventSuscriber;
-import io.vertigo.commons.eventbus.data.aspects.Flip;
-import io.vertigo.lang.Component;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class MySubscriber implements Component {
-	private int count = 0;
-	private int redCount = 0;
-	private int blueCount = 0;
+import io.vertigo.core.component.aop.AspectAnnotation;
 
-	@EventSuscriber
-	public void onAllColor(final ColorEvent colorEvent) {
-		count++;
-	}
-
-	@EventSuscriber
-	public void onRedColor(final RedColorEvent colorEvent) {
-		redCount++;
-	}
-
-	@EventSuscriber
-	@Flip
-	public void onBlueColor(final BlueColorEvent colorEvent) {
-		blueCount++;
-	}
-
-	public int getCount() {
-		return count;
-	}
-
-	public int getRedCount() {
-		return redCount;
-	}
-
-	public int getBlueCount() {
-		return blueCount;
-	}
-
+/**
+ * @author pchretien
+ */
+@Target({ ElementType.METHOD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@AspectAnnotation
+public @interface Flip {
+	//
 }

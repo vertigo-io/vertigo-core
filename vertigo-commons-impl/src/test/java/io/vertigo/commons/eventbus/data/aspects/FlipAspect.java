@@ -16,43 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.eventbus.data;
+package io.vertigo.commons.eventbus.data.aspects;
 
-import io.vertigo.commons.eventbus.EventSuscriber;
-import io.vertigo.commons.eventbus.data.aspects.Flip;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectMethodInvocation;
 
-public class MySubscriber implements Component {
-	private int count = 0;
-	private int redCount = 0;
-	private int blueCount = 0;
+/**
+ * @author pchretien
+ */
+public final class FlipAspect implements Aspect {
+	private static boolean state = false;
 
-	@EventSuscriber
-	public void onAllColor(final ColorEvent colorEvent) {
-		count++;
+	@Override
+	public Integer invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
+		flip();
+		return (Integer) methodInvocation.proceed(args);
 	}
 
-	@EventSuscriber
-	public void onRedColor(final RedColorEvent colorEvent) {
-		redCount++;
+	@Override
+	public Class<Flip> getAnnotationType() {
+		return Flip.class;
 	}
 
-	@EventSuscriber
-	@Flip
-	public void onBlueColor(final BlueColorEvent colorEvent) {
-		blueCount++;
+	private static synchronized void flip() {
+		state = !state;
+
 	}
 
-	public int getCount() {
-		return count;
+	public static synchronized boolean isOn() {
+		return state == true;
 	}
 
-	public int getRedCount() {
-		return redCount;
+	public static synchronized boolean isOff() {
+		return state == false;
 	}
-
-	public int getBlueCount() {
-		return blueCount;
-	}
-
 }

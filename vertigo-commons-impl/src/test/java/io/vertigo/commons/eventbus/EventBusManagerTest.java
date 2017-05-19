@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons.eventbus;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ import io.vertigo.commons.eventbus.data.DummyEvent;
 import io.vertigo.commons.eventbus.data.MySubscriber;
 import io.vertigo.commons.eventbus.data.RedColorEvent;
 import io.vertigo.commons.eventbus.data.WhiteColorEvent;
+import io.vertigo.commons.eventbus.data.aspects.FlipAspect;
 
 /**
  * @author pchretien
@@ -73,6 +75,25 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(4, mySubscriber.getCount());
 
 		assertEquals(2, red);
+
+		assertEquals(0, deadEvents);
+	}
+
+	@Test
+	public void testWithAspects() {
+		/*
+		 * We want to check that aspects are used.
+		 */
+		assertTrue(FlipAspect.isOff());
+
+		eventBusManager.post(new BlueColorEvent()); //<< Flip here
+		assertTrue(FlipAspect.isOn());
+
+		eventBusManager.post(new RedColorEvent()); //there is no aspect
+		assertTrue(FlipAspect.isOn());
+
+		eventBusManager.post(new BlueColorEvent()); //<< Flip here
+		assertTrue(FlipAspect.isOff());
 
 		assertEquals(0, deadEvents);
 	}
