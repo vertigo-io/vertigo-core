@@ -37,12 +37,6 @@ import java.util.List;
  * @author pchretien
  */
 public interface SqlPreparedStatement extends AutoCloseable {
-	void setValues(List<SqlParameter> sqlParameters);
-
-	//=========================================================================
-	//-----2ème Etape : Exécution
-	//=========================================================================
-
 	/**
 	 * Exécute une requête et délègue l'interprêtation du résultat.
 	 * Le Handler est initialisé par KprepareStatement via un appel sur la méthode init.
@@ -51,21 +45,21 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @return Résultat comprenant Objet créé (dto ou dtc)
 	 * @throws SQLException Exception sql
 	 */
-	<O> List<O> executeQuery(final Class<O> dataType, final Integer limit) throws SQLException;
+	<O> List<O> executeQuery(List<SqlParameter> sqlParameters, final Class<O> dataType, final Integer limit) throws SQLException;
 
 	/**
 	 * Exécute la requête.
 	 *
-	 * @throws SQLException Si erreur
 	 * @return either the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
+	 * @throws SQLException Si erreur
 	 */
-	int executeUpdate() throws SQLException;
+	int executeUpdate(List<SqlParameter> sqlParameters) throws SQLException;
 
 	/**
 	 * Ajoute le traitement dans la liste des traitements batchs.
 	 * @throws SQLException Si erreur
 	 */
-	void addBatch() throws SQLException;
+	void addBatch(List<SqlParameter> sqlParameters) throws SQLException;
 
 	/**
 	 * Execute le traitement batch.
@@ -83,7 +77,7 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	<O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException;
 
 	/**
-	 * Ferme le PreparedStatement.
+	 * close without exceoption.
 	 */
 	@Override
 	void close();
