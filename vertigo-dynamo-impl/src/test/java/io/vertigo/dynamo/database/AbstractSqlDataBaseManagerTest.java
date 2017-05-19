@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.database;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -89,7 +90,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	protected void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.executeUpdate();
+			preparedStatement.executeUpdate(Collections.emptyList());
 		}
 	}
 
@@ -102,8 +103,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					.add(new SqlParameter(Mail.class, mail))
 					.build();
 			//-----
-			preparedStatement.setValues(sqlParameters);
-			preparedStatement.executeUpdate();
+			preparedStatement.executeUpdate(sqlParameters);
 		}
 	}
 
@@ -185,7 +185,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-				return preparedStatement.executeQuery(dataType, limit);
+				return preparedStatement.executeQuery(Collections.emptyList(), dataType, limit);
 			}
 		} finally {
 			connection.release();
