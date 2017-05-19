@@ -26,7 +26,7 @@ import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.VLists;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -153,9 +153,11 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		if (dtListState.getSkipRows() >= sortedList.size()) {
 			return new DtList<>(unFilteredList.getDefinition());
 		} else if (dtListState.getMaxRows().isPresent()) {
-			final int start = dtListState.getSkipRows();
-			final int end = Math.min(start + dtListState.getMaxRows().get(), sortedList.size());
-			return VLists.subList(sortedList, start, end);
+			return sortedList
+					.stream()
+					.skip(dtListState.getSkipRows())
+					.limit(dtListState.getMaxRows().get())
+					.collect(VCollectors.toDtList(sortedList.getDefinition()));
 		}
 		return sortedList;
 	}

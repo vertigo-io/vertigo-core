@@ -40,7 +40,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.domain.util.VLists;
 
 /**
  * @author pchretien
@@ -335,21 +334,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Item> subList(final DtList<Item> dtc, final int start, final int end) {
-		return VLists.subList(dtc, start, end);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testSubListFail1() {
-		// On teste les dépassements.
-		subList(createItems(), 5, 5);
-		// "[Assertion.precondition] IndexOutOfBoundException....
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testSubListFail2() {
-		// On teste les dépassements.
-		subList(createItems(), 1, 20);
-		// "[Assertion.precondition] IndexOutOfBoundException....
+		return dtc
+				.stream()
+				.skip(start)
+				.limit(end - start)
+				.collect(VCollectors.toDtList(dtc.getDefinition()));
 	}
 
 	/**
