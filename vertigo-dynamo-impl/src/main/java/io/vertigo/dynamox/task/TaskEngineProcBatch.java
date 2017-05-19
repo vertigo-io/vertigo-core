@@ -74,8 +74,9 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	private void setBatchInParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
-		for (final TaskEngineSQLParam param : getParams()) {
-			setInParameter(statement, param, rowNumber);
+		for (int index = 0; index < getParams().size(); index++) {
+			final TaskEngineSQLParam param = getParams().get(index);
+			setInParameter(statement, index, param, rowNumber);
 		}
 	}
 

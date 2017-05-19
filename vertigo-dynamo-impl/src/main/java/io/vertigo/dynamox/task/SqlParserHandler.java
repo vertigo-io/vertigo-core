@@ -93,9 +93,6 @@ final class SqlParserHandler implements ScriptParserHandler {
 			// On vérifie que le fieldName existe pour l'attribut précisé
 			checkFieldName(taskAttribute, param.getFieldName());
 		}
-
-		//Ajout dans la liste et maj de l'index.
-		param.setIndex(params.size());
 		params.add(param);
 	}
 
