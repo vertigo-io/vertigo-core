@@ -77,10 +77,10 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 		switch (generationMode) {
 			case GENERATED_KEYS:
-				return getDataBaseManager().createPreparedStatement(connection, sql, true);
+				return getDataBaseManager().createPreparedStatement(connection, sql, GenerationMode.GENERATED_KEYS);
 			case GENERATED_COLUMNS:
 				final String idFieldName = getTaskDefinition().getInAttribute("DTO").getDomain().getDtDefinition().getIdField().get().getName();
-				return getDataBaseManager().createPreparedStatement(connection, sql, idFieldName);
+				return getDataBaseManager().createPreparedStatement(connection, sql, GenerationMode.GENERATED_COLUMNS, idFieldName);
 			default:
 				throw new IllegalArgumentException("TaskEngineInsertWithGeneratedKeys is not supported with generation mode +'" + generationMode + "'");
 		}

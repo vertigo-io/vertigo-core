@@ -21,6 +21,7 @@ package io.vertigo.dynamo.database;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.vendor.SqlDialect;
 import io.vertigo.lang.Manager;
 
 /**
@@ -38,19 +39,14 @@ public interface SqlDataBaseManager extends Manager {
 	SqlConnectionProvider getConnectionProvider(String name);
 
 	/**
-	 * @param connection Connexion
+	 * @param connection Connection
 	 * @param sql Requête SQL
 	 * @param generatedKeys Si on récupère les clés générées par la base de données.
 	 * @return Statement
 	 */
-	SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final boolean generatedKeys);
-
-	/**
-	 * @param connection Connexion
-	 * @param sql Requête SQL
-	 * @param generatedColumns the generated columns in the statement
-	 * @return Statement
-	 */
-	SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final String... generatedColumns);
-
+	SqlPreparedStatement createPreparedStatement(
+			final SqlConnection connection,
+			final String sql,
+			final SqlDialect.GenerationMode generationMode,
+			final String... generatedColumns);
 }

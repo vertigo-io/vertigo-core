@@ -34,6 +34,7 @@ import io.vertigo.dynamo.database.data.Movie;
 import io.vertigo.dynamo.database.data.MovieInfo;
 import io.vertigo.dynamo.database.statement.SqlParameter;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -90,6 +91,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	protected void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			preparedStatement.executeUpdate(Collections.emptyList());
 		}
 	}
@@ -184,7 +186,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final Integer limit) throws SQLException, Exception {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
-			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 				return preparedStatement.executeQuery(Collections.emptyList(), dataType, limit);
 			}
 		} finally {

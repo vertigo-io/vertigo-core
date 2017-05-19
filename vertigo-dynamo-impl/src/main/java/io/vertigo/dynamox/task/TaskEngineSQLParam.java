@@ -27,7 +27,6 @@ import io.vertigo.lang.WrappedException;
  *
  * Ces paramètres sont de trois types :
  * - IN 	: le séparateur utilisé est #
- * - OUT 	: le séparateur utilisé est %
  *
  * @author pchretien
  */

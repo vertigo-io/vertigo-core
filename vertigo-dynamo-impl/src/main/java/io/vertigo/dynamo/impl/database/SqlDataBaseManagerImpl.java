@@ -30,6 +30,7 @@ import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
 import io.vertigo.lang.Assertion;
 
@@ -49,7 +50,10 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
 	 */
 	@Inject
-	public SqlDataBaseManagerImpl(final LocaleManager localeManager, final AnalyticsManager analyticsManager, final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
+	public SqlDataBaseManagerImpl(
+			final LocaleManager localeManager,
+			final AnalyticsManager analyticsManager,
+			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(sqlConnectionProviderPlugins);
@@ -74,14 +78,21 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
-		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, returnGeneratedKeys, new String[0]);
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final String... generatedColumns) {
-		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, false, generatedColumns);
+	public SqlPreparedStatement createPreparedStatement(
+			final SqlConnection connection,
+			final String sql,
+			final GenerationMode generationMode,
+			final String... generatedColumns) {
+		Assertion.checkNotNull(connection);
+		Assertion.checkNotNull(sql);
+		Assertion.checkNotNull(generationMode);
+		Assertion.checkNotNull(generatedColumns);
+		Assertion.when(generationMode != GenerationMode.GENERATED_COLUMNS)
+				.check(() -> generatedColumns.length == 0, "generated columns are expected only when mode='GENERATED_COLUMNS'");
+		Assertion.when(generationMode == GenerationMode.GENERATED_COLUMNS)
+				.check(() -> generatedColumns.length > 0, "generated columns are expected only when mode='GENERATED_COLUMNS'");
+		//---
+		final boolean returnGeneratedKeys = generationMode == GenerationMode.GENERATED_KEYS;
+		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, returnGeneratedKeys, generatedColumns);
 	}
 }
