@@ -22,12 +22,15 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlParameter;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -55,29 +58,15 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
-		for (int i = 0; i < batchSize; i++) {
-			setBatchInParameters(statement, i);
+		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
+			final List<SqlParameter> sqlParameters = new ArrayList<>();
+			for (final TaskEngineSQLParam param : getParams()) {
+				sqlParameters.add(new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber)));
+			}
+			statement.setValues(sqlParameters);
 			statement.addBatch();
 		}
-
 		return statement.executeBatch();
-	}
-
-	/**
-	 * Modifie le statement en fonction des paramètres pour un statement qui sera exécuter en mode batch. Affecte les
-	 * valeurs en entrée
-	 *
-	 * @param statement de type KPreparedStatement, KCallableStatement...
-	 * @param rowNumber ligne de DTC à prendre en compte
-	 * @throws SQLException En cas d'erreur dans la configuration
-	 */
-	private void setBatchInParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
-		Assertion.checkNotNull(statement);
-		//-----
-		for (int index = 0; index < getParams().size(); index++) {
-			final TaskEngineSQLParam param = getParams().get(index);
-			setInParameter(statement, index, param, rowNumber);
-		}
 	}
 
 	private int getBatchSize() {

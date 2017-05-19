@@ -37,16 +37,7 @@ import java.util.List;
  * @author pchretien
  */
 public interface SqlPreparedStatement extends AutoCloseable {
-
-	//=========================================================================
-	//-----1ère Etape : Setters
-	//=========================================================================
-	/**
-	 * Setter générique.
-	 * @param index Indexe du paramètre
-	 * @param o Valeur du paramètre
-	 */
-	<O> void setValue(final int index, final Class<O> dataType, final O value);
+	void setValues(List<SqlParameter> sqlParameters);
 
 	//=========================================================================
 	//-----2ème Etape : Exécution

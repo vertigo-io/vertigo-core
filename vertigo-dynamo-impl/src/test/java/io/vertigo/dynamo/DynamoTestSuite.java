@@ -65,7 +65,9 @@ import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.H2SqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.HSqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.OracleSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
@@ -130,7 +132,11 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		SearchManagerStoreTest.class,
 		//--store
 		CachedStoreManagerTest.class,
-		AbstractSqlStoreManagerTest.class,
+
+		HSqlStoreManagerTest.class,
+		H2SqlStoreManagerTest.class,
+		OracleSqlStoreManagerTest.class,
+
 		JpaStoreManagerTest.class,
 		MultiStoreManagerTest.class,
 		//--task

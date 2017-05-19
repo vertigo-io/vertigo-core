@@ -20,6 +20,7 @@ package io.vertigo.dynamox.task;
 
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
+import io.vertigo.dynamo.database.statement.SqlParameter;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -260,11 +262,12 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	protected final void setInParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//-----
-		for (int index = 0; index < params.size(); index++) {
-			final TaskEngineSQLParam param = params.get(index);
+		final List<SqlParameter> sqlParameters = new ArrayList<>();
+		for (final TaskEngineSQLParam param : params) {
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-			setInParameter(statement, index, param, rowNumber);
+			sqlParameters.add(new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber)));
 		}
+		statement.setValues(sqlParameters);
 	}
 
 	/**
@@ -274,18 +277,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return Collections.unmodifiableList(params);
 	}
 
-	/**
-	 * Affecte un paramètre au Statement.
-	 * @param ps PrepareStatement
-	 * @param param Paramètre SQL
-	 * @param rowNumber Ligne des données d'entrée.
-	 * @throws SQLException Erreur sql
-	 */
-	protected final void setInParameter(final SqlPreparedStatement ps, final int index, final TaskEngineSQLParam param, final Integer rowNumber) {
-		ps.setValue(index, getDataTypeParameter(param), getValueParameter(param, rowNumber));
-	}
-
-	private Class getDataTypeParameter(final TaskEngineSQLParam param) {
+	protected final Class getDataTypeParameter(final TaskEngineSQLParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -309,7 +301,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return domain.getDataType().getJavaClass();
 	}
 
-	private Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+	protected final Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
 		final Object value;
 		if (param.isPrimitive()) {
 			value = getValue(param.getAttributeName());

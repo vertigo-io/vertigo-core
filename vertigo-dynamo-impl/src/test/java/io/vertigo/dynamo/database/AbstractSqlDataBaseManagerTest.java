@@ -31,7 +31,9 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.data.Movie;
 import io.vertigo.dynamo.database.data.MovieInfo;
+import io.vertigo.dynamo.database.statement.SqlParameter;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.util.ListBuilder;
 
 /**
  *
@@ -91,12 +93,16 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 	}
 
-	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
-		final String sql = "insert into movie values (?, ?)";
+	private void insert(final SqlConnection connection, final long key, final String libelle, final Mail mail) throws SQLException {
+		final String sql = "insert into movie values (?, ?, ?)";
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
-			preparedStatement.setValue(0, Long.class, key);
-			preparedStatement.setValue(1, String.class, libelle);
+			final List<SqlParameter> sqlParameters = new ListBuilder<SqlParameter>()
+					.add(new SqlParameter(Long.class, key))
+					.add(new SqlParameter(String.class, libelle))
+					.add(new SqlParameter(Mail.class, mail))
+					.build();
 			//-----
+			preparedStatement.setValues(sqlParameters);
 			preparedStatement.executeUpdate();
 		}
 	}

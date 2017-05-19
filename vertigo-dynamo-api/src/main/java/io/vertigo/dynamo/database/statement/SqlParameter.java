@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.statement;
+package io.vertigo.dynamo.database.statement;
 
 import io.vertigo.lang.Assertion;
 
@@ -24,17 +24,18 @@ import io.vertigo.lang.Assertion;
  * this class concerns the param of a sql statement.
  *
  * @author pchretien
+ * @param <O> the type param
  */
-final class SqlParameter<O> {
+public final class SqlParameter<O> {
 	private final Class<O> dataType;
 	private final O value;
 
 	/**
 	 * Constructor.
 	 * @param dataType the param type
-	 * @param in if the param is an input (or an output)
+	 * @param value the param value
 	 */
-	SqlParameter(final Class<O> dataType, final O value) {
+	public SqlParameter(final Class<O> dataType, final O value) {
 		Assertion.checkNotNull(dataType);
 		//---
 		this.dataType = dataType;
@@ -44,11 +45,14 @@ final class SqlParameter<O> {
 	/**
 	 * @return the param type
 	 */
-	Class getDataType() {
+	public Class getDataType() {
 		return dataType;
 	}
 
-	O getValue() {
+	/**
+	 * @return the param value
+	 */
+	public O getValue() {
 		return value;
 	}
 

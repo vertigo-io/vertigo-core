@@ -22,7 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlParameter;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
@@ -106,7 +107,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/**
 	 * Listes des paramètres (indexé par les index définis dans les méthodes registerXXX
 	 */
-	private final List<SqlParameter> parameters = new ArrayList<>();
+	private List<SqlParameter> parameters = Collections.emptyList();
 
 	/**
 	 * Constructor.
@@ -184,11 +185,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final <O> void setValue(final int index, final Class<O> dataType, final O value) {
+	public final void setValues(final List<SqlParameter> parameters) {
 		state.assertRegisteringState();
+		Assertion.checkNotNull(parameters);
 		//---
-		final SqlParameter parameter = new SqlParameter(dataType, value);
-		parameters.add(index, parameter);
+		this.parameters = parameters;
 	}
 
 	//=========================================================================
