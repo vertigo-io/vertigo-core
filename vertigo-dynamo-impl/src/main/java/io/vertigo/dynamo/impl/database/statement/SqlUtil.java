@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -65,7 +65,7 @@ final class SqlUtil {
 	private static <O> List<O> retrieveData(final Class<O> dataType, final SqlMapping mapping, final ResultSet resultSet, final Integer limit) throws SQLException {
 		final boolean isPrimitive = isPrimitive(dataType);
 
-		final Field[] fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
+		final MyField[] fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
 		final List<O> list = new ArrayList<>();
@@ -86,12 +86,12 @@ final class SqlUtil {
 		return mapping.getValueForResultSet(resultSet, 1, dataType);
 	}
 
-	private static <O> O readRow(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType, final Field[] fields) throws SQLException {
+	private static <O> O readRow(final SqlMapping mapping, final ResultSet resultSet, final Class<O> dataType, final MyField[] fields) throws SQLException {
 		final O bean = ClassUtil.newInstance(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
-			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getType());
-			BeanUtil.setValue(bean, fields[i].getName(), value);
+			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].type);
+			fields[i].setValue(bean, value);
 		}
 		return bean;
 	}
@@ -101,19 +101,36 @@ final class SqlUtil {
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
 	 * @return Tableau de codes de champ.
 	 */
-	private static Field[] findFields(final Class dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
-		final Field[] fields = new Field[resultSetMetaData.getColumnCount()];
+	private static MyField[] findFields(final Class dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
+		final MyField[] fields = new MyField[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {
 			columnLabel = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
+			final String expectedFieldName = StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH));
 			try {
-				fields[i] = dataType.getDeclaredField(StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH)));
+				final Method getter = dataType.getDeclaredMethod("get" + StringUtil.first2UpperCase(expectedFieldName));
+				fields[i] = new MyField(expectedFieldName, getter.getReturnType());
 			} catch (final Exception e) {
 				throw WrappedException.wrap(e);
 			}
 		}
 		return fields;
+	}
+
+	private static class MyField {
+		protected final String name;
+		protected final Class<?> type;
+
+		MyField(final String name, final Class<?> type) {
+			this.name = name;
+			this.type = type;
+		}
+
+		void setValue(final Object bean, final Object value) {
+			BeanUtil.setValue(bean, name, value);
+		}
+
 	}
 
 	private static RuntimeException createTooManyRowsException() {
