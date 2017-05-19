@@ -263,7 +263,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		final List<SqlParameter> sqlParameters = new ArrayList<>();
 		for (final TaskEngineSQLParam param : params) {
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-			sqlParameters.add(new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber)));
+			sqlParameters.add(buildSqlParameter(param, rowNumber));
 		}
 		return sqlParameters;
 	}
@@ -275,7 +275,11 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return Collections.unmodifiableList(params);
 	}
 
-	protected final Class getDataTypeParameter(final TaskEngineSQLParam param) {
+	protected final SqlParameter buildSqlParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+		return new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber));
+	}
+
+	private final Class getDataTypeParameter(final TaskEngineSQLParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -299,7 +303,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return domain.getDataType().getJavaClass();
 	}
 
-	protected final Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+	private Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
 		final Object value;
 		if (param.isPrimitive()) {
 			value = getValue(param.getAttributeName());

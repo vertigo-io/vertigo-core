@@ -61,7 +61,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
 			final List<SqlParameter> sqlParameters = new ArrayList<>();
 			for (final TaskEngineSQLParam param : getParams()) {
-				sqlParameters.add(new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber)));
+				sqlParameters.add(buildSqlParameter(param, rowNumber));
 			}
 			statement.addBatch(sqlParameters);
 		}
