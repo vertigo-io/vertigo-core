@@ -45,9 +45,8 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * Setter générique.
 	 * @param index Indexe du paramètre
 	 * @param o Valeur du paramètre
-	 * @throws SQLException Exception sql
 	 */
-	<O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException;
+	<O> void setValue(final int index, final Class<O> dataType, final O value);
 
 	//=========================================================================
 	//-----2ème Etape : Exécution

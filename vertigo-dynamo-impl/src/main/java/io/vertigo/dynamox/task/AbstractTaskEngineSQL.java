@@ -87,7 +87,6 @@ import io.vertigo.lang.Assertion;
  *       <%}%> order by <%=1%>";
  *
  * @author  pchretien, npiedeloup
- * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
@@ -281,7 +280,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param rowNumber Ligne des données d'entrée.
 	 * @throws SQLException Erreur sql
 	 */
-	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
+	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) {
 		ps.setValue(param.getIndex(), getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
@@ -307,27 +306,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
 		}
 		return domain.getDataType().getJavaClass();
-	}
-
-	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
-		if (param.isPrimitive()) {
-			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isPresent(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
-			setResult(value);
-		} else if (param.isObject()) {
-			//DtObject
-			final DtObject dto = getValue(param.getAttributeName());
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-			final DtField dtField = dtDefinition.getField(param.getFieldName());
-			dtField.getDataAccessor().setValue(dto, value);
-		} else if (param.isList()) {
-			// DtList
-			final DtList<? extends DtObject> dtc = getValue(param.getAttributeName());
-			final DtObject dto = dtc.get(param.getRowNumber());
-			final DtField dtField = dtc.getDefinition().getField(param.getFieldName());
-			dtField.getDataAccessor().setValue(dto, value);
-		} else {
-			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
-		}
 	}
 
 	private Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {

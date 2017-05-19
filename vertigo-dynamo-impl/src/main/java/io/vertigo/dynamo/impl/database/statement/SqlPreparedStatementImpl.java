@@ -184,7 +184,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final <O> void setValue(final int index, final Class<O> dataType, final O value) throws SQLException {
+	public final <O> void setValue(final int index, final Class<O> dataType, final O value) {
 		state.assertRegisteringState();
 		//---
 		final SqlParameter parameter = new SqlParameter(dataType, value);
